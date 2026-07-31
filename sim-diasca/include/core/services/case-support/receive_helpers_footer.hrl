@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2025 EDF R&D
+% Copyright (C) 2012-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -74,7 +74,7 @@ may be used, however `case_receive/1` may still be more appropriate.
 """.
 -spec case_receive() -> any().
 case_receive() ->
-	traces:receive_applicative_message().
+    traces:receive_applicative_message().
 
 
 
@@ -84,16 +84,16 @@ not interfering with trace supervision.
 """.
 -spec case_receive( any() ) -> void().
 case_receive( Message ) ->
-	traces:receive_applicative_message( Message ).
+    traces:receive_applicative_message( Message ).
 
 
 
 -doc "Test support.".
 -spec test_receive() -> any().
 test_receive() ->
-	case_receive().
+    case_receive().
 
 
 -spec test_receive( any() ) -> void().
 test_receive( Message ) ->
-	case_receive( Message ).
+    case_receive( Message ).

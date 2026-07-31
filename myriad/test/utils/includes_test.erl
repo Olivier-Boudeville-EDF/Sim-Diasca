@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 Olivier Boudeville
+% Copyright (C) 2014-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -42,9 +42,9 @@ Test regarding the Myriad overall includes.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	% The actual test is at compilation-time:
-	test_facilities:display( "This include test succeeded."),
+    % The actual test is at compilation-time:
+    test_facilities:display( "This include test succeeded."),
 
-	test_facilities:stop().
+    test_facilities:stop().

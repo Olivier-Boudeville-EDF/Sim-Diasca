@@ -15,115 +15,115 @@
 
 
 main( [ Dir ] ) when is_list( Dir ) ->
-	run( Dir ).
+    run( Dir ).
 
 
 
 run( Dir ) ->
 
-	Dir = "",
-	CoreCount = get_core_count(),
+    Dir = "",
+    CoreCount = get_core_count(),
 
-	Filenames = select_data_files( Dir ),
+    Filenames = select_data_files( Dir ),
 
-	io:format( "~n~nGenerating over ~B cores the plots for the ~B time series "
-			   "found in directory '~s': ~s~n",
-			   [ CoreCount, length( Filenames ), Dir,
-				 string_list_to_string( Filenames ) ] ),
+    io:format( "~n~nGenerating over ~B cores the plots for the ~B time series "
+               "found in directory '~s': ~s~n",
+               [ CoreCount, length( Filenames ), Dir,
+                 string_list_to_string( Filenames ) ] ),
 
-	% Ensures there is up to one idle worker for maximum loading:
-	MaxWorkerCount = CoreCount + 1,
+    % Ensures there is up to one idle worker for maximum loading:
+    MaxWorkerCount = CoreCount + 1,
 
-	manage_workers( _DataFilenames=Filenames, _CurrentWorkers=[],
-					_GeneratedFilenames=[], _ReportedErrors=[],
-					MaxWorkerCount ),
+    manage_workers( _DataFilenames=Filenames, _CurrentWorkers=[],
+                    _GeneratedFilenames=[], _ReportedErrors=[],
+                    MaxWorkerCount ),
 
-	io:format( "End of generation script.~n" ).
+    io:format( "End of generation script.~n" ).
 
 
 
 % Returns a list of the filenames corresponding to time series.
 select_data_files( DirectoryName ) ->
-	{ RegularFiles, _Directories, _OtherFiles, _Devices } = list_dir_elements(
-			DirectoryName ),
-	filter_by_extension( RegularFiles, ".dat" ).
+    { RegularFiles, _Directories, _OtherFiles, _Devices } = list_dir_elements(
+            DirectoryName ),
+    filter_by_extension( RegularFiles, ".dat" ).
 
 
 
 manage_workers( _DataFilenames=[], _CurrentWorkers=[], _GeneratedFilenames=[],
-				_ReportedErrors=[], _MaxWorkerCount ) ->
-	io:format( "Nothing was to be generated.~n" );
+                _ReportedErrors=[], _MaxWorkerCount ) ->
+    io:format( "Nothing was to be generated.~n" );
 
 manage_workers( _DataFilenames=[], _CurrentWorkers=[], GeneratedFilenames,
-				_ReportedErrors=[], _MaxWorkerCount ) ->
+                _ReportedErrors=[], _MaxWorkerCount ) ->
 
-	io:format( "All ~B reports were successfully generated: ~s~n",
-			  [ length( GeneratedFilenames ),
-			   string_list_to_string( GeneratedFilenames ) ] );
+    io:format( "All ~B reports were successfully generated: ~s~n",
+              [ length( GeneratedFilenames ),
+               string_list_to_string( GeneratedFilenames ) ] );
 
 manage_workers( _DataFilenames=[], _CurrentWorkers=[], GeneratedFilenames,
-				ReportedErrors, _MaxWorkerCount ) ->
+                ReportedErrors, _MaxWorkerCount ) ->
 
-	ErrorStrings = [ io_lib:format( "for ~s: ~s", [ File, Error ] )
-					|| { File, Error } <- ReportedErrors ],
+    ErrorStrings = [ io_lib:format( "for ~s: ~s", [ File, Error ] )
+                    || { File, Error } <- ReportedErrors ],
 
-	GenLen = length( GeneratedFilenames ),
-	ErrLen = length( ReportedErrors ),
+    GenLen = length( GeneratedFilenames ),
+    ErrLen = length( ReportedErrors ),
 
-	io:format( "Out of ~B reports, ~B were successfully generated:~s~n"
-			   "Whereas ~B generations failed:~s~n",
-			  [ GenLen + ErrLen, GenLen,
-			   string_list_to_string( GeneratedFilenames ), ErrLen,
-			   string_list_to_string( ErrorStrings ) ] );
+    io:format( "Out of ~B reports, ~B were successfully generated:~s~n"
+               "Whereas ~B generations failed:~s~n",
+              [ GenLen + ErrLen, GenLen,
+               string_list_to_string( GeneratedFilenames ), ErrLen,
+               string_list_to_string( ErrorStrings ) ] );
 
 manage_workers( DataFilenames, CurrentWorkers, GeneratedFilenames,
-				ReportedErrors, MaxWorkerCount ) ->
+                ReportedErrors, MaxWorkerCount ) ->
 
-	{ RemainingWorkers, NewGeneratedFilenames, NewReportedErrors } = receive
+    { RemainingWorkers, NewGeneratedFilenames, NewReportedErrors } = receive
 
-		{ work_done, Pid, PNGFilename } ->
-			%io:format( "Worker ~w finished.~n", [ Pid ] ),
-			{ lists:delete( Pid, CurrentWorkers ),
-			 [ PNGFilename | GeneratedFilenames ], ReportedErrors };
+        { work_done, Pid, PNGFilename } ->
+            %io:format( "Worker ~w finished.~n", [ Pid ] ),
+            { lists:delete( Pid, CurrentWorkers ),
+             [ PNGFilename | GeneratedFilenames ], ReportedErrors };
 
-		{ work_failed, Pid, Error }->
-			%io:format( "Worker ~w failed: ~s.~n", [ Pid, Reason ] ),
-			{ lists:delete( Pid, CurrentWorkers ), GeneratedFilenames,
-			 [ Error | ReportedErrors ] }
+        { work_failed, Pid, Error }->
+            %io:format( "Worker ~w failed: ~s.~n", [ Pid, Reason ] ),
+            { lists:delete( Pid, CurrentWorkers ), GeneratedFilenames,
+             [ Error | ReportedErrors ] }
 
-	after 100 ->
+    after 100 ->
 
-		% Needed to bootstrapt workers:
-		{ CurrentWorkers, GeneratedFilenames, ReportedErrors }
+        % Needed to bootstrapt workers:
+        { CurrentWorkers, GeneratedFilenames, ReportedErrors }
 
-	end,
+    end,
 
-	{ NewDataFilenames, NewWorkers } =
-		update_workers( DataFilenames, RemainingWorkers, MaxWorkerCount ),
+    { NewDataFilenames, NewWorkers } =
+        update_workers( DataFilenames, RemainingWorkers, MaxWorkerCount ),
 
-	manage_workers( NewDataFilenames, NewWorkers, NewGeneratedFilenames,
-					NewReportedErrors, MaxWorkerCount ).
+    manage_workers( NewDataFilenames, NewWorkers, NewGeneratedFilenames,
+                    NewReportedErrors, MaxWorkerCount ).
 
 
 
 update_workers( _DataFilenames=[], Workers, _MaxWorkerCount ) ->
-	% Last workers are still working, just wait (do nothing):
-	{ [], Workers };
+    % Last workers are still working, just wait (do nothing):
+    { [], Workers };
 
 
 update_workers( _DataFilenames=[ Filename | T ], Workers, MaxWorkerCount )
   when length( Workers ) < MaxWorkerCount ->
 
-	% There is still work to be done, and room for one more worker here:
+    % There is still work to be done, and room for one more worker here:
 
-	DispatcherPid = self(),
+    DispatcherPid = self(),
 
-	F = fun() ->
-				manage_plot( Filename, DispatcherPid )
-		end,
+    F = fun() ->
+                manage_plot( Filename, DispatcherPid )
+        end,
 
-	NewWorkerPid = spawn_link( F ),
-	{ T, [ NewWorkerPid | Workers ] }.
+    NewWorkerPid = spawn_link( F ),
+    { T, [ NewWorkerPid | Workers ] }.
 
 
 
@@ -132,72 +132,72 @@ update_workers( _DataFilenames=[ Filename | T ], Workers, MaxWorkerCount )
 % The main function of workers.
 manage_plot( DataFilename, DispatcherPid ) ->
 
-	CommandFilename = replace_extension( DataFilename, ".dat", ".p" ),
+    CommandFilename = replace_extension( DataFilename, ".dat", ".p" ),
 
-	case is_existing_file( CommandFilename ) of
+    case is_existing_file( CommandFilename ) of
 
-		true ->
-			%io:format( "Command file found.~n" ),
-			case generate_report( DataFilename, CommandFilename ) of
+        true ->
+            %io:format( "Command file found.~n" ),
+            case generate_report( DataFilename, CommandFilename ) of
 
-				{ success, TargetFilename } ->
-					DispatcherPid ! { work_done, self(), TargetFilename };
+                { success, TargetFilename } ->
+                    DispatcherPid ! { work_done, self(), TargetFilename };
 
-				{ failure, Reason } ->
-					DispatcherPid ! { work_failed, self(),
-									  { DataFilename, Reason } }
+                { failure, Reason } ->
+                    DispatcherPid ! { work_failed, self(),
+                                      { DataFilename, Reason } }
 
-			end;
+            end;
 
-		false ->
-			Message = io_lib:format( "command file '~s' not found",
-									 [ CommandFilename ] ),
+        false ->
+            Message = io_lib:format( "command file '~s' not found",
+                                     [ CommandFilename ] ),
 
-			DispatcherPid ! { work_failed, self(), { DataFilename, Message } }
+            DispatcherPid ! { work_failed, self(), { DataFilename, Message } }
 
-	end.
+    end.
 
 
 
 % Largely inspired from class_Probe:generate_report/2.
 generate_report( DataFilename, CommandFilename ) ->
 
-	% Gnuplot might issue non-serious warnings. Generates a PNG:
-	Message = case os:cmd( "gnuplot " ++ CommandFilename ) of
+    % Gnuplot might issue non-serious warnings. Generates a PNG:
+    Message = case os:cmd( "gnuplot " ++ CommandFilename ) of
 
-		[] ->
-			[];
+        [] ->
+            [];
 
-		M ->
-			io:format( "Warning: report generation for ~s resulted in "
-					   "following output: ~s.", [ DataFilename, M ] ),
-			M
+        M ->
+            io:format( "Warning: report generation for ~s resulted in "
+                       "following output: ~s.", [ DataFilename, M ] ),
+            M
 
-	end,
+    end,
 
-	% Hack for .png:
-	TargetFilename = CommandFilename ++ "ng",
+    % Hack for .png:
+    TargetFilename = CommandFilename ++ "ng",
 
-	case is_existing_file( TargetFilename ) of
+    case is_existing_file( TargetFilename ) of
 
-		true ->
-			{ success, TargetFilename };
+        true ->
+            { success, TargetFilename };
 
-		false ->
+        false ->
 
-			case Message of
+            case Message of
 
-				[] ->
-					{ failure, io_lib:format( "generation failed for ~s",
-											  [ DataFilename ] ) };
+                [] ->
+                    { failure, io_lib:format( "generation failed for ~s",
+                                              [ DataFilename ] ) };
 
-				_ ->
-					{ failure, io_lib:format( "generation failed for ~s: ~s",
-											  [ DataFilename, Message ] ) }
+                _ ->
+                    { failure, io_lib:format( "generation failed for ~s: ~s",
+                                              [ DataFilename, Message ] ) }
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -215,10 +215,10 @@ generate_report( DataFilename, CommandFilename ) ->
 %
 list_dir_elements(Dirname) ->
 
-	%io:format( "list_dir_elements for '~s'.~n", [ Dirname ] ),
+    %io:format( "list_dir_elements for '~s'.~n", [ Dirname ] ),
 
-	{ ok, LocalDirElements } = file:list_dir( Dirname ),
-	classify_dir_elements( Dirname, LocalDirElements, [], [], [], [] ).
+    { ok, LocalDirElements } = file:list_dir( Dirname ),
+    classify_dir_elements( Dirname, LocalDirElements, [], [], [], [] ).
 
 
 % Returns the type of the specified file entry, in:
@@ -226,20 +226,20 @@ list_dir_elements(Dirname) ->
 %
 get_type_of( EntryName ) ->
 
-	case file:read_file_info( EntryName ) of
+    case file:read_file_info( EntryName ) of
 
-		{ ok, FileInfo } ->
-			#file_info{ type=FileType } = FileInfo,
-			FileType;
+        { ok, FileInfo } ->
+            #file_info{ type=FileType } = FileInfo,
+            FileType;
 
-		{ error, eloop } ->
-			% Probably a recursive symlink:
-			throw( { too_many_symlink_levels, EntryName } );
+        { error, eloop } ->
+            % Probably a recursive symlink:
+            throw( { too_many_symlink_levels, EntryName } );
 
-		{ error, enoent } ->
-			throw( { non_existing_entry, EntryName } )
+        { error, enoent } ->
+            throw( { non_existing_entry, EntryName } )
 
-	end.
+    end.
 
 
 
@@ -247,32 +247,32 @@ get_type_of( EntryName ) ->
 % file elements: { Directories, RegularFiles, Devices, OtherFiles }.
 %
 classify_dir_elements( _Dirname, [],
-					   Devices, Directories, RegularFiles, OtherFiles ) ->
-	% Note the reordering:
-	{ RegularFiles, Directories, OtherFiles, Devices };
+                       Devices, Directories, RegularFiles, OtherFiles ) ->
+    % Note the reordering:
+    { RegularFiles, Directories, OtherFiles, Devices };
 
 classify_dir_elements( Dirname, [ H | T ], Devices, Directories, RegularFiles,
-					   OtherFiles ) ->
+                       OtherFiles ) ->
 
-	 case get_type_of( filename:join( Dirname, H ) ) of
+     case get_type_of( filename:join( Dirname, H ) ) of
 
-		device ->
-			classify_dir_elements( Dirname, T, [ H | Devices ], Directories,
-								   RegularFiles, OtherFiles ) ;
+        device ->
+            classify_dir_elements( Dirname, T, [ H | Devices ], Directories,
+                                   RegularFiles, OtherFiles ) ;
 
-		directory ->
-			classify_dir_elements( Dirname, T, Devices, [ H | Directories ],
-								   RegularFiles, OtherFiles ) ;
+        directory ->
+            classify_dir_elements( Dirname, T, Devices, [ H | Directories ],
+                                   RegularFiles, OtherFiles ) ;
 
-		regular ->
-			classify_dir_elements( Dirname, T, Devices, Directories,
-								   [ H | RegularFiles ], OtherFiles ) ;
+        regular ->
+            classify_dir_elements( Dirname, T, Devices, Directories,
+                                   [ H | RegularFiles ], OtherFiles ) ;
 
-		other ->
-			classify_dir_elements( Dirname, T, Devices, Directories,
-								   RegularFiles, [ H | OtherFiles ] )
+        other ->
+            classify_dir_elements( Dirname, T, Devices, Directories,
+                                   RegularFiles, [ H | OtherFiles ] )
 
-	end.
+    end.
 
 
 
@@ -284,15 +284,15 @@ classify_dir_elements( Dirname, [ H | T ], Devices, Directories, RegularFiles,
 %
 get_current_directory() ->
 
-	case file:get_cwd() of
+    case file:get_cwd() of
 
-		{ ok, Dir} ->
-			Dir;
+        { ok, Dir} ->
+            Dir;
 
-		{ error, Reaso n} ->
-			throw( { failed_to_determine_current_directory, Reason } )
+        { error, Reaso n} ->
+            throw( { failed_to_determine_current_directory, Reason } )
 
-	end.
+    end.
 
 
 
@@ -300,22 +300,22 @@ get_current_directory() ->
 % the specified one.
 %
 filter_by_extension( Filenames, Extension ) ->
-	filter_by_extension( Filenames, Extension, [] ).
+    filter_by_extension( Filenames, Extension, [] ).
 
 
 filter_by_extension( [], _Extension, Acc ) ->
-	Acc ;
+    Acc ;
 
 filter_by_extension( [ H | T ], Extension, Acc ) ->
-	case filename:extension( H ) of
+    case filename:extension( H ) of
 
-		Extension ->
-			filter_by_extension( T, Extension, [ H | Acc ] ) ;
+        Extension ->
+            filter_by_extension( T, Extension, [ H | Acc ] ) ;
 
-		_Other ->
-			filter_by_extension( T, Extension, Acc )
+        _Other ->
+            filter_by_extension( T, Extension, Acc )
 
-	end.
+    end.
 
 
 % Returns a new filename whose extension has been updated.
@@ -324,8 +324,8 @@ filter_by_extension( [ H | T ], Extension, Acc ) ->
 % "/home/jack/rosie.wav".
 %
 replace_extension( Filename, SourceExtension, TargetExtension ) ->
-	Index = string:rstr( Filename, SourceExtension ),
-	string:substr( Filename, 1, Index-1 ) ++ TargetExtension.
+    Index = string:rstr( Filename, SourceExtension ),
+    string:substr( Filename, 1, Index-1 ) ++ TargetExtension.
 
 
 % Returns whether the specified entry exists and is a regular file.
@@ -333,30 +333,30 @@ replace_extension( Filename, SourceExtension, TargetExtension ) ->
 % Returns true or false, and cannot trigger an exception.
 %
 is_existing_file( EntryName ) ->
-	case exists( EntryName ) andalso get_type_of( EntryName ) of
+    case exists( EntryName ) andalso get_type_of( EntryName ) of
 
-		regular ->
-			true ;
+        regular ->
+            true ;
 
-		_ ->
-			false
+        _ ->
+            false
 
-	end.
+    end.
 
 
 % Tells whether specified file entry exists, regardless of its type.
 %
 exists( EntryName ) ->
 
-	case file:read_file_info( EntryName ) of
+    case file:read_file_info( EntryName ) of
 
-		{ ok, _FileInfo } ->
-			true;
+        { ok, _FileInfo } ->
+            true;
 
-		{ error, _Reason } ->
-			false
+        { error, _Reason } ->
+            false
 
-	end.
+    end.
 
 
 
@@ -370,17 +370,17 @@ exists( EntryName ) ->
 %
 get_core_count() ->
 
-	String = remove_ending_carriage_return(
-				os:cmd( "cat /proc/cpuinfo | grep -c processor" ) ),
+    String = remove_ending_carriage_return(
+                os:cmd( "cat /proc/cpuinfo | grep -c processor" ) ),
 
-	try
-		string_to_integer( String )
-	catch
+    try
+        string_to_integer( String )
+    catch
 
-		{ integer_conversion_failed, String } ->
-			throw( { could_not_determine_core_count, String } )
+        { integer_conversion_failed, String } ->
+            throw( { could_not_determine_core_count, String } )
 
-	end.
+    end.
 
 
 
@@ -390,23 +390,23 @@ get_core_count() ->
 % Returns a string which pretty-prints specified list of strings, with bullets.
 %
 string_list_to_string( ListOfStrings ) ->
-	io_lib:format( "~n~s", [ string_list_to_string(
-								 ListOfStrings, _Acc=[], _Bullet=" + " ) ] ).
+    io_lib:format( "~n~s", [ string_list_to_string(
+                                 ListOfStrings, _Acc=[], _Bullet=" + " ) ] ).
 
 string_list_to_string( _ListOfStrings=[], Acc, _Bullet ) ->
-	 Acc;
+     Acc;
 
 string_list_to_string( _ListOfStrings=[ H | T ], Acc, Bullet )
                                 when is_list( H ) ->
-	string_list_to_string( T, Acc ++ Bullet ++ io_lib:format( "~s~n", [ H ] ),
-						   Bullet ).
+    string_list_to_string( T, Acc ++ Bullet ++ io_lib:format( "~s~n", [ H ] ),
+                           Bullet ).
 
 
 % Removes the ending "\n" character(s) of specified string.
 %
 remove_ending_carriage_return( String ) when is_list( String ) ->
-	% 'Res ++ "\n" = String,Res' will not work:
-	string:strip( String, right, $\n ).
+    % 'Res ++ "\n" = String,Res' will not work:
+    string:strip( String, right, $\n ).
 
 
 
@@ -416,14 +416,14 @@ remove_ending_carriage_return( String ) when is_list( String ) ->
 %
 string_to_integer( String ) ->
 
-	try list_to_integer( String ) of
+    try list_to_integer( String ) of
 
-		I ->
-			I
+        I ->
+            I
 
-	catch
+    catch
 
-		error:badarg ->
-			throw( { integer_conversion_failed, String } )
+        error:badarg ->
+            throw( { integer_conversion_failed, String } )
 
-	end.
+    end.

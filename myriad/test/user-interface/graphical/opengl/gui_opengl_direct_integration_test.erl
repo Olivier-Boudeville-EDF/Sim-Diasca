@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -77,28 +77,28 @@ See also gui_opengl_mvc_test.erl for a cleaner decoupling of concerns.
 % This is the test-specific overall GUI state:
 -record( my_gui_state, {
 
-	% The main frame of this test:
-	main_frame :: frame(),
+    % The main frame of this test:
+    main_frame :: frame(),
 
-	% The panel occupying the client area of the main frame:
-	panel :: panel(),
+    % The panel occupying the client area of the main frame:
+    panel :: panel(),
 
-	% The OpenGL canvas on which rendering will be done:
-	canvas :: gl_canvas(),
+    % The OpenGL canvas on which rendering will be done:
+    canvas :: gl_canvas(),
 
-	% The OpenGL context being used:
-	context :: gl_context(),
+    % The OpenGL context being used:
+    context :: gl_context(),
 
-	% An image used as a material:
-	image :: image(),
+    % An image used as a material:
+    image :: image(),
 
-	% The various OpenGL information kept by this test once initialised:
-	opengl_state :: option( my_opengl_state() ),
+    % The various OpenGL information kept by this test once initialised:
+    opengl_state :: option( my_opengl_state() ),
 
-	% Records the current time to update the clock texture when relevant:
-	time :: option( time() ),
+    % Records the current time to update the clock texture when relevant:
+    time :: option( time() ),
 
-	mesh :: mesh() } ).
+    mesh :: mesh() } ).
 
 
 -doc "Test-specific overall GUI state.".
@@ -109,26 +109,26 @@ See also gui_opengl_mvc_test.erl for a cleaner decoupling of concerns.
 % OpenGL-specific GUI test state:
 -record( my_opengl_state, {
 
-	% The widget where the rendering is to occur, typically the GL canvas:
-	render_target :: frame(),
+    % The widget where the rendering is to occur, typically the GL canvas:
+    render_target :: frame(),
 
-	mesh :: mesh(),
+    mesh :: mesh(),
 
-	angle = 0.0 :: degrees(),
+    angle = 0.0 :: degrees(),
 
-	material_texture :: texture(),
+    material_texture :: texture(),
 
-	alpha_texture :: texture(),
+    alpha_texture :: texture(),
 
-	text_texture :: texture(),
+    text_texture :: texture(),
 
-	clock_texture :: texture(),
+    clock_texture :: texture(),
 
-	font :: font(),
+    font :: font(),
 
-	brush :: brush(),
+    brush :: brush(),
 
-	sphere :: glu_id() } ).
+    sphere :: glu_id() } ).
 
 
 -doc "OpenGL-specific GUI test state.".
@@ -165,34 +165,34 @@ See also gui_opengl_mvc_test.erl for a cleaner decoupling of concerns.
 -spec run_actual_test() -> void().
 run_actual_test() ->
 
-	test_facilities:display( "Starting the actual OpenGL MyriadGUI "
-		"integration test, from user process ~w.", [ self() ] ),
+    test_facilities:display( "Starting the actual OpenGL MyriadGUI "
+        "integration test, from user process ~w.", [ self() ] ),
 
-	trace_utils:notice( "A resizable frame will be shown, "
-		"comprising moving, textured rectangle, cube and sphere, "
-		"displaying the current time as well, until closed by the user." ),
+    trace_utils:notice( "A resizable frame will be shown, "
+        "comprising moving, textured rectangle, cube and sphere, "
+        "displaying the current time as well, until closed by the user." ),
 
-	gui:start(),
+    gui:start(),
 
-	%gui:set_debug_level( [ calls, life_cycle ] ),
+    %gui:set_debug_level( [ calls, life_cycle ] ),
 
-	% Postpone the processing of first events to accelerate initial setup:
-	InitialGUIState = gui:batch( fun() -> init_test_gui() end ),
-	%InitialGUIState = init_test_gui(),
+    % Postpone the processing of first events to accelerate initial setup:
+    InitialGUIState = gui:batch( fun() -> init_test_gui() end ),
+    %InitialGUIState = init_test_gui(),
 
-	gui_frame:show( InitialGUIState#my_gui_state.main_frame ),
+    gui_frame:show( InitialGUIState#my_gui_state.main_frame ),
 
-	% Uncomment to check that a no_gl_context error report is triggered indeed,
-	% as expected (as no current GL context exists yet):
-	%
-	%gl:viewport( 0, 0, 50, 50 ),
+    % Uncomment to check that a no_gl_context error report is triggered indeed,
+    % as expected (as no current GL context exists yet):
+    %
+    %gl:viewport( 0, 0, 50, 50 ),
 
-	% OpenGL will be initialised only when the corresponding frame will be ready
-	% (that is once first reported as resized):
-	%
-	gui_main_loop( InitialGUIState ),
+    % OpenGL will be initialised only when the corresponding frame will be ready
+    % (that is once first reported as resized):
+    %
+    gui_main_loop( InitialGUIState ),
 
-	gui:stop().
+    gui:stop().
 
 
 
@@ -203,55 +203,55 @@ canvas is associated, in which an OpenGL context is created.
 -spec init_test_gui() -> my_gui_state().
 init_test_gui() ->
 
-	MainFrame = gui_frame:create( "MyriadGUI OpenGL Direct Integration Test" ),
+    MainFrame = gui_frame:create( "MyriadGUI OpenGL Direct Integration Test" ),
 
-	Panel = gui_panel:create( MainFrame ),
+    Panel = gui_panel:create( MainFrame ),
 
-	GLCanvas = gui_opengl:create_canvas( _Parent=Panel ),
+    GLCanvas = gui_opengl:create_canvas( _Parent=Panel ),
 
-	% Created, yet not bound yet (must wait for the main frame to be shown):
-	GLContext = gui_opengl:create_context( GLCanvas ),
+    % Created, yet not bound yet (must wait for the main frame to be shown):
+    GLContext = gui_opengl:create_context( GLCanvas ),
 
-	gui:subscribe_to_events( { [ onShown, onResized, onWindowClosed ],
-							   MainFrame } ),
+    gui:subscribe_to_events( { [ onShown, onResized, onWindowClosed ],
+                               MainFrame } ),
 
-	% (on Apple's Cocoa, subscribing to onRepaintNeeded might be required)
-	gui:subscribe_to_events( { onRepaintNeeded, GLCanvas } ),
+    % (on Apple's Cocoa, subscribing to onRepaintNeeded might be required)
+    gui:subscribe_to_events( { onRepaintNeeded, GLCanvas } ),
 
-	StatusBar = gui_statusbar:create( MainFrame ),
+    StatusBar = gui_statusbar:create( MainFrame ),
 
-	gui_statusbar:push_text( StatusBar, "Testing OpenGL now." ),
+    gui_statusbar:push_text( StatusBar, "Testing OpenGL now." ),
 
-	Image = gui_image:load_from_file(
-		gui_opengl_for_testing:get_test_image_path() ),
+    Image = gui_image:load_from_file(
+        gui_opengl_for_testing:get_test_image_path() ),
 
-	% No need to mirror images for textures anymore, as already done by
-	% gui_image:load_from_file/1:
-	%
-	%InvImage = gui_image:mirror( Image, _Orientation=horizontal ),
+    % No need to mirror images for textures anymore, as already done by
+    % gui_image:load_from_file/1:
+    %
+    %InvImage = gui_image:mirror( Image, _Orientation=horizontal ),
 
-	%gui_image:destruct( InvImage ),
+    %gui_image:destruct( InvImage ),
 
-	% It is not necessary to scale to dimensions that are powers of two;
-	% moreover even downscaling results in an image quite far from the original:
-	%
-	%gui_image:scale( Image, _NewWidth=128, _NewHeight=128 ),
+    % It is not necessary to scale to dimensions that are powers of two;
+    % moreover even downscaling results in an image quite far from the original:
+    %
+    %gui_image:scale( Image, _NewWidth=128, _NewHeight=128 ),
 
-	TestMesh = gui_opengl_for_testing:get_test_colored_cube_mesh(
-		_EdgeLength=1.0, _FaceGranularity=per_vertex ),
+    TestMesh = gui_opengl_for_testing:get_test_colored_cube_mesh(
+        _EdgeLength=1.0, _FaceGranularity=per_vertex ),
 
-	trace_utils:debug_fmt( "The test mesh is a ~ts",
-						   [ mesh:to_string( TestMesh ) ] ),
+    trace_utils:debug_fmt( "The test mesh is a ~ts",
+                           [ mesh:to_string( TestMesh ) ] ),
 
-	%TestMesh = gui_opengl_for_testing:get_test_tetra_mesh(),
+    %TestMesh = gui_opengl_for_testing:get_test_tetra_mesh(),
 
-	% No OpenGL state yet (GL context cannot be set as current yet):
-	#my_gui_state{ main_frame=MainFrame,
-				   panel=Panel,
-				   canvas=GLCanvas,
-				   context=GLContext,
-				   image=Image,
-				   mesh=TestMesh }.
+    % No OpenGL state yet (GL context cannot be set as current yet):
+    #my_gui_state{ main_frame=MainFrame,
+                   panel=Panel,
+                   canvas=GLCanvas,
+                   context=GLContext,
+                   image=Image,
+                   mesh=TestMesh }.
 
 
 
@@ -261,119 +261,119 @@ The main loop of this test, driven by the receiving of MyriadGUI messages.
 -spec gui_main_loop( my_gui_state() ) -> void().
 gui_main_loop( GUIState ) ->
 
-	%trace_utils:debug( "Main loop." ),
+    %trace_utils:debug( "Main loop." ),
 
-	% Matching the least-often received messages last:
-	receive
+    % Matching the least-often received messages last:
+    receive
 
-		% Not strictly necessary, as anyway a regular redraw is to happen soon
-		% afterwards:
-		%
-		{ onRepaintNeeded, [ GLCanvas, _GLCanvasId, _EventContext ] } ->
+        % Not strictly necessary, as anyway a regular redraw is to happen soon
+        % afterwards:
+        %
+        { onRepaintNeeded, [ GLCanvas, _GLCanvasId, _EventContext ] } ->
 
-			%trace_utils:debug_fmt( "Repaint needed for OpenGL canvas ~w.",
-			%                       [ GLCanvas ] ),
+            %trace_utils:debug_fmt( "Repaint needed for OpenGL canvas ~w.",
+            %                       [ GLCanvas ] ),
 
-			RepaintedGUIState = case GUIState#my_gui_state.opengl_state of
+            RepaintedGUIState = case GUIState#my_gui_state.opengl_state of
 
-				% Not ready yet:
-				undefined ->
-					trace_utils:debug(
-						"To be repainted, yet no OpenGL state yet." ),
-					GUIState;
+                % Not ready yet:
+                undefined ->
+                    trace_utils:debug(
+                        "To be repainted, yet no OpenGL state yet." ),
+                    GUIState;
 
-				GLState ->
-					gui_widget:enable_repaint( GLCanvas ),
-					% Includes the GL flushing and the buffer swaping:
-					render( GLState ),
-					GUIState
+                GLState ->
+                    gui_widget:enable_repaint( GLCanvas ),
+                    % Includes the GL flushing and the buffer swaping:
+                    render( GLState ),
+                    GUIState
 
-			end,
-			gui_main_loop( RepaintedGUIState );
-
-
-		% For a window, the first resizing event happens (just) before its
-		% onShown one:
-		%
-		{ onResized, [ _ParentWindow, _ParentWindowId, _NewParentSize,
-					   _EventContext ] } ->
-
-			%trace_utils:debug_fmt( "Resizing of the parent window "
-			%   (main frame) "to ~w detected.", [ NewParentSize ] ),
-
-			ResizedGUIState = case GUIState#my_gui_state.opengl_state of
-
-				% Not ready yet (first onResized, before onShown):
-				undefined ->
-					trace_utils:debug( "Resized, yet no OpenGL state yet." ),
-					GUIState;
-
-				_ ->
-					on_main_frame_resized( GUIState )
-
-			end,
-
-			gui_main_loop( ResizedGUIState );
+            end,
+            gui_main_loop( RepaintedGUIState );
 
 
-		% The most suitable first location to initialise OpenGL, as making a GL
-		% context current requires a shown window:
-		%
-		{ onShown, [ ParentWindow, _ParentWindowId, _EventContext ] } ->
+        % For a window, the first resizing event happens (just) before its
+        % onShown one:
+        %
+        { onResized, [ _ParentWindow, _ParentWindowId, _NewParentSize,
+                       _EventContext ] } ->
 
-			trace_utils:debug_fmt( "Parent window (main frame) just shown "
-				"(initial size of ~w).",
-				[ gui_widget:get_size( ParentWindow ) ] ),
+            %trace_utils:debug_fmt( "Resizing of the parent window "
+            %   (main frame) "to ~w detected.", [ NewParentSize ] ),
 
-			% Optional, yet better:
-			gui:unsubscribe_from_events( { onShown, ParentWindow } ),
+            ResizedGUIState = case GUIState#my_gui_state.opengl_state of
 
-			% Done once for all:
-			InitGUIState = initialise_opengl( GUIState ),
+                % Not ready yet (first onResized, before onShown):
+                undefined ->
+                    trace_utils:debug( "Resized, yet no OpenGL state yet." ),
+                    GUIState;
 
-			test_facilities:display( "Reported OpenGL settings: "
-				"vendor is '~ts', renderer is '~ts'; OpenGL version is '~ts', "
-				"and the one of the shading language is '~ts'.",
-				[ gui_opengl:get_vendor_name(), gui_opengl:get_renderer_name(),
-				  text_utils:version_to_string( gui_opengl:get_version() ),
-				  gui_shader:get_shading_language_version() ] ),
+                _ ->
+                    on_main_frame_resized( GUIState )
 
-			gui_main_loop( InitGUIState );
+            end,
 
-
-		{ onWindowClosed, [ ParentFrame, _ParentWindowId, _EventContext ] } ->
-			trace_utils:info( "Main frame closed, test success." ),
-
-			% Very final check, while there is still an OpenGL context:
-			gui_opengl:check_error(),
-
-			gui_frame:destruct( ParentFrame );
+            gui_main_loop( ResizedGUIState );
 
 
-		OtherEvent ->
-			trace_utils:warning_fmt( "Test ignored following event:~n ~p",
-									 [ OtherEvent ] ),
+        % The most suitable first location to initialise OpenGL, as making a GL
+        % context current requires a shown window:
+        %
+        { onShown, [ ParentWindow, _ParentWindowId, _EventContext ] } ->
 
-			gui_main_loop( GUIState )
+            trace_utils:debug_fmt( "Parent window (main frame) just shown "
+                "(initial size of ~w).",
+                [ gui_widget:get_size( ParentWindow ) ] ),
+
+            % Optional, yet better:
+            gui:unsubscribe_from_events( { onShown, ParentWindow } ),
+
+            % Done once for all:
+            InitGUIState = initialise_opengl( GUIState ),
+
+            test_facilities:display( "Reported OpenGL settings: "
+                "vendor is '~ts', renderer is '~ts'; OpenGL version is '~ts', "
+                "and the one of the shading language is '~ts'.",
+                [ gui_opengl:get_vendor_name(), gui_opengl:get_renderer_name(),
+                  text_utils:version_to_string( gui_opengl:get_version() ),
+                  gui_shader:get_shading_language_version() ] ),
+
+            gui_main_loop( InitGUIState );
 
 
-	% As this GUI is to be updated even in the absence of user actions:
-	after ?interframe_duration ->
+        { onWindowClosed, [ ParentFrame, _ParentWindowId, _EventContext ] } ->
+            trace_utils:info( "Main frame closed, test success." ),
 
-		RenderGUIState = case GUIState#my_gui_state.opengl_state of
+            % Very final check, while there is still an OpenGL context:
+            gui_opengl:check_error(),
 
-			undefined ->
-				trace_utils:debug( "(not ready yet)" ),
-				GUIState;
+            gui_frame:destruct( ParentFrame );
 
-			_ ->
-				update_rendering( GUIState )
 
-		end,
+        OtherEvent ->
+            trace_utils:warning_fmt( "Test ignored following event:~n ~p",
+                                     [ OtherEvent ] ),
 
-		gui_main_loop( RenderGUIState )
+            gui_main_loop( GUIState )
 
-	end.
+
+    % As this GUI is to be updated even in the absence of user actions:
+    after ?interframe_duration ->
+
+        RenderGUIState = case GUIState#my_gui_state.opengl_state of
+
+            undefined ->
+                trace_utils:debug( "(not ready yet)" ),
+                GUIState;
+
+            _ ->
+                update_rendering( GUIState )
+
+        end,
+
+        gui_main_loop( RenderGUIState )
+
+    end.
 
 
 
@@ -382,76 +382,76 @@ Sets up OpenGL, once for all, once a proper OpenGL context is available.
 """.
 -spec initialise_opengl( my_gui_state() ) -> my_gui_state().
 initialise_opengl( GUIState=#my_gui_state{ canvas=GLCanvas,
-										   context=GLContext,
-										   image=Image,
-										   % Check:
-										   opengl_state=undefined } ) ->
+                                           context=GLContext,
+                                           image=Image,
+                                           % Check:
+                                           opengl_state=undefined } ) ->
 
-	% Initial size of canvas is typically 20x20 pixels:
-	Size = gui_widget:get_client_size( GLCanvas ),
+    % Initial size of canvas is typically 20x20 pixels:
+    Size = gui_widget:get_client_size( GLCanvas ),
 
-	trace_utils:debug_fmt( "Initialising OpenGL "
-		"(whereas canvas is of initial size ~w).", [ Size ] ),
+    trace_utils:debug_fmt( "Initialising OpenGL "
+        "(whereas canvas is of initial size ~w).", [ Size ] ),
 
-	% So done only once:
-	gui_opengl:set_context_on_shown( GLCanvas, GLContext ),
+    % So done only once:
+    gui_opengl:set_context_on_shown( GLCanvas, GLContext ),
 
-	% These settings will not change afterwards (set once for all):
+    % These settings will not change afterwards (set once for all):
 
-	gui_texture:set_basic_general_settings(),
+    gui_texture:set_basic_general_settings(),
 
-	gl:enable( ?GL_DEPTH_TEST ),
-	gl:depthFunc( ?GL_LESS ),
+    gl:enable( ?GL_DEPTH_TEST ),
+    gl:depthFunc( ?GL_LESS ),
 
-	% Solid white:
-	gl:clearColor( 1.0, 1.0, 1.0, 1.0 ),
+    % Solid white:
+    gl:clearColor( 1.0, 1.0, 1.0, 1.0 ),
 
-	MatTexture = gui_texture:create_from_image( Image ),
+    MatTexture = gui_texture:create_from_image( Image ),
 
-	AlphaTexture = gui_texture:load_from_file(
-		gui_opengl_for_testing:get_logo_image_path() ),
+    AlphaTexture = gui_texture:load_from_file(
+        gui_opengl_for_testing:get_logo_image_path() ),
 
-	Font = gui_font:create( _PointSize=32, _Family=default_font_family,
-							_Style=normal, _Weight=bold ),
+    Font = gui_font:create( _PointSize=32, _Family=default_font_family,
+                            _Style=normal, _Weight=bold ),
 
-	Brush = gui_render:create_brush( _BlackRGB={ 0, 0, 0 } ),
+    Brush = gui_render:create_brush( _BlackRGB={ 0, 0, 0 } ),
 
-	% Myriad RGB dark blue:
-	TextColor = { 0, 39, 165 },
+    % Myriad RGB dark blue:
+    TextColor = { 0, 39, 165 },
 
-	TextTexture = gui_texture:create_from_text(
-		"MyriadGUI rocks!", Font, Brush, TextColor, _Flip=true ),
+    TextTexture = gui_texture:create_from_text(
+        "MyriadGUI rocks!", Font, Brush, TextColor, _Flip=true ),
 
-	ClockTexture =
-		get_clock_texture( time_utils:get_local_time(), Font, Brush ),
+    ClockTexture =
+        get_clock_texture( time_utils:get_local_time(), Font, Brush ),
 
 
-	TestMesh = gui_opengl_for_testing:get_test_colored_cube_mesh(
-		_EdgeLength=1.0, _FaceGranularity=per_vertex ),
+    TestMesh = gui_opengl_for_testing:get_test_colored_cube_mesh(
+        _EdgeLength=1.0, _FaceGranularity=per_vertex ),
 
-	%TestMesh = gui_opengl_for_testing:get_test_tetra_mesh(),
+    %TestMesh = gui_opengl_for_testing:get_test_tetra_mesh(),
 
-	trace_utils:debug_fmt( "Test mesh: ~ts.", [ mesh:to_string( TestMesh ) ] ),
+    trace_utils:debug_fmt( "Test mesh: ~ts.", [ mesh:to_string( TestMesh ) ] ),
 
-	SphereId = glu:newQuadric(),
+    SphereId = glu:newQuadric(),
 
-	InitialGLState = #my_opengl_state{ render_target=GLCanvas,
-									   mesh=TestMesh,
-									   angle=0.0,
-									   material_texture=MatTexture,
-									   alpha_texture=AlphaTexture,
-									   text_texture=TextTexture,
-									   clock_texture=ClockTexture,
-									   font=Font,
-									   brush=Brush,
-									   sphere=SphereId },
+    InitialGLState = #my_opengl_state{ render_target=GLCanvas,
+                                       mesh=TestMesh,
+                                       angle=0.0,
+                                       material_texture=MatTexture,
+                                       alpha_texture=AlphaTexture,
+                                       text_texture=TextTexture,
+                                       clock_texture=ClockTexture,
+                                       font=Font,
+                                       brush=Brush,
+                                       sphere=SphereId },
 
-	InitGUIState = GUIState#my_gui_state{ opengl_state=InitialGLState },
+    InitGUIState = GUIState#my_gui_state{ opengl_state=InitialGLState },
 
-	% As the initial onResized was triggered whereas no OpenGL state was
-	% already available:
-	%
-	on_main_frame_resized( InitGUIState ).
+    % As the initial onResized was triggered whereas no OpenGL state was
+    % already available:
+    %
+    on_main_frame_resized( InitGUIState ).
 
 
 
@@ -462,52 +462,52 @@ OpenGL context expected here to have already been set.
 """.
 -spec on_main_frame_resized( my_gui_state() ) -> my_gui_state().
 on_main_frame_resized( GUIState=#my_gui_state{ panel=Panel,
-											   canvas=GLCanvas } ) ->
+                                               canvas=GLCanvas } ) ->
 
-	% Maximises widgets in their respective area:
+    % Maximises widgets in their respective area:
 
-	% First, panel in main frame:
-	gui_widget:maximise_in_parent( Panel ),
+    % First, panel in main frame:
+    gui_widget:maximise_in_parent( Panel ),
 
-	% Then OpenGL canvas in panel:
-	{ CanvasWidth, CanvasHeight } = gui_widget:maximise_in_parent( GLCanvas ),
+    % Then OpenGL canvas in panel:
+    { CanvasWidth, CanvasHeight } = gui_widget:maximise_in_parent( GLCanvas ),
 
-	%trace_utils:debug_fmt( "New client canvas size: {~B,~B}.",
-	%                       [ CanvasWidth, CanvasHeight ] ),
+    %trace_utils:debug_fmt( "New client canvas size: {~B,~B}.",
+    %                       [ CanvasWidth, CanvasHeight ] ),
 
-	% Lower-left corner and size of the viewport in the current window:
-	gl:viewport( 0, 0, CanvasWidth, CanvasHeight ),
+    % Lower-left corner and size of the viewport in the current window:
+    gl:viewport( 0, 0, CanvasWidth, CanvasHeight ),
 
-	% Apparently, at least on a test setting, a race condition (discovered
-	% thanks to the commenting-out of a debug trace) seems to exist between the
-	% moment when the canvas is resized and the one when a new OpenGL rendering
-	% is triggered afterwards; the cause is probably that maximising involves an
-	% (Erlang) asynchronous message to be sent from this user process and to be
-	% received and applied by the process of the target window, whereas a GL
-	% (NIF-based) operation is immediate; without a sufficient delay, the
-	% rendering will thus take place according to the former (e.g. minimised)
-	% canvas size, not according to the one that was expected to be already
-	% resized.
-	%
-	gui_widget:sync( GLCanvas ),
+    % Apparently, at least on a test setting, a race condition (discovered
+    % thanks to the commenting-out of a debug trace) seems to exist between the
+    % moment when the canvas is resized and the one when a new OpenGL rendering
+    % is triggered afterwards; the cause is probably that maximising involves an
+    % (Erlang) asynchronous message to be sent from this user process and to be
+    % received and applied by the process of the target window, whereas a GL
+    % (NIF-based) operation is immediate; without a sufficient delay, the
+    % rendering will thus take place according to the former (e.g. minimised)
+    % canvas size, not according to the one that was expected to be already
+    % resized.
+    %
+    gui_widget:sync( GLCanvas ),
 
-	gl:matrixMode( ?GL_PROJECTION ),
+    gl:matrixMode( ?GL_PROJECTION ),
 
-	gl:loadIdentity(),
+    gl:loadIdentity(),
 
-	Left = -2.0,
-	Bottom = -2.0 * CanvasHeight / CanvasWidth,
-	Near = -20.00,
-	gl:ortho( Left, _Right=-Left, Bottom, _Top=-Bottom, Near, _Far=-Near ),
+    Left = -2.0,
+    Bottom = -2.0 * CanvasHeight / CanvasWidth,
+    Near = -20.00,
+    gl:ortho( Left, _Right=-Left, Bottom, _Top=-Bottom, Near, _Far=-Near ),
 
-	gl:matrixMode( ?GL_MODELVIEW ),
-	gl:loadIdentity(),
+    gl:matrixMode( ?GL_MODELVIEW ),
+    gl:loadIdentity(),
 
-	cond_utils:if_defined( myriad_check_opengl_support,
-						   gui_opengl:check_error() ),
+    cond_utils:if_defined( myriad_check_opengl_support,
+                           gui_opengl:check_error() ),
 
-	% Includes the swapping of buffers:
-	update_rendering( GUIState ).
+    % Includes the swapping of buffers:
+    update_rendering( GUIState ).
 
 
 
@@ -518,34 +518,34 @@ Expected to be called periodically.
 """.
 -spec update_rendering( my_gui_state() ) -> my_gui_state().
 update_rendering( GUIState=#my_gui_state{ opengl_state=GLState,
-										  time=PreviousTime } ) ->
+                                          time=PreviousTime } ) ->
 
-	%trace_utils:debug( "Updating rendering." ),
+    %trace_utils:debug( "Updating rendering." ),
 
-	% First update the state needed:
+    % First update the state needed:
 
-	NewAngle = GLState#my_opengl_state.angle + 1.0,
+    NewAngle = GLState#my_opengl_state.angle + 1.0,
 
-	AngleGLState = GLState#my_opengl_state{ angle=NewAngle },
+    AngleGLState = GLState#my_opengl_state{ angle=NewAngle },
 
-	NewTime = time_utils:get_local_time(),
+    NewTime = time_utils:get_local_time(),
 
-	NewGLState = case NewTime of
+    NewGLState = case NewTime of
 
-		% Still in the same second:
-		PreviousTime ->
-			AngleGLState;
+        % Still in the same second:
+        PreviousTime ->
+            AngleGLState;
 
-		% Time changed:
-		_ ->
-			update_clock_texture( NewTime, AngleGLState )
+        % Time changed:
+        _ ->
+            update_clock_texture( NewTime, AngleGLState )
 
-	end,
+    end,
 
-	% Then call OpenGL accordingly:
-	render( NewGLState ),
+    % Then call OpenGL accordingly:
+    render( NewGLState ),
 
-	GUIState#my_gui_state{ opengl_state=NewGLState, time=NewTime }.
+    GUIState#my_gui_state{ opengl_state=NewGLState, time=NewTime }.
 
 
 
@@ -553,13 +553,13 @@ update_rendering( GUIState=#my_gui_state{ opengl_state=GLState,
 Updates the texture of the clock according to the specified time.
 """.
 -spec update_clock_texture( time(), my_opengl_state() ) ->
-												my_opengl_state().
+                                                my_opengl_state().
 update_clock_texture( Time, GLState=#my_opengl_state{
-		clock_texture=ClockTexture, font=Font, brush=Brush } ) ->
+        clock_texture=ClockTexture, font=Font, brush=Brush } ) ->
 
-	gui_texture:destruct( ClockTexture ),
-	NewClockTexture = get_clock_texture( Time, Font, Brush ),
-	GLState#my_opengl_state{ clock_texture=NewClockTexture }.
+    gui_texture:destruct( ClockTexture ),
+    NewClockTexture = get_clock_texture( Time, Font, Brush ),
+    GLState#my_opengl_state{ clock_texture=NewClockTexture }.
 
 
 
@@ -567,10 +567,10 @@ update_clock_texture( Time, GLState=#my_opengl_state{
 -spec get_clock_texture( time(), font(), brush() ) -> texture().
 get_clock_texture( Time, Font, Brush ) ->
 
-	TimeStr = time_utils:time_to_string( Time ),
+    TimeStr = time_utils:time_to_string( Time ),
 
-	gui_texture:create_from_text( TimeStr, Font, Brush,
-		_OrangeTextColor={ 255, 40, 40 }, _Flip=true ).
+    gui_texture:create_from_text( TimeStr, Font, Brush,
+        _OrangeTextColor={ 255, 40, 40 }, _Flip=true ).
 
 
 
@@ -580,97 +580,97 @@ state.
 """.
 -spec render( my_opengl_state() ) -> void().
 render( #my_opengl_state{ render_target=Widget,
-						  mesh=CubeMesh,
-						  angle=Angle,
-						  material_texture=MatTexture,
-						  alpha_texture=AlphaTexture,
-						  text_texture=TextTexture,
-						  clock_texture=ClockTexture,
-						  sphere=SphereId } ) ->
+                          mesh=CubeMesh,
+                          angle=Angle,
+                          material_texture=MatTexture,
+                          alpha_texture=AlphaTexture,
+                          text_texture=TextTexture,
+                          clock_texture=ClockTexture,
+                          sphere=SphereId } ) ->
 
-	%trace_utils:debug( "Rendering now." ),
+    %trace_utils:debug( "Rendering now." ),
 
-	% See also https://www.khronos.org/opengl/wiki/Common_Mistakes#Swap_Buffers:
-	gl:clear( ?GL_COLOR_BUFFER_BIT bor ?GL_DEPTH_BUFFER_BIT ),
+    % See also https://www.khronos.org/opengl/wiki/Common_Mistakes#Swap_Buffers:
+    gl:clear( ?GL_COLOR_BUFFER_BIT bor ?GL_DEPTH_BUFFER_BIT ),
 
-	gl:matrixMode( ?GL_MODELVIEW ),
-	gl:loadIdentity(),
-	gl:pushMatrix(),
-	gl:translatef( 0.0, 0.5, 0.0 ),
+    gl:matrixMode( ?GL_MODELVIEW ),
+    gl:loadIdentity(),
+    gl:pushMatrix(),
+    gl:translatef( 0.0, 0.5, 0.0 ),
 
-	% In degrees, around the first diagonal axis:
-	%
-	% (matrix recreated from scratch rather than being updated, to avoid the
-	% accumulation of numerical errors)
-	%
-	gl:rotatef( Angle, _X=1.0, _Y=1.0, _Z=1.0 ),
+    % In degrees, around the first diagonal axis:
+    %
+    % (matrix recreated from scratch rather than being updated, to avoid the
+    % accumulation of numerical errors)
+    %
+    gl:rotatef( Angle, _X=1.0, _Y=1.0, _Z=1.0 ),
 
-	gui_texture:set_as_current( MatTexture ),
-	gl:disable( ?GL_BLEND ),
+    gui_texture:set_as_current( MatTexture ),
+    gl:disable( ?GL_BLEND ),
 
-	cond_utils:if_defined( myriad_check_opengl, gui_opengl:check_error() ),
+    cond_utils:if_defined( myriad_check_opengl, gui_opengl:check_error() ),
 
-	% Specifies a texture environment:
-	gl:texEnvi( ?GL_TEXTURE_ENV, ?GL_TEXTURE_ENV_MODE, ?GL_MODULATE ),
+    % Specifies a texture environment:
+    gl:texEnvi( ?GL_TEXTURE_ENV, ?GL_TEXTURE_ENV_MODE, ?GL_MODULATE ),
 
-	% No effect:
-	%gl:disable( ?GL_CULL_FACE ),
-	gl:enable( ?GL_CULL_FACE ),
+    % No effect:
+    %gl:disable( ?GL_CULL_FACE ),
+    gl:enable( ?GL_CULL_FACE ),
 
-	% This is not the support for modern OpenGL; here, with legacy operations,
-	% the gui_texture actual coordinates are not used, leading to textures
-	% covering only partially the mesh surfaces (as textures have been extended
-	% so that their dimensions are power of two, but 1.0 UV coordinates are
-	% used) and a (black) background to be seen:
-	%
-	gui_opengl:render_mesh( CubeMesh ),
+    % This is not the support for modern OpenGL; here, with legacy operations,
+    % the gui_texture actual coordinates are not used, leading to textures
+    % covering only partially the mesh surfaces (as textures have been extended
+    % so that their dimensions are power of two, but 1.0 UV coordinates are
+    % used) and a (black) background to be seen:
+    %
+    gui_opengl:render_mesh( CubeMesh ),
 
-	gl:popMatrix(),
+    gl:popMatrix(),
 
 
-	% Modified texture environment:
-	gl:texEnvi( ?GL_TEXTURE_ENV, ?GL_TEXTURE_ENV_MODE, ?GL_REPLACE ),
+    % Modified texture environment:
+    gl:texEnvi( ?GL_TEXTURE_ENV, ?GL_TEXTURE_ENV_MODE, ?GL_REPLACE ),
 
-	cond_utils:if_defined( myriad_check_opengl, gui_opengl:check_error() ),
+    cond_utils:if_defined( myriad_check_opengl, gui_opengl:check_error() ),
 
-	gui_opengl:enter_2d_mode( Widget ),
+    gui_opengl:enter_2d_mode( Widget ),
 
-	{ Width, Height } = gui_widget:get_client_size( Widget ),
+    { Width, Height } = gui_widget:get_client_size( Widget ),
 
-	Move = abs( 90 - ( trunc( Angle ) rem 180 ) ),
+    Move = abs( 90 - ( trunc( Angle ) rem 180 ) ),
 
-	gui_texture:render( ClockTexture, _Xc=(Width div 2) - 50,
-		_Yc=(Height div 2) - 130 + Move ),
+    gui_texture:render( ClockTexture, _Xc=(Width div 2) - 50,
+        _Yc=(Height div 2) - 130 + Move ),
 
-	gui_texture:render( AlphaTexture, _Xa=(Width div 2) - 80,
-		_Ya=(Height div 2) - Move ),
+    gui_texture:render( AlphaTexture, _Xa=(Width div 2) - 80,
+        _Ya=(Height div 2) - Move ),
 
-	gui_opengl:leave_2d_mode(),
+    gui_opengl:leave_2d_mode(),
 
-	gl:pushMatrix(),
-	gl:enable( ?GL_CULL_FACE ),
-	gl:enable( ?GL_BLEND ),
-	gl:blendFunc( ?GL_SRC_ALPHA, ?GL_ONE_MINUS_SRC_ALPHA ),
-	gl:translatef( 0.0, -0.8, 0.0 ),
-	gui_texture:set_as_current( TextTexture ),
+    gl:pushMatrix(),
+    gl:enable( ?GL_CULL_FACE ),
+    gl:enable( ?GL_BLEND ),
+    gl:blendFunc( ?GL_SRC_ALPHA, ?GL_ONE_MINUS_SRC_ALPHA ),
+    gl:translatef( 0.0, -0.8, 0.0 ),
+    gui_texture:set_as_current( TextTexture ),
 
-	% Texture coordinates should be generated:
-	glu:quadricTexture( SphereId, ?GLU_TRUE ),
-	glu:quadricNormals( SphereId, ?GLU_SMOOTH ),
-	glu:quadricDrawStyle( SphereId, ?GLU_FILL ),
-	glu:quadricOrientation( SphereId, ?GLU_OUTSIDE ),
-	gl:scalef( 1.5, 0.6, 1.0 ),
-	gl:rotatef( -90.0, 1.0, 0.0, 0.0 ),
-	gl:rotatef( -Angle, 0.0, 0.0, 1.0 ),
-	glu:sphere( SphereId, 0.8, 50, 40 ),
-	gl:popMatrix(),
+    % Texture coordinates should be generated:
+    glu:quadricTexture( SphereId, ?GLU_TRUE ),
+    glu:quadricNormals( SphereId, ?GLU_SMOOTH ),
+    glu:quadricDrawStyle( SphereId, ?GLU_FILL ),
+    glu:quadricOrientation( SphereId, ?GLU_OUTSIDE ),
+    gl:scalef( 1.5, 0.6, 1.0 ),
+    gl:rotatef( -90.0, 1.0, 0.0, 0.0 ),
+    gl:rotatef( -Angle, 0.0, 0.0, 1.0 ),
+    glu:sphere( SphereId, 0.8, 50, 40 ),
+    gl:popMatrix(),
 
-	cond_utils:if_defined( myriad_check_opengl, gui_opengl:check_error() ),
+    cond_utils:if_defined( myriad_check_opengl, gui_opengl:check_error() ),
 
-	% Can be done here, as window-related (actually: GLCanvas) information were
-	% already necessary anyway; includes a gl:flush/0:
-	%
-	gui_opengl:swap_buffers( Widget ).
+    % Can be done here, as window-related (actually: GLCanvas) information were
+    % already necessary anyway; includes a gl:flush/0:
+    %
+    gui_opengl:swap_buffers( Widget ).
 
 
 
@@ -678,10 +678,10 @@ render( #my_opengl_state{ render_target=Widget,
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	gui_opengl_for_testing:can_be_run(
-			"the integration test of OpenGL support" ) =:= yes
-		andalso run_actual_test(),
+    gui_opengl_for_testing:can_be_run(
+            "the integration test of OpenGL support" ) =:= yes
+        andalso run_actual_test(),
 
-	test_facilities:stop().
+    test_facilities:stop().

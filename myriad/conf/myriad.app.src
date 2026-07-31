@@ -26,25 +26,25 @@
   {registered, []},
 
   {applications, [ kernel,
-				   stdlib
+                   stdlib
 
-				   % Even if using a non-builtin JSON parser (see USE_JSON), no
-				   % strict need to declare it here, as it can be discovered and
-				   % used at runtime rather than at compile-time (and thus
-				   % Myriad remains with no dependency):
-				   %
-				   %,jsx
-				   %,jiffy
+                   % Even if using a non-builtin JSON parser (see USE_JSON), no
+                   % strict need to declare it here, as it can be discovered and
+                   % used at runtime rather than at compile-time (and thus
+                   % Myriad remains with no dependency):
+                   %
+                   %,jsx
+                   %,jiffy
 
-				 ]},
+                 ]},
 
   {deps, [
 
-	   % Even if enabling a non-builtin JSON parser, no need to select a backend
-	   % here (done at runtime; see comment above):
-	   %
-	   %{jsx, "~> 3.0"}
-	   %{jiffy, "1.0.5"}
+       % Even if enabling a non-builtin JSON parser, no need to select a backend
+       % here (done at runtime; see comment above):
+       %
+       %{jsx, "~> 3.0"}
+       %{jiffy, "1.0.5"}
 
   ]},
 
@@ -54,15 +54,15 @@
   {modules, [MODULES_FOR_OTP]},
 
   {licenses, ["Ceylan-Myriad is licensed by its author (Olivier Boudeville) under a disjunctive tri-license, giving you the choice of one of the three following sets of free software/open source licensing terms:
-	- the Mozilla Public License (MPL), version 1.1 or later (very close to the former Erlang Public License, except aspects regarding Ericsson and/or the Swedish law)
-	- the GNU General Public License (GPL), version 3.0 or later
-	- the GNU Lesser General Public License (LGPL), version 3.0 or later"]},
+    - the Mozilla Public License (MPL), version 1.1 or later (very close to the former Erlang Public License, except aspects regarding Ericsson and/or the Swedish law)
+    - the GNU General Public License (GPL), version 3.0 or later
+    - the GNU Lesser General Public License (LGPL), version 3.0 or later"]},
 
   % Library application, not an active one, so no specific behaviour of its own:
   % {mod, {myriad_app,[]}}
 
   { links, [ {"Official website", "http://myriad.esperide.org" },
-			 {"Github", "https://github.com/Olivier-Boudeville/Ceylan-Myriad"} ]}
+             {"Github", "https://github.com/Olivier-Boudeville/Ceylan-Myriad"} ]}
 
   % By default we already excluded sources files (*.erl) that provide a
   % conditional support (i.e. that depend on third-party prerequisites) from the

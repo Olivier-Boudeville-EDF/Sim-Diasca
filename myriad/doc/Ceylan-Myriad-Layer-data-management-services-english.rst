@@ -1,5 +1,3 @@
-
-
 :raw-latex:`\pagebreak`
 
 .. _`Data-Management`:
@@ -68,7 +66,7 @@ More precisely, a module name (e.g. ``foobar``) and a list of ``{atom(), type_ut
 
   -spec baz() -> term().
   baz() ->
-	42.0.
+    42.0.
 
 .. [#] Of course transient terms like PIDs, references, etc. cannot/should not stored in such tables.
 
@@ -282,9 +280,9 @@ Example:
 
  MyJSONTerm = table:add_entries([
    {<<"asset">>, #{<<"generator">> => <<"My Generator">>,
-				   <<"version">> => <<"2.0">>}},
+                   <<"version">> => <<"2.0">>}},
    {<<"other">>, 42}
-								], table:new()),
+                                ], table:new()),
 
  JSONString = json_utils:to_json(MyJSONTerm)
 
@@ -296,8 +294,8 @@ shall result in a JSON document like:
 
  {
    "asset": {
-	 "generator": "My Generator",
-	 "version": "2.0"
+     "generator": "My Generator",
+     "version": "2.0"
    },
    "other": 42
  }

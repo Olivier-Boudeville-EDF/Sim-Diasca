@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -39,9 +39,9 @@ See protobuf_support_test.erl for the corresponding test, and
 
 
 -doc """
-The name of a Protobuf specification (e.g. foobar), corresponding both to a
-specification file (e.g. "foobar.proto") and the corresponding module name
-generated from it ('foobar').
+The name of a Protobuf specification (e.g. `foobar`), corresponding both to a
+specification file (e.g. `"foobar.proto"`) and the corresponding module name
+generated from it (`foobar`).
 """.
 -type spec_name() :: atom().
 
@@ -49,7 +49,7 @@ generated from it ('foobar').
 
 -doc """
 A path to a Protobuf specification file respecting our conventions (e.g.
-"/home/joe/foobar.proto").
+`"/home/joe/foobar.proto"`).
 """.
 -type spec_file_path() :: file_utils:any_file_path().
 
@@ -57,7 +57,7 @@ A path to a Protobuf specification file respecting our conventions (e.g.
 
 -doc """
 The name of a Protobuf package, as a plain string, such as the user-defined
-"myriad.protobuf.test" one.
+`"myriad.protobuf.test"` one.
 """.
 -type package_name() :: ustring().
 
@@ -74,19 +74,19 @@ The name of a Protobuf package, as a binary string, such as the user-defined
 -doc """
 The name of a type of Protobuf messages, as defined in a specification file.
 
-For example, if defining a "Person" message type in a "myriad.protobuf.test"
-package, the resulting record is #myriad_protobuf_test_person{}, corresponding
-to a myriad_protobuf_test_person() type.
+For example, if defining a `"Person"` message type in a `"myriad.protobuf.test"`
+package, the resulting record is `#myriad_protobuf_test_person{}`, corresponding
+to a `myriad_protobuf_test_person/0` type.
 
-See myriad_example.proto for a test example.
+See `myriad_example.proto` for a test example.
 """.
 -type message_type() :: atom().
 
 
 
 -doc "A (non-serialised, i.e. as an Erlang term) message instance.".
--type message() :: type_utils:record().
- 
+-type message() :: type_utils:tuple_based_record().
+
 
 
 -doc """
@@ -98,8 +98,8 @@ conventions.
 
 
 -export_type([ spec_name/0, spec_file_path/0,
-			   package_name/0, bin_package_name/0,
-			   message_type/0, message/0, serialisation/0 ]).
+               package_name/0, bin_package_name/0,
+               message_type/0, message/0, serialisation/0 ]).
 
 -export([ encode/2, decode/3 ]).
 
@@ -128,10 +128,10 @@ and returns the corresponding serialised form.
 -spec encode( spec_name(), message() ) -> serialisation().
 encode( SpecName, MessageTerm ) ->
 
-	% The message type is deduced from the record.
+    % The message type is deduced from the record.
 
-	% Relies on gpb:
-	SpecName:encode_msg( MessageTerm ).
+    % Relies on gpb:
+    SpecName:encode_msg( MessageTerm ).
 
 
 
@@ -142,33 +142,33 @@ in specified specification.
 -spec decode( spec_name(), message_type(), serialisation() ) -> message().
 decode( SpecName, MessageType, BinSerialisation ) ->
 
-	% Relies on gpb:
-	Msg = SpecName:decode_msg( BinSerialisation, MessageType ),
+    % Relies on gpb:
+    Msg = SpecName:decode_msg( BinSerialisation, MessageType ),
 
-	cond_utils:switch_execution_target(
-		% In developement mode, unknown fields are collected by gpb, in the
-		% '$unknowns' field. Without introspection, we cannot request a field by
-		% name, yet a safe assumption is that this field is the last one; so, as
-		% poorly efficient as it may be:
-		%
-		begin
+    cond_utils:switch_execution_target(
+        % In developement mode, unknown fields are collected by gpb, in the
+        % '$unknowns' field. Without introspection, we cannot request a field by
+        % name, yet a safe assumption is that this field is the last one; so, as
+        % poorly efficient as it may be:
+        %
+        begin
 
-			case list_utils:get_last_element( tuple_to_list( Msg ) ) of
+            case list_utils:get_last_element( tuple_to_list( Msg ) ) of
 
-				[] ->
-					Msg;
+                [] ->
+                    Msg;
 
-				UnknownFields ->
-					trace_utils:warning_fmt( "For following serialised "
-						"message: ~n~p "
-						"to be decoded as type '~ts' of specification '~ts', "
-						"following unknown fields were reported:~n ~p~n"
-						"(full decoded message: ~p)",
-						[ BinSerialisation, MessageType, SpecName,
-						  UnknownFields, Msg ] )
+                UnknownFields ->
+                    trace_utils:warning_fmt( "For following serialised "
+                        "message: ~n~p "
+                        "to be decoded as type '~ts' of specification '~ts', "
+                        "following unknown fields were reported:~n ~p~n"
+                        "(full decoded message: ~p)",
+                        [ BinSerialisation, MessageType, SpecName,
+                          UnknownFields, Msg ] )
 
-			end,
-			Msg
-		end,
-		% Production mode just ignores any unknown field:
-		Msg ).
+            end,
+            Msg
+        end,
+        % Production mode just ignores any unknown field:
+        Msg ).

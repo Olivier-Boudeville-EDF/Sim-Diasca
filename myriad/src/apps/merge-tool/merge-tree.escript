@@ -44,18 +44,18 @@
 % Entry point of this escript.
 main( ArgList ) ->
 
-	% First, enable all possible helper code (hence to be done first of all):
-	_MyriadRootDir = update_code_path_for_myriad(),
+    % First, enable all possible helper code (hence to be done first of all):
+    _MyriadRootDir = update_code_path_for_myriad(),
 
-	% To be compliant with the main way of running this merge tool (see
-	% merge_app.erl), the arguments specified for this escript (e.g. 'foo' and
-	% 'bar') should be moved here from being (a list of) option-less arguments
-	% to arguments of the -base-dir option, just after its associated path (so
-	% as if run with: '--base-dir SOME_PATH/myriad foo bar'):
-	%
-	ArgTable = script_utils:get_arguments( ArgList ),
+    % To be compliant with the main way of running this merge tool (see
+    % merge_app.erl), the arguments specified for this escript (e.g. 'foo' and
+    % 'bar') should be moved here from being (a list of) option-less arguments
+    % to arguments of the -base-dir option, just after its associated path (so
+    % as if run with: '--base-dir SOME_PATH/myriad foo bar'):
+    %
+    ArgTable = script_utils:get_arguments( ArgList ),
 
-	%trace_utils:debug_fmt( "Run as escript: ~ts",
-	%  [ shell_utils:argument_table_to_string( ArgTable ) ] ),
+    %trace_utils:debug_fmt( "Run as escript: ~ts",
+    %  [ shell_utils:argument_table_to_string( ArgTable ) ] ),
 
-	merge_utils:main( ArgTable ).
+    merge_utils:main( ArgTable ).

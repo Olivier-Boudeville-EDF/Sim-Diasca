@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2025 Olivier Boudeville
+% Copyright (C) 2011-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -37,22 +37,22 @@
 %
 -record( app_info, {
 
-	% The official name of the corresponding application:
-	name :: text_utils:bin_string(),
+    % The official name of the corresponding application:
+    name :: text_utils:bin_string(),
 
-	% The version (if any) of the corresponding application:
-	%
-	version :: option( basic_utils:any_version() | text_utils:ustring() ),
+    % The version (if any) of the corresponding application:
+    %
+    version :: option( basic_utils:any_version() | text_utils:ustring() ),
 
-	% The author description (if any)  of the corresponding application:
-	author :: option( text_utils:bin_string() ),
+    % The author description (if any)  of the corresponding application:
+    author :: option( text_utils:bin_string() ),
 
-	% The current operating system information (see
-	% system_utils:get_operating_system_type(/0), if any, on which is this
-	% application runs:
+    % The current operating system information (see
+    % system_utils:get_operating_system_type(/0), if any, on which is this
+    % application runs:
 
-	% Coarse categorisation of the current operating system:
-	os_family :: option( system_utils:os_family() ),
+    % Coarse categorisation of the current operating system:
+    os_family :: option( system_utils:os_family() ),
 
-	% More precise categorisation of the current operating system:
-	os_name :: option( system_utils:os_name() ) } ).
+    % More precise categorisation of the current operating system:
+    os_name :: option( system_utils:os_name() ) } ).

@@ -30,7 +30,7 @@ Some Information About The Sim-Diasca **Dataflow Urban Example** Case
 :Version: 0.0.1
 :Dedication:
 
-	For people interested in this *Sim-Diasca Dataflow Urban Example* case, to better understand it, to run and/or parametrise it and more generally to use it as a complete guideline in order to devise one's dataflow of interest.
+    For people interested in this *Sim-Diasca Dataflow Urban Example* case, to better understand it, to run and/or parametrise it and more generally to use it as a complete guideline in order to devise one's dataflow of interest.
 
 :Abstract:
 
@@ -48,7 +48,7 @@ Its purpose is to showcase how a dataflow shall be defined, implemented and run.
 :raw-latex:`\pagebreak`
 
 .. contents:: Table of Contents
-	:depth: 2
+    :depth: 2
 
 .. section-numbering::
 
@@ -128,7 +128,7 @@ The user may tune the size of the simulation (either from the command-line or di
 For example::
 
   make city_benchmarking_run CMD_LINE_OPT="--batch \
-	   --duration short --scale tiny"
+       --duration short --scale tiny"
 
 
 The city generator (see ``class_CityGenerator.erl``) will determine, based on the city description (see the ``city_description`` record), the various elements that compose this city (procedural generation).
@@ -141,8 +141,8 @@ The city generator will create randomly the specified numbers of these various e
 The aforementioned ``make batch`` command simply corresponds to::
 
   make city_benchmarking_run CMD_LINE_OPT="--batch \
-	--duration short --scale tiny"                 \
-	EXECUTION_TARGET=production
+    --duration short --scale tiny"                 \
+    EXECUTION_TARGET=production
 
 (not that ``EXECUTION_TARGET`` is a compile-time option, so it would apply here only for any module that would have been to be rebuilt)
 

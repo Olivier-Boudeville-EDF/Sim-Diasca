@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 EDF R&D
+% Copyright (C) 2016-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -27,16 +27,16 @@ Class in charge, as a dataflow entry point, to **manage simulation steps**.
 
 
 -define( class_description,
-		 "The experiment entry point is a singleton instance in charge of "
-		 "being the (logical) starting point that impulses the evaluation of "
-		 "the registered dataflows, possibly at each timestep; technically it "
-		 "is run in second position, just after the experiment exit point that "
-		 "triggers it. "
-		 "This specialised version of the ExperimentEntryPoint has been "
-		 "introduced in order to manage simulation steps."
-		 "Note: no class_ExperimentStepsExitPoint has been defined, as the "
-		 "base implementation (class_ExperimentExitPoint) is sufficient "
-		 "here." ).
+         "The experiment entry point is a singleton instance in charge of "
+         "being the (logical) starting point that impulses the evaluation of "
+         "the registered dataflows, possibly at each timestep; technically it "
+         "is run in second position, just after the experiment exit point that "
+         "triggers it. "
+         "This specialised version of the ExperimentEntryPoint has been "
+         "introduced in order to manage simulation steps."
+         "Note: no class_ExperimentStepsExitPoint has been defined, as the "
+         "base implementation (class_ExperimentExitPoint) is sufficient "
+         "here." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -65,11 +65,11 @@ Class in charge, as a dataflow entry point, to **manage simulation steps**.
 % Attributes that are specific to such an experiment entry point are:
 -define( class_attributes, [
 
-	{ current_step, step_count(),
-	  "the current step at which the experiment is" },
+    { current_step, step_count(),
+      "the current step at which the experiment is" },
 
-	{ max_step, step_count(),
-	  "the maximum step that the experiment may reach" } ] ).
+    { max_step, step_count(),
+      "the maximum step that the experiment may reach" } ] ).
 
 
 
@@ -117,18 +117,18 @@ actor, as assigned by the load balancer
 - WorldManagerPid is the PID of the world manager
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-		[ dataflow_pid() ], step_count(), step_count(),
-		experiment_manager_pid(), world_manager_pid() ) -> wooper:state().
+        [ dataflow_pid() ], step_count(), step_count(),
+        experiment_manager_pid(), world_manager_pid() ) -> wooper:state().
 construct( State, ActorSettings, Dataflows, ExperimentStepStart,
-		   ExperimentStepStop, ExperimentManagerPid, WorldManagerPid ) ->
+           ExperimentStepStop, ExperimentManagerPid, WorldManagerPid ) ->
 
-	% First the direct mother class:
-	ActorState = class_ExperimentEntryPoint:construct( State, ActorSettings,
-		Dataflows, ExperimentManagerPid, WorldManagerPid ),
+    % First the direct mother class:
+    ActorState = class_ExperimentEntryPoint:construct( State, ActorSettings,
+        Dataflows, ExperimentManagerPid, WorldManagerPid ),
 
-	% Then the class-specific actions:
-	setAttributes( ActorState, [ { current_step, ExperimentStepStart },
-								 { max_step, ExperimentStepStop } ] ).
+    % Then the class-specific actions:
+    setAttributes( ActorState, [ { current_step, ExperimentStepStart },
+                                 { max_step, ExperimentStepStop } ] ).
 
 
 
@@ -139,12 +139,12 @@ construct( State, ActorSettings, Dataflows, ExperimentStepStart,
 Callback executed on the first diasca of existence of this entry point.
 """.
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-							const_actor_oneway_return().
+                            const_actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
-	?debug_fmt( "Created ~ts.", [ to_string( State ) ] ),
+    ?debug_fmt( "Created ~ts.", [ to_string( State ) ] ),
 
-	actor:const_return().
+    actor:const_return().
 
 
 
@@ -156,32 +156,32 @@ Typically called by the experiment exit point.
 Mostly empty implementation, meant to be overridden.
 """.
 -spec startExperimentTick( wooper:state(), sending_actor_pid() ) ->
-								actor_oneway_return().
+                                actor_oneway_return().
 startExperimentTick( State, _SenderActorPid ) ->
 
-	CurrentStep = ?getAttr(current_step),
+    CurrentStep = ?getAttr(current_step),
 
 
-	% This is an empty implementation.
-	%
-	% Actual ones may fetch information from any source (e.g. thanks to a REST
-	% call), and may update accordingly the corresponding dataflow elements
-	% (typically dataflow actors), possibly directly or through the various
-	% registered dataflows.
-	%
-	% Then corresponding blocks may be activated, and the dataflow evaluated.
+    % This is an empty implementation.
+    %
+    % Actual ones may fetch information from any source (e.g. thanks to a REST
+    % call), and may update accordingly the corresponding dataflow elements
+    % (typically dataflow actors), possibly directly or through the various
+    % registered dataflows.
+    %
+    % Then corresponding blocks may be activated, and the dataflow evaluated.
 
-	%SentState = class_Actor:send_actor_messages( ?getAttr(dataflows),
-	%                   { startExperimentTick, [...], State },
+    %SentState = class_Actor:send_actor_messages( ?getAttr(dataflows),
+    %                   { startExperimentTick, [...], State },
 
-	%actor:return_state( SentState ).
+    %actor:return_state( SentState ).
 
-	NewState = setAttribute( State, current_step, CurrentStep+1 ),
+    NewState = setAttribute( State, current_step, CurrentStep+1 ),
 
-	?debug_fmt( "Shifting to step ~B/~B.",
-				[ CurrentStep+1, ?getAttr(max_step) ] ),
+    ?debug_fmt( "Shifting to step ~B/~B.",
+                [ CurrentStep+1, ?getAttr(max_step) ] ),
 
-	actor:return_state( NewState ).
+    actor:return_state( NewState ).
 
 
 
@@ -193,23 +193,23 @@ startExperimentTick( State, _SenderActorPid ) ->
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
-	DataflowString = case ?getAttr(dataflows) of
+    DataflowString = case ?getAttr(dataflows) of
 
-		[] ->
-			"not referencing any dataflow";
+        [] ->
+            "not referencing any dataflow";
 
-		[ Dataflow ] ->
-			text_utils:format( "referencing a single dataflow instance: ~p",
-							   [ Dataflow ] );
+        [ Dataflow ] ->
+            text_utils:format( "referencing a single dataflow instance: ~p",
+                               [ Dataflow ] );
 
-		Dataflows ->
-			text_utils:format( "referencing ~B dataflow instances: ~w",
-							   [ length( Dataflows ), Dataflows ] )
+        Dataflows ->
+            text_utils:format( "referencing ~B dataflow instances: ~w",
+                               [ length( Dataflows ), Dataflows ] )
 
-	end,
+    end,
 
-	text_utils:format( "Experiment entry point (in step ~B/~B), associated to "
-		"the experiment manager ~w, to the world manager ~w, and ~ts",
-		[ ?getAttr(current_step), ?getAttr(max_step),
-		  ?getAttr(experiment_manager_pid),
-		  ?getAttr(world_manager_pid), DataflowString ] ).
+    text_utils:format( "Experiment entry point (in step ~B/~B), associated to "
+        "the experiment manager ~w, to the world manager ~w, and ~ts",
+        [ ?getAttr(current_step), ?getAttr(max_step),
+          ?getAttr(experiment_manager_pid),
+          ?getAttr(world_manager_pid), DataflowString ] ).

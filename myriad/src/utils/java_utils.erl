@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 Olivier Boudeville
+% Copyright (C) 2016-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -43,9 +43,9 @@ See also `python_utils.erl` for a similar binding.
 
 % Helper exports:
 -export([ get_beam_directories_for_binding/0,
-		  send_oneway/3, send_request/3, execute_request/3,
-		  wait_for_request_result/2, classname_to_bytecode_filename/1,
-		  fully_qualified_classname_to_string/1 ]).
+          send_oneway/3, send_request/3, execute_request/3,
+          wait_for_request_result/2, classname_to_bytecode_filename/1,
+          fully_qualified_classname_to_string/1 ]).
 
 
 
@@ -124,7 +124,7 @@ The name of a Java class, as a string (e.g. `"Foobar"`).
 
 -doc "Designates as precisely as possible a Java class.".
 -type java_fully_qualified_classname() ::
-		java_classname() | { java_package_name(), java_classname() }.
+        java_classname() | { java_package_name(), java_classname() }.
 
 
 
@@ -142,13 +142,13 @@ The name of a Java compiled file (e.g. `"Foobar.class"`).
 
 
 -export_type([ java_mbox_pid/0,
-			   method_name/0, oneway_name/0, request_name/0,
-			   method_parameters/0, oneway_parameters/0, request_parameters/0,
-			   request_result/0,
-			   java_package_name/0, java_string_package_name/0,
-			   java_classname/0, java_string_classname/0,
-			   java_fully_qualified_classname/0,
-			   java_source_filename/0, java_bytecode_filename/0 ]).
+               method_name/0, oneway_name/0, request_name/0,
+               method_parameters/0, oneway_parameters/0, request_parameters/0,
+               request_result/0,
+               java_package_name/0, java_string_package_name/0,
+               java_classname/0, java_string_classname/0,
+               java_fully_qualified_classname/0,
+               java_source_filename/0, java_bytecode_filename/0 ]).
 
 
 % Type shorthands:
@@ -186,32 +186,32 @@ Finds the BEAM locations of all the dependencies required for binding to Java.
 """.
 -spec get_beam_directories_for_binding() -> [ directory_path() ].
 get_beam_directories_for_binding() ->
-	[].
+    [].
 
 
 
 -doc "Sends the specified oneway to the specified Java pseudo-process.".
 -spec send_oneway( java_mbox_pid(), oneway_name(), oneway_parameters() ) ->
-							void().
+                            void().
 send_oneway( MailboxPid, OnewayName, OnewayParameters )
-		when is_atom( OnewayName ) andalso is_list( OnewayParameters ) ->
+        when is_atom( OnewayName ) andalso is_list( OnewayParameters ) ->
 
-	Message = { OnewayName, OnewayParameters },
+    Message = { OnewayName, OnewayParameters },
 
-	%trace_utils:debug_fmt( "Sending to ~w: ~p.", [ MailboxPid, Message ] ),
+    %trace_utils:debug_fmt( "Sending to ~w: ~p.", [ MailboxPid, Message ] ),
 
-	% No PID sent, no answer to expect:
-	MailboxPid ! Message.
+    % No PID sent, no answer to expect:
+    MailboxPid ! Message.
 
 
 
 -doc "Sends the specified request to the specified Java pseudo-process.".
 -spec send_request( java_mbox_pid(), request_name(), request_parameters() ) ->
-							void().
+                            void().
 send_request( MailboxPid, RequestName, RequestParameters )
-		when is_atom( RequestName ) andalso is_list( RequestParameters ) ->
-	% PID sent, as a reply is wanted:
-	MailboxPid ! { RequestName, RequestParameters, self() }.
+        when is_atom( RequestName ) andalso is_list( RequestParameters ) ->
+    % PID sent, as a reply is wanted:
+    MailboxPid ! { RequestName, RequestParameters, self() }.
 
 
 
@@ -220,17 +220,17 @@ Sends for execution the specified request to the specified Java pseudo-process,
 and collects (synchronously) the corresponding result.
 """.
 -spec execute_request( java_mbox_pid(), request_name(),
-					   request_parameters() ) -> request_result().
+                       request_parameters() ) -> request_result().
 execute_request( MailboxPid, RequestName, RequestParameters ) ->
 
-	send_request( MailboxPid, RequestName, RequestParameters ),
+    send_request( MailboxPid, RequestName, RequestParameters ),
 
-	receive
+    receive
 
-		{ java_request_result, Result } ->
-			Result
+        { java_request_result, Result } ->
+            Result
 
-	end.
+    end.
 
 
 
@@ -241,48 +241,48 @@ different accepted types of messages.
 """.
 -spec wait_for_request_result( java_mbox_pid(), method_name() ) -> any().
 wait_for_request_result( MailboxPid, MethodName )
-		when is_atom( MethodName ) ->
+        when is_atom( MethodName ) ->
 
-	% Waits for the response:
-	Message = receive
+    % Waits for the response:
+    Message = receive
 
-		_Msg={ Headers, MethodParameters } when is_tuple( Headers )
+        _Msg={ Headers, MethodParameters } when is_tuple( Headers )
                 andalso erlang:element( 1, Headers ) == java_message ->
 
-			erlang:append_element( erlang:delete_element( 1, Headers ),
-								   MethodParameters )
+            erlang:append_element( erlang:delete_element( 1, Headers ),
+                                   MethodParameters )
 
-	end,
+    end,
 
-	case Message of
+    case Message of
 
-		% Return of a successful request:
-		{ request_completed, _ReceivedData } ->
+        % Return of a successful request:
+        { request_completed, _ReceivedData } ->
 
-			Message;
+            Message;
 
-		% Trace emitted from Java:
-		TraceMessage = { trace_emitted, TraceType, _TraceFormattedMessage }
+        % Trace emitted from Java:
+        TraceMessage = { trace_emitted, TraceType, _TraceFormattedMessage }
                                     when is_atom( TraceType ) ->
 
-			TraceMessage;
+            TraceMessage;
 
-		% Exception raised from Java:
-		ExceptionMessage = { exception_raised, ExceptionType,
-							 _ExceptionFormattedMessage }
+        % Exception raised from Java:
+        ExceptionMessage = { exception_raised, ExceptionType,
+                             _ExceptionFormattedMessage }
                                     when is_atom( ExceptionType ) ->
 
-			ExceptionMessage;
+            ExceptionMessage;
 
-		% Catch-all clause for message receiving:
-		OtherMessage ->
-			trace_utils:error_fmt( "A message received from a Java "
-				"(Jinterface) OtpMbox driven by ~w, in answer to '~p', "
-				"does not respect the expected format: ~p~n",
-				[ MailboxPid, MethodName, OtherMessage ] ),
-			throw( { invalid_java_message_received, OtherMessage } )
+        % Catch-all clause for message receiving:
+        OtherMessage ->
+            trace_utils:error_fmt( "A message received from a Java "
+                "(Jinterface) OtpMbox driven by ~w, in answer to '~p', "
+                "does not respect the expected format: ~p~n",
+                [ MailboxPid, MethodName, OtherMessage ] ),
+            throw( { invalid_java_message_received, OtherMessage } )
 
-	end.
+    end.
 
 
 
@@ -294,30 +294,30 @@ With Java, both names are identical except the extension, hence we just check if
 the name looks CamelCased, i.e. if at least its first letter is in upper case.
 """.
 -spec classname_to_bytecode_filename( java_classname() | ustring() ) ->
-											java_bytecode_filename().
+                                            java_bytecode_filename().
 classname_to_bytecode_filename( Classname ) when is_atom( Classname ) ->
-	classname_to_bytecode_filename( text_utils:atom_to_string( Classname ) );
+    classname_to_bytecode_filename( text_utils:atom_to_string( Classname ) );
 
 classname_to_bytecode_filename( ClassnameStr=[ FirstChar | _T ] ) ->
 
-	case text_utils:is_uppercase( FirstChar ) of
+    case text_utils:is_uppercase( FirstChar ) of
 
-		true ->
-			ClassnameStr ++ ".class";
+        true ->
+            ClassnameStr ++ ".class";
 
-		false ->
-			throw( { java_classname_not_camelcased, ClassnameStr } )
+        false ->
+            throw( { java_classname_not_camelcased, ClassnameStr } )
 
-	end.
+    end.
 
 
 
 -doc "Returns a textual description of specified fully qualified classname.".
 -spec fully_qualified_classname_to_string( java_fully_qualified_classname() ) ->
-													ustring().
+                                                    ustring().
 fully_qualified_classname_to_string( { PackageName, Classname } ) ->
-	text_utils:format( "class '~ts' of package '~ts'",
-					   [ Classname, PackageName ] );
+    text_utils:format( "class '~ts' of package '~ts'",
+                       [ Classname, PackageName ] );
 
 fully_qualified_classname_to_string( Classname ) ->
-	text_utils:format( "class '~ts'", [ Classname ] ).
+    text_utils:format( "class '~ts'", [ Classname ] ).

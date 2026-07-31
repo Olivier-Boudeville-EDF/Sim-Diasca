@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2025 Olivier Boudeville
+% Copyright (C) 2020-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -66,7 +66,6 @@ trace_bridge:register(BridgeSpec), [...]
 % ones.
 
 
-
 -doc "Possibly a `class_TraceAggregator:aggregator_pid()`.".
 -type bridge_pid() :: pid().
 
@@ -79,26 +78,38 @@ trace_bridge:register(BridgeSpec), [...]
 
 
 -export([ get_bridge_spec/2, get_bridge_spec/3,
-		  register/1, register_if_not_already/1,
-		  get_bridge_info/0, set_bridge_info/1,
-		  set_application_timestamp/1, unregister/0,
-		  wait_bridge_sync/0,
+          register/1, register_if_not_already/1,
+          get_bridge_info/0, set_bridge_info/1,
+          set_application_timestamp/1, unregister/0,
+          wait_bridge_sync/0,
 
-		  debug/1, debug_fmt/2,
-		  info/1, info_fmt/2,
-		  notice/1, notice_fmt/2,
-		  warning/1, warning_fmt/2,
-		  error/1, error_fmt/2,
-		  critical/1, critical_fmt/2,
-		  alert/1, alert_fmt/2,
-		  emergency/1, emergency_fmt/2,
-		  void/1, void_fmt/2,
+          inhibit_any/0, restore_any/1,
 
-		  send/2, send/3 ]).
+          debug/1, debug_fmt/2,
+          info/1, info_fmt/2,
+          notice/1, notice_fmt/2,
+          warning/1, warning_fmt/2,
+          error/1, error_fmt/2,
+          critical/1, critical_fmt/2,
+          alert/1, alert_fmt/2,
+          emergency/1, emergency_fmt/2,
+          void/1, void_fmt/2,
+
+          send/2, send/3 ]).
 
 
 % Keys defined in the process dictionary:
 -define( myriad_trace_bridge_key, "_myriad_trace_bridge" ).
+
+
+% Implementation notes:
+%
+% The process dictionary is used in order to avoid carrying along too many
+% parameters: the myriad_trace_bridge_key define corresponds to the key to which
+% a bridge_info() term may be associated so that the current process is bridged
+% to a Trace system.
+%
+% Not special-casing the 'void' severity, as not used frequently enough.
 
 
 
@@ -116,19 +127,10 @@ trace_bridge:register(BridgeSpec), [...]
 
 
 
-% Implementation notes:
-%
-% The process dictionary is used in order to avoid carrying along too many
-% parameters: the myriad_trace_bridge_key define corresponds to the key to which
-% a bridge_info() term may be associated so that the current process is bridged
-% to a Trace system.
-%
-% Not special-casing the 'void' severity, as not used frequently enough.
-
 
 -doc "Bridging information typically specified by the user.".
 -type user_bridge_info() ::
-		{ TraceCategory :: any_string(), BridgePid :: bridge_pid() }.
+    { TraceCategory :: any_string(), BridgePid :: bridge_pid() }.
 
 
 
@@ -140,8 +142,8 @@ Note that this type is opaque; use `get_bridge_spec/{2,3}` to obtain an instance
 thereof.
 """.
 -opaque bridge_spec() :: { TraceEmitterName :: bin_string(),
-						   TraceCategory :: bin_string(),
-						   BridgePid :: bridge_pid() }.
+                           TraceCategory :: bin_string(),
+                           BridgePid :: bridge_pid() }.
 
 
 -export_type([ user_bridge_info/0, bridge_spec/0 ]).
@@ -150,11 +152,17 @@ thereof.
 
 -doc "A bridging information stored in a target process dictionary.".
 -opaque bridge_info() :: {
-	TraceEmitterName :: bin_string(),
-	TraceCategory :: bin_string(),
-	Location :: bin_string(),
-	BridgePid :: bridge_pid(),
-	ApplicationTimestamp :: option( trace_timestamp() ) }.
+        TraceEmitterName :: bin_string(),
+        TraceCategory :: bin_string(),
+        Location :: bin_string(),
+        BridgePid :: bridge_pid(),
+        ApplicationTimestamp :: option( trace_timestamp() ) }
+
+  % In some very rare cases, we want to inhibit a trace bridge (e.g. if needing
+  % to determine whether a service is available by triggering an operation that
+  % may fail with an error trace that should not be reported overall):
+  %
+  | 'inhibited_trace_bridge'.
 
 
 
@@ -169,8 +177,8 @@ corresponding trace bridge and use it automatically from then.
 """.
 -spec get_bridge_spec( any_string(), user_bridge_info() ) -> bridge_spec().
 get_bridge_spec( TraceEmitterName,
-				 _UserBridgeInfo={ TraceCategory, BridgePid } ) ->
-	get_bridge_spec( TraceEmitterName, TraceCategory, BridgePid ).
+                 _UserBridgeInfo={ TraceCategory, BridgePid } ) ->
+    get_bridge_spec( TraceEmitterName, TraceCategory, BridgePid ).
 
 
 
@@ -184,10 +192,10 @@ With Ceylan-Traces, BridgePid is typically obtained thanks to
 Allows not to break the opaqueness of the `bridge_spec()` type.
 """.
 -spec get_bridge_spec( any_string(), any_string(), bridge_pid() ) ->
-							bridge_spec().
+                            bridge_spec().
 get_bridge_spec( TraceEmitterName, TraceCategory, BridgePid ) ->
-	{ text_utils:ensure_binary( TraceEmitterName ),
-	  text_utils:ensure_binary( TraceCategory ), BridgePid }.
+    { text_utils:ensure_binary( TraceEmitterName ),
+      text_utils:ensure_binary( TraceCategory ), BridgePid }.
 
 
 
@@ -202,33 +210,33 @@ See also: `register_if_not_already/1`.
 """.
 -spec register( option( bridge_spec() ) ) -> void().
 register( _MaybeBridgeSpec=undefined ) ->
-	ok;
+    ok;
 
 register( BridgeSpec ) ->
 
-	BridgeKey = ?myriad_trace_bridge_key,
+    BridgeKey = ?myriad_trace_bridge_key,
 
-	BridgeInfo = bridge_spec_to_info( BridgeSpec ),
+    BridgeInfo = bridge_spec_to_info( BridgeSpec ),
 
-	case process_dictionary:get( BridgeKey ) of
+    case process_dictionary:get( BridgeKey ) of
 
-		% Normal case:
-		undefined ->
-			process_dictionary:put( BridgeKey, BridgeInfo ),
-			cond_utils:if_defined( myriad_debug_traces,
-				debug_fmt( "Trace bridge registered (spec: ~p).",
-						   [ BridgeSpec ] ) );
+        % Normal case:
+        undefined ->
+            process_dictionary:put( BridgeKey, BridgeInfo ),
+            cond_utils:if_defined( myriad_debug_traces,
+                debug_fmt( "Trace bridge registered (spec: ~p).",
+                           [ BridgeSpec ] ) );
 
-		UnexpectedInfo ->
-			error_fmt( "Myriad trace bridge already registered (as ~p), "
-				%"ignoring newer registration (as ~p).",
-				"whereas a newer registration (as ~p) was requested.",
-				[ BridgeInfo, UnexpectedInfo ] ),
+        UnexpectedInfo ->
+            error_fmt( "Myriad trace bridge already registered (as ~p), "
+                %"ignoring newer registration (as ~p).",
+                "whereas a newer registration (as ~p) was requested.",
+                [ BridgeInfo, UnexpectedInfo ] ),
 
-			throw( { myriad_trace_bridge_already_registered, UnexpectedInfo,
-					 BridgeInfo } )
+            throw( { myriad_trace_bridge_already_registered, UnexpectedInfo,
+                     BridgeInfo } )
 
-	end.
+    end.
 
 
 
@@ -244,40 +252,40 @@ bridge.
 """.
 -spec register_if_not_already( option( bridge_spec() ) ) -> void().
 register_if_not_already( _MaybeBridgeSpec=undefined ) ->
-	ok;
+    ok;
 
 register_if_not_already( BridgeSpec ) ->
 
-	BridgeKey = ?myriad_trace_bridge_key,
+    BridgeKey = ?myriad_trace_bridge_key,
 
-	process_dictionary:get( BridgeKey ) =:= undefined andalso
-		begin
-			BridgeInfo = bridge_spec_to_info( BridgeSpec ),
+    process_dictionary:get( BridgeKey ) =:= undefined andalso
+        begin
+            BridgeInfo = bridge_spec_to_info( BridgeSpec ),
 
-			process_dictionary:put( BridgeKey, BridgeInfo ),
-			debug_fmt( "Trace bridge registered (spec: ~p).", [ BridgeSpec ] )
-		end.
+            process_dictionary:put( BridgeKey, BridgeInfo ),
+            debug_fmt( "Trace bridge registered (spec: ~p).", [ BridgeSpec ] )
+        end.
 
 
 
 % (helper)
 -spec bridge_spec_to_info( bridge_spec() ) -> bridge_info().
 bridge_spec_to_info( _BridgeSpec={ BinTraceEmitterName, BinTraceCategory,
-								   BridgePid } ) when is_pid( BridgePid ) ->
+                                   BridgePid } ) when is_pid( BridgePid ) ->
 
-	Location = net_utils:localnode_as_binary(),
-	DefaultApplicationTimestamp = undefined,
+    Location = net_utils:localnode_as_binary(),
+    DefaultApplicationTimestamp = undefined,
 
-	% BridgeInfo:
-	{ BinTraceEmitterName, BinTraceCategory, Location, BridgePid,
-	  DefaultApplicationTimestamp };
+    % BridgeInfo:
+    { BinTraceEmitterName, BinTraceCategory, Location, BridgePid,
+      DefaultApplicationTimestamp };
 
 bridge_spec_to_info( _BridgeSpec={ _BinTraceEmitterName, _BinTraceCategory,
-								   NotAPid } ) ->
-	throw( { invalid_bridge_spec, no_bridge_pid, NotAPid } );
+                                   NotAPid } ) ->
+    throw( { invalid_bridge_spec, no_bridge_pid, NotAPid } );
 
 bridge_spec_to_info( OtherBridgeSpec ) ->
-	throw( { invalid_bridge_spec, OtherBridgeSpec } ).
+    throw( { invalid_bridge_spec, OtherBridgeSpec } ).
 
 
 
@@ -289,7 +297,7 @@ same bridge.
 """.
 -spec get_bridge_info() -> option( bridge_info() ).
 get_bridge_info() ->
-	process_dictionary:get( ?myriad_trace_bridge_key ).
+    process_dictionary:get( ?myriad_trace_bridge_key ).
 
 
 
@@ -303,32 +311,35 @@ Any local pre-existing bridge information will be overwritten.
 """.
 -spec set_bridge_info( option( bridge_info() ) ) -> void().
 set_bridge_info( MaybeBridgeInfo ) ->
-	process_dictionary:put( ?myriad_trace_bridge_key, MaybeBridgeInfo ).
+    process_dictionary:put( ?myriad_trace_bridge_key, MaybeBridgeInfo ).
 
 
 
 -doc """
 Sets the current application timestamp.
 
-Note: if no trace bridge is registered, does nothing.
+Note: if no trace bridge is registered, or if it is inhibited, does nothing.
 """.
 -spec set_application_timestamp( trace_timestamp() ) -> void().
 set_application_timestamp( NewAppTimestamp ) ->
 
-	BridgeKey = ?myriad_trace_bridge_key,
+    BridgeKey = ?myriad_trace_bridge_key,
 
-	case process_dictionary:get( BridgeKey ) of
+    case process_dictionary:get( BridgeKey ) of
 
-		undefined ->
-			ok;
+        undefined ->
+            ok;
 
-		BridgeInfo ->
-			NewBridgeInfo = setelement( _AppTmspIndex=5, BridgeInfo,
-										NewAppTimestamp ),
+        inhibited_trace_bridge ->
+            ok;
 
-			process_dictionary:put( BridgeKey, NewBridgeInfo )
+        BridgeInfo ->
+            NewBridgeInfo = setelement( _AppTmspIndex=5, BridgeInfo,
+                                        NewAppTimestamp ),
 
-	end.
+            process_dictionary:put( BridgeKey, NewBridgeInfo )
+
+    end.
 
 
 
@@ -337,8 +348,51 @@ Unregisters the current process, which acted as a trace bridge; never fails.
 """.
 -spec unregister() -> void().
 unregister() ->
-	% No-op if not set:
-	process_dictionary:remove( _K=?myriad_trace_bridge_key ).
+    % No-op if not set:
+    process_dictionary:remove( _K=?myriad_trace_bridge_key ).
+
+
+
+-doc """
+Inhibits any trace bridge, muting all traces sent based on this module from the
+current process.
+
+Useful if some called code could send undesirable traces (e.g. if failing during
+a test of the availability of a feature).
+
+This bridge can be restored with `restore/1`.
+""".
+-spec inhibit_any() -> option( bridge_info() ).
+inhibit_any() ->
+
+    BridgeKey = ?myriad_trace_bridge_key,
+
+    MaybeBridgeInfo = process_dictionary:get( BridgeKey ),
+
+    process_dictionary:put( BridgeKey, inhibited_trace_bridge ),
+
+    MaybeBridgeInfo.
+
+
+
+-doc "Restores any inhibited bridge, as it was obtained from `inhibit_any/0`.".
+-spec restore_any( option( bridge_info() ) ) -> void().
+restore_any( MaybeBridgeInfo ) ->
+
+    BridgeKey = ?myriad_trace_bridge_key,
+
+    case process_dictionary:get( BridgeKey ) of
+
+        inhibited_trace_bridge ->
+            process_dictionary:put( BridgeKey, MaybeBridgeInfo );
+
+        UnexpectedBridgeInfo ->
+            throw( { myriad_trace_bridge_not_inhibited, UnexpectedBridgeInfo,
+                     MaybeBridgeInfo } )
+
+    end.
+
+
 
 
 
@@ -348,111 +402,111 @@ unregister() ->
 -doc "Outputs the specified debug message.".
 -spec debug( trace_message() ) -> void().
 debug( Message ) ->
-	send( debug, Message ).
+    send( debug, Message ).
 
 
 -doc "Outputs the specified debug message to format.".
 -spec debug_fmt( format_string(), format_values() ) -> void().
 debug_fmt( MessageFormat, MessageValues ) ->
-	send( debug, MessageFormat, MessageValues ).
+    send( debug, MessageFormat, MessageValues ).
 
 
 
 -doc "Outputs the specified info message.".
 -spec info( trace_message() ) -> void().
 info( Message ) ->
-	send( info, Message ).
+    send( info, Message ).
 
 
 
 -doc "Outputs the specified info message to format.".
 -spec info_fmt( format_string(), format_values() ) -> void().
 info_fmt( MessageFormat, MessageValues ) ->
-	send( info, MessageFormat, MessageValues ).
+    send( info, MessageFormat, MessageValues ).
 
 
 
 -doc "Outputs the specified notice message.".
 -spec notice( trace_message() ) -> void().
 notice( Message ) ->
-	send( notice, Message ).
+    send( notice, Message ).
 
 
 
 -doc "Outputs the specified notice message to format.".
 -spec notice_fmt( format_string(), format_values() ) -> void().
 notice_fmt( MessageFormat, MessageValues ) ->
-	send( notice, MessageFormat, MessageValues ).
+    send( notice, MessageFormat, MessageValues ).
 
 
 
 -doc "Outputs the specified warning message.".
 -spec warning( trace_message() ) -> void().
 warning( Message ) ->
-	send( warning, Message ).
+    send( warning, Message ).
 
 
 
 -doc "Outputs the specified warning message to format.".
 -spec warning_fmt( format_string(), format_values() ) -> void().
 warning_fmt( MessageFormat, MessageValues ) ->
-	send( warning, MessageFormat, MessageValues ).
+    send( warning, MessageFormat, MessageValues ).
 
 
 
 -doc "Outputs the specified error message.".
 -spec error( trace_message() ) -> void().
 error( Message ) ->
-	send( error, Message ).
+    send( error, Message ).
 
 
 
 -doc "Outputs the specified error message to format.".
 -spec error_fmt( format_string(), format_values() ) -> void().
 error_fmt( MessageFormat, MessageValues ) ->
-	send( error, MessageFormat, MessageValues ).
+    send( error, MessageFormat, MessageValues ).
 
 
 
 -doc "Outputs the specified critical message.".
 -spec critical( trace_message() ) -> void().
 critical( Message ) ->
-	send( critical, Message ).
+    send( critical, Message ).
 
 
 
 -doc "Outputs the specified critical message to format.".
 -spec critical_fmt( format_string(), format_values() ) -> void().
 critical_fmt( MessageFormat, MessageValues ) ->
-	send( critical, MessageFormat, MessageValues ).
+    send( critical, MessageFormat, MessageValues ).
 
 
 
 -doc "Outputs the specified critical message.".
 -spec alert( trace_message() ) -> void().
 alert( Message ) ->
-	send( alert, Message ).
+    send( alert, Message ).
 
 
 
 -doc "Outputs the specified alert message to format.".
 -spec alert_fmt( format_string(), format_values() ) -> void().
 alert_fmt( MessageFormat, MessageValues ) ->
-	send( alert, MessageFormat, MessageValues ).
+    send( alert, MessageFormat, MessageValues ).
 
 
 
 -doc "Outputs the specified emergency message.".
 -spec emergency( trace_message() ) -> void().
 emergency( Message ) ->
-	send( emergency, Message ).
+    send( emergency, Message ).
 
 
 
 -doc "Outputs the specified emergency message to format.".
 -spec emergency_fmt( format_string(), format_values() ) -> void().
 emergency_fmt( MessageFormat, MessageValues ) ->
-	send( emergency, MessageFormat, MessageValues ).
+    send( emergency, MessageFormat, MessageValues ).
 
 
 
@@ -461,7 +515,7 @@ emergency_fmt( MessageFormat, MessageValues ) ->
 """.
 -spec void( trace_message() ) -> void().
 void( _Message ) ->
-	ok.
+    ok.
 
 
 
@@ -470,7 +524,7 @@ void( _Message ) ->
 """.
 -spec void_fmt( format_string(), format_values() ) -> void().
 void_fmt( _MessageFormat, _MessageValues ) ->
-	ok.
+    ok.
 
 
 
@@ -478,17 +532,17 @@ void_fmt( _MessageFormat, _MessageValues ) ->
 -spec send( trace_severity(), trace_message() ) -> void().
 send( SeverityType, Message ) ->
 
-	case process_dictionary:get( ?myriad_trace_bridge_key ) of
+    case process_dictionary:get( ?myriad_trace_bridge_key ) of
 
-		% No bridge set, using the direct, basic Myriad traces:
-		undefined ->
-			trace_utils:SeverityType( Message );
+        % No bridge set, using the direct, basic Myriad traces:
+        undefined ->
+            trace_utils:SeverityType( Message );
 
-		% A bridge is available; mimicking the Ceylan-Traces protocol:
-		BridgeInfo ->
-			send_bridge( SeverityType, Message, BridgeInfo )
+        % A bridge is available; mimicking the Ceylan-Traces protocol:
+        BridgeInfo ->
+            send_bridge( SeverityType, Message, BridgeInfo )
 
-	end.
+    end.
 
 
 
@@ -499,72 +553,78 @@ send( SeverityType, MessageFormat, MessageValues ) ->
     %io:format( "Sending ~ts message of format '~ts' and values ~p.",
     %           [ SeverityType, MessageFormat, MessageValues ] ),
 
-	Message = text_utils:format( MessageFormat, MessageValues ),
+    Message = text_utils:format( MessageFormat, MessageValues ),
 
-	case process_dictionary:get( ?myriad_trace_bridge_key ) of
+    case process_dictionary:get( ?myriad_trace_bridge_key ) of
 
-		% No bridge set, using the direct, basic Myriad traces:
-		undefined ->
-			trace_utils:SeverityType( Message );
+        % No bridge set, using the direct, basic Myriad traces:
+        undefined ->
+            trace_utils:SeverityType( Message );
 
-		% A bridge is available:
-		BridgeInfo ->
+        % A bridge is available:
+        BridgeInfo ->
 
-			% No need to add here an additional trace_utils-based sending, it
-			% will be done for error-like messages by the next call:
-			%
-			send_bridge( SeverityType, Message, BridgeInfo )
+            % No need to add here an additional trace_utils-based sending, it
+            % will be done for error-like messages by the next call:
+            %
+            send_bridge( SeverityType, Message, BridgeInfo )
 
-	end.
+    end.
 
 
 
 % Mimicking the Ceylan-Traces protocol.
-%
-% (helper)
 send_bridge( SeverityType, Message,
-			 _BridgeInfo={ TraceEmitterName, TraceEmitterCategorization,
-						   BinLocation, BridgePid, AppTimestamp } ) ->
+             _BridgeInfo={ TraceEmitterName, TraceEmitterCategorization,
+                           BinLocation, BridgePid, AppTimestamp } ) ->
 
-	cond_utils:if_defined( myriad_debug_traces,
-		trace_utils:debug_fmt( "Sending '~ts', with ~ts severity, to ~w.",
-							   [ Message, SeverityType, BridgePid ] ) ),
+    cond_utils:if_defined( myriad_debug_traces,
+        trace_utils:debug_fmt( "Sending '~ts', with ~ts severity, to ~w.",
+                               [ Message, SeverityType, BridgePid ] ) ),
 
-	AppTimestampString = text_utils:term_to_binary( AppTimestamp ),
+    AppTimestampString = text_utils:term_to_binary( AppTimestamp ),
 
-	BinTimestampText = time_utils:get_bin_textual_timestamp(),
+    BinTimestampText = time_utils:get_bin_textual_timestamp(),
 
-	MessageCategorization = 'Trace Bridge',
+    MessageCategorization = 'Trace Bridge',
 
-	Msg = [ _TraceEmitterPid=self(),
-			TraceEmitterName,
-			TraceEmitterCategorization,
-			AppTimestampString,
-			BinTimestampText,
-			_Location=BinLocation,
-			MessageCategorization,
-			_Priority=trace_utils:get_priority_for( SeverityType ),
-			_Message=text_utils:string_to_binary( Message ) ],
+    Msg = [ _TraceEmitterPid=self(),
+            TraceEmitterName,
+            TraceEmitterCategorization,
+            AppTimestampString,
+            BinTimestampText,
+            _Location=BinLocation,
+            MessageCategorization,
+            _Priority=trace_utils:get_priority_for( SeverityType ),
+            _Message=text_utils:string_to_binary( Message ) ],
 
-	% Error-like messages are echoed on the console and made synchronous, to
-	% ensure that they are not missed:
-	%
-	case trace_utils:is_error_like( SeverityType ) of
+    % Error-like messages are echoed on the console and made synchronous, to
+    % ensure that they are not missed:
+    %
+    case trace_utils:is_error_like( SeverityType ) of
 
-		true ->
-			% A bit of interleaving:
-			BridgePid ! { sendSync, Msg, self() },
+        true ->
+            % A bit of interleaving:
+            BridgePid ! { sendSync, Msg, self() },
 
-			trace_utils:echo( Message, SeverityType, MessageCategorization,
-							  BinTimestampText ),
+            trace_utils:echo( Message, SeverityType, MessageCategorization,
+                              BinTimestampText ),
 
-			wait_bridge_sync();
+            wait_bridge_sync();
 
-		false ->
-			% Unechoed fire and forget here:
-			BridgePid ! { send, Msg }
+        false ->
+            % Unechoed fire and forget here:
+            BridgePid ! { send, Msg }
 
-	end.
+    end;
+
+send_bridge( SeverityType, Message, _BridgeInfo=inhibited_trace_bridge ) ->
+    cond_utils:if_defined( myriad_debug_traces,
+        trace_utils:debug_fmt(
+            "Not sending trace '~ts' with ~ts severity: inhibited bridge.",
+            [ Message, SeverityType ] ),
+        basic_utils:ignore_unused( [ SeverityType, Message ] ) ).
+
 
 
 
@@ -574,20 +634,20 @@ Waits for the bridge to report that a trace synchronisation has been completed.
 -spec wait_bridge_sync() -> void().
 wait_bridge_sync() ->
 
-	receive
+    receive
 
-		% A little breach of opaqueness; any actual bridge aggregator shall
-		% acknowledge a trace sending with such a message:
-		%
-		% (we could have recorded in the bridge the module name of the
-		% aggregator at hand - e.g. class_TraceAggregator - and called an
-		% exported function thereof to determine the acknowledgement message to
-		% expect, like in 'class_TraceAggregator:get_acknowledge_message() ->
-		% {wooper_result, trace_aggregator_synchronised}' yet, at least
-		% currently, we prefer being bound only by message structures, not by
-		% module calls)
-		%
-		{ wooper_result, trace_aggregator_synchronised } ->
-			ok
+        % A little breach of opaqueness; any actual bridge aggregator shall
+        % acknowledge a trace sending with such a message:
+        %
+        % (we could have recorded in the bridge the module name of the
+        % aggregator at hand - e.g. class_TraceAggregator - and called an
+        % exported function thereof to determine the acknowledgement message to
+        % expect, like in 'class_TraceAggregator:get_acknowledge_message() ->
+        % {wooper_result, trace_aggregator_synchronised}' yet, at least
+        % currently, we prefer being bound only by message structures, not by
+        % module calls)
+        %
+        { wooper_result, trace_aggregator_synchronised } ->
+            ok
 
-	end.
+    end.

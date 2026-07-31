@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -31,8 +31,8 @@ simulation.
 
 
 -define( class_description,
-		 "Agent in charge of tracking the overall runtime resource consumption "
-		 "of the simulation." ).
+         "Agent in charge of tracking the overall runtime resource consumption "
+         "of the simulation." ).
 
 
 % Its roles are to trace:
@@ -103,7 +103,7 @@ Keeps track of per-node resources.
 (probes track resources respectively over ticks and wallclock time)
 """.
 -type node_entry() ::
-		{ atom_node_name(), node_static_info(), probe_pid(), probe_pid() }.
+        { atom_node_name(), node_static_info(), probe_pid(), probe_pid() }.
 
 
 -type tracker_pid() :: agent_pid().
@@ -118,69 +118,69 @@ Keeps track of per-node resources.
 % Attributes that are specific to a performance tracker instance are:
 -define( class_attributes, [
 
-	{ started, boolean(),
-	  "tells whether the performance tracking started" },
+    { started, boolean(),
+      "tells whether the performance tracking started" },
 
-	{ tracker_result_dir, directory_path(),
-	  "where performance results will be written" },
+    { tracker_result_dir, directory_path(),
+      "where performance results will be written" },
 
-	{ root_time_manager_pid, option( time_manager_pid() ),
-	  "PID of the root time manager" },
+    { root_time_manager_pid, option( time_manager_pid() ),
+      "PID of the root time manager" },
 
-	{ current_tick_offset, tick_offset(),
-	  "allows this tracker to keep track of simulation ticks, as a "
-	  "listener of the root time manager" },
+    { current_tick_offset, tick_offset(),
+      "allows this tracker to keep track of simulation ticks, as a "
+      "listener of the root time manager" },
 
-	{ load_balancer_pid, option( load_balancer_pid() ),
-	  "PID of the load balancer" },
+    { load_balancer_pid, option( load_balancer_pid() ),
+      "PID of the load balancer" },
 
-	{ instance_trackers, [ instance_tracker_pid() ],
-	  "a list of the PIDs of the instance tracker on all nodes (computing "
-	  "ones and user one - we want to monitor it as well, resource-wise)" },
+    { instance_trackers, [ instance_tracker_pid() ],
+      "a list of the PIDs of the instance tracker on all nodes (computing "
+      "ones and user one - we want to monitor it as well, resource-wise)" },
 
-	{ resources_per_node_entries, [ node_entry() ],
-	  "the ordered list of nodes with their associated information, "
-	  "so that we can keep track of the order in which curves are "
-	  "listed in samples for all probes aggregating node information, "
-	  "and so that we can associate to each node its static settings and "
-	  "resource probes; note that the first entry corresponds to the "
-	  "user node, while the others are for the computing nodes" },
+    { resources_per_node_entries, [ node_entry() ],
+      "the ordered list of nodes with their associated information, "
+      "so that we can keep track of the order in which curves are "
+      "listed in samples for all probes aggregating node information, "
+      "and so that we can associate to each node its static settings and "
+      "resource probes; note that the first entry corresponds to the "
+      "user node, while the others are for the computing nodes" },
 
-	{ nodes_in_tick_probe, probe_pid(),
-	  "PID of the probe tracking the Erlang process and instance count on "
-	  "each node, and also their total (simulation-wide) number, over "
-	  "simulation ticks; initially, its value is undefined, and then is "
-	  "set when computing nodes are known" },
+    { nodes_in_tick_probe, probe_pid(),
+      "PID of the probe tracking the Erlang process and instance count on "
+      "each node, and also their total (simulation-wide) number, over "
+      "simulation ticks; initially, its value is undefined, and then is "
+      "set when computing nodes are known" },
 
-	{ nodes_in_time_probe, probe_pid(),
-	  "PID of the probe tracking the Erlang process and instance count on "
-	  "each node, and also their total (simulation-wide) number, over "
-	  "wallclock time; initially, its value is undefined, and then is "
-	  "set when computing nodes are known"  },
+    { nodes_in_time_probe, probe_pid(),
+      "PID of the probe tracking the Erlang process and instance count on "
+      "each node, and also their total (simulation-wide) number, over "
+      "wallclock time; initially, its value is undefined, and then is "
+      "set when computing nodes are known"  },
 
-	{ ordered_classnames, [ wooper:classname() ],
-	  "ordered list of all classnames involved, so that we can keep track "
-	  "of the order in which curves are listed in samples for the two "
-	  "instance probes (over ticks and over time); note that there is an "
-	  "implicit first entry (in display order) which corresponds to the "
-	  "overall, total instance count (regardless of any class)" },
+    { ordered_classnames, [ wooper:classname() ],
+      "ordered list of all classnames involved, so that we can keep track "
+      "of the order in which curves are listed in samples for the two "
+      "instance probes (over ticks and over time); note that there is an "
+      "implicit first entry (in display order) which corresponds to the "
+      "overall, total instance count (regardless of any class)" },
 
-	{ classes_in_tick_probe, probe_pid(),
-	  "PID of the probe tracking the number of instances for each WOOPER "
-	  "class and the total one (in first position), over simulation "
-	  "ticks; curves are added as classes are discovered" },
+    { classes_in_tick_probe, probe_pid(),
+      "PID of the probe tracking the number of instances for each WOOPER "
+      "class and the total one (in first position), over simulation "
+      "ticks; curves are added as classes are discovered" },
 
-	{ classes_in_time_probe, probe_pid(),
-	  "PID of the probe tracking the number of instances for each WOOPER "
-	  "class and the total one (in first position), over wallclock "
-	  "time; curves are added as classes are discovered" },
+    { classes_in_time_probe, probe_pid(),
+      "PID of the probe tracking the number of instances for each WOOPER "
+      "class and the total one (in first position), over wallclock "
+      "time; curves are added as classes are discovered" },
 
-	{ ticker_pid, pid(),
-	  "PID of the ticker process, whicht triggers information updates" },
+    { ticker_pid, pid(),
+      "PID of the ticker process, whicht triggers information updates" },
 
-	{ ticker_period, milliseconds(),
-	  "Duration between two performance measurements (i.e. sending of  a "
-	  "new data sample to its probes" } ] ).
+    { ticker_period, milliseconds(),
+      "Duration between two performance measurements (i.e. sending of  a "
+      "new data sample to its probes" } ] ).
 
 
 % For the probe_option record:
@@ -253,90 +253,90 @@ registered
 whether this directory shall be created
 """.
 -spec construct( wooper:state(), naming_utils:registration_name(),
-		naming_utils:registration_scope(),
-		directory_path() | { directory_path(), 'do_not_create' } ) ->
-						wooper:state().
+        naming_utils:registration_scope(),
+        directory_path() | { directory_path(), 'do_not_create' } ) ->
+                        wooper:state().
 construct( State, PerformanceTrackerName, RegistrationScope, ResultDirInfo ) ->
 
-	%trace_utils:debug_fmt( "Constructing performance tracker ~w.",
-	%                       [ self() ] ),
+    %trace_utils:debug_fmt( "Constructing performance tracker ~w.",
+    %                       [ self() ] ),
 
-	% Increases the chances that this tracker does not lag too much compared to
-	% wall-clock time:
-	%
-	erlang:process_flag( priority, _Level=high ),
+    % Increases the chances that this tracker does not lag too much compared to
+    % wall-clock time:
+    %
+    erlang:process_flag( priority, _Level=high ),
 
-	EmitterName = atom_to_list( PerformanceTrackerName ),
+    EmitterName = atom_to_list( PerformanceTrackerName ),
 
-	TraceState = class_EngineBaseObject:construct( State,
-		?trace_categorize(EmitterName) ),
+    TraceState = class_EngineBaseObject:construct( State,
+        ?trace_categorize(EmitterName) ),
 
-	RegistrationName = get_registration_name( PerformanceTrackerName ),
+    RegistrationName = get_registration_name( PerformanceTrackerName ),
 
-	naming_utils:register_as( RegistrationName, RegistrationScope ),
+    naming_utils:register_as( RegistrationName, RegistrationScope ),
 
-	class_InstanceTracker:register_agent( RegistrationName ),
+    class_InstanceTracker:register_agent( RegistrationName ),
 
-	ActualResultDirName = case ResultDirInfo of
+    ActualResultDirName = case ResultDirInfo of
 
-		{ ResultDirName, do_not_create } ->
-			ResultDirName;
+        { ResultDirName, do_not_create } ->
+            ResultDirName;
 
-		ResultDirName ->
-			ResultDirName
+        ResultDirName ->
+            ResultDirName
 
-	end,
+    end,
 
-	% Creating the result directory for the performance tracker:
-	TrackerResultDir = file_utils:join( ActualResultDirName,
-										"performance-monitoring" ),
+    % Creating the result directory for the performance tracker:
+    TrackerResultDir = file_utils:join( ActualResultDirName,
+                                        "performance-monitoring" ),
 
-	case ResultDirInfo of
+    case ResultDirInfo of
 
-		{ _ResultDirName, do_not_create } ->
-			ok;
+        { _ResultDirName, do_not_create } ->
+            ok;
 
-		_ ->
-			file_utils:create_directory( TrackerResultDir )
+        _ ->
+            file_utils:create_directory( TrackerResultDir )
 
-	end,
-
-
-	% The probes to monitor the resources per node cannot be created here, as we
-	% do not know yet the nodes of interest.
-
-	{ InstancesPerNodeInTickProbe, InstancesPerNodeInTimeProbe } =
-		create_node_probes( TrackerResultDir ),
-
-	{ InstancesPerClassInTickProbe, InstancesPerClassInTimeProbe } =
-		create_class_probes( TrackerResultDir ),
+    end,
 
 
-	%trace_utils:debug( "Performance tracker ready." ),
+    % The probes to monitor the resources per node cannot be created here, as we
+    % do not know yet the nodes of interest.
 
-	% All memory-related and process-related probes will be created when the
-	% this performance tracker will be started:
-	%
-	FinalState = setAttributes( TraceState, [
-		{ started, false },
-		{ tracker_result_dir, TrackerResultDir },
-		{ root_time_manager_pid, undefined },
-		{ current_tick_offset, undefined },
-		{ load_balancer_pid, undefined },
-		{ instance_trackers, [] },
-		{ resources_per_node_entries, undefined },
-		{ nodes_in_tick_probe, InstancesPerNodeInTickProbe },
-		{ nodes_in_time_probe, InstancesPerNodeInTimeProbe },
-		{ ordered_classnames, [] },
-		{ classes_in_tick_probe, InstancesPerClassInTickProbe },
-		{ classes_in_time_probe, InstancesPerClassInTimeProbe },
-		{ simulation_status, undefined },
-		{ ticker_pid, undefined },
-		{ ticker_period, _Milliseconds=100 } ] ),
+    { InstancesPerNodeInTickProbe, InstancesPerNodeInTimeProbe } =
+        create_node_probes( TrackerResultDir ),
 
-	?send_info( FinalState, "Performance tracker created." ),
+    { InstancesPerClassInTickProbe, InstancesPerClassInTimeProbe } =
+        create_class_probes( TrackerResultDir ),
 
-	FinalState.
+
+    %trace_utils:debug( "Performance tracker ready." ),
+
+    % All memory-related and process-related probes will be created when the
+    % this performance tracker will be started:
+    %
+    FinalState = setAttributes( TraceState, [
+        { started, false },
+        { tracker_result_dir, TrackerResultDir },
+        { root_time_manager_pid, undefined },
+        { current_tick_offset, undefined },
+        { load_balancer_pid, undefined },
+        { instance_trackers, [] },
+        { resources_per_node_entries, undefined },
+        { nodes_in_tick_probe, InstancesPerNodeInTickProbe },
+        { nodes_in_time_probe, InstancesPerNodeInTimeProbe },
+        { ordered_classnames, [] },
+        { classes_in_tick_probe, InstancesPerClassInTickProbe },
+        { classes_in_time_probe, InstancesPerClassInTimeProbe },
+        { simulation_status, undefined },
+        { ticker_pid, undefined },
+        { ticker_period, _Milliseconds=100 } ] ),
+
+    ?send_info( FinalState, "Performance tracker created." ),
+
+    FinalState.
 
 
 
@@ -344,38 +344,38 @@ construct( State, PerformanceTrackerName, RegistrationScope, ResultDirInfo ) ->
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
-	%trace_utils:debug_fmt( "Deleting performance tracker ~w.", [ self() ] ),
+    %trace_utils:debug_fmt( "Deleting performance tracker ~w.", [ self() ] ),
 
-	% Class-specific actions:
-	?notice( "Deleting performance tracker." ),
+    % Class-specific actions:
+    ?notice( "Deleting performance tracker." ),
 
-	TickerState = stop_ticker( State ),
+    TickerState = stop_ticker( State ),
 
-	% Deletes synchronously all probes:
-	AllProbes = get_all_probes( TickerState ),
+    % Deletes synchronously all probes:
+    AllProbes = get_all_probes( TickerState ),
 
-	[ class_Probe:delete_facility_probe( P ) || P <- AllProbes ],
+    [ class_Probe:delete_facility_probe( P ) || P <- AllProbes ],
 
-	StoppedState = case ?getAttr(started) of
+    StoppedState = case ?getAttr(started) of
 
-		true ->
-			executeOneway( TickerState, stop );
+        true ->
+            executeOneway( TickerState, stop );
 
-		false ->
-			State
+        false ->
+            State
 
-	end,
+    end,
 
-	class_InstanceTracker:unregister_agent(),
+    class_InstanceTracker:unregister_agent(),
 
-	% No unregistering needed.
+    % No unregistering needed.
 
-	?notice( "Performance tracker is deleted." ),
+    ?notice( "Performance tracker is deleted." ),
 
-	%trace_utils:debug_fmt( "Performance tracker ~w deleted.", [ self() ] ),
+    %trace_utils:debug_fmt( "Performance tracker ~w deleted.", [ self() ] ),
 
-	% Then call the direct mother class counterparts and allow chaining:
-	StoppedState.
+    % Then call the direct mother class counterparts and allow chaining:
+    StoppedState.
 
 
 
@@ -395,67 +395,67 @@ main simulation events
 - {LoadBalancerPid, LoadBalancerNode} allows to interact with the load balancer
 """.
 -spec start( wooper:state(), time_manager_pid(), [ atom_node_name() ],
-		[ instance_tracker_pid() ], load_balancer_pid() ) -> oneway_return().
+        [ instance_tracker_pid() ], load_balancer_pid() ) -> oneway_return().
 start( State, RootTimeManagerPid, Nodes=[ UserNode | ComputingNodes ],
-	   InstanceTrackers, LoadBalancerPid )->
+       InstanceTrackers, LoadBalancerPid )->
 
-	% A performance tracker is a simulation listener in order to be notified (by
-	% the root time manager) of the end of the simulation; otherwise the tracker
-	% would keep on requesting statistics from the load balancer - which is an
-	% actor, and thus may as such be already destructed, resulting in a
-	% performance tracker time-out.
+    % A performance tracker is a simulation listener in order to be notified (by
+    % the root time manager) of the end of the simulation; otherwise the tracker
+    % would keep on requesting statistics from the load balancer - which is an
+    % actor, and thus may as such be already destructed, resulting in a
+    % performance tracker time-out.
 
-	RootTimeManagerPid ! { addSimulationListener, [ self() ] },
+    RootTimeManagerPid ! { addSimulationListener, [ self() ] },
 
-	% Requests early all remote information:
-	Message = { getStaticResourceInformation, [], self() },
+    % Requests early all remote information:
+    Message = { getStaticResourceInformation, [], self() },
 
-	[ I ! Message || I <- InstanceTrackers ],
+    [ I ! Message || I <- InstanceTrackers ],
 
-	% We need to timestamp probe samples:
-	RootTimeManagerPid ! { addTimeListener, self() },
+    % We need to timestamp probe samples:
+    RootTimeManagerPid ! { addTimeListener, self() },
 
-	% Creates blanck node entries to preserve the intended node order:
-	ResourcesPerNodeEntries =
-		[ { N, undefined, undefined, undefined } || N <- Nodes ],
+    % Creates blanck node entries to preserve the intended node order:
+    ResourcesPerNodeEntries =
+        [ { N, undefined, undefined, undefined } || N <- Nodes ],
 
-	% Declares a curve corresponding to each computing node on all relevant
-	% probes:
-	%
-	MultiNodesProbes =
-		[ ?getAttr(nodes_in_tick_probe), ?getAttr(nodes_in_time_probe) ],
+    % Declares a curve corresponding to each computing node on all relevant
+    % probes:
+    %
+    MultiNodesProbes =
+        [ ?getAttr(nodes_in_tick_probe), ?getAttr(nodes_in_time_probe) ],
 
-	[ [ begin
+    [ [ begin
 
-			NodeCurveName = text_utils:format( "Computing Node ~ts", [ N ] ),
-			P ! { addCurve, [ NodeCurveName ] }
+            NodeCurveName = text_utils:format( "Computing Node ~ts", [ N ] ),
+            P ! { addCurve, [ NodeCurveName ] }
 
-		end || N <- ComputingNodes ]
+        end || N <- ComputingNodes ]
 
-		|| P <- MultiNodesProbes ],
+        || P <- MultiNodesProbes ],
 
-	% The probe creation requires the static information to be already
-	% available (waited after the getStaticResourceInformation/2 calls):
-	%
-	UpdatedResourcesPerNodeEntries = wait_static_node_info(
-		ResourcesPerNodeEntries, InstanceTrackers, UserNode,
-		?getAttr(tracker_result_dir) ),
+    % The probe creation requires the static information to be already
+    % available (waited after the getStaticResourceInformation/2 calls):
+    %
+    UpdatedResourcesPerNodeEntries = wait_static_node_info(
+        ResourcesPerNodeEntries, InstanceTrackers, UserNode,
+        ?getAttr(tracker_result_dir) ),
 
-	% Triggers the first update, before any instance is created yet, as the
-	% ticker will wait for a full period before issuing its first request:
-	%
-	self() ! record_new_sample,
+    % Triggers the first update, before any instance is created yet, as the
+    % ticker will wait for a full period before issuing its first request:
+    %
+    self() ! record_new_sample,
 
-	TickerState = launch_ticker( ?getAttr(ticker_period), State ),
+    TickerState = launch_ticker( ?getAttr(ticker_period), State ),
 
-	StartedState = setAttributes( TickerState, [
-		{ started, true },
-		{ instance_trackers, InstanceTrackers },
-		{ resources_per_node_entries, UpdatedResourcesPerNodeEntries },
-		{ root_time_manager_pid, RootTimeManagerPid },
-		{ load_balancer_pid, LoadBalancerPid } ] ),
+    StartedState = setAttributes( TickerState, [
+        { started, true },
+        { instance_trackers, InstanceTrackers },
+        { resources_per_node_entries, UpdatedResourcesPerNodeEntries },
+        { root_time_manager_pid, RootTimeManagerPid },
+        { load_balancer_pid, LoadBalancerPid } ] ),
 
-	wooper:return_state( StartedState ).
+    wooper:return_state( StartedState ).
 
 
 
@@ -464,36 +464,36 @@ Waits for the static node information to be received, and updates accordingly
 the node entries (with static information to probes).
 """.
 wait_static_node_info( ResourcesPerNodeEntries, _InstanceTrackers=[],
-					   _UserNode, _TrackerDir ) ->
-	ResourcesPerNodeEntries;
+                       _UserNode, _TrackerDir ) ->
+    ResourcesPerNodeEntries;
 
 wait_static_node_info( ResourcesPerNodeEntries, InstanceTrackers, UserNode,
-					   TrackerDir ) ->
+                       TrackerDir ) ->
 
-	receive
+    receive
 
-		{ wooper_result, { NodeName, NodeStaticInfo, InstanceTrackerPid } } ->
+        { wooper_result, { NodeName, NodeStaticInfo, InstanceTrackerPid } } ->
 
-			{ TickProbe, TimeProbe } = create_node_resource_probes( NodeName,
-				NodeStaticInfo, UserNode, TrackerDir ),
+            { TickProbe, TimeProbe } = create_node_resource_probes( NodeName,
+                NodeStaticInfo, UserNode, TrackerDir ),
 
-			UpdatedEntry = { NodeName, NodeStaticInfo, TickProbe, TimeProbe },
+            UpdatedEntry = { NodeName, NodeStaticInfo, TickProbe, TimeProbe },
 
-			% We update in-place a blanck entry:
-			UpdatedResourcesPerNodeEntries = lists:keyreplace( _Key=NodeName,
-				_Index=1, ResourcesPerNodeEntries, UpdatedEntry ),
+            % We update in-place a blanck entry:
+            UpdatedResourcesPerNodeEntries = lists:keyreplace( _Key=NodeName,
+                _Index=1, ResourcesPerNodeEntries, UpdatedEntry ),
 
-			RemainingInstanceTrackers = list_utils:delete_existing(
-				InstanceTrackerPid, InstanceTrackers ),
+            RemainingInstanceTrackers = list_utils:delete_existing(
+                InstanceTrackerPid, InstanceTrackers ),
 
-			wait_static_node_info( UpdatedResourcesPerNodeEntries,
-				RemainingInstanceTrackers, UserNode, TrackerDir )
+            wait_static_node_info( UpdatedResourcesPerNodeEntries,
+                RemainingInstanceTrackers, UserNode, TrackerDir )
 
-	after ?general_timeout_duration ->
+    after ?general_timeout_duration ->
 
-		throw( { time_out, instance_trackers, InstanceTrackers } )
+        throw( { time_out, instance_trackers, InstanceTrackers } )
 
-	end.
+    end.
 
 
 
@@ -504,21 +504,21 @@ started.
 -spec stop( wooper:state() ) -> oneway_return().
 stop( State ) ->
 
-	case ?getAttr(root_time_manager_pid) of
+    case ?getAttr(root_time_manager_pid) of
 
-		undefined ->
-			ok;
+        undefined ->
+            ok;
 
-		RootTimeManagerPid ->
-			[ RootTimeManagerPid ! { RemoveOneway, self() }
-				|| RemoveOneway <- [ removeTimeListener,
-									 removeSimulationListener ] ]
+        RootTimeManagerPid ->
+            [ RootTimeManagerPid ! { RemoveOneway, self() }
+                || RemoveOneway <- [ removeTimeListener,
+                                     removeSimulationListener ] ]
 
-	end,
+    end,
 
-	UpdatedState = stop_ticker( State ),
+    UpdatedState = stop_ticker( State ),
 
-	wooper:return_state( UpdatedState ).
+    wooper:return_state( UpdatedState ).
 
 
 
@@ -530,37 +530,37 @@ Called to stop (synchronously) the tracker sending of data to its probes.
 -spec stop_ticker( wooper:state() ) -> wooper:state().
 stop_ticker( State ) ->
 
-	case ?getAttr(ticker_pid) of
+    case ?getAttr(ticker_pid) of
 
-		undefined ->
-			%?warning( "Stop ticker request ignored: was not running." ),
-			State;
+        undefined ->
+            %?warning( "Stop ticker request ignored: was not running." ),
+            State;
 
-		TickerPid ->
+        TickerPid ->
 
-			?notice( "Stopping the ticker." ),
+            ?notice( "Stopping the ticker." ),
 
-			TickerPid ! { stop, self() },
+            TickerPid ! { stop, self() },
 
-			receive
+            receive
 
-				stopped ->
-					ok
+                stopped ->
+                    ok
 
-			after ?general_timeout_duration ->
+            after ?general_timeout_duration ->
 
-				throw( { time_out, ticker, TickerPid } )
+                throw( { time_out, ticker, TickerPid } )
 
-			end,
+            end,
 
-			% However there might be already 'record_new_sample' messages
-			% sitting in the mailbox, let's flush them:
-			%
-			basic_utils:flush_pending_messages( record_new_sample ),
+            % However there might be already 'record_new_sample' messages
+            % sitting in the mailbox, let's flush them:
+            %
+            basic_utils:flush_pending_messages( record_new_sample ),
 
-			setAttribute( State, ticker_pid, undefined )
+            setAttribute( State, ticker_pid, undefined )
 
-	end.
+    end.
 
 
 
@@ -574,12 +574,12 @@ Default period is 1s (1000 milliseconds).
 -spec setTickerPeriod( wooper:state(), milliseconds() ) -> oneway_return().
 setTickerPeriod( State, TickerPeriod ) ->
 
-	% Changes dynamically the ticker frequency:
-	StoppedState = stop_ticker( State ),
+    % Changes dynamically the ticker frequency:
+    StoppedState = stop_ticker( State ),
 
-	TickerState = launch_ticker( TickerPeriod, StoppedState ),
+    TickerState = launch_ticker( TickerPeriod, StoppedState ),
 
-	wooper:return_state( TickerState ).
+    wooper:return_state( TickerState ).
 
 
 
@@ -588,8 +588,8 @@ Notifies this tracker (as a time listener) that a new tick is being scheduled.
 """.
 -spec onNewTick( wooper:state(), tick_offset() ) -> oneway_return().
 onNewTick( State, NewTickOffset ) ->
-	wooper:return_state(
-		setAttribute( State, current_tick_offset, NewTickOffset ) ).
+    wooper:return_state(
+        setAttribute( State, current_tick_offset, NewTickOffset ) ).
 
 
 
@@ -597,47 +597,47 @@ onNewTick( State, NewTickOffset ) ->
 Notifies this tracker (as a time listener) that a new diasca is being scheduled.
 """.
 -spec onNewDiasca( wooper:state(), tick_offset(), diasca() ) ->
-							                const_oneway_return().
+                                            const_oneway_return().
 onNewDiasca( State, _TickOffset, _NewDiasca ) ->
-	% No-op, the performance tracker does not track diascas currently:
-	wooper:const_return().
+    % No-op, the performance tracker does not track diascas currently:
+    wooper:const_return().
 
 
 
 -doc "Called to generate all performance monitoring reports.".
 -spec generateMonitoringReports( wooper:state() ) ->
-										request_return( 'report_generated' ).
+                                        request_return( 'report_generated' ).
 generateMonitoringReports( State ) ->
 
-	?debug( "Generating performance monitoring reports." ),
+    ?debug( "Generating performance monitoring reports." ),
 
-	% Checking we are the one (a bit useless):
-	% true = (get_tracker() =:= self()),
+    % Checking we are the one (a bit useless):
+    % true = (get_tracker() =:= self()),
 
-	% Done synchronously:
-	StoppedState = stop_ticker( State ),
+    % Done synchronously:
+    StoppedState = stop_ticker( State ),
 
-	% Generated in parallel:
-	Message = { generateReport, _DisplayWanted=false, self() },
+    % Generated in parallel:
+    Message = { generateReport, _DisplayWanted=false, self() },
 
-	ProbeList = send_to_all_probes( Message, StoppedState ),
+    ProbeList = send_to_all_probes( Message, StoppedState ),
 
-	%trace_utils:debug_fmt(
-	%   "Requesting the generation of report for ~B probe(s): ~p.",
-	%   [ length( ProbeList ), ProbeList ] ),
+    %trace_utils:debug_fmt(
+    %   "Requesting the generation of report for ~B probe(s): ~p.",
+    %   [ length( ProbeList ), ProbeList ] ),
 
-	basic_utils:wait_for( _Message={ wooper_result, probe_report_generated },
-		_Count=length( ProbeList ), _Duration=2000,
-		"Still waiting for ~B probe()s to complete their report generation." ),
+    basic_utils:wait_for( _Message={ wooper_result, probe_report_generated },
+        _Count=length( ProbeList ), _Duration=2000,
+        "Still waiting for ~B probe()s to complete their report generation." ),
 
-	?notice( "Performance report correctly generated." ),
+    ?notice( "Performance report correctly generated." ),
 
-	executable_utils:is_batch() orelse
-		executable_utils:browse_images_in( ?getAttr(tracker_result_dir) ),
+    executable_utils:is_batch() orelse
+        executable_utils:browse_images_in( ?getAttr(tracker_result_dir) ),
 
-	%trace_utils:debug( "Performance monitoring reports generated." ),
+    %trace_utils:debug( "Performance monitoring reports generated." ),
 
-	wooper:return_state_result( StoppedState, report_generated ).
+    wooper:return_state_result( StoppedState, report_generated ).
 
 
 
@@ -649,9 +649,9 @@ generateMonitoringReports( State ) ->
 -spec get_tracker() -> static_return( tracker_pid() | 'not_registered' ).
 get_tracker() ->
 
-	RegisteredName = get_registration_name( ?performance_tracker_name ),
+    RegisteredName = get_registration_name( ?performance_tracker_name ),
 
-	wooper:return_static( naming_utils:is_registered( RegisteredName ) ).
+    wooper:return_static( naming_utils:is_registered( RegisteredName ) ).
 
 
 
@@ -660,112 +660,112 @@ get_tracker() ->
 
 -doc "Creates the probes to monitor per-node resources.".
 -spec create_node_resource_probes( atom_node_name(),
-		system_utils:host_static_info(), atom_node_name(), directory_path() ) ->
-											{ probe_pid(), probe_pid() }.
+        system_utils:host_static_info(), atom_node_name(), directory_path() ) ->
+                                            { probe_pid(), probe_pid() }.
 create_node_resource_probes( NodeName, NodeStaticInfo, UserNode,
-							 TrackerResultDir ) ->
+                             TrackerResultDir ) ->
 
-	TotalRam = system_utils:interpret_byte_size_with_unit(
-		NodeStaticInfo#host_static_info.total_ram ),
+    TotalRam = system_utils:interpret_byte_size_with_unit(
+        NodeStaticInfo#host_static_info.total_ram ),
 
-	TotalSwap = system_utils:interpret_byte_size_with_unit(
-		NodeStaticInfo#host_static_info.total_swap ),
+    TotalSwap = system_utils:interpret_byte_size_with_unit(
+        NodeStaticInfo#host_static_info.total_swap ),
 
-	TotalUsed = text_utils:format( "Total Memory Used (over a total of ~ts)",
-								   [ TotalRam ] ),
-
-
-	ErlangVersion = NodeStaticInfo#host_static_info.erlang_version,
-
-	ErlangUsed = text_utils:format(
-		"Memory Used by the Erlang VM (version ~ts)", [ ErlangVersion ] ),
-
-	SwapUsed = text_utils:format( "Swap Used (in GiB, over a total of ~ts)",
-								  [ TotalSwap ] ),
-
-	CPUUtilization = "Percentage of CPU Used (Non-idle)",
-
-	ProcessCount = text_utils:format(
-		"Erlang Process Count (spread over ~B cores)",
-		[ NodeStaticInfo#host_static_info.core_count ] ),
-
-	CurveNames =
-		[ TotalUsed, ErlangUsed, SwapUsed, CPUUtilization, ProcessCount ],
-
-	Zones = [ { "Total available memory (free+buffers+cache)",
-				{ 'abscissa_top', TotalUsed } },
-
-			  { "Memory used by all other programs",
-				{ ErlangUsed, TotalUsed } },
-
-			  { text_utils:format(
-					"Memory used for the simulation (over a total of ~ts)",
-					[ TotalRam ] ),
-
-				{ 'abscissa_bottom', ErlangUsed } } ],
+    TotalUsed = text_utils:format( "Total Memory Used (over a total of ~ts)",
+                                   [ TotalRam ] ),
 
 
-	% Do not suppose anything about this tracker location:
-	NodeDescription = case UserNode of
+    ErlangVersion = NodeStaticInfo#host_static_info.erlang_version,
 
-		NodeName ->
-			"user";
+    ErlangUsed = text_utils:format(
+        "Memory Used by the Erlang VM (version ~ts)", [ ErlangVersion ] ),
 
-		_ ->
-			"computing"
+    SwapUsed = text_utils:format( "Swap Used (in GiB, over a total of ~ts)",
+                                  [ TotalSwap ] ),
 
-	end,
+    CPUUtilization = "Percentage of CPU Used (Non-idle)",
 
-	ProbeOptions = #probe_options{ create_command_file_initially=false },
+    ProcessCount = text_utils:format(
+        "Erlang Process Count (spread over ~B cores)",
+        [ NodeStaticInfo#host_static_info.core_count ] ),
 
-	ResourceOverTickProbe = class_Probe:create_facility_probe(
+    CurveNames =
+        [ TotalUsed, ErlangUsed, SwapUsed, CPUUtilization, ProcessCount ],
 
-		{ _TickProbeName=text_utils:format( "Resource Consumption Probe Over "
-				"Simulation Time for ~ts node ~ts",
-				[ NodeDescription, NodeName ] ),
-		  ProbeOptions },
-		CurveNames,
-		Zones,
-		_TickTitle=text_utils:format( "Monitoring memory and swap "
-			"consumptions on ~ts node ~ts over wall-clock time",
-			[ NodeDescription, NodeName ] ),
-		_TickXLabel="Simulation duration, in simulation ticks",
-		_TickYLabel="Percentages of Memory Consumption, "
-					"Swap and CPU Use and Process Count",
-		TrackerResultDir ),
+    Zones = [ { "Total available memory (free+buffers+cache)",
+                { 'abscissa_top', TotalUsed } },
 
-	[ ResourceOverTickProbe ! M || M <- [
-		{ setKeyOptions, [ "bmargin center" ] },
-		{ setOrdinateRange, [ 0, 100 ] } ,
-		{ setPlotStyle, [ "linespoints" ] },
-		setRotatedTickLabels,
-		{ setPointSize, [ 2, _GenerateFile=true ] } ] ],
+              { "Memory used by all other programs",
+                { ErlangUsed, TotalUsed } },
+
+              { text_utils:format(
+                    "Memory used for the simulation (over a total of ~ts)",
+                    [ TotalRam ] ),
+
+                { 'abscissa_bottom', ErlangUsed } } ],
 
 
-	ResourceOverTimeProbe = class_Probe:create_facility_probe(
+    % Do not suppose anything about this tracker location:
+    NodeDescription = case UserNode of
 
-		{ _TimeProbeName=text_utils:format( "Resource Consumption Probe Over "
-			"Wallclock Time for ~ts node ~ts",
-			[ NodeDescription, NodeName ] ),
-		  ProbeOptions },
-		CurveNames,
-		Zones,
-		_TimeTitle=text_utils:format( "Monitoring memory and swap "
-			"consumptions on ~ts node ~ts over wall-clock time",
-			[ NodeDescription, NodeName ] ),
-		_TimeXLabel="Wall-clock duration, in milliseconds",
-		_TimeYLabel="Percentages of Memory Consumption, "
-					"Swap and CPU Use and Process Count",
-		TrackerResultDir ),
+        NodeName ->
+            "user";
 
-	[ ResourceOverTimeProbe ! M || M <- [
-		{ setKeyOptions, [ "bmargin center" ] },
-		{ setOrdinateRange, [ 0, 100 ] } ,
-		{ setPlotStyle, [ "linespoints" ] },
-		setRotatedTickLabels,
-		{ setPointSize, [ 2, _GenerateFile=true ] } ] ],
+        _ ->
+            "computing"
 
-	{ ResourceOverTickProbe, ResourceOverTimeProbe }.
+    end,
+
+    ProbeOptions = #probe_options{ create_command_file_initially=false },
+
+    ResourceOverTickProbe = class_Probe:create_facility_probe(
+
+        { _TickProbeName=text_utils:format( "Resource Consumption Probe Over "
+                "Simulation Time for ~ts node ~ts",
+                [ NodeDescription, NodeName ] ),
+          ProbeOptions },
+        CurveNames,
+        Zones,
+        _TickTitle=text_utils:format( "Monitoring memory and swap "
+            "consumptions on ~ts node ~ts over wall-clock time",
+            [ NodeDescription, NodeName ] ),
+        _TickXLabel="Simulation duration, in simulation ticks",
+        _TickYLabel="Percentages of Memory Consumption, "
+                    "Swap and CPU Use and Process Count",
+        TrackerResultDir ),
+
+    [ ResourceOverTickProbe ! M || M <- [
+        { setKeyOptions, [ "bmargin center" ] },
+        { setOrdinateRange, [ 0, 100 ] } ,
+        { setPlotStyle, [ "linespoints" ] },
+        setRotatedTickLabels,
+        { setPointSize, [ 2, _GenerateFile=true ] } ] ],
+
+
+    ResourceOverTimeProbe = class_Probe:create_facility_probe(
+
+        { _TimeProbeName=text_utils:format( "Resource Consumption Probe Over "
+            "Wallclock Time for ~ts node ~ts",
+            [ NodeDescription, NodeName ] ),
+          ProbeOptions },
+        CurveNames,
+        Zones,
+        _TimeTitle=text_utils:format( "Monitoring memory and swap "
+            "consumptions on ~ts node ~ts over wall-clock time",
+            [ NodeDescription, NodeName ] ),
+        _TimeXLabel="Wall-clock duration, in milliseconds",
+        _TimeYLabel="Percentages of Memory Consumption, "
+                    "Swap and CPU Use and Process Count",
+        TrackerResultDir ),
+
+    [ ResourceOverTimeProbe ! M || M <- [
+        { setKeyOptions, [ "bmargin center" ] },
+        { setOrdinateRange, [ 0, 100 ] } ,
+        { setPlotStyle, [ "linespoints" ] },
+        setRotatedTickLabels,
+        { setPointSize, [ 2, _GenerateFile=true ] } ] ],
+
+    { ResourceOverTickProbe, ResourceOverTimeProbe }.
 
 
 
@@ -783,32 +783,32 @@ to these probes.
 -spec create_node_probes( directory_path() ) -> { probe_pid(), probe_pid() }.
 create_node_probes( TrackerResultDir ) ->
 
-	ProbeOptions = #probe_options{ create_command_file_initially=true },
+    ProbeOptions = #probe_options{ create_command_file_initially=true },
 
-	InstancesPerNodeInTickProbe = class_Probe:create_facility_probe(
-		{ _TickProbeName="Per Node Instance Count Over Tick Probe",
-		  ProbeOptions },
-		_TickCurveNames=[ "Overall Instance Count" ],
-		_TickZones=[],
-		_TickTitle="Monitoring the Overall and Per-Node Instance Count "
-				   "Over Simulation Ticks",
-		_TickXLabel="Simulation time, in ticks",
-		_TickYLabel="Instance Count",
-		TrackerResultDir ),
+    InstancesPerNodeInTickProbe = class_Probe:create_facility_probe(
+        { _TickProbeName="Per Node Instance Count Over Tick Probe",
+          ProbeOptions },
+        _TickCurveNames=[ "Overall Instance Count" ],
+        _TickZones=[],
+        _TickTitle="Monitoring the Overall and Per-Node Instance Count "
+                   "Over Simulation Ticks",
+        _TickXLabel="Simulation time, in ticks",
+        _TickYLabel="Instance Count",
+        TrackerResultDir ),
 
 
-	InstancesPerNodeInTimeProbe = class_Probe:create_facility_probe(
-		 { _TimeProbeName="Per Node Instance Count Over Time Probe",
-		   ProbeOptions },
-		_TimeCurveNames=[ "Overall Instance Count" ],
-		_TimeZones=[],
-		_TimeTitle="Monitoring the Overall and Per-Node Instance Count "
-				   "Over Wall-clock Time",
-		_TimeXLabel="Wall-clock duration, in milliseconds",
-		_TimeYLabel="Instance Count",
-		TrackerResultDir ),
+    InstancesPerNodeInTimeProbe = class_Probe:create_facility_probe(
+         { _TimeProbeName="Per Node Instance Count Over Time Probe",
+           ProbeOptions },
+        _TimeCurveNames=[ "Overall Instance Count" ],
+        _TimeZones=[],
+        _TimeTitle="Monitoring the Overall and Per-Node Instance Count "
+                   "Over Wall-clock Time",
+        _TimeXLabel="Wall-clock duration, in milliseconds",
+        _TimeYLabel="Instance Count",
+        TrackerResultDir ),
 
-	{ InstancesPerNodeInTickProbe, InstancesPerNodeInTimeProbe }.
+    { InstancesPerNodeInTickProbe, InstancesPerNodeInTimeProbe }.
 
 
 
@@ -819,65 +819,65 @@ simulation ticks and over wallclock time.
 -spec create_class_probes( directory_path() ) -> { probe_pid(), probe_pid() }.
 create_class_probes( TrackerResultDir ) ->
 
-	ProbeOptions = #probe_options{ create_command_file_initially=false },
+    ProbeOptions = #probe_options{ create_command_file_initially=false },
 
-	InstancesPerClassInTickProbe = class_Probe:create_facility_probe(
-		{ _TickProbeName="Per Class Instance Count Over Tick Probe",
-		  ProbeOptions },
-		_TickCurveNames=[ "Overall Instance Count" ],
-		_TickZones=[],
-		_TickTitle="Monitoring the Overall and Per-Class Instance Count "
-				   "Over Simulation Ticks",
-		_TickXLabel="Simulation time, in ticks",
-		_TickYLabel="Instance Count",
-		TrackerResultDir ),
+    InstancesPerClassInTickProbe = class_Probe:create_facility_probe(
+        { _TickProbeName="Per Class Instance Count Over Tick Probe",
+          ProbeOptions },
+        _TickCurveNames=[ "Overall Instance Count" ],
+        _TickZones=[],
+        _TickTitle="Monitoring the Overall and Per-Class Instance Count "
+                   "Over Simulation Ticks",
+        _TickXLabel="Simulation time, in ticks",
+        _TickYLabel="Instance Count",
+        TrackerResultDir ),
 
-	InstancesPerClassInTimeProbe = class_Probe:create_facility_probe(
-		{ _TimeProbeName="Per Class Instance Count Over Time Probe",
-		  ProbeOptions },
-		_TimeCurveNames=[ "Overall Instance Count" ],
-		_TimeZones=[],
-		_TimeTitle="Monitoring the Overall and Per-Class Instance Count "
-				   "Over Wall-clock Time",
-		_TimeXLabel="Wall-clock duration, in milliseconds",
-		_TimeYLabel="Instance Count",
-		TrackerResultDir ),
+    InstancesPerClassInTimeProbe = class_Probe:create_facility_probe(
+        { _TimeProbeName="Per Class Instance Count Over Time Probe",
+          ProbeOptions },
+        _TimeCurveNames=[ "Overall Instance Count" ],
+        _TimeZones=[],
+        _TimeTitle="Monitoring the Overall and Per-Class Instance Count "
+                   "Over Wall-clock Time",
+        _TimeXLabel="Wall-clock duration, in milliseconds",
+        _TimeYLabel="Instance Count",
+        TrackerResultDir ),
 
-	[ P ! { setRotatedTickLabels, _GenerateFile=true } ||
-		P <- [ InstancesPerClassInTickProbe, InstancesPerClassInTimeProbe ] ],
+    [ P ! { setRotatedTickLabels, _GenerateFile=true } ||
+        P <- [ InstancesPerClassInTickProbe, InstancesPerClassInTimeProbe ] ],
 
-	{ InstancesPerClassInTickProbe, InstancesPerClassInTimeProbe }.
+    { InstancesPerClassInTickProbe, InstancesPerClassInTimeProbe }.
 
 
 
 -doc "Main loop of the ticker process.".
 ticker_main_loop( PerformanceTrackerPid, TickerPeriod ) ->
 
-	receive
+    receive
 
-		{ stop, CallerPid } ->
-			%trace_utils:debug_fmt( "The performance ticker received a stop "
-			%                       "request." ),
-			CallerPid ! stopped
+        { stop, CallerPid } ->
+            %trace_utils:debug_fmt( "The performance ticker received a stop "
+            %                       "request." ),
+            CallerPid ! stopped
 
-	after TickerPeriod ->
+    after TickerPeriod ->
 
-		%trace_utils:debug_fmt( "Tick!" ),
+        %trace_utils:debug_fmt( "Tick!" ),
 
-		% Requests, based on wall-clock time, the tracker to update its
-		% statistics:
-		%
-		PerformanceTrackerPid ! record_new_sample,
+        % Requests, based on wall-clock time, the tracker to update its
+        % statistics:
+        %
+        PerformanceTrackerPid ! record_new_sample,
 
-		ticker_main_loop( PerformanceTrackerPid, TickerPeriod )
+        ticker_main_loop( PerformanceTrackerPid, TickerPeriod )
 
-	end.
+    end.
 
 
 
 -doc "Returns the registering name of the performance tracker.".
 get_registration_name( PerformanceName ) when is_atom( PerformanceName ) ->
-	PerformanceName.
+    PerformanceName.
 
 
 
@@ -891,90 +891,90 @@ get_registration_name( PerformanceName ) when is_atom( PerformanceName ) ->
 -spec record_new_sample( wooper:state() ) -> oneway_return().
 record_new_sample( State ) ->
 
-	% First, requests the information from the load balancer, early as we need
-	% the current tick offset first for all curves:
-	%
-	LoadBalancerPid = ?getAttr(load_balancer_pid),
+    % First, requests the information from the load balancer, early as we need
+    % the current tick offset first for all curves:
+    %
+    LoadBalancerPid = ?getAttr(load_balancer_pid),
 
-	% Note that a race condition may exist with the ending of the simulation:
-	% the load balancer, as all actors, may then be removed whereas the
-	% notification (simulation_stopped) has not reached yet this tracker; this
-	% is why a time-out happening while waiting for this call is legit.
-	%
-	LoadBalancerPid ! { getInstanceCounts, [], self() },
+    % Note that a race condition may exist with the ending of the simulation:
+    % the load balancer, as all actors, may then be removed whereas the
+    % notification (simulation_stopped) has not reached yet this tracker; this
+    % is why a time-out happening while waiting for this call is legit.
+    %
+    LoadBalancerPid ! { getInstanceCounts, [], self() },
 
-	% Same thing (in parallel) for node-related information:
+    % Same thing (in parallel) for node-related information:
 
-	Request = { getDynamicResourceInformation, [], self() },
+    Request = { getDynamicResourceInformation, [], self() },
 
-	InstanceTrackers = ?getAttr(instance_trackers),
+    InstanceTrackers = ?getAttr(instance_trackers),
 
-	[ I ! Request || I <- InstanceTrackers ],
+    [ I ! Request || I <- InstanceTrackers ],
 
-	{ CurrentWallclockTime, _T } = statistics( wall_clock ),
+    { CurrentWallclockTime, _T } = statistics( wall_clock ),
 
-	% First, wait for the information from the load balancer, notably the tick
-	% offset (set to zero if not defined):
-	%
-	% (may wait indefinitively if we are at the end of the simulation, whereas
-	% the load-balancer has been destroyed, as all actors)
-	%
-	receive
+    % First, wait for the information from the load balancer, notably the tick
+    % offset (set to zero if not defined):
+    %
+    % (may wait indefinitively if we are at the end of the simulation, whereas
+    % the load-balancer has been destroyed, as all actors)
+    %
+    receive
 
-		{ wooper_result,
-		  { instance_counts, InstancesPerClass, InstancesPerNode } } ->
+        { wooper_result,
+          { instance_counts, InstancesPerClass, InstancesPerNode } } ->
 
-			CurrentTickOffset = case ?getAttr(current_tick_offset) of
+            CurrentTickOffset = case ?getAttr(current_tick_offset) of
 
-				undefined ->
-					0;
+                undefined ->
+                    0;
 
-				Tick ->
-					Tick
+                Tick ->
+                    Tick
 
-			end,
+            end,
 
-			%trace_utils:debug_fmt( "Tick offset #~p: InstancesPerClass=~p, "
-			%    "InstancesPerNode=~p.", [ CurrentTickOffset,
-			%    InstancesPerClass, InstancesPerNode ] ),
+            %trace_utils:debug_fmt( "Tick offset #~p: InstancesPerClass=~p, "
+            %    "InstancesPerNode=~p.", [ CurrentTickOffset,
+            %    InstancesPerClass, InstancesPerNode ] ),
 
-			{ ClassState, Count } = manage_class_monitoring( CurrentTickOffset,
-				CurrentWallclockTime, InstancesPerClass, State ),
+            { ClassState, Count } = manage_class_monitoring( CurrentTickOffset,
+                CurrentWallclockTime, InstancesPerClass, State ),
 
-			% Note the pattern-matching on Count, to check correctness of
-			% instance count:
-			%
-			{ NodeState, Count } = manage_node_monitoring( CurrentTickOffset,
-				CurrentWallclockTime, InstancesPerNode, ClassState ),
+            % Note the pattern-matching on Count, to check correctness of
+            % instance count:
+            %
+            { NodeState, Count } = manage_node_monitoring( CurrentTickOffset,
+                CurrentWallclockTime, InstancesPerNode, ClassState ),
 
-			% Unsorted list:
-			NodeDynInfos = wait_dynamic_info_from_trackers( InstanceTrackers,
-				NodeState, _Acc=[] ),
+            % Unsorted list:
+            NodeDynInfos = wait_dynamic_info_from_trackers( InstanceTrackers,
+                NodeState, _Acc=[] ),
 
-			LocalState = manage_node_dynamic_info( CurrentTickOffset,
-				CurrentWallclockTime, NodeDynInfos, NodeState ),
+            LocalState = manage_node_dynamic_info( CurrentTickOffset,
+                CurrentWallclockTime, NodeDynInfos, NodeState ),
 
-			wooper:return_state( LocalState )
+            wooper:return_state( LocalState )
 
 
-		after 1000 ->
+        after 1000 ->
 
-			% This time-out is not an error case: probably that the load
-			% balancer has already been removed as all actors at simulation end;
-			% this call is simply ignored then, yet we have to flush the answers
-			% from the instance trackers:
-			%
-			_NodeDynInfos = wait_dynamic_info_from_trackers( InstanceTrackers,
-															 State, _Acc=[] ),
+            % This time-out is not an error case: probably that the load
+            % balancer has already been removed as all actors at simulation end;
+            % this call is simply ignored then, yet we have to flush the answers
+            % from the instance trackers:
+            %
+            _NodeDynInfos = wait_dynamic_info_from_trackers( InstanceTrackers,
+                                                             State, _Acc=[] ),
 
-			% However there might be already other 'record_new_sample' messages
-			% sitting in the mailbox, let's flush them as well:
-			%
-			basic_utils:flush_pending_messages( record_new_sample ),
+            % However there might be already other 'record_new_sample' messages
+            % sitting in the mailbox, let's flush them as well:
+            %
+            basic_utils:flush_pending_messages( record_new_sample ),
 
-			wooper:const_return()
+            wooper:const_return()
 
-	end.
+    end.
 
 
 
@@ -988,57 +988,57 @@ Manages the per-class instance monitoring.
 Returns an updated state and the total instance count.
 """.
 manage_class_monitoring( CurrentTickOffset, CurrentWallclockTime,
-						 InstancesPerClass, State ) ->
+                         InstancesPerClass, State ) ->
 
-	OrderedClasses = ?getAttr(ordered_classnames),
-
-
-	% Computes the data sample in the class order as was discovered:
-	%
-	% InstancesPerClass is a list of {Classname, {CreationCount,DeletionCount}}
-	% entries.
-	%
-	% We want to sort it in the order of the classes in OrderedClasses, and
-	% replace the two counters by one, the current number of instances of that
-	% class, i.e. CreationCounter - DeletionCounter.
-	%
-	% Note that new classes may appear in InstancesPerClass (while not being
-	% known of OrderedClasses yet) and that the first element of OrderedClasses
-	% is (implicitly - it does not exist there) the total number of instances.
-
-	% Sort classes:
-	{ TotalCount, SortedExistingClasses, NewClasses } =
-		sort_classes( InstancesPerClass, OrderedClasses ),
+    OrderedClasses = ?getAttr(ordered_classnames),
 
 
-	TickProbe = ?getAttr(classes_in_tick_probe),
+    % Computes the data sample in the class order as was discovered:
+    %
+    % InstancesPerClass is a list of {Classname, {CreationCount,DeletionCount}}
+    % entries.
+    %
+    % We want to sort it in the order of the classes in OrderedClasses, and
+    % replace the two counters by one, the current number of instances of that
+    % class, i.e. CreationCounter - DeletionCounter.
+    %
+    % Note that new classes may appear in InstancesPerClass (while not being
+    % known of OrderedClasses yet) and that the first element of OrderedClasses
+    % is (implicitly - it does not exist there) the total number of instances.
 
-	TimeProbe = ?getAttr(classes_in_time_probe),
+    % Sort classes:
+    { TotalCount, SortedExistingClasses, NewClasses } =
+        sort_classes( InstancesPerClass, OrderedClasses ),
 
-	Probes = [ TickProbe, TimeProbe ],
 
-	% Let's now declare the new classes:
-	[ begin
+    TickProbe = ?getAttr(classes_in_tick_probe),
 
-		Classname = text_utils:atom_to_string( C ),
-		[ P ! { addCurve, [ [ Classname ] ] } || P <- Probes ]
+    TimeProbe = ?getAttr(classes_in_time_probe),
 
-	  end || { C, _Count } <- NewClasses ],
+    Probes = [ TickProbe, TimeProbe ],
 
-	% And finally feed the probes with a full corresponding sample:
-	AllSortedPairs = SortedExistingClasses ++ NewClasses,
+    % Let's now declare the new classes:
+    [ begin
 
-	ExtractedValues = [ V || { _C, V } <- AllSortedPairs ],
+        Classname = text_utils:atom_to_string( C ),
+        [ P ! { addCurve, [ [ Classname ] ] } || P <- Probes ]
 
-	SampleValues = list_to_tuple( [ TotalCount | ExtractedValues ] ),
+      end || { C, _Count } <- NewClasses ],
 
-	TickProbe ! { setData, [ CurrentTickOffset, SampleValues ] },
+    % And finally feed the probes with a full corresponding sample:
+    AllSortedPairs = SortedExistingClasses ++ NewClasses,
 
-	TimeProbe ! { setData, [ CurrentWallclockTime, SampleValues ] },
+    ExtractedValues = [ V || { _C, V } <- AllSortedPairs ],
 
-	{ setAttribute( State, ordered_classnames,
-					[ C || { C, _V } <- AllSortedPairs ] ),
-	  TotalCount }.
+    SampleValues = list_to_tuple( [ TotalCount | ExtractedValues ] ),
+
+    TickProbe ! { setData, [ CurrentTickOffset, SampleValues ] },
+
+    TimeProbe ! { setData, [ CurrentWallclockTime, SampleValues ] },
+
+    { setAttribute( State, ordered_classnames,
+                    [ C || { C, _V } <- AllSortedPairs ] ),
+      TotalCount }.
 
 
 
@@ -1052,27 +1052,27 @@ count and the two lists (one ordered, one listing the new classes), each made of
 """.
 sort_classes( InstancesPerClass, OrderedClasses ) ->
 
-	% First, computes the current instance count for each class, and sums it
-	% also:
-	%
-	{ NewInstancesPerClass, OverallCount } = lists:foldl(
+    % First, computes the current instance count for each class, and sums it
+    % also:
+    %
+    { NewInstancesPerClass, OverallCount } = lists:foldl(
 
-		fun( { Classname, { CreationCount, DeletionCount } },
-			 _Acc={ ClassList, TotalCount } ) ->
-				ExistingCount = CreationCount - DeletionCount,
-				NewClassList = [ { Classname, ExistingCount } | ClassList ],
-				NewTotalCount = TotalCount + ExistingCount,
-				_NewAcc={ NewClassList, NewTotalCount }
+        fun( { Classname, { CreationCount, DeletionCount } },
+             _Acc={ ClassList, TotalCount } ) ->
+                ExistingCount = CreationCount - DeletionCount,
+                NewClassList = [ { Classname, ExistingCount } | ClassList ],
+                NewTotalCount = TotalCount + ExistingCount,
+                _NewAcc={ NewClassList, NewTotalCount }
 
-		end,
-		_FirstAcc={ _ClassList=[], _TotalCount=0 },
-		_List=InstancesPerClass ),
+        end,
+        _FirstAcc={ _ClassList=[], _TotalCount=0 },
+        _List=InstancesPerClass ),
 
-	% Now re-order and split:
-	{ SortedExistingClasses, NewClasses } = reorder_classes(
-		NewInstancesPerClass, OrderedClasses, _ExistingAcc=[] ),
+    % Now re-order and split:
+    { SortedExistingClasses, NewClasses } = reorder_classes(
+        NewInstancesPerClass, OrderedClasses, _ExistingAcc=[] ),
 
-	{ OverallCount, SortedExistingClasses, NewClasses }.
+    { OverallCount, SortedExistingClasses, NewClasses }.
 
 
 
@@ -1083,27 +1083,27 @@ sort_classes( InstancesPerClass, OrderedClasses ) ->
 % Here we exhausted the known classes:
 reorder_classes( InstancesPerClass, _OrderedClasses=[], ExistingAcc ) ->
 
-	% Existing classes will then be correctly reordered:
-	SortedExistingClasses = lists:reverse( ExistingAcc ),
+    % Existing classes will then be correctly reordered:
+    SortedExistingClasses = lists:reverse( ExistingAcc ),
 
-	% InstancesPerClass is then a list corresponding to new classes:
-	{ SortedExistingClasses, _NewClasses=InstancesPerClass };
+    % InstancesPerClass is then a list corresponding to new classes:
+    { SortedExistingClasses, _NewClasses=InstancesPerClass };
 
 
 reorder_classes( InstancesPerClass, _OrderedClasses=[ Class | T ],
-				 ExistingAcc ) ->
+                 ExistingAcc ) ->
 
-	% Finds and removes 'Class':
-	case lists:keytake( _Key=Class, _Index=1, InstancesPerClass ) of
+    % Finds and removes 'Class':
+    case lists:keytake( _Key=Class, _Index=1, InstancesPerClass ) of
 
-		{ value, ClassEntry, NewInstancesPerClass } ->
-			reorder_classes( NewInstancesPerClass, T,
-							 [ ClassEntry | ExistingAcc ] );
+        { value, ClassEntry, NewInstancesPerClass } ->
+            reorder_classes( NewInstancesPerClass, T,
+                             [ ClassEntry | ExistingAcc ] );
 
-		false ->
-			throw( { class_not_found, Class, InstancesPerClass } )
+        false ->
+            throw( { class_not_found, Class, InstancesPerClass } )
 
-	end.
+    end.
 
 
 
@@ -1112,30 +1112,30 @@ Waits for all instance trackers to answer, returns the list of corresponding
 node information records.
 """.
 -spec wait_dynamic_info_from_trackers( [ instance_tracker_pid() ],
-		wooper:state(), [ host_dynamic_info() ] ) -> [ host_dynamic_info() ].
+        wooper:state(), [ host_dynamic_info() ] ) -> [ host_dynamic_info() ].
 wait_dynamic_info_from_trackers( _InstanceTrackers=[], _State, Acc ) ->
-	Acc;
+    Acc;
 
 wait_dynamic_info_from_trackers( InstanceTrackers, State, Acc ) ->
 
-	receive
+    receive
 
-		{ wooper_result, { NodeDynInfo, TrackerPid } } ->
+        { wooper_result, { NodeDynInfo, TrackerPid } } ->
 
-			RemainingTrackers =
-				list_utils:delete_existing( TrackerPid, InstanceTrackers ),
+            RemainingTrackers =
+                list_utils:delete_existing( TrackerPid, InstanceTrackers ),
 
-			wait_dynamic_info_from_trackers( RemainingTrackers, State,
-											 [ NodeDynInfo | Acc ] )
+            wait_dynamic_info_from_trackers( RemainingTrackers, State,
+                                             [ NodeDynInfo | Acc ] )
 
-	after ?general_timeout_duration ->
+    after ?general_timeout_duration ->
 
-		?warning_fmt( "Still waiting for the dynamic information "
-					  "from instance trackers ~p.", [ InstanceTrackers ] ),
+        ?warning_fmt( "Still waiting for the dynamic information "
+                      "from instance trackers ~p.", [ InstanceTrackers ] ),
 
-		wait_dynamic_info_from_trackers( InstanceTrackers, State, Acc )
+        wait_dynamic_info_from_trackers( InstanceTrackers, State, Acc )
 
-	end.
+    end.
 
 
 
@@ -1145,37 +1145,37 @@ Manages the per-node instance monitoring.
 Returns an updated state and the total instance count.
 """.
 manage_node_monitoring( CurrentTickOffset, CurrentWallclockTime,
-						InstancesPerNode, State ) ->
+                        InstancesPerNode, State ) ->
 
-	% Otherwise would include the user node (in first position):
-	[ { _UserNode, _Static, _P1, _P2 } | OrderedNodes ] =
-		?getAttr(resources_per_node_entries),
+    % Otherwise would include the user node (in first position):
+    [ { _UserNode, _Static, _P1, _P2 } | OrderedNodes ] =
+        ?getAttr(resources_per_node_entries),
 
-	%trace_utils:debug_fmt( "manage_node_monitoring: OrderedNodes=~p",
-	%                       [ OrderedNodes ] ),
+    %trace_utils:debug_fmt( "manage_node_monitoring: OrderedNodes=~p",
+    %                       [ OrderedNodes ] ),
 
-	% By design there is no instance on the user node:
-	NewInstancesPerNode =
-		reorder_nodes( InstancesPerNode, OrderedNodes, _Acc=[] ),
+    % By design there is no instance on the user node:
+    NewInstancesPerNode =
+        reorder_nodes( InstancesPerNode, OrderedNodes, _Acc=[] ),
 
-	ExtractedValues = [ V || { _C, V } <- NewInstancesPerNode ],
+    ExtractedValues = [ V || { _C, V } <- NewInstancesPerNode ],
 
-	TotalCount = lists:sum( ExtractedValues ),
+    TotalCount = lists:sum( ExtractedValues ),
 
-	SampleValues = list_to_tuple( [ TotalCount | ExtractedValues ] ),
+    SampleValues = list_to_tuple( [ TotalCount | ExtractedValues ] ),
 
-	%trace_utils:debug_fmt( "manage_node_monitoring: SampleValues = ~p.",
-	%                       [ SampleValues ] ),
+    %trace_utils:debug_fmt( "manage_node_monitoring: SampleValues = ~p.",
+    %                       [ SampleValues ] ),
 
-	TickProbe = ?getAttr(nodes_in_tick_probe),
+    TickProbe = ?getAttr(nodes_in_tick_probe),
 
-	TimeProbe = ?getAttr(nodes_in_time_probe),
+    TimeProbe = ?getAttr(nodes_in_time_probe),
 
-	TickProbe ! { setData, [ CurrentTickOffset, SampleValues ] },
+    TickProbe ! { setData, [ CurrentTickOffset, SampleValues ] },
 
-	TimeProbe ! { setData, [ CurrentWallclockTime, SampleValues ] },
+    TimeProbe ! { setData, [ CurrentWallclockTime, SampleValues ] },
 
-	{ State, TotalCount }.
+    { State, TotalCount }.
 
 
 
@@ -1186,23 +1186,23 @@ manage_node_monitoring( CurrentTickOffset, CurrentWallclockTime,
 % (note that the two lists should be exhausted simultaneously)
 %
 reorder_nodes( _InstancesPerNode=[], _OrderedNodes=[], Acc ) ->
-	% Returns a properly reordered {Node,InstanceCount} list:
-	lists:reverse( Acc );
+    % Returns a properly reordered {Node,InstanceCount} list:
+    lists:reverse( Acc );
 
 reorder_nodes( InstancesPerNode,
-		_OrderedNodes=[ { NodeName, _NodeStaticInfo, _Probe1, _Probe2 } | T ],
-		Acc ) ->
+        _OrderedNodes=[ { NodeName, _NodeStaticInfo, _Probe1, _Probe2 } | T ],
+        Acc ) ->
 
-	% Finds and removes 'Node':
-	case lists:keytake( _Key=NodeName, _Index=1, InstancesPerNode ) of
+    % Finds and removes 'Node':
+    case lists:keytake( _Key=NodeName, _Index=1, InstancesPerNode ) of
 
-		{ value, NodeEntry, NewInstancesPerNode } ->
-			reorder_nodes( NewInstancesPerNode, T, [ NodeEntry | Acc ] );
+        { value, NodeEntry, NewInstancesPerNode } ->
+            reorder_nodes( NewInstancesPerNode, T, [ NodeEntry | Acc ] );
 
-		false ->
-			throw( { node_not_found, NodeName, InstancesPerNode } )
+        false ->
+            throw( { node_not_found, NodeName, InstancesPerNode } )
 
-	end.
+    end.
 
 
 
@@ -1212,64 +1212,64 @@ Manages the per-node resource monitoring (RAM and swap).
 Returns an updated state.
 """.
 manage_node_dynamic_info( CurrentTickOffset, CurrentWallclockTime,
-						  NodeDynInfos, State ) ->
+                          NodeDynInfos, State ) ->
 
-	% Iterates on the list of node entries and feeds appropriately the
-	% corresponding probes:
+    % Iterates on the list of node entries and feeds appropriately the
+    % corresponding probes:
 
-	% trace_utils:debug_fmt( "manage_node_dynamic_info at tick #~p: "
-	%   "NodeDynInfos=~p, NodeEntries = ~p.~n",
-	%   [ CurrentTickOffset, NodeDynInfos,
-	%     ?getAttr(resources_per_node_entries) ] ),
+    % trace_utils:debug_fmt( "manage_node_dynamic_info at tick #~p: "
+    %   "NodeDynInfos=~p, NodeEntries = ~p.~n",
+    %   [ CurrentTickOffset, NodeDynInfos,
+    %     ?getAttr(resources_per_node_entries) ] ),
 
-	manage_dyn_nodes( ?getAttr(resources_per_node_entries), NodeDynInfos,
-					  CurrentTickOffset, CurrentWallclockTime ),
+    manage_dyn_nodes( ?getAttr(resources_per_node_entries), NodeDynInfos,
+                      CurrentTickOffset, CurrentWallclockTime ),
 
-	State.
+    State.
 
 
 % We iterate on the records as we want to use 'keytake' for the node list:
 manage_dyn_nodes( _NodeEntries=[], _NodeDynInfos=[], _CurrentTickOffset,
-				  _CurrentWallclockTime ) ->
-	ok;
+                  _CurrentWallclockTime ) ->
+    ok;
 
 manage_dyn_nodes( NodeEntries,
-				  _NodeDynInfos=[ #host_dynamic_info{
-			node_name=NodeName,
-			swap_used=Swap,
-			cpu_usage=CPUPercentages,
-			ram_use={ PercentRamUsedBySimulation, PercentRamUsedByOthers },
-			process_count=ProcessCount } | T ],
-				CurrentTickOffset,
-				CurrentWallclockTime ) ->
+                  _NodeDynInfos=[ #host_dynamic_info{
+            node_name=NodeName,
+            swap_used=Swap,
+            cpu_usage=CPUPercentages,
+            ram_use={ PercentRamUsedBySimulation, PercentRamUsedByOthers },
+            process_count=ProcessCount } | T ],
+                CurrentTickOffset,
+                CurrentWallclockTime ) ->
 
-	TotalUsed = PercentRamUsedBySimulation + PercentRamUsedByOthers,
+    TotalUsed = PercentRamUsedBySimulation + PercentRamUsedByOthers,
 
-	% For the moment we just focus on an aggregated non-idle use:
-	% (undefined might be returned, the probe manages this natively)
-	%
-	CPUPercent = system_utils:compute_cpu_usage_for( CPUPercentages ),
+    % For the moment we just focus on an aggregated non-idle use:
+    % (undefined might be returned, the probe manages this natively)
+    %
+    CPUPercent = system_utils:compute_cpu_usage_for( CPUPercentages ),
 
-	SampleValues = { TotalUsed, PercentRamUsedBySimulation,
-					 Swap, CPUPercent, ProcessCount },
+    SampleValues = { TotalUsed, PercentRamUsedBySimulation,
+                     Swap, CPUPercent, ProcessCount },
 
-	% Now retrieves the corresponding probes:
-	{ value,  { NodeName, _NodeStaticInfo, TickProbePid, TimeProbePid },
-	  NewNodeEntries } = lists:keytake( _K=NodeName, _Index=1, NodeEntries ),
+    % Now retrieves the corresponding probes:
+    { value,  { NodeName, _NodeStaticInfo, TickProbePid, TimeProbePid },
+      NewNodeEntries } = lists:keytake( _K=NodeName, _Index=1, NodeEntries ),
 
-	TickProbePid ! { setData, [ CurrentTickOffset, SampleValues ] },
+    TickProbePid ! { setData, [ CurrentTickOffset, SampleValues ] },
 
-	TimeProbePid ! { setData, [ CurrentWallclockTime, SampleValues ] },
+    TimeProbePid ! { setData, [ CurrentWallclockTime, SampleValues ] },
 
-	manage_dyn_nodes( NewNodeEntries, T, CurrentTickOffset,
-					  CurrentWallclockTime );
+    manage_dyn_nodes( NewNodeEntries, T, CurrentTickOffset,
+                      CurrentWallclockTime );
 
 % Catch-all crash clause:
 manage_dyn_nodes( NodeEntries, NodeDynInfos, CurrentTickOffset,
-				  CurrentWallclockTime ) ->
+                  CurrentWallclockTime ) ->
 
-	throw( { node_inconsistency, NodeEntries, NodeDynInfos, CurrentTickOffset,
-			 CurrentWallclockTime } ).
+    throw( { node_inconsistency, NodeEntries, NodeDynInfos, CurrentTickOffset,
+             CurrentWallclockTime } ).
 
 
 
@@ -1282,19 +1282,19 @@ of their PIDs.
 -spec send_to_all_probes( any(), wooper:state() ) -> [ probe_pid() ].
 send_to_all_probes( Message, State ) ->
 
-	SingleProbeList = get_all_probes( State ),
+    SingleProbeList = get_all_probes( State ),
 
-	% More parallel by chunks:
-	[ P ! Message || P <- SingleProbeList ],
+    % More parallel by chunks:
+    [ P ! Message || P <- SingleProbeList ],
 
-	% Returns the full PID list:
-	lists:foldl(
-		fun( { _NodeName, _StaticInfos, TickProbe, TimeProbe }, Acc ) ->
-			TickProbe ! Message, TimeProbe ! Message,
-			[ TickProbe, TimeProbe | Acc ]
-		end,
-		_InitialAcc=SingleProbeList,
-		?getAttr(resources_per_node_entries) ).
+    % Returns the full PID list:
+    lists:foldl(
+        fun( { _NodeName, _StaticInfos, TickProbe, TimeProbe }, Acc ) ->
+            TickProbe ! Message, TimeProbe ! Message,
+            [ TickProbe, TimeProbe | Acc ]
+        end,
+        _InitialAcc=SingleProbeList,
+        ?getAttr(resources_per_node_entries) ).
 
 
 
@@ -1307,23 +1307,23 @@ Returns an updated state.
 """.
 launch_ticker( TickerPeriod, State ) ->
 
-	% Allows to track the wall-clock time:
-	% (closure used to avoid exporting the function)
+    % Allows to track the wall-clock time:
+    % (closure used to avoid exporting the function)
 
-	%trace_utils:debug_fmt( "Creating a ticker process whose period "
-	%                       "is ~B ms.", [ TickerPeriod ] ),
+    %trace_utils:debug_fmt( "Creating a ticker process whose period "
+    %                       "is ~B ms.", [ TickerPeriod ] ),
 
-	% Beware of closures!
-	TrackerPid = self(),
+    % Beware of closures!
+    TrackerPid = self(),
 
-	% Creating a ticker process, to trigger regular data updates:
-	TickerPid = ?myriad_spawn_link( 
+    % Creating a ticker process, to trigger regular data updates:
+    TickerPid = ?myriad_spawn_link(
         fun() ->
-			ticker_main_loop( TrackerPid, TickerPeriod )
+            ticker_main_loop( TrackerPid, TickerPeriod )
         end ),
 
-	setAttributes( State, [ { ticker_pid, TickerPid },
-							{ ticker_period, TickerPeriod } ] ).
+    setAttributes( State, [ { ticker_pid, TickerPid },
+                            { ticker_period, TickerPeriod } ] ).
 
 
 
@@ -1334,44 +1334,44 @@ launch_ticker( TickerPeriod, State ) ->
 % (not of interest here)
 -spec simulation_started( wooper:state() ) -> const_oneway_return().
 simulation_started( State ) ->
-	wooper:const_return().
+    wooper:const_return().
 
 
 % (not of interest here)
 -spec simulation_suspended( wooper:state() ) -> const_oneway_return().
 simulation_suspended( State ) ->
-	wooper:const_return().
+    wooper:const_return().
 
 
 % (not of interest here)
 -spec simulation_resumed( wooper:state() ) -> const_oneway_return().
 simulation_resumed( State ) ->
-	wooper:const_return().
+    wooper:const_return().
 
 
 % (not of interest here)
 -spec simulation_succeeded( wooper:state() ) -> const_oneway_return().
 simulation_succeeded( State ) ->
-	wooper:const_return().
+    wooper:const_return().
 
 
 -spec simulation_stopped( wooper:state() ) -> oneway_return().
 simulation_stopped( State ) ->
 
-	% The simulation is stopped, hence we must not interact anymore with actors
-	% (for example with the load balancer)
-	%
-	StopState = stop_ticker( State ),
+    % The simulation is stopped, hence we must not interact anymore with actors
+    % (for example with the load balancer)
+    %
+    StopState = stop_ticker( State ),
 
-	wooper:return_state( StopState ).
+    wooper:return_state( StopState ).
 
 
 
 -doc "Returns a list of the PIDs of all probes.".
 -spec get_all_probes( wooper:state() ) -> [ probe_pid() ].
 get_all_probes( State ) ->
-	[ ?getAttr(nodes_in_tick_probe), ?getAttr(nodes_in_time_probe),
-	  ?getAttr(classes_in_tick_probe), ?getAttr(classes_in_time_probe) ].
+    [ ?getAttr(nodes_in_tick_probe), ?getAttr(nodes_in_time_probe),
+      ?getAttr(classes_in_tick_probe), ?getAttr(classes_in_time_probe) ].
 
 
 
@@ -1391,41 +1391,41 @@ actual instance state is not impacted by serialisation and thus this request is
 often const).
 """.
 -spec onPreSerialisation( wooper:state(), user_data() ) ->
-				const_request_return( { wooper:state(), user_data() } ).
+                const_request_return( { wooper:state(), user_data() } ).
 onPreSerialisation( State, UserData ) ->
 
-	% Just one here, the ticker:
-	PrivateProcesses = [ ticker_pid ],
+    % Just one here, the ticker:
+    PrivateProcesses = [ ticker_pid ],
 
-	% In this state, private processes have been replaced by restoration
-	% markers:
-	%
-	NoTransientState = wooper_serialisation:handle_private_processes(
-		PrivateProcesses, State ),
+    % In this state, private processes have been replaced by restoration
+    % markers:
+    %
+    NoTransientState = wooper_serialisation:handle_private_processes(
+        PrivateProcesses, State ),
 
-	wooper:const_return_result( { NoTransientState, UserData } ).
+    wooper:const_return_result( { NoTransientState, UserData } ).
 
 
 
 -doc "Triggered just after deserialisation.".
 -spec onPostDeserialisation( wooper:state(), user_data() ) ->
-										request_return( user_data() ).
+                                        request_return( user_data() ).
 onPostDeserialisation( State, UserData ) ->
 
-	% We have to recreate all private helper processes that were running,
-	% i.e. just the ticker one:
-	%
-	ReadyState = case ?getAttr(ticker_pid) of
+    % We have to recreate all private helper processes that were running,
+    % i.e. just the ticker one:
+    %
+    ReadyState = case ?getAttr(ticker_pid) of
 
-		undefined ->
-			State;
+        undefined ->
+            State;
 
-		?process_restoration_marker ->
-			% We restore the ticker (of course the wallclock time will register
-			% a sudden delay):
-			%
-			launch_ticker( ?getAttr(ticker_period), State )
+        ?process_restoration_marker ->
+            % We restore the ticker (of course the wallclock time will register
+            % a sudden delay):
+            %
+            launch_ticker( ?getAttr(ticker_period), State )
 
-	end,
+    end,
 
-	wooper:return_state_result( ReadyState, UserData ).
+    wooper:return_state_result( ReadyState, UserData ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -36,8 +36,8 @@ Called by gui_opengl:generate_support_modules/0.
 
 
 -export([ get_debug_source_topic_spec/0, get_debug_type_topic_spec/0,
-		  get_debug_severity_topic_spec/0, get_polygon_facing_mode_topic_spec/0,
-		  get_rasterization_mode_topic_spec/0 ] ).
+          get_debug_severity_topic_spec/0, get_polygon_facing_mode_topic_spec/0,
+          get_rasterization_mode_topic_spec/0 ] ).
 
 
 -export([ list_topic_spec_functions/0 ]).
@@ -72,10 +72,10 @@ Lists all the functions of this module that define a topic specification.
 -spec list_topic_spec_functions() -> [ basic_utils:function_name() ].
 list_topic_spec_functions() ->
 
-	% Directly adapted from the first export define:
-	[ get_debug_source_topic_spec, get_debug_type_topic_spec,
-	  get_debug_severity_topic_spec, get_polygon_facing_mode_topic_spec,
-	  get_rasterization_mode_topic_spec ].
+    % Directly adapted from the first export define:
+    [ get_debug_source_topic_spec, get_debug_type_topic_spec,
+      get_debug_severity_topic_spec, get_polygon_facing_mode_topic_spec,
+      get_rasterization_mode_topic_spec ].
 
 
 
@@ -113,23 +113,23 @@ regarding the OpenGL debug context.
 First elements are debug_source(), second ones are gl_debug_source().
 """.
 -spec get_debug_source_topic_spec() ->
-		topic_spec( debug_source(), gl_debug_source() ).
+        topic_spec( debug_source(), gl_debug_source() ).
 get_debug_source_topic_spec() ->
 
-	% We use our recommended order (first set for internal, second one for
-	% third-party).
+    % We use our recommended order (first set for internal, second one for
+    % third-party).
 
-	Entries = [
-		{ api,             ?GL_DEBUG_SOURCE_API },
-		{ window_system,   ?GL_DEBUG_SOURCE_WINDOW_SYSTEM },
-		{ shader_compiler, ?GL_DEBUG_SOURCE_SHADER_COMPILER },
-		{ third_party,     ?GL_DEBUG_SOURCE_THIRD_PARTY },
-		{ application,     ?GL_DEBUG_SOURCE_APPLICATION },
-		{ other,           ?GL_DEBUG_SOURCE_OTHER },
-		{ all,             ?GL_DONT_CARE } ],
+    Entries = [
+        { api,             ?GL_DEBUG_SOURCE_API },
+        { window_system,   ?GL_DEBUG_SOURCE_WINDOW_SYSTEM },
+        { shader_compiler, ?GL_DEBUG_SOURCE_SHADER_COMPILER },
+        { third_party,     ?GL_DEBUG_SOURCE_THIRD_PARTY },
+        { application,     ?GL_DEBUG_SOURCE_APPLICATION },
+        { other,           ?GL_DEBUG_SOURCE_OTHER },
+        { all,             ?GL_DONT_CARE } ],
 
-	% Thus strict look-up:
-	{ debug_source, Entries }.
+    % Thus strict look-up:
+    { debug_source, Entries }.
 
 
 
@@ -140,26 +140,26 @@ regarding the OpenGL debug context.
 First elements are debug_type(), second ones are gl_debug_type().
 """.
 -spec get_debug_type_topic_spec() ->
-								topic_spec( debug_type(), gl_debug_type() ).
+                                topic_spec( debug_type(), gl_debug_type() ).
 get_debug_type_topic_spec() ->
 
-	% We use our recommended order (first set for internal, second one for
-	% third-party).
+    % We use our recommended order (first set for internal, second one for
+    % third-party).
 
-	Entries = [
-		{ type_error,           ?GL_DEBUG_TYPE_ERROR },
-		{ deprecated_behaviour, ?GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR },
-		{ undefined_behaviour,  ?GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR },
-		{ portability,          ?GL_DEBUG_TYPE_PORTABILITY },
-		{ performance,          ?GL_DEBUG_TYPE_PERFORMANCE },
-		{ marker,               ?GL_DEBUG_TYPE_MARKER },
-		{ push_group,           ?GL_DEBUG_TYPE_PUSH_GROUP },
-		{ pop_group,            ?GL_DEBUG_TYPE_POP_GROUP },
-		{ other,                ?GL_DEBUG_TYPE_OTHER },
-		{ all,                  ?GL_DONT_CARE } ],
+    Entries = [
+        { type_error,           ?GL_DEBUG_TYPE_ERROR },
+        { deprecated_behaviour, ?GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR },
+        { undefined_behaviour,  ?GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR },
+        { portability,          ?GL_DEBUG_TYPE_PORTABILITY },
+        { performance,          ?GL_DEBUG_TYPE_PERFORMANCE },
+        { marker,               ?GL_DEBUG_TYPE_MARKER },
+        { push_group,           ?GL_DEBUG_TYPE_PUSH_GROUP },
+        { pop_group,            ?GL_DEBUG_TYPE_POP_GROUP },
+        { other,                ?GL_DEBUG_TYPE_OTHER },
+        { all,                  ?GL_DONT_CARE } ],
 
-	% Thus strict look-up:
-	{ debug_type, Entries }.
+    % Thus strict look-up:
+    { debug_type, Entries }.
 
 
 
@@ -170,20 +170,20 @@ regarding the OpenGL debug context.
 First elements are debug_severity(), second ones are gl_debug_severity().
 """.
 -spec get_debug_severity_topic_spec() ->
-		topic_spec( debug_severity(), gl_debug_severity() ).
+        topic_spec( debug_severity(), gl_debug_severity() ).
 get_debug_severity_topic_spec() ->
 
-	% We use our recommended order (first set for internal, second one for
-	% third-party).
+    % We use our recommended order (first set for internal, second one for
+    % third-party).
 
-	Entries = [
-		{ low,    ?GL_DEBUG_SEVERITY_LOW },
-		{ medium, ?GL_DEBUG_SEVERITY_MEDIUM },
-		{ high,   ?GL_DEBUG_SEVERITY_HIGH },
-		{ all,    ?GL_DONT_CARE } ],
+    Entries = [
+        { low,    ?GL_DEBUG_SEVERITY_LOW },
+        { medium, ?GL_DEBUG_SEVERITY_MEDIUM },
+        { high,   ?GL_DEBUG_SEVERITY_HIGH },
+        { all,    ?GL_DONT_CARE } ],
 
-	% Thus strict look-up:
-	{ debug_severity, Entries }.
+    % Thus strict look-up:
+    { debug_severity, Entries }.
 
 
 
@@ -195,19 +195,19 @@ First elements are polygon_facing_mode(), second ones are
 gl_polygon_facing_mode().
 """.
 -spec get_polygon_facing_mode_topic_spec() ->
-			topic_spec( polygon_facing_mode(), gl_polygon_facing_mode() ).
+            topic_spec( polygon_facing_mode(), gl_polygon_facing_mode() ).
 get_polygon_facing_mode_topic_spec() ->
 
-	% We use our recommended order (first set for internal, second one for
-	% third-party).
+    % We use our recommended order (first set for internal, second one for
+    % third-party).
 
-	Entries = [
-		{ front_facing,          ?GL_FRONT },
-		{ back_facing,           ?GL_BACK },
-		{ front_and_back_facing, ?GL_FRONT_AND_BACK } ],
+    Entries = [
+        { front_facing,          ?GL_FRONT },
+        { back_facing,           ?GL_BACK },
+        { front_and_back_facing, ?GL_FRONT_AND_BACK } ],
 
-	% Thus strict look-up:
-	{ polygon_facing_mode, Entries }.
+    % Thus strict look-up:
+    { polygon_facing_mode, Entries }.
 
 
 
@@ -220,16 +220,16 @@ First elements are rasterization_mode(), second ones are
 gl_rasterization_mode().
 """.
 -spec get_rasterization_mode_topic_spec() ->
-			topic_spec( rasterization_mode(), gl_rasterization_mode() ).
+            topic_spec( rasterization_mode(), gl_rasterization_mode() ).
 get_rasterization_mode_topic_spec() ->
 
-	% We use our recommended order (first set for internal, second one for
-	% third-party).
+    % We use our recommended order (first set for internal, second one for
+    % third-party).
 
-	Entries = [
-		{ raster_as_points, ?GL_POINT },
-		{ raster_as_lines,  ?GL_LINE },
-		{ raster_filled,    ?GL_FILL } ],
+    Entries = [
+        { raster_as_points, ?GL_POINT },
+        { raster_as_lines,  ?GL_LINE },
+        { raster_filled,    ?GL_FILL } ],
 
-	% Thus strict look-up:
-	{ rasterization_mode, Entries }.
+    % Thus strict look-up:
+    { rasterization_mode, Entries }.

@@ -1,4 +1,4 @@
-% Copyright (C) 2024-2025 Olivier Boudeville
+% Copyright (C) 2024-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -55,28 +55,28 @@ and the test selection box.
 -spec run_gui_test() -> void().
 run_gui_test() ->
 
-	test_facilities:display( "~nStarting the selection box test." ),
+    test_facilities:display( "~nStarting the selection box test." ),
 
-	gui:start(),
+    gui:start(),
 
 
-	Frame = gui_frame:create(
-		"This is the overall frame for selection box testing",
-		_Size={ 1280, 1024 } ),
+    Frame = gui_frame:create(
+        "This is the overall frame for selection box testing",
+        _Size={ 1280, 1024 } ),
 
-	Panel = gui_panel:create( Frame ),
+    Panel = gui_panel:create( Frame ),
 
-	Items = [ "First item", "Second item", "Third item" ],
+    Items = [ "First item", "Second item", "Third item" ],
 
-	SelBox = gui_select_box:create( Items, _Parent=Panel ),
-	% No specific need to call gui:layout/1 or gui:{refresh,update}/1.
+    SelBox = gui_select_box:create( Items, _Parent=Panel ),
+    % No specific need to call gui:layout/1 or gui:{refresh,update}/1.
 
-	gui:subscribe_to_events( [ { onWindowClosed, Frame } ] ),
-	%						   { onButtonToggled, ToggleButton } ),
+    gui:subscribe_to_events( [ { onWindowClosed, Frame } ] ),
+    %                          { onButtonToggled, ToggleButton } ),
 
-	gui_frame:show( Frame ),
+    gui_frame:show( Frame ),
 
-	test_main_loop( _InitialState={ Frame, SelBox } ).
+    test_main_loop( _InitialState={ Frame, SelBox } ).
 
 
 
@@ -88,31 +88,31 @@ corresponding to the frame that shall be closed to stop the test
 -spec test_main_loop( my_test_state() ) -> no_return().
 test_main_loop( State={ Frame, _SelBox } ) ->
 
-	trace_utils:info( "Test main loop running..." ),
+    trace_utils:info( "Test main loop running..." ),
 
-	receive
+    receive
 
-		{ onWindowClosed, [ Frame, _FrameId, _EventContext ] } ->
-			trace_utils:info( "Main frame has been closed." ),
-			stop( State );
+        { onWindowClosed, [ Frame, _FrameId, _EventContext ] } ->
+            trace_utils:info( "Main frame has been closed." ),
+            stop( State );
 
-		Other ->
-			trace_utils:warning_fmt( "Test main loop ignored following "
-									 "message: ~p.", [ Other ] ),
-			test_main_loop( State )
+        Other ->
+            trace_utils:warning_fmt( "Test main loop ignored following "
+                                     "message: ~p.", [ Other ] ),
+            test_main_loop( State )
 
-	end.
+    end.
 
 
 stop( _State={ Frame, SelBox } ) ->
-	trace_utils:info( "Test success, destructing widgets." ),
+    trace_utils:info( "Test success, destructing widgets." ),
 
-	gui_select_box:destruct( SelBox ),
+    gui_select_box:destruct( SelBox ),
 
-	gui_frame:destruct( Frame ),
+    gui_frame:destruct( Frame ),
 
-	trace_utils:info( "Stopping." ),
-	gui:stop().
+    trace_utils:info( "Stopping." ),
+    gui:stop().
 
 
 
@@ -120,17 +120,17 @@ stop( _State={ Frame, SelBox } ) ->
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	case executable_utils:is_batch() of
+    case executable_utils:is_batch() of
 
-		true ->
-			test_facilities:display(
-				"(not running the MyriadGUI test, being in batch mode)" );
+        true ->
+            test_facilities:display(
+                "(not running the MyriadGUI test, being in batch mode)" );
 
-		false ->
-			run_gui_test()
+        false ->
+            run_gui_test()
 
-	end,
+    end,
 
-	test_facilities:stop().
+    test_facilities:stop().

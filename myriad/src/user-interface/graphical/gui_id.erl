@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -130,33 +130,33 @@ like {wx_ref, 35, wxFrame, []}).
 
 
 -export_type([ name_id/0, id/0, button_id/0, button_backend_id/0,
-			   id_allocator_pid/0, myriad_instance_id/0,
-			   backend_id/0, wx_id/0, id_name_alloc_table/0 ]).
+               id_allocator_pid/0, myriad_instance_id/0,
+               backend_id/0, wx_id/0, id_name_alloc_table/0 ]).
 
 
 % Management of widget identifiers.
 -export([ get_first_allocatable_id/0, get_initial_allocation_table/0,
 
-		  allocate_backend_id/0, allocate_backend_id/1,
-		  allocate_backend_ids/1, allocate_backend_ids/2,
+          allocate_backend_id/0, allocate_backend_id/1,
+          allocate_backend_ids/1, allocate_backend_ids/2,
 
-		  declare_name_id/1, declare_name_id/2, declare_name_id_internal/3,
-		  declare_name_ids/1, declare_name_ids/2,
-		  declare_any_id/1,
+          declare_name_id/1, declare_name_id/2, declare_name_id_internal/3,
+          declare_name_ids/1, declare_name_ids/2,
+          declare_any_id/1,
 
-		  resolve_named_id/1, resolve_named_id/2,
-		  resolve_named_ids/1, resolve_named_ids/2,
-		  resolve_named_id_internal/2,
-		  resolve_any_id/1,
+          resolve_named_id/1, resolve_named_id/2,
+          resolve_named_ids/1, resolve_named_ids/2,
+          resolve_named_id_internal/2,
+          resolve_any_id/1,
 
-		  maybe_resolve_backend_id/1, maybe_resolve_backend_id_internal/2,
+          maybe_resolve_backend_id/1, maybe_resolve_backend_id_internal/2,
 
-		  get_any_id/0,
-		  get_best_id/1, get_best_id/2, get_best_id_internal/2,
-		  get_best_menu_item_id_internal/2, get_best_button_id_internal/2,
-		  get_maybe_name_id/1,
+          get_any_id/0,
+          get_best_id/1, get_best_id/2, get_best_id_internal/2,
+          get_best_menu_item_id_internal/2, get_best_button_id_internal/2,
+          get_maybe_name_id/1,
 
-		  id_to_string/1 ]).
+          id_to_string/1 ]).
 
 
 
@@ -225,23 +225,23 @@ MyriadGUI.
 """.
 -spec get_first_allocatable_id() -> backend_id().
 get_first_allocatable_id() ->
-	% Just a sanity check:
-	cond_utils:if_defined( myriad_debug_gui_id,
-		begin
-			MaxStandard = lists:max(
-				[ gui_menu:to_wx_menu_item_id( N )
-					|| N <- gui:get_standard_item_names() ] ),
+    % Just a sanity check:
+    cond_utils:if_defined( myriad_debug_gui_id,
+        begin
+            MaxStandard = lists:max(
+                [ gui_menu:to_wx_menu_item_id( N )
+                    || N <- gui:get_standard_item_names() ] ),
 
-			% Typically 5154 vs highest bound 5999:
-			%trace_utils:debug_fmt(
-			%   "Maximum standard ID: ~B; highest bound: ~B",
-			%   [ MaxStandard, Highest ] ),
+            % Typically 5154 vs highest bound 5999:
+            %trace_utils:debug_fmt(
+            %   "Maximum standard ID: ~B; highest bound: ~B",
+            %   [ MaxStandard, Highest ] ),
 
-			MaxStandard >= ?wxID_HIGHEST andalso
-				throw( { invalid_standard_identifiers, MaxStandard, Highest } )
-		end ),
+            MaxStandard >= ?wxID_HIGHEST andalso
+                throw( { invalid_standard_identifiers, MaxStandard, Highest } )
+        end ),
 
-	?min_allocated_id.
+    ?min_allocated_id.
 
 
 
@@ -249,16 +249,16 @@ get_first_allocatable_id() ->
 -spec get_initial_allocation_table() -> id_name_alloc_table().
 get_initial_allocation_table() ->
 
-	% Statically known name/id associations:
-	%
-	% (seems to be a bad idea as it would prevent to create a standard item
-	% afterwards)
-	%
-	%InitialEntries = [ { N, gui_menu:to_wx_menu_item_id( N ) }
-	%                           || N <- gui:get_standard_item_names() ],
+    % Statically known name/id associations:
+    %
+    % (seems to be a bad idea as it would prevent to create a standard item
+    % afterwards)
+    %
+    %InitialEntries = [ { N, gui_menu:to_wx_menu_item_id( N ) }
+    %                           || N <- gui:get_standard_item_names() ],
 
-	%bijective_table:new( _InitialEntries ).
-	bijective_table:new().
+    %bijective_table:new( _InitialEntries ).
+    bijective_table:new().
 
 
 
@@ -281,117 +281,117 @@ gui:get_id_allocator_pid/{0,1} functions.
 -spec embody_as_id_allocator() -> no_return().
 embody_as_id_allocator() ->
 
-	naming_utils:register_as( ?gui_id_alloc_reg_name, _RegScope=local_only ),
+    naming_utils:register_as( ?gui_id_alloc_reg_name, _RegScope=local_only ),
 
-	id_allocator_main_loop( get_first_allocatable_id(),
-							get_initial_allocation_table() ).
+    id_allocator_main_loop( get_first_allocatable_id(),
+                            get_initial_allocation_table() ).
 
 
 
 % The main loop of the process serving widget identifiers.
 -spec id_allocator_main_loop( backend_id(), id_name_alloc_table() ) ->
-													no_return().
+                                                    no_return().
 id_allocator_main_loop( NextId, NameTable ) ->
 
-	% Still pseudo WOOPER-like conventions (list parameters not wrapped, no
-	% empty list if no parameter):
-	%
-	receive
+    % Still pseudo WOOPER-like conventions (list parameters not wrapped, no
+    % empty list if no parameter):
+    %
+    receive
 
-		% For non-name identifiers:
+        % For non-name identifiers:
 
-		{ allocateBackendIdentifier, RequesterPid } ->
-			RequesterPid ! { notifyAllocatedBackendIdentifier, NextId },
-			id_allocator_main_loop( NextId+1, NameTable );
+        { allocateBackendIdentifier, RequesterPid } ->
+            RequesterPid ! { notifyAllocatedBackendIdentifier, NextId },
+            id_allocator_main_loop( NextId+1, NameTable );
 
-		{ allocateBackendIdentifiers, Count, RequesterPid } ->
-			Ids = lists:seq( NextId, NextId+Count-1 ),
-			RequesterPid ! { notifyAllocatedBackendIdentifiers, Ids },
-			NewNextId = NextId + Count,
-			id_allocator_main_loop( NewNextId, NameTable );
-
-
-		% For name identifiers:
-
-		{ declareNameIdentifier, NameId, RequesterPid } ->
-
-			{ AllocatedId, NewNextId, NewNameTable } =
-				declare_name_id_internal( NameId, NextId, NameTable ),
-
-			%trace_utils:debug_fmt( "Name '~ts' declared as ~B.",
-			%                       [ NameId, AllocatedId ] ),
-
-			RequesterPid ! { notifyDeclaredNameIdentifier, AllocatedId },
-			id_allocator_main_loop( NewNextId, NewNameTable );
-
-		{ declareNameIdentifiers, NameIds, RequesterPid } ->
-			% Using here foldr to avoid a reversing of the accumulated ids:
-			{ FinalNextId, FinalNameTable, Ids } = lists:foldr(
-				fun( NameId, { AccNextId, AccNameTable, AccIds } ) ->
-					{ AllocatedId, NewNextId, NewNameTable } =
-						declare_name_id_internal( NameId, AccNextId,
-												  AccNameTable ),
-					{ NewNextId, NewNameTable, [ AllocatedId | AccIds ] }
-
-				end,
-				_Acc0={ NextId, NameTable, _Ids=[] },
-				_List=NameIds ),
-
-			RequesterPid ! { notifyDeclaredNameIdentifiers, Ids },
-			id_allocator_main_loop( FinalNextId, FinalNameTable );
+        { allocateBackendIdentifiers, Count, RequesterPid } ->
+            Ids = lists:seq( NextId, NextId+Count-1 ),
+            RequesterPid ! { notifyAllocatedBackendIdentifiers, Ids },
+            NewNextId = NextId + Count,
+            id_allocator_main_loop( NewNextId, NameTable );
 
 
-		{ resolveNameIdentifier, NameId, RequesterPid } ->
-			BackendId = resolve_named_id_internal( NameId, NameTable ),
-			RequesterPid ! { notifyResolvedNameIdentifier, BackendId },
-			id_allocator_main_loop( NextId, NameTable );
+        % For name identifiers:
 
-		{ resolveNameIdentifiers, NameIds, RequesterPid } ->
-			BackendIds = [ resolve_named_id_internal( NId, NameTable )
-							|| NId <- NameIds ],
-			RequesterPid ! { notifyResolvedNameIdentifiers, BackendIds },
-			id_allocator_main_loop( NextId, NameTable );
+        { declareNameIdentifier, NameId, RequesterPid } ->
+
+            { AllocatedId, NewNextId, NewNameTable } =
+                declare_name_id_internal( NameId, NextId, NameTable ),
+
+            %trace_utils:debug_fmt( "Name '~ts' declared as ~B.",
+            %                       [ NameId, AllocatedId ] ),
+
+            RequesterPid ! { notifyDeclaredNameIdentifier, AllocatedId },
+            id_allocator_main_loop( NewNextId, NewNameTable );
+
+        { declareNameIdentifiers, NameIds, RequesterPid } ->
+            % Using here foldr to avoid a reversing of the accumulated ids:
+            { FinalNextId, FinalNameTable, Ids } = lists:foldr(
+                fun( NameId, { AccNextId, AccNameTable, AccIds } ) ->
+                    { AllocatedId, NewNextId, NewNameTable } =
+                        declare_name_id_internal( NameId, AccNextId,
+                                                  AccNameTable ),
+                    { NewNextId, NewNameTable, [ AllocatedId | AccIds ] }
+
+                end,
+                _Acc0={ NextId, NameTable, _Ids=[] },
+                _List=NameIds ),
+
+            RequesterPid ! { notifyDeclaredNameIdentifiers, Ids },
+            id_allocator_main_loop( FinalNextId, FinalNameTable );
 
 
-		{ resolveBackendIdentifier, BackendId, RequesterPid } ->
-			MaybeNameId =
-				maybe_resolve_backend_id_internal( BackendId, NameTable ),
-			RequesterPid ! { notifyResolvedBackendIdentifier, MaybeNameId },
-			id_allocator_main_loop( NextId, NameTable );
+        { resolveNameIdentifier, NameId, RequesterPid } ->
+            BackendId = resolve_named_id_internal( NameId, NameTable ),
+            RequesterPid ! { notifyResolvedNameIdentifier, BackendId },
+            id_allocator_main_loop( NextId, NameTable );
+
+        { resolveNameIdentifiers, NameIds, RequesterPid } ->
+            BackendIds = [ resolve_named_id_internal( NId, NameTable )
+                            || NId <- NameIds ],
+            RequesterPid ! { notifyResolvedNameIdentifiers, BackendIds },
+            id_allocator_main_loop( NextId, NameTable );
 
 
-		{ getBestId, BackendId, RequesterPid } ->
-			BestId = get_best_id_internal( BackendId, NameTable ),
-			RequesterPid ! { notifyResolvedAnyIdentifier, BestId },
-			id_allocator_main_loop( NextId, NameTable );
+        { resolveBackendIdentifier, BackendId, RequesterPid } ->
+            MaybeNameId =
+                maybe_resolve_backend_id_internal( BackendId, NameTable ),
+            RequesterPid ! { notifyResolvedBackendIdentifier, MaybeNameId },
+            id_allocator_main_loop( NextId, NameTable );
+
+
+        { getBestId, BackendId, RequesterPid } ->
+            BestId = get_best_id_internal( BackendId, NameTable ),
+            RequesterPid ! { notifyResolvedAnyIdentifier, BestId },
+            id_allocator_main_loop( NextId, NameTable );
 
 
 
-		% Generally no real interest in having the client know the actual
-		% numerical identifiers:
-		%
-		{ requestIdentifier, NameId, RequesterPid } ->
-			NewNameTable =
-				bijective_table:add_new_entry( NameId, NextId, NameTable ),
-			RequesterPid ! { notifyRequestedIdentifier, NextId },
-			id_allocator_main_loop( NextId+1, NewNameTable );
+        % Generally no real interest in having the client know the actual
+        % numerical identifiers:
+        %
+        { requestIdentifier, NameId, RequesterPid } ->
+            NewNameTable =
+                bijective_table:add_new_entry( NameId, NextId, NameTable ),
+            RequesterPid ! { notifyRequestedIdentifier, NextId },
+            id_allocator_main_loop( NextId+1, NewNameTable );
 
-		{ requestIdentifiers, NameIds, RequesterPid } ->
-			Count = length( NameIds ),
-			Ids = lists:seq( NextId, NextId+Count-1 ),
-			NewEntries = lists:zip( NameIds, Ids ),
-			NewNameTable =
-				bijective_table:add_new_entries( NewEntries, NameTable ),
-			RequesterPid ! { notifyRequestedIdentifiers, Ids },
-			id_allocator_main_loop( NextId+Count, NewNameTable );
+        { requestIdentifiers, NameIds, RequesterPid } ->
+            Count = length( NameIds ),
+            Ids = lists:seq( NextId, NextId+Count-1 ),
+            NewEntries = lists:zip( NameIds, Ids ),
+            NewNameTable =
+                bijective_table:add_new_entries( NewEntries, NameTable ),
+            RequesterPid ! { notifyRequestedIdentifiers, Ids },
+            id_allocator_main_loop( NextId+Count, NewNameTable );
 
-		terminate ->
-			cond_utils:if_defined( myriad_debug_gui_id,
-				trace_utils:debug_fmt( "Identifier allocator ~w terminating.",
-									   [ self() ] ),
-				ok )
+        terminate ->
+            cond_utils:if_defined( myriad_debug_gui_id,
+                trace_utils:debug_fmt( "Identifier allocator ~w terminating.",
+                                       [ self() ] ),
+                ok )
 
-	end.
+    end.
 
 
 
@@ -404,44 +404,44 @@ Typically called directly through the MyriadGUI main loop (thus without
 involving messages), which takes care of the identifier management as well.
 """.
 -spec declare_name_id_internal( name_id(), backend_id(),
-								id_name_alloc_table() ) ->
-			{ backend_id(), backend_id(), id_name_alloc_table() }.
+                                id_name_alloc_table() ) ->
+            { backend_id(), backend_id(), id_name_alloc_table() }.
 declare_name_id_internal( NameId, NextId, NameTable ) ->
 
-	% As standard/stock identifiers do not have to be stored (thanks to the
-	% bijective table):
-	%
-	case gui_generated:get_maybe_second_for_button_id( NameId ) of
+    % As standard/stock identifiers do not have to be stored (thanks to the
+    % bijective table):
+    %
+    case gui_generated:get_maybe_second_for_button_id( NameId ) of
 
-		undefined ->
-			case gui_generated:get_maybe_second_for_menu_item_id( NameId ) of
+        undefined ->
+            case gui_generated:get_maybe_second_for_menu_item_id( NameId ) of
 
-				undefined ->
+                undefined ->
 
-					cond_utils:if_defined( myriad_debug_gui_id,
-						trace_utils:debug_fmt(
-							"Registered name identifier: ~ts",
-							[ bijective_table:to_string( NameTable ) ] ) ),
+                    cond_utils:if_defined( myriad_debug_gui_id,
+                        trace_utils:debug_fmt(
+                            "Registered name identifier: ~ts",
+                            [ bijective_table:to_string( NameTable ) ] ) ),
 
-					% Neither a standard button nor a menu item name, hence this
-					% identifier must be auto-allocated:
-					%
-					NewNameTable = bijective_table:add_new_entry( NameId,
-						NextId, NameTable ),
+                    % Neither a standard button nor a menu item name, hence this
+                    % identifier must be auto-allocated:
+                    %
+                    NewNameTable = bijective_table:add_new_entry( NameId,
+                        NextId, NameTable ),
 
-					{ _AllocatedId=NextId, _NewNextId=NextId+1, NewNameTable };
+                    { _AllocatedId=NextId, _NewNextId=NextId+1, NewNameTable };
 
-				MenuItemWxId ->
-					% Standard menu item name, hence no new identifier to issue:
-					{ _AllocatedId=MenuItemWxId, _NewNextId=NextId, NameTable }
+                MenuItemWxId ->
+                    % Standard menu item name, hence no new identifier to issue:
+                    { _AllocatedId=MenuItemWxId, _NewNextId=NextId, NameTable }
 
-			end;
+            end;
 
-		ButtonWxId ->
-			% Standard button name, hence no allocation change either:
-			{ _AllocatedId=ButtonWxId, _NewNextId=NextId, NameTable }
+        ButtonWxId ->
+            % Standard button name, hence no allocation change either:
+            { _AllocatedId=ButtonWxId, _NewNextId=NextId, NameTable }
 
-	end.
+    end.
 
 
 
@@ -455,18 +455,18 @@ Typically called directly through the MyriadGUI main loop (thus without
 involving messages), which takes care of the identifier management as well.
 """.
 -spec resolve_named_id_internal( name_id(), id_name_alloc_table() ) ->
-											backend_id().
+                                            backend_id().
 resolve_named_id_internal( NameId, NameTable ) ->
 
-	case maybe_resolve_named_id_internal( NameId, NameTable ) of
+    case maybe_resolve_named_id_internal( NameId, NameTable ) of
 
-		undefined ->
-			throw( { unresolvable_name_id, NameId } );
+        undefined ->
+            throw( { unresolvable_name_id, NameId } );
 
-		BackendId ->
-			BackendId
+        BackendId ->
+            BackendId
 
-	end.
+    end.
 
 
 
@@ -485,14 +485,14 @@ Throws an exception should the resolution fail.
 -spec resolve_any_id( id() ) -> backend_id().
 % Module-local, meant to resolve quickly most cases.
 resolve_any_id( undefined ) ->
-	?gui_any_id;
+    ?gui_any_id;
 
 resolve_any_id( BackendId ) when is_integer( BackendId ) ->
-	BackendId;
+    BackendId;
 
 resolve_any_id( NameId ) when is_atom( NameId ) ->
-	% Relies on the fact that the MyriadGUI main process now impersonates a
-	resolve_named_id( NameId, _IdAllocRef=gui:get_id_allocator_pid() ).
+    % Relies on the fact that the MyriadGUI main process now impersonates a
+    resolve_named_id( NameId, _IdAllocRef=gui:get_id_allocator_pid() ).
 
 
 
@@ -502,32 +502,32 @@ internally (directly from the current process), from the specified name
 allocation table.
 """.
 -spec maybe_resolve_named_id_internal( name_id(), id_name_alloc_table() ) ->
-											option( backend_id() ).
+                                            option( backend_id() ).
 maybe_resolve_named_id_internal( NameId, NameTable ) ->
 
-	% As standard/stock identifiers do not have to be stored (thanks to the
-	% bijective table):
-	%
-	case gui_generated:get_maybe_second_for_button_id( NameId ) of
+    % As standard/stock identifiers do not have to be stored (thanks to the
+    % bijective table):
+    %
+    case gui_generated:get_maybe_second_for_button_id( NameId ) of
 
-		undefined ->
-			case gui_generated:get_maybe_second_for_menu_item_id( NameId ) of
+        undefined ->
+            case gui_generated:get_maybe_second_for_menu_item_id( NameId ) of
 
-				undefined ->
-					% Neither a standard button nor a menu item name, hence this
-					% identifier may have been auto-allocated:
-					%
-					bijective_table:get_maybe_second_for( NameId, NameTable );
+                undefined ->
+                    % Neither a standard button nor a menu item name, hence this
+                    % identifier may have been auto-allocated:
+                    %
+                    bijective_table:get_maybe_second_for( NameId, NameTable );
 
-				MenuItemWxId ->
-					MenuItemWxId
+                MenuItemWxId ->
+                    MenuItemWxId
 
-			end;
+            end;
 
-		ButtonWxId ->
-			ButtonWxId
+        ButtonWxId ->
+            ButtonWxId
 
-	end.
+    end.
 
 
 
@@ -541,7 +541,7 @@ from the MyriadGUI identifier allocator (if any).
 """.
 -spec allocate_backend_id() -> backend_id().
 allocate_backend_id() ->
-	allocate_backend_id( _IdAllocRef=gui:get_id_allocator_pid()  ).
+    allocate_backend_id( _IdAllocRef=gui:get_id_allocator_pid()  ).
 
 
 
@@ -551,13 +551,13 @@ from the specified identifier allocator.
 """.
 -spec allocate_backend_id( id_allocator_ref() ) -> backend_id().
 allocate_backend_id( IdAllocRef ) ->
-	IdAllocRef ! { allocateBackendIdentifier, self() },
-	receive
+    IdAllocRef ! { allocateBackendIdentifier, self() },
+    receive
 
-		{ notifyAllocatedBackendIdentifier, AllocatedBackendId } ->
-			AllocatedBackendId
+        { notifyAllocatedBackendIdentifier, AllocatedBackendId } ->
+            AllocatedBackendId
 
-	end.
+    end.
 
 
 
@@ -567,7 +567,7 @@ object identifiers, obtained from the MyriadGUI identifier allocator (if any).
 """.
 -spec allocate_backend_ids( count() ) -> [ backend_id() ].
 allocate_backend_ids( Count ) ->
-	allocate_backend_ids( Count, _IdAllocRef=gui:get_id_allocator_pid() ).
+    allocate_backend_ids( Count, _IdAllocRef=gui:get_id_allocator_pid() ).
 
 
 
@@ -577,13 +577,13 @@ object identifiers, obtained from the specified identifier allocator.
 """.
 -spec allocate_backend_ids( count(), id_allocator_ref() ) -> [ backend_id() ].
 allocate_backend_ids( Count, IdAllocRef ) ->
-	IdAllocRef ! { allocateBackendIdentifiers, Count, self() },
-	receive
+    IdAllocRef ! { allocateBackendIdentifiers, Count, self() },
+    receive
 
-		{ notifyAllocatedBackendIdentifiers, AllocatedIds } ->
-			AllocatedIds
+        { notifyAllocatedBackendIdentifiers, AllocatedIds } ->
+            AllocatedIds
 
-	end.
+    end.
 
 
 
@@ -601,7 +601,7 @@ like 'undo_menu_item') are reserved (but not already registered).
 """.
 -spec declare_name_id( name_id() ) -> backend_id().
 declare_name_id( NameId ) ->
-	declare_name_id( NameId, _IdAllocRef=gui:get_id_allocator_pid() ).
+    declare_name_id( NameId, _IdAllocRef=gui:get_id_allocator_pid() ).
 
 
 
@@ -615,13 +615,13 @@ like 'undo_menu_item') are reserved (but not already registered).
 """.
 -spec declare_name_id( name_id(), id_allocator_ref() ) -> void().
 declare_name_id( NameId, IdAllocRef ) ->
-	IdAllocRef ! { declareNameIdentifier, NameId, self() },
-	receive
+    IdAllocRef ! { declareNameIdentifier, NameId, self() },
+    receive
 
-		{ notifyDeclaredNameIdentifier, AllocatedId } ->
-			AllocatedId
+        { notifyDeclaredNameIdentifier, AllocatedId } ->
+            AllocatedId
 
-	end.
+    end.
 
 
 
@@ -634,7 +634,7 @@ like 'undo_menu_item') are reserved and automatically registered.
 """.
 -spec declare_name_ids( [ name_id() ] ) -> void().
 declare_name_ids( NameIds ) ->
-	declare_name_ids( NameIds, _IdAllocRef=gui:get_id_allocator_pid() ).
+    declare_name_ids( NameIds, _IdAllocRef=gui:get_id_allocator_pid() ).
 
 
 
@@ -647,13 +647,13 @@ like 'undo_menu_item') are reserved and automatically registered.
 """.
 -spec declare_name_ids( [ name_id() ], id_allocator_ref() ) -> void().
 declare_name_ids( NameIds, IdAllocRef ) ->
-	IdAllocRef ! { declareNameIdentifiers, NameIds, self() },
-	receive
+    IdAllocRef ! { declareNameIdentifiers, NameIds, self() },
+    receive
 
-		{ notifyDeclaredNameIdentifiers, AllocatedIds } ->
-			AllocatedIds
+        { notifyDeclaredNameIdentifiers, AllocatedIds } ->
+            AllocatedIds
 
-	end.
+    end.
 
 
 
@@ -666,18 +666,18 @@ charge of the identifier allocation.
 """.
 -spec declare_any_id( id() ) -> backend_id().
 declare_any_id( undefined ) ->
-	?gui_any_id;
+    ?gui_any_id;
 
 % Integers are set by the (wx) backend (wx_id()):
 declare_any_id( Id ) when is_integer( Id ) ->
-	Id;
+    Id;
 
 % Atoms are higher-level identifiers set at the MyriadGUI level:
 declare_any_id( NameId ) when is_atom( NameId ) ->
-	% Relies on the fact that the MyriadGUI main process now impersonates a
-	% standalone gui_id server:
-	%
-	declare_name_id( NameId, _IdAllocRef=gui:get_id_allocator_pid() ).
+    % Relies on the fact that the MyriadGUI main process now impersonates a
+    % standalone gui_id server:
+    %
+    declare_name_id( NameId, _IdAllocRef=gui:get_id_allocator_pid() ).
 
 
 
@@ -692,7 +692,7 @@ identifier allocator (if any).
 """.
 -spec resolve_named_id( name_id() ) -> backend_id().
 resolve_named_id( NameId ) ->
-	resolve_named_id( NameId, _IdAllocRef=gui:get_id_allocator_pid() ).
+    resolve_named_id( NameId, _IdAllocRef=gui:get_id_allocator_pid() ).
 
 
 
@@ -703,13 +703,13 @@ identifier allocator.
 """.
 -spec resolve_named_id( name_id(), id_allocator_ref() ) -> backend_id().
 resolve_named_id( NameId, IdAllocRef ) ->
-	IdAllocRef! { resolveNameIdentifier, NameId, self() },
-	receive
+    IdAllocRef! { resolveNameIdentifier, NameId, self() },
+    receive
 
-		{ notifyResolvedNameIdentifier, ResolvedId } ->
-			ResolvedId
+        { notifyResolvedNameIdentifier, ResolvedId } ->
+            ResolvedId
 
-	end.
+    end.
 
 
 
@@ -720,7 +720,7 @@ identifier allocator (if any).
 """.
 -spec resolve_named_ids( [ name_id() ] ) -> [ backend_id() ].
 resolve_named_ids( NameIds ) ->
-	resolve_named_ids( NameIds, _IdAllocRef=gui:get_id_allocator_pid() ).
+    resolve_named_ids( NameIds, _IdAllocRef=gui:get_id_allocator_pid() ).
 
 
 
@@ -730,15 +730,15 @@ named identifiers, which are expected to be already registered by the specified
 identifier allocator.
 """.
 -spec resolve_named_ids( [ name_id() ], id_allocator_ref() ) ->
-								[ backend_id() ].
+                                [ backend_id() ].
 resolve_named_ids( NameIds, IdAllocRef ) ->
-	IdAllocRef ! { resolveNameIdentifiers, NameIds, self() },
-	receive
+    IdAllocRef ! { resolveNameIdentifiers, NameIds, self() },
+    receive
 
-		{ notifyResolvedNameIdentifiers, ResolvedIds } ->
-			ResolvedIds
+        { notifyResolvedNameIdentifiers, ResolvedIds } ->
+            ResolvedIds
 
-	end.
+    end.
 
 
 
@@ -748,8 +748,8 @@ returns 'undefined', based on the MyriadGUI identifier allocator (if any).
 """.
 -spec maybe_resolve_backend_id( backend_id() ) -> option( name_id() ).
 maybe_resolve_backend_id( BackendId ) ->
-	maybe_resolve_backend_id( BackendId,
-							  _IdAllocRef=gui:get_id_allocator_pid() ).
+    maybe_resolve_backend_id( BackendId,
+                              _IdAllocRef=gui:get_id_allocator_pid() ).
 
 
 
@@ -758,15 +758,15 @@ Tries to resolve the specified backend identifier into a named one, otherwise
 returns 'undefined', based on the specified identifier allocator.% any).
 """.
 -spec maybe_resolve_backend_id( backend_id(), id_allocator_ref() ) ->
-										option( name_id() ).
+                                        option( name_id() ).
 maybe_resolve_backend_id( BackendId, IdAllocRef ) ->
-	IdAllocRef ! { resolveBackendIdentifier, BackendId, self() },
-	receive
+    IdAllocRef ! { resolveBackendIdentifier, BackendId, self() },
+    receive
 
-		{ notifyResolvedBackendIdentifier, MaybeNameId } ->
-			MaybeNameId
+        { notifyResolvedBackendIdentifier, MaybeNameId } ->
+            MaybeNameId
 
-	end.
+    end.
 
 
 
@@ -779,43 +779,43 @@ Looks up either, for stock identifiers, first the button table, then the menu
 item one or, for MyriadGUI ones, the specified name allocation table.
 """.
 -spec maybe_resolve_backend_id_internal( backend_id(),
-						id_name_alloc_table() ) -> option( name_id() ).
+                        id_name_alloc_table() ) -> option( name_id() ).
 % If a standard/stock identifier:
 maybe_resolve_backend_id_internal( BackendId, _NameTable )
-								when BackendId < ?min_allocated_id ->
+                                when BackendId < ?min_allocated_id ->
 
-	%trace_utils:debug_fmt( "Resolving backend identifier #~B.",
-	%                       [ BackendId ] ),
+    %trace_utils:debug_fmt( "Resolving backend identifier #~B.",
+    %                       [ BackendId ] ),
 
-	case gui_generated:get_maybe_first_for_button_id( BackendId ) of
+    case gui_generated:get_maybe_first_for_button_id( BackendId ) of
 
-		undefined ->
-			gui_generated:get_maybe_first_for_menu_item_id( BackendId );
+        undefined ->
+            gui_generated:get_maybe_first_for_menu_item_id( BackendId );
 
-		ButtonNameId ->
-			ButtonNameId
+        ButtonNameId ->
+            ButtonNameId
 
-	end;
+    end;
 
 % If a dynamically-allocated one:
 maybe_resolve_backend_id_internal( BackendId, NameTable ) ->
 
-	%trace_utils:debug_fmt( "Searching name identifier for #~B from ~ts.",
-	%   [ BackendId, bijective_table:to_string( NameTable ) ] ),
+    %trace_utils:debug_fmt( "Searching name identifier for #~B from ~ts.",
+    %   [ BackendId, bijective_table:to_string( NameTable ) ] ),
 
-	bijective_table:get_maybe_first_for( BackendId, NameTable ).
+    bijective_table:get_maybe_first_for( BackendId, NameTable ).
 
 
 
 -doc "Returns an unconstrained identifier, whose value is left free.".
 -spec get_any_id() -> id().
 get_any_id() ->
-	% Not wanting the other MyriadGUI module to depend on wx includes.
+    % Not wanting the other MyriadGUI module to depend on wx includes.
 
-	% Using directly that constant rather than calling this function can be
-	% preferred:
-	%
-	?gui_any_id.
+    % Using directly that constant rather than calling this function can be
+    % preferred:
+    %
+    ?gui_any_id.
 
 
 
@@ -827,7 +827,7 @@ is.
 """.
 -spec get_best_id( backend_id() ) -> id().
 get_best_id( BackendId ) ->
-	get_best_id( BackendId, _IdAllocRef=gui:get_id_allocator_pid() ).
+    get_best_id( BackendId, _IdAllocRef=gui:get_id_allocator_pid() ).
 
 
 
@@ -838,13 +838,13 @@ it, returns it, otherwise returns said backend identifier as it is.
 """.
 -spec get_best_id( backend_id(), id_allocator_ref() ) -> id().
 get_best_id( BackendId, IdAllocRef ) ->
-	IdAllocRef ! { getBestId, BackendId, self() },
-	receive
+    IdAllocRef ! { getBestId, BackendId, self() },
+    receive
 
-		{ notifyResolvedAnyIdentifier, ResolvedAnyId } ->
-			ResolvedAnyId
+        { notifyResolvedAnyIdentifier, ResolvedAnyId } ->
+            ResolvedAnyId
 
-	end.
+    end.
 
 
 
@@ -855,18 +855,18 @@ one, otherwise returns that backend identifier as it is.
 """.
 -spec get_best_id_internal( backend_id(), id_name_alloc_table() ) -> id().
 get_best_id_internal( NameId, _NameTable ) when is_atom( NameId ) ->
-	NameId;
+    NameId;
 
 get_best_id_internal( BackendId, NameTable ) ->
-	case maybe_resolve_backend_id_internal( BackendId, NameTable ) of
+    case maybe_resolve_backend_id_internal( BackendId, NameTable ) of
 
-		undefined ->
-			BackendId;
+        undefined ->
+            BackendId;
 
-		NameId ->
-			NameId
+        NameId ->
+            NameId
 
-	end.
+    end.
 
 
 
@@ -877,29 +877,29 @@ returns any corresponding named one, otherwise returns that backend identifier
 as it is.
 """.
 -spec get_best_menu_item_id_internal( backend_id(), id_name_alloc_table() ) ->
-											id().
+                                            id().
 get_best_menu_item_id_internal( BackendId, _NameTable )
-									when BackendId < ?min_allocated_id ->
-	case gui_generated:get_maybe_first_for_menu_item_id( BackendId ) of
+                                    when BackendId < ?min_allocated_id ->
+    case gui_generated:get_maybe_first_for_menu_item_id( BackendId ) of
 
-		undefined ->
-			BackendId;
+        undefined ->
+            BackendId;
 
-		MenuItemNameId ->
-			MenuItemNameId
+        MenuItemNameId ->
+            MenuItemNameId
 
-	end;
+    end;
 
 get_best_menu_item_id_internal( BackendId, NameTable ) ->
-	case bijective_table:get_maybe_first_for( BackendId, NameTable ) of
+    case bijective_table:get_maybe_first_for( BackendId, NameTable ) of
 
-		undefined ->
-			BackendId;
+        undefined ->
+            BackendId;
 
-		MenuItemNameId ->
-			MenuItemNameId
+        MenuItemNameId ->
+            MenuItemNameId
 
-	end.
+    end.
 
 
 
@@ -909,29 +909,29 @@ supposedly of a button internally (directly from the current process): returns
 any corresponding named one, otherwise returns that backend identifier as it is.
 """.
 -spec get_best_button_id_internal( backend_id(), id_name_alloc_table() ) ->
-											id().
+                                            id().
 get_best_button_id_internal( BackendId, _NameTable )
-									when BackendId < ?min_allocated_id ->
-	case gui_generated:get_maybe_first_for_button_id( BackendId ) of
+                                    when BackendId < ?min_allocated_id ->
+    case gui_generated:get_maybe_first_for_button_id( BackendId ) of
 
-		undefined ->
-			BackendId;
+        undefined ->
+            BackendId;
 
-		ButtonNameId ->
-			ButtonNameId
+        ButtonNameId ->
+            ButtonNameId
 
-	end;
+    end;
 
 get_best_button_id_internal( BackendId, NameTable ) ->
-	case bijective_table:get_maybe_first_for( BackendId, NameTable ) of
+    case bijective_table:get_maybe_first_for( BackendId, NameTable ) of
 
-		undefined ->
-			BackendId;
+        undefined ->
+            BackendId;
 
-		ButtonNameId ->
-			ButtonNameId
+        ButtonNameId ->
+            ButtonNameId
 
-	end.
+    end.
 
 
 
@@ -943,11 +943,11 @@ Not exactly the reciprocal of resolve_any_id/1.
 """.
 -spec get_maybe_name_id( backend_id() ) -> option( name_id() ).
 get_maybe_name_id( BackendId ) when is_integer( BackendId ) ->
-	% Relies on the fact that the MyriadGUI main process now impersonates a
-	% standalone gui_id server:
-	%
-	maybe_resolve_backend_id_internal( BackendId,
-									   _IdAllocRef=gui:get_id_allocator_pid() ).
+    % Relies on the fact that the MyriadGUI main process now impersonates a
+    % standalone gui_id server:
+    %
+    maybe_resolve_backend_id_internal( BackendId,
+                                       _IdAllocRef=gui:get_id_allocator_pid() ).
 
 
 
@@ -956,7 +956,7 @@ Returns a textual representation of the specified object identifier.
 """.
 -spec id_to_string( id() ) -> ustring().
 id_to_string( BackendId ) when is_integer( BackendId ) ->
-	text_utils:format( "#~B", [ BackendId ] );
+    text_utils:format( "#~B", [ BackendId ] );
 
 id_to_string( NameId ) when is_atom( NameId ) ->
-	text_utils:atom_to_string( NameId ).
+    text_utils:atom_to_string( NameId ).

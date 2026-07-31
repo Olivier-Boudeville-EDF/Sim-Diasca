@@ -79,7 +79,7 @@ So a typical constructor for a model ``class_M1``, inheriting from, for example,
    % Will result ultimately in a call to
    % class_Actor:construct( State, ActorSettings, AName ):
    SpecialisedState = class_SpecialisedActor:construct( State,
-	ActorSettings, ... ),
+    ActorSettings, ... ),
    C1State = class_C1:construct( SpecialisedState, P1, ... ),
    C2State = class_C2:construct( C1State, P1, P2, ... ),
    [...]
@@ -94,7 +94,7 @@ We strongly encourage the use of type specifications, which would be here:
 .. code:: erlang
 
  -spec construct( wooper:state(), class_Actor:actor_settings(),
-	  type_of_p1(), type_of_p2() ) -> wooper:state().
+      type_of_p1(), type_of_p2() ) -> wooper:state().
 
 
 
@@ -114,14 +114,14 @@ It is generally based on the ``class_Actor:create_initial_actor/2`` static metho
 .. code:: erlang
 
  ActorPid = class_Actor:create_initial_actor( ActorClassName,
-	ActorConstructionParameters )
+    ActorConstructionParameters )
 
 For example, in ``my_example_test.erl`` we could have:
 
 .. code:: erlang
 
   ActorPid = class_Actor:create_initial_actor( class_PinkFlamingo,
-	[ _Age=5, _Gender=male ] )
+    [ _Age=5, _Gender=male ] )
 
 
 Should multiple initial actors have to be created, using this method would be less than optimal, as the load-balancer would be looked-up in the process registry at each call of this static method, which, if creating thousands of actors in a row, could induce some overhead.
@@ -191,7 +191,7 @@ For example, in ``my_creation_test.erl``, we could have:
 
  [...]
  ActorAPid = class_Actor:create_initial_actor( ClassA,
-	ParametersForA ),
+    ParametersForA ),
  ActorAPid ! { createDependingActors, [], self() },
  actors_created = test_receive(),
  [...]
@@ -212,7 +212,7 @@ The creating actor should call the ``class_Actor:create_actor/3`` helper functio
 .. code:: erlang
 
  CreationState = class_Actor:create_actor( Classname,
-	ConstructionParameters, State ),
+    ConstructionParameters, State ),
  [...]
 
 
@@ -460,7 +460,7 @@ Indeed the simulation engine keeps track both of the sendings of actor messages 
 
 .. [#] This is done on a fully distributed way (i.e. through the scheduling tree of time managers over computing nodes) and all communications between an actor and its time manager are purely local (i.e. they are by design on the same Erlang node).
 
-	   Moreover the messages themselves only go from the emitting actor to the recipient one: in each diasca, only the *fact* that the target actor received a first message is of interest, and this is reported only to its own, local time manager - the actual message is never sent to third parties (like a time manager), and no more notifications are sent by the receiving actor once the first message has been reported. So the number of messages, their payload and communication distance are reduced to a bare minimum.
+       Moreover the messages themselves only go from the emitting actor to the recipient one: in each diasca, only the *fact* that the target actor received a first message is of interest, and this is reported only to its own, local time manager - the actual message is never sent to third parties (like a time manager), and no more notifications are sent by the receiving actor once the first message has been reported. So the number of messages, their payload and communication distance are reduced to a bare minimum.
 
 
 
@@ -539,11 +539,11 @@ For example, if the following was specified:
 .. code-block:: erlang
 
   DeploymentSettings = #deployment_settings{
-	...
-	additional_elements_to_deploy = [
-	  {"mock-simulators/soda-test",code},
-	  {"mock-simulators/soda-test/src/soda_test.dat",data}
-	...
+    ...
+    additional_elements_to_deploy = [
+      {"mock-simulators/soda-test",code},
+      {"mock-simulators/soda-test/src/soda_test.dat",data}
+    ...
   },
   ...
 
@@ -553,7 +553,7 @@ Then all models are able to access to the data file thanks to:
 .. code-block:: erlang
 
    DataPath = file_utils:join( class_Actor:get_deployed_root_directory(State),
-	"mock-simulators/soda-test/src/soda_test.dat" ),
+    "mock-simulators/soda-test/src/soda_test.dat" ),
   % Then open, read, parse, etc. at will.
 
 

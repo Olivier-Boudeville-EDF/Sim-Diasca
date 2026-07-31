@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 EDF R&D
+% Copyright (C) 2014-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -31,21 +31,21 @@ actual Sim-Diasca plugins.
 
 
 -export([ on_simulator_start/2,
-		  on_deployment_start/1,
-		  on_deployment_stop/1,
-		  on_technical_settings_available/2,
-		  on_case_initialisation_start/1,
-		  on_case_initialisation_stop/1,
-		  on_simulation_start/1,
-		  on_simulation_bootstrap_start/1,
-		  on_simulation_bootstrap_stop/1,
-		  on_simulation_wallclock_milestone_met/2,
-		  on_simulation_tick_milestone_met/2,
-		  on_simulation_stop/1,
-		  on_result_gathering_start/1,
-		  on_result_gathering_stop/1,
-		  on_simulator_stop/1,
-		  on_case_specific_event/3 ]).
+          on_deployment_start/1,
+          on_deployment_stop/1,
+          on_technical_settings_available/2,
+          on_case_initialisation_start/1,
+          on_case_initialisation_stop/1,
+          on_simulation_start/1,
+          on_simulation_bootstrap_start/1,
+          on_simulation_bootstrap_stop/1,
+          on_simulation_wallclock_milestone_met/2,
+          on_simulation_tick_milestone_met/2,
+          on_simulation_stop/1,
+          on_result_gathering_start/1,
+          on_result_gathering_stop/1,
+          on_simulator_stop/1,
+          on_case_specific_event/3 ]).
 
 
 % For the notify/1 macro:
@@ -85,42 +85,42 @@ The on_technical_settings_available/2 callback could allow to check the
 effectiveness of this request (e.g. if plugins requested incompatible changes).
 """.
 -spec on_simulator_start( configuration_changes(), plugin_data() ) ->
-							{ configuration_changes(), plugin_data() }.
+                            { configuration_changes(), plugin_data() }.
 on_simulator_start( ConfigurationChanges, _PluginData ) ->
 
-	% One may look at the traces sent by the deployment agent(s) to check the
-	% actual number of sequencers:
+    % One may look at the traces sent by the deployment agent(s) to check the
+    % actual number of sequencers:
 
-	notify_fmt( "simulator started; keeping as are following "
-		"input configuration changes: ~p.", [ ConfigurationChanges ] ),
+    notify_fmt( "simulator started; keeping as are following "
+        "input configuration changes: ~p.", [ ConfigurationChanges ] ),
 
-	{ ConfigurationChanges, ok }.
+    { ConfigurationChanges, ok }.
 
-	% As an example, one may use this code instead:
+    % As an example, one may use this code instead:
 
-	%SchedulerCount = 2,
+    %SchedulerCount = 2,
 
-	%notify( text_utils:format( "simulator started; changing configuration, "
-	%    "requesting ~B schedulers.", [ SchedulerCount ] ) ),
+    %notify( text_utils:format( "simulator started; changing configuration, "
+    %    "requesting ~B schedulers.", [ SchedulerCount ] ) ),
 
-	%NewConfigurationChanges = ConfigurationChanges#configuration_changes{
-	%    compute_scheduler_count=SchedulerCount },
+    %NewConfigurationChanges = ConfigurationChanges#configuration_changes{
+    %    compute_scheduler_count=SchedulerCount },
 
-	%{ NewConfigurationChanges, ok }.
+    %{ NewConfigurationChanges, ok }.
 
 
 
 -doc "Callback triggered when the deployment phase starts.".
 -spec on_deployment_start( plugin_data() ) -> plugin_data().
 on_deployment_start( _PluginData ) ->
-	notify( "deployment started" ).
+    notify( "deployment started" ).
 
 
 
 -doc "Callback triggered when the deployment phase stops.".
 -spec on_deployment_stop( plugin_data() ) -> plugin_data().
 on_deployment_stop( _PluginData ) ->
-	notify( "deployment stopped" ).
+    notify( "deployment stopped" ).
 
 
 
@@ -129,18 +129,18 @@ Callback triggered when the simulation technical settings are available, notably
 once the deployment phase is over.
 """.
 -spec on_technical_settings_available( technical_settings(), plugin_data() ) ->
-											plugin_data().
+                                            plugin_data().
 on_technical_settings_available(
-				#technical_settings{ computing_nodes=ComputingNodes,
-									 cookie=Cookie },
-				_PluginData ) ->
+                #technical_settings{ computing_nodes=ComputingNodes,
+                                     cookie=Cookie },
+                _PluginData ) ->
 
-	NodeString = text_utils:format(
-		"cookie '~ts' used for the ~B computing node(s): ~ts",
-		[ Cookie, length( ComputingNodes ),
-		  text_utils:atoms_to_string( ComputingNodes ) ] ),
+    NodeString = text_utils:format(
+        "cookie '~ts' used for the ~B computing node(s): ~ts",
+        [ Cookie, length( ComputingNodes ),
+          text_utils:atoms_to_string( ComputingNodes ) ] ),
 
-	notify( "technical details available: " ++ NodeString ).
+    notify( "technical details available: " ++ NodeString ).
 
 
 
@@ -150,7 +150,7 @@ starts.
 """.
 -spec on_case_initialisation_start( plugin_data() ) -> plugin_data().
 on_case_initialisation_start( _PluginData ) ->
-	notify( "case initialisation started" ).
+    notify( "case initialisation started" ).
 
 
 
@@ -160,7 +160,7 @@ finished.
 """.
 -spec on_case_initialisation_stop( plugin_data() ) -> plugin_data().
 on_case_initialisation_stop( _PluginData ) ->
-	notify( "case initialisation stopped" ).
+    notify( "case initialisation stopped" ).
 
 
 
@@ -170,7 +170,7 @@ first diasca of all initial actors.
 """.
 -spec on_simulation_bootstrap_start( plugin_data() ) -> plugin_data().
 on_simulation_bootstrap_start( _PluginData ) ->
-	notify( "simulation bootstrap started" ).
+    notify( "simulation bootstrap started" ).
 
 
 
@@ -180,7 +180,7 @@ is over.
 """.
 -spec on_simulation_bootstrap_stop( plugin_data() ) -> plugin_data().
 on_simulation_bootstrap_stop( _PluginData ) ->
-	notify( "simulation bootstrap stopped" ).
+    notify( "simulation bootstrap stopped" ).
 
 
 
@@ -189,12 +189,12 @@ Callback triggered when a simulation milestone is met in wallclock time,
 that is after some elapsed duration.
 """.
 -spec on_simulation_wallclock_milestone_met( unit_utils:milliseconds(),
-											 plugin_data() ) -> plugin_data().
+                                             plugin_data() ) -> plugin_data().
 on_simulation_wallclock_milestone_met( CurrentMillisecond, _PluginData ) ->
-	notify_fmt( "simulation wall-clock milestone met, after ~ts; "
-		"current wallclock time is ~ts.",
-		[ time_utils:duration_to_string( CurrentMillisecond ),
-		  time_utils:get_textual_timestamp() ] ).
+    notify_fmt( "simulation wall-clock milestone met, after ~ts; "
+        "current wallclock time is ~ts.",
+        [ time_utils:duration_to_string( CurrentMillisecond ),
+          time_utils:get_textual_timestamp() ] ).
 
 
 
@@ -203,11 +203,11 @@ Callback triggered when a simulation milestone is met in virtual time, that is
 when enough ticks have been evaluated.
 """.
 -spec on_simulation_tick_milestone_met( class_TimeManager:tick_offset(),
-										plugin_data() ) -> plugin_data().
+                                        plugin_data() ) -> plugin_data().
 on_simulation_tick_milestone_met( TickOffset, _PluginData ) ->
-	notify_fmt( "simulation tick milestone met at tick offset #~B, "
-		"while current wall-clock time is ~ts.",
-		[ TickOffset, time_utils:get_textual_timestamp() ] ).
+    notify_fmt( "simulation tick milestone met at tick offset #~B, "
+        "while current wall-clock time is ~ts.",
+        [ TickOffset, time_utils:get_textual_timestamp() ] ).
 
 
 
@@ -216,7 +216,7 @@ Callback triggered when the simulation is started (first tick, first diasca).
 """.
 -spec on_simulation_start( plugin_data() ) -> plugin_data().
 on_simulation_start( _PluginData ) ->
-	notify( "simulation started" ).
+    notify( "simulation started" ).
 
 
 
@@ -226,7 +226,7 @@ met).
 """.
 -spec on_simulation_stop( plugin_data() ) -> plugin_data().
 on_simulation_stop( _PluginData ) ->
-	notify( "simulation stopped" ).
+    notify( "simulation stopped" ).
 
 
 
@@ -236,14 +236,14 @@ termination.
 """.
 -spec on_result_gathering_start( plugin_data() ) -> plugin_data().
 on_result_gathering_start( _PluginData ) ->
-	notify( "result gathering started" ).
+    notify( "result gathering started" ).
 
 
 
 -doc "Callback triggered when the results have been gathered.".
 -spec on_result_gathering_stop( plugin_data() ) -> plugin_data().
 on_result_gathering_stop( _PluginData ) ->
-	notify( "result gathering stopped" ).
+    notify( "result gathering stopped" ).
 
 
 
@@ -253,7 +253,7 @@ circumstances (that is did not crash).
 """.
 -spec on_simulator_stop( plugin_data() ) -> plugin_data().
 on_simulator_stop( _PluginData ) ->
-	notify( "simulator stopped" ).
+    notify( "simulator stopped" ).
 
 
 
@@ -262,15 +262,15 @@ Callback triggered when the simulator execution stopped under normal
 circumstances (that is did not crash).
 """.
 -spec on_case_specific_event( sim_diasca_plugin:case_specific_event(),
-			sim_diasca_plugin:event_data(), plugin_data() ) -> plugin_data().
+            sim_diasca_plugin:event_data(), plugin_data() ) -> plugin_data().
 on_case_specific_event( _CaseSpecificEvent, _EventData, _PluginData ) ->
 
-	% Currently disabled, as too verbose, and duplicating traces already sent
-	% from the simulation case:
-	%
-	%notify_fmt( "[~ts] ~ts", [ CaseSpecificEvent, EventData ] ) ),
+    % Currently disabled, as too verbose, and duplicating traces already sent
+    % from the simulation case:
+    %
+    %notify_fmt( "[~ts] ~ts", [ CaseSpecificEvent, EventData ] ) ),
 
-	ok.
+    ok.
 
 
 
@@ -281,27 +281,27 @@ on_case_specific_event( _CaseSpecificEvent, _EventData, _PluginData ) ->
 % (helper)
 notify( _Message ) ->
 
-	% We can even use our dedicated trace sub-channel:
+    % We can even use our dedicated trace sub-channel:
 
-	% Here we both output the message on the console and in our dedicated trace
-	% sub-channel:
-	%
-	% (no mute variable here: not wanting spurious matchings)
-	%
-	% Parameters: Message, EmitterName, EmitterCategorization,
-	% MessageCategorization
-	%
+    % Here we both output the message on the console and in our dedicated trace
+    % sub-channel:
+    %
+    % (no mute variable here: not wanting spurious matchings)
+    %
+    % Parameters: Message, EmitterName, EmitterCategorization,
+    % MessageCategorization
+    %
 
-	%?notify_em( Message, "my_plugin_example", "Core.PluginManagement",
-	%            "Uncategorized" ).
+    %?notify_em( Message, "my_plugin_example", "Core.PluginManagement",
+    %            "Uncategorized" ).
 
-	% Here we just send a (maskable) trace, no console output:
-	%?notify_info_em( Message, "my_plugin_example", "Core.PluginManagement",
-	%                 "Uncategorized" ),
+    % Here we just send a (maskable) trace, no console output:
+    %?notify_info_em( Message, "my_plugin_example", "Core.PluginManagement",
+    %                 "Uncategorized" ),
 
-	ok.
+    ok.
 
 
 % (helper)
 notify_fmt( MessageFormat, MessageValues ) ->
-	notify( text_utils:format( MessageFormat, MessageValues ) ).
+    notify( text_utils:format( MessageFormat, MessageValues ) ).

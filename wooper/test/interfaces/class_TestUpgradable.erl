@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -37,7 +37,7 @@ whether enable_upgraded_test_class has been defined (then 1.2.4) or not (1.2.3).
 
 
 -define( class_description,
-		 "Test class for the implementation of the Upgradable trait." ).
+         "Test class for the implementation of the Upgradable trait." ).
 
 
 % Emitting traces in useful, but cannot be class_Traceable as we are at the
@@ -59,8 +59,8 @@ whether enable_upgraded_test_class has been defined (then 1.2.4) or not (1.2.3).
 -define( this_class_version, { 1, 2, 3 } ).
 
 -define( class_attributes, [
-	{ name, ustring(), "name of this test instance" },
-	{ height, float(), "height of this test instance" } ] ).
+    { name, ustring(), "name of this test instance" },
+    { height, float(), "height of this test instance" } ] ).
 
 
 -else.
@@ -71,8 +71,8 @@ whether enable_upgraded_test_class has been defined (then 1.2.4) or not (1.2.3).
 -define( this_class_version, { 1, 2, 4 } ).
 
 -define( class_attributes, [
-	{ name, ustring(), "name of this test instance" },
-	{ age, integer(), "age of this test instance" } ] ).
+    { name, ustring(), "name of this test instance" },
+    { age, integer(), "age of this test instance" } ] ).
 
 -endif.
 
@@ -106,13 +106,13 @@ The corresponding version is determined statically.
 
 -spec construct( wooper:state(), ustring(), float() ) -> wooper:state().
 construct( State, Name, Height ) ->
-	trace_utils:debug( "(constructing a class_TestUpgradable version 1.2.3)" ),
-	% Even though both are do-nothing:
-	UpState = class_Upgradable:construct( State ),
-	DescState = class_Describable:construct( UpState ),
-	setAttributes( DescState, [
-		{ name, Name },
-		{ height, Height } ] ).
+    trace_utils:debug( "(constructing a class_TestUpgradable version 1.2.3)" ),
+    % Even though both are do-nothing:
+    UpState = class_Upgradable:construct( State ),
+    DescState = class_Describable:construct( UpState ),
+    setAttributes( DescState, [
+        { name, Name },
+        { height, Height } ] ).
 
 -else.
 
@@ -120,13 +120,13 @@ construct( State, Name, Height ) ->
 
 -spec construct( wooper:state(), ustring(), integer() ) -> wooper:state().
 construct( State, Name, Age ) ->
-	trace_utils:debug( "(constructing a class_TestUpgradable version 1.2.4)" ),
-	% Even though both are do-nothing:
-	UpState = class_Upgradable:construct( State ),
-	DescState = class_Describable:construct( UpState ),
-	setAttributes( DescState, [
-		{ name, Name },
-		{ age, Age } ] ).
+    trace_utils:debug( "(constructing a class_TestUpgradable version 1.2.4)" ),
+    % Even though both are do-nothing:
+    UpState = class_Upgradable:construct( State ),
+    DescState = class_Describable:construct( UpState ),
+    setAttributes( DescState, [
+        { name, Name },
+        { age, Age } ] ).
 
 -endif.
 
@@ -144,49 +144,49 @@ Upgrades this instance (thus to a more recent version) both in terms of code and
 state, taking into account any specified extra data.
 """.
 -spec upgradeVersion( wooper:state(), any_version(), any_version(),
-			option( extra_data() ) ) -> request_return( base_outcome() ).
+            option( extra_data() ) ) -> request_return( base_outcome() ).
 % Only these very specific settings are supported:
 upgradeVersion( State, OriginalVersion={1,2,3}, TargetVersion={1,2,4},
-				ExtraData=upgradable_test ) ->
+                ExtraData=upgradable_test ) ->
 
-	Height = ?getAttr(height),
+    Height = ?getAttr(height),
 
-	false = hasAttribute( State, age ),
+    false = hasAttribute( State, age ),
 
-	% Of course arbitrary:
-	Age = round( Height * 50 ),
+    % Of course arbitrary:
+    Age = round( Height * 50 ),
 
-	NewName = ?getAttr(name) ++ ", then upgraded",
+    NewName = ?getAttr(name) ++ ", then upgraded",
 
 
-	trace_bridge:debug_fmt( "Upgrading from version ~ts to ~ts, "
-		"using extra data '~p'; dropping height ~p, introducing age ~p, "
-		"updating name to '~ts'.",
-		[ text_utils:version_to_string( OriginalVersion ),
-		  text_utils:version_to_string( TargetVersion ), ExtraData,
-		  Height, Age, NewName ] ),
+    trace_bridge:debug_fmt( "Upgrading from version ~ts to ~ts, "
+        "using extra data '~p'; dropping height ~p, introducing age ~p, "
+        "updating name to '~ts'.",
+        [ text_utils:version_to_string( OriginalVersion ),
+          text_utils:version_to_string( TargetVersion ), ExtraData,
+          Height, Age, NewName ] ),
 
-	case get_version() of
+    case get_version() of
 
-		% Expected to be already at target:
-		TargetVersion ->
-			ok;
+        % Expected to be already at target:
+        TargetVersion ->
+            ok;
 
-		OtherVersion ->
-			throw( { invalid_version_on_upgrade, { read, OtherVersion },
-					 { original, OriginalVersion },
-					 { target, TargetVersion },
-					 State#state_holder.actual_class, self() } )
+        OtherVersion ->
+            throw( { invalid_version_on_upgrade, { read, OtherVersion },
+                     { original, OriginalVersion },
+                     { target, TargetVersion },
+                     State#state_holder.actual_class, self() } )
 
-	end,
+    end,
 
-	UpdatedState = setAttributes( State, [
-		{ name, NewName },
-		{ age, Age } ] ),
+    UpdatedState = setAttributes( State, [
+        { name, NewName },
+        { age, Age } ] ),
 
-	UpgradedState = removeAttribute( UpdatedState, height ),
+    UpgradedState = removeAttribute( UpdatedState, height ),
 
-	wooper:return_state_result( UpgradedState, ok ).
+    wooper:return_state_result( UpgradedState, ok ).
 
 
 
@@ -195,48 +195,48 @@ Downgrades this instance (thus to a less recent version) both in terms of code
 and state, taking into account any specified extra data.
 """.
 -spec downgradeVersion( wooper:state(), any_version(), any_version(),
-			option( extra_data() ) ) -> request_return( base_outcome() ).
+            option( extra_data() ) ) -> request_return( base_outcome() ).
 downgradeVersion( State, OriginalVersion={1,2,4}, TargetVersion={1,2,3},
-				  ExtraData=upgradable_test ) ->
+                  ExtraData=upgradable_test ) ->
 
-	Age = ?getAttr(age),
+    Age = ?getAttr(age),
 
-	false = hasAttribute( State, height ),
+    false = hasAttribute( State, height ),
 
-	% Possibly with rounding errors:
-	Height = float( Age / 50 ),
+    % Possibly with rounding errors:
+    Height = float( Age / 50 ),
 
-	NewName = ?getAttr(name) ++ ", then downgraded",
+    NewName = ?getAttr(name) ++ ", then downgraded",
 
 
-	trace_bridge:debug_fmt( "Downgrading from version ~ts to ~ts, "
-		"using extra data '~p'; dropping age ~p, re-introducing height "
-		"with ~p, updating name to '~ts'.",
-		[ text_utils:version_to_string( OriginalVersion ),
-		  text_utils:version_to_string( TargetVersion ), ExtraData,
-		  Age, Height, NewName ] ),
+    trace_bridge:debug_fmt( "Downgrading from version ~ts to ~ts, "
+        "using extra data '~p'; dropping age ~p, re-introducing height "
+        "with ~p, updating name to '~ts'.",
+        [ text_utils:version_to_string( OriginalVersion ),
+          text_utils:version_to_string( TargetVersion ), ExtraData,
+          Age, Height, NewName ] ),
 
-	case get_version() of
+    case get_version() of
 
-		% Expected to be already at target:
-		TargetVersion ->
-			ok;
+        % Expected to be already at target:
+        TargetVersion ->
+            ok;
 
-		OtherVersion ->
-			throw( { invalid_version_on_upgrade, { read, OtherVersion },
-					 { original, OriginalVersion },
-					 { target, TargetVersion },
-					 State#state_holder.actual_class, self() } )
+        OtherVersion ->
+            throw( { invalid_version_on_upgrade, { read, OtherVersion },
+                     { original, OriginalVersion },
+                     { target, TargetVersion },
+                     State#state_holder.actual_class, self() } )
 
-	end,
+    end,
 
-	UpdatedState = setAttributes( State, [
-		{ name, NewName },
-		{ height, Height } ] ),
+    UpdatedState = setAttributes( State, [
+        { name, NewName },
+        { height, Height } ] ),
 
-	DowngradedState = removeAttribute( UpdatedState, age ),
+    DowngradedState = removeAttribute( UpdatedState, age ),
 
-	wooper:return_state_result( DowngradedState, ok ).
+    wooper:return_state_result( DowngradedState, ok ).
 
 
 
@@ -250,8 +250,8 @@ Each version of a class should define its own version of this static method.
 """.
 -spec get_version() -> static_return( any_version() ).
 get_version() ->
-	% Each concrete Upgradable class is typically to return its own define:
-	wooper:return_static( ?this_class_version ).
+    % Each concrete Upgradable class is typically to return its own define:
+    wooper:return_static( ?this_class_version ).
 
 
 
@@ -262,19 +262,19 @@ get_version() ->
 -ifndef(enable_upgraded_test_class).
 
 to_string( State ) ->
-	text_utils:format( "test upgradable instance ~w of class ~ts version ~ts, "
-		"of name '~ts' and height ~p m",
-		[ self(), State#state_holder.actual_class,
-		  text_utils:version_to_string( ?this_class_version ),
-		  ?getAttr(name), ?getAttr(height) ] ).
+    text_utils:format( "test upgradable instance ~w of class ~ts version ~ts, "
+        "of name '~ts' and height ~p m",
+        [ self(), State#state_holder.actual_class,
+          text_utils:version_to_string( ?this_class_version ),
+          ?getAttr(name), ?getAttr(height) ] ).
 
 -else.
 
 to_string( State ) ->
-	text_utils:format( "test upgradable instance ~w of class ~ts version ~ts, "
-		"of name '~ts' and age ~p years",
-		[ self(), State#state_holder.actual_class,
-		  text_utils:version_to_string( ?this_class_version ),
-		  ?getAttr(name), ?getAttr(age) ] ).
+    text_utils:format( "test upgradable instance ~w of class ~ts version ~ts, "
+        "of name '~ts' and age ~p years",
+        [ self(), State#state_holder.actual_class,
+          text_utils:version_to_string( ?this_class_version ),
+          ?getAttr(name), ?getAttr(age) ] ).
 
 -endif.

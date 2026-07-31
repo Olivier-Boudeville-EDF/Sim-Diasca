@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -54,7 +54,7 @@ See fsm_utils_test.erl for the corresponding test.
 
 -doc "Return for a callback mode.".
 -type callback_mode_ret() ::
-		callback_mode() | [ callback_mode() | state_enter() ].
+        callback_mode() | [ callback_mode() | state_enter() ].
 
 
 
@@ -64,7 +64,7 @@ See fsm_utils_test.erl for the corresponding test.
 
 
 -export_type([ callback_mode/0, callback_mode_ret/0,
-			   state_callback_result/1 ]).
+               state_callback_result/1 ]).
 
 
 
@@ -76,29 +76,29 @@ variables too.
 """.
 -spec create_blank_fsm_state() -> table:table().
 create_blank_fsm_state() ->
-	table:new().
+    table:new().
 
 
 
 -doc "Sets the specified FSM state attribute.".
 -spec setFsmAttribute( table:table(), table:key(), table:value() ) ->
-								table:table().
+                                table:table().
 setFsmAttribute( FsmState, AttributeName, AttributeValue ) ->
-	table:add_entry( AttributeName, AttributeValue, FsmState ).
+    table:add_entry( AttributeName, AttributeValue, FsmState ).
 
 
 
 -doc "Retrieves the specified FSM state attribute.".
 -spec getFsmAttribute( table:table(), table:key() ) ->
-				{ 'value', table:value() } | 'attribute_not_found'.
+                { 'value', table:value() } | 'attribute_not_found'.
 getFsmAttribute( FsmState, AttributeName ) ->
 
-	case table:lookup_entry( AttributeName, FsmState ) of
+    case table:lookup_entry( AttributeName, FsmState ) of
 
-		key_not_found->
-			attribute_not_found ;
+        key_not_found->
+            attribute_not_found ;
 
-		VPair ->
-			VPair
+        VPair ->
+            VPair
 
-	end.
+    end.

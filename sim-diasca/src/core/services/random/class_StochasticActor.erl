@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -35,9 +35,9 @@ class_Actor. This class is now mostly useful for its static methods.
 
 
 -define( class_description,
-		 "Stochastic actor class, for actors whose behaviour is at least "
-		 "partly ruled by random laws. "
-		 "See class_StochasticActor_test.erl." ).
+         "Stochastic actor class, for actors whose behaviour is at least "
+         "partly ruled by random laws. "
+         "See class_StochasticActor_test.erl." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -47,9 +47,9 @@ class_Actor. This class is now mostly useful for its static methods.
 % The attributes that are specific to a stochastic actor are:
 -define( class_attributes, [
 
-	% 'sd_' prefix, as considered as a Sim-Diasca builtin:
-	{ sd_random_laws, list_table( law_identifier(), random_law_data() ),
-	  "a table of all random laws available to this stochastic actor" } ]).
+    % 'sd_' prefix, as considered as a Sim-Diasca builtin:
+    { sd_random_laws, list_table( law_identifier(), random_law_data() ),
+      "a table of all random laws available to this stochastic actor" } ]).
 
 
 
@@ -152,31 +152,31 @@ For example, RandomLawDescs may be [{test_first_uniform, {uniform,5,15}}].
 See also: get_random_value_from/2 for more details.
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 class_Actor:name(), [ law_description() ] ) -> wooper:state().
+                 class_Actor:name(), [ law_description() ] ) -> wooper:state().
 construct( State, ActorSettings, StochasticActorName, RandomLawDescs ) ->
 
-	% First the direct mother classes:
-	ActorState = class_Actor:construct( State, ActorSettings,
-		?trace_categorize(StochasticActorName) ),
+    % First the direct mother classes:
+    ActorState = class_Actor:construct( State, ActorSettings,
+        ?trace_categorize(StochasticActorName) ),
 
-	% Then the class-specific actions:
+    % Then the class-specific actions:
 
-	% Now we have an initialised actor, hence properly seeded.
+    % Now we have an initialised actor, hence properly seeded.
 
-	RandomLawEntries = list_table:new(
-		[ { LawId, random_utils:initialise_law( LawSpec ) }
-			|| { LawId, LawSpec } <- RandomLawDescs ] ),
+    RandomLawEntries = list_table:new(
+        [ { LawId, random_utils:initialise_law( LawSpec ) }
+            || { LawId, LawSpec } <- RandomLawDescs ] ),
 
-	% random_laws is a list of initialised random law data, each element being
-	% like {attribute_name_of_law, RandomData}:
-	%
-	StartingState =
-		setAttribute( ActorState, sd_random_laws, RandomLawEntries ),
+    % random_laws is a list of initialised random law data, each element being
+    % like {attribute_name_of_law, RandomData}:
+    %
+    StartingState =
+        setAttribute( ActorState, sd_random_laws, RandomLawEntries ),
 
-	% ?send_info_fmt( StartingState, "Creating a stochastic actor "
-	%                 "with random laws ~p.", [ RandomLawEntries ] ),
+    % ?send_info_fmt( StartingState, "Creating a stochastic actor "
+    %                 "with random laws ~p.", [ RandomLawEntries ] ),
 
-	StartingState.
+    StartingState.
 
 
 
@@ -184,13 +184,13 @@ construct( State, ActorSettings, StochasticActorName, RandomLawDescs ) ->
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
-	% Class-specific actions:
-	%?info( "Deleting stochastic actor." ),
+    % Class-specific actions:
+    %?info( "Deleting stochastic actor." ),
 
-	%?debug( "Stochastic actor deleted." ),
+    %?debug( "Stochastic actor deleted." ),
 
-	% Then allow chaining:
-	State.
+    % Then allow chaining:
+    State.
 
 
 
@@ -219,9 +219,9 @@ Returns the random value.
 -spec get_random_value_from( law_identifier(), wooper:state() ) -> sample().
 get_random_value_from( LawIdentifier, State ) ->
 
-	LawData = list_table:get_value( LawIdentifier, ?getAttr(sd_random_laws) ),
+    LawData = list_table:get_value( LawIdentifier, ?getAttr(sd_random_laws) ),
 
-	random_utils:get_sample_from( LawData ).
+    random_utils:get_sample_from( LawData ).
 
 
 
@@ -232,15 +232,15 @@ reuse.
 Any law declared with the same identifier will be overridden by this one.
 """.
 -spec add_law( law_identifier(), random_law_spec(), wooper:state() ) ->
-											wooper:state().
+                                            wooper:state().
 add_law( LawIdentifier, LawSpec, State ) ->
 
-	LawData = random_utils:initialise_law( LawSpec ),
+    LawData = random_utils:initialise_law( LawSpec ),
 
-	NewLaws = list_table:add_entry( _K=LawIdentifier, _V=LawData,
-									?getAttr(sd_random_laws) ),
+    NewLaws = list_table:add_entry( _K=LawIdentifier, _V=LawData,
+                                    ?getAttr(sd_random_laws) ),
 
-	setAttribute( State, sd_random_laws, NewLaws ).
+    setAttribute( State, sd_random_laws, NewLaws ).
 
 
 
@@ -248,20 +248,20 @@ add_law( LawIdentifier, LawSpec, State ) ->
 -spec remove_law( law_identifier(), wooper:state() ) -> wooper:state().
 remove_law( LawIdentifier, State ) ->
 
-	CurrentLaws = ?getAttr(sd_random_laws),
+    CurrentLaws = ?getAttr(sd_random_laws),
 
-	Key = LawIdentifier,
+    Key = LawIdentifier,
 
-	Index = 1,
+    Index = 1,
 
-	case lists:keymember( Key, Index, CurrentLaws ) of
+    case lists:keymember( Key, Index, CurrentLaws ) of
 
-		true ->
-			NewLaws = lists:keydelete( Key, Index, CurrentLaws ),
-			setAttribute( State, sd_random_laws, NewLaws );
+        true ->
+            NewLaws = lists:keydelete( Key, Index, CurrentLaws ),
+            setAttribute( State, sd_random_laws, NewLaws );
 
-		false ->
-			throw( { unknown_random_law_to_remove, LawIdentifier,
-					 CurrentLaws } )
+        false ->
+            throw( { unknown_random_law_to_remove, LawIdentifier,
+                     CurrentLaws } )
 
-	end.
+    end.

@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2025 Olivier Boudeville
+% Copyright (C) 2018-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -217,60 +217,60 @@ autonomous, standalone test.
 % Basic UI operations.
 -export([ is_available/0,
 
-		  start/0, start/1,
+          start/0, start/1,
 
-		  set/1, set/2, unset/1,
+          set/1, set/2, unset/1,
 
-		  display/1, display/2,
+          display/1, display/2,
 
-		  display_numbered_list/2,
+          display_numbered_list/2,
 
-		  display_instant/1, display_instant/2,
+          display_instant/1, display_instant/2,
 
-		  display_warning/1, display_warning/2,
+          display_warning/1, display_warning/2,
 
-		  display_error/1, display_error/2,
-		  display_error_numbered_list/2,
+          display_error/1, display_error/2,
+          display_error_numbered_list/2,
 
-		  add_separation/0,
+          add_separation/0,
 
-		  get_text/1, get_text/2,
-		  get_text_as_integer/1, get_text_as_integer/2,
-		  get_text_as_maybe_integer/1, get_text_as_maybe_integer/2,
-		  read_text_as_integer/1, read_text_as_integer/2,
-		  read_text_as_maybe_integer/1, read_text_as_maybe_integer/2,
+          get_text/1, get_text/2,
+          get_text_as_integer/1, get_text_as_integer/2,
+          get_text_as_maybe_integer/1, get_text_as_maybe_integer/2,
+          read_text_as_integer/1, read_text_as_integer/2,
+          read_text_as_maybe_integer/1, read_text_as_maybe_integer/2,
 
-		  ask_yes_no/2, ask_yes_no/3,
+          ask_yes_no/2, ask_yes_no/3,
 
-		  choose_designated_item/1, choose_designated_item/2,
-		  choose_designated_item/3,
+          choose_designated_item/1, choose_designated_item/2,
+          choose_designated_item/3,
 
-		  choose_designated_item_with_default/2,
-		  choose_designated_item_with_default/3,
-		  choose_designated_item_with_default/4,
+          choose_designated_item_with_default/2,
+          choose_designated_item_with_default/3,
+          choose_designated_item_with_default/4,
 
-		  choose_numbered_item/1, choose_numbered_item/2,
-		  choose_numbered_item/3,
+          choose_numbered_item/1, choose_numbered_item/2,
+          choose_numbered_item/3,
 
-		  choose_numbered_item_with_default/2,
-		  choose_numbered_item_with_default/3,
-		  choose_numbered_item_with_default/4,
+          choose_numbered_item_with_default/2,
+          choose_numbered_item_with_default/3,
+          choose_numbered_item_with_default/4,
 
-		  set_setting/2, set_setting/3,
-		  set_settings/1, set_settings/2,
+          set_setting/2, set_setting/3,
+          set_settings/1, set_settings/2,
 
-		  unset_setting/1, unset_setting/2,
-		  unset_settings/1, unset_settings/2,
+          unset_setting/1, unset_setting/2,
+          unset_settings/1, unset_settings/2,
 
-		  get_setting/1,
+          get_setting/1,
 
-		  trace/1, trace/2,
+          trace/1, trace/2,
 
-		  clear/0, clear/1,
+          clear/0, clear/1,
 
-		  stop/0, stop/1,
+          stop/0, stop/1,
 
-		  to_string/0, to_string/1 ]).
+          to_string/0, to_string/1 ]).
 
 
 
@@ -294,16 +294,16 @@ The locale to be used by dialogs:
 
 -record( term_ui_state, {
 
-	%state_filename = ?default_state_path :: file_path(),
-	dialog_tool :: dialog_tool(),
-	dialog_tool_path :: file_path(),
-	locale = default :: dialog_locale(),
+    %state_filename = ?default_state_path :: file_path(),
+    dialog_tool :: dialog_tool(),
+    dialog_tool_path :: file_path(),
+    locale = default :: dialog_locale(),
 
-	% Generally little use of console outputs for this backend:
-	log_console = false :: boolean(),
+    % Generally little use of console outputs for this backend:
+    log_console = false :: boolean(),
 
-	log_file = undefined :: option( file() ),
-	settings :: setting_table() } ).
+    log_file = undefined :: option( file() ),
+    settings :: setting_table() } ).
 
 
 -doc "A term_ui state".
@@ -359,7 +359,7 @@ The locale to be used by dialogs:
 -spec is_available() -> boolean().
 is_available() ->
    % Cannot be simplified (no 'true but { T, TPath }):
-	not( lookup_dialog_tool() =:= false ).
+    not( lookup_dialog_tool() =:= false ).
 
 
 
@@ -371,7 +371,7 @@ that state, for any explicit later operation.
 """.
 -spec start() -> ui_state().
 start() ->
-	start( _Opts=[] ).
+    start( _Opts=[] ).
 
 
 
@@ -384,66 +384,66 @@ that state, for any explicit later operation.
 -spec start( ui_options() ) -> ui_state().
 start( Options ) ->
 
-	DialogUIState = case lookup_dialog_tool() of
+    DialogUIState = case lookup_dialog_tool() of
 
-		undefined ->
-			trace_utils:error( "No dialog tool found: neither "
-				"'dialog' nor 'whiptail' is available." ),
-			throw( no_dialog_tool_available );
+        undefined ->
+            trace_utils:error( "No dialog tool found: neither "
+                "'dialog' nor 'whiptail' is available." ),
+            throw( no_dialog_tool_available );
 
-		{ Tool, ToolPath } ->
-			init_state_with_dimensions( Tool, ToolPath )
+        { Tool, ToolPath } ->
+            init_state_with_dimensions( Tool, ToolPath )
 
-	end,
+    end,
 
-	start_helper( Options, DialogUIState ).
+    start_helper( Options, DialogUIState ).
 
 
 
 % (helper)
 start_helper( _Options=[], UIState ) ->
 
-	case process_dictionary:put( ?ui_name_key, ?MODULE ) of
+    case process_dictionary:put( ?ui_name_key, ?MODULE ) of
 
-		undefined ->
-			ok;
+        undefined ->
+            ok;
 
-		UIName ->
-			throw( { ui_already_started, UIName } )
+        UIName ->
+            throw( { ui_already_started, UIName } )
 
-	end,
+    end,
 
-	%trace_utils:debug_fmt( "Storing following initial UI state: ~ts",
-	%                       [ to_string( UIState ) ] ),
+    %trace_utils:debug_fmt( "Storing following initial UI state: ~ts",
+    %                       [ to_string( UIState ) ] ),
 
-	% No prior state expected:
-	process_dictionary:put( ?ui_state_key, UIState ) =:= undefined
-		orelse throw( term_ui_already_started ),
+    % No prior state expected:
+    process_dictionary:put( ?ui_state_key, UIState ) =:= undefined
+        orelse throw( term_ui_already_started ),
 
-	UIState;
+    UIState;
 
 start_helper( _Options=[ log_file | T ], UIState ) ->
-	start_helper( [ { log_file, "ui.log" } | T ], UIState );
+    start_helper( [ { log_file, "ui.log" } | T ], UIState );
 
 start_helper( _Options=[ { log_file, Filename } | T ], UIState ) ->
 
-	LogFile = file_utils:open( Filename, [ write, exclusive, raw ] ),
+    LogFile = file_utils:open( Filename, [ write, exclusive, raw ] ),
 
-	file_utils:write_ustring( LogFile, "Starting term UI.\n" ),
+    file_utils:write_ustring( LogFile, "Starting term UI.\n" ),
 
-	NewUIState = UIState#term_ui_state{ log_file=LogFile },
+    NewUIState = UIState#term_ui_state{ log_file=LogFile },
 
-	start_helper( T, NewUIState );
+    start_helper( T, NewUIState );
 
 start_helper( _Options=[ log_console | T ], UIState ) ->
-	NewUIState = UIState#term_ui_state{ log_console=true },
-	start_helper( T, NewUIState );
+    NewUIState = UIState#term_ui_state{ log_console=true },
+    start_helper( T, NewUIState );
 
 start_helper( UnexpectedList, _UIState ) when is_list( UnexpectedList ) ->
-	throw( { unexpected_options, UnexpectedList } );
+    throw( { unexpected_options, UnexpectedList } );
 
 start_helper( SingleElem, UIState ) ->
-	start_helper( [ SingleElem ], UIState ).
+    start_helper( [ SingleElem ], UIState ).
 
 
 
@@ -455,46 +455,46 @@ Initialises the UI state.
 -spec init_state_with_dimensions( dialog_tool(), file_path() ) -> ui_state().
 init_state_with_dimensions( Tool=dialog, DialogPath ) ->
 
-	Cmd = text_utils:join( _Sep=" ",
-		[ DialogPath, "--print-maxsize", get_redirect_string_for_code() ] ),
+    Cmd = text_utils:join( _Sep=" ",
+        [ DialogPath, "--print-maxsize", get_redirect_string_for_code() ] ),
 
-	%trace_utils:debug_fmt( "Command: '~ts'.", [ Cmd ] ),
+    %trace_utils:debug_fmt( "Command: '~ts'.", [ Cmd ] ),
 
-	{ Env, PortOpts } = get_execution_settings(),
+    { Env, PortOpts } = get_execution_settings(),
 
-	% By default we will be using the full terminal space:
-	case system_utils:run_command( Cmd, Env, _WorkingDir=undefined,
-								   PortOpts ) of
+    % By default we will be using the full terminal space:
+    case system_utils:run_command( Cmd, Env, _WorkingDir=undefined,
+                                   PortOpts ) of
 
-		% For example Result="MaxSize: 28, 107"
-		{ _ExitStatus=0, _Result="MaxSize: " ++ SizeString } ->
+        % For example Result="MaxSize: 28, 107"
+        { _ExitStatus=0, _Result="MaxSize: " ++ SizeString } ->
 
-			% Here, SizeString="28, 107".
-			[ HeightString, " " ++ WidthString ] =
-				text_utils:split( SizeString, _Delimiter=$, ),
+            % Here, SizeString="28, 107".
+            [ HeightString, " " ++ WidthString ] =
+                text_utils:split( SizeString, _Delimiter=$, ),
 
-			Height = text_utils:string_to_integer( HeightString ),
+            Height = text_utils:string_to_integer( HeightString ),
 
-			Width = text_utils:string_to_integer( WidthString ),
+            Width = text_utils:string_to_integer( WidthString ),
 
-			DimSettings = ?ui_table:new(
-				[ { max_height, Height }, { max_width, Width } ] ),
+            DimSettings = ?ui_table:new(
+                [ { max_height, Height }, { max_width, Width } ] ),
 
-			#term_ui_state{ dialog_tool=Tool,
-							dialog_tool_path=DialogPath,
-							settings=DimSettings };
+            #term_ui_state{ dialog_tool=Tool,
+                            dialog_tool_path=DialogPath,
+                            settings=DimSettings };
 
-		{ ExitStatus, Result } ->
-			throw( { max_size_lookup_failure, ExitStatus, Result } )
+        { ExitStatus, Result } ->
+            throw( { max_size_lookup_failure, ExitStatus, Result } )
 
-	end.
+    end.
 
 
 
 -doc "Sets the specified UI setting.".
 -spec set( ui_setting_key(), ui_setting_value() ) -> void().
 set( SettingKey, SettingValue ) ->
-	set( [ { SettingKey, SettingValue } ] ).
+    set( [ { SettingKey, SettingValue } ] ).
 
 
 
@@ -502,11 +502,11 @@ set( SettingKey, SettingValue ) ->
 -spec set( [ ui_setting_entry() ] ) -> void().
 set( SettingEntries ) ->
 
-	UIState = #term_ui_state{ settings=SettingTable } = get_state(),
+    UIState = #term_ui_state{ settings=SettingTable } = get_state(),
 
-	NewSettingTable = ?ui_table:add_entries( SettingEntries, SettingTable ),
+    NewSettingTable = ?ui_table:add_entries( SettingEntries, SettingTable ),
 
-	set_state( UIState#term_ui_state{ settings=NewSettingTable } ).
+    set_state( UIState#term_ui_state{ settings=NewSettingTable } ).
 
 
 
@@ -514,19 +514,19 @@ set( SettingEntries ) ->
 -spec unset( [ ui_setting_key() ] | ui_setting_key() ) -> void().
 unset( SettingKeys ) when is_list( SettingKeys ) ->
 
-	UIState = #term_ui_state{ settings=SettingTable } = get_state(),
+    UIState = #term_ui_state{ settings=SettingTable } = get_state(),
 
-	NewSettingTable = ?ui_table:remove_entries( SettingKeys, SettingTable ),
+    NewSettingTable = ?ui_table:remove_entries( SettingKeys, SettingTable ),
 
-	set_state( UIState#term_ui_state{ settings=NewSettingTable } );
+    set_state( UIState#term_ui_state{ settings=NewSettingTable } );
 
 unset( SettingKey ) ->
 
-	UIState = #term_ui_state{ settings=SettingTable } = get_state(),
+    UIState = #term_ui_state{ settings=SettingTable } = get_state(),
 
-	NewSettingTable = ?ui_table:remove_entry( SettingKey, SettingTable ),
+    NewSettingTable = ?ui_table:remove_entry( SettingKey, SettingTable ),
 
-	set_state( UIState#term_ui_state{ settings=NewSettingTable } ).
+    set_state( UIState#term_ui_state{ settings=NewSettingTable } ).
 
 
 
@@ -534,62 +534,62 @@ unset( SettingKey ) ->
 -spec display( text() ) -> void().
 display( Text ) ->
 
-	% Note: 'dialog' will eat the leading spaces of a line; this will be visible
-	% typically in bullet lists.
+    % Note: 'dialog' will eat the leading spaces of a line; this will be visible
+    % typically in bullet lists.
 
-	% Simplified example:
-	%Cmd = "dialog --msgbox 'Hello!' 8 40",
+    % Simplified example:
+    %Cmd = "dialog --msgbox 'Hello!' 8 40",
 
-	% Single quotes induce no specific issues (as are enclosed in double ones)
-	EscapedText = text_utils:escape_double_quotes( Text ),
+    % Single quotes induce no specific issues (as are enclosed in double ones)
+    EscapedText = text_utils:escape_double_quotes( Text ),
 
-	%trace_utils:debug_fmt( "Original text: '~ts'; once escaped: '~ts'.",
-	%                       [ Text, EscapedText ] ),
+    %trace_utils:debug_fmt( "Original text: '~ts'; once escaped: '~ts'.",
+    %                       [ Text, EscapedText ] ),
 
-	#term_ui_state{ dialog_tool_path=ToolPath,
-					settings=SettingTable } = get_state(),
+    #term_ui_state{ dialog_tool_path=ToolPath,
+                    settings=SettingTable } = get_state(),
 
-	%trace_utils:debug_fmt( "Dialog path: '~ts'.", [ ToolPath ] ),
+    %trace_utils:debug_fmt( "Dialog path: '~ts'.", [ ToolPath ] ),
 
 
-	{ SettingString, SuffixString } =
-		get_dialog_settings_for_return_code( SettingTable ),
+    { SettingString, SuffixString } =
+        get_dialog_settings_for_return_code( SettingTable ),
 
-	%trace_utils:debug_fmt( "Setting string: '~ts'.", [ SettingString ] ),
-	%trace_utils:debug_fmt( "Suffix string: '~ts'.", [ SuffixString ] ),
+    %trace_utils:debug_fmt( "Setting string: '~ts'.", [ SettingString ] ),
+    %trace_utils:debug_fmt( "Suffix string: '~ts'.", [ SuffixString ] ),
 
-	DialogString = text_utils:format( "--msgbox \"~ts\" ~ts",
-									  [ EscapedText, SuffixString ] ),
+    DialogString = text_utils:format( "--msgbox \"~ts\" ~ts",
+                                      [ EscapedText, SuffixString ] ),
 
-	Cmd = text_utils:join( _Sep=" ",
-						   [ ToolPath, SettingString, DialogString ] ),
+    Cmd = text_utils:join( _Sep=" ",
+                           [ ToolPath, SettingString, DialogString ] ),
 
-	%trace_utils:debug_fmt( "term_ui display command: '~ts'.", [ Cmd ] ),
+    %trace_utils:debug_fmt( "term_ui display command: '~ts'.", [ Cmd ] ),
 
-	{ Env, PortOpts } = get_execution_settings(),
+    { Env, PortOpts } = get_execution_settings(),
 
-	case system_utils:run_command( Cmd, Env, _WorkingDir=undefined,
-								   PortOpts ) of
+    case system_utils:run_command( Cmd, Env, _WorkingDir=undefined,
+                                   PortOpts ) of
 
-		{ _ExitStatus=0, _Output="" } ->
-			ok;
+        { _ExitStatus=0, _Output="" } ->
+            ok;
 
-		{ _ExitStatus=0, Output } ->
-			trace_utils:warning_fmt( "Unexpected output: '~ts'.", [ Output ] );
+        { _ExitStatus=0, Output } ->
+            trace_utils:warning_fmt( "Unexpected output: '~ts'.", [ Output ] );
 
-		{ ExitStatus, Output } ->
-			trace_utils:error_fmt( "Display error reported for '~ts' "
-				"(exit status: ~B):~n~ts", [ EscapedText, ExitStatus, Output ] )
-			%throw( { display_error_reported, ExitStatus, Output } )
+        { ExitStatus, Output } ->
+            trace_utils:error_fmt( "Display error reported for '~ts' "
+                "(exit status: ~B):~n~ts", [ EscapedText, ExitStatus, Output ] )
+            %throw( { display_error_reported, ExitStatus, Output } )
 
-	end.
+    end.
 
 
 
 -doc "Displays the specified formatted text, as a normal modal message.".
 -spec display( format_string(), format_values() ) -> void().
 display( FormatString, Values ) ->
-	display( text_utils:format( FormatString, Values ) ).
+    display( text_utils:format( FormatString, Values ) ).
 
 
 
@@ -598,8 +598,8 @@ Displays in-order the items of the specified list, as a normal modal message.
 """.
 -spec display_numbered_list( label(), [ text() ] ) -> void().
 display_numbered_list( Label, Lines ) ->
-	LineStrings = text_utils:strings_to_enumerated_string( Lines ),
-	display( Label ++ LineStrings ).
+    LineStrings = text_utils:strings_to_enumerated_string( Lines ),
+    display( Label ++ LineStrings ).
 
 
 
@@ -609,54 +609,54 @@ Displays the specified text, as a normal non-modal message.
 -spec display_instant( text() ) -> void().
 display_instant( Text ) ->
 
-	% Note: 'dialog' will eat the leading spaces of a line; this will be visible
-	% typically in bullet lists.
+    % Note: 'dialog' will eat the leading spaces of a line; this will be visible
+    % typically in bullet lists.
 
-	% Simplified example:
-	%Cmd = "dialog --infobox 'Hello!' 8 40",
+    % Simplified example:
+    %Cmd = "dialog --infobox 'Hello!' 8 40",
 
-	% Single quotes induce no specific issues (as are enclosed in double ones)
-	EscapedText = text_utils:escape_double_quotes( Text ),
+    % Single quotes induce no specific issues (as are enclosed in double ones)
+    EscapedText = text_utils:escape_double_quotes( Text ),
 
-	%trace_utils:debug_fmt( "Original text: '~ts'; once escaped: '~ts'.",
-	%                       [ Text, EscapedText ] ),
+    %trace_utils:debug_fmt( "Original text: '~ts'; once escaped: '~ts'.",
+    %                       [ Text, EscapedText ] ),
 
-	#term_ui_state{ dialog_tool_path=ToolPath,
-					settings=SettingTable } = get_state(),
+    #term_ui_state{ dialog_tool_path=ToolPath,
+                    settings=SettingTable } = get_state(),
 
-	%trace_utils:debug_fmt( "Dialog path: '~ts'.", [ ToolPath ] ),
+    %trace_utils:debug_fmt( "Dialog path: '~ts'.", [ ToolPath ] ),
 
-	{ SettingString, SuffixString } =
-		get_dialog_settings_for_return_code( SettingTable ),
+    { SettingString, SuffixString } =
+        get_dialog_settings_for_return_code( SettingTable ),
 
-	%trace_utils:debug_fmt( "Setting string: '~ts'.", [ SettingString ] ),
-	%trace_utils:debug_fmt( "Suffix string: '~ts'.", [ SuffixString ] ),
+    %trace_utils:debug_fmt( "Setting string: '~ts'.", [ SettingString ] ),
+    %trace_utils:debug_fmt( "Suffix string: '~ts'.", [ SuffixString ] ),
 
-	DialogString = text_utils:format( "--infobox \"~ts\" ~ts",
-									  [ EscapedText, SuffixString ] ),
+    DialogString = text_utils:format( "--infobox \"~ts\" ~ts",
+                                      [ EscapedText, SuffixString ] ),
 
-	Cmd = text_utils:join( _Sep=" ",
-						   [ ToolPath, SettingString, DialogString ] ),
+    Cmd = text_utils:join( _Sep=" ",
+                           [ ToolPath, SettingString, DialogString ] ),
 
-	%trace_utils:debug_fmt( "term_ui display command: '~ts'.", [ Cmd ] ),
+    %trace_utils:debug_fmt( "term_ui display command: '~ts'.", [ Cmd ] ),
 
-	{ Env, PortOpts } = get_execution_settings(),
+    { Env, PortOpts } = get_execution_settings(),
 
-	case system_utils:run_command( Cmd, Env, _WorkingDir=undefined,
-								   PortOpts ) of
+    case system_utils:run_command( Cmd, Env, _WorkingDir=undefined,
+                                   PortOpts ) of
 
-		{ _ExitStatus=0, _Output="" } ->
-			ok;
+        { _ExitStatus=0, _Output="" } ->
+            ok;
 
-		{ _ExitStatus=0, Output } ->
-			trace_utils:warning_fmt( "Unexpected output: '~ts'.", [ Output ] );
+        { _ExitStatus=0, Output } ->
+            trace_utils:warning_fmt( "Unexpected output: '~ts'.", [ Output ] );
 
-		{ ExitStatus, Output } ->
-			trace_utils:error_fmt( "Display error reported for '~ts' "
-				"(exit status: ~B):~n~ts", [ EscapedText, ExitStatus, Output ] )
-			%throw( { display_error_reported, ExitStatus, Output } )
+        { ExitStatus, Output } ->
+            trace_utils:error_fmt( "Display error reported for '~ts' "
+                "(exit status: ~B):~n~ts", [ EscapedText, ExitStatus, Output ] )
+            %throw( { display_error_reported, ExitStatus, Output } )
 
-	end.
+    end.
 
 
 
@@ -665,7 +665,7 @@ Displays the specified formatted text, as a normal non-modal message.
 """.
 -spec display_instant( format_string(), format_values() ) -> void().
 display_instant( FormatString, Values ) ->
-	display_instant( text_utils:format( FormatString, Values ) ).
+    display_instant( text_utils:format( FormatString, Values ) ).
 
 
 
@@ -673,64 +673,64 @@ display_instant( FormatString, Values ) ->
 -spec display_warning( text() ) -> void().
 display_warning( Text ) ->
 
-	% Simplified example:
-	%Cmd = "dialog --infobox 'Warning!' 8 40",
+    % Simplified example:
+    %Cmd = "dialog --infobox 'Warning!' 8 40",
 
-	% Single quotes induce no specific issues (as are enclosed in double ones)
-	EscapedText = text_utils:escape_double_quotes( Text ),
+    % Single quotes induce no specific issues (as are enclosed in double ones)
+    EscapedText = text_utils:escape_double_quotes( Text ),
 
-	%trace_utils:debug_fmt( "Original text: '~ts'; once escaped: '~ts'.",
-	%                       [ Text, EscapedText ] ),
+    %trace_utils:debug_fmt( "Original text: '~ts'; once escaped: '~ts'.",
+    %                       [ Text, EscapedText ] ),
 
-	#term_ui_state{ dialog_tool_path=ToolPath,
-					settings=SettingTable } = get_state(),
+    #term_ui_state{ dialog_tool_path=ToolPath,
+                    settings=SettingTable } = get_state(),
 
-	%trace_utils:debug_fmt( "Dialog path: '~ts'.", [ ToolPath ] ),
+    %trace_utils:debug_fmt( "Dialog path: '~ts'.", [ ToolPath ] ),
 
-	WarningSettingTable = ?ui_table:add_entry( 'title', ?yellow"Warning"?normal,
-											   SettingTable ),
+    WarningSettingTable = ?ui_table:add_entry( 'title', ?yellow"Warning"?normal,
+                                               SettingTable ),
 
-	{ SettingString, SuffixString } =
-		get_dialog_settings_for_return_code( WarningSettingTable ),
+    { SettingString, SuffixString } =
+        get_dialog_settings_for_return_code( WarningSettingTable ),
 
-	%trace_utils:debug_fmt( "Setting string: '~ts'.", [ SettingString ] ),
-	%trace_utils:debug_fmt( "Suffix string: '~ts'.", [ SuffixString ] ),
+    %trace_utils:debug_fmt( "Setting string: '~ts'.", [ SettingString ] ),
+    %trace_utils:debug_fmt( "Suffix string: '~ts'.", [ SuffixString ] ),
 
-	% Apparently button colors are ignored:
-	%OKLabel = "--ok-label '"?red" Abort "?normal"'",
-	OKLabel = "--ok-label 'Abort'",
+    % Apparently button colors are ignored:
+    %OKLabel = "--ok-label '"?red" Abort "?normal"'",
+    OKLabel = "--ok-label 'Abort'",
 
-	DialogString = "--colors " ++ OKLabel
-		++ text_utils:format( " --msgbox \"~ts\" ~ts",
-							  [ EscapedText, SuffixString ] ),
+    DialogString = "--colors " ++ OKLabel
+        ++ text_utils:format( " --msgbox \"~ts\" ~ts",
+                              [ EscapedText, SuffixString ] ),
 
-	Cmd = text_utils:join( _Sep=" ",
-						   [ ToolPath, SettingString, DialogString ] ),
+    Cmd = text_utils:join( _Sep=" ",
+                           [ ToolPath, SettingString, DialogString ] ),
 
-	%trace_utils:debug_fmt( "term_ui display command: '~ts'.", [ Cmd ] ),
+    %trace_utils:debug_fmt( "term_ui display command: '~ts'.", [ Cmd ] ),
 
-	{ Env, PortOpts } = get_execution_settings(),
+    { Env, PortOpts } = get_execution_settings(),
 
-	case system_utils:run_command( Cmd, Env, _WorkingDir=undefined,
-								   PortOpts ) of
+    case system_utils:run_command( Cmd, Env, _WorkingDir=undefined,
+                                   PortOpts ) of
 
-		{ _ExitStatus=0, _Output="" } ->
-			ok;
+        { _ExitStatus=0, _Output="" } ->
+            ok;
 
-		%{ _ExitStatus=0, Output } ->
-			%trace_utils:debug_fmt( "Display output: '~ts'.", [ Output ] );
+        %{ _ExitStatus=0, Output } ->
+            %trace_utils:debug_fmt( "Display output: '~ts'.", [ Output ] );
 
-		{ ExitStatus, Output } ->
-			throw( { display_warning_reported, ExitStatus, Output } )
+        { ExitStatus, Output } ->
+            throw( { display_warning_reported, ExitStatus, Output } )
 
-	end.
+    end.
 
 
 
 -doc "Displays the specified formatted text, as a warning message.".
 -spec display_warning( format_string(), format_values() ) -> void().
 display_warning( FormatString, Values ) ->
-	display_warning( text_utils:format( FormatString, Values ) ).
+    display_warning( text_utils:format( FormatString, Values ) ).
 
 
 
@@ -738,72 +738,72 @@ display_warning( FormatString, Values ) ->
 -spec display_error( text() ) -> void().
 display_error( Text ) ->
 
-	% Simplified example:
-	%Cmd = "dialog --infobox 'Error!' 8 40",
+    % Simplified example:
+    %Cmd = "dialog --infobox 'Error!' 8 40",
 
-	% Single quotes induce no specific issues (as are enclosed in double ones)
-	EscapedText = text_utils:escape_double_quotes( Text ),
+    % Single quotes induce no specific issues (as are enclosed in double ones)
+    EscapedText = text_utils:escape_double_quotes( Text ),
 
-	%trace_utils:debug_fmt( "Original text: '~ts'; once escaped: '~ts'.",
-	%                       [ Text, EscapedText ] ),
+    %trace_utils:debug_fmt( "Original text: '~ts'; once escaped: '~ts'.",
+    %                       [ Text, EscapedText ] ),
 
-	#term_ui_state{ dialog_tool_path=ToolPath,
-					settings=SettingTable } = get_state(),
+    #term_ui_state{ dialog_tool_path=ToolPath,
+                    settings=SettingTable } = get_state(),
 
-	%trace_utils:debug_fmt( "Dialog path: '~ts'.", [ ToolPath ] ),
+    %trace_utils:debug_fmt( "Dialog path: '~ts'.", [ ToolPath ] ),
 
-	ErrorSettingTable = ?ui_table:add_entry( 'title', ?red"Error"?normal,
-											 SettingTable ),
+    ErrorSettingTable = ?ui_table:add_entry( 'title', ?red"Error"?normal,
+                                             SettingTable ),
 
-	{ SettingString, SuffixString } =
-		get_dialog_settings_for_return_code( ErrorSettingTable ),
+    { SettingString, SuffixString } =
+        get_dialog_settings_for_return_code( ErrorSettingTable ),
 
-	%trace_utils:debug_fmt( "Setting string: '~ts'.", [ SettingString ] ),
-	%trace_utils:debug_fmt( "Suffix string: '~ts'.", [ SuffixString ] ),
+    %trace_utils:debug_fmt( "Setting string: '~ts'.", [ SettingString ] ),
+    %trace_utils:debug_fmt( "Suffix string: '~ts'.", [ SuffixString ] ),
 
-	% Apparently button colors are ignored:
-	%OKLabel = "--ok-label '"?red" Abort "?normal"'",
-	OKLabel = "--ok-label 'Abort'",
+    % Apparently button colors are ignored:
+    %OKLabel = "--ok-label '"?red" Abort "?normal"'",
+    OKLabel = "--ok-label 'Abort'",
 
-	DialogString = "--colors " ++ OKLabel
-		++ text_utils:format( " --msgbox \"~ts\" ~ts",
-							  [ EscapedText, SuffixString ] ),
+    DialogString = "--colors " ++ OKLabel
+        ++ text_utils:format( " --msgbox \"~ts\" ~ts",
+                              [ EscapedText, SuffixString ] ),
 
-	Cmd = text_utils:join( _Sep=" ",
-						   [ ToolPath, SettingString, DialogString ] ),
+    Cmd = text_utils:join( _Sep=" ",
+                           [ ToolPath, SettingString, DialogString ] ),
 
-	%trace_utils:debug_fmt( "term_ui display command: '~ts'.", [ Cmd ] ),
+    %trace_utils:debug_fmt( "term_ui display command: '~ts'.", [ Cmd ] ),
 
-	{ Env, PortOpts } = get_execution_settings(),
+    { Env, PortOpts } = get_execution_settings(),
 
-	case system_utils:run_command( Cmd, Env, _WorkingDir=undefined,
-								   PortOpts ) of
+    case system_utils:run_command( Cmd, Env, _WorkingDir=undefined,
+                                   PortOpts ) of
 
-		{ _ExitStatus=0, _Output="" } ->
-			ok;
+        { _ExitStatus=0, _Output="" } ->
+            ok;
 
-		%{ _ExitStatus=0, Output } ->
-			%trace_utils:debug_fmt( "Display output: '~ts'.", [ Output ] );
+        %{ _ExitStatus=0, Output } ->
+            %trace_utils:debug_fmt( "Display output: '~ts'.", [ Output ] );
 
-		{ ExitStatus, Output } ->
-			throw( { display_error_reported, ExitStatus, Output } )
+        { ExitStatus, Output } ->
+            throw( { display_error_reported, ExitStatus, Output } )
 
-	end.
+    end.
 
 
 
 -doc "Displays the specified formatted text, as an error message.".
 -spec display_error( format_string(), format_values() ) -> void().
 display_error( FormatString, Values ) ->
-	display_error( text_utils:format( FormatString, Values ) ).
+    display_error( text_utils:format( FormatString, Values ) ).
 
 
 
 -doc "Displays in-order the items of the specified list, as an error message.".
 -spec display_error_numbered_list( label(), [ text() ] ) -> void().
 display_error_numbered_list( Label, Lines ) ->
-	LineStrings = text_utils:strings_to_enumerated_string( Lines ),
-	display_error( Label ++ LineStrings ).
+    LineStrings = text_utils:strings_to_enumerated_string( Lines ),
+    display_error( Label ++ LineStrings ).
 
 
 
@@ -814,8 +814,8 @@ Note: meaningless for this backend.
 """.
 -spec add_separation() -> void().
 add_separation() ->
-	% Could be a clear.
-	ok.
+    % Could be a clear.
+    ok.
 
 
 
@@ -831,7 +831,7 @@ Returns the user-entered text, based on an implicit state.
 """.
 -spec get_text( prompt() ) -> text().
 get_text( Prompt ) ->
-	get_text( Prompt, _UIState=get_state() ).
+    get_text( Prompt, _UIState=get_state() ).
 
 
 
@@ -843,62 +843,62 @@ operation_cancelled if the user preferred the cancel button.
 """.
 -spec get_text( prompt(), ui_state() ) -> text().
 get_text( Prompt,
-		  %_UIState ) ->
-		  #term_ui_state{ dialog_tool_path=ToolPath,
-						  settings=SettingTable } ) ->
+          %_UIState ) ->
+          #term_ui_state{ dialog_tool_path=ToolPath,
+                          settings=SettingTable } ) ->
 
-	% For example dialog --backtitle "AA" --inputbox "Enter your name:" 8 40 2>
-	% foobar.txt
+    % For example dialog --backtitle "AA" --inputbox "Enter your name:" 8 40 2>
+    % foobar.txt
 
-	% Single quotes induce no specific issues (as are enclosed in double ones)
-	EscapedPrompt = text_utils:escape_double_quotes( Prompt ),
+    % Single quotes induce no specific issues (as are enclosed in double ones)
+    EscapedPrompt = text_utils:escape_double_quotes( Prompt ),
 
-	{ SettingString, SuffixString } =
-		get_dialog_settings_for_file_return( SettingTable ),
+    { SettingString, SuffixString } =
+        get_dialog_settings_for_file_return( SettingTable ),
 
-	DialogString = text_utils:format( "--inputbox \"~ts\" ~ts",
-									  [ EscapedPrompt, SuffixString ] ),
+    DialogString = text_utils:format( "--inputbox \"~ts\" ~ts",
+                                      [ EscapedPrompt, SuffixString ] ),
 
-	CmdStrings = [ ToolPath, SettingString, DialogString ],
+    CmdStrings = [ ToolPath, SettingString, DialogString ],
 
-	%trace_utils:debug_fmt( "CmdStrings = ~p", [ CmdStrings ] ),
+    %trace_utils:debug_fmt( "CmdStrings = ~p", [ CmdStrings ] ),
 
-	Cmd = text_utils:join( _Sep=" ", CmdStrings ),
+    Cmd = text_utils:join( _Sep=" ", CmdStrings ),
 
-	{ Env, PortOpts } = get_execution_settings(),
+    { Env, PortOpts } = get_execution_settings(),
 
-	Read = case system_utils:run_command( Cmd, Env, _WorkingDir=undefined,
-										  PortOpts ) of
+    Read = case system_utils:run_command( Cmd, Env, _WorkingDir=undefined,
+                                          PortOpts ) of
 
-		{ _ExitStatus=0, _Result="" } ->
-			TmpFilename = ?temp_file,
-			case file_utils:is_existing_file( TmpFilename ) of
+        { _ExitStatus=0, _Result="" } ->
+            TmpFilename = ?temp_file,
+            case file_utils:is_existing_file( TmpFilename ) of
 
-				true ->
-					BinContent = file_utils:read_whole( TmpFilename ),
-					%trace_utils:debug_fmt( "Content = ~p", [ BinContent ] ),
-					file_utils:remove_file(TmpFilename ),
-					text_utils:binary_to_string( BinContent );
+                true ->
+                    BinContent = file_utils:read_whole( TmpFilename ),
+                    %trace_utils:debug_fmt( "Content = ~p", [ BinContent ] ),
+                    file_utils:remove_file(TmpFilename ),
+                    text_utils:binary_to_string( BinContent );
 
-				false ->
-					throw( { term_ui_temp_file_not_found, TmpFilename } )
+                false ->
+                    throw( { term_ui_temp_file_not_found, TmpFilename } )
 
-			end;
+            end;
 
-		{ _ExitStatus=0, Result } ->
-			throw( { unexpected_result, Result } );
+        { _ExitStatus=0, Result } ->
+            throw( { unexpected_result, Result } );
 
-		{ _ExitStatus=1, _Output=[] } ->
-			throw( operation_cancelled );
+        { _ExitStatus=1, _Output=[] } ->
+            throw( operation_cancelled );
 
-		{ ExitStatus, Output } ->
-			throw( { get_text_failed, ExitStatus, Output } )
+        { ExitStatus, Output } ->
+            throw( { get_text_failed, ExitStatus, Output } )
 
-	end,
+    end,
 
-	%trace_utils:debug_fmt( "get_text/2 read: '~p'.", [ Read ] ),
+    %trace_utils:debug_fmt( "get_text/2 read: '~p'.", [ Read ] ),
 
-	text_utils:remove_ending_carriage_return( Read ).
+    text_utils:remove_ending_carriage_return( Read ).
 
 
 
@@ -910,7 +910,7 @@ implicit state.
 """.
 -spec get_text_as_integer( prompt() ) -> integer().
 get_text_as_integer( Prompt ) ->
-	get_text_as_integer( Prompt, _UIState=get_state() ).
+    get_text_as_integer( Prompt, _UIState=get_state() ).
 
 
 
@@ -922,8 +922,8 @@ explicit state.
 """.
 -spec get_text_as_integer( prompt(), ui_state() ) -> integer().
 get_text_as_integer( Prompt, UIState ) ->
-	Text = get_text( Prompt, UIState ),
-	text_utils:string_to_integer( Text ).
+    Text = get_text( Prompt, UIState ),
+    text_utils:string_to_integer( Text ).
 
 
 
@@ -935,7 +935,7 @@ implicit state, prompting the user until a valid input is obtained.
 """.
 -spec read_text_as_integer( prompt() ) -> integer().
 read_text_as_integer( Prompt ) ->
-	read_text_as_integer( Prompt, _UIState=get_state() ).
+    read_text_as_integer( Prompt, _UIState=get_state() ).
 
 
 
@@ -948,19 +948,19 @@ explicit state, prompting the user until a valid input is obtained.
 -spec read_text_as_integer( prompt(), ui_state() ) -> integer().
 read_text_as_integer( Prompt, UIState ) ->
 
-	Text = get_text( Prompt, UIState ),
+    Text = get_text( Prompt, UIState ),
 
-	case text_utils:try_string_to_integer( Text ) of
+    case text_utils:try_string_to_integer( Text ) of
 
-		undefined ->
-			%trace_utils:debug_fmt( "(rejected: '~ts')", [ Text ] ),
-			display_error( "Invalid value specified (~p).", [ Text ] ),
-			read_text_as_integer( Prompt, UIState );
+        undefined ->
+            %trace_utils:debug_fmt( "(rejected: '~ts')", [ Text ] ),
+            display_error( "Invalid value specified (~p).", [ Text ] ),
+            read_text_as_integer( Prompt, UIState );
 
-		I ->
-			I
+        I ->
+            I
 
-	end.
+    end.
 
 
 
@@ -972,7 +972,7 @@ to (possibly) an integer, based on an implicit state.
 """.
 -spec get_text_as_maybe_integer( prompt() ) -> option( integer() ).
 get_text_as_maybe_integer( Prompt ) ->
-	get_text_as_maybe_integer( Prompt, _UIState=get_state() ).
+    get_text_as_maybe_integer( Prompt, _UIState=get_state() ).
 
 
 
@@ -985,15 +985,15 @@ to (possibly) an integer, based on an explicit state.
 -spec get_text_as_maybe_integer( prompt(), ui_state() ) -> option( integer() ).
 get_text_as_maybe_integer( Prompt, UIState ) ->
 
-	case get_text( Prompt, UIState ) of
+    case get_text( Prompt, UIState ) of
 
-		"" ->
-			undefined;
+        "" ->
+            undefined;
 
-		Text ->
-			text_utils:string_to_integer( Text )
+        Text ->
+            text_utils:string_to_integer( Text )
 
-	end.
+    end.
 
 
 
@@ -1007,7 +1007,7 @@ that resolves to an integer (then returned), or an empty string (then returning
 """.
 -spec read_text_as_maybe_integer( prompt() ) -> option( integer() ).
 read_text_as_maybe_integer( Prompt ) ->
-	read_text_as_maybe_integer( Prompt, _UIState=get_state() ).
+    read_text_as_maybe_integer( Prompt, _UIState=get_state() ).
 
 
 
@@ -1023,23 +1023,23 @@ that resolves to an integer (then returned), or an empty string (then returning
 -spec read_text_as_maybe_integer( prompt(), ui_state() ) -> option( integer() ).
 read_text_as_maybe_integer( Prompt, UIState ) ->
 
-	case get_text( Prompt, UIState ) of
+    case get_text( Prompt, UIState ) of
 
-		"" ->
-			undefined;
+        "" ->
+            undefined;
 
-		Text ->
-			case text_utils:try_string_to_integer( Text ) of
+        Text ->
+            case text_utils:try_string_to_integer( Text ) of
 
-				undefined ->
-					read_text_as_maybe_integer( Prompt, UIState );
+                undefined ->
+                    read_text_as_maybe_integer( Prompt, UIState );
 
-				I ->
-					I
+                I ->
+                    I
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -1049,7 +1049,7 @@ and "no" (with specified default option), and returns that choice.
 """.
 -spec ask_yes_no( prompt(), binary_choice() ) -> binary_choice().
 ask_yes_no( Prompt, BinaryDefault ) ->
-	ask_yes_no( Prompt, BinaryDefault, get_state() ).
+    ask_yes_no( Prompt, BinaryDefault, get_state() ).
 
 
 
@@ -1059,51 +1059,51 @@ and "no" (with specified default option), and returns that choice.
 """.
 -spec ask_yes_no( prompt(), binary_choice(), ui_state() ) -> binary_choice().
 ask_yes_no( Prompt, BinaryDefault, #term_ui_state{ dialog_tool_path=ToolPath,
-												   settings=SettingTable } ) ->
+                                                   settings=SettingTable } ) ->
 
-	% For example dialog --backtitle "AA" --title "BB" --defaultno --yesno
-	% "Having\n fun?" 6 25
+    % For example dialog --backtitle "AA" --title "BB" --defaultno --yesno
+    % "Having\n fun?" 6 25
 
-	% Single quotes induce no specific issues (as are enclosed in double ones)
-	EscapedPrompt = text_utils:escape_double_quotes( Prompt ),
+    % Single quotes induce no specific issues (as are enclosed in double ones)
+    EscapedPrompt = text_utils:escape_double_quotes( Prompt ),
 
-	DefaultChoiceOpt = case BinaryDefault of
+    DefaultChoiceOpt = case BinaryDefault of
 
-		yes ->
-			"";
+        yes ->
+            "";
 
-		no ->
-			"--defaultno"
+        no ->
+            "--defaultno"
 
-	end,
+    end,
 
-	{ SettingString, SuffixString } =
-		get_dialog_settings_for_return_code( SettingTable ),
+    { SettingString, SuffixString } =
+        get_dialog_settings_for_return_code( SettingTable ),
 
-	DialogString = text_utils:format( "~ts --yesno \"~ts\" ~ts",
-		[ DefaultChoiceOpt, EscapedPrompt, SuffixString ] ),
+    DialogString = text_utils:format( "~ts --yesno \"~ts\" ~ts",
+        [ DefaultChoiceOpt, EscapedPrompt, SuffixString ] ),
 
-	CmdStrings = [ ToolPath, SettingString, DialogString ],
+    CmdStrings = [ ToolPath, SettingString, DialogString ],
 
-	%trace_utils:debug_fmt( "CmdStrings = ~p", [ CmdStrings ] ),
+    %trace_utils:debug_fmt( "CmdStrings = ~p", [ CmdStrings ] ),
 
-	Cmd = text_utils:join( _Sep=" ", CmdStrings ),
+    Cmd = text_utils:join( _Sep=" ", CmdStrings ),
 
-	{ Env, PortOpts } = get_execution_settings(),
+    { Env, PortOpts } = get_execution_settings(),
 
-	case system_utils:run_command( Cmd, Env, _WorkingDir=undefined,
-								   PortOpts ) of
+    case system_utils:run_command( Cmd, Env, _WorkingDir=undefined,
+                                   PortOpts ) of
 
-		{ _ExitStatus=0, _Result=[] } ->
-			yes;
+        { _ExitStatus=0, _Result=[] } ->
+            yes;
 
-		{ _ExitStatus=1, _Result=[] } ->
-			no;
+        { _ExitStatus=1, _Result=[] } ->
+            no;
 
-		{ ExitStatus, Output } ->
-			throw( { yes_no_choice_failed, ExitStatus, Output } )
+        { ExitStatus, Output } ->
+            throw( { yes_no_choice_failed, ExitStatus, Output } )
 
-	end.
+    end.
 
 
 
@@ -1120,10 +1120,10 @@ prefer to cancel that operation.
 -spec choose_designated_item( [ choice_element() ] ) -> choice_designator().
 choose_designated_item( Choices ) ->
 
-	Prompt = text_utils:format( "Select among these ~B choices:",
-								[ length( Choices ) + 1 ] ),
+    Prompt = text_utils:format( "Select among these ~B choices:",
+                                [ length( Choices ) + 1 ] ),
 
-	choose_designated_item( Prompt, Choices ).
+    choose_designated_item( Prompt, Choices ).
 
 
 
@@ -1139,9 +1139,9 @@ prefer to cancel that operation.
 """.
 
 -spec choose_designated_item( prompt(), [ choice_element() ] ) ->
-									choice_designator().
+                                    choice_designator().
 choose_designated_item( Prompt, Choices ) ->
-	choose_designated_item( Prompt, Choices, get_state() ).
+    choose_designated_item( Prompt, Choices, get_state() ).
 
 
 
@@ -1156,72 +1156,72 @@ prefer to cancel that operation.
 (const)
 """.
 -spec choose_designated_item( prompt(), [ choice_element() ], ui_state() ) ->
-									choice_designator().
+                                    choice_designator().
 choose_designated_item( Prompt, Choices,
-						#term_ui_state{ dialog_tool_path=ToolPath,
-										settings=SettingTable } ) ->
+                        #term_ui_state{ dialog_tool_path=ToolPath,
+                                        settings=SettingTable } ) ->
 
-	% Command: dialog --menu <text> <height> <width> <menu height> <tag1>
-	% <item1>...
-	%
-	% For example dialog --menu "Hello" 0 0 0 1 One 2 Two 3 Three
-	%
-	% (no default choice can be defined)
+    % Command: dialog --menu <text> <height> <width> <menu height> <tag1>
+    % <item1>...
+    %
+    % For example dialog --menu "Hello" 0 0 0 1 One 2 Two 3 Three
+    %
+    % (no default choice can be defined)
 
-	{ Designators, Texts } = lists:unzip( Choices ),
+    { Designators, Texts } = lists:unzip( Choices ),
 
-	lists:member( ui_cancel, Designators ) andalso
-		throw( { disallowed_choice_designator, ui_cancel } ),
+    lists:member( ui_cancel, Designators ) andalso
+        throw( { disallowed_choice_designator, ui_cancel } ),
 
-	ChoiceCount = length( Choices ),
+    ChoiceCount = length( Choices ),
 
-	% We simply tag the choices with a counter (rather than using the designator
-	% atoms):
-	%
-	NumChoices = lists:zip( lists:seq( 1, ChoiceCount ), Texts ),
+    % We simply tag the choices with a counter (rather than using the designator
+    % atoms):
+    %
+    NumChoices = lists:zip( lists:seq( 1, ChoiceCount ), Texts ),
 
-	NumStrings = lists:foldl(
-		fun( { Num, Text }, AccStrings ) ->
-			[ text_utils:format( " ~B \"~ts\"", [ Num, Text ] ) | AccStrings ]
-		end,
-		_Acc0=[],
-		_List=NumChoices ),
+    NumStrings = lists:foldl(
+        fun( { Num, Text }, AccStrings ) ->
+            [ text_utils:format( " ~B \"~ts\"", [ Num, Text ] ) | AccStrings ]
+        end,
+        _Acc0=[],
+        _List=NumChoices ),
 
-	{ SettingString, _SuffixString } =
-		get_dialog_settings_for_return_code( SettingTable ),
+    { SettingString, _SuffixString } =
+        get_dialog_settings_for_return_code( SettingTable ),
 
-	AutoSizeString = "0 0",
+    AutoSizeString = "0 0",
 
-	DialogStrings = [ "--menu", "\"" ++ Prompt ++ "\"", AutoSizeString,
-		_MenuHeight=text_utils:integer_to_string( ChoiceCount )
-		| lists:reverse( [ get_redirect_string_for_code() | NumStrings ] ) ],
+    DialogStrings = [ "--menu", "\"" ++ Prompt ++ "\"", AutoSizeString,
+        _MenuHeight=text_utils:integer_to_string( ChoiceCount )
+        | lists:reverse( [ get_redirect_string_for_code() | NumStrings ] ) ],
 
-	CmdStrings = [ ToolPath, SettingString | DialogStrings ],
+    CmdStrings = [ ToolPath, SettingString | DialogStrings ],
 
-	%trace_utils:debug_fmt( "CmdStrings = ~p", [ CmdStrings ] ),
+    %trace_utils:debug_fmt( "CmdStrings = ~p", [ CmdStrings ] ),
 
-	Cmd = text_utils:join( _Sep=" ", CmdStrings ),
+    Cmd = text_utils:join( _Sep=" ", CmdStrings ),
 
-	{ Env, PortOpts } = get_execution_settings(),
+    { Env, PortOpts } = get_execution_settings(),
 
-	case system_utils:run_command( Cmd, Env, _WorkingDir=undefined,
-								   PortOpts ) of
+    case system_utils:run_command( Cmd, Env, _WorkingDir=undefined,
+                                   PortOpts ) of
 
-		{ _ExitStatus=0, Result } ->
-			ChosenNum = text_utils:string_to_integer( Result ),
-			list_utils:get_element_at( Designators, ChosenNum );
+        { _ExitStatus=0, Result } ->
+            ChosenNum = text_utils:string_to_integer( Result ),
+            list_utils:get_element_at( Designators, ChosenNum );
 
-		{ _ExitStatus=1, _Output=[] } ->
-			ui_cancel;
+        { _ExitStatus=1, _Output=[] } ->
+            ui_cancel;
 
-		{ ExitStatus, Output } ->
-			trace_utils:error_fmt( "Exit code ~B and error output '~ts' "
-				"for prompt '~ts' and choices:~n~p "
-				"corresponding to command:~n~ts",
-				[ ExitStatus, Output, Prompt, Choices, Cmd ] ),
-			throw( { choice_failed, ExitStatus, Output } )
+        { ExitStatus, Output } ->
+            trace_utils:error_fmt( "Exit code ~B and error output '~ts' "
+                "for prompt '~ts' and choices:~n~p "
+                "corresponding to command:~n~ts",
+                [ ExitStatus, Output, Prompt, Choices, Cmd ] ),
+            throw( { choice_failed, ExitStatus, Output } )
 
-	end.
+    end.
 
 
 
@@ -1237,14 +1237,14 @@ prefer to cancel that operation.
 (const)
 """.
 -spec choose_designated_item_with_default( [ choice_element() ],
-				choice_designator() ) -> choice_designator().
+                choice_designator() ) -> choice_designator().
 choose_designated_item_with_default( Choices, DefaultChoiceDesignator ) ->
 
-	Prompt = text_utils:format( "Select among these ~B choices:",
-								[ length( Choices ) + 1 ] ),
+    Prompt = text_utils:format( "Select among these ~B choices:",
+                                [ length( Choices ) + 1 ] ),
 
-	choose_designated_item_with_default( Prompt, Choices,
-		DefaultChoiceDesignator, get_state() ).
+    choose_designated_item_with_default( Prompt, Choices,
+        DefaultChoiceDesignator, get_state() ).
 
 
 
@@ -1264,11 +1264,11 @@ to cancel that operation
 (const)
 """.
 -spec choose_designated_item_with_default( prompt(), [ choice_element() ],
-				choice_designator() ) -> choice_designator().
+                choice_designator() ) -> choice_designator().
 choose_designated_item_with_default( Prompt, Choices,
-									 DefaultChoiceDesignator ) ->
-	choose_designated_item_with_default( Prompt, Choices,
-		DefaultChoiceDesignator, get_state() ).
+                                     DefaultChoiceDesignator ) ->
+    choose_designated_item_with_default( Prompt, Choices,
+        DefaultChoiceDesignator, get_state() ).
 
 
 
@@ -1288,97 +1288,97 @@ to cancel that operation
 (const)
 """.
 -spec choose_designated_item_with_default( prompt(), [ choice_element() ],
-				choice_designator(), ui_state() ) -> choice_designator().
+                choice_designator(), ui_state() ) -> choice_designator().
 choose_designated_item_with_default( Prompt, Choices, DefaultChoiceDesignator,
-		#term_ui_state{ dialog_tool_path=ToolPath,
-						settings=SettingTable } ) ->
+        #term_ui_state{ dialog_tool_path=ToolPath,
+                        settings=SettingTable } ) ->
 
-	% Using 'radio list' rather than 'menu', for the selectable initial, default
-	% choice.
+    % Using 'radio list' rather than 'menu', for the selectable initial, default
+    % choice.
 
-	% Command: dialog --radiolist <text> <height> <width> <list height> <tag1>
-	% <item1> <status1>...
-	%
-	% For example dialog --radiolist "Select CPU type:" 10 40 10 1 386SX off 2
-	% 386DX on 3 486SX off 4 486DX off
+    % Command: dialog --radiolist <text> <height> <width> <list height> <tag1>
+    % <item1> <status1>...
+    %
+    % For example dialog --radiolist "Select CPU type:" 10 40 10 1 386SX off 2
+    % 386DX on 3 486SX off 4 486DX off
 
-	% (very much inspired from choose_designated_item/3)
+    % (very much inspired from choose_designated_item/3)
 
-	{ Designators, Texts } = lists:unzip( Choices ),
+    { Designators, Texts } = lists:unzip( Choices ),
 
-	lists:member( ui_cancel, Designators ) andalso
-		throw( { disallowed_choice_designator, ui_cancel } ),
+    lists:member( ui_cancel, Designators ) andalso
+        throw( { disallowed_choice_designator, ui_cancel } ),
 
-	DefaultChoiceIndex = case list_utils:get_maybe_index_of(
-			DefaultChoiceDesignator, Designators ) of
+    DefaultChoiceIndex = case list_utils:get_maybe_index_of(
+            DefaultChoiceDesignator, Designators ) of
 
-		undefined ->
-			throw( { default_designator_not_among_choices,
-					 DefaultChoiceDesignator, Designators } );
+        undefined ->
+            throw( { default_designator_not_among_choices,
+                     DefaultChoiceDesignator, Designators } );
 
-		I ->
-			I
+        I ->
+            I
 
-	end,
+    end,
 
-	ChoiceCount = length( Choices ),
+    ChoiceCount = length( Choices ),
 
-	% We simply tag the choices with a counter (rather than using the designator
-	% atoms):
-	%
-	NumChoices = lists:zip( lists:seq( 1, ChoiceCount ), Texts ),
+    % We simply tag the choices with a counter (rather than using the designator
+    % atoms):
+    %
+    NumChoices = lists:zip( lists:seq( 1, ChoiceCount ), Texts ),
 
-	% Cannot directly match DefaultChoiceIndex in the head of a clause (not
-	% understood by the compiler):
-	%
-	NumStrings = lists:foldl(
-		fun( { Num, Text }, AccStrings ) ->
-			case Num of
+    % Cannot directly match DefaultChoiceIndex in the head of a clause (not
+    % understood by the compiler):
+    %
+    NumStrings = lists:foldl(
+        fun( { Num, Text }, AccStrings ) ->
+            case Num of
 
-				DefaultChoiceIndex ->
-					[ text_utils:format( " ~B \"~ts\" on",
-						[ DefaultChoiceIndex, Text ] ) | AccStrings ];
+                DefaultChoiceIndex ->
+                    [ text_utils:format( " ~B \"~ts\" on",
+                        [ DefaultChoiceIndex, Text ] ) | AccStrings ];
 
-				_ ->
-					[ text_utils:format( " ~B \"~ts\" off",
-										 [ Num, Text ] ) | AccStrings ]
+                _ ->
+                    [ text_utils:format( " ~B \"~ts\" off",
+                                         [ Num, Text ] ) | AccStrings ]
 
-			end
-		end,
-		_Acc0=[],
-		_List=NumChoices ),
+            end
+        end,
+        _Acc0=[],
+        _List=NumChoices ),
 
-	{ SettingString, _SuffixString } =
-		get_dialog_settings_for_return_code( SettingTable ),
+    { SettingString, _SuffixString } =
+        get_dialog_settings_for_return_code( SettingTable ),
 
-	AutoSizeString = "0 0",
+    AutoSizeString = "0 0",
 
-	DialogStrings = [ "--radiolist", "\"" ++ Prompt ++ "\"", AutoSizeString,
-		_MenuHeight=text_utils:integer_to_string( ChoiceCount )
-		| lists:reverse( [ get_redirect_string_for_code() | NumStrings ] ) ],
+    DialogStrings = [ "--radiolist", "\"" ++ Prompt ++ "\"", AutoSizeString,
+        _MenuHeight=text_utils:integer_to_string( ChoiceCount )
+        | lists:reverse( [ get_redirect_string_for_code() | NumStrings ] ) ],
 
-	CmdStrings = [ ToolPath, SettingString | DialogStrings ],
+    CmdStrings = [ ToolPath, SettingString | DialogStrings ],
 
-	%trace_utils:debug_fmt( "CmdStrings = ~p", [ CmdStrings ] ),
+    %trace_utils:debug_fmt( "CmdStrings = ~p", [ CmdStrings ] ),
 
-	Cmd = text_utils:join( _Sep=" ", CmdStrings ),
+    Cmd = text_utils:join( _Sep=" ", CmdStrings ),
 
-	{ Env, PortOpts } = get_execution_settings(),
+    { Env, PortOpts } = get_execution_settings(),
 
-	case system_utils:run_command( Cmd, Env, _WorkingDir=undefined,
-								   PortOpts ) of
+    case system_utils:run_command( Cmd, Env, _WorkingDir=undefined,
+                                   PortOpts ) of
 
-		{ _ExitStatus=0, Result } ->
-			ChosenNum = text_utils:string_to_integer( Result ),
-			list_utils:get_element_at( Designators, ChosenNum );
+        { _ExitStatus=0, Result } ->
+            ChosenNum = text_utils:string_to_integer( Result ),
+            list_utils:get_element_at( Designators, ChosenNum );
 
-		{ _ExitStatus=1, _Output=[] } ->
-			ui_cancel;
+        { _ExitStatus=1, _Output=[] } ->
+            ui_cancel;
 
-		{ ExitStatus, Output } ->
-			throw( { choice_failed, ExitStatus, Output } )
+        { ExitStatus, Output } ->
+            throw( { choice_failed, ExitStatus, Output } )
 
-	end.
+    end.
 
 
 
@@ -1392,7 +1392,7 @@ atom, should the user prefer to cancel that operation.
 """.
 -spec choose_numbered_item( [ choice_text() ] ) -> choice_index().
 choose_numbered_item( Choices ) ->
-	choose_numbered_item( Choices, get_state() ).
+    choose_numbered_item( Choices, get_state() ).
 
 
 
@@ -1408,18 +1408,18 @@ Note that index zero can also be returned, corresponding to the 'ui_cancel'
 atom, should the user prefer to cancel that operation.
 """.
 -spec choose_numbered_item( [ choice_text() ], ui_state() ) ->
-									choice_index();
-						  ( prompt(), [ choice_element() ] ) -> choice_index().
+                                    choice_index();
+                          ( prompt(), [ choice_element() ] ) -> choice_index().
 choose_numbered_item( Choices, UIState )
-				when is_record( UIState, term_ui_state ) ->
+                when is_record( UIState, term_ui_state ) ->
 
-	Prompt = text_utils:format( "Select among these ~B choices:",
-								[ length( Choices ) ] ),
+    Prompt = text_utils:format( "Select among these ~B choices:",
+                                [ length( Choices ) ] ),
 
-	choose_numbered_item( Prompt, Choices, UIState );
+    choose_numbered_item( Prompt, Choices, UIState );
 
 choose_numbered_item( Prompt, Choices ) ->
-	choose_numbered_item( Prompt, Choices, get_state() ).
+    choose_numbered_item( Prompt, Choices, get_state() ).
 
 
 
@@ -1432,29 +1432,29 @@ Note that index zero can also be returned, corresponding to the 'ui_cancel'
 atom, should the user prefer to cancel that operation.
 """.
 -spec choose_numbered_item( prompt(), [ choice_text() ], ui_state() ) ->
-									choice_index().
+                                    choice_index().
 choose_numbered_item( Prompt, Choices, UIState ) ->
 
-	%trace_utils:debug_fmt( "Prompt = ~ts, Choices = ~p", [ Prompt, Choices ] ),
+    %trace_utils:debug_fmt( "Prompt = ~ts, Choices = ~p", [ Prompt, Choices ] ),
 
-	% We could as well have used a radio list, yet a menu is probably a tad
-	% clearer (and selecting the default, initial entry would have no real use
-	% here).
-	%
-	% We reuse choose_designated_item/3 in a hackhish yet very simple way, based
-	% on integer indexes:
-	%
-	ChoiceElements = lists:zip( lists:seq( 1, length( Choices ) ), Choices ),
+    % We could as well have used a radio list, yet a menu is probably a tad
+    % clearer (and selecting the default, initial entry would have no real use
+    % here).
+    %
+    % We reuse choose_designated_item/3 in a hackhish yet very simple way, based
+    % on integer indexes:
+    %
+    ChoiceElements = lists:zip( lists:seq( 1, length( Choices ) ), Choices ),
 
-	case choose_designated_item( Prompt, ChoiceElements, UIState ) of
+    case choose_designated_item( Prompt, ChoiceElements, UIState ) of
 
-		ui_cancel ->
-			0;
+        ui_cancel ->
+            0;
 
-		D ->
-			D
+        D ->
+            D
 
-	end.
+    end.
 
 
 
@@ -1466,10 +1466,10 @@ Note that index zero can also be returned, corresponding to the 'ui_cancel'
 atom, should the user prefer to cancel that operation.
 """.
 -spec choose_numbered_item_with_default( [ choice_text() ], choice_text() ) ->
-												choice_index().
+                                                choice_index().
 choose_numbered_item_with_default( Choices, DefaultChoiceText ) ->
-	choose_numbered_item_with_default( Choices, DefaultChoiceText,
-									   get_state() ).
+    choose_numbered_item_with_default( Choices, DefaultChoiceText,
+                                       get_state() ).
 
 
 
@@ -1485,21 +1485,21 @@ Note that index zero can also be returned, corresponding to the 'ui_cancel'
 atom, should the user prefer to cancel that operation.
 """.
 -spec choose_numbered_item_with_default( [ choice_text() ], choice_text(),
-											ui_state() ) -> choice_index();
-									   ( prompt(), [ choice_text() ],
-											choice_index() ) -> choice_index().
+                                            ui_state() ) -> choice_index();
+                                       ( prompt(), [ choice_text() ],
+                                            choice_index() ) -> choice_index().
 choose_numbered_item_with_default( Choices, DefaultChoiceText, UIState )
-				when is_record( UIState, term_ui_state ) ->
+                when is_record( UIState, term_ui_state ) ->
 
-	Prompt = text_utils:format( "Select among these ~B choices:",
-								[ length( Choices ) ] ),
+    Prompt = text_utils:format( "Select among these ~B choices:",
+                                [ length( Choices ) ] ),
 
-	choose_numbered_item_with_default( Prompt, Choices, DefaultChoiceText,
-									   UIState );
+    choose_numbered_item_with_default( Prompt, Choices, DefaultChoiceText,
+                                       UIState );
 
 choose_numbered_item_with_default( Prompt, Choices, DefaultChoiceText ) ->
-	choose_numbered_item_with_default( Prompt, Choices, DefaultChoiceText,
-									   get_state() ).
+    choose_numbered_item_with_default( Prompt, Choices, DefaultChoiceText,
+                                       get_state() ).
 
 
 
@@ -1512,41 +1512,41 @@ Note that index zero can also be returned, corresponding to the 'ui_cancel'
 atom, should the user prefer to cancel that operation.
 """.
 -spec choose_numbered_item_with_default( prompt(), [ choice_text() ],
-			choice_text(), ui_state() ) -> choice_index().
+            choice_text(), ui_state() ) -> choice_index().
 choose_numbered_item_with_default( Prompt, Choices, DefaultChoiceText,
-								   UIState ) ->
+                                   UIState ) ->
 
-	% We use a radio list here, to benefit from a default.
+    % We use a radio list here, to benefit from a default.
 
-	% (very much inspired from choose_numbered_item/3)
+    % (very much inspired from choose_numbered_item/3)
 
-	% We reuse choose_designated_item_with_default/4 in a hackhish yet very
-	% simple way, based on integer indexes:
-	%
-	ChoiceElements = lists:zip( lists:seq( 1, length( Choices ) ), Choices ),
+    % We reuse choose_designated_item_with_default/4 in a hackhish yet very
+    % simple way, based on integer indexes:
+    %
+    ChoiceElements = lists:zip( lists:seq( 1, length( Choices ) ), Choices ),
 
-	DefaultChoiceIndex =
-			case list_utils:get_maybe_index_of( DefaultChoiceText, Choices ) of
+    DefaultChoiceIndex =
+            case list_utils:get_maybe_index_of( DefaultChoiceText, Choices ) of
 
-		undefined ->
-			throw( { default_not_among_choices, DefaultChoiceText, Choices } );
+        undefined ->
+            throw( { default_not_among_choices, DefaultChoiceText, Choices } );
 
-		I ->
-			I
+        I ->
+            I
 
-	end,
+    end,
 
-	% Choice designators are simply integers here:
-	case choose_designated_item_with_default( Prompt, ChoiceElements,
-											  DefaultChoiceIndex, UIState ) of
+    % Choice designators are simply integers here:
+    case choose_designated_item_with_default( Prompt, ChoiceElements,
+                                              DefaultChoiceIndex, UIState ) of
 
-		ui_cancel ->
-			0;
+        ui_cancel ->
+            0;
 
-		D ->
-			D
+        D ->
+            D
 
-	end.
+    end.
 
 
 
@@ -1561,38 +1561,38 @@ implicit state.
 """.
 -spec trace( message() ) -> void().
 trace( Message ) ->
-	trace( Message, get_state() ).
+    trace( Message, get_state() ).
 
 
 
 -doc "Traces specified message, by displaying it, and possibly logging it.".
 -spec trace( message(), ui_state() ) -> void();
-		   ( format_string(), [ term() ] ) -> void().
+           ( format_string(), [ term() ] ) -> void().
 trace( Message, UIState ) when is_record( UIState, term_ui_state ) ->
 
-	TraceMessage = "[trace] " ++ Message ++ "\n",
+    TraceMessage = "[trace] " ++ Message ++ "\n",
 
-	UIState#term_ui_state.log_console andalso trace_utils:info( TraceMessage ),
+    UIState#term_ui_state.log_console andalso trace_utils:info( TraceMessage ),
 
-	case UIState#term_ui_state.log_file of
+    case UIState#term_ui_state.log_file of
 
-		undefined ->
-			ok;
+        undefined ->
+            ok;
 
-		LogFile ->
-			io:format( LogFile, TraceMessage, [] )
+        LogFile ->
+            io:format( LogFile, TraceMessage, [] )
 
-	end;
+    end;
 
 trace( FormatString, Values ) ->
-	trace( text_utils:format( FormatString, Values ) ).
+    trace( text_utils:format( FormatString, Values ) ).
 
 
 
 -doc "Clears the interface.".
 -spec clear() -> void().
 clear() ->
-	clear( get_state() ).
+    clear( get_state() ).
 
 
 
@@ -1600,59 +1600,59 @@ clear() ->
 -spec clear( ui_state() ) -> void().
 clear( #term_ui_state{ dialog_tool_path=ToolPath } ) ->
 
-	% Simplified example:
-	%Cmd = "dialog --clear",
+    % Simplified example:
+    %Cmd = "dialog --clear",
 
-	DialogString = "--clear",
+    DialogString = "--clear",
 
-	Cmd = text_utils:join( _Sep=" ", [ ToolPath, DialogString ] ),
+    Cmd = text_utils:join( _Sep=" ", [ ToolPath, DialogString ] ),
 
-	{ Env, PortOpts } = get_execution_settings(),
+    { Env, PortOpts } = get_execution_settings(),
 
-	case system_utils:run_command( Cmd, Env, _WorkingDir=undefined,
-								   PortOpts ) of
+    case system_utils:run_command( Cmd, Env, _WorkingDir=undefined,
+                                   PortOpts ) of
 
-		{ _ExitStatus=0, _Output="" } ->
-			%trace_utils:debug( "Cleared." ),
-			ok;
+        { _ExitStatus=0, _Output="" } ->
+            %trace_utils:debug( "Cleared." ),
+            ok;
 
-		{ _ExitStatus=0, Output } ->
-			trace_utils:debug_fmt( "Display output: '~ts'.", [ Output ] );
+        { _ExitStatus=0, Output } ->
+            trace_utils:debug_fmt( "Display output: '~ts'.", [ Output ] );
 
-		{ ExitStatus, Output } ->
-			throw( { display_error_reported, ExitStatus, Output } )
+        { ExitStatus, Output } ->
+            throw( { display_error_reported, ExitStatus, Output } )
 
-	end.
+    end.
 
 
 
 -doc "Stops the UI.".
 -spec stop() -> void().
 stop() ->
-	stop( get_state() ).
+    stop( get_state() ).
 
 
 
 -doc "Stops the UI.".
 -spec stop( ui_state() ) -> void().
 stop( UIState=#term_ui_state{ log_file=undefined } ) ->
-	stop_helper( UIState );
+    stop_helper( UIState );
 
 stop( UIState=#term_ui_state{ log_file=LogFile } ) ->
-	file_utils:write_ustring( LogFile, "Stopping UI.\n" ),
-	file_utils:close( LogFile ),
-	stop_helper( UIState ).
+    file_utils:write_ustring( LogFile, "Stopping UI.\n" ),
+    file_utils:close( LogFile ),
+    stop_helper( UIState ).
 
 
 % (helper)
 %stop_helper( #term_ui_state{ state_filename=StateFilename } ) ->
 stop_helper( _UIState ) ->
 
-	clear(),
+    clear(),
 
-	%file_utils:remove_file_if_existing( StateFilename ),
+    %file_utils:remove_file_if_existing( StateFilename ),
 
-	process_dictionary:remove( ?ui_state_key ).
+    process_dictionary:remove( ?ui_state_key ).
 
 
 
@@ -1664,29 +1664,29 @@ stop_helper( _UIState ) ->
 -spec lookup_dialog_tool() -> option( { dialog_tool(), file_path() } ).
 lookup_dialog_tool() ->
 
-	case executable_utils:lookup_executable( "dialog" ) of
+    case executable_utils:lookup_executable( "dialog" ) of
 
-		false ->
-			% Maybe in the future (currently not supported):
-			%AcceptWhiptail = true,
-			AcceptWhiptail = false,
+        false ->
+            % Maybe in the future (currently not supported):
+            %AcceptWhiptail = true,
+            AcceptWhiptail = false,
 
-			case AcceptWhiptail
-					andalso executable_utils:lookup_executable( "whiptail" ) of
+            case AcceptWhiptail
+                    andalso executable_utils:lookup_executable( "whiptail" ) of
 
-				false ->
-					undefined;
+                false ->
+                    undefined;
 
-				WPath ->
-					{ whiptail, WPath }
+                WPath ->
+                    { whiptail, WPath }
 
-			end;
+            end;
 
-		DPath ->
-			%trace_utils:debug_fmt( "Dialog path: '~ts'.", [ DPath ] ),
-			{ dialog, DPath }
+        DPath ->
+            %trace_utils:debug_fmt( "Dialog path: '~ts'.", [ DPath ] ),
+            { dialog, DPath }
 
-	end.
+    end.
 
 
 
@@ -1698,10 +1698,10 @@ Sets the current UI state.
 -spec set_state( ui_state() ) -> void().
 set_state( UIState ) ->
 
-	%trace_utils:debug_fmt( "Setting as '~ts': ~ts.",
-	%                       [ ?ui_state_key, to_string( UIState ) ] ),
+    %trace_utils:debug_fmt( "Setting as '~ts': ~ts.",
+    %                       [ ?ui_state_key, to_string( UIState ) ] ),
 
-	process_dictionary:put( ?ui_state_key, UIState ).
+    process_dictionary:put( ?ui_state_key, UIState ).
 
 
 
@@ -1713,15 +1713,15 @@ Returns the current UI state.
 -spec get_state() -> ui_state().
 get_state() ->
 
-	case process_dictionary:get( ?ui_state_key ) of
+    case process_dictionary:get( ?ui_state_key ) of
 
-		undefined ->
-			throw( term_ui_not_started );
+        undefined ->
+            throw( term_ui_not_started );
 
-		UIState ->
-			UIState
+        UIState ->
+            UIState
 
-	end.
+    end.
 
 
 
@@ -1731,13 +1731,13 @@ string, a suffix string (dealing with size and redirection for an output
 returned as a return code).
 """.
 -spec get_dialog_settings_for_return_code( setting_table() ) ->
-												{ ustring(), ustring() }.
+                                                { ustring(), ustring() }.
 get_dialog_settings_for_return_code( SettingTable ) ->
 
-	{ SettingsString, SuffixString } = get_dialog_base_settings( SettingTable ),
+    { SettingsString, SuffixString } = get_dialog_base_settings( SettingTable ),
 
-	{ SettingsString, text_utils:format( "~ts ~ts",
-		[ SuffixString, get_redirect_string_for_code() ] ) }.
+    { SettingsString, text_utils:format( "~ts ~ts",
+        [ SuffixString, get_redirect_string_for_code() ] ) }.
 
 
 
@@ -1747,60 +1747,60 @@ string, a suffix string (dealing with size and redirection for an output
 returned as a temporary file).
 """.
 -spec get_dialog_settings_for_file_return( setting_table() ) ->
-											{ ustring(), ustring() }.
+                                            { ustring(), ustring() }.
 get_dialog_settings_for_file_return( SettingTable ) ->
 
-	{ SettingsString, SuffixString } = get_dialog_base_settings( SettingTable ),
+    { SettingsString, SuffixString } = get_dialog_base_settings( SettingTable ),
 
-	{ SettingsString, text_utils:format( "~ts ~ts",
-						[ SuffixString, get_redirect_string_for_file() ] ) }.
+    { SettingsString, text_utils:format( "~ts ~ts",
+                        [ SuffixString, get_redirect_string_for_file() ] ) }.
 
 
 
 -doc "Returns the base settings for dialog, expected redirection.".
 get_dialog_base_settings( SettingTable ) ->
 
-	TitleOpt = case ?ui_table:get_value_with_default( 'title',
-			_Default=undefined, SettingTable ) of
+    TitleOpt = case ?ui_table:get_value_with_default( 'title',
+            _Default=undefined, SettingTable ) of
 
-		undefined ->
-			"";
+        undefined ->
+            "";
 
-		Title ->
-			% We prefer having the title surrounded by spaces:
-			text_utils:format( "--title ' ~ts '", [ Title ] )
+        Title ->
+            % We prefer having the title surrounded by spaces:
+            text_utils:format( "--title ' ~ts '", [ Title ] )
 
-	end,
+    end,
 
-	BacktitleOpt = case ?ui_table:get_value_with_default( 'backtitle',
-			_BackDefault=undefined, SettingTable ) of
+    BacktitleOpt = case ?ui_table:get_value_with_default( 'backtitle',
+            _BackDefault=undefined, SettingTable ) of
 
-		undefined ->
-			"";
+        undefined ->
+            "";
 
-		Backtitle ->
-			text_utils:format( "--backtitle '~ts'", [ Backtitle ] )
+        Backtitle ->
+            text_utils:format( "--backtitle '~ts'", [ Backtitle ] )
 
-	end,
+    end,
 
-	SettingsOpts = [ TitleOpt, BacktitleOpt ],
+    SettingsOpts = [ TitleOpt, BacktitleOpt ],
 
-	SettingsString = text_utils:join( _Separator=" ", SettingsOpts ),
+    SettingsString = text_utils:join( _Separator=" ", SettingsOpts ),
 
 
-	% Dialogs look a lot better if not using the maximum dimensions but
-	% requesting auto sizing:
+    % Dialogs look a lot better if not using the maximum dimensions but
+    % requesting auto sizing:
 
-	%Height = ?ui_table:get_value( 'max_height', SettingTable ),
-	%Width = ?ui_table:get_value( 'max_width', SettingTable ),
+    %Height = ?ui_table:get_value( 'max_height', SettingTable ),
+    %Width = ?ui_table:get_value( 'max_width', SettingTable ),
 
-	% Auto:
-	Height = 0,
-	Width = 0,
+    % Auto:
+    Height = 0,
+    Width = 0,
 
-	SuffixString = text_utils:format( "~B ~B", [ Height, Width ] ),
+    SuffixString = text_utils:format( "~B ~B", [ Height, Width ] ),
 
-	{ SettingsString, SuffixString }.
+    { SettingsString, SuffixString }.
 
 
 
@@ -1810,8 +1810,8 @@ on exit statuses (hence only for a single positive integer output).
 """.
 -spec get_redirect_string_for_code() -> ustring().
 get_redirect_string_for_code() ->
-	% As 'nouse_stdio' will be needed:
-	"2>&4".
+    % As 'nouse_stdio' will be needed:
+    "2>&4".
 
 
 
@@ -1820,24 +1820,24 @@ Returns a string to be used for I/O redirection in an execution command relying
 on a temporary file (hence for any kind of outputs).
 """.
 get_redirect_string_for_file() ->
-	"2> " ++ ?temp_file.
+    "2> " ++ ?temp_file.
 
 
 
 -doc "Returns the settings suitable for an execution of the backend.".
 -spec get_execution_settings() ->
-			{ system_utils:environment(), [ system_utils:port_option() ] }.
+            { system_utils:environment(), [ system_utils:port_option() ] }.
 get_execution_settings() ->
 
-	% Results in having LANG=C:
-	Env = system_utils:get_standard_environment(),
+    % Results in having LANG=C:
+    Env = system_utils:get_standard_environment(),
 
-	% Finding this combination was really not obvious:
-	% (and the VM must be run with -noinput only)
-	%
-	PortOpts = [ stream, nouse_stdio, exit_status, eof ],
+    % Finding this combination was really not obvious:
+    % (and the VM must be run with -noinput only)
+    %
+    PortOpts = [ stream, nouse_stdio, exit_status, eof ],
 
-	{ Env, PortOpts }.
+    { Env, PortOpts }.
 
 
 
@@ -1846,8 +1846,8 @@ Sets the specified setting to specified value, in the (implicit) UI state.
 """.
 -spec set_setting( ui_setting_key(), ui_setting_value() ) -> void().
 set_setting( SettingKey, SettingValue ) ->
-	NewUIState = set_setting( SettingKey, SettingValue, get_state() ),
-	set_state( NewUIState ).
+    NewUIState = set_setting( SettingKey, SettingValue, get_state() ),
+    set_state( NewUIState ).
 
 
 
@@ -1855,14 +1855,14 @@ set_setting( SettingKey, SettingValue ) ->
 Sets the specified setting to specified value, in the specified UI state.
 """.
 -spec set_setting( ui_setting_key(), ui_setting_value(), ui_state() ) ->
-							ui_state().
+                            ui_state().
 set_setting( SettingKey, SettingValue,
-			 UIState=#term_ui_state{ settings=SettingTable } ) ->
+             UIState=#term_ui_state{ settings=SettingTable } ) ->
 
-	NewSettingTable = ?ui_table:add_entry( SettingKey, SettingValue,
-										   SettingTable ),
+    NewSettingTable = ?ui_table:add_entry( SettingKey, SettingValue,
+                                           SettingTable ),
 
-	UIState#term_ui_state{ settings=NewSettingTable }.
+    UIState#term_ui_state{ settings=NewSettingTable }.
 
 
 
@@ -1871,8 +1871,8 @@ Sets the specified settings to specified values, in the (implicit) UI state.
 """.
 -spec set_settings( [ ui_setting_entry() ] ) -> void().
 set_settings( SettingEntries ) ->
-	NewUIState = set_settings( SettingEntries, get_state() ),
-	set_state( NewUIState ).
+    NewUIState = set_settings( SettingEntries, get_state() ),
+    set_state( NewUIState ).
 
 
 
@@ -1881,49 +1881,49 @@ Sets the specified settings to specified values, in the specified UI state.
 """.
 -spec set_settings( [ ui_setting_entry() ], ui_state() ) -> ui_state().
 set_settings( SettingEntries,
-			  UIState=#term_ui_state{ settings=SettingTable } ) ->
-	NewSettingTable = ?ui_table:add_entries( SettingEntries, SettingTable ),
-	UIState#term_ui_state{ settings=NewSettingTable }.
+              UIState=#term_ui_state{ settings=SettingTable } ) ->
+    NewSettingTable = ?ui_table:add_entries( SettingEntries, SettingTable ),
+    UIState#term_ui_state{ settings=NewSettingTable }.
 
 
 
 -doc "Unsets specified setting, in the (implicit) UI state.".
 -spec unset_setting( ui_setting_key() ) -> void().
 unset_setting( SettingKey ) ->
-	NewUIState = unset_setting( SettingKey, get_state() ),
-	set_state( NewUIState ).
+    NewUIState = unset_setting( SettingKey, get_state() ),
+    set_state( NewUIState ).
 
 
 
 -doc "Unsets specified settings, in the (implicit) UI state.".
 -spec unset_settings( [ ui_setting_key() ] ) -> void().
 unset_settings( SettingKeys ) ->
-	NewUIState = unset_settings( SettingKeys, get_state() ),
-	set_state( NewUIState ).
+    NewUIState = unset_settings( SettingKeys, get_state() ),
+    set_state( NewUIState ).
 
 
 
 -doc "Unsets specified setting, in the specified UI state.".
 -spec unset_setting( ui_setting_key(), ui_state() ) -> void().
 unset_setting( SettingKey,
-			   UIState=#term_ui_state{ settings=SettingTable } ) ->
+               UIState=#term_ui_state{ settings=SettingTable } ) ->
 
-	NewSettingTable = ?ui_table:add_entry( SettingKey, _SettingValue=undefined,
-										   SettingTable ),
+    NewSettingTable = ?ui_table:add_entry( SettingKey, _SettingValue=undefined,
+                                           SettingTable ),
 
-	UIState#term_ui_state{ settings=NewSettingTable }.
+    UIState#term_ui_state{ settings=NewSettingTable }.
 
 
 
 -doc "Unsets specified settings, in the specified UI state.".
 -spec unset_settings( [ ui_setting_key() ], ui_state() ) -> void().
 unset_settings( SettingKeys,
-				UIState=#term_ui_state{ settings=SettingTable } ) ->
+                UIState=#term_ui_state{ settings=SettingTable } ) ->
 
-	NewEntries = [ { S, undefined } || S <- SettingKeys ],
-	NewSettingTable = ?ui_table:add_entries( NewEntries, SettingTable ),
+    NewEntries = [ { S, undefined } || S <- SettingKeys ],
+    NewSettingTable = ?ui_table:add_entries( NewEntries, SettingTable ),
 
-	UIState#term_ui_state{ settings=NewSettingTable }.
+    UIState#term_ui_state{ settings=NewSettingTable }.
 
 
 
@@ -1933,7 +1933,7 @@ specified setting.
 """.
 -spec get_setting( ui_setting_key() ) -> option( ui_setting_value() ).
 get_setting( SettingKey ) ->
-	get_setting( SettingKey, get_state() ).
+    get_setting( SettingKey, get_state() ).
 
 
 
@@ -1942,60 +1942,60 @@ Returns the value (if any) associated, in the specified UI state, to the
 specified setting.
 """.
 -spec get_setting( ui_setting_key(), ui_state() ) ->
-							option( ui_setting_value() ).
+                            option( ui_setting_value() ).
 get_setting( SettingKey, #term_ui_state{ settings=SettingTable } ) ->
-	?ui_table:get_value_with_default( SettingKey, _Default=undefined,
-									  SettingTable ).
+    ?ui_table:get_value_with_default( SettingKey, _Default=undefined,
+                                      SettingTable ).
 
 
 
 -doc "Returns a textual description of the (implicit) UI state.".
 -spec to_string() -> ustring().
 to_string() ->
-	to_string( get_state() ).
+    to_string( get_state() ).
 
 
 
 -doc "Returns a textual description of the specified UI state.".
 -spec to_string( ui_state() ) -> ustring().
 to_string( #term_ui_state{ %state_filename=StateFilename,
-						   dialog_tool=DialogTool,
-						   dialog_tool_path=DialogToolPath,
-						   locale=Locale,
-						   log_console=LogConsole,
-						   log_file=LogFile,
-						   settings=SettingTable } ) ->
+                           dialog_tool=DialogTool,
+                           dialog_tool_path=DialogToolPath,
+                           locale=Locale,
+                           log_console=LogConsole,
+                           log_file=LogFile,
+                           settings=SettingTable } ) ->
 
-	DialogString = text_utils:format( "~ts (found in '~ts')",
-									  [ DialogTool, DialogToolPath ] ),
+    DialogString = text_utils:format( "~ts (found in '~ts')",
+                                      [ DialogTool, DialogToolPath ] ),
 
-	LocaleString = text_utils:format( "using the ~ts locale", [ Locale ] ),
+    LocaleString = text_utils:format( "using the ~ts locale", [ Locale ] ),
 
-	ConsoleString = case LogConsole of
+    ConsoleString = case LogConsole of
 
-		true ->
-			"";
+        true ->
+            "";
 
-		false ->
-			"not"
+        false ->
+            "not"
 
-	end,
+    end,
 
-	FileString = case LogFile of
+    FileString = case LogFile of
 
-		undefined ->
-			"not using a log file";
+        undefined ->
+            "not using a log file";
 
-		_ ->
-			text_utils:format( "using log file '~ts'", [ LogFile ] )
+        _ ->
+            text_utils:format( "using log file '~ts'", [ LogFile ] )
 
-	end,
+    end,
 
-	SettingString = ui:settings_to_string( SettingTable ),
+    SettingString = ui:settings_to_string( SettingTable ),
 
-	%text_utils:format( "term_ui interface, using state file '~ts' "
-	%    "for tool ~ts, ~ts, ~ts writing logs on console, ~ts and ~ts",
-	text_utils:format( "term_ui interface, using tool ~ts, "
-		"~ts, ~ts writing logs on console, ~ts and ~ts",
-		[ DialogString, LocaleString, ConsoleString, FileString,
-		  SettingString ] ).
+    %text_utils:format( "term_ui interface, using state file '~ts' "
+    %    "for tool ~ts, ~ts, ~ts writing logs on console, ~ts and ~ts",
+    text_utils:format( "term_ui interface, using tool ~ts, "
+        "~ts, ~ts writing logs on console, ~ts and ~ts",
+        [ DialogString, LocaleString, ConsoleString, FileString,
+          SettingString ] ).

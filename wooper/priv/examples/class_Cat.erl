@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
@@ -18,17 +18,17 @@ Guaranteed to be implemented by a cat.
 
 
 -define( class_description,
-		 "Class modelling any kind of cat, and there are many." ).
+         "Class modelling any kind of cat, and there are many." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
 -define( superclasses,
-		 [ class_Mammal, class_ViviparousBeing, class_Serialisable ] ).
+         [ class_Mammal, class_ViviparousBeing, class_Serialisable ] ).
 
 
 -define( class_attributes, [
 
-	{ whisker_color, whisker_color(), none, "50 shades of whiskers" }
+    { whisker_color, whisker_color(), none, "50 shades of whiskers" }
 
 ] ).
 
@@ -49,54 +49,54 @@ Guaranteed to be implemented by a cat.
 
 -doc "Constructs a cat instance.".
 -spec construct( wooper:state(), age(), gender(), fur_color(),
-				 whisker_color() ) -> wooper:state().
+                 whisker_color() ) -> wooper:state().
 construct( State, Age, Gender, FurColor, WhiskerColor ) ->
 
-	% First the direct mother classes:
-	MammalState = class_Mammal:construct( State, Age, Gender, FurColor ),
-	ViviparousMammalState = class_ViviparousBeing:construct( MammalState ),
-	SerialState = class_Serialisable:construct( ViviparousMammalState ),
+    % First the direct mother classes:
+    MammalState = class_Mammal:construct( State, Age, Gender, FurColor ),
+    ViviparousMammalState = class_ViviparousBeing:construct( MammalState ),
+    SerialState = class_Serialisable:construct( ViviparousMammalState ),
 
-	% Then the class-specific attributes:
-	setAttribute( SerialState, whisker_color, WhiskerColor ).
+    % Then the class-specific attributes:
+    setAttribute( SerialState, whisker_color, WhiskerColor ).
 
 
 
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
-	io:format( "Deleting cat ~w! (overridden destructor)~n", [ self() ] ),
+    io:format( "Deleting cat ~w! (overridden destructor)~n", [ self() ] ),
 
-	% To test:
-	% basic_utils:crash(),
+    % To test:
+    % basic_utils:crash(),
 
-	State.
+    State.
 
 
 
 -doc "No guarantee on biological fidelity.".
 -spec getTeatCount( wooper:state() ) -> const_request_return( teat_count() ).
 getTeatCount( State ) ->
-	wooper:const_return_result( 6 ).
+    wooper:const_return_result( 6 ).
 
 
 
 -doc "Cats are supposed carnivorous though.".
 -spec canEat( wooper:state(), food() ) -> const_request_return( boolean() ).
 canEat( State, soup ) ->
-	wooper:const_return_result( true );
+    wooper:const_return_result( true );
 
 canEat( _State, chocolate ) ->
-	throw( { harmful_food_detected, chocolate } );
+    throw( { harmful_food_detected, chocolate } );
 
 canEat( State, croquette ) ->
-	wooper:const_return_result( true );
+    wooper:const_return_result( true );
 
 canEat( State, meat ) ->
-	wooper:const_return_result( true );
+    wooper:const_return_result( true );
 
 canEat( State, _OtherFood ) ->
-	wooper:const_return_result( false ).
+    wooper:const_return_result( false ).
 
 
 
@@ -104,30 +104,30 @@ canEat( State, _OtherFood ) ->
 -spec getWhiskerColor( wooper:state() ) -> const_request_return( color() ).
 getWhiskerColor( State )->
 
-	io:format( "getWhiskerColor/1 request called by ~w.~n", [ ?getSender() ] ),
+    io:format( "getWhiskerColor/1 request called by ~w.~n", [ ?getSender() ] ),
 
-	wooper:const_return_result( ?getAttr(whisker_color) ).
+    wooper:const_return_result( ?getAttr(whisker_color) ).
 
 
 
 -doc "Requests this cat to terminate, based on specified halting procedure.".
 -spec terminate( wooper:state(), 'crash' ) -> const_oneway_return().
 terminate( State, crash ) ->
-	basic_utils:crash(),
-	wooper:const_return().
+    basic_utils:crash(),
+    wooper:const_return().
 
 
 
 -spec toString( wooper:state() ) -> const_request_return( ustring() ).
 toString( State ) ->
 
-	% Would be available only on debug mode:
-	%Description = wooper:instance_to_string( State ),
+    % Would be available only on debug mode:
+    %Description = wooper:instance_to_string( State ),
 
-	Description = text_utils:format( "cat instance with whiskers of color ~p.",
-									 [ ?getAttr(whisker_color) ] ),
+    Description = text_utils:format( "cat instance with whiskers of color ~p.",
+                                     [ ?getAttr(whisker_color) ] ),
 
-	wooper:const_return_result( Description ).
+    wooper:const_return_result( Description ).
 
 
 
@@ -137,4 +137,4 @@ toString( State ) ->
 -doc "Returns the mean life expectancy of a cat, in years.".
 -spec get_mean_life_expectancy() -> static_return( age() ).
 get_mean_life_expectancy() ->
-	wooper:return_static( 18 ).
+    wooper:return_static( 18 ).

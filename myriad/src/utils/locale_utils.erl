@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2025 Olivier Boudeville
+% Copyright (C) 2020-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -37,7 +37,7 @@ character sets.
 
 -doc "Type to designate countries of interest.".
 -type country() :: 'france' | 'united_kingdom' | 'usa' | 'china' | 'japan'
-				   | 'unreferenced_country' | atom().
+                   | 'unreferenced_country' | atom().
 
 
 
@@ -96,9 +96,9 @@ A locale with a character set, like "fr_FR.UTF-8".
 
 
 -export_type([ country/0,
-			   string_locale/0, bin_locale/0, any_locale/0,
-			   locale_description/0, bin_locale_description/0,
-			   locale_charset/0 ]).
+               string_locale/0, bin_locale/0, any_locale/0,
+               locale_description/0, bin_locale_description/0,
+               locale_charset/0 ]).
 
 
 -export([ get_locale_charset/0 ]).
@@ -118,23 +118,23 @@ Returns the current locale with a character set, like "fr_FR.UTF-8".
 """.
 -spec get_locale_charset() -> ustring().
 get_locale_charset() ->
-	case system_utils:get_environment_variable( "LC_ALL" ) of
+    case system_utils:get_environment_variable( "LC_ALL" ) of
 
-		R when R =:= false orelse R =:="" ->
-			case system_utils:get_environment_variable( "LANG" ) of
+        R when R =:= false orelse R =:="" ->
+            case system_utils:get_environment_variable( "LANG" ) of
 
-				R when R =:= false orelse R =:="" ->
-					BaseLocale = "en_US.UTF-8",
-					trace_utils:warning_fmt( "Unable to determine the current "
-						"locale, assuming '~ts'.", [ BaseLocale ] ),
-					BaseLocale;
+                R when R =:= false orelse R =:="" ->
+                    BaseLocale = "en_US.UTF-8",
+                    trace_utils:warning_fmt( "Unable to determine the current "
+                        "locale, assuming '~ts'.", [ BaseLocale ] ),
+                    BaseLocale;
 
-				R ->
-					R
+                R ->
+                    R
 
-			end;
+            end;
 
-		R ->
-			R
+        R ->
+            R
 
-	end.
+    end.

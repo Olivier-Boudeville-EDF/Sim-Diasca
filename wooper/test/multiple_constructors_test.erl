@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2025 Olivier Boudeville
+% Copyright (C) 2018-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -38,104 +38,104 @@ This module allows to test the support for **multiple constructors**.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	% Allows to support both OTP conventions and ad hoc, automatic ones:
-	wooper_utils:start_for_test(),
+    % Allows to support both OTP conventions and ad hoc, automatic ones:
+    wooper_utils:start_for_test(),
 
-	TestedClass = class_MultipleConstructors,
+    TestedClass = class_MultipleConstructors,
 
-	I1Name = "Ian",
+    I1Name = "Ian",
 
-	test_facilities:display( "Creating an instance of ~ts, named '~ts'.",
-							 [ TestedClass, I1Name ] ),
+    test_facilities:display( "Creating an instance of ~ts, named '~ts'.",
+                             [ TestedClass, I1Name ] ),
 
-	I1Pid = TestedClass:new_link( I1Name, male ),
+    I1Pid = TestedClass:new_link( I1Name, male ),
 
-	I1Pid ! { getName, [], self() },
-	receive
+    I1Pid ! { getName, [], self() },
+    receive
 
-		{ wooper_result, I1Name } ->
-			ok
+        { wooper_result, I1Name } ->
+            ok
 
-	end,
+    end,
 
-	I1Pid ! { getGender, [], self() },
-	receive
+    I1Pid ! { getGender, [], self() },
+    receive
 
-		{ wooper_result, male } ->
-			ok
+        { wooper_result, male } ->
+            ok
 
-	end,
+    end,
 
-	I1Pid ! { synchronous_delete, self() },
-	receive
+    I1Pid ! { synchronous_delete, self() },
+    receive
 
-		{ deleted, I1Pid } ->
-			ok
+        { deleted, I1Pid } ->
+            ok
 
-	end,
-
-
-	I2Name = "Murdock",
-
-	test_facilities:display( "Creating an instance of ~ts, named '~ts'.",
-							 [ TestedClass, I2Name ] ),
-
-	I2Pid = TestedClass:new_link( I2Name ),
-
-	I2Pid ! { getName, [], self() },
-	receive
-
-		{ wooper_result, I2Name } ->
-			ok
-
-	end,
-
-	I2Pid ! { getGender, [], self() },
-	receive
-
-		{ wooper_result, undefined } ->
-			ok
-
-	end,
-
-	I2Pid ! { synchronous_delete, self() },
-	receive
-
-		{ deleted, I2Pid } ->
-			ok
-
-	end,
+    end,
 
 
-	test_facilities:display( "Creating an anonymous instance of ~ts.",
-							 [ TestedClass ] ),
+    I2Name = "Murdock",
 
-	I3Pid = TestedClass:new_link(),
+    test_facilities:display( "Creating an instance of ~ts, named '~ts'.",
+                             [ TestedClass, I2Name ] ),
 
-	I3Pid ! { getName, [], self() },
-	receive
+    I2Pid = TestedClass:new_link( I2Name ),
 
-		{ wooper_result, "Terry" } ->
-			ok
+    I2Pid ! { getName, [], self() },
+    receive
 
-	end,
+        { wooper_result, I2Name } ->
+            ok
 
-	I3Pid ! { getGender, [], self() },
-	receive
+    end,
 
-		{ wooper_result, unknown } ->
-			ok
+    I2Pid ! { getGender, [], self() },
+    receive
 
-	end,
+        { wooper_result, undefined } ->
+            ok
 
-	I3Pid ! { synchronous_delete, self() },
-	receive
+    end,
 
-		{ deleted, I3Pid } ->
-			ok
+    I2Pid ! { synchronous_delete, self() },
+    receive
 
-	end,
+        { deleted, I2Pid } ->
+            ok
 
-	test_facilities:stop().
+    end,
+
+
+    test_facilities:display( "Creating an anonymous instance of ~ts.",
+                             [ TestedClass ] ),
+
+    I3Pid = TestedClass:new_link(),
+
+    I3Pid ! { getName, [], self() },
+    receive
+
+        { wooper_result, "Terry" } ->
+            ok
+
+    end,
+
+    I3Pid ! { getGender, [], self() },
+    receive
+
+        { wooper_result, unknown } ->
+            ok
+
+    end,
+
+    I3Pid ! { synchronous_delete, self() },
+    receive
+
+        { deleted, I3Pid } ->
+            ok
+
+    end,
+
+    test_facilities:stop().

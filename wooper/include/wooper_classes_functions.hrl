@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -46,9 +46,9 @@ Request returning the classname of the instance.
 Always accurate, in all constructors, methods and destructors.
 """.
 -spec getClassname( wooper:state() ) ->
-							const_request_return( wooper:classname() ).
+                            const_request_return( wooper:classname() ).
 getClassname( State ) ->
-	wooper:const_return_result( State#state_holder.actual_class ).
+    wooper:const_return_result( State#state_holder.actual_class ).
 
 
 
@@ -58,11 +58,11 @@ Request returning the (direct) superclasses of the instance.
 Always accurate, in all constructors, methods and destructors.
 """.
 -spec getSuperclasses( wooper:state() ) ->
-							const_request_return( [ wooper:classname() ] ).
+                            const_request_return( [ wooper:classname() ] ).
 getSuperclasses( State ) ->
-	ActualModule = State#state_holder.actual_class,
-	SuperClasses = ActualModule:get_superclasses(),
-	wooper:const_return_result( SuperClasses ).
+    ActualModule = State#state_holder.actual_class,
+    SuperClasses = ActualModule:get_superclasses(),
+    wooper:const_return_result( SuperClasses ).
 
 
 
@@ -77,9 +77,9 @@ This is a method for debug purpose, only activated if wooper_debug_mode is
 defined.
 """.
 -spec wooper_get_instance_description( wooper:state() ) ->
-								const_request_return( text_utils:ustring() ).
+                                const_request_return( text_utils:ustring() ).
 wooper_get_instance_description( State ) ->
-	wooper:const_return_result( wooper:instance_to_string( State ) ).
+    wooper:const_return_result( wooper:instance_to_string( State ) ).
 
 
 -endif. % wooper_debug_mode

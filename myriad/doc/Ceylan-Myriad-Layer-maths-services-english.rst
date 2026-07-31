@@ -1,4 +1,3 @@
-
 :raw-latex:`\pagebreak`
 
 .. _Maths:
@@ -44,5 +43,3 @@ Some simple maths-related operations are defined in the ``myriad/src/maths`` dir
 - **bounding spaces** (notably bounding boxes) are supported in ``bounding_{surface,volume}.erl``, including ``get_lazy_bounding_circle/1``, ``get_minimal_enclosing_circle/1``, etc.
 
 - a minimalist `Runge-Kutta solver <https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods#The_Runge.E2.80.93Kutta_method>`_ is defined in ``rk4_solver.erl`` (see also the corresponding `Lorenz test`_)
-
-

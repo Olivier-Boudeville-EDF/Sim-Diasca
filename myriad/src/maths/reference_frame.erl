@@ -1,4 +1,4 @@
-% Copyright (C) 2024-2025 Olivier Boudeville
+% Copyright (C) 2024-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -95,12 +95,12 @@ Any (internal) name (not an identifier) of a reference frame.
 
 
 -export_type([ reference_frame/0, ref/0,
-			   ref_pid/0, designated_ref/0,
-			   user_ref_name/0, ref_name/0 ]).
+               ref_pid/0, designated_ref/0,
+               user_ref_name/0, ref_name/0 ]).
 
 
 -export([ is_designated_ref/1, check_designated_ref/1,
-		  designated_ref_to_string/1 ]).
+          designated_ref_to_string/1 ]).
 
 
 % Shorthands:
@@ -117,20 +117,20 @@ Any (internal) name (not an identifier) of a reference frame.
 -spec is_designated_ref( term() ) -> boolean().
 %is_designated_ref( Ref ) when is_record( Ref, reference_frame3 ) ->
 is_designated_ref( RefId ) when is_integer( RefId ) ->
-	true;
+    true;
 
 is_designated_ref( RefPid ) when is_pid( RefPid ) ->
-	true;
+    true;
 
 is_designated_ref( _ ) ->
-	false.
+    false.
 
 
 
 -doc "Ensures that the specified term is a reference frame designator indeed.".
 -spec check_designated_ref( term() ) -> designated_ref().
 check_designated_ref( T ) ->
-	is_designated_ref( T ) orelse throw( { not_a_designated_ref, T } ).
+    is_designated_ref( T ) orelse throw( { not_a_designated_ref, T } ).
 
 
 
@@ -139,7 +139,7 @@ Returns a textual representation of the specified designated reference frame.
 """.
 -spec designated_ref_to_string( designated_ref() ) -> ustring().
 designated_ref_to_string( Ref3 ) when is_record( Ref3, reference_frame3 ) ->
-	reference_frame3:to_string( Ref3 );
+    reference_frame3:to_string( Ref3 );
 
 designated_ref_to_string( DesigPid ) when is_pid( DesigPid ) ->
-	text_utils:format( "the reference frame held by ~w", [ DesigPid ] ).
+    text_utils:format( "the reference frame held by ~w", [ DesigPid ] ).

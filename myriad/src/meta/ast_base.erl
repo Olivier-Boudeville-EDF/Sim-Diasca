@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2025 Olivier Boudeville
+% Copyright (C) 2018-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -103,8 +103,8 @@ In-source context (typically to report errors); e.g. `{"foo.erl",{112,4}}`.
 
 
 -export_type([ form_location/0, file_reference/0, line/0, column/0,
-			   stream_loc/0, file_loc/0,
-			   form_context/0, source_context/0 ]).
+               stream_loc/0, file_loc/0,
+               form_context/0, source_context/0 ]).
 
 
 

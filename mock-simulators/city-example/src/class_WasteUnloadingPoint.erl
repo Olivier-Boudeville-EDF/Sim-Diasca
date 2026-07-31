@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2025 EDF R&D
+% Copyright (C) 2012-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -25,8 +25,8 @@
 
 
 -define( class_description,
-		 "Class modelling a waste unloading point, i.e. a physical location to "
-		 "which wastes can be unloaded, by garbage trucks." ).
+         "Class modelling a waste unloading point, i.e. a physical location to "
+         "which wastes can be unloaded, by garbage trucks." ).
 
 
 % For waste_tank() and al:
@@ -53,8 +53,8 @@
 % The class-specific attributes of an instance of unloading point are:
 -define( class_attributes, [
 
-	{ waste_capacity, [ waste_capacity() ],
-	  "is a plain list storing the state of the waste storage tanks" } ] ).
+    { waste_capacity, [ waste_capacity() ],
+      "is a plain list storing the state of the waste storage tanks" } ] ).
 
 
 
@@ -69,14 +69,14 @@ Construction parameters are:
 - CapacityInformation describes the waste storage capacity of this point
 """.
 -spec construct( wooper:state(), class_GIS:location(), waste_capacity() ) ->
-						wooper:state().
+                        wooper:state().
 construct( State, Location, CapacityInformation ) ->
 
-	ContainerState = class_GeoContainer:construct( State, Location ),
+    ContainerState = class_GeoContainer:construct( State, Location ),
 
-	Tanks = manage_capacity_information( CapacityInformation ),
+    Tanks = manage_capacity_information( CapacityInformation ),
 
-	setAttribute( ContainerState, waste_capacity, Tanks ).
+    setAttribute( ContainerState, waste_capacity, Tanks ).
 
 
 
@@ -97,55 +97,55 @@ The answer (the actor message sent back) will be:
 time (transaction failed)
 """.
 -spec unloadWaste( wooper:state(), waste_type(), unit_utils:tons(),
-				   sending_actor_pid() ) -> actor_oneway_return().
+                   sending_actor_pid() ) -> actor_oneway_return().
 unloadWaste( _State, _WasteType=none, _ProposedMass, _WasteUnloaderPid ) ->
-	throw( cannot_unload_untyped_waste );
+    throw( cannot_unload_untyped_waste );
 
 unloadWaste( State, WasteType, ProposedMass, WasteUnloaderPid ) ->
 
-	WasteTanks = ?getAttr(waste_capacity),
+    WasteTanks = ?getAttr(waste_capacity),
 
-	[ waste_utils:check_waste_tank( T ) || T <- WasteTanks ],
+    [ waste_utils:check_waste_tank( T ) || T <- WasteTanks ],
 
-	{ _State, DescString } = executeRequest( State, toString ),
+    { _State, DescString } = executeRequest( State, toString ),
 
-	?info_fmt( "Trying to dispatch ~f tons of waste of type ~ts "
-		"into ~B tanks in ~ts.",
-		[ ProposedMass, WasteType, length( WasteTanks ), DescString ] ),
+    ?info_fmt( "Trying to dispatch ~f tons of waste of type ~ts "
+        "into ~B tanks in ~ts.",
+        [ ProposedMass, WasteType, length( WasteTanks ), DescString ] ),
 
-	UnloadState = case dispatch_waste_into_tanks( WasteType, ProposedMass,
-												  WasteTanks ) of
+    UnloadState = case dispatch_waste_into_tanks( WasteType, ProposedMass,
+                                                  WasteTanks ) of
 
-		false ->
-			?info_fmt( "No waste could be unloaded from transport ~w.",
+        false ->
+            ?info_fmt( "No waste could be unloaded from transport ~w.",
                        [ WasteUnloaderPid ] ),
-			class_Actor:send_actor_message( WasteUnloaderPid,
-											notifyNoUnloadedWaste, State );
+            class_Actor:send_actor_message( WasteUnloaderPid,
+                                            notifyNoUnloadedWaste, State );
 
-		{ NewWasteTanks, RemainingMass } ->
+        { NewWasteTanks, RemainingMass } ->
 
-			UnloadedMass = ProposedMass - RemainingMass,
+            UnloadedMass = ProposedMass - RemainingMass,
 
-			UnloadingTickCount =
-				 get_unloading_duration( WasteType, UnloadedMass, State ),
+            UnloadingTickCount =
+                 get_unloading_duration( WasteType, UnloadedMass, State ),
 
-			?info_fmt( "Unloading, from transport ~w, ~f tons of waste "
-				"of type ~ts, this will last for ~B ticks.",
-				[ WasteUnloaderPid, UnloadedMass, WasteType,
-				  UnloadingTickCount ] ),
+            ?info_fmt( "Unloading, from transport ~w, ~f tons of waste "
+                "of type ~ts, this will last for ~B ticks.",
+                [ WasteUnloaderPid, UnloadedMass, WasteType,
+                  UnloadingTickCount ] ),
 
-			SentState = class_Actor:send_actor_message( WasteUnloaderPid,
-				{ notifyUnloadedWaste,
-					[ UnloadedMass, WasteType, UnloadingTickCount ] }, State ),
+            SentState = class_Actor:send_actor_message( WasteUnloaderPid,
+                { notifyUnloadedWaste,
+                    [ UnloadedMass, WasteType, UnloadingTickCount ] }, State ),
 
-			setAttribute( SentState, waste_capacity, NewWasteTanks )
+            setAttribute( SentState, waste_capacity, NewWasteTanks )
 
-	end,
+    end,
 
-	[ waste_utils:check_waste_tank( T )
-		|| T <- getAttribute( UnloadState, waste_capacity ) ],
+    [ waste_utils:check_waste_tank( T )
+        || T <- getAttribute( UnloadState, waste_capacity ) ],
 
-	actor:return_state( UnloadState ).
+    actor:return_state( UnloadState ).
 
 
 
@@ -155,7 +155,7 @@ unloadWaste( State, WasteType, ProposedMass, WasteUnloaderPid ) ->
 
 % Checkings.
 manage_capacity_information( CapacityInformation ) ->
-	[ waste_utils:check_waste_tank( Tank ) || Tank <- CapacityInformation ].
+    [ waste_utils:check_waste_tank( Tank ) || Tank <- CapacityInformation ].
 
 
 
@@ -168,20 +168,20 @@ returns a pair of updated waste tanks and the remaining mass that could not be
 transferred (if any), and thus is remaining.
 """.
 dispatch_waste_into_tanks( WasteType, ProposedMass, WasteTanks ) ->
-	dispatch_waste_into_tanks( WasteType, ProposedMass, WasteTanks, _Acc=[] ).
+    dispatch_waste_into_tanks( WasteType, ProposedMass, WasteTanks, _Acc=[] ).
 
 
 % Two terminating cases:
 dispatch_waste_into_tanks( _WasteType, _RemainingMass, _WasteTanks=[],
-						   _Acc=[] ) ->
-	% No tank changed:
-	false;
+                           _Acc=[] ) ->
+    % No tank changed:
+    false;
 
 dispatch_waste_into_tanks( _WasteType, RemainingMass, _WasteTanks=[],
-						   AccTank ) ->
-	% At least one tank received waste:
-	[ waste_utils:check_waste_tank( T ) || T <- AccTank ],
-	{ AccTank, RemainingMass };
+                           AccTank ) ->
+    % At least one tank received waste:
+    [ waste_utils:check_waste_tank( T ) || T <- AccTank ],
+    { AccTank, RemainingMass };
 
 
 dispatch_waste_into_tanks( WasteType, RemainingMass, _WasteTanks=[
@@ -190,68 +190,68 @@ dispatch_waste_into_tanks( WasteType, RemainingMass, _WasteTanks=[
                           current_mass_stored=CurrentMass,
                           max_mass_stored=MaxMass } | T ], AccTank ) ->
 
-	% To be accepted, an incoming waste must be among the allowed ones, and
-	% compatible with what is already stored (if any):
-	%
-	case lists:member( WasteType, AllowedTypes )
+    % To be accepted, an incoming waste must be among the allowed ones, and
+    % compatible with what is already stored (if any):
+    %
+    case lists:member( WasteType, AllowedTypes )
             andalso waste_utils:can_be_mixed( TankWasteType, WasteType ) of
 
-		true ->
+        true ->
 
-			% Eligible tank, waste-type. Has room left?
-			case MaxMass - CurrentMass of
+            % Eligible tank, waste-type. Has room left?
+            case MaxMass - CurrentMass of
 
-				Margin when Margin > 0.0 ->
+                Margin when Margin > 0.0 ->
 
-					% Yes, this tank has room, at least to some extent:
-					case RemainingMass > Margin of
+                    % Yes, this tank has room, at least to some extent:
+                    case RemainingMass > Margin of
 
-						true ->
+                        true ->
 
-							% We can fill this tank, but some waste will remain:
-							UpdatedTank = waste_utils:add_waste_to_tank( Tank,
-								Margin, WasteType ) ,
+                            % We can fill this tank, but some waste will remain:
+                            UpdatedTank = waste_utils:add_waste_to_tank( Tank,
+                                Margin, WasteType ) ,
 
-							waste_utils:check_waste_tank( UpdatedTank ),
+                            waste_utils:check_waste_tank( UpdatedTank ),
 
-							% So we keep on iterating here:
-							dispatch_waste_into_tanks( WasteType,
-								RemainingMass - Margin, T,
-								[ UpdatedTank | AccTank ] );
-
-
-						false ->
-
-							% We can fully put the remaining waste into that
-							% tank:
-							%
-							LastTank = waste_utils:add_waste_to_tank( Tank,
-								RemainingMass, WasteType ),
-
-							waste_utils:check_waste_tank( LastTank ),
-
-							% Returning directly here (no recursion):
-							{ [ LastTank | T ] ++ AccTank, _RemainingMass=0.0 }
-
-					end;
-
-				_ZeroMargin ->
-					%trace_utils:debug( "Tank full." ),
-					dispatch_waste_into_tanks( WasteType, RemainingMass, T,
-											   [ Tank | AccTank ] )
-			end;
+                            % So we keep on iterating here:
+                            dispatch_waste_into_tanks( WasteType,
+                                RemainingMass - Margin, T,
+                                [ UpdatedTank | AccTank ] );
 
 
-		false ->
+                        false ->
 
-			%trace_utils:debug_fmt( "Non-compatible waste types (tank: ~ts, "
-			%   "waste: ~ts), "continuing iterating.",
-			%   [ TankWasteType, WasteType ] ),
+                            % We can fully put the remaining waste into that
+                            % tank:
+                            %
+                            LastTank = waste_utils:add_waste_to_tank( Tank,
+                                RemainingMass, WasteType ),
 
-			dispatch_waste_into_tanks( WasteType, RemainingMass, T,
-									   [ Tank | AccTank ] )
+                            waste_utils:check_waste_tank( LastTank ),
 
-	end.
+                            % Returning directly here (no recursion):
+                            { [ LastTank | T ] ++ AccTank, _RemainingMass=0.0 }
+
+                    end;
+
+                _ZeroMargin ->
+                    %trace_utils:debug( "Tank full." ),
+                    dispatch_waste_into_tanks( WasteType, RemainingMass, T,
+                                               [ Tank | AccTank ] )
+            end;
+
+
+        false ->
+
+            %trace_utils:debug_fmt( "Non-compatible waste types (tank: ~ts, "
+            %   "waste: ~ts), "continuing iterating.",
+            %   [ TankWasteType, WasteType ] ),
+
+            dispatch_waste_into_tanks( WasteType, RemainingMass, T,
+                                       [ Tank | AccTank ] )
+
+    end.
 
 
 
@@ -261,8 +261,8 @@ specified waste type in a waste transport.
 """.
 get_unloading_duration( _WasteType, UnloadedMass, State ) ->
 
-	% A base of 2 minutes, plus 1 minute per ton:
-	Seconds = ( 2 + 1 * UnloadedMass ) * 60,
+    % A base of 2 minutes, plus 1 minute per ton:
+    Seconds = ( 2 + 1 * UnloadedMass ) * 60,
 
-	class_Actor:convert_seconds_to_ticks( Seconds, ?city_max_relative_error,
-										  State ).
+    class_Actor:convert_seconds_to_ticks( Seconds, ?city_max_relative_error,
+                                          State ).

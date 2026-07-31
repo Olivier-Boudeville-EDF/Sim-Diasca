@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2025 Olivier Boudeville
+% Copyright (C) 2020-2026 Olivier Boudeville
 %
 % Released as LGPL software.
 %
@@ -30,8 +30,8 @@ debugging.
 -doc "Typically for testing.".
 -spec run() -> void().
 run() ->
-	ArgTable = cmd_line_utils:get_argument_table(),
-	main( ArgTable ).
+    ArgTable = cmd_line_utils:get_argument_table(),
+    main( ArgTable ).
 
 
 % Defaults:
@@ -40,11 +40,11 @@ run() ->
 -doc "Returns the usage information of the corresponding application.".
 -spec get_usage() -> void().
 get_usage() ->
-	text_utils:format( "Usage: ~ts MBDR_PROJECT_FILE.mbdr"
-		"[-h|--help]~n"
-		"  Builds specified MBDR project, where:~n"
-		" - MBDR_PROJECT_FILE.mbdr is a MBDR file corresponding to the project "
-		"that shall be built~n", [ ?exec_name ] ).
+    text_utils:format( "Usage: ~ts MBDR_PROJECT_FILE.mbdr"
+        "[-h|--help]~n"
+        "  Builds specified MBDR project, where:~n"
+        " - MBDR_PROJECT_FILE.mbdr is a MBDR file corresponding to the project "
+        "that shall be built~n", [ ?exec_name ] ).
 
 
 
@@ -55,62 +55,62 @@ associated escript.
 -spec main( cmd_line_utils:argument_table() ) -> void().
 main( ArgTable ) ->
 
-	%trace_utils:debug_fmt( "Original script-specific arguments: ~ts",
-	%   [ cmd_line_utils:argument_table_to_string( ArgTable ) ] ),
+    %trace_utils:debug_fmt( "Original script-specific arguments: ~ts",
+    %   [ cmd_line_utils:argument_table_to_string( ArgTable ) ] ),
 
-	[ %InteractiveRefKey,
-	  HelpRefKey ] =
-		[ %'-interactive',
-		  '-help' ],
+    [ %InteractiveRefKey,
+      HelpRefKey ] =
+        [ %'-interactive',
+          '-help' ],
 
-	% Standardises command-line options:
-	MergedTable = list_table:merge_in_keys( [
-			%{ InteractiveRefKey, [ 'i' ] },
-			{ HelpRefKey, [ 'h' ] } ], ArgTable ),
+    % Standardises command-line options:
+    MergedTable = list_table:merge_in_keys( [
+            %{ InteractiveRefKey, [ 'i' ] },
+            { HelpRefKey, [ 'h' ] } ], ArgTable ),
 
-	%trace_utils:debug_fmt( "Canonicalized script-specific arguments: ~ts",
-	%   [ cmd_line_utils:argument_table_to_string( MergedTable ) ] ),
+    %trace_utils:debug_fmt( "Canonicalized script-specific arguments: ~ts",
+    %   [ cmd_line_utils:argument_table_to_string( MergedTable ) ] ),
 
-	list_table:has_entry( HelpRefKey, MergedTable ) andalso display_usage(),
+    list_table:has_entry( HelpRefKey, MergedTable ) andalso display_usage(),
 
-	%{ IsInteractive, InterTable } = case
-	% list_table:extract_entry_with_default( InteractiveRefKey,
-	% _DefaultInter=false, MergedTable ) of
-	%
-	%   { [], ShrunkTable } ->
-	%       { true, ShrunkTable };
-	%
-	%   P={ false, _ShrunkTable } ->
-	%       P
-	%
-	%end,
+    %{ IsInteractive, InterTable } = case
+    % list_table:extract_entry_with_default( InteractiveRefKey,
+    % _DefaultInter=false, MergedTable ) of
+    %
+    %   { [], ShrunkTable } ->
+    %       { true, ShrunkTable };
+    %
+    %   P={ false, _ShrunkTable } ->
+    %       P
+    %
+    %end,
 
-	%trace_utils:debug_fmt( "Interactive: ~ts", [ IsInteractive ] ),
+    %trace_utils:debug_fmt( "Interactive: ~ts", [ IsInteractive ] ),
 
-	%ProjectFileValue = case list_table:lookup_entry( _Key=fixme, fixme ) of
+    %ProjectFileValue = case list_table:lookup_entry( _Key=fixme, fixme ) of
 
-	ResultingTable = MergedTable,
+    ResultingTable = MergedTable,
 
-	case list_table:keys( ResultingTable ) of
+    case list_table:keys( ResultingTable ) of
 
-		[] ->
-			ok;
+        [] ->
+            ok;
 
-		UnexpectedOpts ->
-			trace_utils:error_fmt( "Unexpected user input: ~ts~n~ts",
-				[ cmd_line_utils:argument_table_to_string( ResultingTable ),
-				  get_usage() ] ),
-			throw( { unexpected_command_line_options, UnexpectedOpts } )
+        UnexpectedOpts ->
+            trace_utils:error_fmt( "Unexpected user input: ~ts~n~ts",
+                [ cmd_line_utils:argument_table_to_string( ResultingTable ),
+                  get_usage() ] ),
+            throw( { unexpected_command_line_options, UnexpectedOpts } )
 
-	end,
+    end,
 
-	trace_utils:notice( "Stopping now." ),
+    trace_utils:notice( "Stopping now." ),
 
-	basic_utils:stop( _ErrorCode=0 ).
+    basic_utils:stop( _ErrorCode=0 ).
 
 
 
 -doc "Displays the usage of this service, and stops (with no error).".
 display_usage() ->
-	io:format( get_usage(), [] ),
-	basic_utils:stop( _ErrorCode=0 ).
+    io:format( get_usage(), [] ),
+    basic_utils:stop( _ErrorCode=0 ).

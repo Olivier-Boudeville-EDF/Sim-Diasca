@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 Olivier Boudeville
+% Copyright (C) 2016-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -64,10 +64,10 @@ See `sql_support_test.erl` for the corresponding test.
 % - a catalog is a *database instance*, and may have multiple schemas
 %
 % - a *schema* is a table namespace defined in the context of a database
-% instance, and may have multiple tables
+% instance, and which may have multiple tables
 %
-% - a *table* gathers *records* (i.e. rows), structured according to *fields*
-% (i.e. columns)
+% - a *table* gathers *records* (i.e. rows), structured according to
+% *fields* (i.e. columns)
 
 
 % Binary extraction:
@@ -109,7 +109,7 @@ See `sql_support_test.erl` for the corresponding test.
 -doc """
 Designates the hostname on which a target database server instance is running.
 
-For example "baz.foobar.org."
+For example `"baz.foobar.org"`.
 """.
 -type database_host_name() :: net_utils:string_host_name().
 
@@ -128,7 +128,7 @@ For example 5432.
 
 
 -doc """
-The name of the target database instance. For example "acme_stock_db".
+The name of the target database instance. For example `"acme_stock_db"`.
 
 A database instance is also designated as a catalog.
 """.
@@ -154,7 +154,7 @@ A database instance is also designated as a catalog.
 A schema describes the organisation of the tables of a database. It defines a
 namespace of tables, and security boundaries.
 
-For example "customer_schema".
+For example `"customer_schema"`.
 """.
 -type schema_name() :: ustring().
 
@@ -195,7 +195,7 @@ A table of a database contains records comprising the same number of fields.
 
 % Mostly meaningless:
 -doc """
-A record (also called a 'row' or a 'tuple') represents a single, implicitly
+A record (also called a "row" or a "tuple") represents a single, implicitly
 structured data item in a table.
 """.
 -type record_name() :: ustring().
@@ -203,7 +203,7 @@ structured data item in a table.
 
 
 -doc """
-A field (also designated as 'column' or 'attribute') represents a set of data
+A field (also designated as "column" or "attribute") represents a set of data
 values of a particular type, one value for each record of the table.
 """.
 -type field_name() :: ustring().
@@ -211,7 +211,7 @@ values of a particular type, one value for each record of the table.
 
 
 -doc """
-A field (also designated as 'column' or 'attribute') represents a set of data
+A field (also designated as "column" or "attribute") represents a set of data
 values of a particular type, one value for each record of the table.
 """.
 -type bin_field_name() :: ustring().
@@ -219,7 +219,7 @@ values of a particular type, one value for each record of the table.
 
 
 -doc """
-A field (also designated as 'column' or 'attribute') represents a set of data
+A field (also designated as "column" or "attribute") represents a set of data
 values of a particular type, one value for each record of the table.
 """.
 -type any_field_name() :: field_name() | bin_field_name().
@@ -232,7 +232,7 @@ values of a particular type, one value for each record of the table.
 
 
 -doc """
-The name of a user of a database server. For example "john_smith".
+The name of a user of a database server. For example `"john_smith"`.
 """.
 -type database_user_name() :: ustring().
 
@@ -250,7 +250,7 @@ The name of a user of a database server. For example "john_smith".
 
 -doc "All settings necessary to access a database server.".
 -type database_access_settings() ::
-		{ database_connection_settings(), database_user_settings() }.
+        { database_connection_settings(), database_user_settings() }.
 
 
 
@@ -300,7 +300,7 @@ A number of database operations, typically performed in the context of a query.
 
 
 -doc "An actual record (a row).".
--type record() :: type_utils:tuple( field_value() ).
+-type row_record() :: type_utils:tuple( field_value() ).
 
 
 
@@ -313,8 +313,8 @@ values.
 
 
 -doc """
-The value of a field in a returned record, that may be 'null', that is
-translated here as 'undefined' (hence the maybe).
+The value of a field in a returned record, that may be `null`, that is
+translated here as `undefined` (hence the maybe).
 """.
 -type field_value() :: option( read_binary() ).
 
@@ -333,7 +333,7 @@ translated here as 'undefined' (hence the maybe).
 -doc """
 A database timestamp.
 
-For example "2021-11-08 13:33:52.895374".
+For example `"2021-11-08 13:33:52.895374"`.
 """.
 -type timestamp() :: ustring().
 
@@ -341,12 +341,12 @@ For example "2021-11-08 13:33:52.895374".
 
 -doc "The result of the execution of a query.".
 -type query_result() :: select_result() | update_result() | insert_result()
-					  | delete_result().
+                      | delete_result().
 
 
 
 -doc "The result of a select operation.".
--type select_result() :: { [ field_description() ], [ record() ] }.
+-type select_result() :: { [ field_description() ], [ row_record() ] }.
 
 
 
@@ -372,50 +372,50 @@ The result of a delete operation, that is the number of operations performed.
 
 
 -export_type([ database_host_name/0, database_port/0,
-			   database_name/0, bin_database_name/0, any_database_name/0,
-			   schema_name/0, bin_schema_name/0, any_schema_name/0,
-			   table_name/0, bin_table_name/0, any_table_name/0,
+               database_name/0, bin_database_name/0, any_database_name/0,
+               schema_name/0, bin_schema_name/0, any_schema_name/0,
+               table_name/0, bin_table_name/0, any_table_name/0,
 
-			   record_name/0,
-			   field_name/0, bin_field_name/0, any_field_name/0,
+               record_name/0,
+               field_name/0, bin_field_name/0, any_field_name/0,
 
-			   database_connection_settings/0,
+               database_connection_settings/0,
 
-			   database_user_name/0, database_user_password/0,
-			   database_user_settings/0,
+               database_user_name/0, database_user_password/0,
+               database_user_settings/0,
 
-			   database_access_settings/0,
+               database_access_settings/0,
 
-			   backend_name/0, connection/0,
+               backend_name/0, connection/0,
 
-			   query_string/0, operation_count/0, field_description/0,
+               query_string/0, operation_count/0, field_description/0,
 
-			   record/0, read_binary/0, field_value/0,
-			   user_name/0, user_id/0, timestamp/0,
+               row_record/0, read_binary/0, field_value/0,
+               user_name/0, user_id/0, timestamp/0,
 
-			   query_result/0, query_format/0, query_values/0,
-			   select_result/0, update_result/0, insert_result/0,
-			   delete_result/0 ]).
+               query_result/0, query_format/0, query_values/0,
+               select_result/0, update_result/0, insert_result/0,
+               delete_result/0 ]).
 
 
 
 -export([ list_possible_backend_names/0, has_backend/1, get_backend_name/0,
-		  start/0,
-		  connect/2, connect/3,
-		  execute_query/2, execute_query/3,
-		  list_database_names/1,
-		  list_schema_names/2,
-		  list_table_names/3,
-		  get_data/1,
-		  %extract_field/6,
-		  close/1,
-		  stop/0,
-		  connection_settings_to_string/1, user_settings_to_string/1 ]).
+          start/0,
+          connect/2, connect/3,
+          execute_query/2, execute_query/3,
+          list_database_names/1,
+          list_schema_names/2,
+          list_table_names/3,
+          get_data/1,
+          %extract_field/6,
+          close/1,
+          stop/0,
+          connection_settings_to_string/1, user_settings_to_string/1 ]).
 
 
 
 
-% Shorthands:
+% Type shorthands:
 
 -type count() :: basic_utils:count().
 -type base_status() :: basic_utils:base_status().
@@ -437,7 +437,7 @@ they are available locally or not).
 """.
 -spec list_possible_backend_names() -> [ backend_name() ].
 list_possible_backend_names() ->
-	[ sqlite3, postgresql ].
+    [ sqlite3, postgresql ].
 
 
 
@@ -448,34 +448,34 @@ available (that is currently and locally, at runtime).
 -spec has_backend( backend_name() ) -> boolean().
 has_backend( BackendName ) ->
 
-	% The availability of a given backend is determined on whether its main
-	% module can be found in the code path:
-	%
-	BackendModule = case BackendName of
+    % The availability of a given backend is determined on whether its main
+    % module can be found in the code path:
+    %
+    BackendModule = case BackendName of
 
-		sqlite3 ->
-			sqlite3;
+        sqlite3 ->
+            sqlite3;
 
-		postgresql ->
-			epgsql
+        postgresql ->
+            epgsql
 
-	end,
+    end,
 
-	case code_utils:is_beam_in_path( BackendModule ) of
+    case code_utils:is_beam_in_path( BackendModule ) of
 
-		not_found ->
-			false;
+        not_found ->
+            false;
 
-		[ _SinglePath ] ->
-			true;
+        [ _SinglePath ] ->
+            true;
 
-		MultiplePaths ->
-			trace_utils:warning_fmt( "Multiple '~ts' modules found for the SQL "
-				"backend ~ts, in: ~ts", [ BackendModule, BackendName,
-					text_utils:strings_to_string( MultiplePaths ) ] ),
-			true
+        MultiplePaths ->
+            trace_utils:warning_fmt( "Multiple '~ts' modules found for the SQL "
+                "backend ~ts, in: ~ts", [ BackendModule, BackendName,
+                    text_utils:strings_to_string( MultiplePaths ) ] ),
+            true
 
-	end.
+    end.
 
 
 
@@ -484,170 +484,170 @@ Returns the type of the currently used (build-time) SQL backend (if any).
 """.
 -spec get_backend_name() -> option( backend_name() ).
 get_backend_name() ->
-	cond_utils:switch_set_to( myriad_sql_backend, [
+    cond_utils:switch_set_to( myriad_sql_backend, [
 
-		{ sqlite3, sqlite3 },
+        { sqlite3, sqlite3 },
 
-		{ postgresql, postgresql },
+        { postgresql, postgresql },
 
-		{ none, undefined } ],
+        { none, undefined } ],
 
-		% Default token:
-		none ).
+        % Default token:
+        none ).
 
 
 
 -doc "Starts (checks and inits) the SQL service support.".
 -spec start() -> void().
 start() ->
-	cond_utils:switch_set_to( myriad_sql_backend, [
+    cond_utils:switch_set_to( myriad_sql_backend, [
 
-		{ sqlite3,
-			% We have to secure the erlang-sqlite3 binding, nevertheless nothing
-			% special is needed (e.g. finding ebin/sqlite3.beam results in
-			% finding automatically priv/sqlite3_drv.so).
+        { sqlite3,
+            % We have to secure the erlang-sqlite3 binding, nevertheless nothing
+            % special is needed (e.g. finding ebin/sqlite3.beam results in
+            % finding automatically priv/sqlite3_drv.so).
 
-			%trace_utils:debug( "Starting the SQL support, using SQLite3." )
-			ok
-		},
+            %trace_utils:debug( "Starting the SQL support, using SQLite3." )
+            ok
+        },
 
-		{ postgresql,
-			%trace_utils:debug( "Starting the SQL support, using PostgreSQL." )
-			ok
-		},
+        { postgresql,
+            %trace_utils:debug( "Starting the SQL support, using PostgreSQL." )
+            ok
+        },
 
-		{ none, throw( no_myriad_sql_backend_enabled ) } ],
+        { none, throw( no_myriad_sql_backend_enabled ) } ],
 
-		% Default token:
-		none ).
+        % Default token:
+        none ).
 
 
 
 -doc "Connects to the specified database, with a default time-out.".
 -spec connect( database_connection_settings(), database_user_settings() ) ->
-							fallible( connection() ).
+                            fallible( connection() ).
 connect( ConnSettings, UserSettings ) ->
-	connect( ConnSettings, UserSettings, _TimeOutMs=5000 ).
+    connect( ConnSettings, UserSettings, _TimeOutMs=5000 ).
 
 
 
 -doc "Connects to the specified database, with the specified time-out.".
 -spec connect( database_connection_settings(), database_user_settings(),
-			   time_out() ) -> fallible( connection() ).
+               time_out() ) -> fallible( connection() ).
 connect( ConnSettings=#database_connection_settings{ host_name=HostnameStr,
-													 port=MaybePort,
-													 name=DbNameStr },
-		 UserSettings=#database_user_settings{ user_name=UserName,
-											   user_password=UserPassword },
-		 TimeOut ) ->
+                                                     port=MaybePort,
+                                                     name=DbNameStr },
+         UserSettings=#database_user_settings{ user_name=UserName,
+                                               user_password=UserPassword },
+         TimeOut ) ->
 
-	ActualPort = case MaybePort of
+    ActualPort = case MaybePort of
 
-		undefined ->
-			?default_database_port;
+        undefined ->
+            ?default_database_port;
 
-		Port ->
-			Port
+        Port ->
+            Port
 
-	end,
+    end,
 
-	ConnRes = cond_utils:switch_set_to( myriad_sql_backend, [
+    ConnRes = cond_utils:switch_set_to( myriad_sql_backend, [
 
-		{ sqlite3,
-			begin
-				basic_utils:ignore_unused(
-					[ ConnSettings, HostnameStr, MaybePort, DbNameStr,
-					  UserSettings, UserName, UserPassword, TimeOut,
-					  ActualPort ] ),
-				{ ok, myriad_sqlite3_connection }
-			 end },
+        { sqlite3,
+            begin
+                basic_utils:ignore_unused(
+                    [ ConnSettings, HostnameStr, MaybePort, DbNameStr,
+                      UserSettings, UserName, UserPassword, TimeOut,
+                      ActualPort ] ),
+                { ok, myriad_sqlite3_connection }
+             end },
 
-		{ postgresql,
-			epgsql:connect( _Opts=#{ host => HostnameStr,
-									 port => ActualPort,
-									 username => UserName,
-									 password => UserPassword,
-									 database => DbNameStr,
-									 timeout => TimeOut,
-									 % SQL NULL not translated as 'null':
-									 nulls => [ undefined ] } ) },
+        { postgresql,
+            epgsql:connect( _Opts=#{ host => HostnameStr,
+                                     port => ActualPort,
+                                     username => UserName,
+                                     password => UserPassword,
+                                     database => DbNameStr,
+                                     timeout => TimeOut,
+                                     % SQL NULL not translated as 'null':
+                                     nulls => [ undefined ] } ) },
 
-		{ none,
-			begin
-				basic_utils:ignore_unused(
-					[ ConnSettings, HostnameStr, MaybePort, DbNameStr,
-					  UserSettings, UserName, UserPassword, TimeOut,
-					  ActualPort ] ),
-				throw( no_myriad_sql_backend_enabled )
-			 end } ],
+        { none,
+            begin
+                basic_utils:ignore_unused(
+                    [ ConnSettings, HostnameStr, MaybePort, DbNameStr,
+                      UserSettings, UserName, UserPassword, TimeOut,
+                      ActualPort ] ),
+                throw( no_myriad_sql_backend_enabled )
+             end } ],
 
-		% Default:
-		none ),
+        % Default:
+        none ),
 
-	cond_utils:if_defined( myriad_debug_sql_support,
-		trace_utils:debug_fmt( "Connection attempt to ~ts, as ~ts reported: ~w",
-			[ connection_settings_to_string( ConnSettings ),
-			  user_settings_to_string( UserSettings ), ConnRes ] ),
-		basic_utils:ignore_unused( [ ConnSettings, UserSettings ] ) ),
+    cond_utils:if_defined( myriad_debug_sql_support,
+        trace_utils:debug_fmt( "Connection attempt to ~ts, as ~ts reported: ~w",
+            [ connection_settings_to_string( ConnSettings ),
+              user_settings_to_string( UserSettings ), ConnRes ] ),
+        basic_utils:ignore_unused( [ ConnSettings, UserSettings ] ) ),
 
-	ConnRes.
+    ConnRes.
 
 
 
 -doc "Executes the specified SQL query based on the specified connection.".
 -spec execute_query( connection(), query_string() ) ->
-											fallible( query_result() ).
+                                            fallible( query_result() ).
 execute_query( Conn, Query ) ->
 
-	cond_utils:if_defined( myriad_debug_sql_support,
-		trace_utils:debug_fmt( "Executing on connection ~w query '~ts'.",
-							   [ Conn, Query ] ) ),
+    cond_utils:if_defined( myriad_debug_sql_support,
+        trace_utils:debug_fmt( "Executing on connection ~w query '~ts'.",
+                               [ Conn, Query ] ) ),
 
-	cond_utils:switch_set_to( myriad_sql_backend, [
+    cond_utils:switch_set_to( myriad_sql_backend, [
 
-		{ sqlite3,
-			begin
-				basic_utils:ignore_unused( [ Conn, Query ] ),
-				throw( to_do )
-			end },
+        { sqlite3,
+            begin
+                basic_utils:ignore_unused( [ Conn, Query ] ),
+                throw( to_do )
+            end },
 
-		{ postgresql,
-			% Simple query:
-			case epgsql:squery( Conn, Query ) of
+        { postgresql,
+            % Simple query:
+            case epgsql:squery( Conn, Query ) of
 
-				{ ok, ColumnDesc, Rows } ->
-					cond_utils:if_defined( myriad_debug_sql_support,
-						trace_utils:debug_fmt( "Query success, returning ~B "
-							"field descriptions and ~B records.",
-							[ length( ColumnDesc ), length( Rows ) ] ) ),
+                { ok, ColumnDesc, Rows } ->
+                    cond_utils:if_defined( myriad_debug_sql_support,
+                        trace_utils:debug_fmt( "Query success, returning ~B "
+                            "field descriptions and ~B records.",
+                            [ length( ColumnDesc ), length( Rows ) ] ) ),
 
-					{ ok, { ColumnDesc, Rows } };
+                    { ok, { ColumnDesc, Rows } };
 
 
-				P={ ok, OpCount } ->
-					cond_utils:if_defined( myriad_debug_sql_support,
-						trace_utils:debug_fmt( "Query success, ~B operations "
-							"performed.", [ length( OpCount ) ] ),
-						basic_utils:ignore_unused( OpCount ) ),
-					P;
+                P={ ok, OpCount } ->
+                    cond_utils:if_defined( myriad_debug_sql_support,
+                        trace_utils:debug_fmt( "Query success, ~B operations "
+                            "performed.", [ length( OpCount ) ] ),
+                        basic_utils:ignore_unused( OpCount ) ),
+                    P;
 
-				P={error, QError } ->
-					cond_utils:if_defined( myriad_debug_sql_support,
-						trace_utils:error_fmt( "Query failed: ~p.",
-											   [ QError ] ),
-						basic_utils:ignore_unused( QError ) ),
-					P
+                P={error, QError } ->
+                    cond_utils:if_defined( myriad_debug_sql_support,
+                        trace_utils:error_fmt( "Query failed: ~p.",
+                                               [ QError ] ),
+                        basic_utils:ignore_unused( QError ) ),
+                    P
 
-			end },
+            end },
 
-		{ none,
-			begin
-				basic_utils:ignore_unused( [ Conn, Query ] ),
-				throw( no_myriad_sql_backend_enabled )
-			end } ],
+        { none,
+            begin
+                basic_utils:ignore_unused( [ Conn, Query ] ),
+                throw( no_myriad_sql_backend_enabled )
+            end } ],
 
-		% Default:
-		none ).
+        % Default:
+        none ).
 
 
 
@@ -655,9 +655,9 @@ execute_query( Conn, Query ) ->
 Executes the specified SQL query to formant, based on the specified connection.
 """.
 -spec execute_query( connection(), query_format(), query_values() ) ->
-											fallible( query_result() ).
+                                            fallible( query_result() ).
 execute_query( Conn, QueryFormat, QueryValues ) ->
-	execute_query( Conn, text_utils:format( QueryFormat, QueryValues ) ).
+    execute_query( Conn, text_utils:format( QueryFormat, QueryValues ) ).
 
 
 
@@ -666,41 +666,41 @@ Returns a list of all the database instances hosted by the database server
 designated by the specified connection.
 """.
 -spec list_database_names( connection() ) ->
-											fallible( [ bin_database_name() ] ).
+                                            fallible( [ bin_database_name() ] ).
 list_database_names( Conn ) ->
 
-	% Queries depend on the database backend:
-	cond_utils:switch_set_to( myriad_sql_backend, [
+    % Queries depend on the database backend:
+    cond_utils:switch_set_to( myriad_sql_backend, [
 
-		{ sqlite3,
-			begin
-				basic_utils:ignore_unused( Conn ),
-				throw( to_do )
-			end },
+        { sqlite3,
+            begin
+                basic_utils:ignore_unused( Conn ),
+                throw( to_do )
+            end },
 
-		{ postgresql,
-			 begin
-				case execute_query( Conn, "select datname from pg_database "
-									"where datistemplate = false" ) of
+        { postgresql,
+             begin
+                case execute_query( Conn, "select datname from pg_database "
+                                    "where datistemplate = false" ) of
 
-					{ ok, { _FieldDescs, Records } } ->
-						DbNames = [ N || { N } <- Records ],
-						{ ok, DbNames };
+                    { ok, { _FieldDescs, Records } } ->
+                        DbNames = [ N || { N } <- Records ],
+                        { ok, DbNames };
 
-					Error ->
-						Error
+                    Error ->
+                        Error
 
-				end
-			 end },
+                end
+             end },
 
-		{ none,
-			begin
-				basic_utils:ignore_unused( Conn ),
-				throw( no_myriad_sql_backend_enabled )
-			end } ],
+        { none,
+            begin
+                basic_utils:ignore_unused( Conn ),
+                throw( no_myriad_sql_backend_enabled )
+            end } ],
 
-		% Default:
-		none ).
+        % Default:
+        none ).
 
 
 
@@ -711,47 +711,47 @@ of the database server designated by the specified connection.
 For example `[<<"pg_catalog">>, <<"information_schema">>, <<"public">>]`.
 """.
 -spec list_schema_names( connection(), any_database_name() ) ->
-											fallible( [ bin_schema_name() ] ).
+                                            fallible( [ bin_schema_name() ] ).
 list_schema_names( Conn, DbInstanceName ) ->
 
-	BinDbInstanceName = text_utils:ensure_binary( DbInstanceName ),
+    BinDbInstanceName = text_utils:ensure_binary( DbInstanceName ),
 
-	% Queries depend on the database backend:
-	cond_utils:switch_set_to( myriad_sql_backend, [
+    % Queries depend on the database backend:
+    cond_utils:switch_set_to( myriad_sql_backend, [
 
-		{ sqlite3,
-			begin
-				basic_utils:ignore_unused( [ Conn, BinDbInstanceName ] ),
-				throw( to_do )
-			end },
+        { sqlite3,
+            begin
+                basic_utils:ignore_unused( [ Conn, BinDbInstanceName ] ),
+                throw( to_do )
+            end },
 
-		% Supposedly better than 'select nspname from pg_catalog.pg_namespace':
-		{ postgresql,
-			 begin
-				Query = text_utils:format( "select schema_name from "
-					"information_schema.schemata where catalog_name = '~ts'",
-					[ BinDbInstanceName ] ),
+        % Supposedly better than 'select nspname from pg_catalog.pg_namespace':
+        { postgresql,
+             begin
+                Query = text_utils:format( "select schema_name from "
+                    "information_schema.schemata where catalog_name = '~ts'",
+                    [ BinDbInstanceName ] ),
 
-				case execute_query( Conn, Query ) of
+                case execute_query( Conn, Query ) of
 
-					{ ok, { _FieldDescs, Records } } ->
-						SchNames = [ N || { N } <- Records ],
-						{ ok, SchNames };
+                    { ok, { _FieldDescs, Records } } ->
+                        SchNames = [ N || { N } <- Records ],
+                        { ok, SchNames };
 
-					Error ->
-						Error
+                    Error ->
+                        Error
 
-				end
-			 end },
+                end
+             end },
 
-		{ none,
-			begin
-				basic_utils:ignore_unused( [ Conn, BinDbInstanceName ] ),
-				throw( no_myriad_sql_backend_enabled )
-			end } ],
+        { none,
+            begin
+                basic_utils:ignore_unused( [ Conn, BinDbInstanceName ] ),
+                throw( no_myriad_sql_backend_enabled )
+            end } ],
 
-		% Default:
-		none ).
+        % Default:
+        none ).
 
 
 
@@ -761,74 +761,74 @@ of the specified database instance of the database server designated by the
 specified connection.
 """.
 -spec list_table_names( connection(), bin_database_name(),
-						bin_schema_name() ) -> fallible( [ bin_table_name() ] ).
+                        bin_schema_name() ) -> fallible( [ bin_table_name() ] ).
 list_table_names( Conn, DbInstanceName, SchemaName ) ->
 
-	BinDbInstanceName = text_utils:ensure_binary( DbInstanceName ),
-	BinSchemaName = text_utils:ensure_binary( SchemaName ),
+    BinDbInstanceName = text_utils:ensure_binary( DbInstanceName ),
+    BinSchemaName = text_utils:ensure_binary( SchemaName ),
 
-	% Queries depend on the database backend:
+    % Queries depend on the database backend:
 
-	cond_utils:switch_set_to( myriad_sql_backend, [
+    cond_utils:switch_set_to( myriad_sql_backend, [
 
-		{ sqlite3,
-			begin
-				basic_utils:ignore_unused(
-					[ Conn, BinDbInstanceName, BinSchemaName ] ),
-				throw( to_do )
-			end },
+        { sqlite3,
+            begin
+                basic_utils:ignore_unused(
+                    [ Conn, BinDbInstanceName, BinSchemaName ] ),
+                throw( to_do )
+            end },
 
-		{ postgresql,
-			 begin
-				% To exclude views, put "AND table_type = 'BASE TABLE'" to the
-				% where clause:
-				%
-				Query = text_utils:format( "select table_name from "
-					"information_schema.tables where table_catalog = '~ts' "
-					" and table_schema = '~ts'",
-					[ BinDbInstanceName, BinSchemaName ] ),
+        { postgresql,
+             begin
+                % To exclude views, put "AND table_type = 'BASE TABLE'" to the
+                % where clause:
+                %
+                Query = text_utils:format( "select table_name from "
+                    "information_schema.tables where table_catalog = '~ts' "
+                    " and table_schema = '~ts'",
+                    [ BinDbInstanceName, BinSchemaName ] ),
 
-				case execute_query( Conn, Query ) of
+                case execute_query( Conn, Query ) of
 
-					{ ok, { _FieldDescs, Records } } ->
-						TbNames = [ N || { N } <- Records ],
-						{ ok, TbNames };
+                    { ok, { _FieldDescs, Records } } ->
+                        TbNames = [ N || { N } <- Records ],
+                        { ok, TbNames };
 
-					Error ->
-						Error
+                    Error ->
+                        Error
 
-				end
-			 end },
+                end
+             end },
 
-		{ none,
-			begin
-				basic_utils:ignore_unused( [ Conn, BinDbInstanceName,
-											 BinSchemaName ] ),
-				throw( no_myriad_sql_backend_enabled )
-			end } ],
+        { none,
+            begin
+                basic_utils:ignore_unused( [ Conn, BinDbInstanceName,
+                                             BinSchemaName ] ),
+                throw( no_myriad_sql_backend_enabled )
+            end } ],
 
-		% Default:
-		none ).
+        % Default:
+        none ).
 
 
 
 -doc """
 Returns the actual binary that is stored in a database data field, from the one
-directly read (with is prefixed and in hexadecimal character).
+directly read (with is prefixed, and expressed in hexadecimal digits).
 
 Refer to the 'Binary extraction' section above for further details.
 """.
 -spec get_data( read_binary() ) -> binary().
 get_data( ReadBinString ) ->
 
-	% ReadBinString is a binary string containing hexadecimal characters.
-	%
-	% For some reason, at least with epgsql, a "\x" prefix is present, let's
-	% remove it:
-	%
-	<<"\\x", ReadHexaBinStr/binary>> = ReadBinString,
+    % ReadBinString is a binary string containing hexadecimal characters.
+    %
+    % For some reason, at least with epgsql, a "\x" prefix is present, let's
+    % remove it:
+    %
+    <<"\\x", ReadHexaBinStr/binary>> = ReadBinString,
 
-	text_utils:hexabinstring_to_binary( ReadHexaBinStr ).
+    text_utils:hexabinstring_to_binary( ReadHexaBinStr ).
 
 
 
@@ -836,36 +836,36 @@ get_data( ReadBinString ) ->
 -spec close( connection() ) -> base_status().
 close( Conn ) ->
 
-	cond_utils:if_defined( myriad_debug_sql_support,
-		trace_utils:debug_fmt( "Closing connection ~p.", [ Conn ] ) ),
+    cond_utils:if_defined( myriad_debug_sql_support,
+        trace_utils:debug_fmt( "Closing connection ~p.", [ Conn ] ) ),
 
-	cond_utils:switch_set_to( myriad_sql_backend, [
+    cond_utils:switch_set_to( myriad_sql_backend, [
 
-		{ sqlite3,
-			begin
-				basic_utils:ignore_unused( Conn ),
-				throw( to_do )
-			end },
+        { sqlite3,
+            begin
+                basic_utils:ignore_unused( Conn ),
+                throw( to_do )
+            end },
 
-		{ postgresql, epgsql:close( Conn ) },
+        { postgresql, epgsql:close( Conn ) },
 
-		{ none,
-			begin
-				basic_utils:ignore_unused( Conn ),
-				throw( no_myriad_sql_backend_enabled )
-			end } ],
+        { none,
+            begin
+                basic_utils:ignore_unused( Conn ),
+                throw( no_myriad_sql_backend_enabled )
+            end } ],
 
-		% Default:
-		none ).
+        % Default:
+        none ).
 
 
 
 -doc "Stops the SQL support.".
 -spec stop() -> void().
 stop() ->
-	cond_utils:if_defined( myriad_debug_sql_support,
-						   trace_utils:debug( "Stopping the SQL support." ),
-						   ok ).
+    cond_utils:if_defined( myriad_debug_sql_support,
+                           trace_utils:debug( "Stopping the SQL support." ),
+                           ok ).
 
 
 
@@ -873,32 +873,32 @@ stop() ->
 Returns a textual description of the specified database connection settings.
 """.
 -spec connection_settings_to_string( database_connection_settings() ) ->
-											ustring().
+                                            ustring().
 connection_settings_to_string( #database_connection_settings{
-									host_name=DbHostname,
-									port=MaybeDbPort,
-									name=DbName } ) ->
+                                    host_name=DbHostname,
+                                    port=MaybeDbPort,
+                                    name=DbName } ) ->
 
-	HostStr = case MaybeDbPort of
+    HostStr = case MaybeDbPort of
 
-		undefined ->
-			DbHostname;
+        undefined ->
+            DbHostname;
 
-		Port ->
-			text_utils:format( "~ts (port: ~B)", [ DbHostname, Port ] )
+        Port ->
+            text_utils:format( "~ts (port: ~B)", [ DbHostname, Port ] )
 
-	end,
+    end,
 
-	text_utils:format( "database instance '~ts' running on host ~ts",
-					   [ DbName, HostStr ] ).
+    text_utils:format( "database instance '~ts' running on host ~ts",
+                       [ DbName, HostStr ] ).
 
 
 
 -doc "Returns a textual description of the specified database user settings.".
 -spec user_settings_to_string( database_user_settings() ) -> ustring().
 user_settings_to_string( #database_user_settings{
-							user_name=UserName,
-							user_password=UserPassword } ) ->
-	% Password could be hidden:
-	text_utils:format( "user '~ts' with password '~ts'",
-					   [ UserName, UserPassword ] ).
+                            user_name=UserName,
+                            user_password=UserPassword } ) ->
+    % Password could be hidden:
+    text_utils:format( "user '~ts' with password '~ts'",
+                       [ UserName, UserPassword ] ).

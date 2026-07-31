@@ -1,4 +1,4 @@
-% Copyright (C) 2009-2025 Olivier Boudeville
+% Copyright (C) 2009-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -39,17 +39,17 @@
 %
 -record( matrix3, {
 
-	m11 :: linear:coordinate(),
-	m12 :: linear:coordinate(),
-	m13 :: linear:coordinate(),
+    m11 :: linear:coordinate(),
+    m12 :: linear:coordinate(),
+    m13 :: linear:coordinate(),
 
-	m21 :: linear:coordinate(),
-	m22 :: linear:coordinate(),
-	m23 :: linear:coordinate(),
+    m21 :: linear:coordinate(),
+    m22 :: linear:coordinate(),
+    m23 :: linear:coordinate(),
 
-	m31 :: linear:coordinate(),
-	m32 :: linear:coordinate(),
-	m33 :: linear:coordinate() } ).
+    m31 :: linear:coordinate(),
+    m32 :: linear:coordinate(),
+    m33 :: linear:coordinate() } ).
 
 
 
@@ -78,10 +78,10 @@
 %
 -record( compact_matrix3, {
 
-	m11 :: linear:coordinate(),
-	m12 :: linear:coordinate(),
-	tx  :: linear:coordinate(),
+    m11 :: linear:coordinate(),
+    m12 :: linear:coordinate(),
+    tx  :: linear:coordinate(),
 
-	m21 :: linear:coordinate(),
-	m22 :: linear:coordinate(),
-	ty  :: linear:coordinate() } ).
+    m21 :: linear:coordinate(),
+    m22 :: linear:coordinate(),
+    ty  :: linear:coordinate() } ).

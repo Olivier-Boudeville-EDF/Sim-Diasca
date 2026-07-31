@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 EDF R&D
+% Copyright (C) 2016-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -25,16 +25,16 @@
 
 
 -define( class_description,
-		 "Dataflow processing unit class, corresponding to the implementation "
-		 "of the computational parts of a dataflow. "
-		 "This is a specialization of the generic dataflow block actor, meant "
-		 "to be the mother class from which the actual processing units "
-		 "inherit. "
-		 "This class should provide most of the basics needed to properly "
-		 "describe most processing units, including various built-in activation"
-		 " policies. It may be subclassed if needed to introduce variants."
-		 "Please refer to the 'Sim-Diasca Dataflow HOWTO' for further "
-		 "information." ).
+         "Dataflow processing unit class, corresponding to the implementation "
+         "of the computational parts of a dataflow. "
+         "This is a specialization of the generic dataflow block actor, meant "
+         "to be the mother class from which the actual processing units "
+         "inherit. "
+         "This class should provide most of the basics needed to properly "
+         "describe most processing units, including various built-in activation"
+         " policies. It may be subclassed if needed to introduce variants."
+         "Please refer to the 'Sim-Diasca Dataflow HOWTO' for further "
+         "information." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -125,7 +125,7 @@ refreshed), hence no automatic reset is performed anymore
 unit itself (not expected to be a common case)
 """.
 -type activation_policy() :: 'activate_on_new_set'
-						   | 'activate_when_all_set' | 'custom_activation'.
+                           | 'activate_when_all_set' | 'custom_activation'.
 
 
 -export_type([ unit_name/0, activation_policy/0 ]).
@@ -148,13 +148,13 @@ unit itself (not expected to be a common case)
 % The attributes that are specific to a processing unit are:
 -define( class_attributes, [
 
-	{ activation_policy, activation_policy(), "policy applied to decide "
-	  "when this processing unit should be activated" },
+    { activation_policy, activation_policy(), "policy applied to decide "
+      "when this processing unit should be activated" },
 
-	{ activation_requested, boolean(), "tells whether an activation has "
-	  "already been requested this diasca (allows to activate an unit ruled "
-	  "by the activate_on_new_set policy only once, even if multiple of its "
-	  "input ports have been set at the same diasca)" } ] ).
+    { activation_requested, boolean(), "tells whether an activation has "
+      "already been requested this diasca (allows to activate an unit ruled "
+      "by the activate_on_new_set policy only once, even if multiple of its "
+      "input ports have been set at the same diasca)" } ] ).
 
 
 
@@ -202,21 +202,21 @@ this processing unit
 for this processing unit
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 unit_name(), activation_policy(), [ input_port_spec() ],
-				 [ output_port_spec() ], dataflow_pid() ) -> wooper:state().
+                 unit_name(), activation_policy(), [ input_port_spec() ],
+                 [ output_port_spec() ], dataflow_pid() ) -> wooper:state().
 construct( State, ActorSettings, ProcessingUnitName, ActivationPolicy,
-		   InputPortSpecs, OutputPortSpecs, DataflowPid ) ->
+           InputPortSpecs, OutputPortSpecs, DataflowPid ) ->
 
-	% First the direct mother class:
-	BlockState = class_DataflowBlock:construct( State, ActorSettings,
-		?trace_categorize(ProcessingUnitName),
-		InputPortSpecs, OutputPortSpecs, DataflowPid ),
+    % First the direct mother class:
+    BlockState = class_DataflowBlock:construct( State, ActorSettings,
+        ?trace_categorize(ProcessingUnitName),
+        InputPortSpecs, OutputPortSpecs, DataflowPid ),
 
-	ActualPolicy = check_policy( ActivationPolicy ),
+    ActualPolicy = check_policy( ActivationPolicy ),
 
-	% Then the class-specific actions:
-	setAttributes( BlockState, [ { activation_policy, ActualPolicy },
-								 { activation_requested, false } ] ).
+    % Then the class-specific actions:
+    setAttributes( BlockState, [ { activation_policy, ActualPolicy },
+                                 { activation_requested, false } ] ).
 
 
 
@@ -231,20 +231,20 @@ Note: should this method be overridden in a child class, this version should be
 called from there as well (as must be called in all cases).
 """.
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-							actor_oneway_return().
+                            actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
-	?debug_fmt( "Created a ~ts", [ to_string( State ) ] ),
+    ?debug_fmt( "Created a ~ts", [ to_string( State ) ] ),
 
-	DataflowPid = ?getAttr(dataflow_pid),
+    DataflowPid = ?getAttr(dataflow_pid),
 
-	% As this class may have been specialised:
-	ActualClassname = wooper:get_classname( State ),
+    % As this class may have been specialised:
+    ActualClassname = wooper:get_classname( State ),
 
-	SentState = class_Actor:send_actor_message( DataflowPid,
-		{ registerDataflowUnit, [ ActualClassname ] }, State ),
+    SentState = class_Actor:send_actor_message( DataflowPid,
+        { registerDataflowUnit, [ ActualClassname ] }, State ),
 
-	actor:return_state( SentState ).
+    actor:return_state( SentState ).
 
 
 
@@ -260,57 +260,57 @@ perform activations exactly like a standard setting.
 Counterpart of the setAttributeValue/4 of class_DataflowObject.
 """.
 -spec setInputPortValue( wooper:state(),
-			input_port_name() | input_port_string_name(), channel_value(),
-			sending_actor_pid() ) -> actor_oneway_return().
+            input_port_name() | input_port_string_name(), channel_value(),
+            sending_actor_pid() ) -> actor_oneway_return().
 % Sending binaries shall be preferred (more efficient):
 setInputPortValue( State, InputPortName, ChannelValue, SendingActorPid )
                         when is_binary( InputPortName )
                              andalso is_record( ChannelValue, channel_value ) ->
 
-	?debug_fmt( "Explicit setting of input port '~ts' to the value '~ts' "
-		"for this processing unit, as requested by process ~w.",
-		[ InputPortName, class_DataflowBlock:value_to_string( ChannelValue ),
-		  SendingActorPid ] ),
+    ?debug_fmt( "Explicit setting of input port '~ts' to the value '~ts' "
+        "for this processing unit, as requested by process ~w.",
+        [ InputPortName, class_DataflowBlock:value_to_string( ChannelValue ),
+          SendingActorPid ] ),
 
-	% Values conveyed by channels obey by design some rules - here we have to
-	% validate them from scratch as they are introduced with no control:
-	%
-	% (only lightweight checking done currently)
+    % Values conveyed by channels obey by design some rules - here we have to
+    % validate them from scratch as they are introduced with no control:
+    %
+    % (only lightweight checking done currently)
 
-	InputPortTable = ?getAttr(input_ports),
+    InputPortTable = ?getAttr(input_ports),
 
-	InputPort = class_DataflowBlock:get_input_port( InputPortName,
-													InputPortTable, State ),
+    InputPort = class_DataflowBlock:get_input_port( InputPortName,
+                                                    InputPortTable, State ),
 
-	class_DataflowBlock:validate_value_for_input_port( ChannelValue, InputPort,
-													   InputPortName, State ),
+    class_DataflowBlock:validate_value_for_input_port( ChannelValue, InputPort,
+                                                       InputPortName, State ),
 
-	NewInputPort = class_DataflowBlock:assign_input_value( ChannelValue,
-		InputPort, InputPortName, State ),
+    NewInputPort = class_DataflowBlock:assign_input_value( ChannelValue,
+        InputPort, InputPortName, State ),
 
-	NewInputPortTable =
-		table:update_entry( InputPortName, NewInputPort, InputPortTable ),
+    NewInputPortTable =
+        table:update_entry( InputPortName, NewInputPort, InputPortTable ),
 
-	SetState = setAttribute( State, input_ports, NewInputPortTable ),
+    SetState = setAttribute( State, input_ports, NewInputPortTable ),
 
-	ScheduledState = consider_activation_after_input( SetState ),
+    ScheduledState = consider_activation_after_input( SetState ),
 
-	actor:return_state( ScheduledState );
+    actor:return_state( ScheduledState );
 
 
 setInputPortValue( State, InputPortName, ChannelValue, SendingActorPid )
                                 when is_list( InputPortName ) ->
 
-	NewState = setInputPortValue( State,
-		text_utils:string_to_binary( InputPortName ), ChannelValue,
-		SendingActorPid ),
+    NewState = setInputPortValue( State,
+        text_utils:string_to_binary( InputPortName ), ChannelValue,
+        SendingActorPid ),
 
-	actor:return_state( NewState );
+    actor:return_state( NewState );
 
 
 setInputPortValue( _State, Unexpected, _ChannelValue, _SendingActorPid ) ->
-	% Probably an atom here:
-	throw( { invalid_type_for_port_name, Unexpected } ).
+    % Probably an atom here:
+    throw( { invalid_type_for_port_name, Unexpected } ).
 
 
 
@@ -324,50 +324,50 @@ Note: an immediate value (with no specific metadata) could have sufficed, as
 they are supposed to have been checked at channel creation.
 """.
 -spec notifyNewInput( wooper:state(), input_port_name(), channel_value(),
-					  block_pid() ) -> actor_oneway_return().
+                      block_pid() ) -> actor_oneway_return().
 notifyNewInput( State, InputPortName, ChannelValue, UpstreamBlockPid )
                     when is_binary( InputPortName )
                          andalso is_record( ChannelValue, channel_value ) ->
 
-	?debug_fmt( "Dataflow-based setting of input port '~ts' to the value '~ts' "
-		"for this unit, as requested by upstream block ~w.",
-		[ InputPortName, class_DataflowBlock:value_to_string( ChannelValue ),
-		  UpstreamBlockPid ] ),
+    ?debug_fmt( "Dataflow-based setting of input port '~ts' to the value '~ts' "
+        "for this unit, as requested by upstream block ~w.",
+        [ InputPortName, class_DataflowBlock:value_to_string( ChannelValue ),
+          UpstreamBlockPid ] ),
 
-	% Values conveyed by channels obey by design some rules - here we validate
-	% them for an increased safety:
-	%
-	% (only lightweight checking done currently)
+    % Values conveyed by channels obey by design some rules - here we validate
+    % them for an increased safety:
+    %
+    % (only lightweight checking done currently)
 
-	InputPortTable = ?getAttr(input_ports),
+    InputPortTable = ?getAttr(input_ports),
 
-	InputPort = class_DataflowBlock:get_input_port( InputPortName,
-													InputPortTable, State ),
+    InputPort = class_DataflowBlock:get_input_port( InputPortName,
+                                                    InputPortTable, State ),
 
-	class_DataflowBlock:validate_value_for_input_port( ChannelValue, InputPort,
-													   InputPortName, State ),
+    class_DataflowBlock:validate_value_for_input_port( ChannelValue, InputPort,
+                                                       InputPortName, State ),
 
-	NewInputPort = class_DataflowBlock:assign_input_value( ChannelValue,
-		InputPort, InputPortName, State ),
+    NewInputPort = class_DataflowBlock:assign_input_value( ChannelValue,
+        InputPort, InputPortName, State ),
 
-	NewInputPortTable = table:update_entry( InputPortName, NewInputPort,
-											InputPortTable ),
+    NewInputPortTable = table:update_entry( InputPortName, NewInputPort,
+                                            InputPortTable ),
 
-	SetState = setAttribute( State, input_ports, NewInputPortTable ),
+    SetState = setAttribute( State, input_ports, NewInputPortTable ),
 
-	ScheduledState = consider_activation_after_input( SetState ),
+    ScheduledState = consider_activation_after_input( SetState ),
 
-	actor:return_state( ScheduledState );
+    actor:return_state( ScheduledState );
 
 
 notifyNewInput( _State, InputPortName, _ChannelValue, _UpstreamBlockPid )
                             when is_list( InputPortName ) ->
-	throw( { non_binary_port_name, InputPortName } );
+    throw( { non_binary_port_name, InputPortName } );
 
 
 notifyNewInput( _State, InputPortName, _ChannelValue, _UpstreamBlockPid ) ->
-	% Probably an atom here:
-	throw( { invalid_type_for_port_name, InputPortName } ).
+    % Probably an atom here:
+    throw( { invalid_type_for_port_name, InputPortName } ).
 
 
 
@@ -380,54 +380,54 @@ knowing that an input port has just been set.
 -spec consider_activation_after_input( wooper:state() ) -> wooper:state().
 consider_activation_after_input( State ) ->
 
-	ActivationPolicy = ?getAttr(activation_policy),
+    ActivationPolicy = ?getAttr(activation_policy),
 
-	IsActivated = case ActivationPolicy of
+    IsActivated = case ActivationPolicy of
 
-		activate_on_new_set ->
-			true;
+        activate_on_new_set ->
+            true;
 
-		activate_when_all_set ->
-			are_all_input_ports_set( State );
+        activate_when_all_set ->
+            are_all_input_ports_set( State );
 
-		custom_activation ->
-			%is_custom_activation_triggered( State )
-			throw( not_implemented_yet )
+        custom_activation ->
+            %is_custom_activation_triggered( State )
+            throw( not_implemented_yet )
 
-	end,
+    end,
 
-	case IsActivated of
+    case IsActivated of
 
-		true ->
-			case ?getAttr(activation_requested) of
+        true ->
+            case ?getAttr(activation_requested) of
 
-				true ->
-					?info_fmt( "An input port was set that would have led to "
-						"an activation of this processing unit (ruled "
-						"by the ~w policy), should it be not already "
-						"planned to be activated.", [ ActivationPolicy ] ),
-					State;
+                true ->
+                    ?info_fmt( "An input port was set that would have led to "
+                        "an activation of this processing unit (ruled "
+                        "by the ~w policy), should it be not already "
+                        "planned to be activated.", [ ActivationPolicy ] ),
+                    State;
 
-				false ->
-					?info_fmt( "An input port was set, and this led to an "
-						"activation of this processing unit "
-						"(ruled by the ~w policy).", [ ActivationPolicy ] ),
+                false ->
+                    ?info_fmt( "An input port was set, and this led to an "
+                        "activation of this processing unit "
+                        "(ruled by the ~w policy).", [ ActivationPolicy ] ),
 
-					ActivatedState = class_Actor:send_actor_message( self(),
-						triggerActivation, State ),
+                    ActivatedState = class_Actor:send_actor_message( self(),
+                        triggerActivation, State ),
 
-					setAttribute( ActivatedState, activation_requested, true )
+                    setAttribute( ActivatedState, activation_requested, true )
 
-			end;
+            end;
 
-		false ->
-			?debug_fmt( "An input port was set, yet this did not lead to an "
-				"activation of this processing unit "
-				"(ruled by the ~w policy), as ~ts",
-				[ ActivationPolicy, list_unset_input_ports( State ) ] ),
-			State
+        false ->
+            ?debug_fmt( "An input port was set, yet this did not lead to an "
+                "activation of this processing unit "
+                "(ruled by the ~w policy), as ~ts",
+                [ ActivationPolicy, list_unset_input_ports( State ) ] ),
+            State
 
-	end.
+    end.
 
 
 
@@ -439,8 +439,8 @@ none is unset) is thus considered true.
 """.
 -spec are_all_input_ports_set( wooper:state() ) -> boolean().
 are_all_input_ports_set( State ) ->
-	InputPorts = table:values( ?getAttr(input_ports) ),
-	are_all_set( InputPorts ).
+    InputPorts = table:values( ?getAttr(input_ports) ),
+    are_all_set( InputPorts ).
 
 
 
@@ -452,36 +452,36 @@ Lists the input ports that are not (yet) set.
 -spec list_unset_input_ports( wooper:state() ) -> ustring().
 list_unset_input_ports( State ) ->
 
-	% In all the (actual, i.e. standard or iterated) input ports, filters the
-	% ports that are not set, and keep their names:
+    % In all the (actual, i.e. standard or iterated) input ports, filters the
+    % ports that are not set, and keep their names:
 
-	InputTable = ?getAttr(input_ports),
+    InputTable = ?getAttr(input_ports),
 
-	UnsetPortNames = [ text_utils:binary_to_string( PortName )
-		|| { PortName, #input_port{ value_status=unset } }
-				<- table:enumerate( InputTable ) ],
+    UnsetPortNames = [ text_utils:binary_to_string( PortName )
+        || { PortName, #input_port{ value_status=unset } }
+                <- table:enumerate( InputTable ) ],
 
-	text_utils:format(
+    text_utils:format(
         "the following ~B input ports (over ~B) are not set: ~ts",
         [ length( UnsetPortNames ), table:size( InputTable ),
-		  text_utils:strings_to_sorted_string( UnsetPortNames ) ] ).
+          text_utils:strings_to_sorted_string( UnsetPortNames ) ] ).
 
 
 
 -doc "Tells whether all specified input ports are set.".
 -spec are_all_set( [ input_port() ] ) -> boolean().
 are_all_set( _InputPorts=[] ) ->
-	% As a result, a unit with no input port could be activated, if not called
-	% relevantly (i.e. from consider_activation_after_input/1):
-	%
-	true;
+    % As a result, a unit with no input port could be activated, if not called
+    % relevantly (i.e. from consider_activation_after_input/1):
+    %
+    true;
 
 are_all_set( _InputPorts=[ #input_port{ value_status=unset } | _T ] ) ->
-	false;
+    false;
 
 % A bit of extraneous checking is welcome:
 are_all_set( _InputPorts=[ #input_port{ value_status={ set, _V } } | T ] ) ->
-	are_all_set( T ).
+    are_all_set( T ).
 
 
 
@@ -489,23 +489,23 @@ are_all_set( _InputPorts=[ #input_port{ value_status={ set, _V } } | T ] ) ->
 -spec unset_all_input_ports( wooper:state() ) -> wooper:state().
 unset_all_input_ports( State ) ->
 
-	InputPorts = table:enumerate( ?getAttr(input_ports) ),
+    InputPorts = table:enumerate( ?getAttr(input_ports) ),
 
-	ResetInputPorts = reset_ports( InputPorts, _Acc=[] ),
+    ResetInputPorts = reset_ports( InputPorts, _Acc=[] ),
 
-	NewInputPortTable = table:new( ResetInputPorts ),
+    NewInputPortTable = table:new( ResetInputPorts ),
 
-	setAttribute( State, input_ports, NewInputPortTable ).
+    setAttribute( State, input_ports, NewInputPortTable ).
 
 
 
 -doc "Returns a reset version of the specified list of port pairs.".
 reset_ports( _InputPorts=[], Acc ) ->
-	Acc;
+    Acc;
 
 reset_ports( _InputPorts=[ { PortName, Port } | T ], Acc ) ->
-	NewPort = Port#input_port{ value_status=unset },
-	reset_ports( T, [ { PortName, NewPort } | Acc ] ).
+    NewPort = Port#input_port{ value_status=unset },
+    reset_ports( T, [ { PortName, NewPort } | Acc ] ).
 
 
 
@@ -518,52 +518,52 @@ previous input port assignments.
 (self-triggered actor oneway)
 """.
 -spec triggerActivation( wooper:state(), sending_actor_pid() ) ->
-								actor_oneway_return().
+                                actor_oneway_return().
 triggerActivation( State, _SelfSendingActorPid ) ->
 
-	PreActOutputPorts = class_DataflowBlock:get_output_entries( State ),
+    PreActOutputPorts = class_DataflowBlock:get_output_entries( State ),
 
-	?notice( "Activation of this processing unit triggered now." ),
+    ?notice( "Activation of this processing unit triggered now." ),
 
-	ActivatedState = executeOneway( State, activate ),
+    ActivatedState = executeOneway( State, activate ),
 
-	PostActOutputPorts =
-		class_DataflowBlock:get_output_entries( ActivatedState ),
+    PostActOutputPorts =
+        class_DataflowBlock:get_output_entries( ActivatedState ),
 
-	ChangeString = case list_utils:difference( PostActOutputPorts,
-											   PreActOutputPorts ) of
+    ChangeString = case list_utils:difference( PostActOutputPorts,
+                                               PreActOutputPorts ) of
 
-		[] ->
-			"no change in output ports";
+        [] ->
+            "no change in output ports";
 
-		ChangedOutputPorts ->
-			Strings = [ text_utils:format( "'~ts' has just been set to ~p",
-										   [ OPName, V ] )
+        ChangedOutputPorts ->
+            Strings = [ text_utils:format( "'~ts' has just been set to ~p",
+                                           [ OPName, V ] )
                                 || { OPName, V } <- ChangedOutputPorts ],
 
-			text_utils:format( "~B newly set output ports: ~ts",
-							   [ length( ChangedOutputPorts ),
-								 text_utils:strings_to_string( Strings ) ] )
+            text_utils:format( "~B newly set output ports: ~ts",
+                               [ length( ChangedOutputPorts ),
+                                 text_utils:strings_to_string( Strings ) ] )
 
-	end,
+    end,
 
-	?notice_fmt( "Activation is over, with ~ts", [ ChangeString ] ),
+    ?notice_fmt( "Activation is over, with ~ts", [ ChangeString ] ),
 
-	PortResetState = case ?getAttr(activation_policy) of
+    PortResetState = case ?getAttr(activation_policy) of
 
-		activate_when_all_set ->
-			% Maybe not resetting the input ports is more convenient after all:
-			ActivatedState;
-			%unset_all_input_ports( ActivatedState );
+        activate_when_all_set ->
+            % Maybe not resetting the input ports is more convenient after all:
+            ActivatedState;
+            %unset_all_input_ports( ActivatedState );
 
-		_ ->
-			ActivatedState
+        _ ->
+            ActivatedState
 
-	end,
+    end,
 
-	ActResetState = setAttribute( PortResetState, activation_requested, false ),
+    ActResetState = setAttribute( PortResetState, activation_requested, false ),
 
-	actor:return_state( ActResetState ).
+    actor:return_state( ActResetState ).
 
 
 
@@ -577,10 +577,10 @@ Meant to be overridden.
 -spec activate( wooper:state() ) -> const_oneway_return().
 activate( State ) ->
 
-	?warning_fmt( "Default, do-nothing activation triggered for ~ts.",
-				  to_string( State ) ),
+    ?warning_fmt( "Default, do-nothing activation triggered for ~ts.",
+                  to_string( State ) ),
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 
@@ -591,37 +591,37 @@ Typically called from its unit manager when having to destruct a unit after
 being notified that an associated dataflow object has been destructed.
 """.
 -spec triggerDestruction( wooper:state(), class_DataflowUnitManager:action_id(),
-						  sending_actor_pid() ) -> actor_oneway_return().
+                          sending_actor_pid() ) -> actor_oneway_return().
 triggerDestruction( State, ActionId, SendingActorPid ) ->
 
-	?debug_fmt( "Destruction triggered by ~w, in the context of action #~B.",
-				[ SendingActorPid, ActionId ] ),
+    ?debug_fmt( "Destruction triggered by ~w, in the context of action #~B.",
+                [ SendingActorPid, ActionId ] ),
 
-	% Regardless of upstream or downstream:
-	ConnectedBlocks = set_utils:to_list(
-		class_DataflowBlock:get_directly_connected_blocks( State ) ),
+    % Regardless of upstream or downstream:
+    ConnectedBlocks = set_utils:to_list(
+        class_DataflowBlock:get_directly_connected_blocks( State ) ),
 
-	ConnectState = class_Actor:send_actor_messages( ConnectedBlocks,
-		_Oneway=disconnectFromBlock, State ),
+    ConnectState = class_Actor:send_actor_messages( ConnectedBlocks,
+        _Oneway=disconnectFromBlock, State ),
 
-	ActualClassname = wooper:get_classname( ConnectState ),
+    ActualClassname = wooper:get_classname( ConnectState ),
 
-	UnregisterState = class_Actor:send_actor_message( ?getAttr(dataflow_pid),
-		{ unregisterDataflowUnit, [ ActualClassname ] }, ConnectState ),
+    UnregisterState = class_Actor:send_actor_message( ?getAttr(dataflow_pid),
+        { unregisterDataflowUnit, [ ActualClassname ] }, ConnectState ),
 
-	DestructState = class_Actor:send_actor_message( SendingActorPid,
-		{ onUnitDestructed, [ ActionId, ActualClassname ] }, UnregisterState ),
+    DestructState = class_Actor:send_actor_message( SendingActorPid,
+        { onUnitDestructed, [ ActionId, ActualClassname ] }, UnregisterState ),
 
-	DeclaredState = executeOneway( DestructState, declareTermination ),
+    DeclaredState = executeOneway( DestructState, declareTermination ),
 
-	EmptyPortTable = table:new(),
+    EmptyPortTable = table:new(),
 
-	FinalState = setAttributes( DeclaredState, [
-		{ input_ports, EmptyPortTable },
-		{ output_ports, EmptyPortTable },
-		{ run_status, terminating } ] ),
+    FinalState = setAttributes( DeclaredState, [
+        { input_ports, EmptyPortTable },
+        { output_ports, EmptyPortTable },
+        { run_status, terminating } ] ),
 
-	actor:return_state( FinalState ).
+    actor:return_state( FinalState ).
 
 
 
@@ -635,23 +635,23 @@ Checks the processing unit activation policy provided by the user.
 """.
 -spec check_policy( basic_utils:user_data() ) -> activation_policy().
 check_policy( P=activate_on_new_set ) ->
-	P;
+    P;
 
 check_policy( P=activate_when_all_set ) ->
-	P;
+    P;
 
 check_policy( P=custom_activation ) ->
-	P;
+    P;
 
 check_policy( P ) when is_atom( P ) ->
-	?app_error_fmt( "Unknown activation policy encountered: ~p (unsupported).",
-					[ P ] ),
-	throw( { unsupported_activation_policy, P } );
+    ?app_error_fmt( "Unknown activation policy encountered: ~p (unsupported).",
+                    [ P ] ),
+    throw( { unsupported_activation_policy, P } );
 
 check_policy( P ) ->
-	?app_error_fmt( "Invalid type of activation policy definition: ~p.",
-					[ P ] ),
-	throw( { invalid_activation_policy_type, P } ).
+    ?app_error_fmt( "Invalid type of activation policy definition: ~p.",
+                    [ P ] ),
+    throw( { invalid_activation_policy_type, P } ).
 
 
 
@@ -659,10 +659,10 @@ check_policy( P ) ->
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
-	{ InputDetailed, OutputDetailed } =
-		class_DataflowBlock:io_to_string( State ),
+    { InputDetailed, OutputDetailed } =
+        class_DataflowBlock:io_to_string( State ),
 
-	text_utils:format( "processing unit named '~ts', being ~ts, "
-		"applying the ~ts activation policy, having ~ts~nand ~ts",
-		[ ?getAttr(name), ?getAttr(run_status), ?getAttr(activation_policy),
-		  InputDetailed, OutputDetailed ] ).
+    text_utils:format( "processing unit named '~ts', being ~ts, "
+        "applying the ~ts activation policy, having ~ts~nand ~ts",
+        [ ?getAttr(name), ?getAttr(run_status), ?getAttr(activation_policy),
+          InputDetailed, OutputDetailed ] ).

@@ -274,7 +274,7 @@ Examples of this kind of systems are multi-agent simulations. If they often need
 
 The example_ mentioned through the current guide is an illustration [#]_ of the interacting lives of numerous animals of various species. Obviously, they have to share behaviours (e.g. all ovoviviparous beings may lay eggs, all creatures can live and die, all have an age, etc.), which cannot be mapped easily (read: automatically) to Erlang concepts without adding some generic constructs.
 
-.. [#] This example is not a *simulation*, it is just a multi-agent system. For real, massive, discrete-time simulations of complex systems in Erlang (using WOOPER), one may refer to `Sim-Diasca <https://github.com/Olivier-Boudeville-EDF/Sim-Diasca>`_ instead (a free software discrete-time simulation engine).
+.. [#] This example is not a *simulation*, it is just a multi-agent system. For real, massive, discrete-time simulations of complex systems in Erlang (using WOOPER), one may refer to `Sim-Diasca <https://github.com/edf-Lab/Sim-Diasca>`_ instead (a free software discrete-time simulation engine).
 
 .. one may refer to `Sim-Diasca <http://www.sim-diasca.com>`_ instead (a free software simulation engine).
 
@@ -655,6 +655,10 @@ The actual result ``R``, as determined by the method, is sent back as an Erlang 
  [..]
 
 
+Note that, with the use of blocking receives, deadlocks may happen; refer to the `On the Avoidance of Applicative Deadlocks`_ section for more details.
+
+
+
 
 Oneway Methods
 ______________
@@ -958,17 +962,19 @@ Note that ``State`` can be used as always, and that even there it is not reporte
 Sender PID
 **********
 
-Requests can access to one more information than oneways: the PID of the caller that sent the request. As WOOPER takes care automatically of sending back the result to the caller, having the request know explicitly the caller is usually not useful, thus the caller PID does not appear explicitly in request signatures, among the actual parameters.
+Requests can access to one more piece of information than oneways: the PID of the caller that sent the request (this PID has to be known of the instance in some way, as the requester expects a result from it).
 
-However WOOPER keeps track of this information, which remains available to requests, and may be useful for some of them.
+As WOOPER takes care automatically of sending back the result to the caller, having the request know explicitly the caller is usually not useful; so the caller PID does not appear explicitly in request signatures, among the actual parameters.
+
+However WOOPER keeps track of this information, which remains available to requests, and may be useful to some of them.
 
 From a request body, the caller PID can indeed be retrieved by using the ``getSender/0`` macro, which is automatically managed by WOOPER:
 
 .. code:: erlang
 
- giveBirth(State,NumberOfMaleChildren,NumberOfFemaleChildren) ->
+ giveBirth(State, NumberOfMaleChildren, NumberOfFemaleChildren) ->
 	 [..]
-	 CallerPID = ?getSender(),
+	 CallerPid = ?getSender(),
 	 [..]
 
 
@@ -976,21 +982,22 @@ Thus a request has natively access to its caller PID, i.e. with no need to speci
 
 .. code:: erlang
 
- MyCat ! {giveBirth,[2,3,self()],self()}
+ MyCat ! {giveBirth, [2,3,self()], self()}
 
-one can rely on only:
+one can rely simply on a more satisfactory:
 
 .. code:: erlang
 
- MyCat ! {giveBirth,[2,3],self()}
+ MyCat ! {giveBirth, [2,3], self()}
 
 
-while still letting the possibility for the called request (here ``giveBirth/3``, for a state and two parameters) to access the caller PID thanks to the ``getSender/0`` macro, and maybe store it for a later use or do anything appropriate with it.
+while still letting the possibility for the called request (here ``giveBirth/3``, for a state and two parameters) to access the caller PID thanks to its ``getSender/0`` macro, and maybe store it for a later use, or do anything appropriate with it.
 
 Note that:
 
 - having to handle explicitly the caller PID is rather uncommon, as WOOPER takes care automatically of the sending of the result back to the caller
 - the ``getSender/0`` macro should only be used for requests, as of course the sender PID has no meaning in the case of oneways; if that macro is called nevertheless from a oneway, then it returns the atom ``undefined``.
+
 
 
 Failsafe Request Calls
@@ -1222,28 +1229,28 @@ For example, for a request taking more than one parameter, or one list parameter
 
 .. code:: erlang
 
- {NewState,Result} = executeRequest(CurrentState,myRequestName,
-								["hello",42])
+ {NewState,Result} = executeRequest(CurrentState, myRequestName,
+									["hello", 42])
 
 For a request taking exactly one, non-list, parameter:
 
 .. code:: erlang
 
  {NewState,NewCounter} = executeRequest(CurrentState,
-								addToCurrentCounter,78)
+	 addToCurrentCounter, 78)
 
 For a request taking no parameter:
 
 .. code:: erlang
 
- {NewState,Sentence} = executeRequest(CurrentState,getLastSentence)
+ {NewState,Sentence} = executeRequest(CurrentState, getLastSentence)
 
 
 Const requests can be called [#]_ as well, like in:
 
 .. code:: erlang
 
- Color = executeConstRequest(CurrentState,getColor)
+ Color = executeConstRequest(CurrentState, getColor)
 
 
 .. [#] Note that currently WOOPER will not check that a called request is indeed const, and will silently drop any updated state.
@@ -1259,28 +1266,28 @@ For example, a oneway taking more than one parameter, or one list parameter:
 
 .. code:: erlang
 
- NewState = executeOneway(CurrentState,say,[ "hello", 42 ])
+ NewState = executeOneway(CurrentState, say, ["hello", 42])
 
 
 For a oneway taking exactly one (non-list) parameter:
 
 .. code:: erlang
 
- NewState = executeOneway(CurrentState,setAge,78)
+ NewState = executeOneway(CurrentState, setAge, 78)
 
 
 For a oneway taking no parameter:
 
 .. code:: erlang
 
- NewState = executeOneway(CurrentState,declareBirthday)
+ NewState = executeOneway(CurrentState, declareBirthday)
 
 
 Const oneways can also be called [#]_ as well, like in:
 
 .. code:: erlang
 
- executeConstOneway(CurrentState,displayAge)
+ executeConstOneway(CurrentState, displayAge)
 
 
 .. [#] Note that currently WOOPER will not check that a called oneway is indeed const, and will silently drop any updated state.
@@ -1297,13 +1304,13 @@ __________________________________________________
 
 One can specify **explicitly** the class (of course belonging to the inheritance graph of the class at hand) defining the version of the method that one wants to execute, bypassing the inheritance-aware overriding system.
 
-For example, a method needing to call ``setAge/2`` from its body would be expected to use something like: ``AgeState = executeOneway(State,setAge,NewAge)``.
+For example, a method needing to call ``setAge/2`` from its body would be expected to use something like: ``AgeState = executeOneway(State, setAge, NewAge)``.
 
 If ``class_Cat`` overrode ``setAge/2``, any cat instance would then call the overridden ``class_Cat:setAge/2`` method instead of the original ``class_Creature:setAge/2``.
 
 What if our specific method of ``class_Cat`` wanted, for any reason, to call the ``class_Creature`` version of ``setAge/2``, now shadowed by an overridden version of it? In this case a ``execute*As`` function should be used.
 
-These functions, which are ``executeRequestAs/{3,4}`` and ``executeOnewayAs/{3,4}``, behave exactly as the previous ``execute*`` functions, except that they take an additional parameter (to be specified just after the state) that is the name of the mother class (direct or not) having defined the version of the method that we want to execute.
+These functions, which are ``executeRequestAs/{3,4}`` and ``executeOnewayAs/{3,4}``, behave exactly as the previous ``execute*`` functions, except that they take an additional parameter (to be specified initially) that is the name of the mother class (direct or not) having defined the version of the method that we want to execute.
 
 .. Note::
 
@@ -1314,15 +1321,14 @@ In our example, we should thus use simply:
 
 .. code:: erlang
 
- AgeState = executeOnewayAs(State,class_Creature,setAge,NewAge)
+ AgeState = executeOnewayAs(class_Creature, State, setAge, NewAge)
 
 in order to call the ``class_Creature`` version of the ``setAge/2`` oneway.
 
 
 Finally, as one could expect, these functions have their const counterparts, namely: ``executeConstRequestAs/{3,4}`` and ``executeConstOnewayAs/{3,4}``, whose usage offers no surprise, like in::
 
- Color = executeConstRequestAs(MyState,class_Vehicle,
-							   getColorOf,[wheels])
+ Color = executeConstRequestAs(class_Vehicle, MyState, getColorOf, [wheels])
 
 
 
@@ -1689,7 +1695,7 @@ For example:
 .. code:: erlang
 
  ConstructedState = setAttributes(MyState,
-		  [{age,3},{whisker_color,white}])
+		  [{age,3}, {whisker_color,white}])
 
 will return a new state, exact copy of ``MyState`` but for the listed attributes, set to their respective specified value.
 
@@ -1712,7 +1718,7 @@ For example:
 
 .. code:: erlang
 
- {NewState,PastColor} = swapInAttribute(AState,fur_color,_NewValue=black)
+ {NewState, PastColor} = swapInAttribute(AState, fur_color, _NewValue=black)
 
 
 
@@ -1835,6 +1841,40 @@ The less usual cases where a value must be read from a state variable that is *n
 
 
 
+The ``getAttributes/2`` function
+********************************
+
+In order to obtain the values of, this time, an (ordered) **list** of attributes, one may use the ``getAttributes/2`` function.
+
+
+Its type specification is:
+
+.. code:: erlang
+
+ -spec getAttributes( wooper:state(), [ attribute_name() ] ) ->
+											[ attribute_value() ].
+
+
+For example:
+
+.. code:: erlang
+
+  [MyCount, MyAge, MyIdeas] = getAttribute(SomeState,
+	  [count, age, ideas]).
+
+
+
+The ``getAttrList/1`` macro
+***************************
+
+As for ``getAttr/1``, quite often, when having to retrieve the value of attributes from a state variable, that variable will be named ``State``, notably when using directly the original state specified in the method declaration.
+
+In this case, in order to obtain from such a state, in a single operation, the value of multiple attributes, the ``getAttrList/1`` *macro* can be used: ``?getAttrList([count, age, ideas])`` expands (literally) as ``getAttributes(State, [count, age, ideas])``, and is a tad shorter.
+
+Refer to the ``getAttr/1`` macro for further details.
+
+
+
 The ``getMaybeAttribute/2`` function
 ************************************
 
@@ -1845,12 +1885,12 @@ Its type specification is:
 .. code:: erlang
 
  -spec getMaybeAttribute(wooper:state(), attribute_name()) ->
-		  maybe({'value', attribute_value()}).
+		  option({'value', attribute_value()}).
 
 
 Note that:
 
-- thanks to Myriad, ``maybe(T) :: T | 'undefined'``
+- thanks to Myriad, ``option(T) :: T | 'undefined'`` (knowing that ``maybe`` is now a keyword reserved by Erlang)
 - the ``value`` atom tag is used to discriminate a non-existing attribute from one whose value is ``undefined``
 
 For example:
@@ -1881,7 +1921,7 @@ Like the ``getAttribute/2`` function has the ``getAttr/1`` macro, to the ``getMa
 
 This macro should be used *only* if the attribute of interest cannot have the ``undefined`` value, as this macro returns directly the value ``V`` obtained (if any), instead of its ``{value,V}`` tagged version [#]_.
 
-.. [#] Indeed, for convenience, this macro returns values of type ``maybe(attribute_value())`` (not of the ``maybe({'value', attribute_value()})`` type, thus an attribute set to the ``undefined`` value could not be discriminated from a non-defined attribute).
+.. [#] Indeed, for convenience, this macro returns values of type ``option(attribute_value())`` (not of the ``option({'value', attribute_value()})`` type, thus an attribute set to the ``undefined`` value could not be discriminated from a non-defined attribute).
 
 
 For example, to return the value of a possibly-defined attribute named ``my_description``, whose value is known to never be equal to ``undefined`` (for example because it is a string in all cases):
@@ -2164,7 +2204,7 @@ This may happen when, like in `the WOOPER example <#wooper-example>`_ presented 
 - various child classes derive from it (e.g. ``class_Mammal`` and a ``class_OvoviviparousBeing`` may derive from ``class_Creature`` for obvious reasons)
 - a more concrete class (e.g. ``class_Platypus``) has to derive from at least two of these child classes (since a platypus happens to be both a mammal and an ovoviviparous being)
 
-.. [#] For example, it might be the case with `class_TraceEmitter <https://github.com/Olivier-Boudeville/Ceylan-Traces/blob/master/src/class_TraceEmitter.erl>`_ if relying on `Ceylan-Traces <https://traces.esperide.org/>`_, or `class_Actor <https://github.com/Olivier-Boudeville-EDF/Sim-Diasca/blob/main/sim-diasca/src/core/services/scheduling/class_Actor.erl>`_ if using `Sim-Diasca <https://github.com/Olivier-Boudeville-EDF/Sim-Diasca>`_, as such base classes are rather ubiquitous in their respective contexts.
+.. [#] For example, it might be the case with `class_TraceEmitter <https://github.com/Olivier-Boudeville/Ceylan-Traces/blob/master/src/class_TraceEmitter.erl>`_ if relying on `Ceylan-Traces <https://traces.esperide.org/>`_, or `class_Actor <https://github.com/edf-Lab/Sim-Diasca/blob/main/sim-diasca/src/core/services/scheduling/class_Actor.erl>`_ if using `Sim-Diasca <https://github.com/edf-Lab/Sim-Diasca>`_, as such base classes are rather ubiquitous in their respective contexts.
 
 Then the concrete class will end up deriving more than once from the same root class (here: ``class_Platypus`` will derive indirectly from ``class_Creature`` twice).
 
@@ -2275,7 +2315,7 @@ WOOPER also provides a few `general-purpose interfaces <https://github.com/Olivi
   ..
   .. An instance of the Foobar class would then be deemed Describable iff its ``my_description``  member variable would be set to a non-null pointer. Doing so may be considered more flexible than for example having Foobar be a child class of a Describable interface (as (1) this eliminates a use of multiple inheritance, and (2) allows some instances of Foobar to be Describable, whereas others not).
   ..
-  .. In WOOPER this *could* translate to defining an attribute named ``my_description`` whose value would be of type ``maybe(description())`` [#]_.
+  .. In WOOPER this *could* translate to defining an attribute named ``my_description`` whose value would be of type ``option(description())`` [#]_.
   ..
   .. .. [#] Whatever the ``description()`` type may be - provided, for disambiguation, that it does not include the ``undefined`` atom.
   ..
@@ -2332,7 +2372,7 @@ WOOPER also provides a few `general-purpose interfaces <https://github.com/Olivi
   ..  %
   ..  % (exported helper)
   ..  %
-  ..  -spec get_maybe_description(wooper:state()) -> maybe(description()).
+  ..  -spec get_maybe_description(wooper:state()) -> option(description()).
   ..  get_maybe_description(State) ->
   ..    % As here the description() type does not include the 'undefined' atom:
   ..    ?getMaybeAttr(my_description).
@@ -2901,6 +2941,8 @@ Therefore the implementation we target could be best [#]_ written as:
 Integrated Call APIs
 --------------------
 
+These APIs are provided as an alternative to the direct processing of terms (for passive instances) and/or messages (for active instances).
+
 
 Single Calls
 ............
@@ -2920,22 +2962,61 @@ As for **active instances**, doing the same directly through Erlang base constru
 
 
 
-
 Multi-Calls
 ...........
 
-Sometimes, in the context of *active instances*, it may be more convenient to reason not in terms of single calls, but of multiple calls, with various flavours in the number of callers, callees, method calls involved, parallelism and synchronisation.
+Sometimes, in the context of *active instances*, it may be more convenient to reason not in terms of single calls, but of multiple calls, with various flavours in the number of callers, callees, method calls involved, concurrency and synchronisation.
 
 So the ``wooper`` module provides facilities in order to execute:
 
-- a given **request** **sequentially** on **multiple callees**: ``send_request_in_turn/3`` or, if wanting that a time-out applies, ``send_request_in_turn/4``
-- the same for a **oneway** sending (off-band, through a direct message sending) a user-specified **acknowledgement term** (e.g. a conventional atom): ``send_acknowledged_oneway_in_turn/5``
-- a given **request**, whose only result in a user-specified **acknowledgement term**, in **parallel** on **multiple callees**: ``send_requests_and_wait_acks/4`` or, if wanting that a time-out applies, ``send_requests_and_wait_acks/5``
-- a given **request** in **parallel** on **multiple callees**, obtaining back an **unordered** list of their results: ``obtain_results_for_requests/3``
 - a **series of requests** on a **single** callee: ``send_request_series/2`` (just for the sending) and ``obtain_results_for_request_series/2`` (to include also the collecting of their ordered results)
+- a given **request** **sequentially** on **multiple callees**: ``send_request_in_turn/3`` or, if wanting that a time-out applies, ``send_request_in_turn/4``
+- the same for a **oneway** sending (off-band, through a direct message sending), based on a user-specified **acknowledgement term** (e.g. a conventional atom): ``send_acknowledged_oneway_in_turn/5``
+- a given **request**, whose only result is a user-specified **acknowledgement term**, in **parallel** on **multiple callees**: ``send_requests_and_wait_acks/4`` or, if wanting that a time-out applies, ``send_requests_and_wait_acks/5``
+- a given **request** in **parallel** on **multiple callees**:
+
+  - obtaining back an **unordered** list of their results: ``obtain_results_for_requests/3``
+  - giving full information regarding which callee returned which result, which callee failed to answer before a user-defined time-out: ``execute_concurrent_request/{2..5}``
+
+This last case relies on the notion of *concurrent requests*, a very general form of concurrent call to multiple callees, with which a request does not return just a raw result but a term of the ``concurrent_result/0`` type.
+
+Such a term (refer to the ``forge_concurrent_result/{1,2}`` functions to best obtain them), by comprising the PID of the callee, a (possibly user-specified) concurrency tag and the actual result of the corresponding unitary call, allows the ``execute_concurrent_request/{2..5}`` functions to automatically filter the results received in response and associate them to their respective callees while, if a time-out was requested, listing the callees that failed to respond on time.
+
+Refer to the ``method_management_test.erl`` test for a full example of the use of concurrent requests.
+
+Finally, instead of blocking the caller until all concurrent calls are fully resolved, i.e. that the corresponding request messages are sent and then their result counterparts are received (or not, implying a time-out), these two phases can be split so that the caller can **interleave** some processing of its own between them. This is the purpose of respectively the ``send_concurrent_request/{2..5}`` and ``wait_for_concurrent_request_results/1`` function pairs.
+
+A typical example thereof is the following caller-side code:
+
+.. code:: erlang
+
+  [...]
+
+  % Here, the doSomething/1 concurrent request (hence expected to return
+  % a concurrent_result/0 term) does not take any argument, does not set
+  % a time-out, and relies on the default concurrent tag:
+  %
+  ConcurrentWaitInfo = wooper:send_concurrent_request(
+	MyTargetInstancePids, _ReqName=doSomething),
+
+  % Here the caller can interleave any processing of its liking.
+  [...]
+
+  case wooper:wait_for_concurrent_request_results(ConcurrentWaitInfo) of
+
+	% Here all instances answered on time:
+	{Results, _TimedOutInstances=[]} ->
+	  process_as_wanted(Results);
+
+	% Here the partial results have to be dealt with (possibly just throw).
+	{_MaybeResults, TimedOutInstances} ->
+	   [...]
+
+  end.
 
 
-Many more flavours can be considered (e.g. for active/passive instances, requests or oneways, with or without time-out, synchronisable or not, etc.) and may be supported in the future, on a per-need basis.
+
+Many more flavours can be considered (e.g. for active/passive instances, requests or oneways, with or without time-out, synchronisable or not, etc.) and may be supported in the future, on a per-need basis (suggestions welcome).
 
 However it may be more convenient to compose any extra multi-call that is needed thanks to the various basic helpers that are provided in the ``wooper`` module in order to send calls or to collect their results. Doing so allows for example to perform interleaving (triggering concurrent calls as soon as possible, collecting their results as late as possible) and maximise the overall parallelism.
 
@@ -3443,7 +3524,7 @@ No **warning** should be tolerated in code using WOOPER, as we *never* found use
 
 .. With the hashtable-based version of WOOPER,
 
-All **attributes** of an instance should better be defined **from the constructor**, instead of being dynamically added during the life of the instance; otherwise the methods would have to deal with some attributes that may, or may not, be defined; if no proper value exists for an attribute at the creation of an instance, then its value should just be set to the atom ``undefined``; its type should then go from ``T()`` to ``maybe(T())``.
+All **attributes** of an instance should better be defined **from the constructor**, instead of being dynamically added during the life of the instance; otherwise the methods would have to deal with some attributes that may, or may not, be defined; if no proper value exists for an attribute at the creation of an instance, then its value should just be set to the atom ``undefined``; its type should then go from ``T()`` to ``option(T())``.
 
 **Class-specific attributes** should be specified (using the ``class_attributes`` define), as doing so brings up much useful information to the developer/maintainer.
 
@@ -3495,6 +3576,29 @@ Debug Mode
 We recommend that, as a WOOPER user, one enables its debug mode when developing (ensure in ``GNUmakevars.inc`` that ``ENABLE_DEBUG`` has been set to true - which is the case by default), as it may catch various user errors more easily (not only WOOPER-internal errors, but also, and most importantly, any user-originating mistake).
 
 Then only, once one's code is mature enough, this debug mode may be disabled in order to obtain best performances.
+
+
+
+Getting the Most Relevant Error Reports
+---------------------------------------
+
+In terms of settings, WOOPER inherits the ones of Myriad, including regarding error reports; so by default they are only displayed on the console, and in an ellipsed form.
+
+If wanting more detailed (longer but possibly less tractable) / durable (on the console but also in-file) error reports, one's program shall execute, preferably early, ``basic_utils:set_error_report_output(standard_and_file_ellipsed)``, or even ``basic_utils:set_error_report_output(standard_and_file_full)``.
+
+Refer to `this section <https://myriad.esperide.org/#myriad-error-report-support>`_ for more details.
+
+
+
+Instance-Level Inquiries
+------------------------
+
+Distributed systems may be difficult to debug; sometimes one wonders what happens at the level of a given (active) instance.
+
+The ``wooper:get_status/1`` debug function will return whether the process corresponding to the specified instance PID is dead (``no_process`` is returned by this function;  this instance might have already terminated) or alive, in which case it is either not responsive (``not_responsive`` - hence that instance is busy to the point of failing to answer a ping request within a short time) or ``operational`` (a ping answer was received).
+
+The ``wooper:check_operational/1`` debug function will throw an exception iff the active instance corresponding to the specified PID is found not operational.
+
 
 
 "No attribute declaration found" whereas a ``class_attributes`` define exists
@@ -3625,6 +3729,20 @@ Note that the WOOPER code designates this module as the ``table`` one (e.g. ``ta
 
 
 
+On the Avoidance of Applicative Deadlocks
+-----------------------------------------
+
+The use of requests - and more generally of any message exchange pattern involving a blocking receive [#]_ - shall be carefully designed, as **applicative deadlocks** are easy to create within concurrent systems.
+
+This may typically happen when an instance I1 sends a request to (at least) another one, I2. If ever I2, in order to process that request, requires information to be obtained (directly or not) from I1, then a request will be sent in turn to I1, and I2 will wait for the corresponding information. However I1 is already waiting for the result of its original request, so is blocked by design and will never answer to that intermediate inquiry. As a result, these instances will remain stuck and unresponsive for ever. This is an example of a (systematic) deadlock, whose origin is the crossing of requests between instances.
+
+Solutions may be to, if applicable, organise the request sending to be done by phases (e.g. I2 sending spontaneously information to I1, which will send its request to I2 only when receiving that information), or to happen in only one direction (one instance - for example I2 - behaving as a server, the others as clients). Another approach is to adopt a fully asynchronous mode of operation (relying for such exchanges on oneways rather than on requests).
+
+.. [#] Relying on receive time-outs is, in the general case, not a suitable workaround, as their duration would be arbitrary and would lead to an application whose behaviour would change under heavy loads.
+
+
+
+
 :raw-latex:`\pagebreak`
 
 
@@ -3666,7 +3784,7 @@ Refer to the corresponding `Myriad prerequisite section <http://myriad.esperide.
 
 
 
-Using Cutting-Edge GIT
+Using Cutting-Edge Git
 ----------------------
 
 This is the installation method that we use and recommend; the WOOPER ``master`` branch is meant to stick to the latest stable version: we try to ensure that this main line always stays functional (sorry for the pun). Evolutions are to take place in feature branches and to be merged only when ready.
@@ -3805,7 +3923,7 @@ For more details, one may have a look at:
 Testing WOOPER
 --------------
 
-Once `Myriad <https://myriad.esperide.org>`_ and WOOPER itself have been built (for that refer to either `Using Cutting-Edge GIT`_ or `Using Rebar3`_), just run from the root directory of WOOPER:
+Once `Myriad <https://myriad.esperide.org>`_ and WOOPER itself have been built (for that refer to either `Using Cutting-Edge Git`_ or `Using Rebar3`_), just run from the root directory of WOOPER:
 
 .. code:: bash
 
@@ -3991,7 +4109,7 @@ WOOPER is the second level of a software stack beginning with Erlang and then My
 
 If the initial versions of WOOPER were mostly based on macros and headers, newer ones rely on the Erlang way of doing metaprogramming, namely parse-transforms.
 
-More precisely, the sources of a user-defined class are transformed by the standard Erlang toolchain (``erlc`` compiler) into an AST (*Abstract Syntax Tree*), which is first transformed by WOOPER (e.g. to generate the new operators, to export any destructor, etc.) and then by Myriad (e.g. to support newer types such as ``void/0``, ``maybe/1`` or ``table/2``), which also provides much of the AST transformation support.
+More precisely, the sources of a user-defined class are transformed by the standard Erlang toolchain (``erlc`` compiler) into an AST (*Abstract Syntax Tree*), which is first transformed by WOOPER (e.g. to generate the new operators, to export any destructor, etc.) and then by Myriad (e.g. to support newer types such as ``void/0``, ``option/1`` or ``table/2``), which also provides much of the AST transformation support.
 
 
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 EDF R&D
+% Copyright (C) 2016-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -38,15 +38,15 @@
 %
 -record( dataflow_state, {
 
-	world_manager_pid :: world_manager_pid(),
+    world_manager_pid :: world_manager_pid(),
 
-	experiment_manager_pid :: experiment_manager_pid(),
+    experiment_manager_pid :: experiment_manager_pid(),
 
-	identification_manager_pid :: identification_manager_pid(),
+    identification_manager_pid :: identification_manager_pid(),
 
-	semantic_server_pid :: semantic_server_pid(),
+    semantic_server_pid :: semantic_server_pid(),
 
-	type_server_pid :: type_server_pid()} ).
+    type_server_pid :: type_server_pid()} ).
 
 
 -doc """
@@ -122,7 +122,7 @@ The canonical form describing the initial, minimum and maximum number of
 iterated ports.
 """.
 -type iteration_multiplicity() ::
-		{ port_count(), { min_port_count(), max_port_count() } }.
+        { port_count(), { min_port_count(), max_port_count() } }.
 
 
 
@@ -134,21 +134,21 @@ its third, expanded form (with the three port counts)
 """.
 -type iteration_spec() ::
 
-	% Values not possible here (as expected to be already translated
-	% beforehand): 'true' or 'false'
+    % Values not possible here (as expected to be already translated
+    % beforehand): 'true' or 'false'
 
-	% Iterated with specified initial instance count:
-	%
-	% (min:0, max: unbounded)
-	%
-	port_count()
+    % Iterated with specified initial instance count:
+    %
+    % (min:0, max: unbounded)
+    %
+    port_count()
 
-	% Iterated with specified initial and maximum instance count (min:0):
+    % Iterated with specified initial and maximum instance count (min:0):
   | { port_count(), max_port_count() }
 
-	% Iterated with specified initial, minimum and maximum instance count:
-	% (canonical form)
-	%
+    % Iterated with specified initial, minimum and maximum instance count:
+    % (canonical form)
+    %
   | iteration_multiplicity().
 
 
@@ -178,7 +178,7 @@ Type of a (standard) port (direction), either input or output.
 
 -doc "Type of a port specification.".
 -type port_spec_type() ::
-	'input_port_iteration' | 'output_port_iteration' | port_type().
+    'input_port_iteration' | 'output_port_iteration' | port_type().
 
 
 
@@ -246,7 +246,7 @@ upstream blocks.
 
 -doc "User-level counterpart.".
 -type iteration_port_string_source() ::
-	{ block_pid(), output_iteration_string_name() }.
+    { block_pid(), output_iteration_string_name() }.
 
 
 -doc """
@@ -336,7 +336,7 @@ Please refer to the section about units in the technical manual of the 'Myriad'
 layer, and to unit_utils.erl for more details.
 """.
 -type value_unit() ::
-	{ unit_utils:unit_bin_string(), unit_utils:canonical_unit() }.
+    { unit_utils:unit_bin_string(), unit_utils:canonical_unit() }.
 
 
 
@@ -349,13 +349,13 @@ The (textual) description of the type of a given value ("type-as-a-string").
 For example: `[{float(),boolean()}]` for a list containing pairs made of a float
 and a boolean.
 """.
--type value_type_description() :: type_utils:type_description().
+-type value_text_type() :: type_utils:text_type().
 
 
 
 -doc """
 If a given type may be initially specified as a type-as-a-string, that is as a
-value_type_description() such as for example `[{float(),boolean()}]`, it has to
+value_text_type() such as for example `[{float(),boolean()}]`, it has to
 be translated here to a type-as-a-term, like in this corresponding form: {list,
 [{tuple, [{float,[]}, {boolean,[]}]}]}.
 
@@ -371,14 +371,14 @@ verification purposes.
 
 -doc "A constraint that may apply to a value.".
 -type value_constraint() :: { 'greater_than', number() }
-						  | { 'lower_than', number() }
-						  | { 'between', number(), number() }
-						  | { 'in', list() }
-						  | 'positive'
-						  | 'strictly_positive'
-						  | 'negative'
-						  | 'strictly_negative'
-						  | 'non_null'.
+                          | { 'lower_than', number() }
+                          | { 'between', number(), number() }
+                          | { 'in', list() }
+                          | 'positive'
+                          | 'strictly_positive'
+                          | 'negative'
+                          | 'strictly_negative'
+                          | 'non_null'.
 
 
 
@@ -394,7 +394,7 @@ Describes the SUTC metadata held by a port.
 See also: the `port_description/0` type.
 """.
 -type port_metadata() :: { value_semantics(), value_unit(),
-						   value_type_description(), value_constraints() }.
+                           value_text_type(), value_constraints() }.
 
 
 
@@ -447,7 +447,7 @@ whereas its associated block was suspended (thus the set value is to be sent to
 the upstream blocks as soon as the block resumes)
 """.
 -type port_timestamp() :: class_TimeManager:logical_timestamp()
-						| 'none' | 'send_on_resume'.
+                        | 'none' | 'send_on_resume'.
 
 
 
@@ -456,46 +456,46 @@ the upstream blocks as soon as the block resumes)
 %
 -record( input_port_spec, {
 
-	% Name of that input port (mandatory):
-	name :: port_string_name(),
+    % Name of that input port (mandatory):
+    name :: port_string_name(),
 
 
-	% Comment (if any) associated to this input port:
-	comment = undefined :: option( port_comment() ),
+    % Comment (if any) associated to this input port:
+    comment = undefined :: option( port_comment() ),
 
 
-	% Tells whether this is a port iteration.
-	%
-	% If false, this is not a port iteration; if true, it is an unbounded port
-	% iteration with no initial port; otherwise the iteration is explicitly
-	% specified.
-	%
-	is_iteration = 'false' :: boolean() | iteration_spec(),
+    % Tells whether this is a port iteration.
+    %
+    % If false, this is not a port iteration; if true, it is an unbounded port
+    % iteration with no initial port; otherwise the iteration is explicitly
+    % specified.
+    %
+    is_iteration = 'false' :: boolean() | iteration_spec(),
 
 
-	% SUTC information:
+    % SUTC information:
 
 
-	% Semantics of the information carried by this port (as a list of IRIs
-	% expressed as plain strings)
-	%
-	value_semantics :: user_value_semantics(),
+    % Semantics of the information carried by this port (as a list of IRIs
+    % expressed as plain strings)
+    %
+    value_semantics :: user_value_semantics(),
 
 
-	% Unit of the values that this port may receive (mandatory):
-	value_unit :: unit_utils:unit_string(),
+    % Unit of the values that this port may receive (mandatory):
+    value_unit :: unit_utils:unit_string(),
 
 
-	% Textual description of the type of the values that this port may receive
-	% (mandatory):
-	%
-	value_type_description :: value_type_description(),
+    % Textual description of the type of the values that this port may receive
+    % (mandatory):
+    %
+    value_text_type :: value_text_type(),
 
 
-	% Constraints that apply to the values that this port may receive (may not
-	% be defined):
-	%
-	value_constraints = [] :: value_constraints() } ).
+    % Constraints that apply to the values that this port may receive (may not
+    % be defined):
+    %
+    value_constraints = [] :: value_constraints() } ).
 
 
 -doc """
@@ -512,52 +512,52 @@ when defining an input port.
 %
 -record( output_port_spec, {
 
-	% Name of that output port (mandatory):
-	name :: port_string_name(),
+    % Name of that output port (mandatory):
+    name :: port_string_name(),
 
 
-	% Comment (if any) associated to this output port:
-	comment = undefined :: option( port_comment() ),
+    % Comment (if any) associated to this output port:
+    comment = undefined :: option( port_comment() ),
 
 
-	% Tells whether this is a port iteration.
-	%
-	% If false, this is not a port iteration; if true, it is an unbounded port
-	% iteration with no initial port; otherwise the iteration is explicitly
-	% specified.
-	%
-	is_iteration = 'false' :: boolean() | iteration_spec(),
+    % Tells whether this is a port iteration.
+    %
+    % If false, this is not a port iteration; if true, it is an unbounded port
+    % iteration with no initial port; otherwise the iteration is explicitly
+    % specified.
+    %
+    is_iteration = 'false' :: boolean() | iteration_spec(),
 
 
-	% Tells whether this output port shall be seen as a result producer, i.e. if
-	% its values over time are results of interest for the simulation.
-	%
-	produces_result = false :: boolean(),
+    % Tells whether this output port shall be seen as a result producer, i.e. if
+    % its values over time are results of interest for the simulation.
+    %
+    produces_result = false :: boolean(),
 
 
-	% SUTC information:
+    % SUTC information:
 
 
-	% Semantics of the information carried by this port (as a list of IRIs
-	% expressed as plain strings)
-	%
-	value_semantics :: user_value_semantics(),
+    % Semantics of the information carried by this port (as a list of IRIs
+    % expressed as plain strings)
+    %
+    value_semantics :: user_value_semantics(),
 
 
-	% Unit of the values that this port may send (mandatory):
-	value_unit :: unit_utils:unit_string(),
+    % Unit of the values that this port may send (mandatory):
+    value_unit :: unit_utils:unit_string(),
 
 
-	% Textual description of the type of the values that this port may send
-	% (mandatory):
-	%
-	value_type_description :: value_type_description(),
+    % Textual description of the type of the values that this port may send
+    % (mandatory):
+    %
+    value_text_type :: value_text_type(),
 
 
-	% Constraints that apply to the values that this port may send (may not be
-	% defined):
-	%
-	value_constraints = [] :: value_constraints() } ).
+    % Constraints that apply to the values that this port may send (may not be
+    % defined):
+    %
+    value_constraints = [] :: value_constraints() } ).
 
 
 -doc """
@@ -573,22 +573,22 @@ when defining an output port.
 %
 -record( channel_value, {
 
-	% The actual value carried by this element of information:
-	actual_value :: actual_value(),
+    % The actual value carried by this element of information:
+    actual_value :: actual_value(),
 
 
-	% Semantics of that value, a vocabulary (i.e. a set of binaries):
-	semantics :: value_semantics(),
+    % Semantics of that value, a vocabulary (i.e. a set of binaries):
+    semantics :: value_semantics(),
 
 
-	% Unit of that value:
-	unit :: value_unit(),
+    % Unit of that value:
+    unit :: value_unit(),
 
 
-	% Type of that value:
-	type :: value_type()
+    % Type of that value:
+    type :: value_type()
 
-	% Constraints are attached to ports, not to values as such.
+    % Constraints are attached to ports, not to values as such.
 
 } ).
 
@@ -612,7 +612,7 @@ Note that it has to translate nicely to its two associated port names: it must
 comply with the rules listed for `port_name/0`.
 """.
 -type dataflow_attribute_name() :: dataflow_attribute_string_name()
-								 | dataflow_attribute_bin_name().
+                                 | dataflow_attribute_bin_name().
 
 
 -doc "Name of a dataflow attribute (as a plain string).".
@@ -633,36 +633,36 @@ comply with the rules listed for `port_name/0`.
 % Specification of a dataflow attribute.
 -record( dataflow_attribute_spec, {
 
-	% Name of this dataflow attribute:
-	attribute_name :: dataflow_attribute_name(),
+    % Name of this dataflow attribute:
+    attribute_name :: dataflow_attribute_name(),
 
 
-	% Comment (if any) associated to this attribute:
-	comment :: option( dataflow_attribute_comment() ),
+    % Comment (if any) associated to this attribute:
+    comment :: option( dataflow_attribute_comment() ),
 
 
-	% Semantics associated to this attribute (as a list of IRIs expressed as
-	% plain strings)
-	%
-	semantics :: user_value_semantics(),
+    % Semantics associated to this attribute (as a list of IRIs expressed as
+    % plain strings)
+    %
+    semantics :: user_value_semantics(),
 
 
-	% Textual description of the type of the values that this attribute is to
-	% hold (mandatory):
-	%
-	unit :: unit_utils:unit_string(),
+    % Textual description of the type of the values that this attribute is to
+    % hold (mandatory):
+    %
+    unit :: unit_utils:unit_string(),
 
 
-	% Textual description of the type of the values that this port may hold
-	% (mandatory):
-	%
-	type_description :: value_type_description(),
+    % Textual description of the type of the values that this port may hold
+    % (mandatory):
+    %
+    text_type :: value_text_type(),
 
 
-	% Constraints that apply to the values that this attribute may hold (may not
-	% be defined):
-	%
-	constraints = [] :: value_constraints() } ).
+    % Constraints that apply to the values that this attribute may hold (may not
+    % be defined):
+    %
+    constraints = [] :: value_constraints() } ).
 
 
 -doc "Specification of a dataflow attribute.".
@@ -674,7 +674,7 @@ comply with the rules listed for `port_name/0`.
 Describes the initial values of the attributes of a dataflow object.
 """.
 -type dataflow_object_initial_values() ::
-		[ { dataflow_attribute_name(), actual_value() } ].
+        [ { dataflow_attribute_name(), actual_value() } ].
 
 
 -doc """
@@ -716,41 +716,41 @@ Name of a dataflow unit manager, that is its classname
 
 -doc "Specification of a clause regarding the matching of an input.".
 -type clause_input_match_spec() ::
-		{ port_string_name(), 'any_state' }
-	  | { port_string_name(), 'unset' }
-	  | { port_string_name(), 'set' }
-	  | { port_string_name(), { 'set', actual_value() } }
-	  | { port_string_name(), { 'between', number(), number() } }
-	  | { port_string_name(), { 'around', float(), float() } }
-	  | { port_string_name(), { 'around', float() } }
-	  | { port_string_name(), { 'among', [ actual_value() ] } }.
+        { port_string_name(), 'any_state' }
+      | { port_string_name(), 'unset' }
+      | { port_string_name(), 'set' }
+      | { port_string_name(), { 'set', actual_value() } }
+      | { port_string_name(), { 'between', number(), number() } }
+      | { port_string_name(), { 'around', float(), float() } }
+      | { port_string_name(), { 'around', float() } }
+      | { port_string_name(), { 'among', [ actual_value() ] } }.
 
 
 -doc "Specification of a clause regarding the matching of an output.".
 -type clause_output_match_spec() ::
-		{ port_string_name(), 'reassign' }
-	  | { port_string_name(), 'unset' }
-	  | { port_string_name(), { 'set', actual_value() } }
-	  | { port_string_name(), { 'state_of', port_string_name() } }.
+        { port_string_name(), 'reassign' }
+      | { port_string_name(), 'unset' }
+      | { port_string_name(), { 'set', actual_value() } }
+      | { port_string_name(), { 'state_of', port_string_name() } }.
 
 
 -doc "Description of a mockup clause.".
 -type mockup_clause() :: { clause_time_spec(), [ clause_input_match_spec() ],
-							[ clause_output_match_spec() ] }.
+                            [ clause_output_match_spec() ] }.
 
 
 % Specification record defining a class of mockup units to be instantiated:
 -record( mockup_unit_spec, {
 
-	unit_type = class_DefaultMockupUnit :: dataflow_unit_type(),
+    unit_type = class_DefaultMockupUnit :: dataflow_unit_type(),
 
-	activation_policy :: class_DataflowProcessingUnit:activation_policy(),
+    activation_policy :: class_DataflowProcessingUnit:activation_policy(),
 
-	input_port_specs :: [ input_port_spec() ],
+    input_port_specs :: [ input_port_spec() ],
 
-	output_port_specs :: [ output_port_spec() ],
+    output_port_specs :: [ output_port_spec() ],
 
-	mockup_clauses :: [ mockup_clause() ] } ).
+    mockup_clauses :: [ mockup_clause() ] } ).
 
 
 -doc """

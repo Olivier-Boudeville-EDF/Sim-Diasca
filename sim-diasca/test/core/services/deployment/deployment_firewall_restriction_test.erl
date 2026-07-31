@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -38,78 +38,78 @@ specified).
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+    ?case_start,
 
-	% Default simulation settings (50Hz, batch reproducible) are used, except
-	% for the name:
-	%
-	SimulationSettings = #simulation_settings{
-		simulation_name="Test of the management of firewall restrictions" },
-
-
-	% Default deployment settings (unavailable nodes allowed, on-the-fly
-	% generation of the deployment package requested), but computing
-	% hosts are specified (to be updated depending on your environment):
-	% (note that localhost is implied)
-	%
-	DeploymentSettings = #deployment_settings{
-
-		computing_hosts=
-			{ use_host_file_otherwise_local, "sim-diasca-host-candidates.etf" },
-
-		perform_initial_node_cleanup=true,
-
-		firewall_restrictions=[
-
-			% Uncomment next line and modify accordingly EPMD_PORT in
-			% myriad/GNUmakevars.inc to test the change in EPMD port:
-			%
-			%{ epmd_port, 4000 },
-
-			{ tcp_restricted_range,
-				{ _MinPort=30000, _MaxPort=35000 } } ] },
+    % Default simulation settings (50Hz, batch reproducible) are used, except
+    % for the name:
+    %
+    SimulationSettings = #simulation_settings{
+        simulation_name="Test of the management of firewall restrictions" },
 
 
-	?test_warning( "By default this test will not use an alternate EPMD port, "
-		"as the overall engine settings have to be changed "
-		"accordingly for this test to succeed." ),
+    % Default deployment settings (unavailable nodes allowed, on-the-fly
+    % generation of the deployment package requested), but computing
+    % hosts are specified (to be updated depending on your environment):
+    % (note that localhost is implied)
+    %
+    DeploymentSettings = #deployment_settings{
 
-	% Default load balancing settings (round-robin placement heuristic):
-	LoadBalancingSettings = #load_balancing_settings{},
+        computing_hosts=
+            { use_host_file_otherwise_local, "sim-diasca-host-candidates.etf" },
 
+        perform_initial_node_cleanup=true,
 
-	?test_notice_fmt( "This test will deploy a distributed simulation "
-		"based on computing hosts specified as ~p.",
-		[ DeploymentSettings#deployment_settings.computing_hosts ] ),
+        firewall_restrictions=[
 
+            % Uncomment next line and modify accordingly EPMD_PORT in
+            % myriad/GNUmakevars.inc to test the change in EPMD port:
+            %
+            %{ epmd_port, 4000 },
 
-	% Directly created on the user node:
-	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-		DeploymentSettings, LoadBalancingSettings ),
-
-
-	?test_info( "Here we do not create any actor, "
-				"thus the simulation will stop immediately." ),
-
-	DeploymentManagerPid ! { getRootTimeManager, [], self() },
-	RootTimeManagerPid = test_receive(),
+            { tcp_restricted_range,
+                { _MinPort=30000, _MaxPort=35000 } } ] },
 
 
-	?test_info( "Starting simulation." ),
-	RootTimeManagerPid ! { start, [ _StopTick=120, self() ] },
+    ?test_warning( "By default this test will not use an alternate EPMD port, "
+        "as the overall engine settings have to be changed "
+        "accordingly for this test to succeed." ),
+
+    % Default load balancing settings (round-robin placement heuristic):
+    LoadBalancingSettings = #load_balancing_settings{},
 
 
-	% Waits until simulation is finished:
-	receive
-
-		simulation_stopped ->
-			?test_info( "Simulation stopped spontaneously." )
-
-	end,
+    ?test_notice_fmt( "This test will deploy a distributed simulation "
+        "based on computing hosts specified as ~p.",
+        [ DeploymentSettings#deployment_settings.computing_hosts ] ),
 
 
-	?test_info( "Requesting textual timings (second)." ),
+    % Directly created on the user node:
+    DeploymentManagerPid = sim_diasca:init( SimulationSettings,
+        DeploymentSettings, LoadBalancingSettings ),
 
-	sim_diasca:shutdown(),
 
-	?case_stop.
+    ?test_info( "Here we do not create any actor, "
+                "thus the simulation will stop immediately." ),
+
+    DeploymentManagerPid ! { getRootTimeManager, [], self() },
+    RootTimeManagerPid = test_receive(),
+
+
+    ?test_info( "Starting simulation." ),
+    RootTimeManagerPid ! { start, [ _StopTick=120, self() ] },
+
+
+    % Waits until simulation is finished:
+    receive
+
+        simulation_stopped ->
+            ?test_info( "Simulation stopped spontaneously." )
+
+    end,
+
+
+    ?test_info( "Requesting textual timings (second)." ),
+
+    sim_diasca:shutdown(),
+
+    ?case_stop.

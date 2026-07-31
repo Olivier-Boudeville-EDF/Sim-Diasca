@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -38,75 +38,75 @@ See the `class_RandomManager` and `class_TestStochasticActor` tested modules.
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+    ?case_start,
 
-	% Prefer reusing most default settings:
-	SimulationSettings = #simulation_settings{
-		simulation_name="Stochastic Actor Test" },
+    % Prefer reusing most default settings:
+    SimulationSettings = #simulation_settings{
+        simulation_name="Stochastic Actor Test" },
 
-	DeploymentSettings = #deployment_settings{},
+    DeploymentSettings = #deployment_settings{},
 
-	LoadBalancingSettings = #load_balancing_settings{},
+    LoadBalancingSettings = #load_balancing_settings{},
 
-	% A deployment manager is created directly on the user node:
-	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-		DeploymentSettings, LoadBalancingSettings ),
+    % A deployment manager is created directly on the user node:
+    DeploymentManagerPid = sim_diasca:init( SimulationSettings,
+        DeploymentSettings, LoadBalancingSettings ),
 
-	% The random laws the test actor will rely on:
-	% ({RandomLawName, RandomSpec})
-	%
-	LawDescs = [ { my_first_uniform,  { uniform, 5, 15 } },
-				 { my_second_uniform, { integer_uniform, 0, 100 } },
-				 { my_exponential,    { exponential_1p, 80 } },
-				 { my_gaussian,       { gaussian, 50, 2 } } ],
-
-
-	% Creates an actor that will automatically subscribe itself to the manager
-	% and that will terminate on specified tick:
-	%
-	class_Actor:create_initial_actor( class_TestStochasticActor,
-		[ "Cartman", LawDescs, _CartmanTerminationProbability=20 ] ),
-
-	% Other actors:
-	class_Actor:create_initial_actor( class_TestStochasticActor,
-		[ "Kenny", LawDescs, _KennyTerminationProbability=99 ] ),
-
-	class_Actor:create_initial_actor( class_TestStochasticActor,
-		[ "Kyle", LawDescs, _KyleTerminationProbability=10 ] ),
-
-	class_Actor:create_initial_actor( class_TestStochasticActor,
-		[ "Stan", LawDescs, _StanTerminationProbability=0 ] ),
+    % The random laws the test actor will rely on:
+    % ({RandomLawName, RandomSpec})
+    %
+    LawDescs = [ { my_first_uniform,  { uniform, 5, 15 } },
+                 { my_second_uniform, { integer_uniform, 0, 100 } },
+                 { my_exponential,    { exponential_1p, 80 } },
+                 { my_gaussian,       { gaussian, 50, 2 } } ],
 
 
-	% A TestStochasticActor requesting - and consuming - no law was successfully
-	% tested as well.
+    % Creates an actor that will automatically subscribe itself to the manager
+    % and that will terminate on specified tick:
+    %
+    class_Actor:create_initial_actor( class_TestStochasticActor,
+        [ "Cartman", LawDescs, _CartmanTerminationProbability=20 ] ),
+
+    % Other actors:
+    class_Actor:create_initial_actor( class_TestStochasticActor,
+        [ "Kenny", LawDescs, _KennyTerminationProbability=99 ] ),
+
+    class_Actor:create_initial_actor( class_TestStochasticActor,
+        [ "Kyle", LawDescs, _KyleTerminationProbability=10 ] ),
+
+    class_Actor:create_initial_actor( class_TestStochasticActor,
+        [ "Stan", LawDescs, _StanTerminationProbability=0 ] ),
 
 
-	% We want this test to end once a specified number of ticks are elapsed:
-	StopTick = 30,
+    % A TestStochasticActor requesting - and consuming - no law was successfully
+    % tested as well.
 
-	DeploymentManagerPid ! { getRootTimeManager, [], self() },
-	RootTimeManagerPid = test_receive(),
 
-	?test_notice_fmt( "Starting simulation, "
-					  "for a stop at tick offset #~B.", [ StopTick ] ),
+    % We want this test to end once a specified number of ticks are elapsed:
+    StopTick = 30,
 
-	RootTimeManagerPid ! { start, [ StopTick, self() ] },
+    DeploymentManagerPid ! { getRootTimeManager, [], self() },
+    RootTimeManagerPid = test_receive(),
 
-	?test_info( "Waiting for the simulation to end, "
-		"since having been declared as a simulation listener." ),
+    ?test_notice_fmt( "Starting simulation, "
+                      "for a stop at tick offset #~B.", [ StopTick ] ),
 
-	receive
+    RootTimeManagerPid ! { start, [ StopTick, self() ] },
 
-		simulation_stopped ->
-			?test_info( "Simulation stopped spontaneously, "
-						"specified stop tick must have been reached." )
+    ?test_info( "Waiting for the simulation to end, "
+        "since having been declared as a simulation listener." ),
 
-	end,
+    receive
 
-	?test_info( "Browsing the report results, if in batch mode." ),
-	class_ResultManager:browse_reports(),
+        simulation_stopped ->
+            ?test_info( "Simulation stopped spontaneously, "
+                        "specified stop tick must have been reached." )
 
-	sim_diasca:shutdown(),
+    end,
 
-	?case_stop.
+    ?test_info( "Browsing the report results, if in batch mode." ),
+    class_ResultManager:browse_reports(),
+
+    sim_diasca:shutdown(),
+
+    ?case_stop.

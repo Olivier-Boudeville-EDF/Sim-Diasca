@@ -6,7 +6,7 @@
 % Note: this source file was beforehand in DOS encoding, presumably for no good
 % reason.
 
-% Copyright (C) 2013-2025 Olivier Boudeville
+% Copyright (C) 2013-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -52,76 +52,76 @@ See the sms_utils.erl tested module.
 
 -spec run() -> no_return().
 run() ->
-	run( _EnableSMSSending=false ).
+    run( _EnableSMSSending=false ).
 
 
 
 -spec run( boolean() ) -> no_return().
 run( EnableSMSSending ) ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	SMSAccount = case preferences:get( sms_account ) of
+    SMSAccount = case preferences:get( sms_account ) of
 
-		undefined ->
-			test_facilities:display( "(no SMS account found in preferences, "
-									 "not trying to send any SMS)" ),
+        undefined ->
+            test_facilities:display( "(no SMS account found in preferences, "
+                                     "not trying to send any SMS)" ),
 
-			test_facilities:stop();
+            test_facilities:stop();
 
-		Account ->
-			Account
+        Account ->
+            Account
 
-	end,
+    end,
 
-	test_facilities:display( "Using account: ~ts.",
-							 [ sms_utils:account_to_string( SMSAccount ) ] ),
+    test_facilities:display( "Using account: ~ts.",
+                             [ sms_utils:account_to_string( SMSAccount ) ] ),
 
-	Recipient = case preferences:get( mobile_number ) of
+    Recipient = case preferences:get( mobile_number ) of
 
-		undefined ->
+        undefined ->
 
-			test_facilities:display( "(no target mobile number found "
-				"in preferences, not trying to send any SMS)" ),
+            test_facilities:display( "(no target mobile number found "
+                "in preferences, not trying to send any SMS)" ),
 
-			test_facilities:stop();
+            test_facilities:stop();
 
-		Number ->
-			Number
+        Number ->
+            Number
 
-	end,
+    end,
 
-	{ CreditRes, UpdatedSMSAccount } = sms_utils:update_credits( SMSAccount ),
+    { CreditRes, UpdatedSMSAccount } = sms_utils:update_credits( SMSAccount ),
 
-	test_facilities:display( "Updated account (credit request answered: '~ts'):"
-		" ~ts.",
-		[ CreditRes, sms_utils:account_to_string( UpdatedSMSAccount ) ] ),
+    test_facilities:display( "Updated account (credit request answered: '~ts'):"
+        " ~ts.",
+        [ CreditRes, sms_utils:account_to_string( UpdatedSMSAccount ) ] ),
 
-	% â becomes a, ~ disappears, {} and [] become (), etc.
-	Message = "Le château d'Hélène est un bien beau château ! "
-		"Test: &~\"#{([-|`_\ç^à@)])=+}*/,?;.§",
+    % â becomes a, ~ disappears, {} and [] become (), etc.
+    Message = "Le château d'Hélène est un bien beau château ! "
+        "Test: &~\"#{([-|`_\ç^à@)])=+}*/,?;.§",
 
-	%ServiceClass = eco
-	ServiceClass = pro,
+    %ServiceClass = eco
+    ServiceClass = pro,
 
-	FirstSMS = sms_utils:create_sms( Message, Recipient,
-		_SenderDescription="33616833333", ServiceClass ),
+    FirstSMS = sms_utils:create_sms( Message, Recipient,
+        _SenderDescription="33616833333", ServiceClass ),
 
-	% Not wanting using all credits because of testings:
-	SendRes = case EnableSMSSending of
+    % Not wanting using all credits because of testings:
+    SendRes = case EnableSMSSending of
 
-		true ->
-			sms_utils:send( FirstSMS, UpdatedSMSAccount );
+        true ->
+            sms_utils:send( FirstSMS, UpdatedSMSAccount );
 
-		false ->
-			test_facilities:display( "(test not allowed to send SMS, "
-									 "stopping here.)" ),
+        false ->
+            test_facilities:display( "(test not allowed to send SMS, "
+                                     "stopping here.)" ),
 
-			test_facilities:stop()
+            test_facilities:stop()
 
-	end,
+    end,
 
-	test_facilities:display( "Result of the sending of ~ts:~p.",
-							 [ sms_utils:sms_to_string( FirstSMS ), SendRes ] ),
+    test_facilities:display( "Result of the sending of ~ts:~p.",
+                             [ sms_utils:sms_to_string( FirstSMS ), SendRes ] ),
 
-	test_facilities:stop().
+    test_facilities:stop().

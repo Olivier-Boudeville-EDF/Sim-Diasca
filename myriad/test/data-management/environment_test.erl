@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -42,153 +42,153 @@ See the environment.erl tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	test_facilities:display( "Environment while the service is not running: "
-							 "~ts", [ environment:to_string() ] ),
+    test_facilities:display( "Environment while the service is not running: "
+                             "~ts", [ environment:to_string() ] ),
 
-	ETFFilePath = "test-environment.etf",
+    ETFFilePath = "test-environment.etf",
 
-	file_utils:remove_file_if_existing( ETFFilePath ),
+    file_utils:remove_file_if_existing( ETFFilePath ),
 
-	FirstEnvRegName = first_env,
+    FirstEnvRegName = first_env,
 
-	% May not be called (automatic launching of the service whenever needed):
-	% (test of file loading done in preferences_test.erl)
-	%
-	environment:start_link( FirstEnvRegName ),
+    % May not be called (automatic launching of the service whenever needed):
+    % (test of file loading done in preferences_test.erl)
+    %
+    environment:start_link( FirstEnvRegName ),
 
-	FirstEnvPid = environment:get_server( FirstEnvRegName ),
+    FirstEnvPid = environment:get_server( FirstEnvRegName ),
 
-	test_facilities:display( "Environment after the service is just started: "
-		"~ts (server PID for '~ts': ~w).", [ environment:to_string(),
-			FirstEnvRegName, FirstEnvPid ] ),
-
-
-	FirstTargetKey = first_test_key,
-
-	test_facilities:display( "Value associated to ~ts before it is set "
-		"from test: ~p", [ FirstTargetKey,
-			environment:get( FirstTargetKey, FirstEnvRegName ) ] ),
-
-	FirstTargetValue = "This is the first test value!",
-
-	environment:set( FirstTargetKey, FirstTargetValue, FirstEnvRegName ),
-
-	test_facilities:display( "Value associated to ~ts after it is set "
-		"from test: ~p", [ FirstTargetKey,
-			environment:get( FirstTargetKey, FirstEnvRegName ) ] ),
+    test_facilities:display( "Environment after the service is just started: "
+        "~ts (server PID for '~ts': ~w).", [ environment:to_string(),
+            FirstEnvRegName, FirstEnvPid ] ),
 
 
-	SecondTargetKey = second_test_key,
-	SecondTargetValue = "This is the second test value!",
-	environment:set( SecondTargetKey, SecondTargetValue, FirstEnvRegName ),
+    FirstTargetKey = first_test_key,
 
-	AnotherTargetValue = "This is another test value!",
+    test_facilities:display( "Value associated to ~ts before it is set "
+        "from test: ~p", [ FirstTargetKey,
+            environment:get( FirstTargetKey, FirstEnvRegName ) ] ),
 
-	ThirdTargetKey = third_test_key,
-	FourthTargetValue = "This is a fourth value!",
+    FirstTargetValue = "This is the first test value!",
 
-	environment:set( [ { FirstTargetKey, AnotherTargetValue },
-					   { ThirdTargetKey, FourthTargetValue } ],
-					 FirstEnvRegName ),
+    environment:set( FirstTargetKey, FirstTargetValue, FirstEnvRegName ),
 
-	test_facilities:display( "Value associated to ~ts after it is set "
-		"again from test: ~p", [ FirstTargetKey,
-			environment:get( FirstTargetKey, FirstEnvRegName ) ] ),
+    test_facilities:display( "Value associated to ~ts after it is set "
+        "from test: ~p", [ FirstTargetKey,
+            environment:get( FirstTargetKey, FirstEnvRegName ) ] ),
 
 
-	[ AnotherTargetValue, FourthTargetValue, SecondTargetValue ] =
-		environment:get( [ FirstTargetKey, ThirdTargetKey, SecondTargetKey ],
-						 FirstEnvRegName ),
+    SecondTargetKey = second_test_key,
+    SecondTargetValue = "This is the second test value!",
+    environment:set( SecondTargetKey, SecondTargetValue, FirstEnvRegName ),
 
-	test_facilities:display( "Environment while the service is running: "
-							 ++ environment:to_string() ),
+    AnotherTargetValue = "This is another test value!",
 
-	TestEntries = [ { FirstTargetKey, 1 }, { SecondTargetKey, 2 } ],
+    ThirdTargetKey = third_test_key,
+    FourthTargetValue = "This is a fourth value!",
 
-	environment:set( TestEntries, FirstEnvRegName ),
+    environment:set( [ { FirstTargetKey, AnotherTargetValue },
+                       { ThirdTargetKey, FourthTargetValue } ],
+                     FirstEnvRegName ),
 
-	[ 2, 1 ] =
-		environment:get( [ SecondTargetKey, FirstTargetKey ], FirstEnvPid ),
-
-	test_facilities:display( "Environment after the second setting: "
-							 ++ environment:to_string() ),
-
-	environment:cache(
-		[ first_test_key, { third_test_key, "Third cache value!" } ],
-		FirstEnvRegName ),
+    test_facilities:display( "Value associated to ~ts after it is set "
+        "again from test: ~p", [ FirstTargetKey,
+            environment:get( FirstTargetKey, FirstEnvRegName ) ] ),
 
 
-	% For this test we update the environment server stealthly, bypassing the
-	% cache; better than:
-	%
-	%FirstEnvRegName ! { set_environment, [ { first_test_key, 7 } ] },
-	%
-	% is to use a separate client process for that:
-	spawn_link( fun() ->
+    [ AnotherTargetValue, FourthTargetValue, SecondTargetValue ] =
+        environment:get( [ FirstTargetKey, ThirdTargetKey, SecondTargetKey ],
+                         FirstEnvRegName ),
 
-		environment:set( first_test_key, 7, FirstEnvPid ),
+    test_facilities:display( "Environment while the service is running: "
+                             ++ environment:to_string() ),
 
-		% Both a check and a way of synchronising the server update to avoid any
-		% race condition with the next read from the test process:
-		%
-		7 = environment:get( first_test_key, FirstEnvPid ),
+    TestEntries = [ { FirstTargetKey, 1 }, { SecondTargetKey, 2 } ],
 
-		test_facilities:display( "Auxiliary test process ~w succeeded.",
-								 [ self() ] )
+    environment:set( TestEntries, FirstEnvRegName ),
 
-				end ),
+    [ 2, 1 ] =
+        environment:get( [ SecondTargetKey, FirstTargetKey ], FirstEnvPid ),
 
+    test_facilities:display( "Environment after the second setting: "
+                             ++ environment:to_string() ),
 
-	% This test process should be still unaware of the update because of its
-	% caching:
-	%
-	1 = environment:get( FirstTargetKey, FirstEnvRegName ),
-
-	environment:sync( FirstEnvRegName ),
-
-	% Now aware:
-	7 = environment:get( FirstTargetKey, FirstEnvRegName ),
-
-	test_facilities:display( "Environment after the cache enabling: "
-								++ environment:to_string() ),
-
-	% New cache request:
-	environment:cache( { FirstTargetKey, 8 }, FirstEnvRegName ),
-
-	8 = environment:get( FirstTargetKey, FirstEnvRegName ),
-
-	% Note that first_test_key will still be at 7 in:
-	environment:store( FirstEnvRegName, ETFFilePath ),
+    environment:cache(
+        [ first_test_key, { third_test_key, "Third cache value!" } ],
+        FirstEnvRegName ),
 
 
-	test_facilities:display( "Now testing conditional setting." ),
+    % For this test we update the environment server stealthly, bypassing the
+    % cache; better than:
+    %
+    %FirstEnvRegName ! { set_environment, [ { first_test_key, 7 } ] },
+    %
+    % is to use a separate client process for that:
+    spawn_link( fun() ->
 
-	% With a non-cached key:
-	NonCachedKey = non_cached_key,
-	Hello = hello,
+        environment:set( first_test_key, 7, FirstEnvPid ),
 
-	environment:set_cond( NonCachedKey, Hello, FirstEnvPid ),
+        % Both a check and a way of synchronising the server update to avoid any
+        % race condition with the next read from the test process:
+        %
+        7 = environment:get( first_test_key, FirstEnvPid ),
 
-	Hello = environment:get( NonCachedKey, FirstEnvPid ),
+        test_facilities:display( "Auxiliary test process ~w succeeded.",
+                                 [ self() ] )
 
-
-	% With a cached key already set to the specified value:
-	environment:set_cond( FirstTargetKey, 8, FirstEnvPid ),
-
-	8 = environment:get( FirstTargetKey, FirstEnvRegName ),
-
-
-	% With a cached key already not set to the specified value:
-	Goodbye = goodbye,
-
-	environment:set_cond( FirstTargetKey, Goodbye, FirstEnvPid ),
-
-	Goodbye = environment:get( FirstTargetKey, FirstEnvRegName ),
+                end ),
 
 
-	% Useless in the general case (permanent service):
-	environment:stop( FirstEnvRegName ),
+    % This test process should be still unaware of the update because of its
+    % caching:
+    %
+    1 = environment:get( FirstTargetKey, FirstEnvRegName ),
 
-	test_facilities:stop().
+    environment:sync( FirstEnvRegName ),
+
+    % Now aware:
+    7 = environment:get( FirstTargetKey, FirstEnvRegName ),
+
+    test_facilities:display( "Environment after the cache enabling: "
+                                ++ environment:to_string() ),
+
+    % New cache request:
+    environment:cache( { FirstTargetKey, 8 }, FirstEnvRegName ),
+
+    8 = environment:get( FirstTargetKey, FirstEnvRegName ),
+
+    % Note that first_test_key will still be at 7 in:
+    environment:store( FirstEnvRegName, ETFFilePath ),
+
+
+    test_facilities:display( "Now testing conditional setting." ),
+
+    % With a non-cached key:
+    NonCachedKey = non_cached_key,
+    Hello = hello,
+
+    environment:set_cond( NonCachedKey, Hello, FirstEnvPid ),
+
+    Hello = environment:get( NonCachedKey, FirstEnvPid ),
+
+
+    % With a cached key already set to the specified value:
+    environment:set_cond( FirstTargetKey, 8, FirstEnvPid ),
+
+    8 = environment:get( FirstTargetKey, FirstEnvRegName ),
+
+
+    % With a cached key already not set to the specified value:
+    Goodbye = goodbye,
+
+    environment:set_cond( FirstTargetKey, Goodbye, FirstEnvPid ),
+
+    Goodbye = environment:get( FirstTargetKey, FirstEnvRegName ),
+
+
+    % Useless in the general case (permanent service):
+    environment:stop( FirstEnvRegName ),
+
+    test_facilities:stop().

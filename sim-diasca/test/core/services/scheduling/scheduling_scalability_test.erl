@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -44,23 +44,23 @@ Returns the construction parameters of interest for the specified actor number.
 """.
 determine_actor_settings( ActorCount, SimulationDuration ) ->
 
-	ActorName = text_utils:format( "Actor ~B", [ ActorCount ] ),
+    ActorName = text_utils:format( "Actor ~B", [ ActorCount ] ),
 
-	SchedulingPolicy = case ActorCount rem 2 of
+    SchedulingPolicy = case ActorCount rem 2 of
 
-		0 ->
-			{ periodic, _Period=class_RandomManager:get_uniform_value( 10 ) } ;
+        0 ->
+            { periodic, _Period=class_RandomManager:get_uniform_value( 10 ) } ;
 
-		1 ->
-			{ erratic, _MinRange=class_RandomManager:get_uniform_value( 8 ) }
+        1 ->
+            { erratic, _MinRange=class_RandomManager:get_uniform_value( 8 ) }
 
-	end,
+    end,
 
-	% Not all will terminate before the simulation ends:
-	TerminationTickOffset =
-		10 + class_RandomManager:get_uniform_value( SimulationDuration + 200 ),
+    % Not all will terminate before the simulation ends:
+    TerminationTickOffset =
+        10 + class_RandomManager:get_uniform_value( SimulationDuration + 200 ),
 
-	{ ActorName, SchedulingPolicy, TerminationTickOffset }.
+    { ActorName, SchedulingPolicy, TerminationTickOffset }.
 
 
 
@@ -72,26 +72,26 @@ Note: this may lead to a given peer be added more than once.
 (helper)
 """.
 add_initial_peers( _ActorPid, _PotentialPeers, _PeerCount=0 ) ->
-	ok;
+    ok;
 
 add_initial_peers( ActorPid, PotentialPeers, PeerCount ) ->
 
-	case length( PotentialPeers ) of
+    case length( PotentialPeers ) of
 
-		0 ->
-			% No possible peer, stopping there:
-			ok;
+        0 ->
+            % No possible peer, stopping there:
+            ok;
 
-		Len ->
-			PeerIndex = class_RandomManager:get_uniform_value( Len ),
-			Peer = lists:nth( PeerIndex, PotentialPeers ),
+        Len ->
+            PeerIndex = class_RandomManager:get_uniform_value( Len ),
+            Peer = lists:nth( PeerIndex, PotentialPeers ),
 
-			ActorPid ! { addInitialPeer, Peer, self() },
-			peer_added = test_receive(),
+            ActorPid ! { addInitialPeer, Peer, self() },
+            peer_added = test_receive(),
 
-			add_initial_peers( ActorPid, PotentialPeers, PeerCount-1 )
+            add_initial_peers( ActorPid, PotentialPeers, PeerCount-1 )
 
-	end.
+    end.
 
 
 
@@ -101,7 +101,7 @@ Returns the maximum number of peers for a given actor.
 (helper)
 """.
 get_max_peer_count() ->
-	8.
+    8.
 
 
 
@@ -112,37 +112,37 @@ actors, one after the other.
 Returns a list of the PID of the created actors.
 """.
 create_initial_actors_direct( ActorCount, LoadBalancerPid,
-							  SimulationDuration ) ->
-	create_initial_actors_direct( ActorCount, LoadBalancerPid,
-								  SimulationDuration, _Acc=[] ).
+                              SimulationDuration ) ->
+    create_initial_actors_direct( ActorCount, LoadBalancerPid,
+                                  SimulationDuration, _Acc=[] ).
 
 
 create_initial_actors_direct( _ActorCount=0, _LoadBalancerPid,
-							  _SimulationDuration, Acc ) ->
-	Acc;
+                              _SimulationDuration, Acc ) ->
+    Acc;
 
 create_initial_actors_direct( ActorCount, LoadBalancerPid, SimulationDuration,
-							  Acc ) ->
+                              Acc ) ->
 
 
-	{ ActorName, SchedulingPolicy, TerminationTickOffset } =
-		determine_actor_settings( ActorCount, SimulationDuration ),
+    { ActorName, SchedulingPolicy, TerminationTickOffset } =
+        determine_actor_settings( ActorCount, SimulationDuration ),
 
 
-	ActorCount rem 100 =:= 0 andalso
-		?test_notice_fmt( "Still ~B actors to create.", [ ActorCount ] ),
+    ActorCount rem 100 =:= 0 andalso
+        ?test_notice_fmt( "Still ~B actors to create.", [ ActorCount ] ),
 
-	ActorPid = class_Actor:create_initial_actor( class_TestActor,
-		[ ActorName, SchedulingPolicy, no_creation, TerminationTickOffset ],
-		LoadBalancerPid ),
+    ActorPid = class_Actor:create_initial_actor( class_TestActor,
+        [ ActorName, SchedulingPolicy, no_creation, TerminationTickOffset ],
+        LoadBalancerPid ),
 
-	MaxPeerCount = get_max_peer_count(),
+    MaxPeerCount = get_max_peer_count(),
 
-	add_initial_peers( ActorPid, Acc,
-					   class_RandomManager:get_uniform_value( MaxPeerCount ) ),
+    add_initial_peers( ActorPid, Acc,
+                       class_RandomManager:get_uniform_value( MaxPeerCount ) ),
 
-	create_initial_actors_direct( ActorCount-1, LoadBalancerPid,
-								  SimulationDuration, [ ActorPid | Acc ] ).
+    create_initial_actors_direct( ActorCount-1, LoadBalancerPid,
+                                  SimulationDuration, [ ActorPid | Acc ] ).
 
 
 
@@ -153,69 +153,69 @@ actors, in batch.
 Returns a list of the PIDs of the created actors.
 """.
 create_initial_actors_indirect( ActorCount, LoadBalancerPid,
-								SimulationDuration ) ->
+                                SimulationDuration ) ->
 
-	?test_notice_fmt( "Will create a batch of ~B actors.", [ ActorCount ] ),
+    ?test_notice_fmt( "Will create a batch of ~B actors.", [ ActorCount ] ),
 
-	trace_utils:debug_fmt( "Will create a batch of ~B actors, at ~ts.",
-						   [ ActorCount, time_utils:get_textual_timestamp() ] ),
+    trace_utils:debug_fmt( "Will create a batch of ~B actors, at ~ts.",
+                           [ ActorCount, time_utils:get_textual_timestamp() ] ),
 
-	FullCreationList = define_initial_actors_indirect( ActorCount,
-		SimulationDuration, _Acc=[] ),
+    FullCreationList = define_initial_actors_indirect( ActorCount,
+        SimulationDuration, _Acc=[] ),
 
-	?test_info( "Actors defined, now creating them." ),
+    ?test_info( "Actors defined, now creating them." ),
 
-	trace_utils:debug_fmt( "Actors defined, now creating them, at ~ts.",
-						   [ time_utils:get_textual_timestamp() ] ),
+    trace_utils:debug_fmt( "Actors defined, now creating them, at ~ts.",
+                           [ time_utils:get_textual_timestamp() ] ),
 
-	ActorList = class_Actor:create_initial_actors( FullCreationList,
-												   LoadBalancerPid ),
+    ActorList = class_Actor:create_initial_actors( FullCreationList,
+                                                   LoadBalancerPid ),
 
 
-	?test_info( "Actors created, now linking them." ),
+    ?test_info( "Actors created, now linking them." ),
 
-	trace_utils:debug_fmt( "Actors created, now linking them, at ~ts.",
-						   [ time_utils:get_textual_timestamp() ] ),
+    trace_utils:debug_fmt( "Actors created, now linking them, at ~ts.",
+                           [ time_utils:get_textual_timestamp() ] ),
 
-	% This part of the test is not scalable:
-	%link_actors( ActorList, get_max_peer_count() ),
+    % This part of the test is not scalable:
+    %link_actors( ActorList, get_max_peer_count() ),
 
-	trace_utils:debug_fmt( "Actors linked, at ~ts.",
-						   [ time_utils:get_textual_timestamp() ] ),
+    trace_utils:debug_fmt( "Actors linked, at ~ts.",
+                           [ time_utils:get_textual_timestamp() ] ),
 
-	?test_info( "Actors linked." ),
+    ?test_info( "Actors linked." ),
 
-	ActorList.
+    ActorList.
 
 
 
 define_initial_actors_indirect( _ActorCount=0, _SimulationDuration, Acc ) ->
-	Acc;
+    Acc;
 
 define_initial_actors_indirect( ActorCount, SimulationDuration, Acc ) ->
 
-	{ ActorName, SchedulingPolicy, TerminationTickOffset } =
-		determine_actor_settings( ActorCount, SimulationDuration ),
+    { ActorName, SchedulingPolicy, TerminationTickOffset } =
+        determine_actor_settings( ActorCount, SimulationDuration ),
 
-	NewActorDef = { class_TestActor,
-		[ ActorName, SchedulingPolicy, no_creation, TerminationTickOffset ] },
+    NewActorDef = { class_TestActor,
+        [ ActorName, SchedulingPolicy, no_creation, TerminationTickOffset ] },
 
-	define_initial_actors_indirect( ActorCount - 1, SimulationDuration,
-									[ NewActorDef | Acc ] ).
+    define_initial_actors_indirect( ActorCount - 1, SimulationDuration,
+                                    [ NewActorDef | Acc ] ).
 
 
 
 
 -doc "Links the specified actors.".
 link_actors( _ActorList=[], _MaxPeerCount ) ->
-	ok;
+    ok;
 
 link_actors( _ActorList= [ ActorPid | OtherActors ], MaxPeerCount ) ->
 
-	add_initial_peers( ActorPid, OtherActors,
-					   class_RandomManager:get_uniform_value( MaxPeerCount ) ),
+    add_initial_peers( ActorPid, OtherActors,
+                       class_RandomManager:get_uniform_value( MaxPeerCount ) ),
 
-	link_actors( OtherActors, MaxPeerCount ).
+    link_actors( OtherActors, MaxPeerCount ).
 
 
 
@@ -226,205 +226,205 @@ specified).
 """.
 -spec run() -> no_return().
 run() ->
-	run( _TestBatchOfCreations=true ).
+    run( _TestBatchOfCreations=true ).
 
 
 -spec run( boolean() ) -> no_return().
 run( TestBatchOfCreations ) ->
 
-	?case_start,
+    ?case_start,
 
-	% Default simulation settings (50Hz, batch reproducible) are used, except
-	% for the name:
-	%
-	SimulationSettings = #simulation_settings{
-		simulation_name="Scheduling scalability test" },
+    % Default simulation settings (50Hz, batch reproducible) are used, except
+    % for the name:
+    %
+    SimulationSettings = #simulation_settings{
+        simulation_name="Scheduling scalability test" },
 
 
-	% Default deployment settings (unavailable nodes allowed, on-the-fly
-	% generation of the deployment package requested), but computing
-	% hosts are specified (to be updated depending on your environment):
-	%
-	% (note that localhost is excluded)
-	%
-	DeploymentSettings = #deployment_settings{
+    % Default deployment settings (unavailable nodes allowed, on-the-fly
+    % generation of the deployment package requested), but computing
+    % hosts are specified (to be updated depending on your environment):
+    %
+    % (note that localhost is excluded)
+    %
+    DeploymentSettings = #deployment_settings{
 
-		computing_hosts=
-			% { use_host_file_otherwise_local, "sim-diasca-host-candidates.etf",
-			%   exclude_localhost }
-			%
-			{ use_host_file_otherwise_local, "sim-diasca-host-candidates.etf" }
+        computing_hosts=
+            % { use_host_file_otherwise_local, "sim-diasca-host-candidates.etf",
+            %   exclude_localhost }
+            %
+            { use_host_file_otherwise_local, "sim-diasca-host-candidates.etf" }
 
-	},
+    },
 
 
-	% Default load balancing settings (round-robin placement heuristic):
-	LoadBalancingSettings = #load_balancing_settings{},
+    % Default load balancing settings (round-robin placement heuristic):
+    LoadBalancingSettings = #load_balancing_settings{},
 
 
-	?test_notice_fmt( "This test will deploy a distributed simulation"
-		" based on computing hosts specified as ~p.",
-		[ DeploymentSettings#deployment_settings.computing_hosts ] ),
+    ?test_notice_fmt( "This test will deploy a distributed simulation"
+        " based on computing hosts specified as ~p.",
+        [ DeploymentSettings#deployment_settings.computing_hosts ] ),
 
 
-	% Directly created on the user node:
-	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-		DeploymentSettings, LoadBalancingSettings ),
+    % Directly created on the user node:
+    DeploymentManagerPid = sim_diasca:init( SimulationSettings,
+        DeploymentSettings, LoadBalancingSettings ),
 
 
-	?test_info( "Deployment manager created, retrieving the load balancer." ),
+    ?test_info( "Deployment manager created, retrieving the load balancer." ),
 
-	DeploymentManagerPid ! { getLoadBalancer, [], self() },
-	LoadBalancerPid = test_receive(),
+    DeploymentManagerPid ! { getLoadBalancer, [], self() },
+    LoadBalancerPid = test_receive(),
 
-	% Increase class_TimeManager:get_maximum_idle_duration() if being in
-	% development mode and wanting many actors:
-	%
-	%ActorCountPerComputingNode = 50000,
-	%ActorCountPerComputingNode = 25000,
-	%ActorCountPerComputingNode = 15000,
-	ActorCountPerComputingNode = 500,
-	%ActorCountPerComputingNode = 50,
-	%ActorCountPerComputingNode = 5,
-	%ActorCountPerComputingNode = 3,
+    % Increase class_TimeManager:get_maximum_idle_duration() if being in
+    % development mode and wanting many actors:
+    %
+    %ActorCountPerComputingNode = 50000,
+    %ActorCountPerComputingNode = 25000,
+    %ActorCountPerComputingNode = 15000,
+    ActorCountPerComputingNode = 500,
+    %ActorCountPerComputingNode = 50,
+    %ActorCountPerComputingNode = 5,
+    %ActorCountPerComputingNode = 3,
 
-	LoadBalancerPid ! { getComputingNodes, [], self() },
-	NodeList = test_receive(),
-	ComputingNodeCount = length( NodeList ),
+    LoadBalancerPid ! { getComputingNodes, [], self() },
+    NodeList = test_receive(),
+    ComputingNodeCount = length( NodeList ),
 
 
-	SimulationDurationInTicks = 15000,
+    SimulationDurationInTicks = 15000,
 
-	TotalActorCount = ActorCountPerComputingNode * ComputingNodeCount,
+    TotalActorCount = ActorCountPerComputingNode * ComputingNodeCount,
 
-	?test_notice_fmt( "Will now create a total of ~B initial actors, "
-		"i.e. ~B actors on each of the ~B actually available computing nodes.",
-		[ TotalActorCount, ActorCountPerComputingNode, ComputingNodeCount ] ),
+    ?test_notice_fmt( "Will now create a total of ~B initial actors, "
+        "i.e. ~B actors on each of the ~B actually available computing nodes.",
+        [ TotalActorCount, ActorCountPerComputingNode, ComputingNodeCount ] ),
 
-	?test_info( "Requesting to the load balancer the creation of "
-				"a first initial test actor." ),
+    ?test_info( "Requesting to the load balancer the creation of "
+                "a first initial test actor." ),
 
-	FirstTerminationTickOffset = 1 + round( SimulationDurationInTicks / 2 ),
+    FirstTerminationTickOffset = 1 + round( SimulationDurationInTicks / 2 ),
 
 
-	FirstActorPid = class_Actor:create_initial_actor( class_TestActor,
-		[ "First test actor", { periodic, _FirstPeriod=3 }, no_creation,
-		  FirstTerminationTickOffset ], LoadBalancerPid ),
+    FirstActorPid = class_Actor:create_initial_actor( class_TestActor,
+        [ "First test actor", { periodic, _FirstPeriod=3 }, no_creation,
+          FirstTerminationTickOffset ], LoadBalancerPid ),
 
-	FirstActorPid ! { getAAI, [], self() },
-	2 = test_receive(),
+    FirstActorPid ! { getAAI, [], self() },
+    2 = test_receive(),
 
 
-	?test_notice_fmt( "First actor has for PID ~w and for AAI 2.",
-					  [ FirstActorPid ] ),
+    ?test_notice_fmt( "First actor has for PID ~w and for AAI 2.",
+                      [ FirstActorPid ] ),
 
-	?test_info( "First actor has a correct AAI." ),
+    ?test_info( "First actor has a correct AAI." ),
 
-	SecondTerminationTickOffset =
-		1 + round( 2 * SimulationDurationInTicks / 3 ),
+    SecondTerminationTickOffset =
+        1 + round( 2 * SimulationDurationInTicks / 3 ),
 
-	SecondActorPid = class_Actor:create_initial_actor( class_TestActor,
-		[ "Second test actor", { periodic, _SecondPeriod=3 },
-		  no_creation, SecondTerminationTickOffset ],
-		LoadBalancerPid ),
+    SecondActorPid = class_Actor:create_initial_actor( class_TestActor,
+        [ "Second test actor", { periodic, _SecondPeriod=3 },
+          no_creation, SecondTerminationTickOffset ],
+        LoadBalancerPid ),
 
-	SecondActorPid ! { getAAI, [], self() },
-	3 = test_receive(),
+    SecondActorPid ! { getAAI, [], self() },
+    3 = test_receive(),
 
 
-	% Meant to be still living at the end of the simulation:
-	ThirdTerminationTickOffset = 2 * SimulationDurationInTicks,
+    % Meant to be still living at the end of the simulation:
+    ThirdTerminationTickOffset = 2 * SimulationDurationInTicks,
 
-	ThirdActorPid = class_Actor:create_initial_actor( class_TestActor,
-		[ "Third test actor", { periodic, _ThirdPeriod=3 },
-		  no_creation, ThirdTerminationTickOffset ], LoadBalancerPid ),
+    ThirdActorPid = class_Actor:create_initial_actor( class_TestActor,
+        [ "Third test actor", { periodic, _ThirdPeriod=3 },
+          no_creation, ThirdTerminationTickOffset ], LoadBalancerPid ),
 
-	ThirdActorPid ! { getAAI, [], self() },
-	4 = test_receive(),
+    ThirdActorPid ! { getAAI, [], self() },
+    4 = test_receive(),
 
-	?test_info( "First three actors have correct AAI." ),
+    ?test_info( "First three actors have correct AAI." ),
 
 
-	?test_info( "Linking actors." ),
+    ?test_info( "Linking actors." ),
 
-	% Requests, to block and not start the simulation before the initial
-	% situation is set up (to avoid a race condition):
-	%
-	SecondActorPid ! { addInitialPeer, FirstActorPid, self() },
-	peer_added = test_receive(),
+    % Requests, to block and not start the simulation before the initial
+    % situation is set up (to avoid a race condition):
+    %
+    SecondActorPid ! { addInitialPeer, FirstActorPid, self() },
+    peer_added = test_receive(),
 
-	ThirdActorPid  ! { addInitialPeer, SecondActorPid, self() },
-	peer_added = test_receive(),
+    ThirdActorPid  ! { addInitialPeer, SecondActorPid, self() },
+    peer_added = test_receive(),
 
-	FirstActorPid  ! { addInitialPeer, ThirdActorPid, self() },
-	peer_added = test_receive(),
+    FirstActorPid  ! { addInitialPeer, ThirdActorPid, self() },
+    peer_added = test_receive(),
 
 
-	% Two ways of creating the initial actors can be tested here:
-	%
-	% - the direct creation: actors are created one after the other, with as
-	% many calls to the load balancer
-	%
-	% - the indirect creation: creation parameters are determined first in a
-	% large list, which is then sent as a whole to the load-balancer:
+    % Two ways of creating the initial actors can be tested here:
+    %
+    % - the direct creation: actors are created one after the other, with as
+    % many calls to the load balancer
+    %
+    % - the indirect creation: creation parameters are determined first in a
+    % large list, which is then sent as a whole to the load-balancer:
 
-	% Three actors were already created:
-	ActorToCreate = TotalActorCount - 3,
+    % Three actors were already created:
+    ActorToCreate = TotalActorCount - 3,
 
-	PreCreation = time_utils:get_timestamp(),
+    PreCreation = time_utils:get_timestamp(),
 
-	trace_utils:debug( "Starting batched creation." ),
+    trace_utils:debug( "Starting batched creation." ),
 
-	case TestBatchOfCreations of
+    case TestBatchOfCreations of
 
-		false ->
-			create_initial_actors_direct( ActorToCreate, LoadBalancerPid,
-										  SimulationDurationInTicks );
+        false ->
+            create_initial_actors_direct( ActorToCreate, LoadBalancerPid,
+                                          SimulationDurationInTicks );
 
-		true ->
-			create_initial_actors_indirect( ActorToCreate, LoadBalancerPid,
-											SimulationDurationInTicks )
+        true ->
+            create_initial_actors_indirect( ActorToCreate, LoadBalancerPid,
+                                            SimulationDurationInTicks )
 
-	end,
+    end,
 
-	PostCreation = time_utils:get_timestamp(),
+    PostCreation = time_utils:get_timestamp(),
 
-	trace_utils:debug_fmt( "Creation lasted for ~ts.",
-		[ time_utils:get_textual_duration( PreCreation, PostCreation ) ] ),
+    trace_utils:debug_fmt( "Creation lasted for ~ts.",
+        [ time_utils:get_textual_duration( PreCreation, PostCreation ) ] ),
 
-	DeploymentManagerPid ! { getRootTimeManager, [], self() },
-	RootTimeManagerPid = test_receive(),
+    DeploymentManagerPid ! { getRootTimeManager, [], self() },
+    RootTimeManagerPid = test_receive(),
 
 
-	?test_info( "Starting simulation." ),
-	RootTimeManagerPid !
-		{ start, [ _StopTick=SimulationDurationInTicks, self() ] },
+    ?test_info( "Starting simulation." ),
+    RootTimeManagerPid !
+        { start, [ _StopTick=SimulationDurationInTicks, self() ] },
 
 
-	?test_info( "Requesting textual timings (first)." ),
+    ?test_info( "Requesting textual timings (first)." ),
 
-	RootTimeManagerPid ! { getTextualTimings, [], self() },
-	FirstTimingString = test_receive(),
+    RootTimeManagerPid ! { getTextualTimings, [], self() },
+    FirstTimingString = test_receive(),
 
-	?test_notice_fmt( "Received first time: ~ts.", [ FirstTimingString ] ),
+    ?test_notice_fmt( "Received first time: ~ts.", [ FirstTimingString ] ),
 
 
-	% Waits until simulation is finished:
-	receive
+    % Waits until simulation is finished:
+    receive
 
-		simulation_stopped ->
-			?test_info( "Simulation stopped spontaneously." )
+        simulation_stopped ->
+            ?test_info( "Simulation stopped spontaneously." )
 
-	end,
+    end,
 
 
-	?test_info( "Requesting textual timings (second)." ),
+    ?test_info( "Requesting textual timings (second)." ),
 
-	RootTimeManagerPid ! { getTextualTimings, [], self() },
-	SecondTimingString = test_receive(),
+    RootTimeManagerPid ! { getTextualTimings, [], self() },
+    SecondTimingString = test_receive(),
 
-	?test_notice_fmt( "Received second time: ~ts.", [ SecondTimingString ] ),
+    ?test_notice_fmt( "Received second time: ~ts.", [ SecondTimingString ] ),
 
-	sim_diasca:shutdown(),
+    sim_diasca:shutdown(),
 
-	?case_stop.
+    ?case_stop.

@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2025 Olivier Boudeville
+% Copyright (C) 2010-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -30,17 +30,17 @@
 -moduledoc """
 Gathering of various **system-level** (operating system) convenient facilities.
 
-See system_utils_test.erl for the corresponding test.
+See `system_utils_test.erl` for the corresponding test.
 """.
 
 
 
 % User-related functions.
 -export([ get_user_name/0, get_user_name_safe/0, get_user_name_string/0,
-		  get_user_id/0,
-		  get_user_info/0, get_user_info_safe/0,
-		  get_user_home_directory/0, get_user_home_directory/1,
-		  get_user_home_directory_string/0 ]).
+          get_user_id/0,
+          get_user_info/0, get_user_info_safe/0,
+          get_user_home_directory/0, get_user_home_directory/1,
+          get_user_home_directory_string/0 ]).
 
 
 % Group-related functions.
@@ -49,7 +49,7 @@ See system_utils_test.erl for the corresponding test.
 
 % Unicode-related support.
 -export([ get_default_encoding/0, get_default_encoding_option/0,
-		  force_unicode_support/0 ]).
+          force_unicode_support/0 ]).
 
 
 % Lower-level services.
@@ -58,77 +58,89 @@ See system_utils_test.erl for the corresponding test.
 
 % System-related functions.
 -export([ run_command/1, run_command/2, run_command/3,
-		  run_command/4,
+          run_command/4,
 
-		  run_executable/1, run_executable/2, run_executable/3,
-		  run_executable/4, run_executable/5,
+          run_executable/1, run_executable/2, run_executable/3,
+          run_executable/4, run_executable/5,
 
-		  get_default_port_options/0,
+          get_default_port_options/0,
 
-		  get_line/1, get_line/2, get_line_helper_script/0,
+          get_line/1, get_line/2, get_line_helper_script/0,
 
-		  get_standard_environment/0,
-		  monitor_port/2,
-		  evaluate_shell_expression/1, evaluate_shell_expression/2,
+          get_standard_environment/0,
+          monitor_port/2,
+          evaluate_shell_expression/1, evaluate_shell_expression/2,
 
-		  run_background_command/1, run_background_command/2,
-		  run_background_command/3,
+          run_background_command/1, run_background_command/2,
+          run_background_command/3,
 
-		  run_background_executable/1, run_background_executable/2,
-		  run_background_executable/3, run_background_executable/4,
-		  run_background_executable/5,
+          run_background_executable/1, run_background_executable/2,
+          run_background_executable/3, run_background_executable/4,
+          run_background_executable/5,
 
-		  evaluate_background_shell_expression/1,
-		  evaluate_background_shell_expression/2,
+          evaluate_background_shell_expression/1,
+          evaluate_background_shell_expression/2,
 
-		  get_environment_prefix/1, get_actual_expression/2,
-		  get_environment_variable/1, set_environment_variable/2,
+          get_environment_prefix/1, get_actual_expression/2,
+          get_environment_variable/1, set_environment_variable/2,
 
-		  get_environment_variable_for_executable_lookup/0,
-		  get_environment_variable_for_library_lookup/0,
+          get_environment_variable_for_executable_lookup/0,
+          get_environment_variable_for_library_lookup/0,
 
-		  add_path_for_executable_lookup/1, add_paths_for_executable_lookup/1,
-		  add_path_for_library_lookup/1, add_paths_for_library_lookup/1,
-		  get_environment/0, environment_to_string/0, environment_to_string/1,
+          add_path_for_executable_lookup/1, add_paths_for_executable_lookup/1,
+          add_path_for_library_lookup/1, add_paths_for_library_lookup/1,
+          get_environment/0, environment_to_string/0, environment_to_string/1,
 
-		  get_operating_system_family/0, get_operating_system_name/0,
-		  get_operating_system_type/0,
+          get_operating_system_family/0, get_operating_system_name/0,
+          get_operating_system_type/0,
 
-		  get_interpreter_version/0, get_application_version/1,
+          get_interpreter_version/0, get_application_version/1,
+
+          get_size_of_vm_word/0, get_size_of_vm_word_string/0,
+          get_size/1,
+
+          interpret_byte_size/1, interpret_byte_size_with_unit/1,
+          convert_byte_size_with_unit/1,
+
+          report_main_system_metrics/0, report_main_system_metrics/1,
+
+          display_memory_summary/0,
+          get_total_physical_memory/0, get_total_physical_memory_string/0,
+          get_total_physical_memory_on/1, get_memory_used_by_vm/0,
+          get_total_memory_used/0,
+
+          interpret_top_memory_using_processes/0,
+          interpret_top_memory_using_processes/1,
+          get_top_memory_using_processes/0, get_top_memory_using_processes/1,
+          process_memory_info_to_string/1,
+
+          get_swap_status/0, get_swap_status_string/0,
+          get_core_count/0, get_core_count_string/0,
+          get_process_count/0, get_process_count_string/0,
+          compute_cpu_usage_between/2, compute_cpu_usage_for/1,
+          compute_detailed_cpu_usage/2, get_cpu_usage_counters/0,
 
 
-		  get_size_of_vm_word/0, get_size_of_vm_word_string/0,
-		  get_size/1,
+          interpret_top_cumulated_cpu_processes/0,
+          interpret_top_cumulated_cpu_processes/1,
+          get_top_cumulated_cpu_processes/0, get_top_cumulated_cpu_processes/1,
+          process_cpu_info_to_string/1,
 
-		  interpret_byte_size/1, interpret_byte_size_with_unit/1,
-		  convert_byte_size_with_unit/1,
+          get_disk_usage/0, get_disk_usage_string/0,
+          get_mount_points/0, get_mount_points/1,
+          get_known_pseudo_filesystems/0,
+          get_filesystem_info/1, get_filesystem_info/2,
+          filesystem_info_to_string/1,
 
-		  display_memory_summary/0,
-		  get_total_physical_memory/0, get_total_physical_memory_string/0,
-		  get_total_physical_memory_on/1, get_memory_used_by_vm/0,
-		  get_total_memory_used/0,
+          get_default_temporary_directory/0, get_current_directory_string/0,
 
-		  get_swap_status/0, get_swap_status_string/0,
-		  get_core_count/0, get_core_count_string/0,
-		  get_process_count/0, get_process_count_string/0,
-		  compute_cpu_usage_between/2, compute_cpu_usage_for/1,
-		  compute_detailed_cpu_usage/2, get_cpu_usage_counters/0,
+          get_resource_limits/0, get_resource_limits_string/0,
 
-		  get_disk_usage/0, get_disk_usage_string/0,
-		  get_mount_points/0, get_mount_points/1,
-		  get_known_pseudo_filesystems/0,
-		  get_filesystem_info/1, get_filesystem_info/2,
-		  filesystem_info_to_string/1,
+          get_operating_system_description/0,
+          get_operating_system_description_string/0,
+          get_system_description/0,
 
-		  get_default_temporary_directory/0, get_current_directory_string/0,
-
-		  get_resource_limits/0, get_resource_limits_string/0,
-
-		  get_operating_system_description/0,
-		  get_operating_system_description_string/0,
-		  get_system_description/0,
-
-		  has_graphical_output/0 ]).
+          has_graphical_output/0 ]).
 
 
 -define( executable_search_path_variable, "PATH" ).
@@ -174,16 +186,16 @@ See system_utils_test.erl for the corresponding test.
 -doc """
 More precise categorization of an operating system.
 
-Generally using portable facilities (e.g. file_utils) shall be preferred to
+Generally using portable facilities (e.g. `file_utils`) shall be preferred to
 matching any value of that type.
 
 Unix system are designated by the name returned by `uname -s`, but in lower
-case. For example, on Solaris 1 and 2, it is 'sunos'.
+case. For example, on Solaris 1 and 2, it is `sunos`.
 """.
 -type os_name() :: 'linux'
-				 | 'sunos'
-				 | 'nt' % For Windows
-				 | atom().
+                 | 'sunos'
+                 | 'nt' % For Windows
+                 | atom().
 
 
 
@@ -205,12 +217,12 @@ Name of a (third-party) prerequisite package (e.g. "ErlPort", "jsx", etc.).
 
 
 -export([ get_software_base_directory/0,
-		  get_dependency_base_directory/1, get_dependency_code_directory/1,
+          get_dependency_base_directory/1, get_dependency_code_directory/1,
 
-		  is_json_support_available/0,
-		  get_json_unavailability_hint/0,
+          is_json_support_available/0,
+          get_json_unavailability_hint/0,
 
-		  is_hdf5_support_available/0, get_hdf5_unavailability_hint/0  ]).
+          is_hdf5_support_available/0, get_hdf5_unavailability_hint/0  ]).
 
 
 
@@ -234,15 +246,18 @@ Name of a (third-party) prerequisite package (e.g. "ErlPort", "jsx", etc.).
 
 
 
+-doc "A CPU load, as a percentage, possibly higher than 100% with multicores.".
+-type cpu_load() :: percent().
+
+
 -doc "Information about CPU usage.".
 -opaque cpu_usage_info() ::
-	{ integer(), integer(), integer(), integer(), integer() }.
-
-
+    { integer(), integer(), integer(), integer(), integer() }.
 
 -doc "Percentages of CPU usages.".
 -type cpu_usage_percentages() ::
-		{ percent(), percent(), percent(), percent(), percent() }.
+        { percent(), percent(), percent(), percent(), percent() }.
+
 
 
 
@@ -276,31 +291,31 @@ All the known types of filesystems (atom() type used to capture even lacking
 ones).
 """.
 -type filesystem_type() :: actual_filesystem_type() | pseudo_filesystem_type()
-						 | 'unknown' | atom().
+                         | 'unknown' | atom().
 
 
 -record( fs_info, {
 
-	% Device name (e.g. /dev/sda5):
-	filesystem :: directory_path(),
+    % Device name (e.g. /dev/sda5):
+    filesystem :: directory_path(),
 
-	% Mount point (e.g. /boot):
-	mount_point :: directory_path(),
+    % Mount point (e.g. /boot):
+    mount_point :: directory_path(),
 
-	% Filesystem type (e.g. 'ext4'):
-	type :: filesystem_type(),
+    % Filesystem type (e.g. 'ext4'):
+    type :: filesystem_type(),
 
-	% Used size, in bytes:
-	used_size :: byte_size(),
+    % Used size, in bytes:
+    used_size :: byte_size(),
 
-	% Available size, in bytes:
-	available_size :: byte_size(),
+    % Available size, in bytes:
+    available_size :: byte_size(),
 
-	% Number of used inodes:
-	used_inodes :: count(),
+    % Number of used inodes:
+    used_inodes :: count(),
 
-	% Number of available inodes:
-	available_inodes :: count() } ).
+    % Number of available inodes:
+    available_inodes :: count() } ).
 
 
 -doc "Stores information about a filesystem.".
@@ -309,10 +324,17 @@ ones).
 
 
 -doc """
-Describes a command to be run (i.e. a path to an executable, with possibly
-command-line arguments).
+Describes, as a plain string, a command to be run (i.e. at least a path to an
+executable, with possibly command-line arguments).
 """.
 -type command() :: any_string().
+
+
+-doc """
+Describes, as a binary string, a command to be run (i.e. at least a path to an
+executable, with possibly command-line arguments).
+""".
+-type bin_command() :: any_string().
 
 
 
@@ -338,8 +360,8 @@ confuse it.
 
 -doc """
 A pair specifying a complete command-line ready to be executed by
-run_executable/n (convenient to store once for all if needing to launch it
-repeatedly). Generally more secure than command/1 as well.
+`run_executable/n` (convenient to store once for all if needing to launch it
+repeatedly). Generally more secure than a full `command/0` as well.
 """.
 -type execution_pair() :: { bin_executable_path(), [ executable_argument() ] }.
 
@@ -349,10 +371,10 @@ repeatedly). Generally more secure than command/1 as well.
 An option used to spawn a port (others managed through specific parameters).
 """.
 -type port_option() :: { 'packet', 1 | 2 | 4 }
-					 | 'stream'
-					 | { 'line', count() }
-					 | atom()
-					 | { atom(), term() }.
+                     | 'stream'
+                     | { 'line', count() }
+                     | atom()
+                     | { atom(), term() }.
 
 
 
@@ -395,7 +417,7 @@ standard output; no exit status).
 
 
 -doc """
-Value of a shell environment variable, 'false' meaning that the corresponding
+Value of a shell environment variable, `false` meaning that the corresponding
 variable is not set.
 """.
 -type env_variable_value() :: ustring() | 'false'.
@@ -432,6 +454,9 @@ variable is not set.
 
 -doc "To store (UNIX-like) user names.".
 -type user_name() :: nonempty_string().
+
+-doc "To store (UNIX-like) user names.".
+-type bin_user_name() :: bin_string().
 
 
 
@@ -480,39 +505,53 @@ variable is not set.
 
 
 -doc """
-The PID of an operating-system process (OS-level, not Erlang-level, process
+The PID of an operating-system process (an OS-level - not Erlang-level - process
 identifier).
 """.
 -type os_pid() :: non_neg_integer().
 
 
 
+-doc "Information typically returned by `get_top_memory_using_processes/1`.".
+-type process_memory_info() :: { RSSSize :: byte_size(), VSZSize :: byte_size(),
+                                 os_pid(), bin_user_name(), bin_command() }.
+
+
+-doc "Information typically returned by `get_top_cumulated_cpu_processes/1`.".
+-type process_cpu_info() ::
+    { CPULoad :: cpu_load(), os_pid(), bin_user_name(), bin_command() }.
+
+
+
 -export_type([ byte_size/0, bytes_per_second/0, byte_offset/0, bit_size/0,
-			   cpu_usage_info/0, cpu_usage_percentages/0,
-			   host_static_info/0, host_dynamic_info/0,
+               cpu_load/0, cpu_usage_info/0, cpu_usage_percentages/0,
+               host_static_info/0, host_dynamic_info/0,
 
-			   actual_filesystem_type/0, pseudo_filesystem_type/0,
-			   filesystem_type/0, fs_info/0,
+               actual_filesystem_type/0, pseudo_filesystem_type/0,
+               filesystem_type/0, fs_info/0,
 
-			   command/0, executable_argument/0, execution_pair/0,
-			   port_option/0,
-			   return_code/0, command_output/0, execution_outcome/0,
+               command/0, bin_command/0, executable_argument/0,
+               execution_pair/0,
+               port_option/0,
+               return_code/0, command_output/0, execution_outcome/0,
 
-			   shell_expression/0, expression_outcome/0,
+               shell_expression/0, expression_outcome/0,
 
-			   env_variable_name/0, env_variable_value/0, environment/0,
-			   working_dir/0,
+               env_variable_name/0, env_variable_value/0, environment/0,
+               working_dir/0,
 
-			   encoding/0, encoding_option/0, encoding_options/0,
+               encoding/0, encoding_option/0, encoding_options/0,
 
-			   user_name/0, atom_user_name/0,
-			   login/0, bin_login/0, any_login/0,
-			   password/0, bin_password/0, any_password/0,
+               user_name/0, bin_user_name/0, atom_user_name/0,
+               login/0, bin_login/0, any_login/0,
+               password/0, bin_password/0, any_password/0,
 
-			   basic_credential/0,
-			   group_name/0,
+               basic_credential/0,
+               group_name/0,
 
-			   user_id/0, group_id/0, os_pid/0 ]).
+               user_id/0, group_id/0, os_pid/0,
+
+               process_memory_info/0 ]).
 
 
 % For myriad_spawn*:
@@ -551,31 +590,31 @@ identifier).
 -spec get_user_name() -> ustring().
 get_user_name() ->
 
-	case run_command( ?id "-un" ) of
+    case run_command( ?id "-un" ) of
 
-		{ _ExitCode=0, Output } ->
-			Output;
+        { _ExitCode=0, Output } ->
+            Output;
 
-		{ ExitCode, ErrorOutput } ->
-			throw( { user_name_inquiry_failed, ExitCode, ErrorOutput } )
+        { ExitCode, ErrorOutput } ->
+            throw( { user_name_inquiry_failed, ExitCode, ErrorOutput } )
 
-	end.
+    end.
 
-	% Another option:
-	% case os:getenv( "USER" ) of
+    % Another option:
+    % case os:getenv( "USER" ) of
 
-	%   false ->
+    %   false ->
 
-	%       trace_utils:error( "The name of the user could not be "
-	%           "obtained from the shell environment "
-	%           "(no USER variable defined)." ),
+    %       trace_utils:error( "The name of the user could not be "
+    %           "obtained from the shell environment "
+    %           "(no USER variable defined)." ),
 
-	%       throw( user_name_not_found_in_environment );
+    %       throw( user_name_not_found_in_environment );
 
-	%   UserName ->
-	%       UserName
+    %   UserName ->
+    %       UserName
 
-	%end.
+    %end.
 
 
 
@@ -587,16 +626,16 @@ Not expected to fail.
 -spec get_user_name_safe() -> user_name().
 get_user_name_safe() ->
 
-	try
+    try
 
-		get_user_name()
+        get_user_name()
 
-	catch
+    catch
 
-		_ ->
-			"(unknown user)"
+        _ ->
+            "(unknown user)"
 
-	end.
+    end.
 
 
 
@@ -610,16 +649,16 @@ Cannot crash.
 -spec get_user_name_string() -> user_name().
 get_user_name_string() ->
 
-	try
+    try
 
-		io_lib:format( "user name: ~ts", [ get_user_name() ] )
+        io_lib:format( "user name: ~ts", [ get_user_name() ] )
 
-	catch _AnyClass:Exception ->
+    catch _AnyClass:Exception ->
 
-		io_lib:format( "no user name information could be obtained (~p)",
-					   [ Exception ] )
+        io_lib:format( "no user name information could be obtained (~p)",
+                       [ Exception ] )
 
-	end.
+    end.
 
 
 
@@ -627,22 +666,22 @@ get_user_name_string() ->
 -spec get_user_id() -> user_id().
 get_user_id() ->
 
-	case run_command( ?id "-u" ) of
+    case run_command( ?id "-u" ) of
 
-		{ _ExitCode=0, Output } ->
-			text_utils:string_to_integer( Output );
+        { _ExitCode=0, Output } ->
+            text_utils:string_to_integer( Output );
 
-		{ ExitCode, ErrorOutput } ->
-			throw( { user_id_inquiry_failed, ExitCode, ErrorOutput } )
+        { ExitCode, ErrorOutput } ->
+            throw( { user_id_inquiry_failed, ExitCode, ErrorOutput } )
 
-	end.
+    end.
 
 
 
 -doc "Returns the system information regarding the current user.".
 -spec get_user_info() -> { user_name(), group_name() }.
 get_user_info() ->
-	{ get_user_name(), get_group_name() }.
+    { get_user_name(), get_group_name() }.
 
 
 
@@ -653,7 +692,7 @@ Not expected to fail.
 """.
 -spec get_user_info_safe() -> { user_name(), group_name() }.
 get_user_info_safe() ->
-	{ get_user_name_safe(), get_group_name_safe() }.
+    { get_user_name_safe(), get_group_name_safe() }.
 
 
 
@@ -661,27 +700,27 @@ get_user_info_safe() ->
 -spec get_user_home_directory() -> directory_path() .
 get_user_home_directory() ->
 
-	case os:getenv( "HOME" ) of
+    case os:getenv( "HOME" ) of
 
-		false ->
-			% Thus expecting "XXXX -home a/path/to/home":
-			case cmd_line_utils:get_command_arguments_for_option( 'home' ) of
+        false ->
+            % Thus expecting "XXXX -home a/path/to/home":
+            case cmd_line_utils:get_command_arguments_for_option( 'home' ) of
 
-				undefined ->
-					throw( home_directory_not_found );
+                undefined ->
+                    throw( home_directory_not_found );
 
-				[ [ Home ] ] when is_list( Home ) ->
-					Home;
+                [ [ Home ] ] when is_list( Home ) ->
+                    Home;
 
-				OtherHomeArg ->
-					throw( { invalid_home_directory_specified, OtherHomeArg } )
+                OtherHomeArg ->
+                    throw( { invalid_home_directory_specified, OtherHomeArg } )
 
-			end;
+            end;
 
-		Home ->
-			Home
+        Home ->
+            Home
 
-	end.
+    end.
 
 
 
@@ -691,7 +730,7 @@ to the most usual UNIX conventions.
 """.
 -spec get_user_home_directory( user_name() ) -> directory_path().
 get_user_home_directory( Username ) ->
-	text_utils:format( "/home/~ts", [ Username ] ).
+    text_utils:format( "/home/~ts", [ Username ] ).
 
 
 
@@ -703,17 +742,17 @@ Cannot crash.
 -spec get_user_home_directory_string() -> ustring().
 get_user_home_directory_string() ->
 
-	try
+    try
 
-		io_lib:format( "user home directory: ~ts",
-					   [ get_user_home_directory() ] )
+        io_lib:format( "user home directory: ~ts",
+                       [ get_user_home_directory() ] )
 
-	catch _AnyClass:Exception ->
+    catch _AnyClass:Exception ->
 
-		io_lib:format( "no home directory information could be "
-					   "obtained (~p)", [ Exception ] )
+        io_lib:format( "no home directory information could be "
+                       "obtained (~p)", [ Exception ] )
 
-	end.
+    end.
 
 
 
@@ -725,15 +764,15 @@ get_user_home_directory_string() ->
 -spec get_group_id() -> group_id().
 get_group_id() ->
 
-	case run_command( ?id "-g" ) of
+    case run_command( ?id "-g" ) of
 
-		{ _ExitCode=0, Output } ->
-			text_utils:string_to_integer( Output );
+        { _ExitCode=0, Output } ->
+            text_utils:string_to_integer( Output );
 
-		{ ExitCode, ErrorOutput } ->
-			throw( { group_id_inquiry_failed, ExitCode, ErrorOutput } )
+        { ExitCode, ErrorOutput } ->
+            throw( { group_id_inquiry_failed, ExitCode, ErrorOutput } )
 
-	end.
+    end.
 
 
 
@@ -741,15 +780,15 @@ get_group_id() ->
 -spec get_group_name() -> group_name().
 get_group_name() ->
 
-	case run_command( ?id "-gn" ) of
+    case run_command( ?id "-gn" ) of
 
-		{ _ExitCode=0, Output } ->
-			Output;
+        { _ExitCode=0, Output } ->
+            Output;
 
-		{ ExitCode, ErrorOutput } ->
-			throw( { group_inquiry_failed, ExitCode, ErrorOutput } )
+        { ExitCode, ErrorOutput } ->
+            throw( { group_inquiry_failed, ExitCode, ErrorOutput } )
 
-	end.
+    end.
 
 
 
@@ -761,16 +800,16 @@ Not expected to fail.
 -spec get_group_name_safe() -> group_name().
 get_group_name_safe() ->
 
-	try
+    try
 
-		get_group_name()
+        get_group_name()
 
-	catch
+    catch
 
-		_ ->
-			"(unknown group)"
+        _ ->
+            "(unknown group)"
 
-	end.
+    end.
 
 
 
@@ -788,7 +827,7 @@ module, notably about the consequences of specifying an encoding at file opening
 """.
 -spec get_default_encoding() -> encoding().
 get_default_encoding() ->
-	?default_encoding.
+    ?default_encoding.
 
 
 
@@ -802,7 +841,7 @@ module, notably about the consequences of specifying an encoding at file opening
 """.
 -spec get_default_encoding_option() -> encoding_option().
 get_default_encoding_option() ->
-	?default_encoding_opt.
+    ?default_encoding_opt.
 
 
 
@@ -810,16 +849,16 @@ get_default_encoding_option() ->
 -spec force_unicode_support() -> void().
 force_unicode_support() ->
 
-	EncodingOpt = ?default_encoding_opt,
+    EncodingOpt = ?default_encoding_opt,
 
-	%trace_utils:notice_fmt( "Forcing ~p encoding option.", [ Encoding ] ),
+    %trace_utils:notice_fmt( "Forcing ~p encoding option.", [ Encoding ] ),
 
-	% One may have to explicitly force the use of the Unicode encoding, as
-	% apparently a side-effect of running the VM with the -noinput option (which
-	% is often the case) is to switch the current encoding to Latin1 (then at
-	% least terminal outputs become scrambled):
-	%
-	ok = io:setopts( _Opts=[ EncodingOpt ] ).
+    % One may have to explicitly force the use of the Unicode encoding, as
+    % apparently a side-effect of running the VM with the -noinput option (which
+    % is often the case) is to switch the current encoding to Latin1 (then at
+    % least terminal outputs become scrambled):
+    %
+    ok = io:setopts( _Opts=[ EncodingOpt ] ).
 
 
 
@@ -845,7 +884,7 @@ In this case, await_output_completion/1 should be used, with a larger delay.
 
 % Default time-out duration (0.3 second, for loaded computers):
 await_output_completion() ->
-	await_output_completion( _MsTimeOut=300 ).
+    await_output_completion( _MsTimeOut=300 ).
 
 -else. % myriad_debug_mode
 
@@ -856,7 +895,7 @@ await_output_completion() ->
 % (warning: this may impact adversely the timing if intensive logging is used)
 %
 await_output_completion() ->
-	await_output_completion( _MsTimeOut=2500 ).
+    await_output_completion( _MsTimeOut=2500 ).
 
 -endif. % myriad_debug_mode
 
@@ -873,42 +912,42 @@ displaying and the halting.
 -spec await_output_completion( milliseconds() ) -> void().
 await_output_completion( _MsTimeOut ) ->
 
-	% Not sure it is really the proper way of waiting, however should be still
-	% better than timer:sleep( 500 ):
-	%
-	% (we suppose that the time-out here is in milliseconds)
+    % Not sure it is really the proper way of waiting, however should be still
+    % better than timer:sleep( 500 ):
+    %
+    % (we suppose that the time-out here is in milliseconds)
 
-	%trace_utils:debug( "(awaiting output completion)" ),
+    %trace_utils:debug( "(awaiting output completion)" ),
 
-	% Almost just a yield (re-enabled, see below):
-	timer:sleep( 10 ),
+    % Almost just a yield (re-enabled, see below):
+    timer:sleep( 10 ),
 
-	%trace_utils:debug( "(output completed)" ),
+    %trace_utils:debug( "(output completed)" ),
 
-	% Does not seem always sufficient:
-	% (supposing timeout() is in milliseconds)
+    % Does not seem always sufficient:
+    % (supposing timeout() is in milliseconds)
 
-	% Does not exist anymore since Erlang 21.0
-	%
-	% (we get at runtime: {noproc,{sys,get_status,[error_logger,300]}})
-	%
-	% sys:get_status( error_logger, TimeOut ).
+    % Does not exist anymore since Erlang 21.0
+    %
+    % (we get at runtime: {noproc,{sys,get_status,[error_logger,300]}})
+    %
+    % sys:get_status( error_logger, TimeOut ).
 
-	% We considered adding to test_facilities:start/1 a configuration of the
-	% default logger_std_h handler so that async_mode_qlen was set to 0 (to
-	% ensure synchronicity in all cases), yet we are not using
-	% error_logger/logger for our usual outputs (we use io:format/{1,2} rather
-	% than erlang:display/1, see basic_utils:display/1).
+    % We considered adding to test_facilities:start/1 a configuration of the
+    % default logger_std_h handler so that async_mode_qlen was set to 0 (to
+    % ensure synchronicity in all cases), yet we are not using
+    % error_logger/logger for our usual outputs (we use io:format/{1,2} rather
+    % than erlang:display/1, see basic_utils:display/1).
 
-	% And apparently io:format/{1,2} are actually synchronous
-	% (cf. http://erlang.org/pipermail/erlang-questions/2011-July/059908.html),
-	% so nothing seems to be done to ensure that no output can be lost.
-	% (time will tell, as we at least used to notice that outputs could be lost)
+    % And apparently io:format/{1,2} are actually synchronous
+    % (cf. http://erlang.org/pipermail/erlang-questions/2011-July/059908.html),
+    % so nothing seems to be done to ensure that no output can be lost.
+    % (time will tell, as we at least used to notice that outputs could be lost)
 
-	% As for logger, a doubt remains about its synchronicity, see
-	% test_facilities:start/1 about that.
+    % As for logger, a doubt remains about its synchronicity, see
+    % test_facilities:start/1 about that.
 
-	ok.
+    ok.
 
 
 
@@ -943,23 +982,26 @@ Runs (synchronously) specified command (an executable path possibly followed
 with command-line arguments; specified as a single, standalone string), with no
 specific port option, with a standard environment, from the current working
 directory, and returns its return code (exit status) and its outputs (both the
-standard and the error ones): {ReturnCode,CmdOutput}.
+standard and the error ones): `{ReturnCode,CmdOutput}`.
 
 This function will run a specific executable, not evaluate a shell expression
-(that would possibly run executables); see evaluate_shell_expression/{1,2} for
+(that would possibly run executables); see `evaluate_shell_expression/{1,2}` for
 that.
 
-So one should not try to abuse this function by adding an ampersand (`&`) at the
-end to trigger a background launch - this would just be interpreted as a last
-argument. Use run_background_command/{1,2,3} in this module instead.
+So one should not try to abuse this function by:
+- using pipes (`|`): for that, call, in this module,
+`evaluate_shell_expression/{1,2}`
+- adding an ampersand (`&`) at the end to trigger a background launch (this
+would just be interpreted as a last argument): for that, call instead
+`run_background_command/{1,2,3}`, in this module as well
 
-Note: the run_executable/* functions shall be preferred (as being better
-regarding encoding and security) to the run_command/* ones, which may be
+Note: the `run_executable/*` functions shall be preferred (as being better
+regarding encoding and security) to the `run_command/*` ones, which may be
 considered available only for backward compatibility.
 """.
 -spec run_command( command() ) -> execution_outcome().
 run_command( Command ) ->
-	run_command( Command, get_standard_environment() ).
+    run_command( Command, get_standard_environment() ).
 
 
 
@@ -968,22 +1010,25 @@ Executes (synchronously) specified command (an executable path possibly followed
 with command-line arguments; specified as a single, standalone string), with no
 specific port option, in specified shell environment and from the current
 working directory, and returns its return code (exit status) and its outputs
-(both the standard and the error ones): {ReturnCode,CmdOutput}.
+(both the standard and the error ones): `{ReturnCode,CmdOutput}`.
 
 This function will run a specific executable, not evaluate a shell expression
 (that would possibly run executables).
 
-So one should not try to abuse this function by adding an ampersand (`&`) at the
-end to trigger a background launch - this would just be interpreted as a last
-argument. Use run_background_command/{1,2,3} in this module instead.
+So one should not try to abuse this function by:
+- using pipes (`|`): for that, call, in this module,
+`evaluate_shell_expression/{1,2}`
+- adding an ampersand (`&`) at the end to trigger a background launch (this
+would just be interpreted as a last argument): for that, call instead
+`run_background_command/{1,2,3}`, in this module as well
 
-Note: the run_executable/* functions shall be preferred (as being better
-regarding encoding and security) to the run_command/* ones, which may be
+Note: the `run_executable/*` functions shall be preferred (as being better
+regarding encoding and security) to the `run_command/*` ones, which may be
 considered available only for backward compatibility.
 """.
 -spec run_command( command(), environment() ) -> execution_outcome().
 run_command( Command, Environment ) ->
-	run_command( Command, Environment, _WorkingDir=undefined ).
+    run_command( Command, Environment, _WorkingDir=undefined ).
 
 
 
@@ -992,24 +1037,27 @@ Executes (synchronously) specified command (an executable path possibly followed
 with command-line arguments; specified as a single, standalone string), with no
 specific port option, in specified shell environment and working directory, and
 returns its return code (exit status) and its outputs (both the standard and the
-error ones): {ReturnCode,CmdOutput}.
+error ones): `{ReturnCode,CmdOutput}`.
 
 This function will run a specific executable, not evaluate a shell expression
 (that would possibly run executables).
 
-So one should not try to abuse this function by adding an ampersand (`&`) at the
-end to trigger a background launch - this would just be interpreted as a last
-argument. Use run_background_command/{1,2,3} in this module instead.
+So one should not try to abuse this function by:
+- using pipes (`|`): for that, call, in this module,
+`evaluate_shell_expression/{1,2}`
+- adding an ampersand (`&`) at the end to trigger a background launch (this
+would just be interpreted as a last argument): for that, call instead
+`run_background_command/{1,2,3}`, in this module as well
 
-Note: the run_executable/* functions shall be preferred (as being better
-regarding encoding and security) to the run_command/* ones, which may be
+Note: the `run_executable/*` functions shall be preferred (as being better
+regarding encoding and security) to the `run_command/*` ones, which may be
 considered available only for backward compatibility.
 """.
 -spec run_command( command(), environment(), option( working_dir() ) ) ->
-							execution_outcome().
+                            execution_outcome().
 run_command( Command, Environment, MaybeWorkingDir ) ->
-	run_command( Command, Environment, MaybeWorkingDir,
-				 get_default_port_options() ).
+    run_command( Command, Environment, MaybeWorkingDir,
+                 get_default_port_options() ).
 
 
 
@@ -1018,347 +1066,355 @@ Executes (synchronously) the specified command (an executable path possibly
 followed with command-line arguments; specified as a single, standalone string),
 in the specified shell environment and working directory, with specified extra
 port options (possibly containing any relevant command-line arguments; see
-<http://erlang.org/doc/man/erlang.html#open_port-2>).
+[http://erlang.org/doc/man/erlang.html#open_port-2]).
 
 Returns its return code (exit status) and its outputs (both the standard and the
-error ones): {ReturnCode,CmdOutput}.
+error ones): `{ReturnCode,CmdOutput}`.
 
 This function will run a specific executable, not evaluate a shell expression
-(that would possibly run executables).
+(that would possibly run executables); see `evaluate_shell_expression/{1,2}` for
+that.
 
-So one should not try to abuse this function by adding an ampersand (`&`) at the
-end to trigger a background launch - this would just be interpreted as a last
-argument. Use run_background_command/{1,2,3} in this module instead.
+So one should not try to abuse this function by:
+- using pipes (`|`): for that, call, in this module,
+`evaluate_shell_expression/{1,2}`
+- adding an ampersand (`&`) at the end to trigger a background launch (this
+would just be interpreted as a last argument): for that, call instead
+`run_background_command/{1,2,3}`, in this module as well
 
 This is the most complete function to run a command.
 
-Note: the run_executable/* functions shall be preferred (as being better
-regarding encoding and security) to the run_command/* ones, which may be
+Note: the `run_executable/*` functions shall be preferred (as being better
+regarding encoding and security) to the `run_command/*` ones, which may be
 considered available only for backward compatibility.
 """.
 -spec run_command( command(), environment(), option( working_dir() ),
-				   [ port_option() ] ) -> execution_outcome().
+                   [ port_option() ] ) -> execution_outcome().
 run_command( Command, Environment, MaybeWorkingDir, PortOptions ) ->
 
-	cond_utils:if_defined( myriad_debug_third_party_execution,
-		begin
-			trace_utils:debug_fmt( "Running command: '~ts' with "
-				"~ts from working directory '~ts', with port options ~w.",
-				[ Command, environment_to_string( Environment ),
-				  MaybeWorkingDir, PortOptions ] ),
-			timer:sleep( 200 )
-		end ),
+    cond_utils:if_defined( myriad_debug_third_party_execution,
+        begin
+            trace_utils:debug_fmt( "Running command: '~ts' with "
+                "~ts from working directory '~ts', with port options ~w.",
+                [ Command, environment_to_string( Environment ),
+                  MaybeWorkingDir, PortOptions ] ),
+            timer:sleep( 200 )
+        end ),
 
-	PortOptsWithEnv = [ { env, Environment } | PortOptions ],
+    PortOptsWithEnv = [ { env, Environment } | PortOptions ],
 
-	PortOptsWithPath = case MaybeWorkingDir of
+    PortOptsWithPath = case MaybeWorkingDir of
 
-		undefined ->
-			PortOptsWithEnv;
+        undefined ->
+            PortOptsWithEnv;
 
-		WorkingDir ->
-			[ { cd, WorkingDir } | PortOptsWithEnv ]
+        WorkingDir ->
+            [ { cd, WorkingDir } | PortOptsWithEnv ]
 
-	end,
+    end,
 
-	% Not spawn_executable, so that the command may directly include arguments:
-	Port = open_port( { spawn, Command }, PortOptsWithPath ),
+    % Not spawn_executable, so that the command may directly include arguments:
+    Port = open_port( { spawn, Command }, PortOptsWithPath ),
 
-	%trace_utils:debug_fmt( "Spawned port ~p for command '~ts'.",
-	%                       [ Port, Command ] ),
+    %trace_utils:debug_fmt( "Spawned port ~p for command '~ts'.",
+    %                       [ Port, Command ] ),
 
-	read_port( Port, _Data=[] ).
+    read_port( Port, _Data=[] ).
 
 
 
 -doc """
+
 Executes (synchronously) the specified executable, whose path is exactly the
 specified one (that is: taken verbatim, not looked-up through any PATH
-environment variable; use, in the executable_utils module,
-lookup_executable/{1,2} or find_executable/1 for that; not using any
-intermediary shell either) with no specific command-line argument, with a
-standard environment, from the current working directory, using the default port
-options.
+environment variable; use, in the `executable_utils` module,
+`lookup_executable/{1,2}` or `find_executable/1` for that; not using any
+intermediary shell either, use `evaluate_shell_expression/{1,2}` for that) with
+no specific command-line argument, with a standard environment, from the current
+working directory, using the default port options.
 
 Returns its return code (exit status) and its outputs (both the standard and the
-error ones): {ReturnCode, CmdOutput}.
+error ones): `{ReturnCode, CmdOutput}`.
 """.
 -spec run_executable( executable_path() ) -> execution_outcome().
 run_executable( ExecPath ) ->
-	run_executable( ExecPath, _Arguments=[], get_standard_environment(),
-					_MaybeWorkingDir=undefined, get_default_port_options() ).
+    run_executable( ExecPath, _Arguments=[], get_standard_environment(),
+                    _MaybeWorkingDir=undefined, get_default_port_options() ).
 
 
 
 -doc """
 Executes (synchronously) the specified executable, whose path is exactly the
 specified one (that is: taken verbatim, not looked-up through any PATH
-environment variable; use, in the executable_utils module,
-lookup_executable/{1,2} or find_executable/1 for that; not using any
-intermediary shell either) with specified command-line arguments, with a
-standard environment, from the current working directory, using the default port
-options.
+environment variable; use, in the `executable_utils` module,
+`lookup_executable/{1,2}` or `find_executable/1` for that; not using any
+intermediary shell either, use `evaluate_shell_expression/{1,2}` for that) with
+specified command-line arguments, with a standard environment, from the current
+working directory, using the default port options.
 
 Returns its return code (exit status) and its outputs (both the standard and the
-error ones): {ReturnCode, CmdOutput}.
+error ones): `{ReturnCode, CmdOutput}`.
 """.
 -spec run_executable( executable_path(), [ executable_argument() ] ) ->
-							execution_outcome().
+                            execution_outcome().
 run_executable( ExecPath, Arguments ) ->
-	run_executable( ExecPath, Arguments, get_standard_environment(),
-					_MaybeWorkingDir=undefined, get_default_port_options() ).
+    run_executable( ExecPath, Arguments, get_standard_environment(),
+                    _MaybeWorkingDir=undefined, get_default_port_options() ).
 
 
 
 -doc """
 Executes (synchronously) the specified executable, whose path is exactly the
 specified one (that is: taken verbatim, not looked-up through any PATH
-environment variable; use, in the executable_utils module,
-lookup_executable/{1,2} or find_executable/1 for that; not using any
-intermediary shell either) with specified command-line arguments and environment
-variables, from the current working directory, using the default port options.
+environment variable; use, in the `executable_utils` module,
+`lookup_executable/{1,2}` or `find_executable/1` for that; not using any
+intermediary shell either, using `evaluate_shell_expression/{1,2}` for that)
+with specified command-line arguments and environment variables, from the
+current working directory, using the default port options.
 
 Returns its return code (exit status) and its outputs (both the standard and the
-error ones): {ReturnCode, CmdOutput}.
+error ones): `{ReturnCode, CmdOutput}`.
 """.
 -spec run_executable( executable_path(), [ executable_argument() ],
-					  environment() ) -> execution_outcome().
+                      environment() ) -> execution_outcome().
 run_executable( ExecPath, Arguments, Environment ) ->
-	run_executable( ExecPath, Arguments, Environment,
-					_MaybeWorkingDir=undefined, get_default_port_options() ).
+    run_executable( ExecPath, Arguments, Environment,
+                    _MaybeWorkingDir=undefined, get_default_port_options() ).
 
 
 
 -doc """
 Executes (synchronously) the specified executable, whose path is exactly the
 specified one (that is: taken verbatim, not looked-up through any PATH
-environment variable; use, in the executable_utils module,
-lookup_executable/{1,2} or find_executable/1 for that; not using any
-intermediary shell either) with specified command-line arguments and environment
-variables, from any specified working directory, using the default port options.
+environment variable; use, in the `executable_utils` module,
+`lookup_executable/{1,2}` or `find_executable/1` for that; not using any
+intermediary shell either, use `evaluate_shell_expression/{1,2}` for that) with
+specified command-line arguments and environment variables, from any specified
+working directory, using the default port options.
 
 Returns its return code (exit status) and its outputs (both the standard and the
-error ones): {ReturnCode, CmdOutput}.
+error ones): `{ReturnCode, CmdOutput}`.
 
 """.
 -spec run_executable( executable_path(), [ executable_argument() ],
-		environment(), option( working_dir() ) ) -> execution_outcome().
+        environment(), option( working_dir() ) ) -> execution_outcome().
 run_executable( ExecPath, Arguments, Environment, MaybeWorkingDir ) ->
-	run_executable( ExecPath, Arguments, Environment, MaybeWorkingDir,
-					get_default_port_options() ).
+    run_executable( ExecPath, Arguments, Environment, MaybeWorkingDir,
+                    get_default_port_options() ).
 
 
 
 -doc """
 Executes (synchronously) the specified executable, whose path is exactly the
 specified one (that is: taken verbatim, not looked-up through any PATH
-environment variable; use, in the executable_utils module,
-lookup_executable/{1,2} or find_executable/1 for that; not using any
-intermediary shell either) with specified command-line arguments and environment
-variables, from any specified working directory and any extra port options.
+environment variable; use, in the `executable_utils` module,
+`lookup_executable/{1,2}` or `find_executable/1` for that; not using any
+intermediary shell either, use `evaluate_shell_expression/{1,2}` for that) with
+specified command-line arguments and environment variables, from any specified
+working directory and any extra port options.
 
 Returns its return code (exit status) and its outputs (both the standard and the
-error ones): {ReturnCode, CmdOutput}.
+error ones): `{ReturnCode, CmdOutput}`.
 
 This is the recommended, most complete way of running an executable.
 """.
 -spec run_executable( executable_path(), [ executable_argument() ],
-		environment(), option( working_dir() ), [ port_option() ] ) ->
-							execution_outcome().
+        environment(), option( working_dir() ), [ port_option() ] ) ->
+                            execution_outcome().
 run_executable( ExecPath, Arguments, Environment, MaybeWorkingDir,
-				PortOptions ) ->
+                PortOptions ) ->
 
-	cond_utils:if_defined( myriad_debug_third_party_execution,
-		begin
-			trace_utils:debug_fmt( "Running executable '~ts' "
-				"with arguments:~n ~p and with ~ts "
-				"from working directory '~ts', with port options ~w.",
-				[ ExecPath, Arguments, environment_to_string( Environment ),
-				  MaybeWorkingDir, PortOptions ] ),
-			timer:sleep( 200 )
-		end ),
+    cond_utils:if_defined( myriad_debug_third_party_execution,
+        begin
+            trace_utils:debug_fmt( "Running executable '~ts' "
+                "with arguments:~n ~p and with ~ts "
+                "from working directory '~ts', with port options ~w.",
+                [ ExecPath, Arguments, environment_to_string( Environment ),
+                  MaybeWorkingDir, PortOptions ] ),
+            timer:sleep( 200 )
+        end ),
 
-	PortOptsWithEnv =
-		[ { args, Arguments }, { env, Environment } | PortOptions ],
+    PortOptsWithEnv =
+        [ { args, Arguments }, { env, Environment } | PortOptions ],
 
-	PortOptsWithPath = case MaybeWorkingDir of
+    PortOptsWithPath = case MaybeWorkingDir of
 
-		undefined ->
-			PortOptsWithEnv;
+        undefined ->
+            PortOptsWithEnv;
 
-		WorkingDir ->
-			[ { cd, WorkingDir } | PortOptsWithEnv ]
+        WorkingDir ->
+            [ { cd, WorkingDir } | PortOptsWithEnv ]
 
-	end,
+    end,
 
-	Port = open_port( { spawn_executable, ExecPath }, PortOptsWithPath ),
+    Port = open_port( { spawn_executable, ExecPath }, PortOptsWithPath ),
 
-	%trace_utils:debug_fmt( "Spawned port ~p for executable '~ts'.",
-	%                       [ Port, ExecPath ] ),
+    %trace_utils:debug_fmt( "Spawned port ~p for executable '~ts'.",
+    %                       [ Port, ExecPath ] ),
 
-	read_port( Port, _Data=[] ).
+    read_port( Port, _Data=[] ).
 
 
 
 -doc "Returns the default options to be used for open_port/2.".
 -spec get_default_port_options() -> [ port_option() ].
 get_default_port_options() ->
-	% Removed: 'in'
-	[ stream, exit_status, use_stdio, stderr_to_stdout, eof ].
+    % Removed: 'in'
+    [ stream, exit_status, use_stdio, stderr_to_stdout, eof ].
 
 
 
 % Helper to read command data from a port.
 read_port( Port, Data ) ->
 
-	%trace_utils:debug_fmt( "Reading port ~p (data: '~p').", [ Port, Data ] ),
+    %trace_utils:debug_fmt( "Reading port ~p (data: '~p').", [ Port, Data ] ),
 
-	receive
+    receive
 
-		{ Port, { data, NewData } } ->
-			%trace_utils:debug_fmt( "Received data: '~p'.", [ NewData ] ),
-			read_port( Port, [ NewData | Data ] );
+        { Port, { data, NewData } } ->
+            %trace_utils:debug_fmt( "Received data: '~p'.", [ NewData ] ),
+            read_port( Port, [ NewData | Data ] );
 
-		% As mentioned in the documentation, "the eof message and the
-		% exit_status message appear in an unspecified order":
+        % As mentioned in the documentation, "the eof message and the
+        % exit_status message appear in an unspecified order":
 
-		{ Port, eof } ->
+        { Port, eof } ->
 
-			%trace_utils:debug_fmt( "Received eof (first), closing ~p.",
-			%                       [ Port ] ),
+            %trace_utils:debug_fmt( "Received eof (first), closing ~p.",
+            %                       [ Port ] ),
 
-			port_close( Port ),
+            port_close( Port ),
 
-			receive
+            receive
 
-				{ Port, { exit_status, ExitStatus } } ->
+                { Port, { exit_status, ExitStatus } } ->
 
-					%trace_utils:debug_fmt(
-					%  "Received exit_status (second): ~p.", [ ExitStatus ] ),
+                    %trace_utils:debug_fmt(
+                    %  "Received exit_status (second): ~p.", [ ExitStatus ] ),
 
-					% Otherwise we have an enclosing list and last character is
-					% always "\n":
-					%
-					Output = text_utils:remove_ending_carriage_return(
-						lists:flatten( lists:reverse( Data ) ) ),
+                    % Otherwise we have an enclosing list and last character is
+                    % always "\n":
+                    %
+                    Output = text_utils:remove_ending_carriage_return(
+                        lists:flatten( lists:reverse( Data ) ) ),
 
-					{ ExitStatus, Output }
+                    { ExitStatus, Output }
 
-			end;
+            end;
 
-		{ Port, { exit_status, ExitStatus } } ->
+        { Port, { exit_status, ExitStatus } } ->
 
-			%trace_utils:debug_fmt( "Received exit_status (first): ~p.",
-			%                       [ ExitStatus ] ),
+            %trace_utils:debug_fmt( "Received exit_status (first): ~p.",
+            %                       [ ExitStatus ] ),
 
-			receive
+            receive
 
-				{ Port, eof } ->
-					%trace_utils:debug_fmt( "Received eof (second), "
-					%                       "closing ~p.", [ Port ] ),
+                { Port, eof } ->
+                    %trace_utils:debug_fmt( "Received eof (second), "
+                    %                       "closing ~p.", [ Port ] ),
 
-					port_close( Port ),
+                    port_close( Port ),
 
-					Output = text_utils:remove_ending_carriage_return(
-						lists:flatten( lists:reverse( Data ) ) ),
+                    Output = text_utils:remove_ending_carriage_return(
+                        lists:flatten( lists:reverse( Data ) ) ),
 
-					{ ExitStatus, Output }
+                    { ExitStatus, Output }
 
-			end;
+            end;
 
-		% Added by ourselves so that we can avoid process leakage:
-		terminate_port ->
+        % Added by ourselves so that we can avoid process leakage:
+        terminate_port ->
 
-			%trace_utils:debug_fmt( "Terminating port ~p.", [ Port ] ),
+            %trace_utils:debug_fmt( "Terminating port ~p.", [ Port ] ),
 
-			% Anyway no PID to send information to:
-			port_terminated
+            % Anyway no PID to send information to:
+            port_terminated
 
 
-		% Other messages should not be intercepted (e.g. they could be in
-		% relation to other ongoing ports):
-		%
-		%Other ->
-		%   trace_utils:warning_fmt( "Received unexpected message: ~p.",
-		%                            [ Other ] ),
-		%   Other
+        % Other messages should not be intercepted (e.g. they could be in
+        % relation to other ongoing ports):
+        %
+        %Other ->
+        %   trace_utils:warning_fmt( "Received unexpected message: ~p.",
+        %                            [ Other ] ),
+        %   Other
 
-	 end.
+     end.
 
 
 
 -doc """
-Our version of io:get_line/1, as an external program so that the VM can be run
-with -noinput (and thus so that {text,term}_ui can be used with the same VM
+Our version of `io:get_line/1`, as an external program so that the VM can be run
+with `-noinput` (and thus so that `{text,term}_ui` can be used with the same VM
 settings).
 """.
 -spec get_line( ustring() ) -> ustring().
 get_line( Prompt ) ->
-	get_line( Prompt, get_line_helper_script() ).
+    get_line( Prompt, get_line_helper_script() ).
 
 
 
 -doc """
-Our version of io:get_line/1, as an external program so that the VM can be run
-with -noinput (and thus so that {text,term}_ui can be used with the same VM
+Our version of `io:get_line/1`, as an external program so that the VM can be run
+with `-noinput` (and thus so that `{text,term}_ui` can be used with the same VM
 settings).
 """.
 -spec get_line( ustring(), executable_path() ) -> ustring().
 get_line( Prompt, GetLineScriptPath ) ->
 
-	% Having the script display the prompt would not work, as that script would
-	% not be able to write to the standard input (1):
-	%
-	%Cmd = text_utils:format( "get-line-as-external-program.sh \"~ts\" 1>&4",
-	%                         [ Prompt ] ),
+    % Having the script display the prompt would not work, as that script would
+    % not be able to write to the standard input (1):
+    %
+    %Cmd = text_utils:format( "get-line-as-external-program.sh \"~ts\" 1>&4",
+    %                         [ Prompt ] ),
 
-	io:format( Prompt ),
+    io:format( Prompt ),
 
-	% We have to execute a real executable (e.g. not a shell builtin):
-	Cmd = GetLineScriptPath ++ " 1>&4",
+    % We have to execute a real executable (e.g. not a shell builtin):
+    Cmd = GetLineScriptPath ++ " 1>&4",
 
-	Env = get_standard_environment(),
+    Env = get_standard_environment(),
 
-	PortOpts = [ stream, nouse_stdio, exit_status, eof ],
+    PortOpts = [ stream, nouse_stdio, exit_status, eof ],
 
-	case run_command( Cmd, Env, _WorkingDir=undefined, PortOpts ) of
+    case run_command( Cmd, Env, _WorkingDir=undefined, PortOpts ) of
 
-		{ _ExitStatus=0, UserText } ->
-			UserText;
+        { _ExitStatus=0, UserText } ->
+            UserText;
 
-		{ ExitStatus, Any } ->
-			throw( { myriad_get_line_failed, ExitStatus, Any } )
+        { ExitStatus, Any } ->
+            throw( { myriad_get_line_failed, ExitStatus, Any } )
 
-	end.
+    end.
 
 
 
 -doc """
-Returns the path to the Myriad helper script for get_line/1 operations.
+Returns the path to the Myriad helper script for `get_line/1` operations.
 """.
 -spec get_line_helper_script() -> executable_path().
 get_line_helper_script() ->
 
-	GetLineScript = file_utils:join( script_utils:get_script_base_directory(),
-									 "get-line-as-external-program.sh" ),
+    GetLineScript = file_utils:join( script_utils:get_script_base_directory(),
+                                     "get-line-as-external-program.sh" ),
 
-	case file_utils:is_existing_file( GetLineScript ) of
+    case file_utils:is_existing_file( GetLineScript ) of
 
-		true ->
-			case file_utils:is_user_executable( GetLineScript ) of
+        true ->
+            case file_utils:is_user_executable( GetLineScript ) of
 
-				true ->
-					GetLineScript;
+                true ->
+                    GetLineScript;
 
-				false ->
-					throw( { script_not_user_executable, GetLineScript } )
+                false ->
+                    throw( { script_not_user_executable, GetLineScript } )
 
-			end;
+            end;
 
-		_False ->
-			throw( { script_not_found, GetLineScript } )
+        _False ->
+            throw( { script_not_found, GetLineScript } )
 
-	end.
+    end.
 
 
 
@@ -1367,25 +1423,25 @@ Returns a default, standard, safe/secure environment for "porcelain"-like
 executions, that is executions that are, as much as possible, reproducible in
 various runtime contexts (typically: with locale-independent outputs).
 
-To be used with run_{command,executable}/n.
+To be used with `run_{command,executable}/*`.
 """.
 -spec get_standard_environment() -> environment().
 get_standard_environment() ->
 
-	% Locales can be selected from the first column of /etc/locale.gen.
+    % Locales can be selected from the first column of /etc/locale.gen.
 
-	%BaseLocale = "C",
+    %BaseLocale = "C",
 
-	% Preferring now a Unicode variant:
-	BaseLocale = "en_US.UTF-8",
-	%BaseLocale = "en_GB.UTF-8",
+    % Preferring now a Unicode variant:
+    BaseLocale = "en_US.UTF-8",
+    %BaseLocale = "en_GB.UTF-8",
 
-	% The locale set for LANG will be used for all the LC_* variables that are
-	% not explicitly set (see
-	% https://wiki.archlinux.org/index.php/locale#LANG:_default_locale); so:
-	%
-	%[ { "LANG", BaseLocale }, { "LC_ALL", BaseLocale } ].
-	[ { "LANG", BaseLocale } ].
+    % The locale set for LANG will be used for all the LC_* variables that are
+    % not explicitly set (see
+    % https://wiki.archlinux.org/index.php/locale#LANG:_default_locale); so:
+    %
+    %[ { "LANG", BaseLocale }, { "LC_ALL", BaseLocale } ].
+    [ { "LANG", BaseLocale } ].
 
 
 
@@ -1394,78 +1450,78 @@ Monitors a port: reads command data and signals from a port, and reports it.
 """.
 monitor_port( Port, Data ) ->
 
-	%trace_utils:debug_fmt( "Process ~p starting the monitoring of "
-	%                       "port ~p (data: '~p').", [ self(), Port, Data ] ),
+    %trace_utils:debug_fmt( "Process ~p starting the monitoring of "
+    %                       "port ~p (data: '~p').", [ self(), Port, Data ] ),
 
-	receive
+    receive
 
-		{ Port, { data, NewData } } ->
-			%trace_utils:debug_fmt( "Port monitor ~p received data: '~p'.",
-			%                       [ self(), NewData ] ),
+        { Port, { data, NewData } } ->
+            %trace_utils:debug_fmt( "Port monitor ~p received data: '~p'.",
+            %                       [ self(), NewData ] ),
 
-			monitor_port( Port, [ NewData | Data ] );
+            monitor_port( Port, [ NewData | Data ] );
 
-		% As mentioned in the documentation, "the eof message and the
-		% exit_status message appear in an unspecified order":
+        % As mentioned in the documentation, "the eof message and the
+        % exit_status message appear in an unspecified order":
 
-		{ Port, eof } ->
-			%trace_utils:debug_fmt( "Port monitor ~p received eof (first).",
-			%                       [ self() ] ),
+        { Port, eof } ->
+            %trace_utils:debug_fmt( "Port monitor ~p received eof (first).",
+            %                       [ self() ] ),
 
-			port_close( Port ),
+            port_close( Port ),
 
-			receive
+            receive
 
-				{ Port, { exit_status, ExitStatus } } ->
+                { Port, { exit_status, ExitStatus } } ->
 
-					%trace_utils:debug_fmt( "Port monitor ~p received "
-					%   "exit_status (second).", [ self() ] ),
+                    %trace_utils:debug_fmt( "Port monitor ~p received "
+                    %   "exit_status (second).", [ self() ] ),
 
-					% Otherwise we have an enclosing list and last character is
-					% always "\n":
-					%
-					Output = text_utils:remove_ending_carriage_return(
-						lists:flatten( lists:reverse( Data ) ) ),
+                    % Otherwise we have an enclosing list and last character is
+                    % always "\n":
+                    %
+                    Output = text_utils:remove_ending_carriage_return(
+                        lists:flatten( lists:reverse( Data ) ) ),
 
-					{ ExitStatus, Output }
+                    { ExitStatus, Output }
 
-			end;
+            end;
 
-		{ Port, { exit_status, ExitStatus } } ->
+        { Port, { exit_status, ExitStatus } } ->
 
-			%trace_utils:debug_fmt( "Port monitor ~p received "
-			%   "exit_status (first).", [ self() ] ),
+            %trace_utils:debug_fmt( "Port monitor ~p received "
+            %   "exit_status (first).", [ self() ] ),
 
-			receive
+            receive
 
-				{ Port, eof } ->
-					%trace_utils:debug( "Port monitor ~p received eof "
-					%                   "(second).", [ self() ] ),
+                { Port, eof } ->
+                    %trace_utils:debug( "Port monitor ~p received eof "
+                    %                   "(second).", [ self() ] ),
 
-					port_close( Port ),
+                    port_close( Port ),
 
-					Output = text_utils:remove_ending_carriage_return(
-						lists:flatten( lists:reverse( Data ) ) ),
+                    Output = text_utils:remove_ending_carriage_return(
+                        lists:flatten( lists:reverse( Data ) ) ),
 
-					{ ExitStatus, Output }
+                    { ExitStatus, Output }
 
-			end;
+            end;
 
-		% Added by ourselves so that we can avoid process leakage:
-		terminate_port ->
+        % Added by ourselves so that we can avoid process leakage:
+        terminate_port ->
 
-			%trace_utils:debug_fmt( "Port monitor ~p terminating.",
-			%                       [ self() ] ),
+            %trace_utils:debug_fmt( "Port monitor ~p terminating.",
+            %                       [ self() ] ),
 
-			% Anyway no PID to send information to:
-			port_terminated
+            % Anyway no PID to send information to:
+            port_terminated
 
-	 end.
+     end.
 
 
 
 -doc """
-Evaluates specified shell (e.g. sh, bash, etc - not Erlang) expression, in a
+Evaluates specified shell (e.g. sh, bash, etc. - not Erlang) expression, in a
 standard environment.
 
 No return code is available with this approach, only the output of the
@@ -1473,7 +1529,7 @@ expression.
 """.
 -spec evaluate_shell_expression( shell_expression() ) -> expression_outcome().
 evaluate_shell_expression( Expression ) ->
-	evaluate_shell_expression( Expression, get_standard_environment() ).
+    evaluate_shell_expression( Expression, get_standard_environment() ).
 
 
 
@@ -1485,17 +1541,17 @@ No return code is available with this approach, only the output of the
 expression.
 """.
 -spec evaluate_shell_expression( shell_expression(), environment() ) ->
-										expression_outcome().
+                                        expression_outcome().
 evaluate_shell_expression( Expression, Environment ) ->
 
-	FullExpression = get_actual_expression( Expression, Environment ),
+    FullExpression = get_actual_expression( Expression, Environment ),
 
-	cond_utils:if_defined( myriad_debug_third_party_execution,
-		trace_utils:debug_fmt( "Evaluation shell expression '~ts' in ~ts",
-			[ FullExpression, environment_to_string( Environment ) ] ) ),
+    cond_utils:if_defined( myriad_debug_third_party_execution,
+        trace_utils:debug_fmt( "Evaluation shell expression '~ts' in ~ts",
+            [ FullExpression, environment_to_string( Environment ) ] ) ),
 
-	% No return code available, success supposed:
-	text_utils:remove_ending_carriage_return( os:cmd( FullExpression ) ).
+    % No return code available, success supposed:
+    text_utils:remove_ending_carriage_return( os:cmd( FullExpression ) ).
 
 
 % No evaluate_shell_expression/3 defined, as one may change the current working
@@ -1520,7 +1576,7 @@ one should consider using evaluate_background_shell_expression/1 instead.
 """.
 -spec run_background_command( command() ) -> void().
 run_background_command( Command ) ->
-	run_background_command( Command, get_standard_environment() ).
+    run_background_command( Command, get_standard_environment() ).
 
 
 
@@ -1534,12 +1590,12 @@ For that, as it is a process-blocking operation in Erlang, a dedicated process
 is spawned (and most probably lost).
 
 If this function is expected to be called many times, to avoid the process leak,
-one should consider using evaluate_background_shell_expression/2 instead.
+one should consider using `evaluate_background_shell_expression/2` instead.
 
 """.
 -spec run_background_command( command(), environment() ) -> void().
 run_background_command( Command, Environment ) ->
-	run_background_command( Command, Environment, _WorkingDir=undefined ).
+    run_background_command( Command, Environment, _WorkingDir=undefined ).
 
 
 
@@ -1553,13 +1609,13 @@ For that, as it is a process-blocking operation in Erlang, a dedicated process
 is spawned (and most probably lost).
 
 If this function is expected to be called many times, to avoid the process leak,
-one should consider using evaluate_background_shell_expression/2 instead.
+one should consider using `evaluate_background_shell_expression/2` instead.
 """.
 -spec run_background_command( command(), environment(),
-							  option( working_dir() ) ) -> void().
+                              option( working_dir() ) ) -> void().
 run_background_command( Command, Environment, MaybeWorkingDir ) ->
-	run_background_command( Command, Environment, MaybeWorkingDir,
-							_PortOptions=[] ).
+    run_background_command( Command, Environment, MaybeWorkingDir,
+                            _PortOptions=[] ).
 
 
 
@@ -1567,7 +1623,7 @@ run_background_command( Command, Environment, MaybeWorkingDir ) ->
 Executes asynchronously, in the background, the specified command, in the
 specified shell environment and working directory, with the specified options
 (possibly containing any relevant command-line arguments; see
-<http://erlang.org/doc/man/erlang.html#open_port-2>).
+[http://erlang.org/doc/man/erlang.html#open_port-2]).
 
 As a consequence it returns no return code (exit status) nor output.
 
@@ -1575,34 +1631,34 @@ For that, as it is a process-blocking operation in Erlang, a dedicated process
 is spawned (and most probably lost).
 
 If this function is expected to be called many times, to avoid the process leak,
-one should consider using evaluate_background_shell_expression/2 instead.
+one should consider using `evaluate_background_shell_expression/2` instead.
 
 This is the most complete function to run a background option.
 """.
 -spec run_background_command( command(), environment(),
-						option( working_dir() ), [ port_option() ] ) -> void().
+                        option( working_dir() ), [ port_option() ] ) -> void().
 run_background_command( Command, Environment, MaybeWorkingDir,
-						PortOptions ) ->
+                        PortOptions ) ->
 
-	cond_utils:if_defined( myriad_debug_third_party_execution,
-		trace_utils:debug_fmt( "Running command '~ts' in the background "
-			"with ~ts from working directory '~ts', with port options ~w.",
-			[ Command, environment_to_string( Environment ), MaybeWorkingDir,
-			  PortOptions ] ) ),
+    cond_utils:if_defined( myriad_debug_third_party_execution,
+        trace_utils:debug_fmt( "Running command '~ts' in the background "
+            "with ~ts from working directory '~ts', with port options ~w.",
+            [ Command, environment_to_string( Environment ), MaybeWorkingDir,
+              PortOptions ] ) ),
 
-	% Apparently using a port-based launch and a background execution will block
-	% the current process, so we sacrifice a process here - yet we monitor it:
-	%
-	?myriad_spawn_link( fun() ->
+    % Apparently using a port-based launch and a background execution will block
+    % the current process, so we sacrifice a process here - yet we monitor it:
+    %
+    ?myriad_spawn_link( fun() ->
 
-		ExecOutcome = run_command( Command, Environment, MaybeWorkingDir,
-								   PortOptions ),
+        ExecOutcome = run_command( Command, Environment, MaybeWorkingDir,
+                                   PortOptions ),
 
-		% Does not seem to be ever executed:
-		trace_utils:debug_fmt( "Command execution outcome: ~p.",
-							   [ ExecOutcome ] )
+        % Does not seem to be ever executed:
+        trace_utils:debug_fmt( "Command execution outcome: ~p.",
+                               [ ExecOutcome ] )
 
-						end ).
+                        end ).
 
 
 
@@ -1613,11 +1669,11 @@ run_background_command( Command, Environment, MaybeWorkingDir,
 -doc """
 Executes asynchronously, in the background, the specified executable, whose path
 is exactly the specified one (that is: taken verbatim, not looked-up through any
-PATH environment variable; use, in the executable_utils module,
-lookup_executable/{1,2} or find_executable/1 for that; not using any
-intermediary shell either) with no specific command-line argument, with a
-standard environment, from the current working directory and using the default
-port options.
+PATH environment variable; use, in the `executable_utils` module,
+`lookup_executable/{1,2}` or `find_executable/1` for that; not using any
+intermediary shell either, use `evaluate_shell_expression/{1,2}` for that) with
+no specific command-line argument, with a standard environment, from the current
+working directory and using the default port options.
 
 As a consequence it returns no return code (exit status) nor output.
 
@@ -1629,20 +1685,20 @@ one may consider using evaluate_background_shell_expression/1 instead.
 """.
 -spec run_background_executable( executable_path() ) -> void().
 run_background_executable( ExecPath ) ->
-	run_background_executable( ExecPath, _Arguments=[],
-		get_standard_environment(), _MaybeWorkingDir=undefined,
-		get_default_port_options() ).
+    run_background_executable( ExecPath, _Arguments=[],
+        get_standard_environment(), _MaybeWorkingDir=undefined,
+        get_default_port_options() ).
 
 
 
 -doc """
 Executes asynchronously, in the background, the specified executable, whose path
 is exactly the specified one (that is: taken verbatim, not looked-up through any
-PATH environment variable; use, in the executable_utils module,
-lookup_executable/{1,2} or find_executable/1 for that; not using any
-intermediary shell either) with the specified command-line arguments, with a
-standard environment, from the current working directory and using the default
-port options.
+PATH environment variable; use, in the `executable_utils` module,
+`lookup_executable/{1,2}` or `find_executable/1` for that; not using any
+intermediary shell either, use `evaluate_shell_expression/{1,2}` for that) with
+the specified command-line arguments, with a standard environment, from the
+current working directory and using the default port options.
 
 As a consequence it returns no return code (exit status) nor output.
 
@@ -1650,24 +1706,24 @@ For that, as it is a process-blocking operation in Erlang, a dedicated process
 is spawned (and most probably lost).
 
 If this function is expected to be called many times, to avoid the process leak,
-one may consider using evaluate_background_shell_expression/2 instead.
+one may consider using `evaluate_background_shell_expression/2` instead.
 """.
 -spec run_background_executable( executable_path(),
-								 [ executable_argument() ] ) -> void().
+                                 [ executable_argument() ] ) -> void().
 run_background_executable( ExecPath, Arguments ) ->
-	run_background_executable( ExecPath, Arguments, get_standard_environment(),
-		_MaybeWorkingDir=undefined, get_default_port_options() ).
+    run_background_executable( ExecPath, Arguments, get_standard_environment(),
+        _MaybeWorkingDir=undefined, get_default_port_options() ).
 
 
 
 -doc """
 Executes asynchronously, in the background, the specified executable, whose path
 is exactly the specified one (that is: taken verbatim, not looked-up through any
-PATH environment variable; use, in the executable_utils module,
-lookup_executable/{1,2} or find_executable/1 for that; not using any
-intermediary shell either) with the specified command-line arguments and
-environment, from the current working directory and using the default port
-options.
+PATH environment variable; use, in the `executable_utils` module,
+`lookup_executable/{1,2}` or `find_executable/1` for that; not using any
+intermediary shell either, use `evaluate_shell_expression/{1,2}` for that) with
+the specified command-line arguments and environment, from the current working
+directory and using the default port options.
 
 As a consequence it returns no return code (exit status) nor output.
 
@@ -1675,23 +1731,24 @@ For that, as it is a process-blocking operation in Erlang, a dedicated process
 is spawned (and most probably lost).
 
 If this function is expected to be called many times, to avoid the process leak,
-one may consider using evaluate_background_shell_expression/2 instead.
+one may consider using `evaluate_background_shell_expression/2` instead.
 """.
 -spec run_background_executable( executable_path(), [ executable_argument() ],
-								 environment() ) -> void().
+                                 environment() ) -> void().
 run_background_executable( ExecPath, Arguments, Environment ) ->
-	run_background_executable( ExecPath, Arguments, Environment,
-		_MaybeWorkingDir=undefined, get_default_port_options() ).
+    run_background_executable( ExecPath, Arguments, Environment,
+        _MaybeWorkingDir=undefined, get_default_port_options() ).
 
 
 
 -doc """
 Executes asynchronously, in the background, the specified executable, whose path
 is exactly the specified one (that is: taken verbatim, not looked-up through any
-PATH environment variable; use, in the executable_utils module,
-lookup_executable/{1,2} or find_executable/1 for that; not using any
-intermediary shell either) with the specified command-line arguments,
-environment and working directory, and using the default port options.
+PATH environment variable; use, in the `executable_utils` module,
+`lookup_executable/{1,2}` or `find_executable/1` for that; not using any
+intermediary shell either, use `evaluate_shell_expression/{1,2}` for that) with
+the specified command-line arguments, environment and working directory, and
+using the default port options.
 
 As a consequence it returns no return code (exit status) nor output.
 
@@ -1699,25 +1756,25 @@ For that, as it is a process-blocking operation in Erlang, a dedicated process
 is spawned (and most probably lost).
 
 If this function is expected to be called many times, to avoid the process leak,
-one may consider using evaluate_background_shell_expression/2 instead.
+one may consider using `evaluate_background_shell_expression/2` instead.
 """.
 -spec run_background_executable( executable_path(), [ executable_argument() ],
-				environment(), option( working_dir() ) ) -> void().
+                environment(), option( working_dir() ) ) -> void().
 run_background_executable( ExecPath, Arguments, Environment,
-						   MaybeWorkingDir ) ->
-	run_background_executable( ExecPath, Arguments, Environment,
-		MaybeWorkingDir, get_default_port_options() ).
+                           MaybeWorkingDir ) ->
+    run_background_executable( ExecPath, Arguments, Environment,
+        MaybeWorkingDir, get_default_port_options() ).
 
 
 
 -doc """
 Executes asynchronously, in the background, the specified executable, whose path
 is exactly the specified one (that is: taken verbatim, not looked-up through any
-PATH environment variable; use, in the executable_utils module,
-lookup_executable/{1,2} or find_executable/1 for that; not using any
-intermediary shell either) with the specified command-line arguments,
-environment, working directory and port options (see
-<http://erlang.org/doc/man/erlang.html#open_port-2>).
+PATH environment variable; use, in the `executable_utils` module,
+`lookup_executable/{1,2}` or `find_executable/1` for that; not using any
+intermediary shell either, use `evaluate_shell_expression/{1,2}` for that) with
+the specified command-line arguments, environment, working directory and port
+options (see [http://erlang.org/doc/man/erlang.html#open_port-2]).
 
 As a consequence it returns no return code (exit status) nor output.
 
@@ -1725,41 +1782,41 @@ For that, as it is a process-blocking operation in Erlang, a dedicated process
 is spawned (and most probably lost).
 
 If this function is expected to be called many times, to avoid the process leak,
-one may consider using evaluate_background_shell_expression/2 instead.
+one may consider using `evaluate_background_shell_expression/2` instead.
 
 This is the recommended, most complete way of running an executable in the
 background.
 """.
 -spec run_background_executable( executable_path(), [ executable_argument() ],
-		environment(), option( working_dir() ), [ port_option() ] ) -> void().
+    environment(), option( working_dir() ), [ port_option() ] ) -> void().
 run_background_executable( ExecPath, Arguments, Environment, MaybeWorkingDir,
-						   PortOptions ) ->
+                           PortOptions ) ->
 
-	cond_utils:if_defined( myriad_debug_third_party_execution,
-		begin
-			trace_utils:debug_fmt( "Running executable '~ts' in the background "
-				"with arguments:~n ~p and with ~ts "
-				"from working directory '~ts', with port options ~w.",
-				[ ExecPath, Arguments, environment_to_string( Environment ),
-				  MaybeWorkingDir, PortOptions ] ),
-			timer:sleep( 200 )
-		end ),
+    cond_utils:if_defined( myriad_debug_third_party_execution,
+        begin
+            trace_utils:debug_fmt( "Running executable '~ts' in the background "
+                "with arguments:~n ~p and with ~ts "
+                "from working directory '~ts', with port options ~w.",
+                [ ExecPath, Arguments, environment_to_string( Environment ),
+                  MaybeWorkingDir, PortOptions ] ),
+            timer:sleep( 200 )
+        end ),
 
-	% Apparently using a port-based launch and a background execution will block
-	% the current process, so we sacrifice a process here - yet we monitor it:
-	%
-	?myriad_spawn_link( fun() ->
+    % Apparently using a port-based launch and a background execution will block
+    % the current process, so we sacrifice a process here - yet we monitor it:
+    %
+    ?myriad_spawn_link( fun() ->
 
-		ExecOutcome = run_executable( ExecPath, Arguments, Environment,
-									  MaybeWorkingDir, PortOptions ),
+        ExecOutcome = run_executable( ExecPath, Arguments, Environment,
+                                      MaybeWorkingDir, PortOptions ),
 
-		cond_utils:if_defined( myriad_debug_third_party_execution,
-				% Is displayed:
-				trace_utils:debug_fmt( "Execution outcome: ~p.",
-									   [ ExecOutcome ] ),
-				basic_utils:ignore_unused( ExecOutcome ) )
+        cond_utils:if_defined( myriad_debug_third_party_execution,
+                % Is displayed:
+                trace_utils:debug_fmt( "Execution outcome: ~p.",
+                                       [ ExecOutcome ] ),
+                basic_utils:ignore_unused( ExecOutcome ) )
 
-						end ).
+                        end ).
 
 
 
@@ -1771,8 +1828,8 @@ As a consequence it returns no return code (exit status) nor output.
 """.
 -spec evaluate_background_shell_expression( shell_expression() ) -> void().
 evaluate_background_shell_expression( Expression ) ->
-	evaluate_background_shell_expression( Expression,
-										  get_standard_environment() ).
+    evaluate_background_shell_expression( Expression,
+                                          get_standard_environment() ).
 
 
 
@@ -1783,17 +1840,17 @@ specified environment, in current directory.
 As a consequence it returns no return code (exit status) nor output.
 """.
 -spec evaluate_background_shell_expression( shell_expression(),
-											environment() ) -> void().
+                                            environment() ) -> void().
 evaluate_background_shell_expression( Expression, Environment ) ->
 
-	FullExpression = get_actual_expression( Expression, Environment ),
+    FullExpression = get_actual_expression( Expression, Environment ),
 
-	cond_utils:if_defined( myriad_debug_third_party_execution,
-		trace_utils:debug_fmt(
-			"Evaluating in the background following shell expression: '~ts'.",
-			[ FullExpression ] ) ),
+    cond_utils:if_defined( myriad_debug_third_party_execution,
+        trace_utils:debug_fmt(
+            "Evaluating in the background following shell expression: '~ts'.",
+            [ FullExpression ] ) ),
 
-	os:cmd( FullExpression ++ " &" ).
+    os:cmd( FullExpression ++ " &" ).
 
 
 
@@ -1804,26 +1861,26 @@ specified environment.
 -spec get_environment_prefix( environment() ) -> ustring().
 get_environment_prefix( Environment ) ->
 
-	% We do not specifically *unset* a variable whose value is false, we set it
-	% to an empty string:
-	%
-	VariableStrings = [ begin
+    % We do not specifically *unset* a variable whose value is false, we set it
+    % to an empty string:
+    %
+    VariableStrings = [ begin
 
-		ActualValue = case Value of
+        ActualValue = case Value of
 
-			false ->
-				"";
+            false ->
+                "";
 
-			_ ->
-				Value
+            _ ->
+                Value
 
-					  end,
+                      end,
 
-		text_utils:format( "~ts=~ts", [ Name, ActualValue ] )
+        text_utils:format( "~ts=~ts", [ Name, ActualValue ] )
 
-						end || { Name, Value } <- Environment ],
+                        end || { Name, Value } <- Environment ],
 
-	text_utils:join( _Separator=" ", VariableStrings ).
+    text_utils:join( _Separator=" ", VariableStrings ).
 
 
 
@@ -1832,13 +1889,13 @@ Returns the full, actual shell expression corresponding to specified expression
 and environment.
 """.
 -spec get_actual_expression( shell_expression(), environment() ) ->
-									expression_outcome().
+                                    expression_outcome().
 get_actual_expression( Expression, _Environment=[] ) ->
-	% Allows to avoid starting the command with a space:
-	Expression;
+    % Allows to avoid starting the command with a space:
+    Expression;
 
 get_actual_expression( Expression, Environment ) ->
-	get_environment_prefix( Environment ) ++ " " ++ Expression.
+    get_environment_prefix( Environment ) ++ " " ++ Expression.
 
 
 
@@ -1848,7 +1905,7 @@ otherwise 'false'.
 """.
 -spec get_environment_variable( env_variable_name() ) -> env_variable_value().
 get_environment_variable( VarName ) ->
-	os:getenv( VarName ).
+    os:getenv( VarName ).
 
 
 
@@ -1857,14 +1914,14 @@ Sets the specified environment variable to the specified value, possibly
 overwriting a past value.
 """.
 -spec set_environment_variable( env_variable_name(), env_variable_value() ) ->
-										void().
+                                        void().
 set_environment_variable( VarName, VarValue ) ->
 
-	% Hopefully a string or 'false':
-	%trace_utils:debug_fmt( "Setting environment variable '~ts' to '~ts'.",
-	%                       [ VarName, VarValue ] ),
+    % Hopefully a string or 'false':
+    %trace_utils:debug_fmt( "Setting environment variable '~ts' to '~ts'.",
+    %                       [ VarName, VarValue ] ),
 
-	os:putenv( VarName, VarValue ).
+    os:putenv( VarName, VarValue ).
 
 
 
@@ -1873,9 +1930,9 @@ Returns the environment variable (if any) used by the system for the lookup of
 executables.
 """.
 -spec get_environment_variable_for_executable_lookup() ->
-									option( env_variable_name() ).
+                                    option( env_variable_name() ).
 get_environment_variable_for_executable_lookup() ->
-	?executable_search_path_variable.
+    ?executable_search_path_variable.
 
 
 
@@ -1884,9 +1941,9 @@ Returns the environment variable (if any) used by the system for the lookup of
 (shared) libraries.
 """.
 -spec get_environment_variable_for_library_lookup() ->
-									option( env_variable_name() ).
+                                    option( env_variable_name() ).
 get_environment_variable_for_library_lookup() ->
-	?library_search_path_variable.
+    ?library_search_path_variable.
 
 
 
@@ -1899,67 +1956,67 @@ directory) first.
 """.
 -spec add_path_for_executable_lookup( directory_path() ) -> void().
 add_path_for_executable_lookup( PathName ) ->
-	add_paths_for_executable_lookup( [ PathName ] ).
+    add_paths_for_executable_lookup( [ PathName ] ).
 
 
 
 -doc """
 Adds the specified directories to the system's executable search paths
-(typically (typically the PATH environment variable), in first position,
-respecting the specified path order.
+(typically the `PATH` environment variable), in first position, respecting the
+specified path order.
 
 Any relative path will be transformed into an absolute one (based on current
 directory) first.
 """.
 -spec add_paths_for_executable_lookup( [ directory_path() ] ) -> void().
 add_paths_for_executable_lookup( Paths ) ->
-	add_paths_for_executable_lookup( Paths, _Acc=[] ).
+    add_paths_for_executable_lookup( Paths, _Acc=[] ).
 
 
 add_paths_for_executable_lookup( _Paths=[], Acc ) ->
 
-	ExecOptVarName = ?executable_search_path_variable,
+    ExecOptVarName = ?executable_search_path_variable,
 
-	BaseExecOpt = case get_environment_variable( ExecOptVarName ) of
+    BaseExecOpt = case get_environment_variable( ExecOptVarName ) of
 
-		false ->
-			[];
+        false ->
+            [];
 
-		VarValue ->
-			[ VarValue ]
+        VarValue ->
+            [ VarValue ]
 
-	end,
+    end,
 
-	ToJoin = lists:reverse( BaseExecOpt ++ Acc ),
+    ToJoin = lists:reverse( BaseExecOpt ++ Acc ),
 
-	NewExecOpt = text_utils:join( _Sep=":", ToJoin ),
+    NewExecOpt = text_utils:join( _Sep=":", ToJoin ),
 
-	set_environment_variable( ExecOptVarName, NewExecOpt );
+    set_environment_variable( ExecOptVarName, NewExecOpt );
 
 
 add_paths_for_executable_lookup( [ Path | T ], Acc ) ->
-	AbsPath = file_utils:ensure_path_is_absolute( Path ),
+    AbsPath = file_utils:ensure_path_is_absolute( Path ),
 
-	add_paths_for_executable_lookup( T, [ AbsPath | Acc ] ).
+    add_paths_for_executable_lookup( T, [ AbsPath | Acc ] ).
 
 
 
 -doc """
 Adds the specified directory to the system's library search paths (typically the
-LD_LIBRARY_PATH environment variable), in first position.
+`LD_LIBRARY_PATH` environment variable), in first position.
 
 A relative path will be transformed into an absolute one (based on current
 directory) first.
 """.
 -spec add_path_for_library_lookup( directory_path() ) -> void().
 add_path_for_library_lookup( PathName ) ->
-	add_paths_for_library_lookup( [ PathName ] ).
+    add_paths_for_library_lookup( [ PathName ] ).
 
 
 
 -doc """
 Adds the specified directories to the system's library search paths (typically
-the LD_LIBRARY_PATH environment variable), in first position, respecting the
+the `LD_LIBRARY_PATH` environment variable), in first position, respecting the
 specified path order.
 
 Any relative path will be transformed into an absolute one (based on current
@@ -1967,88 +2024,88 @@ directory) first.
 """.
 -spec add_paths_for_library_lookup( [ directory_path() ] ) -> void().
 add_paths_for_library_lookup( Paths ) ->
-	add_paths_for_library_lookup( Paths, _Acc=[] ).
+    add_paths_for_library_lookup( Paths, _Acc=[] ).
 
 
 add_paths_for_library_lookup( _Paths=[], Acc ) ->
-	LibOptVarName = ?library_search_path_variable,
+    LibOptVarName = ?library_search_path_variable,
 
-	BaseLibOpt = case get_environment_variable( LibOptVarName ) of
+    BaseLibOpt = case get_environment_variable( LibOptVarName ) of
 
-		false ->
-			[];
+        false ->
+            [];
 
-		VarValue ->
-			[ VarValue ]
+        VarValue ->
+            [ VarValue ]
 
-	end,
+    end,
 
-	ToJoin = lists:reverse( BaseLibOpt ++ Acc ),
+    ToJoin = lists:reverse( BaseLibOpt ++ Acc ),
 
-	NewLibOpt = text_utils:join( _Sep=":", ToJoin ),
+    NewLibOpt = text_utils:join( _Sep=":", ToJoin ),
 
-	set_environment_variable( LibOptVarName, NewLibOpt );
+    set_environment_variable( LibOptVarName, NewLibOpt );
 
 
 add_paths_for_library_lookup( [ Path | T ], Acc ) ->
-	AbsPath = file_utils:ensure_path_is_absolute( Path ),
+    AbsPath = file_utils:ensure_path_is_absolute( Path ),
 
-	add_paths_for_library_lookup( T, [ AbsPath | Acc ] ).
+    add_paths_for_library_lookup( T, [ AbsPath | Acc ] ).
 
 
 
 -doc "Returns the current shell environment, sorted by variable names.".
 -spec get_environment() -> environment().
 get_environment() ->
-	StringEnv = lists:sort( os:getenv() ),
-	[ text_utils:split_at_first( $=, VarEqValue ) || VarEqValue <-StringEnv ].
+    StringEnv = lists:sort( os:getenv() ),
+    [ text_utils:split_at_first( $=, VarEqValue ) || VarEqValue <-StringEnv ].
 
 
 
 -doc "Returns a textual description of the current shell environment.".
 -spec environment_to_string() -> ustring().
 environment_to_string() ->
-	environment_to_string( get_environment() ).
+    environment_to_string( get_environment() ).
 
 
 
 -doc "Returns a textual description of the specified shell environment.".
 -spec environment_to_string( environment() ) -> ustring().
 environment_to_string( _Environment=[] ) ->
-	"an empty shell environment";
+    "an empty shell environment";
 
 environment_to_string( Environment ) ->
 
-	{ SetVars, UnsetVars } = lists:partition(
-		fun( { _Name, _Value=false } ) ->
-			false;
+    { SetVars, UnsetVars } = lists:partition(
+        fun( { _Name, _Value=false } ) ->
+            false;
 
-		   ( _ ) ->
-			true
+           ( _ ) ->
+            true
 
-		end,
-		Environment ),
+        end,
+        Environment ),
 
-	VariableStrings = [ text_utils:format( "~ts = ~ts", [ Name, Value ] )
-							|| { Name, Value } <- SetVars ],
+    VariableStrings = [ text_utils:format( "~ts = ~ts", [ Name, Value ] )
+                            || { Name, Value } <- SetVars ],
 
-	FinalVariableStrings = case UnsetVars of
+    FinalVariableStrings = case UnsetVars of
 
-		[] ->
-			VariableStrings;
+        [] ->
+            VariableStrings;
 
-		_ ->
-			UnsetNames = [ Name || { Name, _False } <- UnsetVars ],
+        _ ->
+            UnsetNames = [ Name || { Name, _False } <- UnsetVars ],
 
-			UnsetString = "unset variables: "
-				++ text_utils:join( _Sep=", ", UnsetNames ),
+            UnsetString = "unset variables: "
+                ++ text_utils:join( _Sep=", ", UnsetNames ),
 
-			list_utils:append_at_end( UnsetString, VariableStrings )
+            list_utils:append_at_end( UnsetString, VariableStrings )
 
-	end,
+    end,
 
-	"following shell environment: "
-		++ text_utils:strings_to_string( FinalVariableStrings ).
+    "following shell environment: "
+        ++ text_utils:strings_to_string( FinalVariableStrings ).
 
 
 
@@ -2056,116 +2113,143 @@ environment_to_string( Environment ) ->
 Returns the version information of the current Erlang interpreter (actually the
 one of the whole environment, including the VM) being used.
 
-Returns a full version name (e.g. "R13B04") or, if not available, a shorter one
-(e.g. "R11B").
+Returns a full version name (e.g.`"28.3"`) or, if ever not available, a shorter
+one (e.g. `"28"`). May return in some cases strings like `17.0-rc1`.
+
+This function used to return vintage version names like `"R13B04"` or `"R11B"`.
 """.
 -spec get_interpreter_version() -> ustring().
 get_interpreter_version() ->
 
-	% Older versions (pre-R13A?) did not support the otp_release tag:
-	try erlang:system_info( otp_release ) of
+    % Best course of action is to read the content of the
+    % ${ERL_INSTALL_ROOT}/releases/${ERL_MAJOR_VERSION}/OTP_VERSION file:
+    %
+    % As older versions (pre-R13A?) did not support the otp_release tag; and for
+    % example V=17 Newer release (e.g. 17.0-rc1) did not comply to the
+    % traditional scheme:
+    %
+    % (and erlang:system_info(version) would return the ERTS version, like
+    % "16.2", whereas erlang:system_info(system_version) would return the full
+    % slogan line of the interpreter)
+    %
+    try erlang:system_info( otp_release ) of
 
-		StringVersion ->
+        OTPRelease ->
+            OTPVersionPath = text_utils:format( "~ts/releases/~ts/OTP_VERSION",
+                [ code:root_dir(), OTPRelease ] ),
 
-			try list_to_integer( StringVersion ) of
+            case file_utils:is_existing_file( OTPVersionPath ) of
 
-				V ->
-					% For example V=17 Newer release (e.g. 17.0-rc1) does not
-					% comply to the traditional scheme, applying it for
-					% uniformity and maybe a bit of nostalgia:
-					%
-					lists:flatten( io_lib:format( "R~BB", [ V ] ) )
+                true ->
+                    %trace_utils:debug_fmt( "Returning the content of '~ts'.",
+                    %                       [ OTPVersionPath ] ),
+                    Str = text_utils:binary_to_string(
+                        file_utils:read_whole( OTPVersionPath ) ),
 
-			catch
+                    try
 
-				_:_ ->
-					% For example StringVersion="R13B04":
-					StringVersion
+                        text_utils:remove_trailing_newline( Str )
 
-			end
+                    catch _:_ ->
+                        % Best effort:
+                         Str
 
-	catch
 
-		_:_ ->
-			% Here we revert to another (older) solution:
-			{ _OTPInfos, StringVersion } = init:script_id(),
-			% For example StringVersion="R11B"
-			StringVersion
+                    end;
 
-	end.
+
+                % Surprising:
+                false ->
+                    %trace_utils:debug_fmt( "Returning otp_release version." ),
+                    OTPRelease
+
+            end
+
+    catch
+
+        _:_ ->
+            % Here we revert to another (older) solution:
+            %
+            % (e.g. {"Erlang/OTP","28"})
+            { _OTPInfos, StringVersion } = init:script_id(),
+            %trace_utils:debug_fmt( "Returning script_id version." ),
+            StringVersion
+
+    end.
 
 
 
 -doc "Returns the family of the local operating system.".
 -spec get_operating_system_family() -> os_family().
 get_operating_system_family() ->
-	pair:first( os:type() ).
+    pair:first( os:type() ).
 
 
 
 -doc "Returns the name of the local operating system.".
 -spec get_operating_system_name() -> os_name().
 get_operating_system_name() ->
-	pair:second( os:type() ).
+    pair:second( os:type() ).
 
 
 
 -doc "Returns the type (family and type) of the local operating system.".
 -spec get_operating_system_type() -> os_type().
 get_operating_system_type() ->
-	os:type().
+    os:type().
 
 
 
 -doc """
 Returns the version information (as a 2 or 3-part tuple) corresponding to the
-specified Erlang standard application (e.g. for 'kernel', could return {3,0} or
-{2,16,3}).
+specified Erlang standard application (e.g. for `kernel`, could return `{3,0}`
+or `{2,16,3}`).
 
 Throws an exception if the information could not be retrieved.
 """.
 -spec get_application_version( application_name() ) -> any_version().
 get_application_version( ApplicationName ) ->
 
-	case application:get_key( ApplicationName, vsn ) of
+    case application:get_key( ApplicationName, vsn ) of
 
-		% For example "3.0" or "2.16.3":
-		{ ok, VsnString } ->
-			basic_utils:parse_version( VsnString );
+        % For example "3.0" or "2.16.3":
+        { ok, VsnString } ->
+            basic_utils:parse_version( VsnString );
 
-		undefined ->
-			throw( { application_version_not_found, ApplicationName } )
+        undefined ->
+            throw( { application_version_not_found, ApplicationName } )
 
-	end.
+    end.
 
 
 
--doc "Returns the size, in bytes, of a word of this Virtual Machine.".
+-doc "Returns the size, in bytes, of a word of this (Erlang) Virtual Machine.".
 -spec get_size_of_vm_word() -> byte_size().
 get_size_of_vm_word() ->
-	erlang:system_info( wordsize ).
+    erlang:system_info( wordsize ).
 
 
 
 -doc """
-Returns a textual description of the size of a VM word.
+Returns a textual description of the size of a word of this (Erlang) Virtual
+Machine.
 
 Cannot crash.
 """.
 -spec get_size_of_vm_word_string() -> ustring().
 get_size_of_vm_word_string() ->
 
-	try
+    try
 
-		io_lib:format( "size of a VM word: ~B bytes",
-					   [ get_size_of_vm_word() ] )
+        io_lib:format( "size of a VM word: ~B bytes",
+                       [ get_size_of_vm_word() ] )
 
-	catch _AnyClass:Exception ->
+    catch _AnyClass:Exception ->
 
-		io_lib:format( "size of a VM word could not be obtained (~p)",
-					   [ Exception ] )
+        io_lib:format( "size of a VM word could not be obtained (~p)",
+                       [ Exception ] )
 
-	end.
+    end.
 
 
 
@@ -2179,27 +2263,27 @@ heap (and reference-counted).
 The (flat) size of on-heap terms is incremented to account for the top term word
 (which is kept in a register or on the stack).
 
-Note that the size/1 BIF is not optimized by the JIT, and its use can result in
-worse types for Dialyzer. When one knows that the value being tested must be a
-tuple, tuple_size/1 should always be preferred.
+Note that the `size/1` BIF is not optimized by the JIT, and its use can result
+in worse types for Dialyzer. When one knows that the value being tested must be
+a tuple, `tuple_size/1` should always be preferred.
 
-When one knows that the value being tested must be a binary, byte_size/1 should
-be preferred, provided the value is not a bitstring (that are accepted by
-byte_size/1, which rounds up size to a whole number of bytes) - so is_binary/1
-shall be used beforehand (note that the compiler removes redundant calls to
-is_binary/1).
+When one knows that the value being tested must be a binary, `byte_size/1`
+should be preferred, provided the value is not a bitstring (that are accepted by
+`byte_size/1` which rounds up size to a whole number of bytes) - so
+`is_binary/1` shall be used beforehand (note that the compiler removes redundant
+calls to `is_binary/1`).
 
-See also <https://www.erlang.org/doc/efficiency_guide/advanced.html>.
+See also [https://www.erlang.org/doc/efficiency_guide/advanced.html].
 """.
 -spec get_size( term() ) -> byte_size().
 get_size( Bin ) when is_binary( Bin ) ->
-	byte_size( Bin );
+    byte_size( Bin );
 
 get_size( Term ) ->
-	% With sharing taken into account:
-	% use ( erts_debug:size( Term ) + 1 ) * get_size_of_vm_word()
-	%
-	( erts_debug:flat_size( Term ) + 1 ) * get_size_of_vm_word().
+    % With sharing taken into account:
+    % use ( erts_debug:size( Term ) + 1 ) * get_size_of_vm_word()
+    %
+    ( erts_debug:flat_size( Term ) + 1 ) * get_size_of_vm_word().
 
 
 
@@ -2209,82 +2293,82 @@ expressed in bytes, using multipliers of 2^10=1024 (hence not SI kilos, that is
 1000-based multipliers): GiB (Gibibytes, not Gigabytes), MiB (Mebibytes, not
 Megabytes), KiB (Kibibytes, not Kilobytes) and bytes.
 
-See <http://en.wikipedia.org/wiki/Kibibyte>.
+See [http://en.wikipedia.org/wiki/Kibibyte].
 """.
 -spec interpret_byte_size( byte_size() ) -> ustring().
 interpret_byte_size( SizeInBytes ) ->
 
-	Kilo = 1024,
-	Mega = Kilo*Kilo,
-	Giga = Kilo*Mega,
+    Kilo = 1024,
+    Mega = Kilo*Kilo,
+    Giga = Kilo*Mega,
 
-	ListWithGiga = case SizeInBytes div Giga of
+    ListWithGiga = case SizeInBytes div Giga of
 
-		0 ->
-			[];
+        0 ->
+            [];
 
-		GigaNonNull->
-			[ text_utils:format( "~B GiB", [ GigaNonNull ] ) ]
+        GigaNonNull->
+            [ text_utils:format( "~B GiB", [ GigaNonNull ] ) ]
 
-	end,
+    end,
 
-	SizeAfterGiga = SizeInBytes rem Giga,
-	%io:format( "SizeAfterGiga = ~B.", [ SizeAfterGiga ] ),
+    SizeAfterGiga = SizeInBytes rem Giga,
+    %io:format( "SizeAfterGiga = ~B.", [ SizeAfterGiga ] ),
 
-	ListWithMega = case SizeAfterGiga div Mega of
+    ListWithMega = case SizeAfterGiga div Mega of
 
-		0 ->
-			ListWithGiga;
+        0 ->
+            ListWithGiga;
 
-		MegaNonNull->
-			[ io_lib:format( "~B MiB", [ MegaNonNull ] ) | ListWithGiga ]
+        MegaNonNull->
+            [ io_lib:format( "~B MiB", [ MegaNonNull ] ) | ListWithGiga ]
 
-	end,
+    end,
 
-	SizeAfterMega = SizeAfterGiga rem Mega,
-	%io:format( "SizeAfterMega = ~B.~n", [ SizeAfterMega ] ),
+    SizeAfterMega = SizeAfterGiga rem Mega,
+    %io:format( "SizeAfterMega = ~B.~n", [ SizeAfterMega ] ),
 
-	ListWithKilo = case SizeAfterMega div Kilo of
+    ListWithKilo = case SizeAfterMega div Kilo of
 
-		0 ->
-			ListWithMega;
+        0 ->
+            ListWithMega;
 
-		KiloNonNull->
-			[ io_lib:format( "~B KiB", [ KiloNonNull ] ) | ListWithMega ]
+        KiloNonNull->
+            [ io_lib:format( "~B KiB", [ KiloNonNull ] ) | ListWithMega ]
 
-	end,
+    end,
 
-	SizeAfterKilo = SizeAfterMega rem Kilo,
-	%io:format( "SizeAfterKilo = ~B.~n", [ SizeAfterKilo ] ),
+    SizeAfterKilo = SizeAfterMega rem Kilo,
+    %io:format( "SizeAfterKilo = ~B.~n", [ SizeAfterKilo ] ),
 
-	ListWithByte = case SizeAfterKilo rem Kilo of
+    ListWithByte = case SizeAfterKilo rem Kilo of
 
-		0 ->
-			ListWithKilo ;
+        0 ->
+            ListWithKilo ;
 
-		1->
-			[ "1 byte" | ListWithKilo ];
+        1->
+            [ "1 byte" | ListWithKilo ];
 
-		AtLeastTwoBytes ->
-			 [ io_lib:format( "~B bytes", [ AtLeastTwoBytes ] ) | ListWithKilo ]
+        AtLeastTwoBytes ->
+             [ io_lib:format( "~B bytes", [ AtLeastTwoBytes ] ) | ListWithKilo ]
 
-	end,
+    end,
 
-	%io:format( "Unit list is: ~w.~n", [ ListWithByte ] ),
+    %io:format( "Unit list is: ~w.~n", [ ListWithByte ] ),
 
-	case ListWithByte of
+    case ListWithByte of
 
-		[] ->
-			"0 byte";
+        [] ->
+            "0 byte";
 
-		[ OneElement ] ->
-			OneElement;
+        [ OneElement ] ->
+            OneElement;
 
-		[ Smaller | Bigger ] ->
-			text_utils:join( ", ", lists:reverse( Bigger ) )
-				++ " and " ++ Smaller
+        [ Smaller | Bigger ] ->
+            text_utils:join( ", ", lists:reverse( Bigger ) )
+                ++ " and " ++ Smaller
 
-	end.
+    end.
 
 
 
@@ -2295,40 +2379,40 @@ Gigabytes), MiB (Mebibytes, not Megabytes), KiB (Kibibytes, not Kilobytes) and
 bytes, rounding that value to 1 figure after the comma (this is thus an
 approximate value).
 
-See <http://en.wikipedia.org/wiki/Kibibyte>.
+See [http://en.wikipedia.org/wiki/Kibibyte].
 """.
 -spec interpret_byte_size_with_unit( byte_size() ) -> ustring().
 interpret_byte_size_with_unit( Size ) ->
 
-	{ Unit, Value } = convert_byte_size_with_unit( Size ),
+    { Unit, Value } = convert_byte_size_with_unit( Size ),
 
-	case Unit of
+    case Unit of
 
-		byte ->
+        byte ->
 
-			case Value of
+            case Value of
 
-				0 ->
-					"0 byte";
+                0 ->
+                    "0 byte";
 
-				1 ->
-					"1 byte";
+                1 ->
+                    "1 byte";
 
-				Other ->
-					io_lib:format( "~B bytes", [ Other ] )
+                Other ->
+                    io_lib:format( "~B bytes", [ Other ] )
 
-			end;
+            end;
 
-		kib ->
-			io_lib:format( "~.1f KiB", [ Value ] );
+        kib ->
+            io_lib:format( "~.1f KiB", [ Value ] );
 
-		mib ->
-			io_lib:format( "~.1f MiB", [ Value ] );
+        mib ->
+            io_lib:format( "~.1f MiB", [ Value ] );
 
-		gib ->
-			io_lib:format( "~.1f GiB", [ Value ] )
+        gib ->
+            io_lib:format( "~.1f GiB", [ Value ] )
 
-	end.
+    end.
 
 
 
@@ -2336,12 +2420,12 @@ interpret_byte_size_with_unit( Size ) ->
 Converts the specified size, in bytes, as a value expressed in an appropriate
 size unit.
 
-Returns a { Unit, Value } pair, in which:
+Returns a `{Unit,Value}` pair, in which:
 
 - Unit is the largest size unit that can be selected so that the specified size
 if worth at least 1 unit of it (e.g. we do not want a value 0.9, at least 1.0 is
-wanted); Unit can be 'gib', for GiB (Gibibytes), 'mib', for MiB (Mebibytes),
-'kib' for KiB (Kibibytes), or 'byte', for Byte
+wanted); Unit can be `gib`, for GiB (Gibibytes), `mib`, for MiB (Mebibytes),
+`kib` for KiB (Kibibytes), or `byte`, for Byte
 
 - Value is the converted byte size, in the specified returned unit, expressed
 either as an integer (for bytes) or as a float
@@ -2353,42 +2437,112 @@ Note that the returned value cannot be expected to be exact (rounded), therefore
 this function is mostly useful for user output.
 """.
 -spec convert_byte_size_with_unit( byte_size() ) ->
-	{ 'byte', integer() } | { 'kib', float() } | { 'mib', float() }
+    { 'byte', integer() } | { 'kib', float() } | { 'mib', float() }
   | { 'gib', float() }.
 convert_byte_size_with_unit( SizeInBytes ) ->
 
-	Kilo = 1024,
-	Mega = Kilo*Kilo,
-	Giga = Kilo*Mega,
+    Kilo = 1024,
+    Mega = Kilo*Kilo,
+    Giga = Kilo*Mega,
 
-	case SizeInBytes div Giga of
+    case SizeInBytes div Giga of
 
-		0 ->
+        0 ->
 
-			case SizeInBytes div Mega of
+            case SizeInBytes div Mega of
 
-				0 ->
+                0 ->
 
-					case SizeInBytes div Kilo of
+                    case SizeInBytes div Kilo of
 
-						0 ->
-							%{ byte, float( SizeInBytes ) };
-							{ byte, SizeInBytes };
+                        0 ->
+                            %{ byte, float( SizeInBytes ) };
+                            { byte, SizeInBytes };
 
-						_ ->
-							{ kib, SizeInBytes / Kilo }
+                        _ ->
+                            { kib, SizeInBytes / Kilo }
 
-					end;
+                    end;
 
-				_ ->
-					{ mib, SizeInBytes/Mega }
+                _ ->
+                    { mib, SizeInBytes/Mega }
 
-			end;
+            end;
 
-		_ ->
-			{ gib, SizeInBytes / Giga }
+        _ ->
+            { gib, SizeInBytes / Giga }
 
-	end.
+    end.
+
+
+
+-doc """
+Reports the main local, instantaneous system metrics, including the top
+processes in terms of instantaneous CPU use, by decreasing order.
+
+Based on the information returned by the `top` executable.
+""".
+-spec report_main_system_metrics() -> ustring().
+report_main_system_metrics() ->
+    report_main_system_metrics( _ProcessCount=20 ).
+
+
+-doc """
+Reports the main local, instantaneous system metrics, including the specified
+number of the top processes in terms of instantaneous CPU use, by decreasing
+order.
+
+Based on the information returned by the `top` executable.
+""".
+-spec report_main_system_metrics( count() ) -> ustring().
+report_main_system_metrics( ProcessCount ) ->
+
+    % Determining from script the instantaneous CPU load does not require
+    % sampling /proc/<PID>/stat, as 'top' is not necessarily interactive;
+    % moreover 'pidstat' would be an often unavailable dependency. So:
+
+    % Usually /usr/bin/top:
+    case executable_utils:lookup_executable( _ExecName="top" ) of
+
+        false ->
+            % Preferring in a troubleshooting session not to crash in turn:
+            "(no main system metrics to report, as no 'top' executable found)";
+
+        TopExecPath ->
+
+            % -b: batch mode
+            % -n 1: a single iteration
+            % -c: full command (not just the executable name)
+            % -w N: up to N characters per process line
+            %
+            % (the default column used for sorting is %CPU - the instantaneous
+            % load, which is the one we are interested in; apparently the fields
+            % displayed by top cannot be set non-interactively, otherwise we
+            % would have gone for: '%CPU %CUC %MEM VIRT RES SWAP TIME+ USER PID
+            % PPID S PR NI COMMAND')
+            %
+            TopOptsStr = "-b -n 1 -c -w 250",
+
+            % Not wanting to catch 'top' itself:
+            FullStr = evaluate_shell_expression( text_utils:format(
+                "~ts ~ts | grep -v '~ts'",
+                [ TopExecPath, TopOptsStr, TopExecPath ] ) ),
+
+            AllLines = text_utils:split( FullStr, _Sep=$\n ),
+
+            LineCount = length( AllLines ),
+
+            % For the general information header returned by 'top':
+            HeaderLineCount = 7,
+
+            ToExtractCount = min( ProcessCount+HeaderLineCount, LineCount ),
+
+            { ExtractedLines, _Rest } =
+                list_utils:extract_first_elements( AllLines, ToExtractCount ),
+
+            text_utils:join( _Separator=$\n, ExtractedLines )
+
+    end.
 
 
 
@@ -2399,18 +2553,18 @@ the Erlang emulator.
 -spec display_memory_summary() -> void().
 display_memory_summary() ->
 
-	SysSize  = erlang:memory( system ),
-	ProcSize = erlang:memory( processes ),
+    SysSize  = erlang:memory( system ),
+    ProcSize = erlang:memory( processes ),
 
-	Sum = SysSize + ProcSize,
+    Sum = SysSize + ProcSize,
 
-	io:format( "  - system size: ~ts (~ts)~n",
-			   [ interpret_byte_size_with_unit( SysSize ),
-				 text_utils:percent_to_string( SysSize / Sum ) ] ),
+    io:format( "  - system size: ~ts (~ts)~n",
+               [ interpret_byte_size_with_unit( SysSize ),
+                 text_utils:percent_to_string( SysSize / Sum ) ] ),
 
-	io:format( "  - process size: ~ts (~ts)~n",
-			   [ interpret_byte_size_with_unit( ProcSize ),
-				 text_utils:percent_to_string( ProcSize / Sum ) ] ).
+    io:format( "  - process size: ~ts (~ts)~n",
+               [ interpret_byte_size_with_unit( ProcSize ),
+                 text_utils:percent_to_string( ProcSize / Sum ) ] ).
 
 
 
@@ -2421,40 +2575,40 @@ computer, expressed in bytes.
 -spec get_total_physical_memory() -> byte_size().
 get_total_physical_memory() ->
 
-	% First check the expected unit is returned, by pattern-matching:
-	UnitCommand = ?cat "/proc/meminfo |" ?grep "'MemTotal:' |"
-		?awk "'{print $3}'",
+    % First check the expected unit is returned, by pattern-matching:
+    UnitCommand = ?cat "/proc/meminfo |" ?grep "'MemTotal:' |"
+        ?awk "'{print $3}'",
 
-	case run_command( UnitCommand ) of
+    case run_command( UnitCommand ) of
 
-		 { _UnitExitCode=0, _Output="kB" } ->
+         { _UnitExitCode=0, _Output="kB" } ->
 
-			% Ok, using kB indeed.
+            % Ok, using kB indeed.
 
-			ValueCommand = ?cat "/proc/meminfo |" ?grep "'MemTotal:' |"
-				?awk "'{print $2}'",
+            ValueCommand = ?cat "/proc/meminfo |" ?grep "'MemTotal:' |"
+                ?awk "'{print $2}'",
 
-			% The returned value of following command is like "12345\n", in
-			% bytes:
-			%
-			case run_command( ValueCommand ) of
+            % The returned value of following command is like "12345\n", in
+            % bytes:
+            %
+            case run_command( ValueCommand ) of
 
-				{ _ValueExitCode=0, MemSizeString } ->
+                { _ValueExitCode=0, MemSizeString } ->
 
-					% They were probably kiB:
-					list_to_integer( MemSizeString ) * 1024;
+                    % They were probably kiB:
+                    list_to_integer( MemSizeString ) * 1024;
 
-				{ ExitCode, ErrorOutput } ->
-					throw( { total_physical_memory_inquiry_failed, ExitCode,
-							 ErrorOutput } )
+                { ExitCode, ErrorOutput } ->
+                    throw( { total_physical_memory_inquiry_failed, ExitCode,
+                             ErrorOutput } )
 
-			end;
+            end;
 
-		{ ExitCode, ErrorOutput } ->
-			throw( { total_physical_memory_inquiry_failed, ExitCode,
-					 ErrorOutput } )
+        { ExitCode, ErrorOutput } ->
+            throw( { total_physical_memory_inquiry_failed, ExitCode,
+                     ErrorOutput } )
 
-	end.
+    end.
 
 
 
@@ -2466,46 +2620,46 @@ Cannot crash.
 -spec get_total_physical_memory_string() -> ustring().
 get_total_physical_memory_string() ->
 
-	try
+    try
 
-		io_lib:format( "total physical memory: ~ts",
-					   [ interpret_byte_size( get_total_physical_memory() ) ] )
+        io_lib:format( "total physical memory: ~ts",
+                       [ interpret_byte_size( get_total_physical_memory() ) ] )
 
-	catch _AnyClass:Exception ->
+    catch _AnyClass:Exception ->
 
-		io_lib:format( "no total physical RAM information could be "
-					   "obtained (~p)", [ Exception ] )
+        io_lib:format( "no total physical RAM information could be "
+                       "obtained (~p)", [ Exception ] )
 
-	end.
+    end.
 
 
 
 -doc """
 Returns the total installed physical volatile memory (RAM) of the computer on
-which specified node (specified as an atom) is running, expressed in bytes.
+which the specified node (specified as an atom) is running, expressed in bytes.
 """.
 -spec get_total_physical_memory_on( net_utils:atom_node_name() ) -> byte_size().
 get_total_physical_memory_on( Node ) ->
 
-	% No standard environment enforced here.
+    % No standard environment enforced here.
 
-	% First check the expected unit is returned, by pattern-matching:
-	UnitCommand = ?cat "/proc/meminfo |" ?grep "'MemTotal:' |"
-		?awk "'{print $3}'",
+    % First check the expected unit is returned, by pattern-matching:
+    UnitCommand = ?cat "/proc/meminfo |" ?grep "'MemTotal:' |"
+        ?awk "'{print $3}'",
 
-	"kB\n" = rpc:call( Node, os, cmd, [ UnitCommand ] ),
+    "kB\n" = rpc:call( Node, os, cmd, [ UnitCommand ] ),
 
-	ValueCommand = ?cat "/proc/meminfo |" ?grep "'MemTotal:' |"
-		?awk "'{print $2}'",
+    ValueCommand = ?cat "/proc/meminfo |" ?grep "'MemTotal:' |"
+        ?awk "'{print $2}'",
 
-	ValueCommandOutput = rpc:call( Node, os, cmd, [ ValueCommand ] ),
+    ValueCommandOutput = rpc:call( Node, os, cmd, [ ValueCommand ] ),
 
-	% The returned value of following command is like "12345\n", in bytes:
-	MemorySizeString = text_utils:remove_ending_carriage_return(
-		ValueCommandOutput ),
+    % The returned value of following command is like "12345\n", in bytes:
+    MemorySizeString = text_utils:remove_ending_carriage_return(
+        ValueCommandOutput ),
 
-	% They were probably kiB:
-	list_to_integer( MemorySizeString ) * 1024.
+    % They were probably kiB:
+    list_to_integer( MemorySizeString ) * 1024.
 
 
 
@@ -2516,14 +2670,14 @@ this emulator.
 """.
 -spec get_memory_used_by_vm() -> byte_size().
 get_memory_used_by_vm() ->
-	erlang:memory( total ).
+    erlang:memory( total ).
 
 
 
 -doc """
-Returns {UsedRAM, TotalRAM} where UsedRAM is the actual total memory used on the
-current host by all applications, in bytes, and TotalRAM is the total installed
-RAM, in bytes.
+Returns `{UsedRAM, TotalRAM}` where UsedRAM is the actual total memory used on
+the current host by all applications, in bytes, and TotalRAM is the total
+installed RAM, in bytes.
 
 The cached memory and the buffers used by the kernel are not taken into account
 into the returned count.
@@ -2531,130 +2685,131 @@ into the returned count.
 -spec get_total_memory_used() -> { byte_size(), byte_size() }.
 get_total_memory_used() ->
 
-	% Example of memory information as returned by the 'free' command:
-	% (slightly edited with variable names)
-	%
-	% """
-	%             total       used       free     shared    buffers    cached
-	% Mem:       A=8202424  B=5588920  C=2613504  D=0       E=567480   F=3212392
-	% -/+ buffers/cache:    G=1809048  H=6393376
-	% """
-	%
-	% We have: H = C + D + E + F, and G = A - H. D is never used (obsolete).
-	% We return here { G, A }, thus { G, G+H }.
+    % Example of memory information as returned by the 'free' command:
+    % (slightly edited with variable names)
+    %
+    % """
+    %             total       used       free     shared    buffers    cached
+    % Mem:       A=8202424  B=5588920  C=2613504  D=0       E=567480   F=3212392
+    % -/+ buffers/cache:    G=1809048  H=6393376
+    % """
+    %
+    % We have: H = C + D + E + F, and G = A - H. D is never used (obsolete).
+    % We return here { G, A }, thus { G, G+H }.
 
-	% Avoid locale and greps 'buffers/cache:' (e.g. on Debian) as well as
-	% 'buff/cache' (e.g. on Arch)
-	%MemoryInfo = os:cmd( "LANG= free -b | grep '/cache' "
-	%                     "| awk '{print $3,$4}'" ),
+    % Avoid locale and greps 'buffers/cache:' (e.g. on Debian) as well as
+    % 'buff/cache' (e.g. on Arch)
+    %MemoryInfo = os:cmd( "LANG= free -b | grep '/cache' "
+    %                     "| awk '{print $3,$4}'" ),
 
-	% Converts MemoryInfo from "a b\n" to ["a","b\n"]
-	%[ AppliUsedString, TotalFreeTermString ] =
-	%  string:tokens( MemoryInfo, " " ),
+    % Converts MemoryInfo from "a b\n" to ["a","b\n"]
+    %[ AppliUsedString, TotalFreeTermString ] =
+    %  string:tokens( MemoryInfo, " " ),
 
-	% Unfortunately on Arch we have quite different outputs, like:
-	%          total        used        free      shared  buff/cache   available
-	% Mem:   8047428     2476488     1124396      362228     4446544     4893712
-	% Swap:        0           0           0
-
-
-	% This is G:
-	%AppliUsedSize = text_utils:string_to_integer( AppliUsedString ),
-
-	%TotalFreeString = text_utils:remove_ending_carriage_return(
-	%                                       TotalFreeTermString ),
-
-	% This is H:
-	%TotalFreeSize = text_utils:string_to_integer( TotalFreeString ),
-
-	% { G, G+H }:
-	%{ AppliUsedSize, AppliUsedSize + TotalFreeSize }.
+    % Unfortunately on Arch we have quite different outputs, like:
+    %          total        used        free      shared  buff/cache   available
+    % Mem:   8047428     2476488     1124396      362228     4446544     4893712
+    % Swap:        0           0           0
 
 
-	% So finally we preferred /proc/meminfo, used first to get MemTotal:
-	%
-	TotalString = case run_command( ?cat "/proc/meminfo |"
-			?grep "'^MemTotal:' |" ?awk "'{print $2,$3}'" ) of
+    % This is G:
+    %AppliUsedSize = text_utils:string_to_integer( AppliUsedString ),
 
-		{ _TotalExitCode=0, TotalOutput } ->
-			%io:format( "TotalOutput: '~p'~n", [ TotalOutput ] ),
-			TotalOutput;
+    %TotalFreeString = text_utils:remove_ending_carriage_return(
+    %                                       TotalFreeTermString ),
 
-		{ TotalExitCode, TotalErrorOutput } ->
-			throw( { total_memory_used_inquiry_failed, TotalExitCode,
-					 TotalErrorOutput } )
+    % This is H:
+    %TotalFreeSize = text_utils:string_to_integer( TotalFreeString ),
 
-	end,
+    % { G, G+H }:
+    %{ AppliUsedSize, AppliUsedSize + TotalFreeSize }.
 
-	[ Total, "kB" ] = string:tokens( TotalString, " " ),
 
-	TotalByte = text_utils:string_to_integer( Total ) * 1024,
+    % So finally we preferred /proc/meminfo, used first to get MemTotal:
+    %
+    TotalString = case run_command( ?cat "/proc/meminfo |"
+            ?grep "'^MemTotal:' |" ?awk "'{print $2,$3}'" ) of
 
-	% MemAvailable does not seem always available:
-	%
-	FreeString = case run_command(
-			?cat "/proc/meminfo |" ?grep "'^MemAvailable:' |"
-			?awk "'{print $2,$3}'" )  of
+        { _TotalExitCode=0, TotalOutput } ->
+            %io:format( "TotalOutput: '~p'~n", [ TotalOutput ] ),
+            TotalOutput;
 
-		{ _AvailExitCode=0, MemAvailOutput } ->
-			%io:format( "## using MemAvailable~n" ),
-			MemAvailOutput;
+        { TotalExitCode, TotalErrorOutput } ->
+            throw( { total_memory_used_inquiry_failed, TotalExitCode,
+                     TotalErrorOutput } )
 
-		{ _AvailExitCode, _AvailErrorOutput } ->
+    end,
 
-			% In some cases (e.g. Debian 6.0), no 'MemAvailable' is defined, we
-			% use 'MemFree' instead (we consider they are synonymous):
+    [ Total, "kB" ] = string:tokens( TotalString, " " ),
 
-			%io:format( "## using MemFree~n" ),
+    TotalByte = text_utils:string_to_integer( Total ) * 1024,
 
-			case run_command( ?cat "/proc/meminfo |" ?grep "'^MemFree:' |"
-							  ?awk "'{print $2,$3}'" ) of
+    % MemAvailable does not seem always available:
+    %
+    FreeString = case run_command(
+            ?cat "/proc/meminfo |" ?grep "'^MemAvailable:' |"
+            ?awk "'{print $2,$3}'" )  of
 
-				{ _FreeExitCode=0, MemFreeOutput } ->
-					MemFreeOutput;
+        { _AvailExitCode=0, MemAvailOutput } ->
+            %io:format( "## using MemAvailable~n" ),
+            MemAvailOutput;
 
-				{ FreeExitCode, FreeErrorOutput } ->
-					throw( { total_memory_used_inquiry_failed, FreeExitCode,
-							 FreeErrorOutput } )
+        { _AvailExitCode, _AvailErrorOutput } ->
 
-			end
+            % In some cases (e.g. Debian 6.0), no 'MemAvailable' is defined, we
+            % use 'MemFree' instead (we consider they are synonymous):
 
-	end,
+            %io:format( "## using MemFree~n" ),
 
-	% The problem is that even if MemAvailable is not found, we have a zero exit
-	% code (and an empty string):
-	%
-	FreeByte = case FreeString of
+            case run_command( ?cat "/proc/meminfo |" ?grep "'^MemFree:' |"
+                              ?awk "'{print $2,$3}'" ) of
 
-		[] ->
+                { _FreeExitCode=0, MemFreeOutput } ->
+                    MemFreeOutput;
 
-			% As a last resort we do as before, i.e. we use free:
+                { FreeExitCode, FreeErrorOutput } ->
+                    throw( { total_memory_used_inquiry_failed, FreeExitCode,
+                             FreeErrorOutput } )
 
-			%io:format( "## using free~n" ),
+            end
 
-			case run_command(
-				?free "-b |" ?grep "'/cache' |" ?awk "'{print $3}'" ) of
+    end,
 
-				{ _ExitCode=0, FreeOutput } ->
-					% Already in bytes:
-					text_utils:string_to_integer( FreeOutput );
+    % The problem is that even if MemAvailable is not found, we have a zero exit
+    % code (and an empty string):
+    %
+    FreeByte = case FreeString of
 
-				{ ExitCode, ErrorOutput } ->
-					throw( { total_memory_used_inquiry_failed, ExitCode,
-							 ErrorOutput } )
+        [] ->
 
-			end;
+            % As a last resort we do as before, i.e. we use free:
 
-		_ ->
+            %io:format( "## using free~n" ),
 
-			[ Free, "kB" ] = string:tokens( FreeString, " " ),
-			text_utils:string_to_integer( Free ) * 1024
+            case run_command(
+                ?free "-b |" ?grep "'/cache' |" ?awk "'{print $3}'" ) of
 
-	end,
+                { _ExitCode=0, FreeOutput } ->
+                    % Already in bytes:
+                    text_utils:string_to_integer( FreeOutput );
 
-	UsedByte = TotalByte - FreeByte,
+                { ExitCode, ErrorOutput } ->
+                    throw( { total_memory_used_inquiry_failed, ExitCode,
+                             ErrorOutput } )
 
-	{ UsedByte, TotalByte }.
+            end;
+
+        _ ->
+
+            [ Free, "kB" ] = string:tokens( FreeString, " " ),
+            text_utils:string_to_integer( Free ) * 1024
+
+    end,
+
+    UsedByte = TotalByte - FreeByte,
+
+    { UsedByte, TotalByte }.
+
 
 
 
@@ -2666,33 +2821,33 @@ Cannot crash.
 -spec get_ram_status_string() -> ustring().
 get_ram_status_string() ->
 
-	try
+    try
 
-		case get_total_memory_used() of
+        case get_total_memory_used() of
 
-			{ _UsedRAM, _TotalRAM=0 } ->
-				"total RAM size could not be obtained (found null)";
+            { _UsedRAM, _TotalRAM=0 } ->
+                "total RAM size could not be obtained (found null)";
 
-			{ UsedRAM, TotalRAM } ->
-				io_lib:format( "RAM memory used: ~ts, "
-					"over a total of ~ts (~ts)",
-					[ interpret_byte_size( UsedRAM ),
-					  interpret_byte_size( TotalRAM ),
-					  text_utils:percent_to_string( UsedRAM / TotalRAM ) ] )
+            { UsedRAM, TotalRAM } ->
+                io_lib:format( "RAM memory used: ~ts, "
+                    "over a total of ~ts (~ts)",
+                    [ interpret_byte_size( UsedRAM ),
+                      interpret_byte_size( TotalRAM ),
+                      text_utils:percent_to_string( UsedRAM / TotalRAM ) ] )
 
-		end
+        end
 
-	catch _AnyClass:Exception ->
+    catch _AnyClass:Exception ->
 
-		io_lib:format( "no RAM information could be obtained (~p)",
-					   [ Exception ] )
+        io_lib:format( "no RAM information could be obtained (~p)",
+                       [ Exception ] )
 
-	end.
+    end.
 
 
 
 -doc """
-Returns {UsedSwap, TotalSwap} where UsedSwap is the size of the used swap and
+Returns `{UsedSwap, TotalSwap}` where UsedSwap is the size of the used swap and
 TotalSwap is the total amount of swap space on the local host, both expressed in
 bytes.
 
@@ -2701,43 +2856,43 @@ Will crash if the information cannot be retrieved properly.
 -spec get_swap_status() -> { byte_size(), byte_size() }.
 get_swap_status() ->
 
-	% Same reason as for get_total_memory_used/0:
-	%SwapInfos = os:cmd( "free -b | grep 'Swap:' | awk '{print $2, $3}'" ),
-	SwapTotalString = case run_command( ?cat "/proc/meminfo |"
-			?grep "'^SwapTotal:' |" ?awk "'{print $2,$3}'" ) of
+    % Same reason as for get_total_memory_used/0:
+    %SwapInfos = os:cmd( "free -b | grep 'Swap:' | awk '{print $2, $3}'" ),
+    SwapTotalString = case run_command( ?cat "/proc/meminfo |"
+            ?grep "'^SwapTotal:' |" ?awk "'{print $2,$3}'" ) of
 
-		{ _TotalExitCode=0, TotalOutput } ->
-			TotalOutput;
+        { _TotalExitCode=0, TotalOutput } ->
+            TotalOutput;
 
-		{ TotalExitCode, TotalErrorOutput } ->
-			throw( { swap_inquiry_failed, TotalExitCode, TotalErrorOutput } )
+        { TotalExitCode, TotalErrorOutput } ->
+            throw( { swap_inquiry_failed, TotalExitCode, TotalErrorOutput } )
 
-	end,
+    end,
 
-	[ TotalString, "kB" ] = string:tokens( SwapTotalString, " " ),
+    [ TotalString, "kB" ] = string:tokens( SwapTotalString, " " ),
 
-	TotalByte = text_utils:string_to_integer( TotalString ) * 1024,
+    TotalByte = text_utils:string_to_integer( TotalString ) * 1024,
 
-	SwapFreeString = case run_command(
-			?cat "/proc/meminfo |" ?grep "'^SwapFree:' |"
-			?awk "'{print $2,$3}'" ) of
+    SwapFreeString = case run_command(
+            ?cat "/proc/meminfo |" ?grep "'^SwapFree:' |"
+            ?awk "'{print $2,$3}'" ) of
 
-		{ _FreeExitCode=0, FreeOutput } ->
-			FreeOutput;
+        { _FreeExitCode=0, FreeOutput } ->
+            FreeOutput;
 
-		{ FreeExitCode, FreeErrorOutput } ->
-			throw( { swap_inquiry_failed, FreeExitCode, FreeErrorOutput } )
+        { FreeExitCode, FreeErrorOutput } ->
+            throw( { swap_inquiry_failed, FreeExitCode, FreeErrorOutput } )
 
-	end,
+    end,
 
 
-	[ FreeString, "kB" ] = string:tokens( SwapFreeString, " " ),
+    [ FreeString, "kB" ] = string:tokens( SwapFreeString, " " ),
 
-	FreeByte = text_utils:string_to_integer( FreeString ) * 1024,
+    FreeByte = text_utils:string_to_integer( FreeString ) * 1024,
 
-	UsedByte = TotalByte - FreeByte,
+    UsedByte = TotalByte - FreeByte,
 
-	{ UsedByte, TotalByte }.
+    { UsedByte, TotalByte }.
 
 
 
@@ -2749,27 +2904,189 @@ Cannot crash.
 -spec get_swap_status_string() -> ustring().
 get_swap_status_string() ->
 
-	try
+    try
 
-		case get_swap_status() of
+        case get_swap_status() of
 
-			{ _UsedSwap, _TotalSwap=0 } ->
-				"no swap found";
+            { _UsedSwap, _TotalSwap=0 } ->
+                "no swap found";
 
-			{ UsedSwap, TotalSwap } ->
-				io_lib:format( "swap used: ~ts over a total of ~ts (~ts)",
-					[ interpret_byte_size( UsedSwap ),
-					  interpret_byte_size( TotalSwap ),
-					  text_utils:percent_to_string( UsedSwap / TotalSwap ) ] )
+            { UsedSwap, TotalSwap } ->
+                io_lib:format( "swap used: ~ts over a total of ~ts (~ts)",
+                    [ interpret_byte_size( UsedSwap ),
+                      interpret_byte_size( TotalSwap ),
+                      text_utils:percent_to_string( UsedSwap / TotalSwap ) ] )
 
-		end
+        end
 
 
-	catch _AnyClass:Exception ->
-			io_lib:format( "no swap information could be obtained (~p)",
-						   [ Exception ] )
+    catch _AnyClass:Exception ->
+            io_lib:format( "no swap information could be obtained (~p)",
+                           [ Exception ] )
 
-	end.
+    end.
+
+
+
+
+-doc """
+Returns a description of the processes currently consuming the most RAM, by
+decreasing order.
+
+See `get_top_memory_using_processes/1` for more details.
+""".
+-spec interpret_top_memory_using_processes() -> ustring().
+interpret_top_memory_using_processes() ->
+    interpret_top_memory_using_processes( _ProcessCount=15 ).
+
+
+-doc """
+Returns a description of the specified number of processes currently consuming
+the most RAM, by decreasing order.
+
+See `get_top_memory_using_processes/1` for more details.
+""".
+-spec interpret_top_memory_using_processes( count() ) -> ustring().
+interpret_top_memory_using_processes( ProcessCount ) ->
+    TotalRAMSize = get_total_physical_memory(),
+    PMemInfos = get_top_memory_using_processes( ProcessCount ),
+    text_utils:format( "Listing the ~B largest operating-system "
+        "processes currently in RAM, in terms of RSS (VSZ) metrics: ~ts",
+        [ ProcessCount, text_utils:strings_to_string(
+            [ process_memory_info_to_string( PMI, TotalRAMSize )
+                || PMI <- PMemInfos ] ) ] ).
+
+
+
+
+
+-doc """
+Returns a list of information regarding the processes currently consuming the
+most RAM, by decreasing order.
+
+See `get_top_memory_using_processes/1` for more details.
+""".
+-spec get_top_memory_using_processes() -> [ { process_memory_info() } ].
+get_top_memory_using_processes() ->
+    get_top_memory_using_processes( _ProcessCount=15 ).
+
+
+
+-doc """
+Returns a list of information regarding the specified number of processes
+currently consuming the most RAM, by decreasing order.
+
+`RSS` means *Resident Set Size*, i.e. how much RAM (i.e. physical memory, not
+counting any swap) has been allocated to a process during its execution,
+counting the libraries that it uses that are already loaded in memory, and are
+possibly used by other processes.
+
+`VSZ` means *Virtual Memory Size*, i.e. the total amount of (logical) memory a
+process may hypothetically access (declared pages being load when needed). It
+accounts for the size of the binary itself, any linked libraries, and any stack
+or heap allocations.
+
+The goal being to spot any processes ballooning in memory, we rely primarily on
+`RSS`.
+""".
+-spec get_top_memory_using_processes( count() ) ->
+                                            [ { process_memory_info() } ].
+get_top_memory_using_processes( ProcessCount ) ->
+
+    PsExec = executable_utils:get_ps_path(),
+
+    %FullStr = evaluate_shell_expression( PsExec ++ " aux --sort=-%mem" ),
+
+    % e: display all processes
+    % o: define the columns to be displayed
+    % (sizes in KiB; user column width augmented)
+    %
+    FullStr = evaluate_shell_expression(
+        PsExec ++ " -eo rss,vsz,pid,user:20,args --sort=-rss,-vsz" ),
+
+    % Skip the "RSS VSZ PID USER COMMAND" header
+    % (there is at least one process):
+    %
+    AllLines = tl( text_utils:split( FullStr, _Sep=$\n ) ),
+
+    LineCount = length( AllLines ),
+
+    ToExtractCount = min( ProcessCount, LineCount ),
+
+    { ExtractedLines, _Rest } =
+        list_utils:extract_first_elements( AllLines, ToExtractCount ),
+
+    % Now we have lines in the form of:
+    % "  9200  3984    2729 rambo bash DESKTOP=xfce TRASH=XXX foo -bar".
+    % Extracting the first four fields, the rest being the full command.
+
+    % PCR2 regex, with ^\s* to ignore initial whitespaces, (\S+) to capture a
+    % word, \s+ as words are separated with at least one whitespace, (.*) to
+    % capture all the rest (possibly with whitespaces):
+    %
+    Regex = "^\\s*(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(.*)$",
+
+    { ok, CompiledRegexp } = re:compile( Regex ),
+
+    % all_but_first: do not return group 0, i.e. the one corresponding to the
+    % whole string.
+    %
+    % Actually 5-element lists, not 5-tuples:
+    Quintuplets = [ case re:run( L, CompiledRegexp,
+                                 [ { capture, all_but_first, list } ] ) of
+
+        { match, Groups } ->
+            Groups;
+
+        nomatch ->
+            throw( { matching_failed, L } )
+
+      end || L <- ExtractedLines ],
+
+    % Having here elements like {"9200", "3984", "2729, "rambo", "bash
+    % DESKTOP=xfce TRASH=XXX foo -bar"}:
+
+    % KiB is kibibytes, per 1024 rather per 1000:
+    [ { text_utils:string_to_integer( RSSStr ) * 1024,
+        text_utils:string_to_integer( VSZStr ) * 1024,
+        text_utils:string_to_integer( PidStr ),
+        text_utils:string_to_binary( UserStr ),
+        text_utils:string_to_binary( CmdStr ) }
+            || [ RSSStr, VSZStr, PidStr, UserStr, CmdStr ] <:- Quintuplets ].
+
+
+
+-doc """
+Returns a textual description of the specified process memory information; first
+size is the RSS one, second is the VSZ one.
+""".
+-spec process_memory_info_to_string( process_memory_info() ) -> ustring().
+process_memory_info_to_string(
+        _PMemInfo={ RSSSize, VSZSize, OSPid, BinUsername, BinCmd } ) ->
+    text_utils:format( "process ~B: ~ts (~ts), whose user is '~ts' "
+        "and command is: '~ts'",
+        [ OSPid, interpret_byte_size_with_unit( RSSSize ),
+          interpret_byte_size_with_unit( VSZSize ),
+          BinUsername, text_utils:ellipse( BinCmd, _MaxLen=200 ) ] ).
+
+
+-doc """
+Returns a textual description of the specified process memory information; first
+size is the RSS one, second is the VSZ one, and based on the specified total
+physical RAM, the RSS percentage of it is also given.
+""".
+-spec process_memory_info_to_string( process_memory_info(), byte_size() ) ->
+                                                    ustring().
+process_memory_info_to_string(
+        _PMemInfo={ RSSSize, VSZSize, OSPid, BinUsername, BinCmd },
+        TotalRAMSize ) ->
+    text_utils:format( "~ts for process ~B: ~ts (~ts), whose user is '~ts' "
+        "and command is: '~ts'",
+        [ text_utils:percent_to_string( RSSSize / TotalRAMSize ), OSPid,
+          interpret_byte_size_with_unit( RSSSize ),
+          interpret_byte_size_with_unit( VSZSize ),
+          BinUsername, text_utils:ellipse( BinCmd, _MaxLen=200 ) ] ).
+
 
 
 
@@ -2781,27 +3098,27 @@ Throws an exception on failure.
 -spec get_core_count() -> count().
 get_core_count() ->
 
-	CoreString = case run_command(
-			?cat "/proc/cpuinfo |" ?grep "-c processor" ) of
+    CoreString = case run_command(
+            ?cat "/proc/cpuinfo |" ?grep "-c processor" ) of
 
-		{ _ExitCode=0, Output } ->
-			Output;
+        { _ExitCode=0, Output } ->
+            Output;
 
-		{ ExitCode, ErrorOutput } ->
-			throw( { core_count_inquiry_failed, ExitCode, ErrorOutput } )
+        { ExitCode, ErrorOutput } ->
+            throw( { core_count_inquiry_failed, ExitCode, ErrorOutput } )
 
-	end,
+    end,
 
-	try
+    try
 
-		text_utils:string_to_integer( CoreString )
+        text_utils:string_to_integer( CoreString )
 
-	catch
+    catch
 
-		{ integer_conversion_failed, CoreString } ->
-			throw( { could_not_determine_core_count, CoreString } )
+        { integer_conversion_failed, CoreString } ->
+            throw( { could_not_determine_core_count, CoreString } )
 
-	end.
+    end.
 
 
 
@@ -2813,23 +3130,23 @@ Cannot crash.
 -spec get_core_count_string() -> ustring().
 get_core_count_string() ->
 
-	try
+    try
 
-		io_lib:format( "number of cores: ~B", [ get_core_count() ] )
+        io_lib:format( "number of cores: ~B", [ get_core_count() ] )
 
-	catch _AnyClass:Exception ->
+    catch _AnyClass:Exception ->
 
-		io_lib:format( "no core information could be obtained (~p)",
-					   [ Exception ] )
+        io_lib:format( "no core information could be obtained (~p)",
+                       [ Exception ] )
 
-	end.
+    end.
 
 
 
 -doc "Returns the number of live Erlang processes on the current node.".
 -spec get_process_count() -> count().
 get_process_count() ->
-	erlang:system_info( process_count ).
+    erlang:system_info( process_count ).
 
 
 
@@ -2842,22 +3159,22 @@ Cannot crash.
 -spec get_process_count_string() -> ustring().
 get_process_count_string() ->
 
-	try
+    try
 
-		io_lib:format( "number of existing Erlang processes: ~B ",
-					   [ get_process_count() ] )
+        io_lib:format( "number of existing Erlang processes: ~B ",
+                       [ get_process_count() ] )
 
-	catch _AnyClass:Exception ->
+    catch _AnyClass:Exception ->
 
-		io_lib:format( "no information about the number of live Erlang "
-					   "processes could be obtained (~p)", [ Exception ] )
+        io_lib:format( "no information about the number of live Erlang "
+                       "processes could be obtained (~p)", [ Exception ] )
 
-	end.
+    end.
 
 
 
 -doc """
-Returns an aggregated view of the CPU usage (a float in [0;100]) based on the
+Returns an aggregated view of the CPU usage (a float in `[0;100]`) based on the
 two specified sets of CPU counters, that is the average (on all cores of all
 processors of the local host) percentage of CPU utilization (all kinds of usage
 except idle) during the period which elapsed between the start and end measures
@@ -2869,101 +3186,101 @@ FirstMeasure = system_utils:get_cpu_usage_counters(),
 (do something)
 SecondMeasure = system_utils:get_cpu_usage_counters(),
 
-UsageInPercent = system_utils:compute_cpu_usage_between( FirstMeasure,
-   SecondMeasure )
+UsageInPercent = system_utils:compute_cpu_usage_between(FirstMeasure,
+   SecondMeasure)
 ```
 """.
 -spec compute_cpu_usage_between( cpu_usage_info(), cpu_usage_info() ) ->
-										percent().
+                                        percent().
 compute_cpu_usage_between( StartCounters, EndCounters ) ->
 
-	Percentages = compute_detailed_cpu_usage( StartCounters, EndCounters ),
+    Percentages = compute_detailed_cpu_usage( StartCounters, EndCounters ),
 
-	compute_cpu_usage_for( Percentages ).
+    compute_cpu_usage_for( Percentages ).
 
 
 
 -doc """
-Returns an aggregated view of the CPU usage (a float in [0;100]) based on the
+Returns an aggregated view of the CPU usage (a float in `[0;100]`) based on the
 specified detailed CPU percentages, that is the average (on all cores of all
 processors of the local host) percentage of CPU utilization (all kinds of usage
 except idle) during the period the input percentages correspond to.
 
-Returns 'undefined' iff the specified usage is itself undefined.
+Returns `undefined` iff the specified usage is itself undefined.
 """.
 -spec compute_cpu_usage_for( option( cpu_usage_percentages() ) ) ->
-										option( percent() ).
+                                        option( percent() ).
 compute_cpu_usage_for( undefined ) ->
-	undefined;
+    undefined;
 
 compute_cpu_usage_for( { UserPercent, NicePercent, SystemPercent, _IdlePercent,
-						 OtherPercent } ) ->
+                         OtherPercent } ) ->
 
-	% Every usage matters here, except idle:
-	UserPercent + NicePercent + SystemPercent + OtherPercent.
+    % Every usage matters here, except idle:
+    UserPercent + NicePercent + SystemPercent + OtherPercent.
 
 
 
 -doc """
 Returns a detailed view of the CPU usage, that is the average (on all cores of
 all processors of the local host) percentage of the various kinds of CPU
-utilization: {UserPercent, NicePercent, SystemPercent, IdlePercent,
-OtherPercent}, respectively for user mode, user mode with low priority (nice),
+utilization: `{UserPercent, NicePercent, SystemPercent, IdlePercent,
+OtherPercent}`, respectively for user mode, user mode with low priority (nice),
 system mode, idle task and all other usages (if any), between the two sets of
 measures.
 
-If the two sets of specified counters are equal, returns 'undefined', as no
+If the two sets of specified counters are equal, returns `undefined`, as no
 usage can be quantified then.
 """.
 -spec compute_detailed_cpu_usage( cpu_usage_info(), cpu_usage_info() ) ->
-										option( cpu_usage_percentages() ).
+                                        option( cpu_usage_percentages() ).
 compute_detailed_cpu_usage( _StartCounters={ U1, N1, S1, I1, O1 },
-							_EndCounters = { U2, N2, S2, I2, O2 } ) ->
+                            _EndCounters = { U2, N2, S2, I2, O2 } ) ->
 
-	User = U2 - U1,
+    User = U2 - U1,
 
-	Nice = N2 - N1,
+    Nice = N2 - N1,
 
-	System = S2 - S1,
+    System = S2 - S1,
 
-	Idle = I2 - I1,
+    Idle = I2 - I1,
 
-	Other = O2 - O1,
+    Other = O2 - O1,
 
-	% This would be great if we could avoid a division by zero:
-	case User + Nice + System + Idle + Other of
+    % This would be great if we could avoid a division by zero:
+    case User + Nice + System + Idle + Other of
 
-		% Yes, this happens:
-		0 ->
-			undefined;
+        % Yes, this happens:
+        0 ->
+            undefined;
 
-		Sum ->
+        Sum ->
 
-			RoundDigits = 1,
+            RoundDigits = 1,
 
-			UserPercent = math_utils:round_after( 100 * User / Sum,
-												  RoundDigits ),
+            UserPercent = math_utils:round_after( 100 * User / Sum,
+                                                  RoundDigits ),
 
-			NicePercent = math_utils:round_after( 100 * Nice / Sum,
-												  RoundDigits ),
+            NicePercent = math_utils:round_after( 100 * Nice / Sum,
+                                                  RoundDigits ),
 
-			SystemPercent = math_utils:round_after( 100 * System / Sum,
-													RoundDigits ),
+            SystemPercent = math_utils:round_after( 100 * System / Sum,
+                                                    RoundDigits ),
 
-			IdlePercent = math_utils:round_after( 100 * Idle / Sum,
-												  RoundDigits ),
+            IdlePercent = math_utils:round_after( 100 * Idle / Sum,
+                                                  RoundDigits ),
 
-			AllButOtherPercent = UserPercent + NicePercent + SystemPercent
-				+ IdlePercent,
+            AllButOtherPercent = UserPercent + NicePercent + SystemPercent
+                + IdlePercent,
 
-			% Avoids rounding errors:
-			OtherPercent = math_utils:round_after( 100 - AllButOtherPercent,
-												   RoundDigits ),
+            % Avoids rounding errors:
+            OtherPercent = math_utils:round_after( 100 - AllButOtherPercent,
+                                                   RoundDigits ),
 
-			{ UserPercent, NicePercent, SystemPercent, IdlePercent,
-			  OtherPercent }
+            { UserPercent, NicePercent, SystemPercent, IdlePercent,
+              OtherPercent }
 
-	end.
+    end.
 
 
 
@@ -2975,37 +3292,160 @@ Note: mostly useful in terms of differences over time.
 -spec get_cpu_usage_counters() -> cpu_usage_info().
 get_cpu_usage_counters() ->
 
-	% grep more versatile than: '| head -n 1':
-	StatString = case run_command(
-			?cat "/proc/stat |" ?grep "'cpu '" ) of
+    % grep more versatile than: '| head -n 1':
+    StatString = case run_command(
+            ?cat "/proc/stat |" ?grep "'cpu '" ) of
 
-		{ _ExitCode=0, Output } ->
-			Output;
+        { _ExitCode=0, Output } ->
+            Output;
 
-		{ ExitCode, ErrorOutput } ->
-			throw( { cpu_counters_inquiry_failed, ExitCode, ErrorOutput } )
+        { ExitCode, ErrorOutput } ->
+            throw( { cpu_counters_inquiry_failed, ExitCode, ErrorOutput } )
 
-	end,
+    end,
 
-	% For example cpu  1331302 11435 364777 150663306 82509 249 3645 0 0
+    % For example cpu  1331302 11435 364777 150663306 82509 249 3645 0 0
 
-	% Tells the time spent in user mode, user mode with low priority (nice),
-	% system mode, and the idle task.
+    % Tells the time spent in user mode, user mode with low priority (nice),
+    % system mode, and the idle task.
 
-	[ "cpu", UserString, NiceString, SystemString, IdleString | T ] =
-						string:tokens( StatString, " " ),
+    [ "cpu", UserString, NiceString, SystemString, IdleString | T ] =
+                        string:tokens( StatString, " " ),
 
-	[ User, Nice, System, Idle ] = [ text_utils:string_to_integer( S )
-		|| S <- [ UserString, NiceString, SystemString, IdleString ] ],
+    [ User, Nice, System, Idle ] = [ text_utils:string_to_integer( S )
+        || S <- [ UserString, NiceString, SystemString, IdleString ] ],
 
-	% Adapts to any architecture and update (iowait, irq, softirq, steal, guest,
-	% etc.):
-	Other = lists:sum( [ text_utils:string_to_integer( E ) || E <- T ] ),
+    % Adapts to any architecture and update (iowait, irq, softirq, steal, guest,
+    % etc.):
+    Other = lists:sum( [ text_utils:string_to_integer( E ) || E <- T ] ),
 
-	%io:format( "user = ~f, nice = ~f, system = ~f, idle = ~f, other = ~f, "
-	%           "T = ~p~n", [ User, Nice, System, Idle, Other, T ] ),
+    %io:format( "user = ~f, nice = ~f, system = ~f, idle = ~f, other = ~f, "
+    %           "T = ~p~n", [ User, Nice, System, Idle, Other, T ] ),
 
-	{ User, Nice, System, Idle, Other }.
+    { User, Nice, System, Idle, Other }.
+
+
+
+-doc """
+Returns a description of the processes currently using the most CPU cumulative
+(not instantaneous) load, by decreasing order.
+
+See `get_top_cumulated_cpu_processes/1` for more details.
+""".
+-spec interpret_top_cumulated_cpu_processes() -> ustring().
+interpret_top_cumulated_cpu_processes() ->
+    interpret_top_cumulated_cpu_processes( _ProcessCount=20 ).
+
+
+
+-doc """
+Returns a description of the specified number of processes currently using the
+most CPU cumulative (not instantaneous) load, by decreasing order.
+
+See `get_top_cumulated_cpu_processes/1` for more details.
+""".
+-spec interpret_top_cumulated_cpu_processes( count() ) -> ustring().
+interpret_top_cumulated_cpu_processes( ProcessCount ) ->
+    PCpuInfos = get_top_cumulated_cpu_processes( ProcessCount ),
+    text_utils:format( "Listing the ~B most demanding operating-system "
+                       "processes in terms of cumulated CPU load: ~ts",
+        [ ProcessCount, text_utils:strings_to_string(
+            [ process_cpu_info_to_string( PCI ) || PCI <- PCpuInfos ] ) ] ).
+
+
+
+-doc """
+Returns a list of information regarding the processes currently using the most
+CPU cumulative (not instantaneous) load, by decreasing order.
+
+See `get_top_cumulated_cpu_processes/1` for more details.
+""".
+-spec get_top_cumulated_cpu_processes() -> [ { process_cpu_info() } ].
+get_top_cumulated_cpu_processes() ->
+    get_top_cumulated_cpu_processes( _ProcessCount=15 ).
+
+
+
+-doc """
+Returns a list of information regarding the specified number of processes
+currently using the most CPU cumulative (not instantaneous) load, by decreasing
+order.
+
+CPU loads, even cumulative ones, may be over 100% with multicore computers.
+""".
+-spec get_top_cumulated_cpu_processes( count() ) -> [ { process_cpu_info() } ].
+get_top_cumulated_cpu_processes( ProcessCount ) ->
+
+    PsExecPath = executable_utils:get_ps_path(),
+
+    %FullStr = evaluate_shell_expression( PsExecPath ++ " aux --sort=-%mem" ),
+
+    % e: display all processes
+    % o: define the columns to be displayed
+    % (sizes in KiB; user column width augmented)
+    %
+    FullStr = evaluate_shell_expression(
+        PsExecPath ++ " -eo %cpu,pid,user:20,args --sort=-%cpu" ),
+
+    % Skip the %CPU PID USER COMMAND" header
+    % (there is at least one process):
+    %
+    AllLines = tl( text_utils:split( FullStr, _Sep=$\n ) ),
+
+    LineCount = length( AllLines ),
+
+    ToExtractCount = min( ProcessCount, LineCount ),
+
+    { ExtractedLines, _Rest } =
+        list_utils:extract_first_elements( AllLines, ToExtractCount ),
+
+    % Now we have lines in the form of:
+    % "9.3 1316240 rambo bash DESKTOP=xfce TRASH=XXX foo -bar".
+    % Extracting the first three fields, the rest being the full command.
+
+    % PCR2 regex, with ^\s* to ignore initial whitespaces, (\S+) to capture a
+    % word, \s+ as words are separated with at least one whitespace, (.*) to
+    % capture all the rest (possibly with whitespaces):
+    %
+    Regex = "^\\s*(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(.*)$",
+
+    { ok, CompiledRegexp } = re:compile( Regex ),
+
+    % all_but_first: do not return group 0, i.e. the one corresponding to the
+    % whole string.
+    %
+    % Actually 4-element lists, not 4-tuples:
+    Quadruplets = [ case re:run( L, CompiledRegexp,
+                                 [ { capture, all_but_first, list } ] ) of
+
+        { match, Groups } ->
+            Groups;
+
+        nomatch ->
+            throw( { matching_failed, L } )
+
+      end || L <- ExtractedLines ],
+
+    % Having here elements like {"9.3", "1316240", "rambo", "bash DESKTOP=xfce
+    % TRASH=XXX foo -bar"}:
+
+    [ { text_utils:string_to_float( CPUStr ),
+        text_utils:string_to_integer( PidStr ),
+        text_utils:string_to_binary( UserStr ),
+        text_utils:string_to_binary( CmdStr ) }
+            || [ CPUStr, PidStr, UserStr, CmdStr ] <:- Quadruplets ].
+
+
+
+-doc "Returns a textual description of the specified process CPU information.".
+-spec process_cpu_info_to_string( process_cpu_info() ) -> ustring().
+process_cpu_info_to_string(
+        _PCpuInfo={ CpuLoad, OSPid, BinUsername, BinCmd } ) ->
+    % Already a percentage:
+    text_utils:format( "~.1f% for process ~B, whose user is '~ts' "
+        "and command is: '~ts'",
+        [ CpuLoad, OSPid, BinUsername,
+          text_utils:ellipse( BinCmd, _MaxLen=200 ) ] ).
 
 
 
@@ -3019,19 +3459,19 @@ freeze until a longer time-out (several minutes) kicks in.
 -spec get_disk_usage() -> ustring().
 get_disk_usage() ->
 
-	% Options:
-	%   -h is --human-readable
-	%   -l is -local (limit listing to local file systems)
-	%
-	case run_executable( _ExecPath=?df, _Args=[ "-h", "-l" ] ) of
+    % Options:
+    %   -h is --human-readable
+    %   -l is -local (limit listing to local file systems)
+    %
+    case run_executable( _ExecPath=?df, _Args=[ "-h", "-l" ] ) of
 
-		{ _ExitCode=0, Output } ->
-			Output;
+        { _ExitCode=0, Output } ->
+            Output;
 
-		{ ExitCode, ErrorOutput } ->
-			throw( { disk_usage_inquiry_failed, ExitCode, ErrorOutput } )
+        { ExitCode, ErrorOutput } ->
+            throw( { disk_usage_inquiry_failed, ExitCode, ErrorOutput } )
 
-	end.
+    end.
 
 
 
@@ -3043,24 +3483,24 @@ Cannot crash.
 -spec get_disk_usage_string() -> ustring().
 get_disk_usage_string() ->
 
-	try
+    try
 
-		io_lib:format( "current disk usage:~n~ts", [ get_disk_usage() ] )
+        io_lib:format( "current disk usage:~n~ts", [ get_disk_usage() ] )
 
-	catch _AnyClass:Exception ->
+    catch _AnyClass:Exception ->
 
-		io_lib:format( "no disk usage information could be obtained "
-			"(cause: ~p)", [ Exception ] )
+        io_lib:format( "no disk usage information could be obtained "
+            "(cause: ~p)", [ Exception ] )
 
-	end.
+    end.
 
 
 
 -doc "Returns a list of the known types of pseudo-filesystems.".
 -spec get_known_pseudo_filesystems() -> [ pseudo_filesystem_type() ].
 get_known_pseudo_filesystems() ->
-	% A list of all current filesystems can be obtained thanks to: 'df -T'.
-	[ tmpfs, devtmpfs ].
+    % A list of all current filesystems can be obtained thanks to: 'df -T'.
+    [ tmpfs, devtmpfs ].
 
 
 
@@ -3072,69 +3512,69 @@ This function may throw an exception.
 """.
 -spec get_mount_points() -> [ directory_path() ].
 get_mount_points() ->
-	get_mount_points( _CanFail=true ).
+    get_mount_points( _CanFail=true ).
 
 
 
 -doc """
 Returns a list of the current, local mount points (excluding the
 pseudo-filesystems), throwing an exception on error if requested, otherwise
-displaying an error trace and returning 'undefined'.
+displaying an error trace and returning `undefined`.
 """.
 -spec get_mount_points( boolean() ) -> option( [ directory_path() ] ).
 get_mount_points( CanFail ) ->
 
-	FirstCmd = ?df "-h --local --output=target"
-		++ get_exclude_pseudo_fs_opt() ++ " 2>/dev/null |" ?grep
-		"-v 'Mounted on'",
+    FirstCmd = ?df "-h --local --output=target"
+        ++ get_exclude_pseudo_fs_opt() ++ " 2>/dev/null |" ?grep
+        "-v 'Mounted on'",
 
-	case run_command( FirstCmd ) of
+    case run_command( FirstCmd ) of
 
-		{ _FirstExitCode=0, ResAsOneString } ->
-			%trace_utils:debug_fmt( "(using direct df, with '~ts')",
-			%                       [ FirstCmd ] ),
-			text_utils:split_per_element( ResAsOneString, "\n" );
+        { _FirstExitCode=0, ResAsOneString } ->
+            %trace_utils:debug_fmt( "(using direct df, with '~ts')",
+            %                       [ FirstCmd ] ),
+            text_utils:split_per_element( ResAsOneString, "\n" );
 
-		{ _FirstExitCode, _FirstErrorOutput } ->
+        { _FirstExitCode, _FirstErrorOutput } ->
 
-			% Older versions of df may not know the --output option:
-			SecondCmd = ?df "-h --local "
-				++ get_exclude_pseudo_fs_opt()
-				++ "| " ?grep "-v 'Mounted on' |" ?awk "'{print $6}'",
+            % Older versions of df may not know the --output option:
+            SecondCmd = ?df "-h --local "
+                ++ get_exclude_pseudo_fs_opt()
+                ++ "| " ?grep "-v 'Mounted on' |" ?awk "'{print $6}'",
 
-			case run_command( SecondCmd ) of
+            case run_command( SecondCmd ) of
 
-				{ _SecondExitCode=0, ResAsOneString } ->
-					%trace_utils:debug_fmt( "(using legacy df, with '~ts')",
-					%                       [ SecondCmd ] ),
-					text_utils:split_per_element( ResAsOneString, "\n" );
+                { _SecondExitCode=0, ResAsOneString } ->
+                    %trace_utils:debug_fmt( "(using legacy df, with '~ts')",
+                    %                       [ SecondCmd ] ),
+                    text_utils:split_per_element( ResAsOneString, "\n" );
 
-				{ SecondExitCode, SecondErrorOutput } ->
-					case CanFail of
+                { SecondExitCode, SecondErrorOutput } ->
+                    case CanFail of
 
-						true ->
-							throw( { mount_point_inquiry_failed, SecondExitCode,
-									 SecondErrorOutput } );
+                        true ->
+                            throw( { mount_point_inquiry_failed, SecondExitCode,
+                                     SecondErrorOutput } );
 
-						false ->
-							?trace_error_fmt( "Unable to list mount "
-								"points:~n~ts", [ SecondErrorOutput ] ),
-							undefined
+                        false ->
+                            ?trace_error_fmt( "Unable to list mount "
+                                "points:~n~ts", [ SecondErrorOutput ] ),
+                            undefined
 
-					end
+                    end
 
-			end
+            end
 
-	end.
+    end.
 
 
 % (helper for df)
 get_exclude_pseudo_fs_opt() ->
 
-	Excludes = [ " --exclude-type=" ++ text_utils:atom_to_string( P )
-					|| P <- get_known_pseudo_filesystems() ],
+    Excludes = [ " --exclude-type=" ++ text_utils:atom_to_string( P )
+                    || P <- get_known_pseudo_filesystems() ],
 
-	text_utils:join( _Sep=" ", Excludes ).
+    text_utils:join( _Sep=" ", Excludes ).
 
 
 
@@ -3145,119 +3585,119 @@ May throw an exception.
 """.
 -spec get_filesystem_info( any_directory_path() ) -> fs_info().
 get_filesystem_info( AnyFilesystemPath ) ->
-	get_filesystem_info( AnyFilesystemPath, _CanFail=true ).
+    get_filesystem_info( AnyFilesystemPath, _CanFail=true ).
 
 
 
 -doc """
 Returns information about the specified filesystem, throwing an exception on
 error if requested, otherwise displaying an error trace and returning
-'undefined'.
+`undefined`.
 """.
 -spec get_filesystem_info( any_directory_path(), boolean() ) ->
-											option( fs_info() ).
+                                            option( fs_info() ).
 get_filesystem_info( BinFilesystemPath, CanFail )
-								when is_binary( BinFilesystemPath ) ->
-	get_filesystem_info( text_utils:binary_to_string( BinFilesystemPath ),
-						 CanFail );
+                                when is_binary( BinFilesystemPath ) ->
+    get_filesystem_info( text_utils:binary_to_string( BinFilesystemPath ),
+                         CanFail );
 
 get_filesystem_info( FilesystemPath, CanFail ) ->
 
-	Cmd = ?df "--block-size=1K --local " ++ get_exclude_pseudo_fs_opt()
-		++ " --output=source,target,fstype,used,avail,iused,iavail '"
-		++ FilesystemPath ++ "' |" ?grep "-v 'Mounted on'",
+    Cmd = ?df "--block-size=1K --local " ++ get_exclude_pseudo_fs_opt()
+        ++ " --output=source,target,fstype,used,avail,iused,iavail '"
+        ++ FilesystemPath ++ "' |" ?grep "-v 'Mounted on'",
 
-	case run_command( Cmd ) of
+    case run_command( Cmd ) of
 
-		{ _ExitCode=0, ResAsOneString } ->
-			% Order of the columns: 'Filesystem / Mounted on / Type / Used /
-			% Avail / IUsed / IFree':
-			%
-			case text_utils:split_per_element( ResAsOneString, " " ) of
+        { _ExitCode=0, ResAsOneString } ->
+            % Order of the columns: 'Filesystem / Mounted on / Type / Used /
+            % Avail / IUsed / IFree':
+            %
+            case text_utils:split_per_element( ResAsOneString, " " ) of
 
-				[ Fs, Mount, Type, USize, ASize, Uinodes, Ainodes ] ->
+                [ Fs, Mount, Type, USize, ASize, Uinodes, Ainodes ] ->
 
-					%trace_utils:debug( "(using direct df)" ),
+                    %trace_utils:debug( "(using direct df)" ),
 
-					% df outputs kiB, not kB:
-					#fs_info{
-						filesystem=Fs,
-						mount_point=Mount,
-						type=get_filesystem_type( Type ),
-						used_size =
-							1024 * text_utils:string_to_integer( USize ),
-						available_size =
-							1024 * text_utils:string_to_integer( ASize ),
-						used_inodes = text_utils:string_to_integer( Uinodes ),
-						available_inodes =
-							text_utils:string_to_integer( Ainodes ) };
+                    % df outputs kiB, not kB:
+                    #fs_info{
+                        filesystem=Fs,
+                        mount_point=Mount,
+                        type=get_filesystem_type( Type ),
+                        used_size =
+                            1024 * text_utils:string_to_integer( USize ),
+                        available_size =
+                            1024 * text_utils:string_to_integer( ASize ),
+                        used_inodes = text_utils:string_to_integer( Uinodes ),
+                        available_inodes =
+                            text_utils:string_to_integer( Ainodes ) };
 
-				_ ->
-					get_filesystem_info_alternate( FilesystemPath, CanFail )
+                _ ->
+                    get_filesystem_info_alternate( FilesystemPath, CanFail )
 
-			end;
+            end;
 
-		{ _ExitCode, _ErrorOutput } ->
-			get_filesystem_info_alternate( FilesystemPath, CanFail )
+        { _ExitCode, _ErrorOutput } ->
+            get_filesystem_info_alternate( FilesystemPath, CanFail )
 
-	end.
+    end.
 
 
 
 % Alternate version, if the base version failed.
 get_filesystem_info_alternate( FilesystemPath, CanFail ) ->
 
-	% df must have failed, probably outdated and not understanding --output,
-	% defaulting to a less precise syntax:
+    % df must have failed, probably outdated and not understanding --output,
+    % defaulting to a less precise syntax:
 
-	%trace_utils:debug( "(using alternate df)" ),
+    %trace_utils:debug( "(using alternate df)" ),
 
-	Cmd = ?df "--block-size=1K --local "
-		++ get_exclude_pseudo_fs_opt() ++ " "
-		++ FilesystemPath ++ "|" ?grep "-v 'Mounted on'",
+    Cmd = ?df "--block-size=1K --local "
+        ++ get_exclude_pseudo_fs_opt() ++ " "
+        ++ FilesystemPath ++ "|" ?grep "-v 'Mounted on'",
 
-	case run_command( Cmd ) of
+    case run_command( Cmd ) of
 
-		{ _ExitCode=0, ResAsOneString } ->
+        { _ExitCode=0, ResAsOneString } ->
 
-			case text_utils:split_per_element( ResAsOneString, " " ) of
+            case text_utils:split_per_element( ResAsOneString, " " ) of
 
-				[ Fs, _1KBlocks,  USize, ASize, _UsedPercent, Mount ] ->
+                [ Fs, _1KBlocks,  USize, ASize, _UsedPercent, Mount ] ->
 
-					% df outputs kiB, not kB:
-					#fs_info{
-						filesystem=Fs,
-						mount_point=Mount,
-						type=unknown,
-						used_size =
-							1024 * text_utils:string_to_integer( USize ),
-						available_size = 1024 *
-							text_utils:string_to_integer( ASize ),
-						used_inodes = 0,
-						available_inodes = 0 };
+                    % df outputs kiB, not kB:
+                    #fs_info{
+                        filesystem=Fs,
+                        mount_point=Mount,
+                        type=unknown,
+                        used_size =
+                            1024 * text_utils:string_to_integer( USize ),
+                        available_size = 1024 *
+                            text_utils:string_to_integer( ASize ),
+                        used_inodes = 0,
+                        available_inodes = 0 };
 
-				_ ->
-					throw( { filesystem_inquiry_failed, FilesystemPath,
-							 ResAsOneString } )
+                _ ->
+                    throw( { filesystem_inquiry_failed, FilesystemPath,
+                             ResAsOneString } )
 
-			end;
+            end;
 
-		{ _ExitCode, ErrorOutput } ->
-			case CanFail of
+        { _ExitCode, ErrorOutput } ->
+            case CanFail of
 
-				true ->
-					throw( { filesystem_inquiry_failed, FilesystemPath,
-							 ErrorOutput } );
+                true ->
+                    throw( { filesystem_inquiry_failed, FilesystemPath,
+                             ErrorOutput } );
 
-				false ->
-					?trace_error_fmt( "Unable to obtain successfully "
-						"information about filesystem '~ts':~n~ts",
-						[ FilesystemPath, ErrorOutput ] ),
-					undefined
+                false ->
+                    ?trace_error_fmt( "Unable to obtain successfully "
+                        "information about filesystem '~ts':~n~ts",
+                        [ FilesystemPath, ErrorOutput ] ),
+                    undefined
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -3266,32 +3706,32 @@ Returns a textual description of the specified filesystem information.
 """.
 -spec filesystem_info_to_string( fs_info() ) -> ustring().
 filesystem_info_to_string( #fs_info{ filesystem=Fs, mount_point=Mount,
-									 type=Type,
-									 used_size=USize, available_size=ASize,
-									 used_inodes=Uinodes,
-									 available_inodes=Ainodes } ) ->
+                                     type=Type,
+                                     used_size=USize, available_size=ASize,
+                                     used_inodes=Uinodes,
+                                     available_inodes=Ainodes } ) ->
 
-	% For example vfat does not have inodes:
-	InodeString = case Uinodes + Ainodes of
+    % For example vfat does not have inodes:
+    InodeString = case Uinodes + Ainodes of
 
-		0 ->
-			"";
+        0 ->
+            "";
 
-		S ->
-			Percent = 100 * Uinodes / S,
-			text_utils:format( ", hence used at ~.1f%", [ Percent ] )
+        S ->
+            Percent = 100 * Uinodes / S,
+            text_utils:format( ", hence used at ~.1f%", [ Percent ] )
 
-	end,
+    end,
 
-	text_utils:format( "filesystem ~ts mounted on ~ts (type: ~ts). "
-		"Used size: ~B bytes (i.e. ~ts), available size: "
-		"~B bytes (i.e. ~ts) hence used at ~.1f% (total size: ~ts), "
-		"using ~B inodes and having ~B of them available~ts",
-		[ Fs, Mount, Type, USize, interpret_byte_size_with_unit( USize ),
-		  ASize, interpret_byte_size_with_unit( ASize ),
-		  100 * USize / ( USize + ASize ),
-		  interpret_byte_size_with_unit( USize + ASize ),
-		  Uinodes, Ainodes, InodeString ] ).
+    text_utils:format( "filesystem ~ts mounted on ~ts (type: ~ts). "
+        "Used size: ~B bytes (i.e. ~ts), available size: "
+        "~B bytes (i.e. ~ts) hence used at ~.1f% (total size: ~ts), "
+        "using ~B inodes and having ~B of them available~ts",
+        [ Fs, Mount, Type, USize, interpret_byte_size_with_unit( USize ),
+          ASize, interpret_byte_size_with_unit( ASize ),
+          100 * USize / ( USize + ASize ),
+          interpret_byte_size_with_unit( USize + ASize ),
+          Uinodes, Ainodes, InodeString ] ).
 
 
 
@@ -3300,15 +3740,15 @@ Returns the actual, internal filesystem type corresponding to the specified one.
 """.
 -spec get_filesystem_type( ustring() ) -> filesystem_type().
 get_filesystem_type( TypeString ) ->
-	% Better for now than relying on an uncomplete list:
-	text_utils:string_to_atom( TypeString ).
+    % Better for now than relying on an uncomplete list:
+    text_utils:string_to_atom( TypeString ).
 
 
 
 -doc "Returns a (probably system-dependent) base temporary directory.".
 -spec get_default_temporary_directory() -> directory_path() .
 get_default_temporary_directory() ->
-	"/tmp".
+    "/tmp".
 
 
 
@@ -3320,17 +3760,17 @@ Cannot crash.
 -spec get_current_directory_string() -> ustring().
 get_current_directory_string() ->
 
-	try
+    try
 
-		io_lib:format( "current directory: ~ts",
-					   [ file_utils:get_current_directory() ] )
+        io_lib:format( "current directory: ~ts",
+                       [ file_utils:get_current_directory() ] )
 
-	catch _AnyClass:Exception ->
+    catch _AnyClass:Exception ->
 
-		io_lib:format( "no information about the current directory "
-					   "could be obtained (~p)", [ Exception ] )
+        io_lib:format( "no information about the current directory "
+                       "could be obtained (~p)", [ Exception ] )
 
-	end.
+    end.
 
 
 
@@ -3341,11 +3781,11 @@ system resources.
 -spec get_resource_limits() -> ustring().
 get_resource_limits() ->
 
-	% 'cat /proc/sys/fs/file-max' would report the overall kernel limit over all
-	% processes.
+    % 'cat /proc/sys/fs/file-max' would report the overall kernel limit over all
+    % processes.
 
-	% As ulimit is actually a shell builtin:
-	evaluate_shell_expression( ?ulimit ++ " -a" ).
+    % As ulimit is actually a shell builtin:
+    evaluate_shell_expression( ?ulimit ++ " -a" ).
 
 
 
@@ -3358,16 +3798,16 @@ Cannot crash.
 -spec get_resource_limits_string() -> ustring().
 get_resource_limits_string() ->
 
-	try
+    try
 
-		io_lib:format( "ulimit information:~n~ts", [ get_resource_limits() ] )
+        io_lib:format( "ulimit information:~n~ts", [ get_resource_limits() ] )
 
-	catch _AnyClass:Exception ->
+    catch _AnyClass:Exception ->
 
-		io_lib:format( "no information about the current ulimit settings "
-					   "could be obtained (~p)", [ Exception ] )
+        io_lib:format( "no information about the current ulimit settings "
+                       "could be obtained (~p)", [ Exception ] )
 
-	end.
+    end.
 
 
 
@@ -3375,27 +3815,27 @@ get_resource_limits_string() ->
 -spec get_operating_system_description() -> ustring().
 get_operating_system_description() ->
 
-	OSfile = "/etc/os-release",
+    OSfile = "/etc/os-release",
 
-	case file_utils:is_existing_file_or_link( OSfile ) of
+    case file_utils:is_existing_file_or_link( OSfile ) of
 
-		true ->
-			case run_command( ?cat ++ OSfile ++ " |" ?grep "PRETTY_NAME |"
-					?sed "'s|^PRETTY_NAME=\"||1' |"
-					?sed "'s|\"$||1' 2>/dev/null" ) of
+        true ->
+            case run_command( ?cat ++ OSfile ++ " |" ?grep "PRETTY_NAME |"
+                    ?sed "'s|^PRETTY_NAME=\"||1' |"
+                    ?sed "'s|\"$||1' 2>/dev/null" ) of
 
-				{ _ExitCode=0, Output } ->
-					Output;
+                { _ExitCode=0, Output } ->
+                    Output;
 
-				{ _ExitCode, _ErrorOutput } ->
-					get_operating_system_description_alternate()
+                { _ExitCode, _ErrorOutput } ->
+                    get_operating_system_description_alternate()
 
-			end;
+            end;
 
-		_False ->
-			get_operating_system_description_alternate()
+        _False ->
+            get_operating_system_description_alternate()
 
-	end.
+    end.
 
 
 
@@ -3405,19 +3845,19 @@ system.
 """.
 get_operating_system_description_alternate() ->
 
-	IdentifierPath = "/etc/issue.net",
+    IdentifierPath = "/etc/issue.net",
 
-	case file_utils:is_existing_file( IdentifierPath ) of
+    case file_utils:is_existing_file( IdentifierPath ) of
 
-		true ->
-			BinString = file_utils:read_whole( IdentifierPath ),
-			text_utils:trim_whitespaces(
-				text_utils:binary_to_string( BinString ) );
+        true ->
+            BinString = file_utils:read_whole( IdentifierPath ),
+            text_utils:trim_whitespaces(
+                text_utils:binary_to_string( BinString ) );
 
-		_False ->
-			"(unknown operating system)"
+        _False ->
+            "(unknown operating system)"
 
-	end.
+    end.
 
 
 
@@ -3429,17 +3869,17 @@ Cannot crash.
 -spec get_operating_system_description_string() -> ustring().
 get_operating_system_description_string() ->
 
-	try
+    try
 
-		io_lib:format( "operating system: ~ts",
-					   [ get_operating_system_description() ] )
+        io_lib:format( "operating system: ~ts",
+                       [ get_operating_system_description() ] )
 
-	catch _AnyClass:Exception ->
+    catch _AnyClass:Exception ->
 
-		io_lib:format( "no information about the operating system "
-					   "could be obtained (~p)", [ Exception ] )
+        io_lib:format( "no information about the operating system "
+                       "could be obtained (~p)", [ Exception ] )
 
-	end.
+    end.
 
 
 
@@ -3452,23 +3892,23 @@ retrieved.
 -spec get_system_description() -> ustring().
 get_system_description() ->
 
-	% We use ~ts instead of ~ts as in some cases, Unicode strings might be
-	% returned:
-	%
-	Subjects = [ get_core_count_string(),
-				 get_size_of_vm_word_string(),
-				 get_operating_system_description_string(),
-				 get_process_count_string(),
-				 get_total_physical_memory_string(),
-				 get_ram_status_string(),
-				 get_swap_status_string(),
-				 get_user_name_string(),
-				 get_user_home_directory_string(),
-				 get_current_directory_string(),
-				 get_disk_usage_string(),
-				 get_resource_limits_string() ],
+    % We use ~ts instead of ~ts as in some cases, Unicode strings might be
+    % returned:
+    %
+    Subjects = [ get_core_count_string(),
+                 get_size_of_vm_word_string(),
+                 get_operating_system_description_string(),
+                 get_process_count_string(),
+                 get_total_physical_memory_string(),
+                 get_ram_status_string(),
+                 get_swap_status_string(),
+                 get_user_name_string(),
+                 get_user_home_directory_string(),
+                 get_current_directory_string(),
+                 get_disk_usage_string(),
+                 get_resource_limits_string() ],
 
-	text_utils:strings_to_string( Subjects ).
+    text_utils:strings_to_string( Subjects ).
 
 
 
@@ -3477,11 +3917,11 @@ Tells whether this host has graphical output (typically a running X server).
 """.
 -spec has_graphical_output() -> boolean().
 has_graphical_output() ->
-	% Currently relying on this X-related variable:
-	%
-	% (cannot be further simplified, 'true' never returned)
-	%
-	not( get_environment_variable( "DISPLAY" ) =:= false ).
+    % Currently relying on this X-related variable:
+    %
+    % (cannot be further simplified, 'true' never returned)
+    %
+    not( get_environment_variable( "DISPLAY" ) =:= false ).
 
 
 
@@ -3515,124 +3955,124 @@ software.
 """.
 -spec get_software_base_directory() -> directory_path().
 get_software_base_directory() ->
-	file_utils:join( get_user_home_directory(), "Software" ).
+    file_utils:join( get_user_home_directory(), "Software" ).
 
 
 
 -doc """
 Returns the (expected, conventional) base installation directory of the
-specified third-party, prerequisite package (e.g. "Foobar").
+specified third-party, prerequisite package (e.g. `"Foobar"`).
 """.
 -spec get_dependency_base_directory( package_name() ) -> directory_path().
 get_dependency_base_directory( PackageName="ErlPort" ) ->
 
-	% ErlPort must be special-cased, as its actual base installation directory
-	% *must* be named "erlport" (otherwise the interpreter initialization may
-	% fail on new nodes with the {not_found,"erlport/priv"} error).
-	%
-	% So:
-	%
-	% - if the 'ERLPORT_BASE_DIR' environment variable is defined, and set to an
-	% existing directory, then this directory will be retained
-	%
-	% - otherwise a default will be used, corresponding to the
-	% '~/Software/ErlPort/erlport' directory
+    % ErlPort must be special-cased, as its actual base installation directory
+    % *must* be named "erlport" (otherwise the interpreter initialization may
+    % fail on new nodes with the {not_found,"erlport/priv"} error).
+    %
+    % So:
+    %
+    % - if the 'ERLPORT_BASE_DIR' environment variable is defined, and set to an
+    % existing directory, then this directory will be retained
+    %
+    % - otherwise a default will be used, corresponding to the
+    % '~/Software/ErlPort/erlport' directory
 
-	case get_environment_variable( "ERLPORT_BASE_DIR" ) of
+    case get_environment_variable( "ERLPORT_BASE_DIR" ) of
 
-		false ->
+        false ->
 
-			% Then trying default path:
-			PathComponents =
-				[ get_software_base_directory(), PackageName, "erlport" ],
+            % Then trying default path:
+            PathComponents =
+                [ get_software_base_directory(), PackageName, "erlport" ],
 
-			DefaultDir = file_utils:normalise_path(
-				file_utils:join( PathComponents ) ),
+            DefaultDir = file_utils:normalise_path(
+                file_utils:join( PathComponents ) ),
 
-			case file_utils:is_existing_directory_or_link( DefaultDir ) of
+            case file_utils:is_existing_directory_or_link( DefaultDir ) of
 
-				true ->
-					trace_utils:debug_fmt( "Using default Erlport directory "
-										   "'~ts'.", [ DefaultDir ] ),
-					DefaultDir;
+                true ->
+                    trace_utils:debug_fmt( "Using default Erlport directory "
+                                           "'~ts'.", [ DefaultDir ] ),
+                    DefaultDir;
 
-				false ->
-					trace_utils:error_fmt( "No Erlport installation found: the "
-						"ERLPORT_BASE_DIR environment variable is not defined, "
-						"and the default directory ('~ts') does not exist.",
-						[ DefaultDir ] ),
+                false ->
+                    trace_utils:error_fmt( "No Erlport installation found: the "
+                        "ERLPORT_BASE_DIR environment variable is not defined, "
+                        "and the default directory ('~ts') does not exist.",
+                        [ DefaultDir ] ),
 
-					throw( { erlport_default_directory_not_found, DefaultDir } )
+                    throw( { erlport_default_directory_not_found, DefaultDir } )
 
-			end;
+            end;
 
 
-		EnvDir ->
-			case filename:basename( EnvDir ) of
+        EnvDir ->
+            case filename:basename( EnvDir ) of
 
-				"erlport" ->
-					case file_utils:is_existing_directory_or_link( EnvDir ) of
+                "erlport" ->
+                    case file_utils:is_existing_directory_or_link( EnvDir ) of
 
-						true ->
-							trace_utils:debug_fmt( "Using the Erlport "
-								"directory specified in the ERLPORT_BASE_DIR "
-								"environment variable: '~ts'.", [ EnvDir ] ),
-							EnvDir;
+                        true ->
+                            trace_utils:debug_fmt( "Using the Erlport "
+                                "directory specified in the ERLPORT_BASE_DIR "
+                                "environment variable: '~ts'.", [ EnvDir ] ),
+                            EnvDir;
 
-						false ->
-							trace_utils:error_fmt( "The Erlport directory "
-								"specified in the ERLPORT_BASE_DIR environment "
-								"variable ('~ts') does not exist.",
-								[ EnvDir ] ),
+                        false ->
+                            trace_utils:error_fmt( "The Erlport directory "
+                                "specified in the ERLPORT_BASE_DIR environment "
+                                "variable ('~ts') does not exist.",
+                                [ EnvDir ] ),
 
-							throw( { erlport_specified_directory_not_found,
-									 EnvDir } )
+                            throw( { erlport_specified_directory_not_found,
+                                     EnvDir } )
 
-					end;
+                    end;
 
-				_ ->
-					trace_utils:error_fmt( "The Erlport directory "
-						"specified in the ERLPORT_BASE_DIR environment "
-						"variable ('~ts') does not end with 'erlport'.",
-						[ EnvDir ] ),
-					throw( { invalid_erlport_specified_directory, EnvDir } )
+                _ ->
+                    trace_utils:error_fmt( "The Erlport directory "
+                        "specified in the ERLPORT_BASE_DIR environment "
+                        "variable ('~ts') does not end with 'erlport'.",
+                        [ EnvDir ] ),
+                    throw( { invalid_erlport_specified_directory, EnvDir } )
 
-			end
+            end
 
-	end;
+    end;
 
 get_dependency_base_directory( PackageName ) ->
 
-	% Expected to return a fully resolved version of the
-	% "$HOME/Software/Foobar/Foobar-current-install" path, such as
-	% "/home/stallone/Software/Foobar/Foobar-current-install":
-	%
-	PathComponents = [ get_software_base_directory(), PackageName,
-					   PackageName ++ "-current-install" ],
+    % Expected to return a fully resolved version of the
+    % "$HOME/Software/Foobar/Foobar-current-install" path, such as
+    % "/home/stallone/Software/Foobar/Foobar-current-install":
+    %
+    PathComponents = [ get_software_base_directory(), PackageName,
+                       PackageName ++ "-current-install" ],
 
-	file_utils:normalise_path( file_utils:join( PathComponents ) ).
+    file_utils:normalise_path( file_utils:join( PathComponents ) ).
 
 
 
 -doc """
 Returns the (expected, conventional) code installation directory of the
-specified third-party, prerequisite, Erlang package (e.g. "Foobar").
+specified third-party, prerequisite, Erlang package (e.g. `"Foobar"`).
 """.
 -spec get_dependency_code_directory( package_name() ) -> directory_path().
 get_dependency_code_directory( PackageName ) ->
 
-	% We would expect here
-	% /home/stallone/Software/Foobar/Foobar-current-install/ebin:
-	%
-	file_utils:join( get_dependency_base_directory( PackageName ), "ebin" ).
+    % We would expect here
+    % /home/stallone/Software/Foobar/Foobar-current-install/ebin:
+    %
+    file_utils:join( get_dependency_base_directory( PackageName ), "ebin" ).
 
 
 
 -doc "Tells whether a JSON support is available.".
 -spec is_json_support_available() -> boolean().
 is_json_support_available() ->
-	% This module can be built and executed in all cases:
-	json_utils:is_parser_available().
+    % This module can be built and executed in all cases:
+    json_utils:is_parser_available().
 
 
 
@@ -3642,7 +4082,7 @@ available.
 """.
 -spec get_json_unavailability_hint() -> ustring().
 get_json_unavailability_hint() ->
-	json_utils:get_json_unavailability_hint( _Backend=undefined ).
+    json_utils:get_json_unavailability_hint( _Backend=undefined ).
 
 
 
@@ -3652,24 +4092,24 @@ get_json_unavailability_hint() ->
 -spec is_hdf5_support_available() -> boolean().
 is_hdf5_support_available() ->
 
-	% Unlike dependencies like jsx whose compilation (in json_utils.erl) do not
-	% need any specific *.hrl header (therefore json_utils:start/0 is available
-	% in all cases), hdf5_support needs one (erlhdf5.hrl), hence the
-	% hdf5_support module may not be built at all, and thus will not be
-	% available even in order to provide a means of telling whether HDF can be
-	% supported.
-	%
-	% So:
-	%
-	case code_utils:is_beam_in_path( hdf5_support ) of
+    % Unlike dependencies like jsx whose compilation (in json_utils.erl) do not
+    % need any specific *.hrl header (therefore json_utils:start/0 is available
+    % in all cases), hdf5_support needs one (erlhdf5.hrl), hence the
+    % hdf5_support module may not be built at all, and thus will not be
+    % available even in order to provide a means of telling whether HDF can be
+    % supported.
+    %
+    % So:
+    %
+    case code_utils:is_beam_in_path( hdf5_support ) of
 
-		not_found ->
-			false;
+        not_found ->
+            false;
 
-		_Paths ->
-			true
+        _Paths ->
+            true
 
-	end.
+    end.
 
 
 
@@ -3679,5 +4119,5 @@ available.
 """.
 -spec get_hdf5_unavailability_hint() -> ustring().
 get_hdf5_unavailability_hint() ->
-	"Hint: inspect, in myriad/GNUmakevars.inc, the USE_HDF5 and "
-	"ERLHDF5_BASE variables.".
+    "Hint: inspect, in myriad/GNUmakevars.inc, the USE_HDF5 and "
+    "ERLHDF5_BASE variables.".

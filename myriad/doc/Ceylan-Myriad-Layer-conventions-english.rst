@@ -33,7 +33,7 @@ Source files should be formatted for a 80-character width: no character should b
 
 Except in very specific cases, only ASCII code should be used (e.g. no accentuated characters).
 
-Tabulations should be preferred to series of spaces, and the text should be formatted according to 4-character tabulations.
+As recommended by various style guides, a series of 4 spaces shall be preferred to tabulations.
 
 All redundant whitespaces should be removed, preferably automatically (see the Emacs ``whitespace-cleanup`` command). This is why, with the `emacs settings`_ that we recommend, pressing the F8 key removes for example the yellow areas in the current buffer by replacing any series of four spaces by a corresponding tabulation.
 
@@ -57,9 +57,9 @@ For example::
   In the Erlang source code found from XXX/ceylan/myriad, we have:
   + 208 source files (*.erl), 36 header files (*.hrl)
   + a grand total of 118666 lines:
-	- 35959 of which (30.3%) are blank lines
-	- 37187 of which (31.3%) are comments
-	- 45520 of which (38.3%) are code
+    - 35959 of which (30.3%) are blank lines
+    - 37187 of which (31.3%) are comments
+    - 45520 of which (38.3%) are code
 
 The most obvious conventions are:
 
@@ -292,15 +292,15 @@ Release Conventions
 
 These conventions apply to the release of any Myriad-based package, i.e. either Myriad itself or packages depending, directly or not, from it.
 
-The recommended procedure is (while being at the root of a clone):
+The recommended procedure is (while being at the root of a clone of the package of interest):
 
-#. ensure that your version of Erlang (see `install-erlang.sh <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/conf/install-erlang.sh>`_), of rebar3 (see `install-rebar3.sh <https://github.com/Olivier-Boudeville/Ceylan-Hull/blob/master/install-rebar3.sh>`_) and possibly of erlang_ls (see `this section <https://howtos.esperide.org/Emacs.html#regarding-erlang>`_) are up to date
+#. ensure that your version of ``Erlang`` (see `install-erlang.sh <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/conf/install-erlang.sh>`_), of ``rebar3`` (see `install-rebar3.sh <https://github.com/Olivier-Boudeville/Ceylan-Hull/blob/master/install-rebar3.sh>`_) and possibly of ``erlang_ls`` (see `this section <https://howtos.esperide.org/Emacs.html#regarding-erlang>`_) are up to date
 #. merge all new developments in the ``master`` (or ``main``) branch
 #. possibly update dependencies, then:
 
-   - in the corresponding ``GNUmakevars.inc`` settings
+   - in the corresponding ``GNUmakevars.inc`` settings if needed (for example if adding/removing dependencies)
    - in any ``priv/bin/deploy-*-native-build.sh`` script
-   - in ``conf/rebar.config.template``; in which case then run ``make set-rebar-conf``
+   - in ``conf/rebar.config.template``; in which case then run, still from the root of the package clone, ``make set-rebar-conf``
 #. in ``GNUmakevars.inc``:
 
    - ensure that all debug/check flags (like, for Myriad: ``MYRIAD_DEBUG_FLAGS += -Dmyriad_debug_code_path``) are disabled, and that non-release elements (e.g. ``MYRIAD_LCO_OPT``) and optional ones are disabled as well
@@ -321,7 +321,9 @@ Other Conventions
 
 - for clarity, we tend to use longer variable names, in CamelCase
 - we tend to use mute variables to clarify meanings and intents, as in ``_Acc=[]`` (beware, despite being muted, any variable in scope that bears the same name will be matched), ``Acc`` designating accumulators
-- as there is much list-based recursion, a variable named ``H`` means ``Head`` and ``T`` means ``Tail`` (as in ``[Head|Tail]``)
-- the string format specifier ``~s`` shall never be used; its Unicode-aware counterpart ``~ts`` must be used instead; similarly, for string operations, ``list_to_binary/1`` and ``binary_to_list/1`` must no be used either; prefer anyway the primitives in ``text_utils``
+- as there is much list-based recursion involved, a variable named ``H`` means *head*, and ``T`` means *tail* (as in ``[Head|Tail]``)
+- ``Res`` means usually *result*
+- longer series of words may be abbreviated based on their first letters: a transitive adjustable frobnicator may be designated by ``TAF``
+- the string format specifier ``~s`` shall never be used; its Unicode-aware counterpart ``~ts`` must be used instead; similarly, for string operations, ``list_to_binary/1`` and ``binary_to_list/1`` must no be used either; anyway the primitives in ``text_utils`` shall be preferred
 
 .. See also the few hints regarding contribution_.

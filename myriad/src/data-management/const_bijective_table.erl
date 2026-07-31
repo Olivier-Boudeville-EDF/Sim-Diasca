@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -102,7 +102,7 @@ instead
 
 
 -export([ generate_in_memory/2, generate_in_memory/3,
-		  generate_in_file/2, generate_in_file/3, generate_in_file/4 ]).
+          generate_in_file/2, generate_in_file/3, generate_in_file/4 ]).
 
 
 -doc """
@@ -181,7 +181,7 @@ operation remains fully in-memory.
 """.
 -spec generate_in_memory( module_name(), entries() ) -> void().
 generate_in_memory( ModuleName, Entries ) ->
-	generate_in_memory( ModuleName, Entries, _ElementLookup=strict ).
+    generate_in_memory( ModuleName, Entries, _ElementLookup=strict ).
 
 
 
@@ -201,47 +201,47 @@ sets contains the 'undefined' atom, as it leads to ambiguity.
 Note that no actual module file is generated (e.g. no 'foobar.beam'), the
 operation remains fully in-memory.
 """.
--spec generate_in_memory( module_name(), entries(), element_lookup() ) ->	
-										void().
+-spec generate_in_memory( module_name(), entries(), element_lookup() ) ->
+                                        void().
 generate_in_memory( ModuleName, Entries, ElementLookup ) ->
 
-	cond_utils:if_defined( myriad_debug_code_generation,
-		% list_table cannot be used, as "keys" (first) are not necessarily
-		% atoms:
-		%
-		trace_utils:debug_fmt( "Generating pseudo-module '~ts', "
-			"with the '~ts' element look-up, from following entries:~n ~p",
-			[ ModuleName, ElementLookup, Entries ] ) ),
+    cond_utils:if_defined( myriad_debug_code_generation,
+        % list_table cannot be used, as "keys" (first) are not necessarily
+        % atoms:
+        %
+        trace_utils:debug_fmt( "Generating pseudo-module '~ts', "
+            "with the '~ts' element look-up, from following entries:~n ~p",
+            [ ModuleName, ElementLookup, Entries ] ) ),
 
-	Forms = generate_table_forms( ModuleName, Entries, ElementLookup ),
-	%trace_utils:debug_fmt( "Generated forms:~p", [ Forms ] ),
+    Forms = generate_table_forms( ModuleName, Entries, ElementLookup ),
+    %trace_utils:debug_fmt( "Generated forms:~p", [ Forms ] ),
 
-	% Not wanting an actual file:
-	CompileOpts = [ binary | meta_utils:get_compile_base_opts() ],
+    % Not wanting an actual file:
+    CompileOpts = [ binary | meta_utils:get_compile_base_opts() ],
 
-	BinaryObjectCode = case compile:forms( Forms, CompileOpts ) of
+    BinaryObjectCode = case compile:forms( Forms, CompileOpts ) of
 
-		% Matches the module name:
-		{ ok, ModuleName, Binary } ->
-			Binary;
+        % Matches the module name:
+        { ok, ModuleName, Binary } ->
+            Binary;
 
-		Error ->
-			throw( { module_generation_failed, ModuleName, Error } )
+        Error ->
+            throw( { module_generation_failed, ModuleName, Error } )
 
-	end,
+    end,
 
-	% Just a name here, not designating any actual file:
-	ModulePseudoFilename = get_generated_beam_filename_for( ModuleName ),
+    % Just a name here, not designating any actual file:
+    ModulePseudoFilename = get_generated_beam_filename_for( ModuleName ),
 
-	code:load_binary( ModuleName, ModulePseudoFilename, BinaryObjectCode ).
+    code:load_binary( ModuleName, ModulePseudoFilename, BinaryObjectCode ).
 
-	% Contains for example '{foobar,
-	% "const_bijective_table_generated_foobar.beam"}':
-	%
-	%trace_utils:debug_fmt( "Loaded modules:~n~p", [ code:all_loaded() ] ),
+    % Contains for example '{foobar,
+    % "const_bijective_table_generated_foobar.beam"}':
+    %
+    %trace_utils:debug_fmt( "Loaded modules:~n~p", [ code:all_loaded() ] ),
 
-	% We loaded this new module also, as otherwise any previous various version
-	% of it would still be used instead.
+    % We loaded this new module also, as otherwise any previous various version
+    % of it would still be used instead.
 
 
 
@@ -260,7 +260,7 @@ Returns the generated filename (not path), for any further reference.
 """.
 -spec generate_in_file( module_name(), entries() ) -> file_name().
 generate_in_file( ModuleName, Entries ) ->
-	generate_in_file( ModuleName, Entries, _ElementLookup=strict ).
+    generate_in_file( ModuleName, Entries, _ElementLookup=strict ).
 
 
 
@@ -285,10 +285,10 @@ The resulting module is not loaded by this function.
 Returns the generated filename (not path), for any further reference.
 """.
 -spec generate_in_file( module_name(), entries(), element_lookup() ) ->
-												file_name().
+                                                file_name().
 generate_in_file( ModuleName, Entries, ElementLookup ) ->
-	generate_in_file( ModuleName, Entries, ElementLookup,
-					  _TargetDir=file_utils:get_current_directory() ).
+    generate_in_file( ModuleName, Entries, ElementLookup,
+                      _TargetDir=file_utils:get_current_directory() ).
 
 
 
@@ -313,52 +313,52 @@ The resulting module is not loaded by this function.
 Returns the generated filename (not path), for any further reference.
 """.
 -spec generate_in_file( module_name(), entries(), element_lookup(),
-						any_directory_path() ) -> file_name().
+                        any_directory_path() ) -> file_name().
 generate_in_file( ModuleName, Entries, ElementLookup, TargetDir ) ->
 
-	file_utils:is_existing_directory_or_link( TargetDir ) orelse
-		throw( { non_existing_output_directory, TargetDir } ),
+    file_utils:is_existing_directory_or_link( TargetDir ) orelse
+        throw( { non_existing_output_directory, TargetDir } ),
 
-	ModuleFilename = get_generated_beam_filename_for( ModuleName ),
+    ModuleFilename = get_generated_beam_filename_for( ModuleName ),
 
-	cond_utils:if_defined( myriad_debug_code_generation,
-		% list_table cannot be used, as "keys" (first) are not necessarily
-		% atoms:
-		%
-		trace_utils:debug_fmt( "Generating module '~ts' in file '~ts', in the "
-			"'~ts' directory, with the '~ts' element look-up, "
-			"from following entries:~n ~p",
-			[ ModuleName, ModuleFilename, TargetDir, ElementLookup,
-			  Entries ] ) ),
+    cond_utils:if_defined( myriad_debug_code_generation,
+        % list_table cannot be used, as "keys" (first) are not necessarily
+        % atoms:
+        %
+        trace_utils:debug_fmt( "Generating module '~ts' in file '~ts', in the "
+            "'~ts' directory, with the '~ts' element look-up, "
+            "from following entries:~n ~p",
+            [ ModuleName, ModuleFilename, TargetDir, ElementLookup,
+              Entries ] ) ),
 
-	Forms = generate_table_forms( ModuleName, Entries, ElementLookup ),
-	%trace_utils:debug_fmt( "Generated forms:~p", [ Forms ] ),
+    Forms = generate_table_forms( ModuleName, Entries, ElementLookup ),
+    %trace_utils:debug_fmt( "Generated forms:~p", [ Forms ] ),
 
-	CompileOpts =
-		[ { outdir, TargetDir } | meta_utils:get_compile_base_opts() ],
+    CompileOpts =
+        [ { outdir, TargetDir } | meta_utils:get_compile_base_opts() ],
 
-	BinaryObjectCode = case compile:forms( Forms, CompileOpts ) of
+    BinaryObjectCode = case compile:forms( Forms, CompileOpts ) of
 
-		% Matches the module name; apparently 'binary' is implicit and thus no
-		% file is written:
-		%
-		{ ok, ModuleName, Binary } ->
-			Binary;
+        % Matches the module name; apparently 'binary' is implicit and thus no
+        % file is written:
+        %
+        { ok, ModuleName, Binary } ->
+            Binary;
 
-		Error ->
-			throw( { module_generation_failed, ModuleName, Error } )
+        Error ->
+            throw( { module_generation_failed, ModuleName, Error } )
 
-	end,
+    end,
 
-	% So we do it by ourselves:
-	TargetFilePath = file_utils:join( TargetDir, ModuleFilename ),
-	file_utils:write_whole( TargetFilePath, BinaryObjectCode ),
+    % So we do it by ourselves:
+    TargetFilePath = file_utils:join( TargetDir, ModuleFilename ),
+    file_utils:write_whole( TargetFilePath, BinaryObjectCode ),
 
-	cond_utils:if_defined( myriad_check_code_generation,
-		file_utils:is_existing_file( TargetFilePath ) orelse
-			throw( { no_module_file_generated, TargetFilePath } ) ),
+    cond_utils:if_defined( myriad_check_code_generation,
+        file_utils:is_existing_file( TargetFilePath ) orelse
+            throw( { no_module_file_generated, TargetFilePath } ) ),
 
-	ModuleFilename.
+    ModuleFilename.
 
 
 
@@ -372,13 +372,13 @@ Returns a filename corresponding to the specified BEAM module to be generated.
 -spec get_generated_beam_filename_for( module_name() ) -> file_name().
 get_generated_beam_filename_for( ModName ) ->
 
-	% Clearer, but longer, and anyway the runtime will expect ModName, not
-	% another atom:
-	%
-	%"const_bijective_table_generated_"
-	%    ++ code_utils:get_beam_filename( ModName ).
+    % Clearer, but longer, and anyway the runtime will expect ModName, not
+    % another atom:
+    %
+    %"const_bijective_table_generated_"
+    %    ++ code_utils:get_beam_filename( ModName ).
 
-	code_utils:get_beam_filename( ModName ).
+    code_utils:get_beam_filename( ModName ).
 
 
 
@@ -386,21 +386,21 @@ get_generated_beam_filename_for( ModName ) ->
 Generates the forms corresponding to the specified entries and module.
 """.
 -spec generate_table_forms( module_name(), entries(), element_lookup() ) ->
-												[ form() ].
+                                                [ form() ].
 generate_table_forms( ModuleName, Entries, ElementLookup ) ->
 
-	FileLoc = ast_utils:get_generated_code_location(),
+    FileLoc = ast_utils:get_generated_code_location(),
 
-	% We prefer defining get_first_for/1 then get_second_for/1, and respecting
-	% the order of the specified entries; preferably ends with end of file:
-	%
-	% (refer to https://www.erlang.org/doc/apps/erts/absform.html)
+    % We prefer defining get_first_for/1 then get_second_for/1, and respecting
+    % the order of the specified entries; preferably ends with end of file:
+    %
+    % (refer to https://www.erlang.org/doc/apps/erts/absform.html)
 
-	RevEntries = lists:reverse( Entries ),
+    RevEntries = lists:reverse( Entries ),
 
-	[ const_bijective_topics:generate_header_form( ModuleName, FileLoc ) |
-	  generate_fun_forms( RevEntries, ElementLookup, FileLoc ) ] ++
-		[ const_bijective_topics:generate_footer_form( FileLoc ) ].
+    [ const_bijective_topics:generate_header_form( ModuleName, FileLoc ) |
+      generate_fun_forms( RevEntries, ElementLookup, FileLoc ) ] ++
+        [ const_bijective_topics:generate_footer_form( FileLoc ) ].
 
 
 
@@ -409,34 +409,34 @@ generate_table_forms( ModuleName, Entries, ElementLookup ) ->
 %
 generate_fun_forms( Entries, _ElementLookup=strict, FileLoc ) ->
 
-	% Mostly like const_bijective_topics:generate_forms/5:
+    % Mostly like const_bijective_topics:generate_forms/5:
 
-	RevEntries = lists:reverse( Entries ),
+    RevEntries = lists:reverse( Entries ),
 
-	% We have here to generate first the 'foobar:get_first_for(Sn) -> Fn;'
-	% clauses:
-	%
-	FirstFunForm = generate_strict_fun_form_for_first( RevEntries, FileLoc ),
+    % We have here to generate first the 'foobar:get_first_for(Sn) -> Fn;'
+    % clauses:
+    %
+    FirstFunForm = generate_strict_fun_form_for_first( RevEntries, FileLoc ),
 
-	SecondFunForm = generate_strict_fun_form_for_second( RevEntries, FileLoc ),
+    SecondFunForm = generate_strict_fun_form_for_second( RevEntries, FileLoc ),
 
-	[ FirstFunForm, SecondFunForm ];
+    [ FirstFunForm, SecondFunForm ];
 
 
 generate_fun_forms( Entries, _ElementLookup='maybe', FileLoc ) ->
 
-	% Mostly like const_bijective_topics:generate_forms/5:
+    % Mostly like const_bijective_topics:generate_forms/5:
 
-	RevEntries = lists:reverse( Entries ),
+    RevEntries = lists:reverse( Entries ),
 
-	% We have here to generate first the 'foobar:get_first_for(Sn) -> Fn;'
-	% clauses:
-	%
-	FirstFunForms = generate_maybe_fun_forms_for_first( RevEntries, FileLoc ),
+    % We have here to generate first the 'foobar:get_first_for(Sn) -> Fn;'
+    % clauses:
+    %
+    FirstFunForms = generate_maybe_fun_forms_for_first( RevEntries, FileLoc ),
 
-	SecondFunForms = generate_maybe_fun_forms_for_second( RevEntries, FileLoc ),
+    SecondFunForms = generate_maybe_fun_forms_for_second( RevEntries, FileLoc ),
 
-	FirstFunForms ++ SecondFunForms.
+    FirstFunForms ++ SecondFunForms.
 
 
 
@@ -444,27 +444,27 @@ generate_fun_forms( Entries, _ElementLookup='maybe', FileLoc ) ->
 % Generates the strict form corresponding to foobar:get_first_for/1.
 generate_strict_fun_form_for_first( Entries, FileLoc ) ->
 
-	% We have here to generate first the 'foobar:get_first_for(Sn) -> Fn;'
-	% clauses:
-	%
-	Clauses = const_bijective_topics:generate_first_clauses( Entries, FileLoc,
-		_Acc=[ catch_all_clause( second_not_found, _Lookup=strict,
-								 FileLoc ) ] ),
+    % We have here to generate first the 'foobar:get_first_for(Sn) -> Fn;'
+    % clauses:
+    %
+    Clauses = const_bijective_topics:generate_first_clauses( Entries, FileLoc,
+        _Acc=[ catch_all_clause( second_not_found, _Lookup=strict,
+                                 FileLoc ) ] ),
 
-	{ function, FileLoc, _FirstFunName=get_first_for, _Arity=1, Clauses }.
+    { function, FileLoc, _FirstFunName=get_first_for, _Arity=1, Clauses }.
 
 
 
 % Generates the strict form corresponding to foobar:get_second_for/1.
 generate_strict_fun_form_for_second( Entries, FileLoc ) ->
 
-	% We have here to generate second the 'foobar:get_second_for(Sn) -> Fn;'
-	% clauses:
-	%
-	Clauses = const_bijective_topics:generate_second_clauses( Entries, FileLoc,
-		_Acc=[ catch_all_clause( first_not_found, _Lookup=strict, FileLoc ) ] ),
+    % We have here to generate second the 'foobar:get_second_for(Sn) -> Fn;'
+    % clauses:
+    %
+    Clauses = const_bijective_topics:generate_second_clauses( Entries, FileLoc,
+        _Acc=[ catch_all_clause( first_not_found, _Lookup=strict, FileLoc ) ] ),
 
-	{ function, FileLoc, _SecondFunName=get_second_for, _Arity=1, Clauses }.
+    { function, FileLoc, _SecondFunName=get_second_for, _Arity=1, Clauses }.
 
 
 
@@ -473,29 +473,29 @@ generate_strict_fun_form_for_second( Entries, FileLoc ) ->
 %
 generate_maybe_fun_forms_for_first( Entries, FileLoc ) ->
 
-	% We generate first a full maybe function, then derive its strict
-	% counterpart from it (the strict one calling the maybe one):
+    % We generate first a full maybe function, then derive its strict
+    % counterpart from it (the strict one calling the maybe one):
 
-	Arity = 1,
+    Arity = 1,
 
-	MaybeFunName = get_maybe_first_for,
+    MaybeFunName = get_maybe_first_for,
 
-	MaybeClauses = const_bijective_topics:generate_first_clauses( Entries,
-		FileLoc,
-		_MAcc=[ catch_all_clause( second_not_found, _Lookup='maybe',
-								  FileLoc ) ] ),
+    MaybeClauses = const_bijective_topics:generate_first_clauses( Entries,
+        FileLoc,
+        _MAcc=[ catch_all_clause( second_not_found, _Lookup='maybe',
+                                  FileLoc ) ] ),
 
-	MaybeFunForm = { function, FileLoc, MaybeFunName, Arity, MaybeClauses },
+    MaybeFunForm = { function, FileLoc, MaybeFunName, Arity, MaybeClauses },
 
 
-	StrictClauses = generate_strict_calling_clauses(
-		_ErrorAtom=second_not_found, MaybeFunName, FileLoc ),
+    StrictClauses = generate_strict_calling_clauses(
+        _ErrorAtom=second_not_found, MaybeFunName, FileLoc ),
 
-	%trace_utils:debug_fmt( "Strict clauses:~n ~p", [ StrictClauses ] ),
+    %trace_utils:debug_fmt( "Strict clauses:~n ~p", [ StrictClauses ] ),
 
-	StrictFunForm = { function, FileLoc, get_first_for, Arity, StrictClauses },
+    StrictFunForm = { function, FileLoc, get_first_for, Arity, StrictClauses },
 
-	[ MaybeFunForm, StrictFunForm ].
+    [ MaybeFunForm, StrictFunForm ].
 
 
 
@@ -505,23 +505,23 @@ generate_maybe_fun_forms_for_first( Entries, FileLoc ) ->
 %
 generate_maybe_fun_forms_for_second( Entries, FileLoc ) ->
 
-	Arity = 1,
+    Arity = 1,
 
-	MaybeFunName = get_maybe_second_for,
+    MaybeFunName = get_maybe_second_for,
 
-	MaybeClauses = const_bijective_topics:generate_second_clauses( Entries,
-		FileLoc,
-		_MAcc=[ catch_all_clause( first_not_found, _Lookup='maybe',
-								  FileLoc ) ] ),
+    MaybeClauses = const_bijective_topics:generate_second_clauses( Entries,
+        FileLoc,
+        _MAcc=[ catch_all_clause( first_not_found, _Lookup='maybe',
+                                  FileLoc ) ] ),
 
-	MaybeFunForm = { function, FileLoc, MaybeFunName, Arity, MaybeClauses },
+    MaybeFunForm = { function, FileLoc, MaybeFunName, Arity, MaybeClauses },
 
-	StrictClauses = generate_strict_calling_clauses(
-		_ErrorAtom=first_not_found, MaybeFunName, FileLoc ),
+    StrictClauses = generate_strict_calling_clauses(
+        _ErrorAtom=first_not_found, MaybeFunName, FileLoc ),
 
-	StrictFunForm = { function, FileLoc, get_second_for, Arity, StrictClauses },
+    StrictFunForm = { function, FileLoc, get_second_for, Arity, StrictClauses },
 
-	[ MaybeFunForm, StrictFunForm ].
+    [ MaybeFunForm, StrictFunForm ].
 
 
 
@@ -531,33 +531,33 @@ generate_maybe_fun_forms_for_second( Entries, FileLoc ) ->
 % (helper)
 generate_strict_calling_clauses( ErrorAtom, MaybeFunName, FileLoc ) ->
 
-	% Corresponds to a clause:
-	%  FUNC( X ) ->
-	%    case MaybeFunName( X ) of
-	%
-	%        undefined ->
-	%            throw( { ErrorAtom, X } );
-	%
-	%        V ->
-	%            V
-	%
-	%    end
+    % Corresponds to a clause:
+    %  FUNC( X ) ->
+    %    case MaybeFunName( X ) of
+    %
+    %        undefined ->
+    %            throw( { ErrorAtom, X } );
+    %
+    %        V ->
+    %            V
+    %
+    %    end
 
-	XVar = {var,FileLoc,'X'},
+    XVar = {var,FileLoc,'X'},
 
-	VVar = {var,FileLoc,'V'},
+    VVar = {var,FileLoc,'V'},
 
-	ThrowTuple = { tuple, FileLoc, [ {atom,FileLoc,ErrorAtom}, XVar ] },
+    ThrowTuple = { tuple, FileLoc, [ {atom,FileLoc,ErrorAtom}, XVar ] },
 
-	% Single clause:
-	[ { clause, FileLoc, _PatternSeq=[ XVar ], _GuardSeq=[],
-		[ { 'case', FileLoc,
-			{ call, FileLoc, {atom,FileLoc,MaybeFunName}, [ XVar ] },
-			[ { clause, FileLoc, [{atom,FileLoc,undefined}], [],
-				[ { call, FileLoc, _Fun={atom,FileLoc,throw},
-				  _Args=[ ThrowTuple ] } ] },
-			  { clause, FileLoc, [VVar], [],
-				[ VVar ] } ] } ] } ].
+    % Single clause:
+    [ { clause, FileLoc, _PatternSeq=[ XVar ], _GuardSeq=[],
+        [ { 'case', FileLoc,
+            { call, FileLoc, {atom,FileLoc,MaybeFunName}, [ XVar ] },
+            [ { clause, FileLoc, [{atom,FileLoc,undefined}], [],
+                [ { call, FileLoc, _Fun={atom,FileLoc,throw},
+                  _Args=[ ThrowTuple ] } ] },
+              { clause, FileLoc, [VVar], [],
+                [ VVar ] } ] } ] } ].
 
 
 
@@ -570,31 +570,31 @@ Thus results in { {nocatch, {first_not_found, MyUnexpectedValue} },
 [{my_generated_module, get_second_for,1,[]}, ...
 """.
 -spec catch_all_clause( error_type(), element_lookup(), file_loc() ) ->
-								clause_def().
+                                clause_def().
 catch_all_clause( ErrorAtom, _Lookup=strict, FileLoc ) ->
 
-	% Corresponds to a clause:
-	%  FUNC( NotMatched ) ->
-	%    throw( { ErrorAtom, NotMatched } )
+    % Corresponds to a clause:
+    %  FUNC( NotMatched ) ->
+    %    throw( { ErrorAtom, NotMatched } )
 
-	NotMatchedVar = { var, FileLoc, 'NotMatched' },
+    NotMatchedVar = { var, FileLoc, 'NotMatched' },
 
-	% Not {remote, FileLoc, _Mod={atom,FileLoc,erlang}, _FunThrow...
-	ThrowCall = { call, FileLoc, _Fun={atom,FileLoc,throw},
-		_Args=[ { tuple, FileLoc,
-					[ {atom,FileLoc,ErrorAtom}, NotMatchedVar ] } ] },
+    % Not {remote, FileLoc, _Mod={atom,FileLoc,erlang}, _FunThrow...
+    ThrowCall = { call, FileLoc, _Fun={atom,FileLoc,throw},
+        _Args=[ { tuple, FileLoc,
+                    [ {atom,FileLoc,ErrorAtom}, NotMatchedVar ] } ] },
 
-	{ clause, FileLoc, _PatternSeq=[ NotMatchedVar ], _GuardSeq=[],
-		_Body=[ ThrowCall ] };
+    { clause, FileLoc, _PatternSeq=[ NotMatchedVar ], _GuardSeq=[],
+        _Body=[ ThrowCall ] };
 
 
 catch_all_clause( _ErrorAtom, _Lookup='maybe', FileLoc ) ->
 
-	% Corresponds to a clause:
-	%  FUNC( _NotMatched ) ->
-	%    undefined.
+    % Corresponds to a clause:
+    %  FUNC( _NotMatched ) ->
+    %    undefined.
 
-	NotMatchedVar = { var, FileLoc, '_' },
+    NotMatchedVar = { var, FileLoc, '_' },
 
-	{ clause, FileLoc, _PatternSeq=[ NotMatchedVar ], _GuardSeq=[],
-		_Body=[ {atom,FileLoc,'undefined'} ] }.
+    { clause, FileLoc, _PatternSeq=[ NotMatchedVar ], _GuardSeq=[],
+        _Body=[ {atom,FileLoc,'undefined'} ] }.

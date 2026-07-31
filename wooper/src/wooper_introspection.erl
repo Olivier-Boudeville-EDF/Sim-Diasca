@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2025 Olivier Boudeville
+% Copyright (C) 2019-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -44,9 +44,9 @@ Returns the list of the names of the class-specific attributes of specified
 class, in their declaration order.
 """.
 -spec get_class_specific_attribute_names( wooper:classname() ) ->
-												[ wooper:attribute_name() ].
+                                                [ wooper:attribute_name() ].
 get_class_specific_attribute_names( Classname ) ->
 
-	Attrinfos = Classname:get_class_specific_attributes(),
+    Attrinfos = Classname:get_class_specific_attributes(),
 
-	[ AttrName || #attribute_info{ name=AttrName } <- Attrinfos ].
+    [ AttrName || #attribute_info{ name=AttrName } <- Attrinfos ].

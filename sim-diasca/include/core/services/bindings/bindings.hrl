@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 EDF R&D
+% Copyright (C) 2016-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -23,10 +23,10 @@
 % Record gathering all the binding managers of the various languages involved.
 -record( binding_managers, {
 
-	% For Python:
-	python_binding_manager = none ::
+    % For Python:
+    python_binding_manager = none ::
         'none' | class_PythonBindingManager:manager_pid(),
 
-	% For Java:
-	java_binding_manager = none ::
+    % For Java:
+    java_binding_manager = none ::
         'none' | class_JavaBindingManager:manager_pid() } ).

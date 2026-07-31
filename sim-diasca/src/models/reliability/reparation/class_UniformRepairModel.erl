@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -28,10 +28,10 @@ uniform law.
 
 
 -define( class_description,
-		 "Class modelling the reparation behaviour of equipments according "
-		 "to a uniform law (probability density)."
-		 "It is a less common repair model than the Gaussian one."
-		 "See: class_GaussianRepairModel." ).
+         "Class modelling the reparation behaviour of equipments according "
+         "to a uniform law (probability density)."
+         "It is a less common repair model than the Gaussian one."
+         "See: class_GaussianRepairModel." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -40,7 +40,7 @@ uniform law.
 
 % Must be included before class_TraceEmitter header:
 -define( trace_emitter_categorization,
-		 "Actor.StochasticActor.RepairModel.UniformRepairModel" ).
+         "Actor.StochasticActor.RepairModel.UniformRepairModel" ).
 
 
 
@@ -65,24 +65,24 @@ Affecting more resources leads to decreased repair durations. So it is a measure
 of the failure gravity in itself, not depending on the repair resources.
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 class_RepairModel:mttr() ) -> wooper:state().
+                 class_RepairModel:mttr() ) -> wooper:state().
 construct( State, ActorSettings,
-		   _MTTR={ MaxTTRday, MaxTTRhour, MaxTTRminute, MaxTTRsecond } ) ->
+           _MTTR={ MaxTTRday, MaxTTRhour, MaxTTRminute, MaxTTRsecond } ) ->
 
-	% First the direct mother classes:
+    % First the direct mother classes:
 
-	% Computing maximum TTR (expressed in seconds):
-	MaxTTR = MaxTTRsecond + 60*( MaxTTRminute + 60*(MaxTTRhour+24*MaxTTRday) ),
+    % Computing maximum TTR (expressed in seconds):
+    MaxTTR = MaxTTRsecond + 60*( MaxTTRminute + 60*(MaxTTRhour+24*MaxTTRday) ),
 
-	% Defines an uniform repair profile, for stochastic class to manage it:
-	RepairState = class_RepairModel:construct( State, ActorSettings,
-		?trace_categorize("Uniform repair model"), { uniform, MaxTTR } ),
+    % Defines an uniform repair profile, for stochastic class to manage it:
+    RepairState = class_RepairModel:construct( State, ActorSettings,
+        ?trace_categorize("Uniform repair model"), { uniform, MaxTTR } ),
 
-	?send_info_fmt( RepairState,
-		"Creating an uniform repair model whose maximum time-to-repair "
-		"is ~B seconds.", [ MaxTTR ] ),
+    ?send_info_fmt( RepairState,
+        "Creating an uniform repair model whose maximum time-to-repair "
+        "is ~B seconds.", [ MaxTTR ] ),
 
-	RepairState.
+    RepairState.
 
 
 

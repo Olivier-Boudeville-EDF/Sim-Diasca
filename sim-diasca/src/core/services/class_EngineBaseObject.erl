@@ -1,4 +1,4 @@
-% Copyright (C) 2017-2025 EDF R&D
+% Copyright (C) 2017-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -25,12 +25,12 @@
 
 
 -define( class_description,
-		 "Abstract base class common to all Sim-Diasca instances, whence most "
-		 "actual classes are to inherit, directly or not (root of the "
-		 "Sim-Diasca class hierarchy). "
-		 "Useful to be able to introduce uniformly common, transverse, "
-		 "possibly new behaviours such as trace sending, serialization, etc. "
-		 "at the engine level." ).
+         "Abstract base class common to all Sim-Diasca instances, whence most "
+         "actual classes are to inherit, directly or not (root of the "
+         "Sim-Diasca class hierarchy). "
+         "Useful to be able to introduce uniformly common, transverse, "
+         "possibly new behaviours such as trace sending, serialization, etc. "
+         "at the engine level." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -72,10 +72,10 @@
 
 -doc "Constructs a named Sim-Diasca base object.".
 -spec construct( wooper:state(), class_TraceEmitter:emitter_init() ) ->
-						wooper:state().
+                        wooper:state().
 construct( State, InstanceName ) ->
-	% Only direct mother class; updated state returned directly:
-	class_TraceEmitter:construct( State, ?trace_categorize(InstanceName) ).
+    % Only direct mother class; updated state returned directly:
+    class_TraceEmitter:construct( State, ?trace_categorize(InstanceName) ).
 
 
 
@@ -90,10 +90,10 @@ computing node), the (object-local) root directory of the deployment tree.
                             static_return( file_utils:directory_path() ).
 get_deployment_root_directory() ->
 
-	% Returns typically /tmp/sim-diasca-$CASE-$USER-$TIME/deployed-elements",
-	% in which all layers (e.g. myriad, wooper, etc.) are located:
-	%
-	wooper:return_static( file_utils:get_current_directory() ).
+    % Returns typically /tmp/sim-diasca-$CASE-$USER-$TIME/deployed-elements",
+    % in which all layers (e.g. myriad, wooper, etc.) are located:
+    %
+    wooper:return_static( file_utils:get_current_directory() ).
 
 
 
@@ -102,16 +102,16 @@ Returns the names of all the base state attributes (be they defined by this
 class or inherited).
 """.
 -spec get_all_base_attribute_names() ->
-							static_return( [ wooper:attribute_name() ] ).
+                            static_return( [ wooper:attribute_name() ] ).
 get_all_base_attribute_names() ->
 
-	AttrNames =
-		wooper_introspection:get_class_specific_attribute_names( ?MODULE )
-		++ list_utils:flatten_once(
-			[ wooper_introspection:get_class_specific_attribute_names( C )
-					|| C <- ?superclasses ] ),
+    AttrNames =
+        wooper_introspection:get_class_specific_attribute_names( ?MODULE )
+        ++ list_utils:flatten_once(
+            [ wooper_introspection:get_class_specific_attribute_names( C )
+                    || C <- ?superclasses ] ),
 
-	wooper:return_static( AttrNames ).
+    wooper:return_static( AttrNames ).
 
 
 
@@ -121,12 +121,12 @@ get_all_base_attribute_names() ->
 -doc "Initializes some context-specific information.".
 -spec init( wooper:state() ) -> wooper:state().
 init( State ) ->
-	class_TraceEmitter:init( State ).
+    class_TraceEmitter:init( State ).
 
 
 
 -doc "Returns a textual description of this instance.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
-	text_utils:format( "Sim-Diasca base object named '~ts'",
-					   [ ?getAttr(name) ] ).
+    text_utils:format( "Sim-Diasca base object named '~ts'",
+                       [ ?getAttr(name) ] ).

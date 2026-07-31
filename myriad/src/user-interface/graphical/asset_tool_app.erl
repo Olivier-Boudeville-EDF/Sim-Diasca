@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2025 Olivier Boudeville
+% Copyright (C) 2010-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -40,12 +40,12 @@ Note: extremely far from being ready.
 % State of the program, passed between event handlers.
 -record( app_state, {
 
-	main_frame :: frame(),
-	load_image_button :: button(),
-	quit_button :: button(),
-	info_sizer :: sizer(),
-	left_panel :: panel(),
-	canvas :: canvas() } ).
+    main_frame :: frame(),
+    load_image_button :: button(),
+    quit_button :: button(),
+    info_sizer :: sizer(),
+    left_panel :: panel(),
+    canvas :: canvas() } ).
 
 -doc "The application state.".
 -type app_state() :: #app_state{}.
@@ -72,138 +72,138 @@ Note: extremely far from being ready.
 -export_type([ app_state/0 ]).
 
 -export([ gui_main_loop/1, get_canvas_width/0, get_canvas_height/0,
-		  render_main_view/1, load_image/1 ]).
+          render_main_view/1, load_image/1 ]).
 
 
 -doc "Returns the width of the main frame.".
 -spec get_main_frame_width() -> width().
 get_main_frame_width() ->
-	800.
+    800.
 
 
 -doc "Returns the height of the main frame.".
 -spec get_main_frame_height() -> height().
 get_main_frame_height() ->
-	600.
+    600.
 
 
 -doc "Returns the width of the displayed canvas.".
 -spec get_canvas_width() -> width().
 get_canvas_width() ->
-	640.
+    640.
 
 
 -doc "Returns the height of the displayed canvas.".
 -spec get_canvas_height() -> height().
 get_canvas_height() ->
-	480.
+    480.
 
 
 
 -spec init_app_gui() -> no_return().
 init_app_gui() ->
 
-	gui:start(),
+    gui:start(),
 
-	FrameSize = { get_main_frame_width(), get_main_frame_height() },
+    FrameSize = { get_main_frame_width(), get_main_frame_height() },
 
-	MainFrame = gui_frame:create( _Title="Asset tool", FrameSize ),
+    MainFrame = gui_frame:create( _Title="Asset tool", FrameSize ),
 
-	gui:subscribe_to_events( { onWindowClosed, MainFrame } ),
+    gui:subscribe_to_events( { onWindowClosed, MainFrame } ),
 
-	%gui_widget:set_background_color( MainFrame, red ),
-	%gui_widget:set_background_color( LeftPanel, blue ),
-	%gui_widget:set_background_color( RightPanel, green ),
+    %gui_widget:set_background_color( MainFrame, red ),
+    %gui_widget:set_background_color( LeftPanel, blue ),
+    %gui_widget:set_background_color( RightPanel, green ),
 
-	StatusBar = gui_statusbar:create( MainFrame ),
+    StatusBar = gui_statusbar:create( MainFrame ),
 
-	gui_statusbar:push_text( StatusBar, "Waiting for assets to manage." ),
+    gui_statusbar:push_text( StatusBar, "Waiting for assets to manage." ),
 
-	LeftPanel = gui_panel:create( MainFrame ),
+    LeftPanel = gui_panel:create( MainFrame ),
 
-	RightPanel = gui_panel:create( MainFrame ),
+    RightPanel = gui_panel:create( MainFrame ),
 
-	MainSizer = gui_sizer:create( _Orientation=horizontal ),
+    MainSizer = gui_sizer:create( _Orientation=horizontal ),
 
-	% Constant width:
-	gui_sizer:add_element( MainSizer, LeftPanel,
-						   [ { proportion, 0 }, expand_fully ] ),
+    % Constant width:
+    gui_sizer:add_element( MainSizer, LeftPanel,
+                           [ { proportion, 0 }, expand_fully ] ),
 
-	% Grows with the window:
-	gui_sizer:add_element( MainSizer, RightPanel,
-						   [ { proportion, 2 }, expand_fully ] ),
+    % Grows with the window:
+    gui_sizer:add_element( MainSizer, RightPanel,
+                           [ { proportion, 2 }, expand_fully ] ),
 
-	LeftSizer = gui_sizer:create( vertical ),
+    LeftSizer = gui_sizer:create( vertical ),
 
-	ControlBoxSizer = gui_sizer:create_with_labelled_box( vertical, "Controls",
-														  LeftPanel ),
+    ControlBoxSizer = gui_sizer:create_with_labelled_box( vertical, "Controls",
+                                                          LeftPanel ),
 
-	InfoSizer = gui_sizer:create_with_labelled_box( vertical, "Information",
-													LeftPanel ),
+    InfoSizer = gui_sizer:create_with_labelled_box( vertical, "Information",
+                                                    LeftPanel ),
 
-	update_information_sizer( InfoSizer, LeftPanel, [ "(no image loaded)" ] ),
+    update_information_sizer( InfoSizer, LeftPanel, [ "(no image loaded)" ] ),
 
-	gui_sizer:add_elements( LeftSizer, [ ControlBoxSizer, InfoSizer ] ),
-
-
-	% Adding the buttons to the control panel:
-
-	% Common settings:
-
-	LoadImageButton = gui_button:create( "Load image", LeftPanel ),
-
-	QuitButton = gui_button:create( "Quit", LeftPanel ),
-
-	gui_widget:set_tooltip( LeftPanel, "Controls for assets" ),
-
-	% Not working apparently:
-	gui_widget:set_tooltip( LoadImageButton, "Load image" ),
-
-	gui_sizer:add_elements( ControlBoxSizer, [ LoadImageButton, QuitButton ],
-						   expand_fully ),
+    gui_sizer:add_elements( LeftSizer, [ ControlBoxSizer, InfoSizer ] ),
 
 
-	gui_widget:set_sizer( LeftPanel, LeftSizer ),
+    % Adding the buttons to the control panel:
 
-	AssetBoxSizer = gui_sizer:create_with_labelled_box( vertical, "Asset View",
-														RightPanel ),
+    % Common settings:
 
-	Canvas = gui_canvas:create( RightPanel ),
+    LoadImageButton = gui_button:create( "Load image", LeftPanel ),
 
-	gui_canvas:set_background_color( Canvas, pink ),
+    QuitButton = gui_button:create( "Quit", LeftPanel ),
 
-	gui_sizer:add_element( AssetBoxSizer, Canvas,
-						   [ { proportion, 1 }, expand_fully ] ),
+    gui_widget:set_tooltip( LeftPanel, "Controls for assets" ),
 
-	gui_widget:set_tooltip( Canvas, "Asset view." ),
+    % Not working apparently:
+    gui_widget:set_tooltip( LoadImageButton, "Load image" ),
 
-	gui_widget:set_sizer( RightPanel, AssetBoxSizer ),
+    gui_sizer:add_elements( ControlBoxSizer, [ LoadImageButton, QuitButton ],
+                           expand_fully ),
 
-	gui_widget:set_sizer( MainFrame, MainSizer ),
 
-	% Sets the GUI to visible:
-	gui_frame:show( MainFrame ),
+    gui_widget:set_sizer( LeftPanel, LeftSizer ),
 
-	InitialAppState = #app_state{ main_frame=MainFrame,
-								  load_image_button=LoadImageButton,
-								  quit_button=QuitButton,
-								  info_sizer=InfoSizer,
-								  left_panel=LeftPanel,
-								  canvas=Canvas },
+    AssetBoxSizer = gui_sizer:create_with_labelled_box( vertical, "Asset View",
+                                                        RightPanel ),
 
-	EventsOfInterest = [ { onWindowClosed, MainFrame } ],
+    Canvas = gui_canvas:create( RightPanel ),
 
-	% To be done before rendering the GUI (with gui:show/1), as it may result in
-	% events to be emitted (e.g. onRepaintNeeded) that would not be received, if
-	% not already subscribed to:
-	%
-	gui:subscribe_to_events( EventsOfInterest ),
+    gui_canvas:set_background_color( Canvas, pink ),
 
-	app_main_loop( InitialAppState  ).
+    gui_sizer:add_element( AssetBoxSizer, Canvas,
+                           [ { proportion, 1 }, expand_fully ] ),
+
+    gui_widget:set_tooltip( Canvas, "Asset view." ),
+
+    gui_widget:set_sizer( RightPanel, AssetBoxSizer ),
+
+    gui_widget:set_sizer( MainFrame, MainSizer ),
+
+    % Sets the GUI to visible:
+    gui_frame:show( MainFrame ),
+
+    InitialAppState = #app_state{ main_frame=MainFrame,
+                                  load_image_button=LoadImageButton,
+                                  quit_button=QuitButton,
+                                  info_sizer=InfoSizer,
+                                  left_panel=LeftPanel,
+                                  canvas=Canvas },
+
+    EventsOfInterest = [ { onWindowClosed, MainFrame } ],
+
+    % To be done before rendering the GUI (with gui:show/1), as it may result in
+    % events to be emitted (e.g. onRepaintNeeded) that would not be received, if
+    % not already subscribed to:
+    %
+    gui:subscribe_to_events( EventsOfInterest ),
+
+    app_main_loop( InitialAppState  ).
 
 
 app_main_loop( _AppState ) ->
-	fixme.
+    fixme.
 
 
 
@@ -211,13 +211,13 @@ app_main_loop( _AppState ) ->
 -spec render_main_view( canvas() ) -> void().
 render_main_view( Canvas ) ->
 
-	app_facilities:display( "Rendering main view." ),
+    app_facilities:display( "Rendering main view." ),
 
-	gui_canvas:set_background_color( Canvas, white ),
+    gui_canvas:set_background_color( Canvas, white ),
 
-	gui_canvas:clear( Canvas ),
+    gui_canvas:clear( Canvas ),
 
-	gui_canvas:blit( Canvas ).
+    gui_canvas:blit( Canvas ).
 
 
 % (helper)
@@ -225,72 +225,72 @@ render_main_view( Canvas ) ->
 % @private
 %
 gui_main_loop( _GUIState=#app_state{ main_frame=_MainFrame,
-									 load_image_button=_LoadImageButton,
-									 quit_button=_QuitButton,
-									 info_sizer=_InfoSizer,
-									 left_panel=_LeftPanel,
-									 canvas=_Canvas } ) ->
+                                     load_image_button=_LoadImageButton,
+                                     quit_button=_QuitButton,
+                                     info_sizer=_InfoSizer,
+                                     left_panel=_LeftPanel,
+                                     canvas=_Canvas } ) ->
 
-	app_facilities:display( "~nEntering main loop.", [] ).
+    app_facilities:display( "~nEntering main loop.", [] ).
 
-	%% Update = receive
+    %% Update = receive
 
-	%	#wx{ obj=MainFrame, event={wxClose,close_window} } ->
-	%		app_facilities:display( "Quitting GUI app." ),
-	%		quit;
+    %   #wx{ obj=MainFrame, event={wxClose,close_window} } ->
+    %       app_facilities:display( "Quitting GUI app." ),
+    %       quit;
 
-	%	#wx{ obj=LoadImageButton,
-	%		 event=#wxCommand{ type=command_button_clicked } } ->
-	%		app_facilities:display( "Load image clicked." ),
-	%		Texts = load_image( Canvas ),
-	%		gui_canvas:blit( Canvas ),
-	%		update_information_sizer( InfoSizer, LeftPanel, Texts ),
-	%		State;
+    %   #wx{ obj=LoadImageButton,
+    %        event=#wxCommand{ type=command_button_clicked } } ->
+    %       app_facilities:display( "Load image clicked." ),
+    %       Texts = load_image( Canvas ),
+    %       gui_canvas:blit( Canvas ),
+    %       update_information_sizer( InfoSizer, LeftPanel, Texts ),
+    %       State;
 
-	%	#wx{ obj=QuitButton,
-	%		 event=#wxCommand{ type=command_button_clicked } } ->
-	%		app_facilities:display( "Quit button clicked." ),
-	%		quit;
+    %   #wx{ obj=QuitButton,
+    %        event=#wxCommand{ type=command_button_clicked } } ->
+    %       app_facilities:display( "Quit button clicked." ),
+    %       quit;
 
-	%	#wx{ obj=Any, event=#wxCommand{ type=command_button_clicked } } ->
-	%		app_facilities:display( "Following button clicked: ~w.", [ Any ] ),
-	%		quit;
-
-
-	%	% Received for example when another window overlapped:
-	%	#wx{ event=#wxPaint{} } ->
-	%		render_main_view( Canvas ),
-	%		State ;
+    %   #wx{ obj=Any, event=#wxCommand{ type=command_button_clicked } } ->
+    %       app_facilities:display( "Following button clicked: ~w.", [ Any ] ),
+    %       quit;
 
 
-	%	#wx{ event=#wxSize{ size=NewSize } } ->
-
-	%		app_facilities:display( "Resizing to ~w.", [ NewSize ] ),
-
-	%		NewCanvas = gui_canvas:resize( Canvas, NewSize ),
-
-	%		render_main_view( NewCanvas ),
-
-	%		State#app_state{ canvas=NewCanvas };
+    %   % Received for example when another window overlapped:
+    %   #wx{ event=#wxPaint{} } ->
+    %       render_main_view( Canvas ),
+    %       State ;
 
 
-	%	Any ->
-	%		app_facilities:display( "GUI got event '~w' (ignored).",
-	%								[ Any ] ),
-	%		State
+    %   #wx{ event=#wxSize{ size=NewSize } } ->
 
-	% end,
+    %       app_facilities:display( "Resizing to ~w.", [ NewSize ] ),
 
-	% case Update of
+    %       NewCanvas = gui_canvas:resize( Canvas, NewSize ),
 
-	%	quit ->
-	%		% Simply stop recursing:
-	%		ok;
+    %       render_main_view( NewCanvas ),
 
-	%	NewState ->
-	%		gui_main_loop( NewState )
+    %       State#app_state{ canvas=NewCanvas };
 
-	% end.
+
+    %   Any ->
+    %       app_facilities:display( "GUI got event '~w' (ignored).",
+    %                               [ Any ] ),
+    %       State
+
+    % end,
+
+    % case Update of
+
+    %   quit ->
+    %       % Simply stop recursing:
+    %       ok;
+
+    %   NewState ->
+    %       gui_main_loop( NewState )
+
+    % end.
 
 
 
@@ -299,20 +299,20 @@ Loads image in specified canvas, and returns a list of information texts about
  it.
 """.
 load_image( Canvas ) ->
-	gui_canvas:load_image( Canvas, { 40, 20 }, "../../doc/example.bmp" ),
-	[ "eeee", "aaaa", "rrrrr" ].
+    gui_canvas:load_image( Canvas, { 40, 20 }, "../../doc/example.bmp" ),
+    [ "eeee", "aaaa", "rrrrr" ].
 
 
 
 -doc "Updates the information sizer with specified texts.".
 update_information_sizer( InfoSizer, Panel, Texts ) ->
 
-	%gui_sizer:clear( InfoSizer ),
+    %gui_sizer:clear( InfoSizer ),
 
-	TextOpts = [ { border_width, 10 }, all_borders, expand_fully ],
+    TextOpts = [ { border_width, 10 }, all_borders, expand_fully ],
 
    [ gui_sizer:add_element( InfoSizer,
-		gui_text:create_static_display( T, Panel ), TextOpts ) || T <- Texts ].
+        gui_text_display:create( T, Panel ), TextOpts ) || T <- Texts ].
 
 
 
@@ -320,17 +320,17 @@ update_information_sizer( InfoSizer, Panel, Texts ) ->
 -spec exec() -> no_return().
 exec() ->
 
-	app_facilities:start( ?MODULE ),
+    app_facilities:start( ?MODULE ),
 
-	case executable_utils:is_batch() of
+    case executable_utils:is_batch() of
 
-		true ->
-			app_facilities:display( "(not running the asset application, "
-									"being in batch mode)" );
+        true ->
+            app_facilities:display( "(not running the asset application, "
+                                    "being in batch mode)" );
 
-		false ->
-			init_app_gui()
+        false ->
+            init_app_gui()
 
-	end,
+    end,
 
-	app_facilities:stop().
+    app_facilities:stop().

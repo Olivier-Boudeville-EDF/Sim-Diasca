@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -50,48 +50,48 @@ Here the main loop just has to remember the frame whose closing is awaited for.
 -spec run_test_gui() -> void().
 run_test_gui() ->
 
-	test_facilities:display(
-		"~nStarting the actual mouse test of MyriadGUI, from ~w. ",
-		[ self() ] ),
+    test_facilities:display(
+        "~nStarting the actual mouse test of MyriadGUI, from ~w. ",
+        [ self() ] ),
 
-	trace_utils:notice( "An empty, resizable test frame shall appear; "
-						"the test will end as soon as it is closed." ),
+    trace_utils:notice( "An empty, resizable test frame shall appear; "
+                        "the test will end as soon as it is closed." ),
 
-	gui:start(),
+    gui:start(),
 
-	TestFrame = gui_frame:create( "This is the single and only test frame, "
-								  "for mouse testing" ),
+    TestFrame = gui_frame:create( "This is the single and only test frame, "
+                                  "for mouse testing" ),
 
-	MouseEventTypes = [
-		onMouseMoved,
+    MouseEventTypes = [
+        onMouseMoved,
 
-		onMouseLeftButtonPressed, onMouseLeftButtonReleased,
-		onMouseLeftButtonDoubleClicked,
+        onMouseLeftButtonPressed, onMouseLeftButtonReleased,
+        onMouseLeftButtonDoubleClicked,
 
-		onMouseMiddleButtonPressed, onMouseMiddleButtonReleased,
-		onMouseMiddleButtonDoubleClicked,
+        onMouseMiddleButtonPressed, onMouseMiddleButtonReleased,
+        onMouseMiddleButtonDoubleClicked,
 
-		onMouseRightButtonPressed, onMouseRightButtonReleased,
-		onMouseRightButtonDoubleClicked,
+        onMouseRightButtonPressed, onMouseRightButtonReleased,
+        onMouseRightButtonDoubleClicked,
 
-		onMouseFourthButtonPressed, onMouseFourthButtonReleased,
-		onMouseFourthButtonDoubleClicked,
+        onMouseFourthButtonPressed, onMouseFourthButtonReleased,
+        onMouseFourthButtonDoubleClicked,
 
-		onMouseFifthButtonPressed, onMouseFifthButtonReleased,
-		onMouseFifthButtonDoubleClicked,
+        onMouseFifthButtonPressed, onMouseFifthButtonReleased,
+        onMouseFifthButtonDoubleClicked,
 
-		onMouseWheelScrolled,
+        onMouseWheelScrolled,
 
-		onMouseEnteredWidget, onMouseLeftWidget ],
+        onMouseEnteredWidget, onMouseLeftWidget ],
 
-	gui:subscribe_to_events(
-		{ [ onWindowClosed | MouseEventTypes ], TestFrame } ),
+    gui:subscribe_to_events(
+        { [ onWindowClosed | MouseEventTypes ], TestFrame } ),
 
-	trace_utils:notice( "Please close the frame to end this test." ),
+    trace_utils:notice( "Please close the frame to end this test." ),
 
-	gui_frame:show( TestFrame ),
+    gui_frame:show( TestFrame ),
 
-	test_main_loop( TestFrame ).
+    test_main_loop( TestFrame ).
 
 
 
@@ -102,31 +102,31 @@ corresponding to the frame that shall be closed to stop the test.
 -spec test_main_loop( my_test_state() ) -> no_return().
 test_main_loop( TestFrame ) ->
 
-	receive
+    receive
 
-		% Would be far more too numerous for the console:
-		{ onMouseMoved, [ TestFrame, _TestFrameId, _EventContext ] } ->
-			test_main_loop( TestFrame );
+        % Would be far more too numerous for the console:
+        { onMouseMoved, [ TestFrame, _TestFrameId, _EventContext ] } ->
+            test_main_loop( TestFrame );
 
-		{ onWindowClosed, [ TestFrame, _TestFrameId, EventContext ] } ->
-			trace_utils:info_fmt( "Test frame '~ts' closed (~ts).",
-				[ gui:object_to_string( TestFrame ),
-				  gui_event:context_to_string( EventContext ) ] ),
+        { onWindowClosed, [ TestFrame, _TestFrameId, EventContext ] } ->
+            trace_utils:info_fmt( "Test frame '~ts' closed (~ts).",
+                [ gui:object_to_string( TestFrame ),
+                  gui_event:context_to_string( EventContext ) ] ),
 
-			gui_frame:destruct( TestFrame ),
+            gui_frame:destruct( TestFrame ),
 
-			trace_utils:info( "Test frame closed, test success." ),
+            trace_utils:info( "Test frame closed, test success." ),
 
-			gui:stop();
+            gui:stop();
 
-		% We can see button events, entered/left window ones, etc.:
-		Other ->
-			trace_utils:notice_fmt( "Test main loop received "
-				"(and did not specifically managed) the following "
-				"message:~n  ~p.", [ Other ] ),
-			test_main_loop( TestFrame )
+        % We can see button events, entered/left window ones, etc.:
+        Other ->
+            trace_utils:notice_fmt( "Test main loop received "
+                "(and did not specifically managed) the following "
+                "message:~n  ~p.", [ Other ] ),
+            test_main_loop( TestFrame )
 
-	end.
+    end.
 
 
 
@@ -134,17 +134,17 @@ test_main_loop( TestFrame ) ->
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	case executable_utils:is_batch() of
+    case executable_utils:is_batch() of
 
-		true ->
-			test_facilities:display( "(not running the MyriadGUI mouse "
-									 "test, being in batch mode)" );
+        true ->
+            test_facilities:display( "(not running the MyriadGUI mouse "
+                                     "test, being in batch mode)" );
 
-		false ->
-			run_test_gui()
+        false ->
+            run_test_gui()
 
-	end,
+    end,
 
-	test_facilities:stop().
+    test_facilities:stop().

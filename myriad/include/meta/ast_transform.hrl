@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2025 Olivier Boudeville
+% Copyright (C) 2018-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -26,6 +26,18 @@
 % Creation date: Saturday, February 3, 2018.
 
 
+% Defines for transformation matches.
+
+% Not expected to be legit symbols:
+-define( any_module_name, '_' ).
+
+-define( any_type_name,  '_' ).
+-define( any_type_arity, '_' ).
+
+-define( any_function_name,  '_' ).
+-define( any_function_arity, '_' ).
+
+
 % Describes the transformations to be applied onto an AST when scanning it.
 %
 % Typically centralises the automatic replacements of all known kinds to be
@@ -34,65 +46,66 @@
 -record( ast_transforms, {
 
 
-	% Transformations (if any) defined for module-local types:
-	local_types = undefined ::
-		type_utils:option( ast_transform:local_type_transform_table() ),
+    % Transformations (if any) defined for module-local types:
+    local_types = undefined ::
+        type_utils:option( ast_transform:local_type_transform_table() ),
 
 
-	% Transformations (if any) defined for remote types:
-	remote_types = undefined ::
-		type_utils:option( ast_transform:remote_type_transform_table() ),
+    % Transformations (if any) defined for remote types:
+    remote_types = undefined ::
+        type_utils:option( ast_transform:remote_type_transform_table() ),
 
 
-	% Transformations (if any) defined for module-local calls:
-	local_calls = undefined ::
-		type_utils:option( ast_transform:local_call_transform_table() ),
+    % Transformations (if any) defined for module-local calls:
+    local_calls = undefined ::
+        type_utils:option( ast_transform:local_call_transform_table() ),
 
 
-	% Transformations (if any) defined for remote calls:
-	remote_calls = undefined ::
-		type_utils:option( ast_transform:remote_call_transform_table() ),
+    % Transformations (if any) defined for remote calls:
+    remote_calls = undefined ::
+        type_utils:option( ast_transform:remote_call_transform_table() ),
 
 
-	% Allows to record the name of the module being transformed (useful for
-	% example for error messages, to report the source filename):
-	%
-	transformed_module_name = undefined ::
-		type_utils:option( basic_utils:module_name() ),
+    % Allows to record the name of the module being transformed (useful for
+    % example for error messages, to report the source filename):
+    %
+    transformed_module_name = undefined ::
+        type_utils:option( basic_utils:module_name() ),
 
 
-	% Allows to record the name and arity of the function (if any) being
-	% transformed (useful for example for error messages):
-	%
-	transformed_function_identifier = undefined ::
-		type_utils:option( meta_utils:function_id() ),
+    % Allows to record the name and arity of the function (if any) being
+    % transformed (useful for example for error messages):
+    %
+    transformed_function_identifier = undefined ::
+        type_utils:option( meta_utils:function_id() ),
 
 
-	% Records the transformations (if any) to be applied on AST elements as a
-	% whole (generally exceeding the mere transformations of calls into calls,
-	% like rewriting bodies) whenever a trigger is found.
-	%
-	% Triggers currently supported: 'call', 'body'.
-	%
-	transform_table = undefined ::
-		type_utils:option( ast_transform:ast_transform_table() ),
+    % Records the transformations (if any) to be applied on AST elements as a
+    % whole (generally exceeding the mere transformations of calls into calls,
+    % like rewriting bodies) whenever a trigger is found.
+    %
+    % See the `ast_transform:transform_trigger/0` type for the triggers
+    % currently supported.
+    %
+    transform_table = undefined ::
+        type_utils:option( ast_transform:ast_transform_table() ),
 
 
-	% Any user-defined transformation state that is to be kept and updated
-	% in the course of a transformation.
-	%
-	transformation_state = undefined :: ast_transform:transformation_state(),
+    % Any user-defined transformation state that is to be kept and updated
+    % in the course of a transformation.
+    %
+    transformation_state = undefined :: ast_transform:transformation_state(),
 
 
-	% The function to call in order to format, for the sake of logging in a
-	% user-friendly manner, the output of a transformation.
-	%
-	% Introduced so that a transformation caller can set a formatter managing
-	% the transformation state that was defined (useful if some parts of it are
-	% not of interest and/or very bulky to format).
-	%
-	transform_formatter = fun ast_transform:default_formatter/2
-									:: ast_transform:transform_formatter()
+    % The function to call in order to format, for the sake of logging in a
+    % user-friendly manner, the output of a transformation.
+    %
+    % Introduced so that a transformation caller can set a formatter managing
+    % the transformation state that was defined (useful if some parts of it are
+    % not of interest and/or very bulky to format).
+    %
+    transform_formatter = fun ast_transform:default_formatter/2
+        :: ast_transform:transform_formatter()
 
 
 } ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -43,159 +43,159 @@ See the `class_RandomManager` module.
 
 show_uniform( RandomManagerPid, UpperBound ) ->
 
-	?test_debug_fmt( "Requesting a uniform random value in [1,~p].",
-					 [ UpperBound ] ),
+    ?test_debug_fmt( "Requesting a uniform random value in [1,~p].",
+                     [ UpperBound ] ),
 
-	RandomManagerPid ! { getUniformValue, UpperBound, self() },
+    RandomManagerPid ! { getUniformValue, UpperBound, self() },
 
-	receive
+    receive
 
-		{ wooper_result, { uniform_value, Value } } ->
-			?test_debug_fmt( "Received uniform random value: ~p.", [ Value ] )
+        { wooper_result, { uniform_value, Value } } ->
+            ?test_debug_fmt( "Received uniform random value: ~p.", [ Value ] )
 
-	end.
+    end.
 
 
 
 % (helper)
 draw_uniform_values( 0, Table, _MaxValue, _RandomManagerPid ) ->
-	Table;
+    Table;
 
 draw_uniform_values( Count, Table, MaxValue, RandomManagerPid ) ->
-	RandomManagerPid ! { getUniformValue, MaxValue, self() },
+    RandomManagerPid ! { getUniformValue, MaxValue, self() },
 
-	% Wanting a random value in ]1, ?table_span]:
-	receive
+    % Wanting a random value in ]1, ?table_span]:
+    receive
 
-		{ wooper_result, { uniform_value, Value } } ->
-			NewCount = element( Value, Table ) + 1,
-			draw_uniform_values( Count-1,
-				setelement( Value, Table, NewCount ),
-				MaxValue, RandomManagerPid )
+        { wooper_result, { uniform_value, Value } } ->
+            NewCount = element( Value, Table ) + 1,
+            draw_uniform_values( Count-1,
+                setelement( Value, Table, NewCount ),
+                MaxValue, RandomManagerPid )
 
-	end.
+    end.
 
 
 
 -doc "At index V there is the number of times V has been drawn.".
 make_table( Size ) ->
-	erlang:make_tuple( Size, 0 ).
+    erlang:make_tuple( Size, 0 ).
 
 
 send_tables( FirstTable, SecondTable, ThirdTable, FourthTable, FifthTable,
-			 ProbePid ) ->
-	send_tables( FirstTable, SecondTable, ThirdTable, FourthTable, FifthTable,
-				 ProbePid, _Count=1 ).
+             ProbePid ) ->
+    send_tables( FirstTable, SecondTable, ThirdTable, FourthTable, FifthTable,
+                 ProbePid, _Count=1 ).
 
 
 send_tables( _FirstTable, _SecondTable, _ThirdTable, _FourthTable, _FifthTable,
-			 _ProbePid, _Count= ?table_span + 1 ) ->
-	ok;
+             _ProbePid, _Count= ?table_span + 1 ) ->
+    ok;
 
 send_tables( FirstTable, SecondTable, ThirdTable, FourthTable, FifthTable,
-			 ProbePid, Count ) ->
+             ProbePid, Count ) ->
 
-	ProbePid ! { setData, [ Count, { element( Count, FirstTable ),
-		element( Count, SecondTable ), element( Count, ThirdTable ),
-		element( Count, FourthTable ), element( Count, FifthTable ) } ] },
+    ProbePid ! { setData, [ Count, { element( Count, FirstTable ),
+        element( Count, SecondTable ), element( Count, ThirdTable ),
+        element( Count, FourthTable ), element( Count, FifthTable ) } ] },
 
-	send_tables( FirstTable, SecondTable, ThirdTable, FourthTable, FifthTable,
-				 ProbePid, Count+1 ).
+    send_tables( FirstTable, SecondTable, ThirdTable, FourthTable, FifthTable,
+                 ProbePid, Count+1 ).
 
 
 
 compute_mean( Table ) ->
-	List = tuple_to_list( Table ),
+    List = tuple_to_list( Table ),
 
-	% Multiply the number of draws by the drawn value:
-	% (hope the sum is not zero! Starting at index 1)
-	%
-	compute_mean( List, 1, 0 ) / compute_sum( List, 0 ).
+    % Multiply the number of draws by the drawn value:
+    % (hope the sum is not zero! Starting at index 1)
+    %
+    compute_mean( List, 1, 0 ) / compute_sum( List, 0 ).
 
 
 
 -doc "Counts the number of draws.".
 compute_sum( [], Count ) ->
-	Count;
+    Count;
 
 compute_sum( [ H | T ], Count ) ->
-	compute_sum( T, Count + H ).
+    compute_sum( T, Count + H ).
 
 
 
 -doc "Computes the mean of draws.".
 compute_mean( [], _Index, Acc ) ->
-	Acc;
+    Acc;
 
 compute_mean( [ H | T ], Index, Acc ) ->
-	compute_mean( T, Index + 1, Acc + H * Index ).
+    compute_mean( T, Index + 1, Acc + H * Index ).
 
 
 
 test_uniform_random( RandomManagerPid, MaxValue ) ->
 
-	?test_info( "Requesting uniform random values." ),
+    ?test_info( "Requesting uniform random values." ),
 
-	show_uniform( RandomManagerPid, MaxValue ),
-	show_uniform( RandomManagerPid, MaxValue ),
-	show_uniform( RandomManagerPid, MaxValue ),
-	show_uniform( RandomManagerPid, MaxValue ),
-	show_uniform( RandomManagerPid, MaxValue ),
+    show_uniform( RandomManagerPid, MaxValue ),
+    show_uniform( RandomManagerPid, MaxValue ),
+    show_uniform( RandomManagerPid, MaxValue ),
+    show_uniform( RandomManagerPid, MaxValue ),
+    show_uniform( RandomManagerPid, MaxValue ),
 
-	?test_info( "Computing and displaying the full actual "
-				"uniform distribution." ),
+    ?test_info( "Computing and displaying the full actual "
+                "uniform distribution." ),
 
-	?test_warning( "As a large number of samples will be computed, the "
-				   "operation may take some time." ),
+    ?test_warning( "As a large number of samples will be computed, the "
+                   "operation may take some time." ),
 
-	Values = make_table( ?table_span ),
+    Values = make_table( ?table_span ),
 
-	FirstUniformTable = draw_uniform_values( 500, Values, MaxValue,
-											 RandomManagerPid ),
+    FirstUniformTable = draw_uniform_values( 500, Values, MaxValue,
+                                             RandomManagerPid ),
 
-	SecondUniformTable = draw_uniform_values( 5000-500, FirstUniformTable,
-											  MaxValue, RandomManagerPid ),
+    SecondUniformTable = draw_uniform_values( 5000-500, FirstUniformTable,
+                                              MaxValue, RandomManagerPid ),
 
-	ThirdUniformTable = draw_uniform_values( 50000-5000, SecondUniformTable,
-											 MaxValue,RandomManagerPid ),
+    ThirdUniformTable = draw_uniform_values( 50000-5000, SecondUniformTable,
+                                             MaxValue,RandomManagerPid ),
 
-	FourthUniformTable = draw_uniform_values( 500000-50000, ThirdUniformTable,
-											  MaxValue, RandomManagerPid ),
+    FourthUniformTable = draw_uniform_values( 500000-50000, ThirdUniformTable,
+                                              MaxValue, RandomManagerPid ),
 
-	FifthUniformTable = draw_uniform_values( 5000000-500000, FourthUniformTable,
-											 MaxValue, RandomManagerPid ),
+    FifthUniformTable = draw_uniform_values( 5000000-500000, FourthUniformTable,
+                                             MaxValue, RandomManagerPid ),
 
-	Mean = compute_mean( FifthUniformTable ),
+    Mean = compute_mean( FifthUniformTable ),
 
-	?test_notice_fmt( "Mean of this full actual uniform distribution is ~p.",
-					  [ Mean ] ),
+    ?test_notice_fmt( "Mean of this full actual uniform distribution is ~p.",
+                      [ Mean ] ),
 
-	MyUniformProbe = class_Probe:create_facility_probe(
+    MyUniformProbe = class_Probe:create_facility_probe(
 
-		_Title="Uniform probe",
+        _Title="Uniform probe",
 
-		_CurveNames=[ "After 500 draws", "After 5000 draws",
-					  "After 50000 draws", "After 500000 draws",
-					  "After 5000000 draws" ],
+        _CurveNames=[ "After 500 draws", "After 5000 draws",
+                      "After 50000 draws", "After 500000 draws",
+                      "After 5000000 draws" ],
 
-		_Zones=[],
+        _Zones=[],
 
-		text_utils:format( "Test of the generation of uniform random "
-			"distributions ranging in [1..~B].", [ ?table_span ] ),
+        text_utils:format( "Test of the generation of uniform random "
+            "distributions ranging in [1..~B].", [ ?table_span ] ),
 
-		text_utils:format( "Drawn values (mean value is ~w)", [ Mean ] ),
+        text_utils:format( "Drawn values (mean value is ~w)", [ Mean ] ),
 
-		"Number of times a value has been drawn" ),
+        "Number of times a value has been drawn" ),
 
-	send_tables( FirstUniformTable, SecondUniformTable, ThirdUniformTable,
-				 FourthUniformTable, FifthUniformTable, MyUniformProbe ),
+    send_tables( FirstUniformTable, SecondUniformTable, ThirdUniformTable,
+                 FourthUniformTable, FifthUniformTable, MyUniformProbe ),
 
 
-	?test_info( "Requesting the generation of uniform probe report." ),
+    ?test_info( "Requesting the generation of uniform probe report." ),
 
-	class_Probe:generate_report_for( MyUniformProbe ),
+    class_Probe:generate_report_for( MyUniformProbe ),
 
-	class_Probe:delete_facility_probe( MyUniformProbe ).
+    class_Probe:delete_facility_probe( MyUniformProbe ).
 
 
 
@@ -203,20 +203,20 @@ test_uniform_random( RandomManagerPid, MaxValue ) ->
 -spec run() -> no_return().
 run() ->
 
-	?test_start,
+    ?test_start,
 
-	class_ResultManager:create_mockup_environment(),
+    class_ResultManager:create_mockup_environment(),
 
-	?test_info( "Creating a random manager." ),
-	class_RandomManager:create(),
+    ?test_info( "Creating a random manager." ),
+    class_RandomManager:create(),
 
-	RandomManagerPid =
-		naming_utils:wait_for_global_registration_of( ?random_manager_name ),
+    RandomManagerPid =
+        naming_utils:wait_for_global_registration_of( ?random_manager_name ),
 
-	Max = ?table_span,
-	test_uniform_random( RandomManagerPid, Max ),
+    Max = ?table_span,
+    test_uniform_random( RandomManagerPid, Max ),
 
-	?test_info( "Removing random manager." ),
-	wooper:delete_synchronously_instance( RandomManagerPid ),
+    ?test_info( "Removing random manager." ),
+    wooper:delete_synchronously_instance( RandomManagerPid ),
 
-	?test_stop.
+    ?test_stop.

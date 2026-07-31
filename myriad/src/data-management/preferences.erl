@@ -1,4 +1,4 @@
-% Copyright (C) 2013-2025 Olivier Boudeville
+% Copyright (C) 2013-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -102,31 +102,31 @@ the data that it manages.
 
 
 -export([ start/0, start/1, start/2, start_with_defaults/1,
-		  start_link/0, start_link/1, start_link/2, start_link_with_defaults/1,
-		  wait_available/0, wait_available/1,
-		  get/1, get/2, set/2, set/3,
+          start_link/0, start_link/1, start_link/2, start_link_with_defaults/1,
+          wait_available/0, wait_available/1,
+          get/1, get/2, set/2, set/3,
 
-		  update_default_from_etf/1, update_default_from_etf/2,
-		  update_from_etf/2, update_from_etf/3,
+          update_default_from_etf/1, update_default_from_etf/2,
+          update_from_etf/2, update_from_etf/3,
 
-		  cache/1, cache/2, cache_return/1, cache_return/2,
-		  ensure_binary/2,
-		  to_string/0, to_bin_string/0, to_bin_string/1,
+          cache/1, cache/2, cache_return/1, cache_return/2,
+          ensure_binary/2,
+          to_string/0, to_bin_string/0, to_bin_string/1,
 
-		  get_default_preferences_path/0,
-		  is_preferences_default_file_available/0,
-		  check_preferences_default_file/0,
+          get_default_preferences_path/0,
+          is_preferences_default_file_available/0,
+          check_preferences_default_file/0,
 
-		  get_application_preferences_filename/1,
+          get_application_preferences_filename/1,
 
-		  get_application_preferences_file/1,
-		  get_application_preferences_file/2,
-		  get_application_preferences_file/3,
-		  get_application_preferences_file/4,
+          get_application_preferences_file/1,
+          get_application_preferences_file/2,
+          get_application_preferences_file/3,
+          get_application_preferences_file/4,
 
-		  get_default_preferences_registration_name/0,
+          get_default_preferences_registration_name/0,
 
-		  stop/0 ]).
+          stop/0 ]).
 
 
 -doc "The name under which a preferences server can be (locally) registered.".
@@ -188,17 +188,17 @@ key associated to 'undefined').
 
 -doc "The outcome of the lookup of an application preferences file.".
 -type app_pref_lookup_outcome() :: any_file_path()
-		| { 'not_found', any_file_path(), [ any_directory_path() ] }.
+        | { 'not_found', any_file_path(), [ any_directory_path() ] }.
 
 
 -export_type([ pref_reg_name/0, preferences_pid/0, preferences_info/0,
-			   preferences_designator/0, preferences_data/0,
-			   key/0, value/0, entry/0, entries/0,
-			   app_pref_lookup_outcome/0 ]).
+               preferences_designator/0, preferences_data/0,
+               key/0, value/0, entry/0, entries/0,
+               app_pref_lookup_outcome/0 ]).
 
 
 -compile( { inline, [ get_default_preferences_path/0,
-					  get_default_preferences_registration_name/0] } ).
+                      get_default_preferences_registration_name/0] } ).
 
 
 % For the app_info record:
@@ -263,7 +263,7 @@ key associated to 'undefined').
 % (must be consistent with the default_preferences_pref_reg_name define)
 %
 -define( default_preferences_filename,
-		 ".ceylan-settings."  ++ ?default_preferences_extension ).
+         ".ceylan-settings."  ++ ?default_preferences_extension ).
 
 
 % Registration name of the default preferences server:
@@ -290,7 +290,7 @@ existing or not.
 """.
 -spec start() -> preferences_pid().
 start() ->
-	environment:start( get_default_preferences_path() ).
+    environment:start( get_default_preferences_path() ).
 
 
 
@@ -308,8 +308,8 @@ Returns the PID of the corresponding, just created, preferences server.
 """.
 -spec start_with_defaults( entries() ) -> preferences_pid().
 start_with_defaults( DefaultEntries ) ->
-	environment:start_with_defaults( get_default_preferences_path(),
-									 DefaultEntries ).
+    environment:start_with_defaults( get_default_preferences_path(),
+                                     DefaultEntries ).
 
 
 
@@ -324,9 +324,9 @@ existing or not.
 """.
 -spec start_link() -> preferences_pid().
 start_link() ->
-	PrefPid = environment:start_link( get_default_preferences_path() ),
-	trace_utils:debug_fmt( "Preferences started, as server ~w.", [ PrefPid ] ),
-	PrefPid.
+    PrefPid = environment:start_link( get_default_preferences_path() ),
+    trace_utils:debug_fmt( "Preferences started, as server ~w.", [ PrefPid ] ),
+    PrefPid.
 
 
 
@@ -343,12 +343,12 @@ Returns the PID of the corresponding, just created, preferences server.
 -spec start_link_with_defaults( entries() ) -> preferences_pid().
 start_link_with_defaults( DefaultEntries ) ->
 
-	PrefPid = environment:start_link_with_defaults(
-		get_default_preferences_path(), DefaultEntries ),
+    PrefPid = environment:start_link_with_defaults(
+        get_default_preferences_path(), DefaultEntries ),
 
-	trace_utils:debug_fmt( "Preferences started, as server ~w.", [ PrefPid ] ),
+    trace_utils:debug_fmt( "Preferences started, as server ~w.", [ PrefPid ] ),
 
-	PrefPid.
+    PrefPid.
 
 
 
@@ -370,7 +370,7 @@ existing or not, blank or not.
 """.
 -spec start( pref_reg_name() | file_path() ) -> preferences_pid().
 start( AnyPrefName ) ->
-	environment:start( AnyPrefName ).
+    environment:start( AnyPrefName ).
 
 
 
@@ -394,7 +394,7 @@ existing or not, blank or not.
 """.
 -spec start_link( pref_reg_name() | file_path() ) -> preferences_pid().
 start_link( AnyPrefName ) ->
-	environment:start_link( AnyPrefName ).
+    environment:start_link( AnyPrefName ).
 
 
 % start_link_with_defaults/2 could be added here.
@@ -414,7 +414,7 @@ existing or not.
 """.
 -spec start( pref_reg_name(), file_path() ) -> preferences_pid().
 start( ServerRegName, FilePath ) ->
-	environment:start( ServerRegName, FilePath ).
+    environment:start( ServerRegName, FilePath ).
 
 
 % start_with_defaults/3 could be added here.
@@ -434,7 +434,7 @@ existing or not.
 """.
 -spec start_link( pref_reg_name(), file_path() ) -> preferences_pid().
 start_link( ServerRegName, FilePath ) ->
-	environment:start_link( ServerRegName, FilePath ).
+    environment:start_link( ServerRegName, FilePath ).
 
 
 % start_link_with_defaults/3 could be added here.
@@ -449,7 +449,7 @@ before being able to look-up preferences.
 """.
 -spec wait_available() -> preferences_pid().
 wait_available() ->
-	wait_available( get_default_preferences_registration_name() ).
+    wait_available( get_default_preferences_registration_name() ).
 
 
 
@@ -462,7 +462,7 @@ before being able to look-up preferences.
 """.
 -spec wait_available( pref_reg_name() ) -> preferences_pid().
 wait_available( ServerRegName ) ->
-	environment:wait_available( ServerRegName ).
+    environment:wait_available( ServerRegName ).
 
 
 
@@ -483,8 +483,8 @@ Examples:
 """.
 -spec get( maybe_list( key() ) ) -> maybe_list( option( value() ) ).
 get( KeyMaybes ) ->
-	environment:get( KeyMaybes, get_default_preferences_registration_name(),
-					 get_default_preferences_path() ).
+    environment:get( KeyMaybes, get_default_preferences_registration_name(),
+                     get_default_preferences_path() ).
 
 
 
@@ -502,16 +502,16 @@ Examples:
   "Hello!" = preferences:get(hello, "/var/foobar.etf")
 
   ["Hello!", 42, undefined] =
-	preferences:get([hello, my_number, some_maybe], my_foobar_preferences)
+    preferences:get([hello, my_number, some_maybe], my_foobar_preferences)
 
   ["Hello!", 42, undefined] =
-	preferences:get([hello, my_number, some_maybe], MyPrefServerPid)
+    preferences:get([hello, my_number, some_maybe], MyPrefServerPid)
 ```
 """.
 -spec get( maybe_list( key() ), preferences_designator() | file_path() ) ->
-										maybe_list( option( value() ) ).
+                                        maybe_list( option( value() ) ).
 get( KeyMaybes, EnvData ) ->
-	environment:get( KeyMaybes, EnvData ).
+    environment:get( KeyMaybes, EnvData ).
 
 
 
@@ -525,13 +525,13 @@ Any cached key will be updated in the local process cache, in addition to the
 preferences server.
 """.
 -spec set( key(), value() ) -> void();
-		 ( [ entry() ], preferences_designator() | file_path() ) -> void().
+         ( [ entry() ], preferences_designator() | file_path() ) -> void().
 set( Key, Value ) when is_atom( Key ) ->
-	environment:set( Key, Value, get_default_preferences_registration_name(),
-					 get_default_preferences_path() );
+    environment:set( Key, Value, get_default_preferences_registration_name(),
+                     get_default_preferences_path() );
 
 set( Entries, EnvData ) ->
-	environment:set( Entries, EnvData ).
+    environment:set( Entries, EnvData ).
 
 
 
@@ -543,7 +543,7 @@ needed) or on the specified PID of an already-running preferences server.
 """.
 -spec set( key(), value(), preferences_designator() | file_path() ) -> void().
 set( Key, Value, EnvData ) ->
-	environment:set( Key, Value, EnvData ).
+    environment:set( Key, Value, EnvData ).
 
 
 
@@ -564,8 +564,8 @@ one taken into account will be the last.
 """.
 -spec update_default_from_etf( any_file_path() ) -> void().
 update_default_from_etf( AnyETFFilePath ) ->
-	update_default_from_etf( AnyETFFilePath,
-		_ETFCheckPolicy=strict_tagged_trace ).
+    update_default_from_etf( AnyETFFilePath,
+        _ETFCheckPolicy=strict_tagged_trace ).
 
 
 
@@ -580,9 +580,9 @@ preferences will be directly replaced by any selected one found in the file.
 """.
 -spec update_default_from_etf( any_file_path(), etf_check_policy() ) -> void().
 update_default_from_etf( AnyETFFilePath, ETFCheckPolicy ) ->
-	update_from_etf( AnyETFFilePath,
-					 _PrefDes=get_default_preferences_registration_name(),
-					 ETFCheckPolicy ).
+    update_from_etf( AnyETFFilePath,
+                     _PrefDes=get_default_preferences_registration_name(),
+                     ETFCheckPolicy ).
 
 
 
@@ -599,8 +599,8 @@ the file.
 """.
 -spec update_from_etf( any_file_path(), preferences_designator() ) -> void().
 update_from_etf( AnyETFFilePath, PrefDesignator ) ->
-	update_from_etf( AnyETFFilePath, PrefDesignator,
-					 _ETFCheckPolicy=strict_tagged_trace ).
+    update_from_etf( AnyETFFilePath, PrefDesignator,
+                     _ETFCheckPolicy=strict_tagged_trace ).
 
 
 -doc """
@@ -613,14 +613,14 @@ Loaded entries will supersede any pre-existing ones: a pre-existing entry in the
 preferences will be directly replaced by any selected one found in the file.
 """.
 -spec update_from_etf( any_file_path(), preferences_designator(),
-					   etf_check_policy() ) -> void().
+                       etf_check_policy() ) -> void().
 update_from_etf( AnyETFFilePath, PrefDesignator, ETFCheckPolicy ) ->
 
-	%trace_utils:debug_fmt( "Updating preferences designated by ~w from "
-	%                       "file '~ts'.", [ PrefDesignator, AnyETFFilePath ] ),
+    %trace_utils:debug_fmt( "Updating preferences designated by ~w from "
+    %                       "file '~ts'.", [ PrefDesignator, AnyETFFilePath ] ),
 
-	environment:update_from_etf( AnyETFFilePath, PrefDesignator,
-								 ETFCheckPolicy ).
+    environment:update_from_etf( AnyETFFilePath, PrefDesignator,
+                                 ETFCheckPolicy ).
 
 
 
@@ -642,7 +642,7 @@ only the entries not already in cache will be requested from the server.
 """.
 -spec cache( cache_spec() ) -> void().
 cache( CacheSpec ) ->
-	cache( CacheSpec, _PrefData=get_default_preferences_registration_name() ).
+    cache( CacheSpec, _PrefData=get_default_preferences_registration_name() ).
 
 
 
@@ -668,7 +668,7 @@ implicit (in which case the default preferences server will be used).
 """.
 -spec cache( cache_spec(), preferences_data() ) -> void().
 cache( CacheSpec, PrefData ) ->
-	environment:cache( CacheSpec, PrefData ).
+    environment:cache( CacheSpec, PrefData ).
 
 
 
@@ -680,8 +680,8 @@ Equivalent to a call to cache/1 followed by one to get/1 with the same keys.
 """.
 -spec cache_return( maybe_list( key() ) ) -> maybe_list( option( value() ) ).
 cache_return( KeyMaybeList ) ->
-	cache_return( KeyMaybeList,
-				  _PrefData=get_default_preferences_registration_name() ).
+    cache_return( KeyMaybeList,
+                  _PrefData=get_default_preferences_registration_name() ).
 
 
 
@@ -692,9 +692,9 @@ value.
 Equivalent to a call to cache/2 followed by one to get/2 with the same keys.
 """.
 -spec cache_return( maybe_list( key() ), preferences_data() ) ->
-								maybe_list( option( value() ) ).
+                                maybe_list( option( value() ) ).
 cache_return( KeyMaybeList, PrefData ) ->
-	environment:cache_return( KeyMaybeList, PrefData ).
+    environment:cache_return( KeyMaybeList, PrefData ).
 
 
 
@@ -707,7 +707,7 @@ internally they should be binary ones.
 """.
 -spec ensure_binary( maybe_list( key() ), preferences_data() ) -> void().
 ensure_binary( KeyMaybeList, PrefData ) ->
-	environment:ensure_binary( KeyMaybeList, PrefData ).
+    environment:ensure_binary( KeyMaybeList, PrefData ).
 
 
 
@@ -717,7 +717,7 @@ default preferences file.
 """.
 -spec to_string() -> ustring().
 to_string() ->
-	environment:to_string( get_default_preferences_path() ).
+    environment:to_string( get_default_preferences_path() ).
 
 
 
@@ -727,22 +727,22 @@ default preferences file.
 """.
 -spec to_bin_string() -> bin_string().
 to_bin_string() ->
-	environment:to_bin_string( get_default_preferences_path() ).
+    environment:to_bin_string( get_default_preferences_path() ).
 
 
 
 -doc "Returns a textual description of the specified preferences server.".
 -spec to_bin_string( preferences_data() ) -> bin_string().
 to_bin_string( EnvData ) ->
-	environment:to_bin_string( EnvData ).
+    environment:to_bin_string( EnvData ).
 
 
 
 -doc "Returns the full, absolute path to the default preferences filename.".
 -spec get_default_preferences_path() -> file_path().
 get_default_preferences_path() ->
-	file_utils:join( system_utils:get_user_home_directory(),
-					 ?default_preferences_filename ).
+    file_utils:join( system_utils:get_user_home_directory(),
+                     ?default_preferences_filename ).
 
 
 
@@ -752,9 +752,9 @@ full path.
 """.
 -spec is_preferences_default_file_available() -> { boolean(), file_path() }.
 is_preferences_default_file_available() ->
-	PrefFile = get_default_preferences_path(),
-	Res = file_utils:is_existing_file_or_link( PrefFile ),
-	{ Res, PrefFile }.
+    PrefFile = get_default_preferences_path(),
+    Res = file_utils:is_existing_file_or_link( PrefFile ),
+    { Res, PrefFile }.
 
 
 
@@ -764,15 +764,15 @@ Checks that the default preferences file exists; throws an exception otherwise.
 -spec check_preferences_default_file() -> void().
 check_preferences_default_file() ->
 
-	case is_preferences_default_file_available() of
+    case is_preferences_default_file_available() of
 
-		{ true, _FilePath } ->
-			ok;
+        { true, _FilePath } ->
+            ok;
 
-		{ false, FilePath } ->
-			throw( { no_default_preferences_file_found, FilePath } )
+        { false, FilePath } ->
+            throw( { no_default_preferences_file_found, FilePath } )
 
-	end.
+    end.
 
 
 
@@ -782,12 +782,12 @@ application.
 """.
 -spec get_application_preferences_filename( any_app_info() ) -> file_name().
 get_application_preferences_filename( #app_info{ name=BinAppName } ) ->
-	text_utils:format( "~ts." ++ ?default_preferences_extension,
-					   [ BinAppName ] );
+    text_utils:format( "~ts." ++ ?default_preferences_extension,
+                       [ BinAppName ] );
 
 get_application_preferences_filename( _AppInfoMap=#{ name := BinAppName } ) ->
-	text_utils:format( "~ts." ++ ?default_preferences_extension,
-					   [ BinAppName ] ).
+    text_utils:format( "~ts." ++ ?default_preferences_extension,
+                       [ BinAppName ] ).
 
 
 
@@ -796,19 +796,19 @@ Returns the found preferences file (if any) relevant for the specified
 application, otherwise the preferences filename and the ordered list of the full
 paths explored.
 
-For example, for an application named "foobar", of version 0.0.1, following
+For example, for an application named `"foobar"`, of version 0.0.1, following
 paths may be looked up in turn:
- - "~/.config/foobar/0.0.1/foobar.etf"
- - "~/.config/foobar/foobar.etf"
+ - `"~/.config/foobar/0.0.1/foobar.etf"`
+ - `"~/.config/foobar/foobar.etf"`
 
 So for example either "/home/john/.config/foobar/foobar.etf" is returned, or a
 {not_found, "foobar.etf", ["/home/john/.config/foobar/0.0.1/foobar.etf",
 "/home/john/.config/foobar/foobar.etf"]} triplet.
 """.
 -spec get_application_preferences_file( any_app_info() ) ->
-											app_pref_lookup_outcome().
+                                            app_pref_lookup_outcome().
 get_application_preferences_file( AnyAppInfo ) ->
-	get_application_preferences_file( AnyAppInfo, _AddDefaultPrefPath=false ).
+    get_application_preferences_file( AnyAppInfo, _AddDefaultPrefPath=false ).
 
 
 
@@ -817,22 +817,22 @@ Returns the found preferences file (if any) relevant for the specified
 application, otherwise the preferences filename and the ordered list of the full
 paths explored.
 
-For example, for an application named "foobar", of version 0.0.1, following
+For example, for an application named `"foobar"`, of version 0.0.1, following
 paths may be looked up in turn:
- - "~/.config/foobar/0.0.1/foobar.etf"
- - "~/.config/foobar/foobar.etf"
- - if AddDefaultPrefPath is true: "/home/john/.ceylan-settings.etf"
+ - `"~/.config/foobar/0.0.1/foobar.etf"`
+ - `"~/.config/foobar/foobar.etf"`
+ - if `AddDefaultPrefPath` is `true`: `"/home/john/.ceylan-settings.etf"`
 
-So for example either "/home/john/.config/foobar/foobar.etf" is returned, or a
-{not_found, "foobar.etf", ["/home/john/.config/foobar/0.0.1/foobar.etf",
-"/home/john/.config/foobar/foobar.etf", "/home/john/.ceylan-settings.etf"]}
+So for example either `"/home/john/.config/foobar/foobar.etf"` is returned, or a
+`{not_found, "foobar.etf", ["/home/john/.config/foobar/0.0.1/foobar.etf",
+"/home/john/.config/foobar/foobar.etf", "/home/john/.ceylan-settings.etf"]}`
 triplet.
 """.
 -spec get_application_preferences_file( any_app_info(), boolean() ) ->
-											app_pref_lookup_outcome().
+                                            app_pref_lookup_outcome().
 get_application_preferences_file( AnyAppInfo, AddDefaultPrefPath ) ->
-	get_application_preferences_file( AnyAppInfo, _PrioritaryDirs=[],
-									  _ExtraDirs=[], AddDefaultPrefPath ).
+    get_application_preferences_file( AnyAppInfo, _PrioritaryDirs=[],
+                                      _ExtraDirs=[], AddDefaultPrefPath ).
 
 
 
@@ -843,13 +843,13 @@ paths explored, using first the application-related directories, then the
 specified extra directory candidates and, if requested, as a last resort, the
 default preferences path.
 
-For example, for an application named "foobar", of version 0.0.1 and extra
-directories ["/home/a", "/var/b"], following paths may be looked up in turn:
- - "~/.config/foobar/0.0.1/foobar.etf"
- - "~/.config/foobar/foobar.etf"
- - "/home/a/foobar.etf"
- - "/var/b/foobar.etf"
- - if AddDefaultPrefPath is true: "/home/john/.ceylan-settings.etf"
+For example, for an application named `"foobar"`, of version 0.0.1 and extra
+directories `["/home/a", "/var/b"]`, following paths may be looked up in turn:
+ - `"~/.config/foobar/0.0.1/foobar.etf"`
+ - `"~/.config/foobar/foobar.etf"`
+ - `"/home/a/foobar.etf"è
+ - `"/var/b/foobar.etf"`
+ - if `AddDefaultPrefPath` is `true`: `"/home/john/.ceylan-settings.etf"`
 
 So for example either "/var/b/foobar.etf" is returned, or a {not_found,
 "foobar.etf", ["/home/john/.config/foobar/0.0.1/foobar.etf",
@@ -857,10 +857,10 @@ So for example either "/var/b/foobar.etf" is returned, or a {not_found,
    "/var/b/foobar.etf", "/home/john/.ceylan-settings.etf"]} triplet.
 """.
 -spec get_application_preferences_file( any_app_info(),
-			[ any_directory_path() ], boolean() ) -> app_pref_lookup_outcome().
+            [ any_directory_path() ], boolean() ) -> app_pref_lookup_outcome().
 get_application_preferences_file( AnyAppInfo, ExtraDirs, AddDefaultPrefPath ) ->
-	get_application_preferences_file( AnyAppInfo, _PrioritaryDirs=[], ExtraDirs,
-								  AddDefaultPrefPath ).
+    get_application_preferences_file( AnyAppInfo, _PrioritaryDirs=[], ExtraDirs,
+                                  AddDefaultPrefPath ).
 
 
 
@@ -871,103 +871,103 @@ paths explored, using the specified prioritary directories as (ordered) first
 locations, then the application-related directories, then the extra (ordered)
 directories and, if requested, as a last resort, the default preferences path.
 
-For example, for an application named "foobar", of version 0.0.1 and prioritary
-directories ["/home/a", "/var/b"] and extra directories ["/opt/c"], following
-paths may be looked up in turn:
- - "/home/a/foobar.etf"
- - "/var/b/foobar.etf"
- - "~/.config/foobar/0.0.1/foobar.etf"
- - "~/.config/foobar/foobar.etf"
- - "/opt/c/foobar.etf"
- - if AddDefaultPrefPath is true: "/home/john/.ceylan-settings.etf"
+For example, for an application named `"foobar"`, of version 0.0.1 and
+prioritary directories `["/home/a", "/var/b"]` and extra directories
+`["/opt/c"]`, following paths may be looked up in turn:
+ - `"/home/a/foobar.etf"`
+ - `"/var/b/foobar.etf"`
+ - `"~/.config/foobar/0.0.1/foobar.etf"`
+ - `"~/.config/foobar/foobar.etf"`
+ - `"/opt/c/foobar.etf"`
+ - if `AddDefaultPrefPath` is `true`: `"/home/john/.ceylan-settings.etf"`
 
-So for example either "/var/b/foobar.etf" is returned, or a {not_found,
+So for example either `"/var/b/foobar.etf"` is returned, or a `{not_found,
 "foobar.etf", ["/home/a/foobar.etf", "/var/b/foobar.etf",
    "/home/john/.config/foobar/0.0.1/foobar.etf",
    "/home/john/.config/foobar/foobar.etf", "/opt/c/foobar.etf"
-   "/home/john/.ceylan-settings.etf"]} triplet.
+   "/home/john/.ceylan-settings.etf"]}` triplet.
 """.
 -spec get_application_preferences_file( any_app_info(),
-	[ any_directory_path() ], [ any_directory_path() ], boolean() ) ->
-											app_pref_lookup_outcome().
+    [ any_directory_path() ], [ any_directory_path() ], boolean() ) ->
+                                            app_pref_lookup_outcome().
 get_application_preferences_file( AppInfo=#app_info{}, PrioritaryDirs,
-								  ExtraDirs, AddDefaultPrefPath ) ->
-	AppInfoMap = app_facilities:get_app_info_map( AppInfo ),
-	get_application_preferences_file( AppInfoMap, PrioritaryDirs, ExtraDirs,
-									  AddDefaultPrefPath );
+                                  ExtraDirs, AddDefaultPrefPath ) ->
+    AppInfoMap = app_facilities:get_app_info_map( AppInfo ),
+    get_application_preferences_file( AppInfoMap, PrioritaryDirs, ExtraDirs,
+                                      AddDefaultPrefPath );
 
 get_application_preferences_file( AppInfoMap=#{ name := BinAppName },
-		PrioritaryDirs, ExtraDirs, AddDefaultPrefPath ) ->
+        PrioritaryDirs, ExtraDirs, AddDefaultPrefPath ) ->
 
-	PathType = user_config,
+    PathType = user_config,
 
-	AppCandidateDir =
-		filename:basedir( PathType, BinAppName, _Opts=AppInfoMap ),
+    AppCandidateDir =
+        filename:basedir( PathType, BinAppName, _Opts=AppInfoMap ),
 
-	% A second choice could be without the version:
-	AppDirs = [ AppCandidateDir ] ++ case maps:find( _K=version, AppInfoMap ) of
+    % A second choice could be without the version:
+    AppDirs = [ AppCandidateDir ] ++ case maps:find( _K=version, AppInfoMap ) of
 
-		{ ok, _Version } ->
-			NoVersionMap = maps:remove( version, AppInfoMap ),
+        { ok, _Version } ->
+            NoVersionMap = maps:remove( version, AppInfoMap ),
 
-			SecondAppCandidateDir =
-				filename:basedir( PathType, BinAppName, NoVersionMap ),
+            SecondAppCandidateDir =
+                filename:basedir( PathType, BinAppName, NoVersionMap ),
 
-			[ SecondAppCandidateDir ];
+            [ SecondAppCandidateDir ];
 
-		error ->
-			[]
+        error ->
+            []
 
-						end,
+    end,
 
-	OrderedDirs = PrioritaryDirs ++ AppDirs ++ ExtraDirs,
+    OrderedDirs = PrioritaryDirs ++ AppDirs ++ ExtraDirs,
 
-	PrefFilename = get_application_preferences_filename( AppInfoMap ),
+    PrefFilename = get_application_preferences_filename( AppInfoMap ),
 
-	case file_utils:get_first_file_or_link_for( PrefFilename, OrderedDirs ) of
+    case file_utils:get_first_file_or_link_for( PrefFilename, OrderedDirs ) of
 
-		undefined ->
-			case AddDefaultPrefPath of
+        undefined ->
+            case AddDefaultPrefPath of
 
-				true ->
-					DefPath = get_default_preferences_path(),
-					case file_utils:is_existing_file_or_link( DefPath ) of
+                true ->
+                    DefPath = get_default_preferences_path(),
+                    case file_utils:is_existing_file_or_link( DefPath ) of
 
-						true ->
-							DefPath;
+                        true ->
+                            DefPath;
 
-						_False ->
-							BasePathCandidates = [
-								file_utils:ensure_path_is_absolute(
-									file_utils:join( D, PrefFilename ) )
-														|| D <- OrderedDirs ],
+                        _False ->
+                            BasePathCandidates = [
+                                file_utils:ensure_path_is_absolute(
+                                    file_utils:join( D, PrefFilename ) )
+                                                        || D <- OrderedDirs ],
 
-							{ not_found, PrefFilename,
-							  BasePathCandidates ++ [ DefPath ] }
+                            { not_found, PrefFilename,
+                              BasePathCandidates ++ [ DefPath ] }
 
-					end;
+                    end;
 
 
-				false ->
-					BasePathCandidates = [ file_utils:ensure_path_is_absolute(
-						file_utils:join( D, PrefFilename ) )
-											|| D <- OrderedDirs ],
+                false ->
+                    BasePathCandidates = [ file_utils:ensure_path_is_absolute(
+                        file_utils:join( D, PrefFilename ) )
+                                            || D <- OrderedDirs ],
 
-					{ not_found, PrefFilename, BasePathCandidates }
+                    { not_found, PrefFilename, BasePathCandidates }
 
-			end;
+            end;
 
-		PrefPath ->
-			PrefPath
+        PrefPath ->
+            PrefPath
 
-	end.
+    end.
 
 
 
 -doc "Returns the default (local) registration name for the preferences.".
 -spec get_default_preferences_registration_name() -> pref_reg_name().
 get_default_preferences_registration_name() ->
-	?default_preferences_pref_reg_name.
+    ?default_preferences_pref_reg_name.
 
 
 
@@ -978,4 +978,4 @@ Never fails.
 """.
 -spec stop() -> void().
 stop() ->
-	environment:stop( get_default_preferences_path() ).
+    environment:stop( get_default_preferences_path() ).

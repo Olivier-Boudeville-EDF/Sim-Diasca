@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2025 Olivier Boudeville
+% Copyright (C) 2018-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -42,27 +42,27 @@ See the script_utils.erl tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	false = script_utils:is_running_as_escript(),
+    false = script_utils:is_running_as_escript(),
 
-	test_facilities:display( "Root of Myriad is: ~ts",
-							 [ script_utils:get_myriad_base_directory() ] ),
+    test_facilities:display( "Root of Myriad is: ~ts",
+                             [ script_utils:get_myriad_base_directory() ] ),
 
-	test_facilities:display( "Script directory is: ~ts",
-							 [ script_utils:get_script_base_directory() ] ),
+    test_facilities:display( "Script directory is: ~ts",
+                             [ script_utils:get_script_base_directory() ] ),
 
-	ArgString = "foo -color red white -bar baz -boom -color blue",
+    ArgString = "foo -color red white -bar baz -boom -color blue",
 
-	% Emulated as if they were obtained in the context of an escript:
-	CommandLineArgs = text_utils:split( ArgString, _Delimiter=$ ),
+    % Emulated as if they were obtained in the context of an escript:
+    CommandLineArgs = text_utils:split( ArgString, _Delimiter=$ ),
 
-	CanonicalArgTables =
-		cmd_line_utils:get_argument_table_from_strings( CommandLineArgs ),
+    CanonicalArgTables =
+        cmd_line_utils:get_argument_table_from_strings( CommandLineArgs ),
 
-	test_facilities:display( "Command-line interpretation follows, for "
-		"command-line arguments '~ts': ~ts",
-		[ ArgString,
-		  cmd_line_utils:argument_table_to_string( CanonicalArgTables ) ] ),
+    test_facilities:display( "Command-line interpretation follows, for "
+        "command-line arguments '~ts': ~ts",
+        [ ArgString,
+          cmd_line_utils:argument_table_to_string( CanonicalArgTables ) ] ),
 
-	test_facilities:stop().
+    test_facilities:stop().

@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2025 Olivier Boudeville
+% Copyright (C) 2010-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -39,7 +39,7 @@ See `bounding_volume_test.erl` for the corresponding test.
 
 
 -export([ get_lazy_bounding_sphere/1, get_minimal_enclosing_sphere/1,
-		  to_string/1 ]).
+          to_string/1 ]).
 
 
 % For record declarations of bounding volumes:
@@ -67,7 +67,7 @@ See `bounding_volume_test.erl` for the corresponding test.
 
 
 -export_type([ bounding_volume_type/0,
-			   right_cuboid/0, sphere/0, bounding_volume/0 ]).
+               right_cuboid/0, sphere/0, bounding_volume/0 ]).
 
 
 
@@ -102,15 +102,15 @@ Returns the sphere information: {Center, SquareRadius}.
 -spec get_lazy_bounding_sphere( [ point3() ] ) -> sphere().
 get_lazy_bounding_sphere( Points ) ->
 
-	{ TopLeftNearP, BottomRightFarP } =
-		linear_3D:compute_smallest_enclosing_cuboid( Points ),
+    { TopLeftNearP, BottomRightFarP } =
+        linear_3D:compute_smallest_enclosing_cuboid( Points ),
 
-	Center = point3:get_center( TopLeftNearP, BottomRightFarP ),
+    Center = point3:get_center( TopLeftNearP, BottomRightFarP ),
 
-	% We divide by 4, as we are dealing with squared quantities:
-	SquareRadius = point3:square_distance( TopLeftNearP, BottomRightFarP ) / 4,
+    % We divide by 4, as we are dealing with squared quantities:
+    SquareRadius = point3:square_distance( TopLeftNearP, BottomRightFarP ) / 4,
 
-	#sphere{ center=Center, square_radius=SquareRadius }.
+    #sphere{ center=Center, square_radius=SquareRadius }.
 
 
 
@@ -127,21 +127,21 @@ function.
 """.
 -spec get_minimal_enclosing_sphere( [ point3() ] ) -> sphere().
 get_minimal_enclosing_sphere( _Points=[] ) ->
-	throw( no_point_to_enclose );
+    throw( no_point_to_enclose );
 
 get_minimal_enclosing_sphere( _Points=[ _P ] ) ->
-	throw( todo ).
+    throw( todo ).
 
 
 
 -doc "Returns a textual description of the specified bounding volume.".
 -spec to_string( bounding_volume() ) -> ustring().
 to_string( #right_cuboid{ base_vertex=BaseVertex, abscissa_length=XLen,
-						  ordinate_length=YLen, elevation_length=ZLen } ) ->
-	text_utils:format( "bounding right cuboid whose base vertex is ~ts, "
-		"and lengths along the X, Y and Z axes are respectively ~w, ~w and ~w",
-		[ point3:to_string( BaseVertex ), XLen, YLen, ZLen ] );
+                          ordinate_length=YLen, elevation_length=ZLen } ) ->
+    text_utils:format( "bounding right cuboid whose base vertex is ~ts, "
+        "and lengths along the X, Y and Z axes are respectively ~w, ~w and ~w",
+        [ point3:to_string( BaseVertex ), XLen, YLen, ZLen ] );
 
 to_string( #sphere{ center=Center, square_radius=SquareRadius } ) ->
-	text_utils:format( "bounding sphere whose center is ~ts and "
-		"square radius is ~w", [ Center, SquareRadius ] ).
+    text_utils:format( "bounding sphere whose center is ~ts and "
+        "square radius is ~w", [ Center, SquareRadius ] ).

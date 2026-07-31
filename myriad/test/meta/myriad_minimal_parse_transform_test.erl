@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 Olivier Boudeville
+% Copyright (C) 2014-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -42,47 +42,47 @@ See the myriad_parse_transform.erl tested module.
 
 perform_direct_ast_operations( TargetSourceFile ) ->
 
-	io:format( "~nNow performing directly AST-level operations:~n~n" ),
+    io:format( "~nNow performing directly AST-level operations:~n~n" ),
 
-	BaseAST = ast_utils:erl_to_ast( TargetSourceFile ),
+    BaseAST = ast_utils:erl_to_ast( TargetSourceFile ),
 
-	io:format( "Base AST:~n~p~n", [ BaseAST ] ),
+    io:format( "Base AST:~n~p~n", [ BaseAST ] ),
 
-	BaseModuleInfo = ast_info:extract_module_info_from_ast( BaseAST ),
+    BaseModuleInfo = ast_info:extract_module_info_from_ast( BaseAST ),
 
-	io:format( "Base module info: ~ts~n~n",
-			   [ ast_info:module_info_to_string( BaseModuleInfo ) ] ),
+    io:format( "Base module info: ~ts~n~n",
+               [ ast_info:module_info_to_string( BaseModuleInfo ) ] ),
 
-	FinalModuleInfo = BaseModuleInfo,
+    FinalModuleInfo = BaseModuleInfo,
 
-	io:format( "Final module info: ~ts~n~n",
-			   [ ast_info:module_info_to_string( FinalModuleInfo ) ] ),
+    io:format( "Final module info: ~ts~n~n",
+               [ ast_info:module_info_to_string( FinalModuleInfo ) ] ),
 
-	FinalAST = ast_info:recompose_ast_from_module_info( FinalModuleInfo ),
+    FinalAST = ast_info:recompose_ast_from_module_info( FinalModuleInfo ),
 
-	io:format( "Final AST:~n~p~n", [ FinalAST ] ).
+    io:format( "Final AST:~n~p~n", [ FinalAST ] ).
 
 
 
 -spec run() -> no_return().
 run() ->
 
-	%TargetSourceFile = "../../src/utils/code_utils.erl",
-	TargetSourceFile = "simple_parse_transform_target.erl",
-	%TargetSourceFile = "../../src/data-management/preferences.erl",
+    %TargetSourceFile = "../../src/utils/code_utils.erl",
+    TargetSourceFile = "simple_parse_transform_target.erl",
+    %TargetSourceFile = "../../src/data-management/preferences.erl",
 
-	io:format( "Applying the Myriad parse transform to the "
-			   "'~ts' source file.~n~n", [ TargetSourceFile ] ),
+    io:format( "Applying the Myriad parse transform to the "
+               "'~ts' source file.~n~n", [ TargetSourceFile ] ),
 
-	TransformedAST = myriad_parse_transform:run_standalone( TargetSourceFile ),
+    TransformedAST = myriad_parse_transform:run_standalone( TargetSourceFile ),
 
-	io:format( "Transformed AST:~n~p~n~n", [ TransformedAST ] ),
+    io:format( "Transformed AST:~n~p~n~n", [ TransformedAST ] ),
 
-	%ast_utils:write_ast_to_file( TransformedAST, TargetSourceFile ++ ".ast" ),
+    %ast_utils:write_ast_to_file( TransformedAST, TargetSourceFile ++ ".ast" ),
 
-	%perform_direct_ast_operations( TargetSourceFile ),
+    %perform_direct_ast_operations( TargetSourceFile ),
 
-	io:format( "Test successful." ),
+    io:format( "Test successful." ),
 
-	% Otherwise freezes indefinitely:
-	basic_utils:stop().
+    % Otherwise freezes indefinitely:
+    basic_utils:stop().

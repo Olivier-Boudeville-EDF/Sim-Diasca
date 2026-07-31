@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 EDF R&D
+% Copyright (C) 2016-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -25,8 +25,8 @@
 
 
 -define( class_description,
-		 "Example dataflow object corresponding to a district, in the context "
-		 "of the 'Dataflow Urban Example' case." ).
+         "Example dataflow object corresponding to a district, in the context "
+         "of the 'Dataflow Urban Example' case." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -42,8 +42,8 @@
 % Plain (standard) attributes specific to a district object are:
 -define( class_attributes, [
 
-	{ districts, [ building_pid() ], "a list of the buildings that this "
-	  "district contains (not owning them)" } ] ).
+    { districts, [ building_pid() ], "a list of the buildings that this "
+      "district contains (not owning them)" } ] ).
 
 
 
@@ -95,23 +95,23 @@ actor, as assigned by the load balancer
 - DataflowPid is the PID of the dataflow instance
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-	class_Actor:name(), [ administrative_name() | surface() | area_type() ],
-	dataflow_pid() ) -> wooper:state().
+    class_Actor:name(), [ administrative_name() | surface() | area_type() ],
+    dataflow_pid() ) -> wooper:state().
 construct( State, ActorSettings, DistrictName,
-		   [ AdministrativeName, GroundSurface, Type ], DataflowPid ) ->
+           [ AdministrativeName, GroundSurface, Type ], DataflowPid ) ->
 
-	AttributeSpecs = get_dataflow_attribute_specs(),
+    AttributeSpecs = get_dataflow_attribute_specs(),
 
-	InitialAttributeValues = [ AdministrativeName, GroundSurface, Type ],
+    InitialAttributeValues = [ AdministrativeName, GroundSurface, Type ],
 
-	% First the direct mother class:
-	ObjectState = class_DataflowObject:construct( State, ActorSettings,
-		?trace_categorize(DistrictName), AttributeSpecs,
-		InitialAttributeValues, _SpecForUniquePeers=[],
-		_SpecForMultiplePeers=[], DataflowPid ),
+    % First the direct mother class:
+    ObjectState = class_DataflowObject:construct( State, ActorSettings,
+        ?trace_categorize(DistrictName), AttributeSpecs,
+        InitialAttributeValues, _SpecForUniquePeers=[],
+        _SpecForMultiplePeers=[], DataflowPid ),
 
-	% Then the class-specific actions:
-	setAttribute( ObjectState, buildings, [] ).
+    % Then the class-specific actions:
+    setAttribute( ObjectState, buildings, [] ).
 
 
 
@@ -119,22 +119,22 @@ construct( State, ActorSettings, DistrictName,
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
-	% Class-specific actions:
+    % Class-specific actions:
 
-	case ?getAttr(buildings) of
+    case ?getAttr(buildings) of
 
-		[] ->
-			ok;
+        [] ->
+            ok;
 
-		Buildings ->
-			% Normal if no disassociation event was specified:
-			?info_fmt( "Destructed, yet still referencing ~B buildings: ~w.",
-					   [ length( Buildings ), Buildings ] )
+        Buildings ->
+            % Normal if no disassociation event was specified:
+            ?info_fmt( "Destructed, yet still referencing ~B buildings: ~w.",
+                       [ length( Buildings ), Buildings ] )
 
-	end,
+    end,
 
-	% Then allow chaining:
-	State.
+    % Then allow chaining:
+    State.
 
 
 
@@ -151,14 +151,14 @@ located-in this district.
 registerBuilding( State, BuildingPid, _SendingActorPid )
                                         when is_pid( BuildingPid ) ->
 
-	% Check that registered up to once:
-	false = lists:member( BuildingPid, ?getAttr(buildings) ),
+    % Check that registered up to once:
+    false = lists:member( BuildingPid, ?getAttr(buildings) ),
 
-	?debug_fmt( "Registering building ~p.", [ BuildingPid ] ),
+    ?debug_fmt( "Registering building ~p.", [ BuildingPid ] ),
 
-	NewState = appendToAttribute( State, buildings, BuildingPid ),
+    NewState = appendToAttribute( State, buildings, BuildingPid ),
 
-	actor:return_state( NewState ).
+    actor:return_state( NewState ).
 
 
 
@@ -168,30 +168,30 @@ registerBuilding( State, BuildingPid, _SendingActorPid )
 
 -doc "Allows to fully specify the dataflow attributes of this object.".
 -spec get_dataflow_attribute_specs() ->
-							static_return( [ dataflow_attribute_spec() ] ).
+                            static_return( [ dataflow_attribute_spec() ] ).
 get_dataflow_attribute_specs() ->
 
-	wooper:return_static( [
+    wooper:return_static( [
 
-		#dataflow_attribute_spec{
-			attribute_name="administrative_name",
-			semantics=[ ?name_semantics ],
-			unit="dimensionless",
-			type_description="string" },
+        #dataflow_attribute_spec{
+            attribute_name="administrative_name",
+            semantics=[ ?name_semantics ],
+            unit="dimensionless",
+            text_type="string()" },
 
-		#dataflow_attribute_spec{
-			attribute_name="ground_surface",
-			semantics=[ ?surface_semantics ],
-			unit="m^2",
-			type_description="float",
-			constraints = [ positive ] },
+        #dataflow_attribute_spec{
+            attribute_name="ground_surface",
+            semantics=[ ?surface_semantics ],
+            unit="m^2",
+            text_type="float()",
+            constraints = [ positive ] },
 
-	   #dataflow_attribute_spec{
-			attribute_name="type",
-			semantics=[ ?area_type_semantics ],
-			unit="dimensionless",
-			type_description="area_type",
-			constraints = [ positive ] } ] ).
+       #dataflow_attribute_spec{
+            attribute_name="type",
+            semantics=[ ?area_type_semantics ],
+            unit="dimensionless",
+            text_type="area_type()",
+            constraints = [ positive ] } ] ).
 
 
 
@@ -203,18 +203,18 @@ get_dataflow_attribute_specs() ->
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
-	BuildingString = case ?getAttr(buildings) of
+    BuildingString = case ?getAttr(buildings) of
 
-		[] ->
-			"no building";
+        [] ->
+            "no building";
 
-		Buildings ->
-			text_utils:format( "~B buildings (~w)",
-							   [ length( Buildings ), Buildings ] )
+        Buildings ->
+            text_utils:format( "~B buildings (~w)",
+                               [ length( Buildings ), Buildings ] )
 
-	end,
+    end,
 
-	text_utils:format( "District object named '~ts', containing ~ts and "
-		"having ~ts",
-		[ ?getAttr(name), BuildingString,
-		  class_DataflowObject:attributes_to_string( State ) ] ).
+    text_utils:format( "district object named '~ts', containing ~ts and "
+        "having ~ts",
+        [ ?getAttr(name), BuildingString,
+          class_DataflowObject:attributes_to_string( State ) ] ).

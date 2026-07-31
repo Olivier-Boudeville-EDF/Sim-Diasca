@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 EDF R&D
+% Copyright (C) 2016-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -41,7 +41,7 @@ sense that if a language is involved somewhere, others should also be, aside).
 
 % Exports of helpers:
 -export([ get_all_erlang_unit_types/0, get_erlang_unit_type/1,
-		  get_unit_types/1 ]).
+          get_unit_types/1 ]).
 
 
 % For trace notifications:
@@ -56,8 +56,8 @@ to all units implemented in a foreign programming language.
 """.
 -spec get_all_erlang_unit_types() -> [ dataflow_unit_type() ].
 get_all_erlang_unit_types() ->
-	[ dataflow_python_binding_utils:get_erlang_unit_type(),
-	  dataflow_java_binding_utils:get_erlang_unit_type() ].
+    [ dataflow_python_binding_utils:get_erlang_unit_type(),
+      dataflow_java_binding_utils:get_erlang_unit_type() ].
 
 
 
@@ -67,13 +67,13 @@ language.
 """.
 -spec get_erlang_unit_type( language_utils:language() ) -> dataflow_unit_type().
 get_erlang_unit_type( python ) ->
-	dataflow_python_binding_utils:get_erlang_unit_type();
+    dataflow_python_binding_utils:get_erlang_unit_type();
 
 get_erlang_unit_type( java ) ->
-	dataflow_java_binding_utils:get_erlang_unit_type();
+    dataflow_java_binding_utils:get_erlang_unit_type();
 
 get_erlang_unit_type( Other ) ->
-	throw( { unsupported_language_for_unit, Other } ).
+    throw( { unsupported_language_for_unit, Other } ).
 
 
 
@@ -85,31 +85,31 @@ Note: checks also that their declared implementation language (if any is
 specified) is supported.
 """.
 -spec get_unit_types( [ class_DataflowUnitManager:managed_unit_spec() ] ) ->
-							[ dataflow_unit_type() ].
+                            [ dataflow_unit_type() ].
 get_unit_types( UnitSpecs ) ->
-	SupportedLanguages = language_utils:get_supported_languages(),
-	get_unit_types( UnitSpecs, SupportedLanguages, _Acc=[] ).
+    SupportedLanguages = language_utils:get_supported_languages(),
+    get_unit_types( UnitSpecs, SupportedLanguages, _Acc=[] ).
 
 get_unit_types( _UnitSpecs=[], _SupportedLanguages, Acc ) ->
-	lists:reverse( Acc );
+    lists:reverse( Acc );
 
 get_unit_types( _UnitSpecs =[ { UnitType, ImplementationLanguage } | T ],
-				SupportedLanguages, Acc ) ->
+                SupportedLanguages, Acc ) ->
 
-	case lists:member( ImplementationLanguage, SupportedLanguages ) of
+    case lists:member( ImplementationLanguage, SupportedLanguages ) of
 
-		true ->
-			get_unit_types( T, SupportedLanguages, [ UnitType | Acc ] );
+        true ->
+            get_unit_types( T, SupportedLanguages, [ UnitType | Acc ] );
 
-		false ->
-			?notify_error_fmt( "The '~p' language (declared by the unit '~ts') "
-				"is not supported by the binding API.",
-				[ ImplementationLanguage, UnitType ] ),
-			throw( { binding_language_not_supported, ImplementationLanguage,
-					 UnitType } )
+        false ->
+            ?notify_error_fmt( "The '~p' language (declared by the unit '~ts') "
+                "is not supported by the binding API.",
+                [ ImplementationLanguage, UnitType ] ),
+            throw( { binding_language_not_supported, ImplementationLanguage,
+                     UnitType } )
 
-	end;
+    end;
 
 % Erlang is of course an (auto-accepted) default language:
 get_unit_types( _UnitSpecs =[ UnitType | T ], SupportedLanguages, Acc ) ->
-	get_unit_types( [ { UnitType, erlang } | T ], SupportedLanguages, Acc ).
+    get_unit_types( [ { UnitType, erlang } | T ], SupportedLanguages, Acc ).

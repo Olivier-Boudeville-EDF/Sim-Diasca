@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2025 Olivier Boudeville
+% Copyright (C) 2010-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -70,12 +70,12 @@ PID.
 -spec start( instance_pid() ) -> proxy_pid().
 start( TargetInstancePid ) ->
 
-	trace_utils:notice_fmt( "Creating a proxy for WOOPER instance ~w.",
-							[ TargetInstancePid ] ),
+    trace_utils:notice_fmt( "Creating a proxy for WOOPER instance ~w.",
+                            [ TargetInstancePid ] ),
 
-	?myriad_spawn( fun() ->
-					proxy_main_loop( TargetInstancePid )
-				   end ).
+    ?myriad_spawn( fun() ->
+                    proxy_main_loop( TargetInstancePid )
+                   end ).
 
 
 
@@ -86,12 +86,12 @@ specified PID.
 -spec start_link( instance_pid() ) -> proxy_pid().
 start_link( TargetInstancePid ) ->
 
-	trace_utils:notice_fmt( "Creating a linked proxy for WOOPER instance ~w.",
-							[ TargetInstancePid ] ),
+    trace_utils:notice_fmt( "Creating a linked proxy for WOOPER instance ~w.",
+                            [ TargetInstancePid ] ),
 
-	?myriad_spawn_link( fun() ->
-							proxy_main_loop( TargetInstancePid )
-						end ).
+    ?myriad_spawn_link( fun() ->
+                            proxy_main_loop( TargetInstancePid )
+                        end ).
 
 
 
@@ -99,69 +99,69 @@ start_link( TargetInstancePid ) ->
 -spec proxy_main_loop( instance_pid() ) -> no_return().
 proxy_main_loop( TargetInstancePid ) ->
 
-	trace_utils:debug_fmt(
-		"Proxy ~w waiting for a call to WOOPER target instance ~w.",
-		[ self(), TargetInstancePid ] ),
+    trace_utils:debug_fmt(
+        "Proxy ~w waiting for a call to WOOPER target instance ~w.",
+        [ self(), TargetInstancePid ] ),
 
-	% This proxy is expected to receive (only) either requests or oneways:
-	receive
+    % This proxy is expected to receive (only) either requests or oneways:
+    receive
 
-		{ RequestName, Args, SenderPid } ->
+        { RequestName, Args, SenderPid } ->
 
-			trace_utils:debug_fmt( "Proxy ~w processing request ~p.",
-				[ self(), { RequestName, Args, SenderPid } ] ),
+            trace_utils:debug_fmt( "Proxy ~w processing request ~p.",
+                [ self(), { RequestName, Args, SenderPid } ] ),
 
-			TargetInstancePid ! { RequestName, Args, self() },
-			receive
+            TargetInstancePid ! { RequestName, Args, self() },
+            receive
 
-				% Expecting a {wooper_result, Res} pair:
-				R ->
-					trace_utils:debug_fmt(
-						"Proxy ~w returning ~p to caller ~w.",
-						[ self(), R, SenderPid ] ),
+                % Expecting a {wooper_result, Res} pair:
+                R ->
+                    trace_utils:debug_fmt(
+                        "Proxy ~w returning ~p to caller ~w.",
+                        [ self(), R, SenderPid ] ),
 
-					SenderPid ! R
+                    SenderPid ! R
 
-			end,
-			proxy_main_loop( TargetInstancePid ) ;
-
-
-		{ OnewayName, Args } ->
-
-			trace_utils:debug_fmt( "Proxy ~w processing oneway ~p.",
-								   [ self(), { OnewayName, Args } ] ),
-
-			TargetInstancePid ! { OnewayName, Args },
-
-			proxy_main_loop( TargetInstancePid );
+            end,
+            proxy_main_loop( TargetInstancePid ) ;
 
 
-		delete ->
+        { OnewayName, Args } ->
 
-			trace_utils:debug_fmt(
-				"Deleting proxy ~w for WOOPER target instance ~w.",
-				[ self(), TargetInstancePid ] ),
+            trace_utils:debug_fmt( "Proxy ~w processing oneway ~p.",
+                                   [ self(), { OnewayName, Args } ] ),
 
-			% No looping here:
-			TargetInstancePid ! delete;
+            TargetInstancePid ! { OnewayName, Args },
 
-
-		OnewayName when is_atom( OnewayName ) ->
-
-			trace_utils:debug_fmt( "Proxy ~w processing oneway ~p.",
-								   [ self(), OnewayName ] ),
-
-			TargetInstancePid ! OnewayName,
-			proxy_main_loop( TargetInstancePid );
+            proxy_main_loop( TargetInstancePid );
 
 
-		Other ->
+        delete ->
 
-			trace_utils:debug_fmt(
-				"Warning: WOOPER instance proxy (~w) for ~w ignored "
-				"following message: ~p.",
-			    [ self(), TargetInstancePid, Other ] ),
+            trace_utils:debug_fmt(
+                "Deleting proxy ~w for WOOPER target instance ~w.",
+                [ self(), TargetInstancePid ] ),
 
-			proxy_main_loop( TargetInstancePid )
+            % No looping here:
+            TargetInstancePid ! delete;
 
-	end.
+
+        OnewayName when is_atom( OnewayName ) ->
+
+            trace_utils:debug_fmt( "Proxy ~w processing oneway ~p.",
+                                   [ self(), OnewayName ] ),
+
+            TargetInstancePid ! OnewayName,
+            proxy_main_loop( TargetInstancePid );
+
+
+        Other ->
+
+            trace_utils:debug_fmt(
+                "Warning: WOOPER instance proxy (~w) for ~w ignored "
+                "following message: ~p.",
+                [ self(), TargetInstancePid, Other ] ),
+
+            proxy_main_loop( TargetInstancePid )
+
+    end.

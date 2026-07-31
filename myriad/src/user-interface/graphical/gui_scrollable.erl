@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -85,7 +85,7 @@ per scroll step.
 """.
 -spec create( option( parent() ) ) -> scrollable().
 create( MaybeParent ) ->
-	create( _Inc=?default_scroll_increment, MaybeParent ).
+    create( _Inc=?default_scroll_increment, MaybeParent ).
 
 
 
@@ -94,22 +94,22 @@ Creates a scrollable, with the specified scroll increment (both for horizontal
 and vertical orientations) and the specified parent.
 """.
 -spec create( pixels_per_scroll_step()
-			| { pixels_per_scroll_step(), pixels_per_scroll_step() },
-			  option( parent() ) ) -> scrollable().
+            | { pixels_per_scroll_step(), pixels_per_scroll_step() },
+              option( parent() ) ) -> scrollable().
 create( { HPixPerStep, VPixPerStep }, MaybeParent ) ->
-	Scrollable = wxScrolledWindow:new( MaybeParent ),
+    Scrollable = wxScrolledWindow:new( MaybeParent ),
 
-	% Otherwise no scrollbar will be enable:
-	wxScrolledWindow:setScrollRate( Scrollable, HPixPerStep, VPixPerStep ),
+    % Otherwise no scrollbar will be enable:
+    wxScrolledWindow:setScrollRate( Scrollable, HPixPerStep, VPixPerStep ),
 
-	Scrollable;
+    Scrollable;
 
 create( PixPerStep, MaybeParent ) ->
-	create( { PixPerStep, PixPerStep }, MaybeParent ).
+    create( { PixPerStep, PixPerStep }, MaybeParent ).
 
 
 
 -doc "Destructs the specified scrollable.".
 -spec destruct( scrollable() ) -> void().
 destruct( Scrollable  ) ->
-	wxScrolledWindow:destroy( Scrollable ).
+    wxScrolledWindow:destroy( Scrollable ).

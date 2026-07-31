@@ -70,31 +70,38 @@ docker-image: prepare-docker-context prepare-docker-image create-docker-image
 	@echo "If satisfied with this image, it can be pushed to registry thanks to: 'make push-docker-image'."
 
 
+# The Erlang version in the Docker images therefore derives directly from the
+# one referenced by the Myriad's conf/install-erlang.sh script:
+#
 prepare-docker-image:
 	@echo "  Preparing a Sim-Diasca $(IMAGE_BASE_NAME) Docker image"
 	@$(DOCKER_PREPARATION_SCRIPT) $(DOCKER_USAGE_OPT) --erlang-version "$(ERLANG_TARGET_VERSION)"
 
 
+# The 'docker' commands used to be prefixed with 'sudo', yet it made the push
+# fail (no /root/.docker/config.json), and it is better just to have the current
+# user is the 'docker' group.
+
 create-docker-image: $(DOCKER_CONTEXT_NAME)/$(DOCKERFILE)
 	@echo "  Tagging image for base registry, as $(IMAGE_BASE_REF_NAME) and $(IMAGE_BASE_LATEST_NAME)."
-	@sudo docker build --tag $(IMAGE_BASE_REF_NAME) --tag $(IMAGE_BASE_LATEST_NAME) $(DOCKER_CONTEXT_NAME)
+	@docker build --tag $(IMAGE_BASE_REF_NAME) --tag $(IMAGE_BASE_LATEST_NAME) $(DOCKER_CONTEXT_NAME)
 	@if [ -n "$(SIM_DIASCA_ALT_DOCKER_REGISTRY)" ]; then \
 	echo "  Tagging image for alternate registry, as $(IMAGE_ALT_REF_NAME) and $(IMAGE_ALT_LATEST_NAME)."; \
-	sudo docker build --tag $(IMAGE_ALT_REF_NAME) --tag $(IMAGE_ALT_LATEST_NAME) $(DOCKER_CONTEXT_NAME); fi
-	@echo "This image can be checked interactively thanks to: 'sudo docker run -it $(IMAGE_BASE_REF_NAME) /bin/bash'."
+	docker build --tag $(IMAGE_ALT_REF_NAME) --tag $(IMAGE_ALT_LATEST_NAME) $(DOCKER_CONTEXT_NAME); fi
+	@echo "This image can be checked interactively thanks to: 'docker run -it $(IMAGE_BASE_REF_NAME) /bin/bash'."
 
 
 run-docker-image:
 	@echo "  Running image $(IMAGE_BASE_REF_NAME)"
-	@sudo docker run -it "$(IMAGE_BASE_REF_NAME)"
+	@docker run -it "$(IMAGE_BASE_REF_NAME)"
 
 
 push-docker-image:
 	@echo "  Pushing all tags for image $(IMAGE_BASE_PUSH_TARGET) in base registry"
-	@sudo docker image push --all-tags $(IMAGE_BASE_PUSH_TARGET)
+	@docker image push --all-tags $(IMAGE_BASE_PUSH_TARGET)
 	@if [ -n "$(SIM_DIASCA_ALT_DOCKER_REGISTRY)" ]; then \
 	@echo "  Pushing all tags for image $(IMAGE_ALT_PUSH_TARGET) in alternate registry"; \
-	sudo docker image push --all-tags $(IMAGE_ALT_PUSH_TARGET); fi
+	docker image push --all-tags $(IMAGE_ALT_PUSH_TARGET); fi
 
 
 info-docker-image:
@@ -143,9 +150,11 @@ clean-source-archives:
 # called by default, see the 'clean-all-results' target in the root
 # GNUmakefile):
 #
+# (lowercasing due to our newer path conventions)
+#
 clean-results:
 	@echo "    Cleaning all results for user $$USER in $$(pwd)"
-	@for d in *-on-*-at-*-by-$$USER-*; do /bin/rm -rf $$d; done
+	@for d in *-on-*-at-*-by-$$(echo ${USER} | tr '[:upper:]' '[:lower:]')-*; do /bin/rm -rf $$d; done
 
 
 clean-outputs: clean-results clean-traces
@@ -164,7 +173,7 @@ real-clean: clean-outputs
 # any parse-transform using them (here, the Sim-Diasca one), and the resulting
 # BEAM must be produced in the right directory (not at the engine root).
 #
-# As most paths (ex: the one leading to the Myriad parse transform) are
+# As most paths (e.g. the one leading to the Myriad parse transform) are
 # relative, the corresponding directory change will make them irrelevant, so we
 # add the correct ones (simpler than modifying the base paths).
 #

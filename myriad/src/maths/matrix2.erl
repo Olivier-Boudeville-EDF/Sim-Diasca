@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -85,20 +85,20 @@ matrix) containing any kind of numerical coordinates.
 
 
 -export([ new/1, null/0, identity/0, rotation/1,
-		  from_columns/2, from_rows/2,
-		  from_coordinates/4,
-		  from_arbitrary/1, to_arbitrary/1,
-		  dimension/0, dimensions/0,
-		  row/2, column/2,
-		  get_element/3, set_element/4,
-		  transpose/1,
-		  scale/2,
-		  add/2, sub/2, mult/2, mult/1, apply/2,
-		  are_equal/2,
-		  determinant/1, comatrix/1, inverse/1,
-		  to_canonical/1,
-		  check/1,
-		  to_string/1 ] ).
+          from_columns/2, from_rows/2,
+          from_coordinates/4,
+          from_arbitrary/1, to_arbitrary/1,
+          dimension/0, dimensions/0,
+          row/2, column/2,
+          get_element/3, set_element/4,
+          transpose/1,
+          scale/2,
+          add/2, sub/2, mult/2, mult/1, apply/2,
+          are_equal/2,
+          determinant/1, comatrix/1, inverse/1,
+          to_canonical/1,
+          check/1,
+          to_string/1 ] ).
 
 
 -import( math_utils, [ are_close/2 ] ).
@@ -138,27 +138,27 @@ Returns a 2D (canonical) matrix corresponding to the user-specified matrix.
 -spec new( user_matrix2() ) -> canonical_matrix2().
 new( UserMatrix ) ->
 
-	CoordList = [ type_utils:ensure_float( C )
-					|| C <- list_utils:flatten_once( UserMatrix ) ],
+    CoordList = [ type_utils:ensure_float( C )
+                    || C <- list_utils:flatten_once( UserMatrix ) ],
 
-	% Returns a #matrix2 record (i.e. a tagged tuple):
-	list_to_tuple( [ 'matrix2' | CoordList ] ).
+    % Returns a #matrix2 record (i.e. a tagged tuple):
+    list_to_tuple( [ 'matrix2' | CoordList ] ).
 
 
 
 -doc "Returns the null (2x2) matrix.".
 -spec null() -> canonical_matrix2().
 null() ->
-	Zero = 0.0,
-	CoordList = lists:duplicate( _N=?dim * ?dim, Zero ),
-	list_to_tuple( [ 'matrix2' | CoordList ] ).
+    Zero = 0.0,
+    CoordList = lists:duplicate( _N=?dim * ?dim, Zero ),
+    list_to_tuple( [ 'matrix2' | CoordList ] ).
 
 
 
 -doc "Returns the identity (2x2) matrix.".
 -spec identity() -> matrix2().
 identity() ->
-	identity_2.
+    identity_2.
 
 
 
@@ -174,10 +174,10 @@ SO(2).
 """.
 -spec rotation( radians() ) -> rot_matrix2().
 rotation( RadAngle ) ->
-	Cos = math:cos( RadAngle ),
-	Sin = math:sin( RadAngle ),
-	#matrix2{ m11=Cos, m12=-Sin,
-			  m21=Sin, m22=Cos }.
+    Cos = math:cos( RadAngle ),
+    Sin = math:sin( RadAngle ),
+    #matrix2{ m11=Cos, m12=-Sin,
+              m21=Sin, m22=Cos }.
 
 
 
@@ -192,8 +192,8 @@ Returns thus:
 """.
 -spec from_columns( vector2(), vector2() ) -> canonical_matrix2().
 from_columns( _Va=[Xa,Ya], _Vb=[Xb,Yb] ) ->
-	#matrix2{ m11=Xa, m12=Xb,
-			  m21=Ya, m22=Yb }.
+    #matrix2{ m11=Xa, m12=Xb,
+              m21=Ya, m22=Yb }.
 
 
 
@@ -208,8 +208,8 @@ Returns thus:
 """.
 -spec from_rows( vector2(), vector2() ) -> canonical_matrix2().
 from_rows( _Va=[Xa,Ya], _Vb=[Xb,Yb] ) ->
-	#matrix2{ m11=Xa, m12=Ya,
-			  m21=Xb, m22=Yb }.
+    #matrix2{ m11=Xa, m12=Ya,
+              m21=Xb, m22=Yb }.
 
 
 
@@ -218,11 +218,11 @@ Returns the (2x2, canonical) matrix whose (4) coordinates are the specified
 ones, as listed row after row.
 """.
 -spec from_coordinates( coordinate(), coordinate(),
-						coordinate(), coordinate() ) -> canonical_matrix2().
+                        coordinate(), coordinate() ) -> canonical_matrix2().
 from_coordinates( M11, M12,
-				  M21, M22 ) ->
-	#matrix2{ m11=M11, m12=M12,
-			  m21=M21, m22=M22 }.
+                  M21, M22 ) ->
+    #matrix2{ m11=M11, m12=M12,
+              m21=M21, m22=M22 }.
 
 
 
@@ -232,7 +232,7 @@ matrix.
 """.
 -spec from_arbitrary( matrix() ) -> matrix2().
 from_arbitrary( Matrix ) ->
-	erlang:apply( fun from_rows/?dim, Matrix ).
+    erlang:apply( fun from_rows/?dim, Matrix ).
 
 
 
@@ -242,9 +242,9 @@ matrix.
 """.
 -spec to_arbitrary( matrix2() ) -> matrix().
 to_arbitrary( Matrix2 ) ->
-	M = to_canonical( Matrix2 ),
-	[ _RecordTag | Coords ] = tuple_to_list( M ),
-	matrix:from_coordinates( Coords, _ColumCount=?dim ).
+    M = to_canonical( Matrix2 ),
+    [ _RecordTag | Coords ] = tuple_to_list( M ),
+    matrix:from_coordinates( Coords, _ColumCount=?dim ).
 
 
 
@@ -255,7 +255,7 @@ Not useless, when using polymorphism based on module name.
 """.
 -spec dimension() -> dimension().
 dimension() ->
-	?dim.
+    ?dim.
 
 
 
@@ -266,33 +266,33 @@ Not useless, when using polymorphism based on module name.
 """.
 -spec dimensions() -> dimensions().
 dimensions() ->
-	{ ?dim, ?dim }.
+    { ?dim, ?dim }.
 
 
 
 -doc "Returns the specified row of the specified matrix.".
 -spec row( dimension(), matrix2() ) -> vector2().
 row( _RowCount=1, #matrix2{ m11=M11, m12=M12 } ) ->
-	[ M11, M12 ];
+    [ M11, M12 ];
 
 row( _RowCount=2, #matrix2{ m21=M21, m22=M22 } ) ->
-	[ M21, M22 ];
+    [ M21, M22 ];
 
 row( RowCount, OtherMatrix ) ->
-	row( RowCount, to_canonical( OtherMatrix ) ).
+    row( RowCount, to_canonical( OtherMatrix ) ).
 
 
 
 -doc "Returns the specified column of the specified matrix.".
 -spec column( dimension(), matrix2() ) -> vector2().
 column( _ColumnCount=1, #matrix2{ m11=M11, m21=M21 } ) ->
-	[ M11, M21 ];
+    [ M11, M21 ];
 
 column( _ColumnCount=2, #matrix2{ m12=M12, m22=M22 } ) ->
-	[ M12, M22 ];
+    [ M12, M22 ];
 
 column( ColCount, OtherMatrix ) ->
-	column( ColCount, to_canonical( OtherMatrix ) ).
+    column( ColCount, to_canonical( OtherMatrix ) ).
 
 
 
@@ -301,20 +301,20 @@ Returns the element at the specified row and column of the specified matrix.
 """.
 -spec get_element( dimension(), dimension(), matrix2() ) -> coordinate().
 get_element( _R=1, _C=1, #matrix2{ m11=M11 } ) ->
-	M11;
+    M11;
 
 get_element( _R=1, _C=2, #matrix2{ m12=M12 } ) ->
-	M12;
+    M12;
 
 
 get_element( _R=2, _C=1, #matrix2{ m21=M21 } ) ->
-	M21;
+    M21;
 
 get_element( _R=2, _C=2, #matrix2{ m22=M22 } ) ->
-	M22;
+    M22;
 
 get_element( R, C, OtherMatrix ) ->
-	get_element( R, C, to_canonical( OtherMatrix ) ).
+    get_element( R, C, to_canonical( OtherMatrix ) ).
 
 
 
@@ -323,22 +323,22 @@ Returns a matrix identical to the specified one except that its specified
 element at the specified location has been set to the specified value.
 """.
 -spec set_element( dimension(), dimension(), coordinate(), matrix2() ) ->
-									matrix2().
+                                    matrix2().
 set_element( _R=1, _C=1, Value, Matrix=#matrix2{} ) ->
-	Matrix#matrix2{ m11=Value };
+    Matrix#matrix2{ m11=Value };
 
 set_element( _R=1, _C=2, Value, Matrix=#matrix2{} ) ->
-	Matrix#matrix2{ m12=Value };
+    Matrix#matrix2{ m12=Value };
 
 
 set_element( _R=2, _C=1, Value, Matrix=#matrix2{} ) ->
-	Matrix#matrix2{ m21=Value };
+    Matrix#matrix2{ m21=Value };
 
 set_element( _R=2, _C=2, Value, Matrix=#matrix2{} ) ->
-	Matrix#matrix2{ m22=Value };
+    Matrix#matrix2{ m22=Value };
 
 set_element( R, C, Value, OtherMatrix ) ->
-	set_element( R, C, Value, to_canonical( OtherMatrix ) ).
+    set_element( R, C, Value, to_canonical( OtherMatrix ) ).
 
 
 
@@ -346,78 +346,78 @@ set_element( R, C, Value, OtherMatrix ) ->
 -spec transpose( matrix2() ) -> matrix2().
 % Diagonal untouched:
 transpose( M=#matrix2{ m12=M12, m21=M21 } ) ->
-	M#matrix2{ m12=M21, m21=M12 };
+    M#matrix2{ m12=M21, m21=M12 };
 
 transpose( M=identity_2 ) ->
-	M.
+    M.
 
 
 
 -doc "Scales specified (2D) matrix of the specified factor.".
 -spec scale( matrix2(), factor() ) -> matrix2().
 scale( #matrix2{ m11=M11, m12=M12,
-				 m21=M21, m22=M22 }, Factor ) ->
-	#matrix2{ m11=Factor*M11, m12=Factor*M12,
-			  m21=Factor*M21, m22=Factor*M22 };
+                 m21=M21, m22=M22 }, Factor ) ->
+    #matrix2{ m11=Factor*M11, m12=Factor*M12,
+              m21=Factor*M21, m22=Factor*M22 };
 
 scale( M=identity_2, Factor ) ->
-	scale( to_canonical( M ), Factor ).
+    scale( to_canonical( M ), Factor ).
 
 
 
 -doc "Returns the sum of the two specified matrices: `M = Ma + Mb`.".
 -spec add( matrix2(), matrix2() ) -> matrix2().
 add( _Ma=#matrix2{ m11=A11, m12=A12,
-				   m21=A21, m22=A22 },
-	 _Mb=#matrix2{ m11=B11, m12=B12,
-				   m21=B21, m22=B22 } ) ->
+                   m21=A21, m22=A22 },
+     _Mb=#matrix2{ m11=B11, m12=B12,
+                   m21=B21, m22=B22 } ) ->
 
-	#matrix2{ m11=A11+B11, m12=A12+B12,
-			  m21=A21+B21, m22=A22+B22 };
+    #matrix2{ m11=A11+B11, m12=A12+B12,
+              m21=A21+B21, m22=A22+B22 };
 
 add( Ma, Mb ) ->
-	add( to_canonical( Ma ), to_canonical( Mb ) ).
+    add( to_canonical( Ma ), to_canonical( Mb ) ).
 
 
 
 -doc "Returns the subtraction of the two specified matrices: `M = Ma - Mb`".
 -spec sub( matrix2(), matrix2() ) -> matrix2().
 sub( _Ma=#matrix2{ m11=A11, m12=A12,
-				   m21=A21, m22=A22 },
-	 _Mb=#matrix2{ m11=B11, m12=B12,
-				   m21=B21, m22=B22 } ) ->
+                   m21=A21, m22=A22 },
+     _Mb=#matrix2{ m11=B11, m12=B12,
+                   m21=B21, m22=B22 } ) ->
 
-	#matrix2{ m11=A11-B11, m12=A12-B12,
-			  m21=A21-B21, m22=A22-B22 };
+    #matrix2{ m11=A11-B11, m12=A12-B12,
+              m21=A21-B21, m22=A22-B22 };
 
 sub( Ma, Mb ) ->
-	% Quick and dirty:
-	MinusMb = scale( Mb, -1.0 ),
-	add( Ma, MinusMb ).
+    % Quick and dirty:
+    MinusMb = scale( Mb, -1.0 ),
+    add( Ma, MinusMb ).
 
 
 
 -doc "Multiplies the first matrix by the second one: returns `M = Ma.Mb`.".
 -spec mult( Ma:: matrix2(), Mb :: matrix2() ) -> matrix2().
 mult( _Ma=identity_2, Mb ) ->
-	Mb;
+    Mb;
 
 mult( Ma, _Mb=identity_2 ) ->
-	Ma;
+    Ma;
 
 mult( _Ma=#matrix2{ m11=A11, m12=A12,
-					m21=A21, m22=A22 },
-	  _Mb=#matrix2{ m11=B11, m12=B12,
-					m21=B21, m22=B22 } ) ->
+                    m21=A21, m22=A22 },
+      _Mb=#matrix2{ m11=B11, m12=B12,
+                    m21=B21, m22=B22 } ) ->
 
-	C11 = A11*B11 + A12*B21,
-	C12 = A11*B12 + A12*B22,
+    C11 = A11*B11 + A12*B21,
+    C12 = A11*B12 + A12*B22,
 
-	C21 = A21*B11 + A22*B21,
-	C22 = A21*B12 + A22*B22,
+    C21 = A21*B11 + A22*B21,
+    C22 = A21*B12 + A22*B22,
 
-	#matrix2{ m11=C11, m12=C12,
-			  m21=C21, m22=C22 }.
+    #matrix2{ m11=C11, m12=C12,
+              m21=C21, m22=C22 }.
 
 
 
@@ -428,10 +428,10 @@ For example `mult([Ma, Mb, Mc]) = mult(mult(Ma,Mb),Mc) = Ma.Mb.Mc`.
 """.
 -spec mult( [ matrix2() ] ) -> matrix2().
 mult( [ Ma, Mb | T ] ) ->
-	mult( [ mult( Ma, Mb ) | T ] );
+    mult( [ mult( Ma, Mb ) | T ] );
 
 mult( [ M ] ) ->
-	M.
+    M.
 
 
 
@@ -443,44 +443,44 @@ Not a clause of mult/2 for an increased clarity.
 """.
 -spec apply( matrix2(), vector2() ) -> vector2().
 apply( _M=identity_2, V ) ->
-	V;
+    V;
 
 apply( _M=#matrix2{ m11=M11, m12=M12,
-					m21=M21, m22=M22 }, _V=[ Vx, Vy ] ) ->
-	ResX = M11*Vx + M12*Vy,
-	ResY = M21*Vx + M22*Vy,
-	[ ResX, ResY ].
+                    m21=M21, m22=M22 }, _V=[ Vx, Vy ] ) ->
+    ResX = M11*Vx + M12*Vy,
+    ResY = M21*Vx + M22*Vy,
+    [ ResX, ResY ].
 
 
 
 -doc "Tells whether the two specified (2x2) matrices are equal.".
 -spec are_equal( matrix2(), matrix2() ) -> boolean().
 are_equal( _Ma=#matrix2{ m11=A11, m12=A12,
-						 m21=A21, m22=A22 },
-		   _Mb=#matrix2{ m11=B11, m12=B12,
-						 m21=B21, m22=B22 } ) ->
-	are_close( A11, B11 ) andalso are_close( A12, B12 )
-		andalso are_close( A21, B21 ) andalso are_close( A22, B22 );
+                         m21=A21, m22=A22 },
+           _Mb=#matrix2{ m11=B11, m12=B12,
+                         m21=B21, m22=B22 } ) ->
+    are_close( A11, B11 ) andalso are_close( A12, B12 )
+        andalso are_close( A21, B21 ) andalso are_close( A22, B22 );
 
 are_equal( _Ma=identity_2, _Mb=identity_2 ) ->
-	true;
+    true;
 
 are_equal( Ma, Mb=identity_2 ) ->
-	are_equal( Ma, to_canonical( Mb ) );
+    are_equal( Ma, to_canonical( Mb ) );
 
 are_equal( Ma=identity_2, Mb ) ->
-	are_equal( Mb, Ma ).
+    are_equal( Mb, Ma ).
 
 
 
 -doc "Returns the determinant of the specified matrix.".
 -spec determinant( matrix2() ) -> scalar().
 determinant( _M=#matrix2{ m11=M11, m12=M12,
-						  m21=M21, m22=M22 } ) ->
-	M11 * M22 - M12 * M21;
+                          m21=M21, m22=M22 } ) ->
+    M11 * M22 - M12 * M21;
 
 determinant( _M=identity_2 ) ->
-	1.0.
+    1.0.
 
 
 
@@ -490,12 +490,12 @@ cofactors).
 """.
 -spec comatrix( matrix2() ) -> matrix2().
 comatrix( identity_2 ) ->
-	identity_2;
+    identity_2;
 
 comatrix( _M=#matrix2{ m11=M11, m12=M12,
-					   m21=M21, m22=M22 } ) ->
-	#matrix2{ m11=M22,  m12=-M21,
-			  m21=-M12, m22=M11 }.
+                       m21=M21, m22=M22 } ) ->
+    #matrix2{ m11=M22,  m12=-M21,
+              m21=-M12, m22=M11 }.
 
 
 
@@ -509,65 +509,65 @@ elimination), or can be replaced by a mere lower–upper (LU) decomposition.
 """.
 -spec inverse( matrix2() ) -> option( matrix2() ).
 inverse( identity_2 ) ->
-	identity_2;
+    identity_2;
 
 inverse( M=#matrix2{ m11=M11, m12=M12,
-					 m21=M21, m22=M22 } ) ->
-	Det = determinant( M ),
-	case math_utils:is_null( Det ) of
+                     m21=M21, m22=M22 } ) ->
+    Det = determinant( M ),
+    case math_utils:is_null( Det ) of
 
-		true ->
-			undefined;
+        true ->
+            undefined;
 
-		false ->
-			#matrix2{ m11=M22/Det,  m12=-M12/Det,
-					  m21=-M21/Det, m22=M11/Det }
+        false ->
+            #matrix2{ m11=M22/Det,  m12=-M12/Det,
+                      m21=-M21/Det, m22=M11/Det }
 
-	end.
+    end.
 
 
 
 -doc "Returns the canonical form of the specified 2x2 matrix.".
 -spec to_canonical( matrix2() ) -> canonical_matrix2().
 to_canonical( identity_2 ) ->
-	Zero = 0.0,
-	One = 1.0,
-	#matrix2{ m11=One,  m12=Zero,
-			  m21=Zero, m22=One  };
+    Zero = 0.0,
+    One = 1.0,
+    #matrix2{ m11=One,  m12=Zero,
+              m21=Zero, m22=One  };
 
 to_canonical( M ) when is_record( M, matrix2 ) ->
-	M.
+    M.
 
 
 
 -doc "Checks that the specified matrix is legit, and returns it.".
 -spec check( matrix2() ) -> matrix2().
 check( M=identity_2 ) ->
-	M;
+    M;
 
 check( M ) ->
-	[ matrix2 | Coords ] = tuple_to_list( M ),
+    [ matrix2 | Coords ] = tuple_to_list( M ),
 
-	[ type_utils:check_float( C ) || C <- Coords ],
+    [ type_utils:check_float( C ) || C <- Coords ],
 
-	M.
+    M.
 
 
 
 -doc "Returns a textual representation of the specified (2x2) matrix.".
 -spec to_string( matrix2() ) -> ustring().
 to_string( _Matrix=identity_2 ) ->
-	"2x2 identity";
+    "2x2 identity";
 
 to_string( Matrix2=#matrix2{} ) ->
 
-	[ _AtomMatrix2 | AllCoords ] = tuple_to_list( Matrix2 ),
+    [ _AtomMatrix2 | AllCoords ] = tuple_to_list( Matrix2 ),
 
-	Strs = linear:coords_to_best_width_strings( AllCoords ),
+    Strs = linear:coords_to_best_width_strings( AllCoords ),
 
-	% No need for ~ts here:
-	RowFormatStr = "[ " ++ text_utils:duplicate( ?dim, "~s " ) ++ "]~n",
+    % No need for ~ts here:
+    RowFormatStr = "[ " ++ text_utils:duplicate( ?dim, "~s " ) ++ "]~n",
 
-	FormatStr = "~n" ++ text_utils:duplicate( ?dim, RowFormatStr ),
+    FormatStr = "~n" ++ text_utils:duplicate( ?dim, RowFormatStr ),
 
-	text_utils:format( FormatStr, Strs ).
+    text_utils:format( FormatStr, Strs ).

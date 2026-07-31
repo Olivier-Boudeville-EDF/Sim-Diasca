@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2025 Olivier Boudeville
+% Copyright (C) 2018-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -38,27 +38,27 @@ This module allows to test the **support for introspection**.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	% Allows to support both OTP conventions and ad hoc, automatic ones:
-	wooper_utils:start_for_test(),
+    % Allows to support both OTP conventions and ad hoc, automatic ones:
+    wooper_utils:start_for_test(),
 
-	test_facilities:display( "Running introspection test." ),
+    test_facilities:display( "Running introspection test." ),
 
-	TargetClass = class_ChildTestClass,
+    TargetClass = class_ChildTestClass,
 
-	test_facilities:display( "Superclasses of ~ts: ~p~n",
-		[ TargetClass, TargetClass:get_superclasses() ] ),
+    test_facilities:display( "Superclasses of ~ts: ~p~n",
+        [ TargetClass, TargetClass:get_superclasses() ] ),
 
-	test_facilities:display( "Attribute information for ~ts:~n  ~p~n",
-		[ TargetClass, TargetClass:get_class_specific_attributes() ] ),
+    test_facilities:display( "Attribute information for ~ts:~n  ~p~n",
+        [ TargetClass, TargetClass:get_class_specific_attributes() ] ),
 
 
-	test_facilities:display( "Attribute names of ~ts instances: ~ts",
-		[ TargetClass, text_utils:atoms_to_string(
-			wooper_introspection:get_class_specific_attribute_names(
-				TargetClass ) ) ] ),
+    test_facilities:display( "Attribute names of ~ts instances: ~ts",
+        [ TargetClass, text_utils:atoms_to_string(
+            wooper_introspection:get_class_specific_attribute_names(
+                TargetClass ) ) ] ),
 
-	test_facilities:display( "Test success." ),
+    test_facilities:display( "Test success." ),
 
-	test_facilities:stop().
+    test_facilities:stop().

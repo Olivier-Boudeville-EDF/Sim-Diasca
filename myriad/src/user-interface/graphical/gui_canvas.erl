@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2025 Olivier Boudeville
+% Copyright (C) 2010-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -115,23 +115,23 @@ See `gui.erl` for more general rendering topics.
 
 % Canvas user API:
 -export([ create/1, destruct/1,
-		  set_draw_color/2, set_fill_color/2, set_background_color/2,
-		  get_rgba/2, set_rgba/2,
-		  draw_line/3, draw_line/4, draw_lines/2, draw_lines/3,
-		  draw_segment/4, draw_polygon/2, draw_label/3,
-		  draw_cross/2, draw_cross/3, draw_cross/4,
-		  draw_labelled_cross/4, draw_labelled_cross/5,
-		  draw_circle/3, draw_circle/4,
-		  draw_numbered_points/2,
-		  load_image/2, load_image/3,
-		  resize/2, blit/1, clear/1 ]).
+          set_draw_color/2, set_fill_color/2, set_background_color/2,
+          get_rgba/2, set_rgba/2,
+          draw_line/3, draw_line/4, draw_lines/2, draw_lines/3,
+          draw_segment/4, draw_polygon/2, draw_label/3,
+          draw_cross/2, draw_cross/3, draw_cross/4,
+          draw_labelled_cross/4, draw_labelled_cross/5,
+          draw_circle/3, draw_circle/4,
+          draw_numbered_points/2,
+          load_image/2, load_image/3,
+          resize/2, blit/1, clear/1 ]).
 
 
 % Canvas implementation functions (typically called by the MyriadGUI main loop):
 
 -export([ create_instance/1, destruct_instance/1,
-		  adjust_size_impl/1, resize_impl/2, clear_impl/1, blit_impl/1,
-		  get_size_impl/1, get_client_size_impl/1 ]).
+          adjust_size_impl/1, resize_impl/2, clear_impl/1, blit_impl/1,
+          get_size_impl/1, get_client_size_impl/1 ]).
 
 
 
@@ -145,7 +145,7 @@ See `gui.erl` for more general rendering topics.
 % created on the fly with no real concern apparently.
 %
 -export([ set_draw_color_impl/2, set_fill_color_impl/2,
-		  set_background_color_impl/2 ]).
+          set_background_color_impl/2 ]).
 
 
 % Pixel-level operations.
@@ -154,17 +154,17 @@ See `gui.erl` for more general rendering topics.
 
 % Line-related rendering.
 -export([ draw_line_impl/3, draw_line_impl/4,
-		  draw_lines_impl/2, draw_lines_impl/3,
-		  draw_segment_impl/4, draw_polygon_impl/2 ]).
+          draw_lines_impl/2, draw_lines_impl/3,
+          draw_segment_impl/4, draw_polygon_impl/2 ]).
 
 
 
 % Rendering of other elements.
 -export([ draw_label_impl/3,
-		  draw_cross_impl/2, draw_cross_impl/3, draw_cross_impl/4,
-		  draw_labelled_cross_impl/4, draw_labelled_cross_impl/5,
-		  draw_circle_impl/3, draw_circle_impl/4,
-		  draw_numbered_points_impl/2 ]).
+          draw_cross_impl/2, draw_cross_impl/3, draw_cross_impl/4,
+          draw_labelled_cross_impl/4, draw_labelled_cross_impl/5,
+          draw_circle_impl/3, draw_circle_impl/4,
+          draw_numbered_points_impl/2 ]).
 
 
 
@@ -244,15 +244,15 @@ Note: not to be mixed up with gui_opengl:create_canvas/{1,2}.
 """.
 -spec create( parent() ) -> canvas().
 create( Parent ) ->
-	% Returns the corresponding myriad_object_ref:
-	gui:execute_instance_creation( myr_canvas, [ Parent ] ).
+    % Returns the corresponding myriad_object_ref:
+    gui:execute_instance_creation( myr_canvas, [ Parent ] ).
 
 
 
 -doc "Destructs the specified canvas.".
 -spec destruct( canvas() ) -> void().
 destruct( _Canvas={ myriad_object_ref, myr_canvas, CanvasId } ) ->
-	gui:execute_instance_destruction( myr_canvas, CanvasId ).
+    gui:execute_instance_destruction( myr_canvas, CanvasId ).
 
 
 
@@ -262,7 +262,7 @@ of shapes.
 """.
 -spec set_draw_color( canvas(), color() ) -> void().
 set_draw_color( _Canvas={ myriad_object_ref, myr_canvas, CanvasId }, Color ) ->
-	gui:get_main_loop_pid() ! { setCanvasDrawColor, [ CanvasId, Color ] }.
+    gui:get_main_loop_pid() ! { setCanvasDrawColor, [ CanvasId, Color ] }.
 
 
 
@@ -273,7 +273,7 @@ An undefined color corresponds to a fully transparent one.
 """.
 -spec set_fill_color( canvas(), option( color() ) ) -> void().
 set_fill_color( _Canvas={ myriad_object_ref, myr_canvas, CanvasId }, Color ) ->
-	gui:get_main_loop_pid() ! { setCanvasFillColor, [ CanvasId, Color ] }.
+    gui:get_main_loop_pid() ! { setCanvasFillColor, [ CanvasId, Color ] }.
 
 
 
@@ -284,8 +284,8 @@ An undefined color corresponds to a fully transparent one.
 """.
 -spec set_background_color( canvas(), option( color() ) ) -> void().
 set_background_color( _Canvas={ myriad_object_ref, myr_canvas, CanvasId },
-					  Color ) ->
-	gui:get_main_loop_pid() ! { setCanvasBackgroundColor, [ CanvasId, Color ] }.
+                      Color ) ->
+    gui:get_main_loop_pid() ! { setCanvasBackgroundColor, [ CanvasId, Color ] }.
 
 
 
@@ -295,14 +295,14 @@ canvas.
 """.
 -spec get_rgba( canvas(), point() ) -> color_by_decimal_with_alpha().
 get_rgba( _Canvas={ myriad_object_ref, myr_canvas, CanvasId }, Point ) ->
-	gui:get_main_loop_pid() ! { getCanvasRGBA, [ CanvasId, Point ], self() },
+    gui:get_main_loop_pid() ! { getCanvasRGBA, [ CanvasId, Point ], self() },
 
-	receive
+    receive
 
-		{ notifyCanvasRGBA, Color } ->
-			Color
+        { notifyCanvasRGBA, Color } ->
+            Color
 
-	end.
+    end.
 
 
 
@@ -312,7 +312,7 @@ RGBA point value.
 """.
 -spec set_rgba( canvas(), point() ) -> void().
 set_rgba( _Canvas={ myriad_object_ref, myr_canvas, CanvasId }, Point ) ->
-	gui:get_main_loop_pid() ! { setCanvasRGBA, [ CanvasId, Point ] }.
+    gui:get_main_loop_pid() ! { setCanvasRGBA, [ CanvasId, Point ] }.
 
 
 
@@ -322,7 +322,7 @@ specified canvas, using the current draw color.
 """.
 -spec draw_line( canvas(), point(), point() ) -> void().
 draw_line( _Canvas={ myriad_object_ref, myr_canvas, CanvasId }, P1, P2 ) ->
-	gui:get_main_loop_pid() ! { drawCanvasLine, [ CanvasId, P1, P2 ] }.
+    gui:get_main_loop_pid() ! { drawCanvasLine, [ CanvasId, P1, P2 ] }.
 
 
 
@@ -332,8 +332,8 @@ specified color.
 """.
 -spec draw_line( canvas(), point(), point(), color() ) -> void().
 draw_line( _Canvas={ myriad_object_ref, myr_canvas, CanvasId }, P1, P2,
-		   Color ) ->
-	gui:get_main_loop_pid() ! { drawCanvasLine, [ CanvasId, P1, P2, Color ] }.
+           Color ) ->
+    gui:get_main_loop_pid() ! { drawCanvasLine, [ CanvasId, P1, P2, Color ] }.
 
 
 
@@ -343,7 +343,7 @@ current draw color.
 """.
 -spec draw_lines( canvas(), [ point() ] ) -> void().
 draw_lines( _Canvas={ myriad_object_ref, myr_canvas, CanvasId }, Points ) ->
-	gui:get_main_loop_pid() ! { drawCanvasLines, [ CanvasId, Points ] }.
+    gui:get_main_loop_pid() ! { drawCanvasLines, [ CanvasId, Points ] }.
 
 
 
@@ -353,8 +353,8 @@ specified color.
 """.
 -spec draw_lines( canvas(), [ point() ], color() ) -> void().
 draw_lines( _Canvas={ myriad_object_ref, myr_canvas, CanvasId }, Points,
-			Color ) ->
-	gui:get_main_loop_pid() ! { drawCanvasLines, [ CanvasId, Points, Color ] }.
+            Color ) ->
+    gui:get_main_loop_pid() ! { drawCanvasLines, [ CanvasId, Points, Color ] }.
 
 
 
@@ -367,8 +367,8 @@ null).
 """.
 -spec draw_segment( canvas(), line2(), coordinate(), coordinate() ) -> void().
 draw_segment( _Canvas={ myriad_object_ref, myr_canvas, CanvasId }, L,
-			  Y1, Y2 ) ->
-	gui:get_main_loop_pid() ! { drawCanvasSegment, [ CanvasId, L, Y1, Y2 ] }.
+              Y1, Y2 ) ->
+    gui:get_main_loop_pid() ! { drawCanvasSegment, [ CanvasId, L, Y1, Y2 ] }.
 
 
 
@@ -378,7 +378,7 @@ filling them.
 """.
 -spec draw_polygon( canvas(), [ point() ] ) -> void().
 draw_polygon( _Canvas={ myriad_object_ref, myr_canvas, CanvasId }, Points ) ->
-	gui:get_main_loop_pid() ! { drawCanvasPolygon, [ CanvasId, Points ] }.
+    gui:get_main_loop_pid() ! { drawCanvasPolygon, [ CanvasId, Points ] }.
 
 
 
@@ -388,8 +388,8 @@ specified canvas, using the current draw color.
 """.
 -spec draw_label( canvas(), point(), label() ) -> void().
 draw_label( _Canvas={ myriad_object_ref, myr_canvas, CanvasId }, Point,
-			Label ) ->
-	gui:get_main_loop_pid() ! { drawCanvasLabel, [ CanvasId, Point, Label  ] }.
+            Label ) ->
+    gui:get_main_loop_pid() ! { drawCanvasLabel, [ CanvasId, Point, Label  ] }.
 
 
 
@@ -399,7 +399,7 @@ length.
 """.
 -spec draw_cross( canvas(), point() ) -> void().
 draw_cross( _Canvas={ myriad_object_ref, myr_canvas, CanvasId }, Location ) ->
-	gui:get_main_loop_pid() ! { drawCanvasCross, [ CanvasId, Location ] }.
+    gui:get_main_loop_pid() ! { drawCanvasCross, [ CanvasId, Location ] }.
 
 
 
@@ -409,9 +409,9 @@ edge length.
 """.
 -spec draw_cross( canvas(), point(), length() ) -> void().
 draw_cross( _Canvas={ myriad_object_ref, myr_canvas, CanvasId }, Location,
-			EdgeLength ) ->
-	gui:get_main_loop_pid() !
-		{ drawCanvasCross, [ CanvasId, Location, EdgeLength ] }.
+            EdgeLength ) ->
+    gui:get_main_loop_pid() !
+        { drawCanvasCross, [ CanvasId, Location, EdgeLength ] }.
 
 
 
@@ -421,9 +421,9 @@ edge length and color.
 """.
 -spec draw_cross( canvas(), point(), length(), color() ) -> void().
 draw_cross( _Canvas={ myriad_object_ref, myr_canvas, CanvasId }, Location,
-			EdgeLength, Color ) ->
-	gui:get_main_loop_pid() !
-		{ drawCanvasCross, [ CanvasId, Location, EdgeLength, Color ] }.
+            EdgeLength, Color ) ->
+    gui:get_main_loop_pid() !
+        { drawCanvasCross, [ CanvasId, Location, EdgeLength, Color ] }.
 
 
 
@@ -433,9 +433,9 @@ edge length and companion label.
 """.
 -spec draw_labelled_cross( canvas(), point(), length(), label()  ) -> void().
 draw_labelled_cross( _Canvas={ myriad_object_ref, myr_canvas, CanvasId },
-					 Location, EdgeLength, LabelText ) ->
-	gui:get_main_loop_pid() ! { drawCanvasLabelledCross,
-		[ CanvasId, Location, EdgeLength, LabelText  ] }.
+                     Location, EdgeLength, LabelText ) ->
+    gui:get_main_loop_pid() ! { drawCanvasLabelledCross,
+        [ CanvasId, Location, EdgeLength, LabelText  ] }.
 
 
 
@@ -444,11 +444,11 @@ Draws an upright cross at the specified location (2D point), with the specified
 edge length and companion label, and with the specified color.
 """.
 -spec draw_labelled_cross( canvas(), point(), length(), color(), label() ) ->
-																void().
+                                                                void().
 draw_labelled_cross( _Canvas={ myriad_object_ref, myr_canvas, CanvasId },
-					 Location, EdgeLength, Color, LabelText ) ->
-	gui:get_main_loop_pid() ! { drawCanvasLabelledCross,
-		[ CanvasId, Location, EdgeLength, Color, LabelText  ] }.
+                     Location, EdgeLength, Color, LabelText ) ->
+    gui:get_main_loop_pid() ! { drawCanvasLabelledCross,
+        [ CanvasId, Location, EdgeLength, Color, LabelText  ] }.
 
 
 
@@ -458,10 +458,10 @@ Renders the specified circle (actually, depending on the fill color, it may be a
 """.
 -spec draw_circle( canvas(), point(), length() ) -> void().
 draw_circle( _Canvas={ myriad_object_ref, myr_canvas, CanvasId }, Center,
-			 Radius ) ->
-	%trace_utils:debug_fmt( "Drawing circle centered at ~p.", [ Center ] ),
-	gui:get_main_loop_pid() !
-		{ drawCanvasCircle, [ CanvasId, Center, Radius ] }.
+             Radius ) ->
+    %trace_utils:debug_fmt( "Drawing circle centered at ~p.", [ Center ] ),
+    gui:get_main_loop_pid() !
+        { drawCanvasCircle, [ CanvasId, Center, Radius ] }.
 
 
 
@@ -471,13 +471,13 @@ disc) on the specified canvas.
 """.
 -spec draw_circle( canvas(), point(), length(), color() ) -> void().
 draw_circle( _Canvas={ myriad_object_ref, myr_canvas, CanvasId }, Center,
-			 Radius, Color ) ->
+             Radius, Color ) ->
 
-	%trace_utils:debug_fmt( "Drawing circle centered at ~p, of colour ~p.",
-	%                       [ Center, Color ] ),
+    %trace_utils:debug_fmt( "Drawing circle centered at ~p, of colour ~p.",
+    %                       [ Center, Color ] ),
 
-	gui:get_main_loop_pid() !
-		{ drawCanvasCircle, [ CanvasId, Center, Radius, Color ] }.
+    gui:get_main_loop_pid() !
+        { drawCanvasCircle, [ CanvasId, Center, Radius, Color ] }.
 
 
 
@@ -488,9 +488,9 @@ the list, P2 for the next, etc.).
 """.
 -spec draw_numbered_points( canvas(), [ point() ] ) -> void().
 draw_numbered_points( _Canvas={ myriad_object_ref, myr_canvas, CanvasId },
-					  Points ) ->
-	gui:get_main_loop_pid() !
-		{ drawCanvasNumberedPoints, [ CanvasId, Points ] }.
+                      Points ) ->
+    gui:get_main_loop_pid() !
+        { drawCanvasNumberedPoints, [ CanvasId, Points ] }.
 
 
 
@@ -500,7 +500,7 @@ its upper left corner.
 """.
 -spec load_image( canvas(), any_file_path() ) -> void().
 load_image( _Canvas={ myriad_object_ref, myr_canvas, CanvasId }, Filename ) ->
-	gui:get_main_loop_pid() ! { loadCanvasImage, [ CanvasId, Filename ] }.
+    gui:get_main_loop_pid() ! { loadCanvasImage, [ CanvasId, Filename ] }.
 
 
 
@@ -510,16 +510,16 @@ the specified location.
 """.
 -spec load_image( canvas(), point(), any_file_path() ) -> void().
 load_image( _Canvas={ myriad_object_ref, myr_canvas, CanvasId }, Position,
-			FilePath ) ->
-	gui:get_main_loop_pid() !
-		{ loadCanvasImage, [ CanvasId, Position, FilePath ] }.
+            FilePath ) ->
+    gui:get_main_loop_pid() !
+        { loadCanvasImage, [ CanvasId, Position, FilePath ] }.
 
 
 
 -doc "Resizes the specified canvas according to the specified size.".
 -spec resize( canvas(), size() ) -> void().
 resize( _Canvas={ myriad_object_ref, myr_canvas, CanvasId }, NewSize ) ->
-	gui:get_main_loop_pid() ! { resizeCanvas, [ CanvasId, NewSize ] }.
+    gui:get_main_loop_pid() ! { resizeCanvas, [ CanvasId, NewSize ] }.
 
 
 
@@ -530,7 +530,7 @@ The back-buffer remains as it was before this call.
 """.
 -spec blit( canvas() ) -> void().
 blit( _Canvas={ myriad_object_ref, myr_canvas, CanvasId } ) ->
-	gui:get_main_loop_pid() ! { blitCanvas, CanvasId }.
+    gui:get_main_loop_pid() ! { blitCanvas, CanvasId }.
 
 
 -doc """
@@ -540,7 +540,7 @@ Note: the result will not be visible until the canvas is blitted.
 """.
 -spec clear( canvas() ) -> void().
 clear( _Canvas={ myriad_object_ref, myr_canvas, CanvasId } ) ->
-	gui:get_main_loop_pid() ! { clearCanvas, CanvasId }.
+    gui:get_main_loop_pid() ! { clearCanvas, CanvasId }.
 
 
 
@@ -561,8 +561,8 @@ by default.
 """.
 -spec get_base_panel_events_of_interest() -> [ event_type() ].
 get_base_panel_events_of_interest() ->
-	% Both are strictly needed:
-	[ onRepaintNeeded, onResized ].
+    % Both are strictly needed:
+    [ onRepaintNeeded, onResized ].
 
 
 
@@ -580,41 +580,41 @@ gui_event:process_myriad_creation/4.
 -spec create_instance( [ parent() ] ) -> { canvas_state(), panel() }.
 create_instance( [ Parent ] ) ->
 
-	cond_utils:if_defined( myriad_debug_gui_canvas,
-		trace_utils:debug_fmt( "Creating an instance of MyriadGUI canvas, "
-			"whose parent is ~w.", [ Parent ] ) ),
+    cond_utils:if_defined( myriad_debug_gui_canvas,
+        trace_utils:debug_fmt( "Creating an instance of MyriadGUI canvas, "
+            "whose parent is ~w.", [ Parent ] ) ),
 
-	% Could have been: Size = auto,
-	Size = { W, H } = gui_widget:get_size( Parent ),
+    % Could have been: Size = auto,
+    Size = { W, H } = gui_widget:get_size( Parent ),
 
-	% Internally, a canvas is mostly an association between a dedicated panel,
-	% bitmap and back-buffer:
+    % Internally, a canvas is mostly an association between a dedicated panel,
+    % bitmap and back-buffer:
 
-	% A canvas is to be fully repainted when resized:
-	Panel = gui_panel:create( _Pos=auto, Size,
-		_Opt=[ { style, [ full_repaint_on_resize ] } ], Parent ),
+    % A canvas is to be fully repainted when resized:
+    Panel = gui_panel:create( _Pos=auto, Size,
+        _Opt=[ { style, [ full_repaint_on_resize ] } ], Parent ),
 
-	% Creates an actual bitmap with the screen color path:
-	Bitmap = gui_bitmap:create( W, H ),
+    % Creates an actual bitmap with the screen color path:
+    Bitmap = gui_bitmap:create( W, H ),
 
-	BackBuffer = wxMemoryDC:new( Bitmap ),
+    BackBuffer = wxMemoryDC:new( Bitmap ),
 
-	InitialCanvasState = #canvas_state{ panel=Panel, bitmap=Bitmap,
-										back_buffer=BackBuffer, size=Size },
+    InitialCanvasState = #canvas_state{ panel=Panel, bitmap=Bitmap,
+                                        back_buffer=BackBuffer, size=Size },
 
-	% The current MyriadGUI loop process must be notified whenever the
-	% associated panel has to be repainted or is resized, so that this canvas
-	% can be notified in turn (to update its internal state, for example its
-	% size). The reassign_table mechanism will take care of that:
-	%
-	gui_wx_backend:connect( Panel, get_base_panel_events_of_interest() ),
+    % The current MyriadGUI loop process must be notified whenever the
+    % associated panel has to be repainted or is resized, so that this canvas
+    % can be notified in turn (to update its internal state, for example its
+    % size). The reassign_table mechanism will take care of that:
+    %
+    gui_wx_backend:connect( Panel, get_base_panel_events_of_interest() ),
 
-	% So when the panel will be resized, a wx 'size' event will be received by
-	% our main loop and reassigned to the canvas.
+    % So when the panel will be resized, a wx 'size' event will be received by
+    % our main loop and reassigned to the canvas.
 
-	% Last step is having this canvas manage this resizing.
+    % Last step is having this canvas manage this resizing.
 
-	{ InitialCanvasState, Panel }.
+    { InitialCanvasState, Panel }.
 
 
 
@@ -626,25 +626,25 @@ gui_event:process_myriad_destruction/3.
 """.
 -spec destruct_instance( canvas_state() ) -> void().
 destruct_instance( CanvasState=#canvas_state{ panel=Panel,
-											  bitmap=Bitmap,
-											  back_buffer=BackBuffer } ) ->
+                                              bitmap=Bitmap,
+                                              back_buffer=BackBuffer } ) ->
 
-	cond_utils:if_defined( myriad_debug_gui_canvas,
-		trace_utils:debug_fmt( "Destructing an instance of MyriadGUI canvas, "
-			"whose state was ~w.", [ CanvasState ] ) ),
+    cond_utils:if_defined( myriad_debug_gui_canvas,
+        trace_utils:debug_fmt( "Destructing an instance of MyriadGUI canvas, "
+            "whose state was ~w.", [ CanvasState ] ) ),
 
-	% Reciprocal of create_instance/1:
+    % Reciprocal of create_instance/1:
 
-	% Underlying panel disconnected from loop for all event types:
-	% (probably useless as the panel is destructed next)
-	%
-	gui_wx_backend:disconnect( CanvasState ),
+    % Underlying panel disconnected from loop for all event types:
+    % (probably useless as the panel is destructed next)
+    %
+    gui_wx_backend:disconnect( CanvasState ),
 
-	gui_render:destruct_memory_device_context( BackBuffer ),
+    gui_render:destruct_memory_device_context( BackBuffer ),
 
-	gui_bitmap:destruct( Bitmap ),
+    gui_bitmap:destruct( Bitmap ),
 
-	gui_panel:destruct( Panel ).
+    gui_panel:destruct( Panel ).
 
 
 
@@ -658,24 +658,24 @@ container is resized.
 -spec adjust_size_impl( canvas_state() ) -> { boolean(), canvas_state() }.
 adjust_size_impl( CanvasState=#canvas_state{ panel=Panel, size=Size } ) ->
 
-	cond_utils:if_defined( myriad_debug_gui_canvas,
-		trace_utils:debug_fmt( "Adjusting size of canvas '~p': currently ~w, "
-			"while panel's is ~w.",
-			[ CanvasState, Size, gui_widget:get_size( Panel ) ] ) ),
+    cond_utils:if_defined( myriad_debug_gui_canvas,
+        trace_utils:debug_fmt( "Adjusting size of canvas '~p': currently ~w, "
+            "while panel's is ~w.",
+            [ CanvasState, Size, gui_widget:get_size( Panel ) ] ) ),
 
-	case gui_widget:get_size( Panel ) of
+    case gui_widget:get_size( Panel ) of
 
-		% Nothing to do if the size of the panel already matches the one of its
-		% canvas:
-		%
-		Size ->
-			{ _NeedsRepaint=false, CanvasState };
+        % Nothing to do if the size of the panel already matches the one of its
+        % canvas:
+        %
+        Size ->
+            { _NeedsRepaint=false, CanvasState };
 
-		% Panel was then resized, so canvas should be as well:
-		NewSize ->
-			{ _NeedsRepaint=true, resize( CanvasState, NewSize ) }
+        % Panel was then resized, so canvas should be as well:
+        NewSize ->
+            { _NeedsRepaint=true, resize( CanvasState, NewSize ) }
 
-	end.
+    end.
 
 
 
@@ -685,31 +685,31 @@ repainted then).
 """.
 -spec resize_impl( canvas_state(), size() ) -> canvas_state().
 resize_impl( CanvasState=#canvas_state{ bitmap=Bitmap,
-										back_buffer=BackBuffer },
-			 NewSize={ W, H } ) ->
+                                        back_buffer=BackBuffer },
+             NewSize={ W, H } ) ->
 
-	cond_utils:if_defined( myriad_debug_gui_canvas,
-		trace_utils:debug_fmt( "Resizing canvas to ~w.", [ NewSize ] ) ),
+    cond_utils:if_defined( myriad_debug_gui_canvas,
+        trace_utils:debug_fmt( "Resizing canvas to ~w.", [ NewSize ] ) ),
 
-	% Regardless of call order and whether either one or both of the next calls
-	% are enabled, if an error like {'_wxe_error_',710, {wxDC,setPen,2},
-	% {badarg,"This"}} is triggered, then probably some operation replaced these
-	% elements yet did not update their reference in the canvas/loop states.
-	%
-	wxMemoryDC:destroy( BackBuffer ),
-	wxBitmap:destroy( Bitmap ),
+    % Regardless of call order and whether either one or both of the next calls
+    % are enabled, if an error like {'_wxe_error_',710, {wxDC,setPen,2},
+    % {badarg,"This"}} is triggered, then probably some operation replaced these
+    % elements yet did not update their reference in the canvas/loop states.
+    %
+    wxMemoryDC:destroy( BackBuffer ),
+    wxBitmap:destroy( Bitmap ),
 
-	NewBitmap = wxBitmap:new( W, H ),
+    NewBitmap = wxBitmap:new( W, H ),
 
-	wxBitmap:create( NewBitmap, W, H,
-					 [ { depth, ?wxBITMAP_SCREEN_DEPTH } ] )
-		orelse throw( { bitmap_recreation_failed, NewBitmap } ),
+    wxBitmap:create( NewBitmap, W, H,
+                     [ { depth, ?wxBITMAP_SCREEN_DEPTH } ] )
+        orelse throw( { bitmap_recreation_failed, NewBitmap } ),
 
-	NewBackBuffer = wxMemoryDC:new( NewBitmap ),
+    NewBackBuffer = wxMemoryDC:new( NewBitmap ),
 
-	CanvasState#canvas_state{ bitmap=NewBitmap,
-							  back_buffer=NewBackBuffer,
-							  size=NewSize }.
+    CanvasState#canvas_state{ bitmap=NewBitmap,
+                              back_buffer=NewBackBuffer,
+                              size=NewSize }.
 
 
 
@@ -718,7 +718,7 @@ Clears the back-buffer of the specified canvas.
 """.
 -spec clear_impl( canvas_state() ) -> void().
 clear_impl( #canvas_state{ back_buffer=BackBuffer } ) ->
-	wxMemoryDC:clear( BackBuffer ).
+    wxMemoryDC:clear( BackBuffer ).
 
 
 
@@ -731,24 +731,24 @@ The back-buffer remains as it was before this call.
 """.
 -spec blit_impl( canvas_state() ) -> canvas_state().
 blit_impl( Canvas=#canvas_state{ panel=Panel,
-								 bitmap=Bitmap,
-								 back_buffer=BackBuffer,
-								 size=Size } ) ->
+                                 bitmap=Bitmap,
+                                 back_buffer=BackBuffer,
+                                 size=Size } ) ->
 
-	VisibleBuffer = wxWindowDC:new( Panel ),
+    VisibleBuffer = wxWindowDC:new( Panel ),
 
-	cond_utils:if_defined( myriad_check_user_interface,
-		Size = { wxBitmap:getWidth( Bitmap ), wxBitmap:getHeight( Bitmap ) },
-		basic_utils:ignore_unused( Bitmap ) ),
+    cond_utils:if_defined( myriad_check_user_interface,
+        Size = { wxBitmap:getWidth( Bitmap ), wxBitmap:getHeight( Bitmap ) },
+        basic_utils:ignore_unused( Bitmap ) ),
 
-	TopLeft = {0,0},
+    TopLeft = {0,0},
 
-	wxDC:blit( VisibleBuffer, _Dest=TopLeft, Size, _Source=BackBuffer,
-			   _Src=TopLeft ),
+    wxDC:blit( VisibleBuffer, _Dest=TopLeft, Size, _Source=BackBuffer,
+               _Src=TopLeft ),
 
-	wxWindowDC:destroy( VisibleBuffer ),
+    wxWindowDC:destroy( VisibleBuffer ),
 
-	Canvas.
+    Canvas.
 
 
 
@@ -758,11 +758,11 @@ Returns the size of this canvas, as {IntegerWidth, IntegerHeight}.
 -spec get_size_impl( canvas_state() ) -> dimensions().
 get_size_impl( #canvas_state{ back_buffer=BackBuffer, size=Size } ) ->
 
-	cond_utils:if_defined( myriad_check_user_interface,
-		Size = wxDC:getSize( BackBuffer ),
-		basic_utils:ignore_unused( BackBuffer ) ),
+    cond_utils:if_defined( myriad_check_user_interface,
+        Size = wxDC:getSize( BackBuffer ),
+        basic_utils:ignore_unused( BackBuffer ) ),
 
-	Size.
+    Size.
 
 
 
@@ -771,8 +771,8 @@ Returns the client size of this canvas, as {IntegerWidth, IntegerHeight}.
 """.
 -spec get_client_size_impl( canvas_state() ) -> dimensions().
 get_client_size_impl( CanvasState ) ->
-	% For a canvas, we expect the client size to be the size:
-	get_size_impl( CanvasState ).
+    % For a canvas, we expect the client size to be the size:
+    get_size_impl( CanvasState ).
 
 
 
@@ -784,17 +784,17 @@ get_client_size_impl( CanvasState ) ->
 -doc "Sets the color to be used for the drawing of the outline of shapes.".
 -spec set_draw_color_impl( canvas_state(), color() ) -> void().
 set_draw_color_impl( Canvas, Color ) when is_atom( Color ) ->
-	set_draw_color_impl( Canvas, gui_color:get_color( Color ) );
+    set_draw_color_impl( Canvas, gui_color:get_color( Color ) );
 
 set_draw_color_impl( Canvas, Color ) ->
-	NewPen = wxPen:new( Color ),
-	BackBuffer = Canvas#canvas_state.back_buffer,
+    NewPen = wxPen:new( Color ),
+    BackBuffer = Canvas#canvas_state.back_buffer,
 
-	%trace_utils:debug_fmt( "For canvas ~n~p, setting backbuffer ~w "
-	%                       "to new pen ~w.", [ Canvas, BackBuffer, NewPen ] ),
+    %trace_utils:debug_fmt( "For canvas ~n~p, setting backbuffer ~w "
+    %                       "to new pen ~w.", [ Canvas, BackBuffer, NewPen ] ),
 
-	wxDC:setPen( BackBuffer, NewPen ),
-	wxPen:destroy( NewPen ).
+    wxDC:setPen( BackBuffer, NewPen ),
+    wxPen:destroy( NewPen ).
 
 
 
@@ -805,37 +805,37 @@ An 'undefined' color corresponds to a fully transparent one.
 """.
 -spec set_fill_color_impl( canvas_state(), option( color() ) ) -> void().
 set_fill_color_impl( #canvas_state{ back_buffer=BackBuffer },
-					 _MaybeColor=undefined ) ->
-	% We want transparency here:
-	wxDC:setBrush( BackBuffer, ?transparent_color );
+                     _MaybeColor=undefined ) ->
+    % We want transparency here:
+    wxDC:setBrush( BackBuffer, ?transparent_color );
 
 set_fill_color_impl( Canvas, Color ) when is_atom( Color ) ->
-	set_fill_color_impl( Canvas, gui_color:get_color( Color ) );
+    set_fill_color_impl( Canvas, gui_color:get_color( Color ) );
 
 set_fill_color_impl( #canvas_state{ back_buffer=BackBuffer }, Color ) ->
-	NewBrush = wxBrush:new( Color ),
-	wxDC:setBrush( BackBuffer, NewBrush ),
-	wxBrush:destroy( NewBrush ).
+    NewBrush = wxBrush:new( Color ),
+    wxDC:setBrush( BackBuffer, NewBrush ),
+    wxBrush:destroy( NewBrush ).
 
 
 
 -doc "Sets the background color of the specified canvas.".
 -spec set_background_color_impl( canvas_state(), color() ) -> void().
 set_background_color_impl( #canvas_state{ back_buffer=BackBuffer },
-						   Color ) ->
+                           Color ) ->
 
-	%trace_utils:debug_fmt( "Setting background color of canvas to ~p.",
-	%                       [ Color ] ),
+    %trace_utils:debug_fmt( "Setting background color of canvas to ~p.",
+    %                       [ Color ] ),
 
-	% Must not be used, otherwise double-deallocation core dump:
-	%_PreviousBrush = wxMemoryDC:getBrush( BackBuffer ),
-	%wxBrush:destroy( PreviousBrush ),
+    % Must not be used, otherwise double-deallocation core dump:
+    %_PreviousBrush = wxMemoryDC:getBrush( BackBuffer ),
+    %wxBrush:destroy( PreviousBrush ),
 
-	ActualColor = gui_color:get_color( Color ),
+    ActualColor = gui_color:get_color( Color ),
 
-	NewBrush = wxBrush:new( ActualColor ),
+    NewBrush = wxBrush:new( ActualColor ),
 
-	wxMemoryDC:setBackground( BackBuffer, NewBrush ).
+    wxMemoryDC:setBackground( BackBuffer, NewBrush ).
 
 
 
@@ -843,15 +843,15 @@ set_background_color_impl( #canvas_state{ back_buffer=BackBuffer },
 -spec get_rgba_impl( canvas_state(), point() ) -> color_by_decimal_with_alpha().
 get_rgba_impl( #canvas_state{ back_buffer=BackBuffer }, Point ) ->
 
-	case wxDC:getPixel( BackBuffer, Point ) of
+    case wxDC:getPixel( BackBuffer, Point ) of
 
-		{ true, Color } ->
-			Color;
+        { true, Color } ->
+            Color;
 
-		_ ->
-			throw( { get_rgba_failed, Point, BackBuffer } )
+        _ ->
+            throw( { get_rgba_failed, Point, BackBuffer } )
 
-	end.
+    end.
 
 
 
@@ -860,8 +860,8 @@ Sets the pixel at the specified position to the current RGBA point value.
 """.
 -spec set_rgba_impl( canvas_state(), point() ) -> void().
 set_rgba_impl( #canvas_state{ back_buffer=BackBuffer }, Point ) ->
-	% Uses the color of the current pen:
-	wxDC:drawPoint( BackBuffer, Point ).
+    % Uses the color of the current pen:
+    wxDC:drawPoint( BackBuffer, Point ).
 
 
 
@@ -874,7 +874,7 @@ specified canvas, using current draw color.
 """.
 -spec draw_line_impl( canvas_state(), point(), point() ) -> void().
 draw_line_impl( #canvas_state{ back_buffer=BackBuffer }, P1, P2 ) ->
-	wxDC:drawLine( BackBuffer, P1, P2 ).
+    wxDC:drawLine( BackBuffer, P1, P2 ).
 
 
 
@@ -885,11 +885,11 @@ specified color.
 -spec draw_line_impl( canvas_state(), point(), point(), color() ) -> void().
 draw_line_impl( Canvas, P1, P2, Color ) ->
 
-	%trace_utils:debug_fmt( "draw_line from ~p to ~p with color ~p.",
-	%                       [ P1, P2, Color ] ),
+    %trace_utils:debug_fmt( "draw_line from ~p to ~p with color ~p.",
+    %                       [ P1, P2, Color ] ),
 
-	set_draw_color_impl( Canvas, Color ),
-	draw_line_impl( Canvas, P1, P2 ).
+    set_draw_color_impl( Canvas, Color ),
+    draw_line_impl( Canvas, P1, P2 ).
 
 
 
@@ -899,7 +899,7 @@ the current draw color.
 """.
 -spec draw_lines_impl( canvas_state(), [ point() ] ) -> void().
 draw_lines_impl( #canvas_state{ back_buffer=BackBuffer }, Points ) ->
-	wxDC:drawLines( BackBuffer, Points ).
+    wxDC:drawLines( BackBuffer, Points ).
 
 
 
@@ -909,8 +909,8 @@ the specified color.
 """.
 -spec draw_lines_impl( canvas_state(), [ point() ], color() ) -> void().
 draw_lines_impl( Canvas, Points, Color ) ->
-	set_draw_color_impl( Canvas, Color),
-	draw_lines_impl( Canvas, Points ).
+    set_draw_color_impl( Canvas, Color),
+    draw_lines_impl( Canvas, Points ).
 
 
 
@@ -921,18 +921,18 @@ Line L must not have for equation Y=constant (i.e. its A parameter must not be
 null).
 """.
 -spec draw_segment_impl( canvas_state(), line2(),
-						 coordinate(), coordinate() ) -> void().
+                         coordinate(), coordinate() ) -> void().
 draw_segment_impl( Canvas, L, Y1, Y2 ) ->
-	draw_line_impl( Canvas,
-		{ round( linear_2D:get_abscissa_for_ordinate( L, Y1 ) ), Y1 },
-		{ round( linear_2D:get_abscissa_for_ordinate( L, Y2 ) ), Y2 } ).
+    draw_line_impl( Canvas,
+        { round( linear_2D:get_abscissa_for_ordinate( L, Y1 ) ), Y1 },
+        { round( linear_2D:get_abscissa_for_ordinate( L, Y2 ) ), Y2 } ).
 
 
 
 -doc "Draws the specified polygon, closing the lines and filling them.".
 -spec draw_polygon_impl( canvas_state(), [ point() ] ) -> void().
 draw_polygon_impl( #canvas_state{ back_buffer=BackBuffer }, Points ) ->
-	wxDC:drawPolygon( BackBuffer, Points ).
+    wxDC:drawPolygon( BackBuffer, Points ).
 
 
 
@@ -947,9 +947,9 @@ specified canvas, using the current draw color.
 -spec draw_label_impl( canvas_state(), point(), label() ) -> void().
 draw_label_impl( #canvas_state{ back_buffer=BackBuffer }, Point, LabelText ) ->
 
-	% Not needed:
-	%wxDC:setBackgroundMode( BackBuffer, ?wxPENSTYLE_TRANSPARENT ),
-	wxDC:drawText( BackBuffer, LabelText, Point ).
+    % Not needed:
+    %wxDC:setBackgroundMode( BackBuffer, ?wxPENSTYLE_TRANSPARENT ),
+    wxDC:drawText( BackBuffer, LabelText, Point ).
 
 
 
@@ -959,7 +959,7 @@ length.
 """.
 -spec draw_cross_impl( canvas_state(), point() ) -> void().
 draw_cross_impl( Canvas, Location ) ->
-	draw_cross_impl( Canvas, Location, _DefaultEdgeLength=4 ).
+    draw_cross_impl( Canvas, Location, _DefaultEdgeLength=4 ).
 
 
 
@@ -968,12 +968,12 @@ Draws an upright cross at the specified location (2D point), with the specified
 edge length.
 """.
 -spec draw_cross_impl( canvas_state(), point(), integer_distance() ) ->
-											void().
+                                            void().
 draw_cross_impl( Canvas, _Location={X,Y}, EdgeLength ) ->
-	Offset = EdgeLength div 2,
-	% The last pixel of a line is not drawn, hence the +1:
-	draw_line_impl( Canvas, { X-Offset, Y }, { X+Offset+1, Y } ),
-	draw_line_impl( Canvas, { X, Y-Offset }, { X, Y+Offset+1 } ).
+    Offset = EdgeLength div 2,
+    % The last pixel of a line is not drawn, hence the +1:
+    draw_line_impl( Canvas, { X-Offset, Y }, { X+Offset+1, Y } ),
+    draw_line_impl( Canvas, { X, Y-Offset }, { X, Y+Offset+1 } ).
 
 
 
@@ -982,12 +982,12 @@ Draws an upright cross at the specified location (2D point), with the specified
 edge length and color.
 """.
 -spec draw_cross_impl( canvas_state(), point(), integer_distance(), color() ) ->
-											void().
+                                            void().
 draw_cross_impl( Canvas, _Location={X,Y}, EdgeLength, Color ) ->
-	Offset = EdgeLength div 2,
-	% The last pixel of a line is not drawn, hence the +1:
-	draw_line_impl( Canvas, { X-Offset, Y }, { X+Offset+1, Y }, Color ),
-	draw_line_impl( Canvas, { X, Y-Offset }, { X, Y+Offset+1 }, Color ).
+    Offset = EdgeLength div 2,
+    % The last pixel of a line is not drawn, hence the +1:
+    draw_line_impl( Canvas, { X-Offset, Y }, { X+Offset+1, Y }, Color ),
+    draw_line_impl( Canvas, { X, Y-Offset }, { X, Y+Offset+1 }, Color ).
 
 
 
@@ -996,13 +996,13 @@ Draws an upright cross at the specified location (2D point), with the specified
 edge length and companion label.
 """.
 -spec draw_labelled_cross_impl( canvas_state(), point(), integer_distance(),
-								label() ) -> void().
+                                label() ) -> void().
 draw_labelled_cross_impl( Canvas, Location={X,Y}, EdgeLength, LabelText ) ->
 
-	draw_cross_impl( Canvas, Location, EdgeLength ),
+    draw_cross_impl( Canvas, Location, EdgeLength ),
 
-	% Text a little above and on the right:
-	draw_label_impl( Canvas, { X+4, Y-12 }, LabelText ).
+    % Text a little above and on the right:
+    draw_label_impl( Canvas, { X+4, Y-12 }, LabelText ).
 
 
 
@@ -1011,11 +1011,11 @@ Draws an upright cross at the specified location (2D point), with the specified
 edge length and companion label, and with specified color.
 """.
 -spec draw_labelled_cross_impl( canvas_state(), point(), integer_distance(),
-								color(), label() ) -> void().
+                                color(), label() ) -> void().
 draw_labelled_cross_impl( Canvas, Location, EdgeLength, Color,
-							  LabelText ) ->
-	set_draw_color_impl( Canvas, Color ),
-	draw_labelled_cross_impl( Canvas, Location, EdgeLength, LabelText ).
+                              LabelText ) ->
+    set_draw_color_impl( Canvas, Color ),
+    draw_labelled_cross_impl( Canvas, Location, EdgeLength, LabelText ).
 
 
 
@@ -1025,7 +1025,7 @@ disc) on the specified canvas.
 """.
 -spec draw_circle_impl( canvas_state(), point(), integer_distance() ) -> void().
 draw_circle_impl( #canvas_state{ back_buffer=BackBuffer }, Center, Radius ) ->
-	wxDC:drawCircle( BackBuffer, Center, Radius ).
+    wxDC:drawCircle( BackBuffer, Center, Radius ).
 
 
 
@@ -1034,10 +1034,10 @@ Renders the specified circle (actually, depending on the specified fill color,
 it may be a disc) on the specified canvas.
 """.
 -spec draw_circle_impl( canvas_state(), point(), integer_distance(),
-						color() ) -> void().
+                        color() ) -> void().
 draw_circle_impl( Canvas, Center, Radius, Color ) ->
-	set_draw_color_impl( Canvas, Color ),
-	draw_circle_impl( Canvas, Center, Radius ).
+    set_draw_color_impl( Canvas, Color ),
+    draw_circle_impl( Canvas, Center, Radius ).
 
 
 
@@ -1048,12 +1048,12 @@ cross and a label (the n-th point will have for label "Pn").
 -spec draw_numbered_points_impl( canvas_state(), [ point() ] ) -> void().
 draw_numbered_points_impl( Canvas, Points ) ->
 
-	LabelledPoints = label_points( Points, _Acc=[], _InitialCount=1 ),
+    LabelledPoints = label_points( Points, _Acc=[], _InitialCount=1 ),
 
-	%trace_utils:debug_fmt( "Labelled points: ~p.", [ LabelledPoints ] ),
+    %trace_utils:debug_fmt( "Labelled points: ~p.", [ LabelledPoints ] ),
 
-	[ draw_labelled_cross_impl( Canvas, Location, _EdgeLength=6, Label )
-			|| { Label, Location } <- LabelledPoints ].
+    [ draw_labelled_cross_impl( Canvas, Location, _EdgeLength=6, Label )
+            || { Label, Location } <- LabelledPoints ].
 
 
 
@@ -1063,7 +1063,7 @@ upper left corner.
 """.
 -spec load_image_impl( canvas_state(), file_path() ) -> void().
 load_image_impl( Canvas, Filename ) ->
-	load_image_impl( Canvas, _Pos={0,0}, Filename ).
+    load_image_impl( Canvas, _Pos={0,0}, Filename ).
 
 
 
@@ -1073,21 +1073,21 @@ the specified location.
 """.
 -spec load_image_impl( canvas_state(), point(), file_path() ) -> void().
 load_image_impl( #canvas_state{ back_buffer=BackBuffer }, Position,
-				 FilePath ) ->
+                 FilePath ) ->
 
-	case file_utils:is_existing_file( FilePath ) of
+    case file_utils:is_existing_file( FilePath ) of
 
-		true ->
-			Image = wxImage:new( FilePath ),
-			Bitmap = wxBitmap:new( Image ),
-			wxImage:destroy( Image ),
-			wxDC:drawBitmap( BackBuffer, Bitmap, Position ),
-			wxBitmap:destroy( Bitmap );
+        true ->
+            Image = wxImage:new( FilePath ),
+            Bitmap = wxBitmap:new( Image ),
+            wxImage:destroy( Image ),
+            wxDC:drawBitmap( BackBuffer, Bitmap, Position ),
+            wxBitmap:destroy( Bitmap );
 
-		false ->
-			throw( { image_file_not_found, FilePath } )
+        false ->
+            throw( { image_file_not_found, FilePath } )
 
-	end.
+    end.
 
 
 
@@ -1104,9 +1104,9 @@ keeping its order.
 (helper)
 """.
 label_points( _Points=[], Acc, _Count ) ->
-	% Removes the reverse operation induced by iterating below in this function:
-	lists:reverse( Acc );
+    % Removes the reverse operation induced by iterating below in this function:
+    lists:reverse( Acc );
 
 label_points( _Points=[ P | T ], Acc, Count ) ->
-	Label = text_utils:format( "P~B", [ Count ] ),
-	label_points( T, [ { Label, P } | Acc ], Count+1 ).
+    Label = text_utils:format( "P~B", [ Count ] ),
+    label_points( T, [ { Label, P } | Acc ], Count+1 ).

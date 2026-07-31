@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -41,54 +41,54 @@ See core_utils.erl module.
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+    ?case_start,
 
-	class_InstanceTracker:create_mockup_environment(),
+    class_InstanceTracker:create_mockup_environment(),
 
-	?test_info( "Creating a random manager." ),
-	class_RandomManager:create(),
+    ?test_info( "Creating a random manager." ),
+    class_RandomManager:create(),
 
-	RandomManagerPid = naming_utils:wait_for_global_registration_of(
-		?random_manager_name ),
+    RandomManagerPid = naming_utils:wait_for_global_registration_of(
+        ?random_manager_name ),
 
-	?test_info( "Testing the random drawing of items in lists." ),
+    ?test_info( "Testing the random drawing of items in lists." ),
 
-	% Unordered and with a duplicate:
-	DrawableList = [ 1, 2, 4, 3, 5, 7, 6, 13, 2 ],
+    % Unordered and with a duplicate:
+    DrawableList = [ 1, 2, 4, 3, 5, 7, 6, 13, 2 ],
 
-	{ DrawnItem, FirstRemainingList } =
-		core_utils:draw_item_from( DrawableList, RandomManagerPid ),
+    { DrawnItem, FirstRemainingList } =
+        core_utils:draw_item_from( DrawableList, RandomManagerPid ),
 
-	?test_notice_fmt( "From list ~p, extracted ~B, remaining: ~p.",
-					  [ DrawableList, DrawnItem, FirstRemainingList ] ),
+    ?test_notice_fmt( "From list ~p, extracted ~B, remaining: ~p.",
+                      [ DrawableList, DrawnItem, FirstRemainingList ] ),
 
-	FirstItemCount = 4,
+    FirstItemCount = 4,
 
-	{ FirstDrawnItemList, SecondRemainingList } = core_utils:draw_items_from(
-		DrawableList, FirstItemCount, RandomManagerPid ),
+    { FirstDrawnItemList, SecondRemainingList } = core_utils:draw_items_from(
+        DrawableList, FirstItemCount, RandomManagerPid ),
 
-	?test_notice_fmt( "From list ~p, extracted ~B items: ~p, remaining: ~p.",
-		[ DrawableList, FirstItemCount, FirstDrawnItemList,
-		  SecondRemainingList ] ),
+    ?test_notice_fmt( "From list ~p, extracted ~B items: ~p, remaining: ~p.",
+        [ DrawableList, FirstItemCount, FirstDrawnItemList,
+          SecondRemainingList ] ),
 
-	SecondItemCount = length( DrawableList ),
+    SecondItemCount = length( DrawableList ),
 
-	{ SecondDrawnItemList, ThirdRemainingList } = core_utils:draw_items_from(
-		DrawableList, SecondItemCount, RandomManagerPid ),
+    { SecondDrawnItemList, ThirdRemainingList } = core_utils:draw_items_from(
+        DrawableList, SecondItemCount, RandomManagerPid ),
 
-	?test_notice_fmt( "From list ~p, extracted all ~B items: ~p, "
-		"remaining: ~p.",
-		[ DrawableList, SecondItemCount, SecondDrawnItemList,
-		  ThirdRemainingList ] ),
+    ?test_notice_fmt( "From list ~p, extracted all ~B items: ~p, "
+        "remaining: ~p.",
+        [ DrawableList, SecondItemCount, SecondDrawnItemList,
+          ThirdRemainingList ] ),
 
-	ThirdItemCount = length( DrawableList ) + 1,
+    ThirdItemCount = length( DrawableList ) + 1,
 
-	too_many_drawn_items = core_utils:draw_items_from( DrawableList,
-		ThirdItemCount, RandomManagerPid ),
+    too_many_drawn_items = core_utils:draw_items_from( DrawableList,
+        ThirdItemCount, RandomManagerPid ),
 
-	?test_info( "Extracting too many items from a list is correctly detected."),
+    ?test_info( "Extracting too many items from a list is correctly detected."),
 
-	?test_info( "Removing random manager." ),
-	wooper:delete_synchronously_instance( RandomManagerPid ),
+    ?test_info( "Removing random manager." ),
+    wooper:delete_synchronously_instance( RandomManagerPid ),
 
-	?case_stop.
+    ?case_stop.

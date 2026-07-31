@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 EDF R&D
+% Copyright (C) 2014-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -40,164 +40,164 @@ This module centralises **city descriptions**.
 
 
 -spec get_description_for( ustring() ) ->
-						class_CityGenerator:city_description().
+                        class_CityGenerator:city_description().
 get_description_for( _CityName="Yzeure" ) ->
 
-	% km²:
-	Area = 1364.24,
+    % km²:
+    Area = 1364.24,
 
-	% Meters:
-	SideLen = erlang:round( class_CityGenerator:area_to_side_length( Area ) ),
+    % Meters:
+    SideLen = erlang:round( class_CityGenerator:area_to_side_length( Area ) ),
 
-	MinAltitude = 217,
-	MaxAltitude = 278,
+    MinAltitude = 217,
+    MaxAltitude = 278,
 
-	% This city happens to be just translated in terms of altitude from the
-	% origin (for X and Y, it is centered):
-	%
-	#city_description{
+    % This city happens to be just translated in terms of altitude from the
+    % origin (for X and Y, it is centered):
+    %
+    #city_description{
 
-		name="Yzeure",
+        name="Yzeure",
 
-		dimensions={ SideLen, SideLen, MaxAltitude - MinAltitude },
+        dimensions={ SideLen, SideLen, MaxAltitude - MinAltitude },
 
-		center={ - SideLen / 2, - SideLen / 2,
-				 ( MinAltitude + MaxAltitude ) / 2 },
+        center={ - SideLen / 2, - SideLen / 2,
+                 ( MinAltitude + MaxAltitude ) / 2 },
 
-		incinerator_count=1,
-		landfill_count=2,
-		residential_waste_source_count=5,
-		industrial_waste_source_count=4,
-		road_junction_count=15,
-		waste_truck_count=5 };
+        incinerator_count=1,
+        landfill_count=2,
+        residential_waste_source_count=5,
+        industrial_waste_source_count=4,
+        road_junction_count=15,
+        waste_truck_count=5 };
 
 
 
 get_description_for( _CityName="Orleans" ) ->
 
-	Factor = 8,
+    Factor = 8,
 
-	%km²:
-	Area = 23643.24 * Factor,
+    %km²:
+    Area = 23643.24 * Factor,
 
-	% Meters:
-	SideLen = erlang:round( class_CityGenerator:area_to_side_length( Area ) ),
+    % Meters:
+    SideLen = erlang:round( class_CityGenerator:area_to_side_length( Area ) ),
 
-	MinAltitude = 217,
-	MaxAltitude = 278,
+    MinAltitude = 217,
+    MaxAltitude = 278,
 
-	% This city happens to be just translated in terms of altitude from the
-	% origin (for X and Y, it is centered):
-	%
-	#city_description{
+    % This city happens to be just translated in terms of altitude from the
+    % origin (for X and Y, it is centered):
+    %
+    #city_description{
 
-		name="Orleans",
+        name="Orleans",
 
-		dimensions={ SideLen, SideLen, MaxAltitude - MinAltitude },
+        dimensions={ SideLen, SideLen, MaxAltitude - MinAltitude },
 
-		center={ - SideLen / 2, - SideLen / 2,
-				( MinAltitude + MaxAltitude ) / 2 },
+        center={ - SideLen / 2, - SideLen / 2,
+                ( MinAltitude + MaxAltitude ) / 2 },
 
-		incinerator_count=18*Factor,
-		landfill_count=14*Factor,
-		residential_waste_source_count=450*Factor,
-		industrial_waste_source_count=130*Factor,
-		road_junction_count=500*Factor,
-		waste_truck_count=180*Factor };
+        incinerator_count=18*Factor,
+        landfill_count=14*Factor,
+        residential_waste_source_count=450*Factor,
+        industrial_waste_source_count=130*Factor,
+        road_junction_count=500*Factor,
+        waste_truck_count=180*Factor };
 
 
 
 get_description_for( _CityName="Rennes" ) ->
 
-	%km²:
-	Area = 9782643.24,
+    %km²:
+    Area = 9782643.24,
 
-	% Meters:
-	SideLen = erlang:round( class_CityGenerator:area_to_side_length( Area ) ),
+    % Meters:
+    SideLen = erlang:round( class_CityGenerator:area_to_side_length( Area ) ),
 
-	MinAltitude = 217,
-	MaxAltitude = 278,
+    MinAltitude = 217,
+    MaxAltitude = 278,
 
-	% This city happens to be just translated in terms of altitude from the
-	% origin (for X and Y, it is centered):
-	%
-	#city_description{
+    % This city happens to be just translated in terms of altitude from the
+    % origin (for X and Y, it is centered):
+    %
+    #city_description{
 
-		name="Rennes",
+        name="Rennes",
 
-		dimensions={ SideLen, SideLen, MaxAltitude - MinAltitude },
+        dimensions={ SideLen, SideLen, MaxAltitude - MinAltitude },
 
-		center={ - SideLen / 2, - SideLen / 2,
-				( MinAltitude + MaxAltitude ) / 2 },
+        center={ - SideLen / 2, - SideLen / 2,
+                ( MinAltitude + MaxAltitude ) / 2 },
 
-		incinerator_count=124,
-		landfill_count=59,
-		residential_waste_source_count=1700,
-		industrial_waste_source_count=430,
-		road_junction_count=1950,
-		waste_truck_count=1007 };
+        incinerator_count=124,
+        landfill_count=59,
+        residential_waste_source_count=1700,
+        industrial_waste_source_count=430,
+        road_junction_count=1950,
+        waste_truck_count=1007 };
 
 
 
 get_description_for( _CityName="Paris" ) ->
 
-	%km²:
-	Area = 56172643.24,
+    %km²:
+    Area = 56172643.24,
 
-	% Meters:
-	SideLen = erlang:round( class_CityGenerator:area_to_side_length( Area ) ),
+    % Meters:
+    SideLen = erlang:round( class_CityGenerator:area_to_side_length( Area ) ),
 
-	MinAltitude = 217,
-	MaxAltitude = 278,
+    MinAltitude = 217,
+    MaxAltitude = 278,
 
-	% This city happens to be just translated in terms of altitude from the
-	% origin (for X and Y, it is centered):
-	#city_description{
+    % This city happens to be just translated in terms of altitude from the
+    % origin (for X and Y, it is centered):
+    #city_description{
 
-		name="Paris",
+        name="Paris",
 
-		dimensions={ SideLen, SideLen, MaxAltitude - MinAltitude },
+        dimensions={ SideLen, SideLen, MaxAltitude - MinAltitude },
 
-		center={ - SideLen / 2, - SideLen / 2,
-				( MinAltitude + MaxAltitude ) / 2 },
+        center={ - SideLen / 2, - SideLen / 2,
+                ( MinAltitude + MaxAltitude ) / 2 },
 
-		incinerator_count=248,
-		landfill_count=218,
-		residential_waste_source_count=6500,
-		industrial_waste_source_count=980,
-		road_junction_count=8500,
-		waste_truck_count=4912 };
+        incinerator_count=248,
+        landfill_count=218,
+        residential_waste_source_count=6500,
+        industrial_waste_source_count=980,
+        road_junction_count=8500,
+        waste_truck_count=4912 };
 
 
 
 get_description_for( _CityName="Beijing" ) ->
 
-	%km²:
-	Area = 218921485.0,
+    %km²:
+    Area = 218921485.0,
 
-	% Meters:
-	SideLen = erlang:round( class_CityGenerator:area_to_side_length( Area ) ),
+    % Meters:
+    SideLen = erlang:round( class_CityGenerator:area_to_side_length( Area ) ),
 
-	MinAltitude = 1937,
-	MaxAltitude = 2602,
+    MinAltitude = 1937,
+    MaxAltitude = 2602,
 
-	% This city happens to be just translated in terms of altitude from the
-	% origin (for X and Y, it is centered):
-	#city_description{
+    % This city happens to be just translated in terms of altitude from the
+    % origin (for X and Y, it is centered):
+    #city_description{
 
-		name="Beijing",
+        name="Beijing",
 
-		dimensions={ SideLen, SideLen, MaxAltitude - MinAltitude },
+        dimensions={ SideLen, SideLen, MaxAltitude - MinAltitude },
 
-		center={ - SideLen / 2, - SideLen / 2,
-				( MinAltitude + MaxAltitude ) / 2 },
+        center={ - SideLen / 2, - SideLen / 2,
+                ( MinAltitude + MaxAltitude ) / 2 },
 
-		incinerator_count=672,
-		landfill_count=495,
-		residential_waste_source_count=20000,
-		industrial_waste_source_count=4000,
-		road_junction_count=80000,
-		waste_truck_count=95100 }.
+        incinerator_count=672,
+        landfill_count=495,
+        residential_waste_source_count=20000,
+        industrial_waste_source_count=4000,
+        road_junction_count=80000,
+        waste_truck_count=95100 }.
 
 
 
@@ -205,33 +205,33 @@ get_description_for( _CityName="Beijing" ) ->
 -spec to_string( class_CityGenerator:city_description() ) -> ustring().
 to_string( #city_description{
 
-		name=Name,
+        name=Name,
 
-		dimensions={ Length, Width, _Height },
+        dimensions={ Length, Width, _Height },
 
-		center=_Position,
+        center=_Position,
 
-		incinerator_count=IncCount,
-		landfill_count=LandCount,
-		residential_waste_source_count=ResidCount,
-		industrial_waste_source_count=IndusCount,
-		road_junction_count=JuncCount,
-		waste_truck_count=TruckCount } ) ->
+        incinerator_count=IncCount,
+        landfill_count=LandCount,
+        residential_waste_source_count=ResidCount,
+        industrial_waste_source_count=IndusCount,
+        road_junction_count=JuncCount,
+        waste_truck_count=TruckCount } ) ->
 
-	{ _CellsPerEdge, CellCount } =
-		class_CityGenerator:get_cell_infos( Length, Width ),
+    { _CellsPerEdge, CellCount } =
+        class_CityGenerator:get_cell_infos( Length, Width ),
 
-	Elements = text_utils:strings_to_string( [
-		text_utils:format( "~B incinerators", [ IncCount ] ),
-		text_utils:format( "~B landfills", [ LandCount ] ),
-		text_utils:format( "~B residential waste sources", [ ResidCount ] ),
-		text_utils:format( "~B industrial waste sources", [ IndusCount ] ),
-		text_utils:format( "~B road junctions", [ JuncCount ] ),
-		text_utils:format( "~B waste trucks", [ TruckCount ] ),
-		text_utils:format( "1 weather system and ~B weather cells",
-						   [ CellCount ] )
+    Elements = text_utils:strings_to_string( [
+        text_utils:format( "~B incinerators", [ IncCount ] ),
+        text_utils:format( "~B landfills", [ LandCount ] ),
+        text_utils:format( "~B residential waste sources", [ ResidCount ] ),
+        text_utils:format( "~B industrial waste sources", [ IndusCount ] ),
+        text_utils:format( "~B road junctions", [ JuncCount ] ),
+        text_utils:format( "~B waste trucks", [ TruckCount ] ),
+        text_utils:format( "1 weather system and ~B weather cells",
+                           [ CellCount ] )
 
-											 ],
-										   _Bullet="%   + " ),
+                                             ],
+                                           _Bullet="%   + " ),
 
-	text_utils:format( "~ts city has: ~ts~n", [ Name, Elements ] ).
+    text_utils:format( "~ts city has: ~ts~n", [ Name, Elements ] ).

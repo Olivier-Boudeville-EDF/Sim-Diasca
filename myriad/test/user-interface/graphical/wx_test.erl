@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -48,70 +48,70 @@ A minimalistic test to investigate wx.
 
 determine_constants() ->
 
-	wxe_util:init_nif( _Silent=false ),
+    wxe_util:init_nif( _Silent=false ),
 
-	wxe_util:setup_consts(),
+    wxe_util:setup_consts(),
 
-	trace_utils:notice_fmt( "Current value for wxFD_MULTIPLE is ~w.",
-							[ ?wxFD_MULTIPLE ] ).
+    trace_utils:notice_fmt( "Current value for wxFD_MULTIPLE is ~w.",
+                            [ ?wxFD_MULTIPLE ] ).
 
 
 
 test_frame() ->
-	_WxServer = wx:new(),
-	%process_flag(trap_exit, true),
+    _WxServer = wx:new(),
+    %process_flag(trap_exit, true),
 
-	TestWindowOpts = [ { style, ?wxBORDER_NONE } ],
+    TestWindowOpts = [ { style, ?wxBORDER_NONE } ],
 
-	TestWindow = wxWindow:new( _Parent=wx:null(), _Id=?wxID_ANY,
-							   TestWindowOpts ),
+    TestWindow = wxWindow:new( _Parent=wx:null(), _Id=?wxID_ANY,
+                               TestWindowOpts ),
 
-	wxWindow:show( TestWindow ),
+    wxWindow:show( TestWindow ),
 
-	%timer:sleep( 3000 ),
+    %timer:sleep( 3000 ),
 
-	TestFrameOpts = [ { style, ?wxBORDER_NONE } ],
+    TestFrameOpts = [ { style, ?wxBORDER_NONE } ],
 
-	TestFrame = wxFrame:new( wx:null(), ?wxID_ANY,
-							 "Test frame", TestFrameOpts ),
+    TestFrame = wxFrame:new( wx:null(), ?wxID_ANY,
+                             "Test frame", TestFrameOpts ),
 
-	wxFrame:show( TestFrame ),
+    wxFrame:show( TestFrame ),
 
-	timer:sleep( 1000 ),
+    timer:sleep( 1000 ),
 
-	%% receive
+    %% receive
 
-	%%	Any ->
-	%%		trace_utils:debug_fmt( "Test received ~w.", [ Any ] )
-	%%		% Terminates.
+    %%  Any ->
+    %%      trace_utils:debug_fmt( "Test received ~w.", [ Any ] )
+    %%      % Terminates.
 
-	%% end.
+    %% end.
 
-	terminates.
+    terminates.
 
 
 test_window_from_frame() ->
-	_WxServer = wx:new(),
-	process_flag(trap_exit, true),
+    _WxServer = wx:new(),
+    process_flag(trap_exit, true),
 
-	%TestWindowOpts = [ { style, ?wxBORDER_NONE } ],
-	TestWindowOpts = [],
+    %TestWindowOpts = [ { style, ?wxBORDER_NONE } ],
+    TestWindowOpts = [],
 
-	% Shows that a mere window may not even appear onscreen; use a frame
-	% instead.
-	%
-	TestWindow = wxWindow:new( _Parent=wx:null(), _Id=?wxID_ANY,
-							   TestWindowOpts ),
+    % Shows that a mere window may not even appear onscreen; use a frame
+    % instead.
+    %
+    TestWindow = wxWindow:new( _Parent=wx:null(), _Id=?wxID_ANY,
+                               TestWindowOpts ),
 
-	wxWindow:show( TestWindow ),
+    wxWindow:show( TestWindow ),
 
-	receive
+    receive
 
-		Any ->
-			trace_utils:debug_fmt( "Test received ~w.", [ Any ] )
-			% Terminates.
+        Any ->
+            trace_utils:debug_fmt( "Test received ~w.", [ Any ] )
+            % Terminates.
 
-	end.
+    end.
 
 
 
@@ -119,20 +119,20 @@ test_window_from_frame() ->
 -spec run_gui_test() -> void().
 run_gui_test() ->
 
-	test_facilities:display( "~nStarting the wx test." ),
+    test_facilities:display( "~nStarting the wx test." ),
 
-	% Either of the next two functions shall be commented-out, as otherwise the
-	% first would load the wx NIF, and the second as well (hence: "NIF library
-	% already loaded):
+    % Either of the next two functions shall be commented-out, as otherwise the
+    % first would load the wx NIF, and the second as well (hence: "NIF library
+    % already loaded):
 
-	% Loads the wx NIF:
-	%determine_constants(),
+    % Loads the wx NIF:
+    %determine_constants(),
 
-	test_frame(),
+    test_frame(),
 
-	%test_window_from_frame(),
+    %test_window_from_frame(),
 
-	test_facilities:display( "End of the wx test." ).
+    test_facilities:display( "End of the wx test." ).
 
 
 
@@ -140,17 +140,17 @@ run_gui_test() ->
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	case executable_utils:is_batch() of
+    case executable_utils:is_batch() of
 
-		true ->
-			test_facilities:display(
-				"(not running the MyriadGUI test, being in batch mode)" );
+        true ->
+            test_facilities:display(
+                "(not running the MyriadGUI test, being in batch mode)" );
 
-		false ->
-			run_gui_test()
+        false ->
+            run_gui_test()
 
-	end,
+    end,
 
-	test_facilities:stop().
+    test_facilities:stop().

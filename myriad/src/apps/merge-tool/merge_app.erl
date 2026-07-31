@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 Olivier Boudeville
+% Copyright (C) 2016-2026 Olivier Boudeville
 %
 % Released as LGPL software.
 %
@@ -26,15 +26,15 @@ user-friendly debugging.
 -spec exec() -> void().
 exec() ->
 
-	% First, enable all possible helper code (hence to be done first of all):
-	update_code_path_for_myriad_from_module(),
+    % First, enable all possible helper code (hence to be done first of all):
+    update_code_path_for_myriad_from_module(),
 
-	% To force options for testing:
-	%ArgTable = cmd_line_utils:generate_argument_table( "--help" ),
+    % To force options for testing:
+    %ArgTable = cmd_line_utils:generate_argument_table( "--help" ),
 
-	ArgTable = cmd_line_utils:get_argument_table(),
+    ArgTable = cmd_line_utils:get_argument_table(),
 
-	%trace_utils:debug_fmt( "Run as application: ~ts",
-	%   [ cmd_line_utils:argument_table_to_string( ArgTable ) ] ),
+    %trace_utils:debug_fmt( "Run as application: ~ts",
+    %   [ cmd_line_utils:argument_table_to_string( ArgTable ) ] ),
 
-	merge_utils:main( ArgTable ).
+    merge_utils:main( ArgTable ).

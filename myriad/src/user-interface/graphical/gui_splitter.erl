@@ -1,4 +1,4 @@
-% Copyright (C) 2024-2025 Olivier Boudeville
+% Copyright (C) 2024-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -60,8 +60,8 @@ unsplit the splitter, i.e. make the bottom (for vertical splitters) or right
 
 -doc "Splitter-specific options.".
 -type splitter_option() :: { 'position', point() }
-						 | { 'size', size() }
-						 | { 'style', [ splitter_style() ] }.
+                         | { 'size', size() }
+                         | { 'style', [ splitter_style() ] }.
 
 
 
@@ -71,7 +71,7 @@ A style element of a splitter.
 See also <https://docs.wxwidgets.org/3.1/classwx_splitter_window.html>.
 """.
 -type splitter_style() ::
-	'three_dim_effect' % Draws a 3D effect for splitter and border.
+    'three_dim_effect' % Draws a 3D effect for splitter and border.
   | 'thin_splitter' % Draws a thin splitter.
   | 'three_dim_splitter' % Draws a 3D splitter (part of the default style).
   | 'three_dim_border' % Draws a 3D border.
@@ -79,10 +79,10 @@ See also <https://docs.wxwidgets.org/3.1/classwx_splitter_window.html>.
   | 'no_border' % Draws no border (the default).
   | 'no_xp_theme' % On Windows, pre-XP look.
   | 'allow_unsplit' % Always allows to unsplit, even if the minimum pane length
-					% is zero.
+                    % is zero.
   | 'live_update'. % Resizes the child windows immediately (strongly recommended
-				   % for a smoother control / to avoid flicker, unless at least
-				   % a pane is long to redraw).
+                   % for a smoother control / to avoid flicker, unless at least
+                   % a pane is long to redraw).
 
 
 -doc """
@@ -114,19 +114,19 @@ window.
 
 
 -export_type([ splitter_window/0, scaling_ratio/0, splitter_position/0,
-			   splitter_option/0 ]).
+               splitter_option/0 ]).
 
 
 
 -export([ create/1, create/2, create/5, create/6, destruct/1,
-		  get_scaling_ratio/1, set_scaling_ratio/2,
-		  get_splitter_position/1, set_splitter_position/2,
-		  get_minimum_pane_length/1, set_minimum_pane_length/2,
-		  get_orientation/1, set_orientation/2,
-		  is_split/1,
-		  set_unique_pane/2, set_panes/4,
-		  get_first_pane/1, get_second_pane/1, get_panes/1,
-		  replace_pane/3, unsplit/1, update_size/1 ]).
+          get_scaling_ratio/1, set_scaling_ratio/2,
+          get_splitter_position/1, set_splitter_position/2,
+          get_minimum_pane_length/1, set_minimum_pane_length/2,
+          get_orientation/1, set_orientation/2,
+          is_split/1,
+          set_unique_pane/2, set_panes/4,
+          get_first_pane/1, get_second_pane/1, get_panes/1,
+          replace_pane/3, unsplit/1, update_size/1 ]).
 
 
 
@@ -184,7 +184,7 @@ The up to two subwindows and splitting can be declared afterwards.
 """.
 -spec create( parent() ) -> splitter_window().
 create( Parent ) ->
-	wxSplitterWindow:new( Parent ).
+    wxSplitterWindow:new( Parent ).
 
 
 
@@ -197,7 +197,7 @@ are very platform-specific and offer actually little choices.
 """.
 -spec create( maybe_list( splitter_option() ), parent() ) -> splitter_window().
 create( Options, Parent ) ->
-	wxSplitterWindow:new( Parent, to_wx_splitter_options( Options ) ).
+    wxSplitterWindow:new( Parent, to_wx_splitter_options( Options ) ).
 
 
 
@@ -208,11 +208,11 @@ parent window, with the specified identifier.
 The up to two subwindows and splitting can be declared afterwards.
 """.
 -spec create( position(), size(), [ splitter_style() ], id(), parent() ) ->
-											splitter_window().
+                                            splitter_window().
 create( Position, Size, Styles, Id, Parent ) ->
-	create( Position, Size, Styles,
-			_OSType=system_utils:get_operating_system_type(),
-			Id, Parent ).
+    create( Position, Size, Styles,
+            _OSType=system_utils:get_operating_system_type(),
+            Id, Parent ).
 
 
 
@@ -225,45 +225,45 @@ The up to two subwindows and splitting can be declared afterwards.
 Most complete creation function.
 """.
 -spec create( position(), size(), [ splitter_style() ], os_type(), id(),
-			  parent() ) -> splitter_window().
+              parent() ) -> splitter_window().
 create( Position, Size, Styles, OSType, Id, Parent ) ->
 
-	ExtraStyles = case OSType of
+    ExtraStyles = case OSType of
 
-		{ _OSFamily=unix, _OSName=darwin } ->
-			[ live_update, three_dim_splitter ];
+        { _OSFamily=unix, _OSName=darwin } ->
+            [ live_update, three_dim_splitter ];
 
-		{ win32, _ } ->
-			[ live_update, standard_border ];
+        { win32, _ } ->
+            [ live_update, standard_border ];
 
-		_ ->
-			[ live_update, three_dim_effect ]
+        _ ->
+            [ live_update, three_dim_effect ]
 
-	end,
+    end,
 
-	AllStyles = ExtraStyles ++ Styles,
+    AllStyles = ExtraStyles ++ Styles,
 
-	ActualId = gui_id:declare_any_id( Id ),
+    ActualId = gui_id:declare_any_id( Id ),
 
-	SplitterWin = wxSplitterWindow:new( Parent, [
-		{ id, ActualId },
-		{ pos, Position },
-		{ size, Size },
-		{ style, splitter_styles_to_bitmask( AllStyles ) } ] ),
+    SplitterWin = wxSplitterWindow:new( Parent, [
+        { id, ActualId },
+        { pos, Position },
+        { size, Size },
+        { style, splitter_styles_to_bitmask( AllStyles ) } ] ),
 
-	% No wxSplitterWindow:split{Horizontally,Vertically}(Splitter, Win1, Win2)
-	% call here, as we do not have Win1 or Win2 yet, and cannot have them at
-	% that point, as their parent must be the just-created, still-to-be-returned
-	% splitter window.
+    % No wxSplitterWindow:split{Horizontally,Vertically}(Splitter, Win1, Win2)
+    % call here, as we do not have Win1 or Win2 yet, and cannot have them at
+    % that point, as their parent must be the just-created, still-to-be-returned
+    % splitter window.
 
-	SplitterWin.
+    SplitterWin.
 
 
 
 -doc "Destructs the specified splitter window.".
 -spec destruct( splitter_window() ) -> void().
 destruct( SplitterWin ) ->
-	wxSplitterWindow:destroy( SplitterWin ).
+    wxSplitterWindow:destroy( SplitterWin ).
 
 
 
@@ -274,7 +274,7 @@ specified splitter window.
 """.
 -spec get_scaling_ratio( splitter_window() ) -> scaling_ratio().
 get_scaling_ratio( SplitterWin ) ->
-	wxSplitterWindow:getSashGravity( SplitterWin ).
+    wxSplitterWindow:getSashGravity( SplitterWin ).
 
 
 -doc """
@@ -283,7 +283,7 @@ splitter window.
 """.
 -spec set_scaling_ratio( splitter_window(), scaling_ratio() ) -> void().
 set_scaling_ratio( SplitterWin, ScalingRatio ) ->
-	wxSplitterWindow:setSashGravity( SplitterWin, _SashGravity=ScalingRatio ).
+    wxSplitterWindow:setSashGravity( SplitterWin, _SashGravity=ScalingRatio ).
 
 
 
@@ -293,7 +293,7 @@ Returns the current position of the splitter.
 """.
 -spec get_splitter_position( splitter_window() ) -> splitter_position().
 get_splitter_position( SplitterWin ) ->
-	wxSplitterWindow:getSashPosition( SplitterWin ).
+    wxSplitterWindow:getSashPosition( SplitterWin ).
 
 
 -doc """
@@ -305,7 +305,7 @@ Does not currently check for an out-of-range value.
 """.
 -spec set_splitter_position( splitter_window(), splitter_position() ) -> void().
 set_splitter_position( SplitterWin, SplitterPos ) ->
-	wxSplitterWindow:setSashPosition( SplitterWin, _SashPosition=SplitterPos ).
+    wxSplitterWindow:setSashPosition( SplitterWin, _SashPosition=SplitterPos ).
 
 
 
@@ -315,7 +315,7 @@ Returns the minimum pane length of the specified splitter window.
 """.
 -spec get_minimum_pane_length( splitter_window() ) -> length().
 get_minimum_pane_length( SplitterWin ) ->
-	wxSplitterWindow:getMinimumPaneSize( SplitterWin ).
+    wxSplitterWindow:getMinimumPaneSize( SplitterWin ).
 
 
 -doc """
@@ -330,7 +330,7 @@ used at creation.
 """.
 -spec set_minimum_pane_length( splitter_window(), length() ) -> void().
 set_minimum_pane_length( SplitterWin, MinPaneLength ) ->
-	wxSplitterWindow:setMinimumPaneSize( SplitterWin, MinPaneLength ).
+    wxSplitterWindow:setMinimumPaneSize( SplitterWin, MinPaneLength ).
 
 
 
@@ -338,7 +338,7 @@ set_minimum_pane_length( SplitterWin, MinPaneLength ) ->
 -doc "Returns the current orientation of the specified splitter.".
 -spec get_orientation( splitter_window() ) -> orientation().
 get_orientation( SplitterWin ) ->
-	wxSplitterWindow:getSplitMode( SplitterWin ).
+    wxSplitterWindow:getSplitMode( SplitterWin ).
 
 
 -doc """
@@ -348,7 +348,7 @@ Only sets the internal variable; does not update the display.
 """.
 -spec set_orientation( splitter_window(), orientation() ) -> void().
 set_orientation( SplitterWin, Orientation ) ->
-	wxSplitterWindow:setSplitMode( SplitterWin, Orientation ).
+    wxSplitterWindow:setSplitMode( SplitterWin, Orientation ).
 
 
 
@@ -357,7 +357,7 @@ Returns whether the splitter is split, that is if its two panes are visible.
 """.
 -spec is_split( splitter_window() ) -> boolean().
 is_split( SplitterWin ) ->
-	wxSplitterWindow:isSplit( SplitterWin ).
+    wxSplitterWindow:isSplit( SplitterWin ).
 
 
 
@@ -369,7 +369,7 @@ The child window (main, single pane) is shown if it is currently hidden.
 """.
 -spec set_unique_pane( splitter_window(), window() ) -> void().
 set_unique_pane( SplitterWin, SinglePaneWin ) ->
-	wxSplitterWindow:initialize( SplitterWin, SinglePaneWin ).
+    wxSplitterWindow:initialize( SplitterWin, SinglePaneWin ).
 
 
 
@@ -383,38 +383,38 @@ The application should have checked whether the splitter is not already split
 (see is_split/1).
 """.
 -spec set_panes( splitter_window(), window(), window(), orientation() ) ->
-											boolean().
+                                            boolean().
 % Initializes the top and bottom panes of the splitter window:
 set_panes( SplitterWin, FirstWindowPane, SecondWindowPane,
-		   _Orientation=horizontal ) ->
-	wxSplitterWindow:splitHorizontally( SplitterWin, FirstWindowPane,
-										SecondWindowPane );
+           _Orientation=horizontal ) ->
+    wxSplitterWindow:splitHorizontally( SplitterWin, FirstWindowPane,
+                                        SecondWindowPane );
 
 % Initializes the left and right panes of the splitter window:
 set_panes( SplitterWin, FirstWindowPane, SecondWindowPane,
-		   _Orientation=vertical ) ->
-	wxSplitterWindow:splitVertically( SplitterWin, FirstWindowPane,
-									  SecondWindowPane ).
+           _Orientation=vertical ) ->
+    wxSplitterWindow:splitVertically( SplitterWin, FirstWindowPane,
+                                      SecondWindowPane ).
 
 
 -doc "Returns the first pane (if any) of the specified splitter window.".
 -spec get_first_pane( splitter_window() ) -> option( window() ).
 get_first_pane( SplitterWin ) ->
-	wxSplitterWindow:getWindow1( SplitterWin ).
+    wxSplitterWindow:getWindow1( SplitterWin ).
 
 
 -doc "Returns the second pane (if any) of the specified splitter window.".
 -spec get_second_pane( splitter_window() ) -> option( window() ).
 get_second_pane( SplitterWin ) ->
-	wxSplitterWindow:getWindow2( SplitterWin ).
+    wxSplitterWindow:getWindow2( SplitterWin ).
 
 
 -doc "Returns the two panes (if any) of the specified splitter window.".
 -spec get_panes( splitter_window() ) ->
-								{ option( window() ), option( window() ) }.
+                                { option( window() ), option( window() ) }.
 get_panes( SplitterWin ) ->
-	{ wxSplitterWindow:getWindow1( SplitterWin ),
-	  wxSplitterWindow:getWindow2( SplitterWin ) }.
+    { wxSplitterWindow:getWindow1( SplitterWin ),
+      wxSplitterWindow:getWindow2( SplitterWin ) }.
 
 
 
@@ -434,8 +434,8 @@ will not delete the replaced window and you may wish to do it yourself.
 """.
 -spec replace_pane( splitter_window(), window(), window() ) -> boolean().
 replace_pane( SplitterWin, CurrentWindowPane, NewWindowPane ) ->
-	wxSplitterWindow:replaceWindow( SplitterWin, _WinOld=CurrentWindowPane,
-									_WinNew=NewWindowPane ).
+    wxSplitterWindow:replaceWindow( SplitterWin, _WinOld=CurrentWindowPane,
+                                    _WinNew=NewWindowPane ).
 
 
 
@@ -445,7 +445,7 @@ returns whether it could be unsplit, i.e. if it was initially split indeed.
 """.
 -spec unsplit( splitter_window() ) -> boolean().
 unsplit( SplitterWin ) ->
-	wxSplitterWindow:unsplit( SplitterWin ).
+    wxSplitterWindow:unsplit( SplitterWin ).
 
 
 
@@ -461,7 +461,7 @@ then call this function, before showing the top-level window.
 """.
 -spec update_size( splitter_window() ) -> void().
 update_size( SplitterWin ) ->
-	wxSplitterWindow:updateSize( SplitterWin ).
+    wxSplitterWindow:updateSize( SplitterWin ).
 
 
 
@@ -472,26 +472,26 @@ wx-specific options.
 (exported helper)
 """.
 -spec to_wx_splitter_options( maybe_list( splitter_option() ) ) ->
-											[ wx_splitter_option() ].
+                                            [ wx_splitter_option() ].
 to_wx_splitter_options( Options ) when is_list( Options ) ->
-	to_wx_splitter_options( Options, _Acc=[] );
+    to_wx_splitter_options( Options, _Acc=[] );
 
 to_wx_splitter_options( Option ) ->
-	to_wx_splitter_options( [ Option ] ).
+    to_wx_splitter_options( [ Option ] ).
 
 
 
 % (helper)
 to_wx_splitter_options( _Options=[], Acc ) ->
-	Acc;
+    Acc;
 
 to_wx_splitter_options( _Options=[ { style, Style } | T ], Acc ) ->
-	to_wx_splitter_options( T,
-		[ { style, splitter_styles_to_bitmask( Style ) } | Acc ] );
+    to_wx_splitter_options( T,
+        [ { style, splitter_styles_to_bitmask( Style ) } | Acc ] );
 
 % Unchanged:
 to_wx_splitter_options( _Options=[ H | T ], Acc ) ->
-	to_wx_splitter_options( T, [ H | Acc ] ).
+    to_wx_splitter_options( T, [ H | Acc ] ).
 
 
 
@@ -503,11 +503,11 @@ wx-specific bit mask.
 """.
 -spec splitter_styles_to_bitmask( [ splitter_style() ] ) -> bit_mask().
 splitter_styles_to_bitmask( StyleOpts ) when is_list( StyleOpts ) ->
-	lists:foldl( fun( S, Acc ) ->
-					gui_generated:get_second_for_splitter_style( S ) bor Acc
-				 end,
-				 _InitialAcc=0,
-				 _List=StyleOpts ).
+    lists:foldl( fun( S, Acc ) ->
+                    gui_generated:get_second_for_splitter_style( S ) bor Acc
+                 end,
+                 _InitialAcc=0,
+                 _List=StyleOpts ).
 
 % Styles are better not maybe_lists (only options are):
 %splitter_styles_to_bitmask( StyleOpt ) ->

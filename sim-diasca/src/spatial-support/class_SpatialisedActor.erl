@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 EDF R&D
+% Copyright (C) 2014-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -27,8 +27,8 @@ Class modelling an actor taking part to a **spatial environment**.
 
 
 -define( class_description,
-		 "Class modelling an actor taking part to a spatial environment, "
-		 "i.e. being at a given position in this environment." ).
+         "Class modelling an actor taking part to a spatial environment, "
+         "i.e. being at a given position in this environment." ).
 
 
 % Note: at least currently, the environment is only 2D, and simplistic
@@ -43,25 +43,25 @@ Class modelling an actor taking part to a **spatial environment**.
 
 -define( class_attributes,[
 
-	{ position, position(),
-	  "current position of this actor; note that between two calls this value "
-	  "must always be up to date, as it might be requested directly "
-	  "(bypassing actor messages) by the environment in some cases" },
+    { position, position(),
+      "current position of this actor; note that between two calls this value "
+      "must always be up to date, as it might be requested directly "
+      "(bypassing actor messages) by the environment in some cases" },
 
-	{ max_speed, option( max_speed() ),
-	  "upper-bound (if any) of the maximum speed of this actor" },
+    { max_speed, option( max_speed() ),
+      "upper-bound (if any) of the maximum speed of this actor" },
 
-	{ environment_pid, environment_pid(),
-	  "PID of the environment this actor will live in" },
+    { environment_pid, environment_pid(),
+      "PID of the environment this actor will live in" },
 
-	{ env_width, border_extent(),
-	  "abscissa extent of the environment, from its origin" },
+    { env_width, border_extent(),
+      "abscissa extent of the environment, from its origin" },
 
-	{ env_height, border_extent(),
-	  "ordinate extent of the environment, from its origin" },
+    { env_height, border_extent(),
+      "ordinate extent of the environment, from its origin" },
 
-	{ border_settings, border_description(),
-	  "describes how border crossing shall be managed" } ] ).
+    { border_settings, border_description(),
+      "describes how border crossing shall be managed" } ] ).
 
 
 -type position() :: class_TwoDimensionalEnvironment:position().
@@ -91,7 +91,7 @@ Class modelling an actor taking part to a **spatial environment**.
 -type border_extent() :: class_TwoDimensionalEnvironment:border_extent().
 
 -type border_description() ::
-		class_TwoDimensionalEnvironment:border_description().
+        class_TwoDimensionalEnvironment:border_description().
 
 -type max_speed() :: class_TwoDimensionalEnvironment:max_speed().
 
@@ -111,23 +111,23 @@ environment
  - EnvironmentPid is the PID of the environment this actor will live in
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-		class_Actor:name(), position(), max_speed(), environment_pid() ) ->
-						wooper:state().
+        class_Actor:name(), position(), max_speed(), environment_pid() ) ->
+                        wooper:state().
 construct( State, ActorSettings, Name, InitialPosition, MaxSpeed,
-		   EnvironmentPid ) ->
+           EnvironmentPid ) ->
 
-	ActorState = class_Actor:construct( State, ActorSettings,
-										?trace_categorize(Name) ),
+    ActorState = class_Actor:construct( State, ActorSettings,
+                                        ?trace_categorize(Name) ),
 
-	setAttributes( ActorState, [
-		{ position, InitialPosition },
-		{ max_speed, MaxSpeed },
-		{ environment_pid, EnvironmentPid },
+    setAttributes( ActorState, [
+        { position, InitialPosition },
+        { max_speed, MaxSpeed },
+        { environment_pid, EnvironmentPid },
 
-		% Will serve as cached environment information:
-		{ env_width, undefined },
-		{ env_height, undefined },
-		{ border_settings, undefined } ] ).
+        % Will serve as cached environment information:
+        { env_width, undefined },
+        { env_height, undefined },
+        { border_settings, undefined } ] ).
 
 
 
@@ -135,17 +135,17 @@ construct( State, ActorSettings, Name, InitialPosition, MaxSpeed,
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
-	% Class-specific actions:
+    % Class-specific actions:
 
-	% We do not undeclare this spatialised actor automatically from this
-	% environment, as this must be done in the course of the simulation.
+    % We do not undeclare this spatialised actor automatically from this
+    % environment, as this must be done in the course of the simulation.
 
-	% This can be done easily thanks to:
-	%SentState = class_Actor:send_actor_message( ?getAttr(environment_pid),
-	%                                            undeclare, State ),
+    % This can be done easily thanks to:
+    %SentState = class_Actor:send_actor_message( ?getAttr(environment_pid),
+    %                                            undeclare, State ),
 
-	% Then allow chaining:
-	State.
+    % Then allow chaining:
+    State.
 
 
 
@@ -157,26 +157,26 @@ destruct( State ) ->
 
 -doc "First scheduling on this spatialised actor.".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-										actor_oneway_return().
+                                        actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
-	% Declaring ourself to the environment:
-	SentState = class_Actor:send_actor_message(
-		?getAttr(environment_pid),
-		{ declareEntity, [ ?getAttr(position), ?getAttr(max_speed),
-						   wooper:get_classname( State ) ] },
-		State ),
+    % Declaring ourself to the environment:
+    SentState = class_Actor:send_actor_message(
+        ?getAttr(environment_pid),
+        { declareEntity, [ ?getAttr(position), ?getAttr(max_speed),
+                           wooper:get_classname( State ) ] },
+        State ),
 
-	% Creates an initial deadline at the tick, to trigger the burners:
-	actor:return_state( SentState ).
+    % Creates an initial deadline at the tick, to trigger the burners:
+    actor:return_state( SentState ).
 
 
 
 -doc "The definition of the spontaneous behaviour of this spatialised actor.".
 -spec actSpontaneous( wooper:state() ) -> const_actor_oneway_return().
 actSpontaneous( State ) ->
-	% Nothing specific here, no futur planned spontaneous action.
-	actor:const_return().
+    % Nothing specific here, no futur planned spontaneous action.
+    actor:const_return().
 
 
 
@@ -186,33 +186,33 @@ Requests this actor to return back its current position.
 Notably called by the environment.
 """.
 -spec getPosition( wooper:state(), sending_actor_pid() ) ->
-											actor_oneway_return().
+                                            actor_oneway_return().
 getPosition( State, SenderPid ) ->
 
-	SentState = class_Actor:send_actor_message( SenderPid,
-		{ notifyPosition, ?getAttr(position) }, State ),
+    SentState = class_Actor:send_actor_message( SenderPid,
+        { notifyPosition, ?getAttr(position) }, State ),
 
-	actor:return_state( SentState ).
+    actor:return_state( SentState ).
 
 
 
 -doc "Returns the settings of the current environment.".
 -spec notifyEnvironmentSettings( wooper:state(), border_extent(),
-			border_extent(), border_description(), sending_actor_pid() ) ->
-										actor_oneway_return().
+            border_extent(), border_description(), sending_actor_pid() ) ->
+                                        actor_oneway_return().
 notifyEnvironmentSettings( State, Width, Height, BorderSettings, _EnvPid ) ->
 
-	actor:return_state( setAttributes( State, [
-		{ env_width, Width },
-		{ env_height, Height },
-		{ border_settings, BorderSettings } ] ) ).
+    actor:return_state( setAttributes( State, [
+        { env_width, Width },
+        { env_height, Height },
+        { border_settings, BorderSettings } ] ) ).
 
 
 
 -doc "Returns a textual description of this instance.".
 -spec toString( wooper:state() ) -> const_request_return( ustring() ).
 toString( State ) ->
-	 wooper:const_return_result( to_string( State ) ).
+     wooper:const_return_result( to_string( State ) ).
 
 
 
@@ -223,7 +223,7 @@ Returns a textual representation of this instance.
 """.
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
-	text_utils:format( "Spatialised actor ~w whose position is ~p (max speed: "
-		"~p meters per second), using environment ~w",
-		[ self(), ?getAttr(position), ?getAttr(max_speed),
-		  ?getAttr(environment_pid) ] ).
+    text_utils:format( "Spatialised actor ~w whose position is ~p (max speed: "
+        "~p meters per second), using environment ~w",
+        [ self(), ?getAttr(position), ?getAttr(max_speed),
+          ?getAttr(environment_pid) ] ).

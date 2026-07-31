@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -61,7 +61,7 @@ Example of content of an environment file:
 
 The server process corresponding to an environment is locally registered; as a
 consequence it can be designated either directly through its PID or through
-its conventional (atom) registration name (like 'my_foobar_env_server' in
+its conventional (atom) registration name (like `my_foobar_env_server` in
 `environment:get(my_first_color, my_foobar_env_server`). No specific global
 registration of servers is made.
 
@@ -71,7 +71,7 @@ to avoid any risk of race conditions (should multiple processes attempt
 concurrently to create the same environment server), and also to be able to
 request that the server is also linked to the calling process.
 
-See our 'preferences' module, corresponding to the user preferences, which is
+See our `preferences` module, corresponding to the user preferences, which is
 implemented as a specific case of environment.
 
 See also the (unrelated) resource module for the sharing of any kind of data
@@ -140,21 +140,21 @@ resource.
 
 
 -export([ start/1, start/2, start_link/1, start_link/2,
-		  start_with_defaults/2, start_link_with_defaults/2,
-		  start_cached/2, start_link_cached/2,
+          start_with_defaults/2, start_link_with_defaults/2,
+          start_cached/2, start_link_cached/2,
 
-		  get_server/1, get_server_info/1, wait_available/1,
+          get_server/1, get_server_info/1, wait_available/1,
 
-		  get/2, get/3,
-		  set/2, set/3, set/4, set_cond/2, set_cond/3, set_cond/4,
-		  update_from_etf/2, update_from_etf/3,
-		  remove/2, extract/2,
-		  cache/2, cache_return/2,
-		  uncache/1, uncache/0, sync/1,
-		  ensure_binary/2,
-		  store/1, store/2,
-		  to_string/1, to_bin_string/1, to_string/0,
-		  stop/1 ]).
+          get/2, get/3,
+          set/2, set/3, set/4, set_cond/2, set_cond/3, set_cond/4,
+          update_from_etf/2, update_from_etf/3,
+          remove/2, extract/2,
+          cache/2, cache_return/2,
+          uncache/1, uncache/0, sync/1,
+          ensure_binary/2,
+          store/1, store/2,
+          to_string/1, to_bin_string/1, to_string/0,
+          stop/1 ]).
 
 
 
@@ -204,7 +204,6 @@ Specifying the registration name is required for caching.
 -type cache_info() :: { env_reg_name(), env_cache_table() }.
 
 
-
 -doc "Key of an entry.".
 -type key() :: atom().
 
@@ -213,8 +212,8 @@ Specifying the registration name is required for caching.
 -doc """
 Value of an entry.
 
-Can be 'undefined' (no difference between a non-registered key and a key
-registered to 'undefined').
+Can be `undefined` (no difference between a non-registered key and a key
+registered to `undefined`).
 """.
 -type value() :: table:value().
 
@@ -225,29 +224,29 @@ registered to 'undefined').
 
 
 
--doc "Entries are lists of entry/0 terms, i.e. lists of pairs.".
+-doc "Entries are lists of `entry/0` terms, i.e. lists of pairs.".
 -type entries() :: table:entries().
 
 
 -doc """
 How entries in an ETF stream shall be checked.
 
-For the strict_tagged_* policies, see the tagged_list module.
+For the `strict_tagged_*` policies, see the `tagged_list` module.
 """.
 -type etf_check_policy() ::
 
-		'no_check' % Do not perform any check (in terms of structure, key
-				   % duplication, etc.)
+    'no_check' % Do not perform any check (in terms of structure, key
+               % duplication, etc.)
 
-	  | 'strict_tagged_trace'  % Assume that the elements of the ETF stream
-							   % form a strict tagged list, and emit a warning
-							   % trace if duplicated keys are found, while
-							   % retaining the last occurrence found for each
-							   % key
+  | 'strict_tagged_trace'  % Assume that the elements of the ETF stream
+                           % form a strict tagged list, and emit a warning trace
+                           % if duplicated keys are found, while retaining the
+                           % last occurrence found for each key
 
-	  | 'strict_tagged_throw'. % Assume that the elements of the ETF stream
-							   % form a strict tagged list, and throw an
-							   % exception if duplicated keys are found
+  | 'strict_tagged_throw'. % Assume that the elements of the ETF stream
+                           % form a strict tagged list, and throw an exception
+                           % if duplicated keys are found
+
 
 -doc """
 A specification of the environment keys (possibly with their initial values)
@@ -259,9 +258,9 @@ environment server).
 
 
 -export_type([ env_pid/0, env_reg_name/0, env_info/0, env_designator/0,
-			   env_data/0,
-			   key/0, value/0, entry/0, entries/0, etf_check_policy/0,
-			   cache_spec/0 ]).
+               env_data/0,
+               key/0, value/0, entry/0, entries/0, etf_check_policy/0,
+               cache_spec/0 ]).
 
 
 % For myriad_spawn*:
@@ -277,38 +276,20 @@ environment server).
 
 % A list_table, as it is expected to reference only very few environments:
 -doc """
-Corresponds to the value associated to the env_dictionary_key key in the process
-dictionary of a process using environment caching.
+Corresponds to the value associated to the `env_dictionary_key` key in the
+process dictionary of a process using environment caching.
 """.
 -type all_env_table() :: list_table( env_pid(), cache_info() ).
 
 
 
 -doc "A table storing the (local) cached entries for a given environment.".
--type env_cache_table() :: table( atom(), term() ).
-
+-type env_cache_table() :: table( key(), value() ).
 
 
 
 % Just for silencing:
 -export_type([ all_env_table/0 ]).
-
-
-
-% Type shorthands:
-
--type ustring() :: text_utils:ustring().
--type bin_string() :: text_utils:bin_string().
-
--type maybe_list( T ) :: list_utils:maybe_list( T ).
-
--type list_table( K, V ) :: list_table:list_table( K, V ).
-
--type file_path() :: file_utils:file_path().
--type bin_file_path() :: file_utils:bin_file_path().
--type any_file_path() :: file_utils:any_file_path().
-
--type registration_name() :: naming_utils:registration_name().
 
 
 
@@ -354,6 +335,23 @@ dictionary of a process using environment caching.
 
 
 
+% Type shorthands:
+
+-type ustring() :: text_utils:ustring().
+-type bin_string() :: text_utils:bin_string().
+
+-type maybe_list( T ) :: list_utils:maybe_list( T ).
+
+-type list_table( K, V ) :: list_table:list_table( K, V ).
+
+-type file_path() :: file_utils:file_path().
+-type bin_file_path() :: file_utils:bin_file_path().
+-type any_file_path() :: file_utils:any_file_path().
+
+-type registration_name() :: naming_utils:registration_name().
+
+
+
 -doc """
 Ensures explicitly that, if not running already, a specified environment server
 is started.
@@ -372,70 +370,70 @@ existing or not, blank or not.
 """.
 -spec start( env_reg_name() | file_path() ) -> env_pid().
 start( ServerRegName ) when is_atom( ServerRegName ) ->
-	case naming_utils:is_registered( ServerRegName, _LookupScope=local ) of
+    case naming_utils:is_registered( ServerRegName, _LookupScope=local ) of
 
-		not_registered ->
+        not_registered ->
 
-			% A goal is to acquire the "lock" (the local name) ASAP, deferring
-			% all possible other operations:
-			%
-			CallerPid = self(),
+            % A goal is to acquire the "lock" (the local name) ASAP, deferring
+            % all possible other operations:
+            %
+            CallerPid = self(),
 
-			% No link to be created here, so one must beware of any silent crash
-			% of this server:
-			%
-			?myriad_spawn( fun() ->
-							server_run( CallerPid, ServerRegName,
-										_MaybeDefaultEntries=[] )
-						   end ),
+            % No link to be created here, so one must beware of any silent crash
+            % of this server:
+            %
+            ?myriad_spawn( fun() ->
+                            server_run( CallerPid, ServerRegName,
+                                        _MaybeDefaultEntries=[] )
+                           end ),
 
-			receive
+            receive
 
-				{ environment_server_pid, Pid } ->
-					Pid
+                { environment_server_pid, Pid } ->
+                    Pid
 
-			end;
+            end;
 
-		Pid ->
-			Pid
+        Pid ->
+            Pid
 
-	end;
+    end;
 
 
 start( FilePath ) when is_list( FilePath ) ->
 
-	RegistrationName = get_env_reg_name_from( FilePath ),
+    RegistrationName = get_env_reg_name_from( FilePath ),
 
-	case naming_utils:is_registered( RegistrationName, _LookupScope=local ) of
+    case naming_utils:is_registered( RegistrationName, _LookupScope=local ) of
 
-		not_registered ->
+        not_registered ->
 
-			% A goal is to acquire the "lock" (the local name) ASAP, deferring
-			% all possible other operations:
-			%
-			CallerPid = self(),
+            % A goal is to acquire the "lock" (the local name) ASAP, deferring
+            % all possible other operations:
+            %
+            CallerPid = self(),
 
-			BinFilePath = text_utils:string_to_binary( FilePath ),
+            BinFilePath = text_utils:string_to_binary( FilePath ),
 
-			% No link to be created here, so one must beware of any silent crash
-			% of this server:
-			%
-			?myriad_spawn( fun() ->
-							server_run( CallerPid, RegistrationName,
-										BinFilePath, _MaybeDefaultEntries=[] )
-						   end ),
+            % No link to be created here, so one must beware of any silent crash
+            % of this server:
+            %
+            ?myriad_spawn( fun() ->
+                            server_run( CallerPid, RegistrationName,
+                                        BinFilePath, _MaybeDefaultEntries=[] )
+                           end ),
 
-			receive
+            receive
 
-				{ environment_server_pid, Pid } ->
-					Pid
+                { environment_server_pid, Pid } ->
+                    Pid
 
-			end;
+            end;
 
-		Pid ->
-			Pid
+        Pid ->
+            Pid
 
-	end.
+    end.
 
 
 
@@ -458,72 +456,72 @@ Does not link the started environment server to the calling process.
 Returns the PID of the corresponding, just created, environment server.
 """.
 -spec start_with_defaults( env_reg_name() | file_path(), entries() ) ->
-													env_pid().
+                                                    env_pid().
 start_with_defaults( ServerRegName, DefaultEntries )
-										when is_atom( ServerRegName ) ->
-	case naming_utils:is_registered( ServerRegName, _LookupScope=local ) of
+                                        when is_atom( ServerRegName ) ->
+    case naming_utils:is_registered( ServerRegName, _LookupScope=local ) of
 
-		not_registered ->
+        not_registered ->
 
-			% A goal is to acquire the "lock" (the local name) ASAP, deferring
-			% all possible other operations:
-			%
-			CallerPid = self(),
+            % A goal is to acquire the "lock" (the local name) ASAP, deferring
+            % all possible other operations:
+            %
+            CallerPid = self(),
 
-			% No link to be created here, so one must beware of any silent crash
-			% of this server:
-			%
-			?myriad_spawn( fun() ->
-							server_run( CallerPid, ServerRegName,
-										DefaultEntries )
-						   end ),
+            % No link to be created here, so one must beware of any silent crash
+            % of this server:
+            %
+            ?myriad_spawn( fun() ->
+                            server_run( CallerPid, ServerRegName,
+                                        DefaultEntries )
+                           end ),
 
-			receive
+            receive
 
-				{ environment_server_pid, Pid } ->
-					Pid
+                { environment_server_pid, Pid } ->
+                    Pid
 
-			end;
+            end;
 
-		Pid ->
-			throw( { already_existing_environment, ServerRegName, Pid } )
+        Pid ->
+            throw( { already_existing_environment, ServerRegName, Pid } )
 
-	end;
+    end;
 
 start_with_defaults( FilePath, DefaultEntries ) when is_list( FilePath ) ->
 
-	RegistrationName = get_env_reg_name_from( FilePath ),
+    RegistrationName = get_env_reg_name_from( FilePath ),
 
-	case naming_utils:is_registered( RegistrationName, _LookupScope=local ) of
+    case naming_utils:is_registered( RegistrationName, _LookupScope=local ) of
 
-		not_registered ->
+        not_registered ->
 
-			% A goal is to acquire the "lock" (the local name) ASAP, deferring
-			% all possible other operations:
-			%
-			CallerPid = self(),
+            % A goal is to acquire the "lock" (the local name) ASAP, deferring
+            % all possible other operations:
+            %
+            CallerPid = self(),
 
-			BinFilePath = text_utils:string_to_binary( FilePath ),
+            BinFilePath = text_utils:string_to_binary( FilePath ),
 
-			% No link to be created here, so one must beware of any silent crash
-			% of this server:
-			%
-			?myriad_spawn( fun() ->
-							server_run( CallerPid, RegistrationName,
-										BinFilePath, DefaultEntries )
-						   end ),
+            % No link to be created here, so one must beware of any silent crash
+            % of this server:
+            %
+            ?myriad_spawn( fun() ->
+                            server_run( CallerPid, RegistrationName,
+                                        BinFilePath, DefaultEntries )
+                           end ),
 
-			receive
+            receive
 
-				{ environment_server_pid, Pid } ->
-					Pid
+                { environment_server_pid, Pid } ->
+                    Pid
 
-			end;
+            end;
 
-		Pid ->
-			throw( { already_existing_environment, FilePath, Pid } )
+        Pid ->
+            throw( { already_existing_environment, FilePath, Pid } )
 
-	end.
+    end.
 
 
 
@@ -543,63 +541,63 @@ existing or not, blank or not.
 """.
 -spec start_link( env_reg_name() | file_path() ) -> env_pid().
 start_link( ServerRegName ) when is_atom( ServerRegName ) ->
-	case naming_utils:is_registered( ServerRegName, _LookupScope=local ) of
+    case naming_utils:is_registered( ServerRegName, _LookupScope=local ) of
 
-		not_registered ->
+        not_registered ->
 
-			% A goal is to acquire the "lock" (the local name) ASAP, deferring
-			% all possible other operations:
-			%
-			CallerPid = self(),
+            % A goal is to acquire the "lock" (the local name) ASAP, deferring
+            % all possible other operations:
+            %
+            CallerPid = self(),
 
-			?myriad_spawn_link( fun() ->
-									server_run( CallerPid, ServerRegName,
-												_MaybeDefaultEntries=[] )
-								end ),
+            ?myriad_spawn_link( fun() ->
+                                    server_run( CallerPid, ServerRegName,
+                                                _MaybeDefaultEntries=[] )
+                                end ),
 
-			receive
+            receive
 
-				{ environment_server_pid, Pid } ->
-					Pid
+                { environment_server_pid, Pid } ->
+                    Pid
 
-			end;
+            end;
 
-		Pid ->
-			Pid
+        Pid ->
+            Pid
 
-	end;
+    end;
 
 start_link( FilePath ) when is_list( FilePath ) ->
 
-	RegistrationName = get_env_reg_name_from( FilePath ),
+    RegistrationName = get_env_reg_name_from( FilePath ),
 
-	case naming_utils:is_registered( RegistrationName, _LookupScope=local ) of
+    case naming_utils:is_registered( RegistrationName, _LookupScope=local ) of
 
-		not_registered ->
+        not_registered ->
 
-			% A goal is to acquire the "lock" (the local name) ASAP, deferring
-			% all possible other operations:
-			%
-			CallerPid = self(),
+            % A goal is to acquire the "lock" (the local name) ASAP, deferring
+            % all possible other operations:
+            %
+            CallerPid = self(),
 
-			BinFilePath = text_utils:string_to_binary( FilePath ),
+            BinFilePath = text_utils:string_to_binary( FilePath ),
 
-			?myriad_spawn_link( fun() ->
-									server_run( CallerPid, RegistrationName,
-										BinFilePath, _MaybeDefaultEntries=[] )
-								end ),
+            ?myriad_spawn_link( fun() ->
+                                    server_run( CallerPid, RegistrationName,
+                                        BinFilePath, _MaybeDefaultEntries=[] )
+                                end ),
 
-			receive
+            receive
 
-				{ environment_server_pid, Pid } ->
-					Pid
+                { environment_server_pid, Pid } ->
+                    Pid
 
-			end;
+            end;
 
-		Pid ->
-			Pid
+        Pid ->
+            Pid
 
-	end.
+    end.
 
 
 
@@ -620,67 +618,67 @@ specified defaults could not then be properly taken into account.
 Returns the PID of the corresponding, just created, environment server.
 """.
 -spec start_link_with_defaults( env_reg_name() | file_path(), entries() ) ->
-													env_pid().
+                                                    env_pid().
 start_link_with_defaults( ServerRegName, DefaultEntries )
-								when is_atom( ServerRegName ) ->
-	case naming_utils:is_registered( ServerRegName, _LookupScope=local ) of
+                                when is_atom( ServerRegName ) ->
+    case naming_utils:is_registered( ServerRegName, _LookupScope=local ) of
 
-		not_registered ->
+        not_registered ->
 
-			% A goal is to acquire the "lock" (the local name) ASAP, deferring
-			% all possible other operations:
-			%
-			CallerPid = self(),
+            % A goal is to acquire the "lock" (the local name) ASAP, deferring
+            % all possible other operations:
+            %
+            CallerPid = self(),
 
-			?myriad_spawn_link( fun() ->
-									server_run( CallerPid, ServerRegName,
-												DefaultEntries )
-								end ),
+            ?myriad_spawn_link( fun() ->
+                                    server_run( CallerPid, ServerRegName,
+                                                DefaultEntries )
+                                end ),
 
-			receive
+            receive
 
-				{ environment_server_pid, Pid } ->
-					Pid
+                { environment_server_pid, Pid } ->
+                    Pid
 
-			end;
+            end;
 
-		Pid ->
-			throw( { already_existing_environment, ServerRegName, Pid } )
+        Pid ->
+            throw( { already_existing_environment, ServerRegName, Pid } )
 
-	end;
+    end;
 
 start_link_with_defaults( FilePath, DefaultEntries )
-										when is_list( FilePath ) ->
+                                        when is_list( FilePath ) ->
 
-	RegistrationName = get_env_reg_name_from( FilePath ),
+    RegistrationName = get_env_reg_name_from( FilePath ),
 
-	case naming_utils:is_registered( RegistrationName, _LookupScope=local ) of
+    case naming_utils:is_registered( RegistrationName, _LookupScope=local ) of
 
-		not_registered ->
+        not_registered ->
 
-			% A goal is to acquire the "lock" (the local name) ASAP, deferring
-			% all possible other operations:
-			%
-			CallerPid = self(),
+            % A goal is to acquire the "lock" (the local name) ASAP, deferring
+            % all possible other operations:
+            %
+            CallerPid = self(),
 
-			BinFilePath = text_utils:string_to_binary( FilePath ),
+            BinFilePath = text_utils:string_to_binary( FilePath ),
 
-			?myriad_spawn_link( fun() ->
-									server_run( CallerPid, RegistrationName,
-												BinFilePath, DefaultEntries )
-								end ),
+            ?myriad_spawn_link( fun() ->
+                                    server_run( CallerPid, RegistrationName,
+                                                BinFilePath, DefaultEntries )
+                                end ),
 
-			receive
+            receive
 
-				{ environment_server_pid, Pid } ->
-					Pid
+                { environment_server_pid, Pid } ->
+                    Pid
 
-			end;
+            end;
 
-		Pid ->
-			throw( { already_existing_environment, FilePath, Pid } )
+        Pid ->
+            throw( { already_existing_environment, FilePath, Pid } )
 
-	end.
+    end.
 
 
 
@@ -699,36 +697,36 @@ existing or not.
 -spec start( env_reg_name(), any_file_path() ) -> env_pid().
 start( ServerRegName, AnyFilePath ) when is_atom( ServerRegName ) ->
 
-	case naming_utils:is_registered( ServerRegName, _LookupScope=local ) of
+    case naming_utils:is_registered( ServerRegName, _LookupScope=local ) of
 
-		not_registered ->
+        not_registered ->
 
-			% A goal is to acquire the "lock" (the local name) ASAP, deferring
-			% all possible other operations:
-			%
-			CallerPid = self(),
+            % A goal is to acquire the "lock" (the local name) ASAP, deferring
+            % all possible other operations:
+            %
+            CallerPid = self(),
 
-			BinFilePath = text_utils:ensure_binary( AnyFilePath ),
+            BinFilePath = text_utils:ensure_binary( AnyFilePath ),
 
-			% No link to be created here, so we must beware of any silent crash
-			% of this server:
-			%
-			?myriad_spawn( fun() ->
-							server_run( CallerPid, ServerRegName, BinFilePath,
-										_MaybeDefaultEntries=[] )
-						   end ),
+            % No link to be created here, so we must beware of any silent crash
+            % of this server:
+            %
+            ?myriad_spawn( fun() ->
+                            server_run( CallerPid, ServerRegName, BinFilePath,
+                                        _MaybeDefaultEntries=[] )
+                           end ),
 
-			receive
+            receive
 
-				{ environment_server_pid, Pid } ->
-					Pid
+                { environment_server_pid, Pid } ->
+                    Pid
 
-			end;
+            end;
 
-		Pid ->
-			Pid
+        Pid ->
+            Pid
 
-	end.
+    end.
 
 
 
@@ -747,33 +745,33 @@ existing or not.
 -spec start_link( env_reg_name(), any_file_path() ) -> env_pid().
 start_link( ServerRegName, AnyFilePath ) when is_atom( ServerRegName ) ->
 
-	case naming_utils:is_registered( ServerRegName, _LookupScope=local ) of
+    case naming_utils:is_registered( ServerRegName, _LookupScope=local ) of
 
-		not_registered ->
+        not_registered ->
 
-			% A goal is to acquire the "lock" (the local name) ASAP, deferring
-			% all possible other operations:
-			%
-			CallerPid = self(),
+            % A goal is to acquire the "lock" (the local name) ASAP, deferring
+            % all possible other operations:
+            %
+            CallerPid = self(),
 
-			BinFilePath = text_utils:ensure_binary( AnyFilePath ),
+            BinFilePath = text_utils:ensure_binary( AnyFilePath ),
 
-			?myriad_spawn_link( fun() ->
-									server_run( CallerPid, ServerRegName,
-										BinFilePath, _MaybeDefaultEntries=[] )
-								end ),
+            ?myriad_spawn_link( fun() ->
+                                    server_run( CallerPid, ServerRegName,
+                                        BinFilePath, _MaybeDefaultEntries=[] )
+                                end ),
 
-			receive
+            receive
 
-				{ environment_server_pid, Pid } ->
-					Pid
+                { environment_server_pid, Pid } ->
+                    Pid
 
-			end;
+            end;
 
-		Pid ->
-			Pid
+        Pid ->
+            Pid
 
-	end.
+    end.
 
 
 
@@ -798,9 +796,9 @@ existing or not, and caching specified elements.
 """.
 -spec start_cached( env_reg_name(), cache_spec() ) -> env_pid().
 start_cached( ServerRegName, CacheSpec ) ->
-	EnvPid = start( ServerRegName ),
-	cache( CacheSpec, ServerRegName ),
-	EnvPid.
+    EnvPid = start( ServerRegName ),
+    cache( CacheSpec, ServerRegName ),
+    EnvPid.
 
 
 
@@ -826,9 +824,9 @@ existing or not, and caching specified elements.
 
 -spec start_link_cached( env_reg_name(), cache_spec() ) -> env_pid().
 start_link_cached( ServerRegName, CacheSpec ) ->
-	EnvPid = start_link( ServerRegName ),
-	cache( CacheSpec, ServerRegName ),
-	EnvPid.
+    EnvPid = start_link( ServerRegName ),
+    cache( CacheSpec, ServerRegName ),
+    EnvPid.
 
 
 
@@ -839,31 +837,31 @@ based on either its name or content filename.
 -spec get_server( env_reg_name() | file_path() ) -> env_pid().
 get_server( ServerRegName ) when is_atom( ServerRegName ) ->
 
-	case naming_utils:is_registered( ServerRegName, _LookupScope=local ) of
+    case naming_utils:is_registered( ServerRegName, _LookupScope=local ) of
 
-		not_registered ->
-			throw( { environment_server_not_registered, ServerRegName } );
+        not_registered ->
+            throw( { environment_server_not_registered, ServerRegName } );
 
-		SrvPid ->
-			SrvPid
+        SrvPid ->
+            SrvPid
 
-	end;
+    end;
 
 get_server( FilePath ) when is_list( FilePath ) ->
 
-	% Not reusing the previous clause for clearer exception:
-	ServerRegName = get_env_reg_name_from( FilePath ),
+    % Not reusing the previous clause for clearer exception:
+    ServerRegName = get_env_reg_name_from( FilePath ),
 
-	case naming_utils:is_registered( ServerRegName, _LookupScope=local ) of
+    case naming_utils:is_registered( ServerRegName, _LookupScope=local ) of
 
-		not_registered ->
-			throw( { environment_server_not_registered, ServerRegName,
-					 FilePath } );
+        not_registered ->
+            throw( { environment_server_not_registered, ServerRegName,
+                     FilePath } );
 
-		SrvPid ->
-			SrvPid
+        SrvPid ->
+            SrvPid
 
-	end.
+    end.
 
 
 
@@ -874,31 +872,31 @@ server, specified based on either its name or content filename.
 -spec get_server_info( env_reg_name() | file_path() ) -> env_info().
 get_server_info( ServerRegName ) when is_atom( ServerRegName ) ->
 
-	case naming_utils:is_registered( ServerRegName, local ) of
+    case naming_utils:is_registered( ServerRegName, local ) of
 
-		not_registered ->
-			throw( { environment_server_not_registered, ServerRegName } );
+        not_registered ->
+            throw( { environment_server_not_registered, ServerRegName } );
 
-		SrvPid ->
-			{ ServerRegName, SrvPid }
+        SrvPid ->
+            { ServerRegName, SrvPid }
 
-	end;
+    end;
 
 get_server_info( FilePath ) when is_list( FilePath ) ->
 
-	% Not reusing the previous clause for clearer exception:
-	ServerRegName = get_env_reg_name_from( FilePath ),
+    % Not reusing the previous clause for clearer exception:
+    ServerRegName = get_env_reg_name_from( FilePath ),
 
-	case naming_utils:is_registered( ServerRegName, _LookupScope=local ) of
+    case naming_utils:is_registered( ServerRegName, _LookupScope=local ) of
 
-		not_registered ->
-			throw( { environment_server_not_registered, ServerRegName,
-					 FilePath } );
+        not_registered ->
+            throw( { environment_server_not_registered, ServerRegName,
+                     FilePath } );
 
-		SrvPid ->
-			{ ServerRegName, SrvPid }
+        SrvPid ->
+            { ServerRegName, SrvPid }
 
-	end.
+    end.
 
 
 
@@ -912,10 +910,10 @@ before being able to look-up values from it.
 -spec wait_available( env_reg_name() ) -> env_pid().
 wait_available( ServerRegName ) ->
 
-	trace_utils:debug_fmt( "Waiting until environment server '~ts' becomes "
-						   "available.", [ ServerRegName ] ),
+    trace_utils:debug_fmt( "Waiting until environment server '~ts' becomes "
+                           "available.", [ ServerRegName ] ),
 
-	naming_utils:wait_for_registration_of( ServerRegName, _RegScope=local ).
+    naming_utils:wait_for_registration_of( ServerRegName, _RegScope=local ).
 
 
 
@@ -947,68 +945,68 @@ Examples:
 ```
 """.
 -spec get( maybe_list( key() ), env_data() | file_path() ) ->
-										maybe_list( option( value() ) ).
+                                        maybe_list( option( value() ) ).
 get( Key, AnyEnvData ) when is_atom( Key ) ->
-	hd( get( [ Key ], AnyEnvData ) );
+    hd( get( [ Key ], AnyEnvData ) );
 
 get( Keys, _EnvInfo={ _EnvRegName, EnvPid } ) ->
-	get( Keys, EnvPid );
+    get( Keys, EnvPid );
 
 % A designator is either a PID or a registration atom:
 get( Keys, EnvRegName ) when is_atom( EnvRegName ) ->
-	EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
-	get( Keys, EnvPid );
+    EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
+    get( Keys, EnvPid );
 
 get( KeyMaybes, FilePath ) when is_list( FilePath ) ->
-	EnvSrvPid = start_link( FilePath ),
-	get( KeyMaybes, EnvSrvPid );
+    EnvSrvPid = start_link( FilePath ),
+    get( KeyMaybes, EnvSrvPid );
 
 % Hence EnvPid expected to be a PID here:
 get( Keys, EnvPid ) when is_list( Keys ) ->
-	case process_dictionary:get( ?env_dictionary_key ) of
+    case process_dictionary:get( ?env_dictionary_key ) of
 
-		undefined ->
-			% No caching wanted or applied, so necessarily a message-based
-			% request to the server:
-			%
-			get_from_environment( Keys, EnvPid );
+        undefined ->
+            % No caching wanted or applied, so necessarily a message-based
+            % request to the server:
+            %
+            get_from_environment( Keys, EnvPid );
 
-		AllEnvTable ->
-			case list_table:lookup_entry( EnvPid, AllEnvTable ) of
+        AllEnvTable ->
+            case list_table:lookup_entry( EnvPid, AllEnvTable ) of
 
-				% Caching used, but not for that environment; server needed:
-				key_not_found ->
-					get_from_environment( Keys, EnvPid );
+                % Caching used, but not for that environment; server needed:
+                key_not_found ->
+                    get_from_environment( Keys, EnvPid );
 
-				% Caching activated, including for this environment, at least
-				% for some keys:
-				%
-				{ value, { _EnvRegName, EnvCacheTable } } ->
-					% Having to select the remote entries needed (if any):
-					DictCachedKeys = table:keys( EnvCacheTable ),
-					case list_utils:difference( Keys, DictCachedKeys ) of
+                % Caching activated, including for this environment, at least
+                % for some keys:
+                %
+                { value, { _EnvRegName, EnvCacheTable } } ->
+                    % Having to select the remote entries needed (if any):
+                    DictCachedKeys = table:keys( EnvCacheTable ),
+                    case list_utils:difference( Keys, DictCachedKeys ) of
 
-						% All entries in cache; returning (in order) their
-						% value directly:
-						%
-						[] ->
-							table:get_values( Keys, EnvCacheTable );
+                        % All entries in cache; returning (in order) their
+                        % value directly:
+                        %
+                        [] ->
+                            table:get_values( Keys, EnvCacheTable );
 
-						% At least some will have to be requested from the
-						% server (and will still not be cached):
-						%
-						LackingKeys ->
-							LackingValues =
-								get_from_environment( LackingKeys, EnvPid ),
+                        % At least some will have to be requested from the
+                        % server (and will still not be cached):
+                        %
+                        LackingKeys ->
+                            LackingValues =
+                                get_from_environment( LackingKeys, EnvPid ),
 
-							aggregate_values( Keys, LackingKeys, LackingValues,
-											  EnvCacheTable, _AccValues=[] )
+                            aggregate_values( Keys, LackingKeys, LackingValues,
+                                              EnvCacheTable, _AccValues=[] )
 
-					end
+                    end
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -1016,23 +1014,23 @@ get( Keys, EnvPid ) when is_list( Keys ) ->
 %
 % (helper)
 -spec aggregate_values( [ key() ], [ key() ], [ value() ], table(),
-						[ value() ] ) -> [ value() ].
+                        [ value() ] ) -> [ value() ].
 % Checks that Immediate* are also empty out of safety (not necessary):
 aggregate_values( _TargetKeys=[], _ImmediateKeys=[], _ImmediateValues=[],
-				  _CacheTable, AccValues ) ->
-	lists:reverse( AccValues );
+                  _CacheTable, AccValues ) ->
+    lists:reverse( AccValues );
 
 % Current key is an immediate one:
 aggregate_values( _TargetKeys=[ K | Tt ], _ImmediateKeys=[ K | Tl ],
-				  _ImmediateValues=[ V | Tv ], CacheTable, Acc ) ->
-	aggregate_values( Tt, Tl, Tv, CacheTable, _NewAcc=[ V | Acc ] );
+                  _ImmediateValues=[ V | Tv ], CacheTable, Acc ) ->
+    aggregate_values( Tt, Tl, Tv, CacheTable, _NewAcc=[ V | Acc ] );
 
 % Current key is thus in cache:
 aggregate_values( _TargetKeys=[ K | Tt ], ImmediateKeys, ImmediateValues,
-				  CacheTable, Acc ) ->
-	V = table:get_value( K, CacheTable ),
-	aggregate_values( Tt, ImmediateKeys, ImmediateValues, CacheTable,
-					  _NewAcc=[ V | Acc ] ).
+                  CacheTable, Acc ) ->
+    V = table:get_value( K, CacheTable ),
+    aggregate_values( Tt, ImmediateKeys, ImmediateValues, CacheTable,
+                      _NewAcc=[ V | Acc ] ).
 
 
 
@@ -1050,24 +1048,24 @@ Examples:
 "Hello!" = environment:get(hello, my_env_server_name, "/var/foobar.etf")
 
 ["Hello!", 42, undefined] =
-	 environment:get([hello, my_number, some_maybe], my_env_server_name,
-					  "/var/foobar.etf")
+     environment:get([hello, my_number, some_maybe], my_env_server_name,
+                      "/var/foobar.etf")
 ```
 """.
 -spec get( maybe_list( key() ), env_reg_name(), file_path() ) ->
-										maybe_list( option( value() ) ).
+                                        maybe_list( option( value() ) ).
 get( KeyMaybes, ServerRegName, FilePath ) ->
-	EnvSrvPid = case naming_utils:is_registered( ServerRegName,
-												 _LookupScope=local ) of
+    EnvSrvPid = case naming_utils:is_registered( ServerRegName,
+                                                 _LookupScope=local ) of
 
-		not_registered ->
-			start_link( FilePath );
+        not_registered ->
+            start_link( FilePath );
 
-		ServerPid ->
-			ServerPid
+        ServerPid ->
+            ServerPid
 
-	end,
-	get( KeyMaybes, EnvSrvPid ).
+    end,
+    get( KeyMaybes, EnvSrvPid ).
 
 
 
@@ -1078,18 +1076,18 @@ taking into account any cache).
 (helper)
 """.
 -spec get_from_environment( maybe_list( maybe_list( key() ) ),
-					env_designator() ) -> maybe_list( option( value() ) ).
+                    env_designator() ) -> maybe_list( option( value() ) ).
 get_from_environment( _KeyMaybes=[], _EnvDesignator ) ->
-	[];
+    [];
 
 get_from_environment( KeyMaybes, EnvDesignator ) ->
-	EnvDesignator ! { get_environment, KeyMaybes, self() },
-	receive
+    EnvDesignator ! { get_environment, KeyMaybes, self() },
+    receive
 
-		{ notify_get_environment, ValueMaybes } ->
-			ValueMaybes
+        { notify_get_environment, ValueMaybes } ->
+            ValueMaybes
 
-	end.
+    end.
 
 
 
@@ -1105,53 +1103,53 @@ environment server.
 """.
 -spec set( [ entry() ], env_data() | file_path() ) -> void().
 set( Entries, _EnvInfo={ _EnvRegName, EnvPid } ) ->
-	set( Entries, EnvPid );
+    set( Entries, EnvPid );
 
 set( Entries, EnvRegName ) when is_atom( EnvRegName ) ->
-	EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
-	set( Entries, EnvPid );
+    EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
+    set( Entries, EnvPid );
 
 set( Entries, FilePath ) when is_list( FilePath ) ->
-	EnvPid = start_link( FilePath ),
-	set( Entries, EnvPid );
+    EnvPid = start_link( FilePath ),
+    set( Entries, EnvPid );
 
 % Implicitly: when is_pid( EnvPid ).
 set( Entries, EnvPid ) when is_list( Entries ) ->
-	% Unconditional:
-	EnvPid ! { set_environment, Entries },
+    % Unconditional:
+    EnvPid ! { set_environment, Entries },
 
-	% Now update any locally cached keys:
-	EnvDictKey = ?env_dictionary_key,
-	case process_dictionary:get( EnvDictKey ) of
+    % Now update any locally cached keys:
+    EnvDictKey = ?env_dictionary_key,
+    case process_dictionary:get( EnvDictKey ) of
 
-		undefined ->
-			% No caching wanted or applied, no cache to update:
-			ok;
+        undefined ->
+            % No caching wanted or applied, no cache to update:
+            ok;
 
-		AllEnvTable ->
-			case list_table:lookup_entry( EnvPid, AllEnvTable ) of
+        AllEnvTable ->
+            case list_table:lookup_entry( EnvPid, AllEnvTable ) of
 
-				% Caching used, but not for that environment; thus we are done:
-				key_not_found ->
-					ok;
+                % Caching used, but not for that environment; thus we are done:
+                key_not_found ->
+                    ok;
 
-				% Caching activated, including for this environment, at least
-				% for some keys:
-				%
-				{ value, { EnvRegName, EnvCacheTable } } ->
+                % Caching activated, including for this environment, at least
+                % for some keys:
+                %
+                { value, { EnvRegName, EnvCacheTable } } ->
 
-					% We update only the cached keys:
-					NewEnvCacheTable =
-						table:update_existing_entries( Entries, EnvCacheTable ),
+                    % We update only the cached keys:
+                    NewEnvCacheTable =
+                        table:update_existing_entries( Entries, EnvCacheTable ),
 
-					NewAllEnvTable = list_table:add_entry( EnvPid,
-						{ EnvRegName, NewEnvCacheTable }, AllEnvTable ),
+                    NewAllEnvTable = list_table:add_entry( EnvPid,
+                        { EnvRegName, NewEnvCacheTable }, AllEnvTable ),
 
-					process_dictionary:put( EnvDictKey, NewAllEnvTable )
+                    process_dictionary:put( EnvDictKey, NewAllEnvTable )
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -1167,7 +1165,7 @@ environment server.
 """.
 -spec set( key(), value(), env_data() | file_path() ) -> void().
 set( Key, Value, AnyEnvElem ) ->
-	set( _Entries=[ { Key, Value } ], AnyEnvElem ).
+    set( _Entries=[ { Key, Value } ], AnyEnvElem ).
 
 
 
@@ -1182,17 +1180,17 @@ environment server.
 """.
 -spec set( key(), value(), env_reg_name(), file_path() ) -> void().
 set( Key, Value, ServerRegName, FilePath ) ->
-	EnvPid = case naming_utils:is_registered( ServerRegName,
-											  _LookupScope=local ) of
+    EnvPid = case naming_utils:is_registered( ServerRegName,
+                                              _LookupScope=local ) of
 
-		not_registered ->
-			start_link( FilePath );
+        not_registered ->
+            start_link( FilePath );
 
-		ServerPid ->
-			ServerPid
+        ServerPid ->
+            ServerPid
 
-	end,
-	set( _Entries=[ { Key, Value } ], EnvPid ).
+    end,
+    set( _Entries=[ { Key, Value } ], EnvPid ).
 
 
 
@@ -1210,64 +1208,64 @@ environment server.
 """.
 -spec set_cond( [ entry() ], env_data() | file_path() ) -> void().
 set_cond( Entries, _EnvInfo={ _EnvRegName, EnvPid } ) ->
-	set_cond( Entries, EnvPid );
+    set_cond( Entries, EnvPid );
 
 set_cond( Entries, EnvRegName ) when is_atom( EnvRegName ) ->
-	EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
-	set_cond( Entries, EnvPid );
+    EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
+    set_cond( Entries, EnvPid );
 
 set_cond( Entries, FilePath ) when is_list( FilePath ) ->
-	EnvPid = start_link( FilePath ),
-	set_cond( Entries, EnvPid );
+    EnvPid = start_link( FilePath ),
+    set_cond( Entries, EnvPid );
 
 
 % Implicitly: when is_pid( EnvPid ).
 set_cond( Entries, EnvPid ) when is_list( Entries ) ->
 
-	% Check any locally cached keys:
-	EnvDictKey = ?env_dictionary_key,
-	case process_dictionary:get( EnvDictKey ) of
+    % Check any locally cached keys:
+    EnvDictKey = ?env_dictionary_key,
+    case process_dictionary:get( EnvDictKey ) of
 
-		undefined ->
-			% No caching wanted or applied, no cache to update, full sending
-			% needed:
-			%
-			EnvPid ! { set_environment, Entries };
+        undefined ->
+            % No caching wanted or applied, no cache to update, full sending
+            % needed:
+            %
+            EnvPid ! { set_environment, Entries };
 
-		AllEnvTable ->
-			case list_table:lookup_entry( EnvPid, AllEnvTable ) of
+        AllEnvTable ->
+            case list_table:lookup_entry( EnvPid, AllEnvTable ) of
 
-				% Caching used, but not for that environment; thus we are done:
-				key_not_found ->
-					EnvPid ! { set_environment, Entries };
+                % Caching used, but not for that environment; thus we are done:
+                key_not_found ->
+                    EnvPid ! { set_environment, Entries };
 
-				% Caching activated, including for this environment, at least
-				% for some keys:
-				%
-				{ value, { EnvRegName, EnvCacheTable } } ->
+                % Caching activated, including for this environment, at least
+                % for some keys:
+                %
+                { value, { EnvRegName, EnvCacheTable } } ->
 
-					NewEnvCacheTable = case get_needed_sendings( Entries,
-							EnvCacheTable, _AccEntries=[] ) of
+                    NewEnvCacheTable = case get_needed_sendings( Entries,
+                            EnvCacheTable, _AccEntries=[] ) of
 
-						% Spared sending:
-						{ _ToSendEntries=[], UpdatedEnvCacheTable } ->
-							UpdatedEnvCacheTable;
+                        % Spared sending:
+                        { _ToSendEntries=[], UpdatedEnvCacheTable } ->
+                            UpdatedEnvCacheTable;
 
-						% Minimal sending:
-						{ ToSendEntries, UpdatedEnvCacheTable } ->
-							EnvPid ! { set_environment, ToSendEntries },
-							UpdatedEnvCacheTable
+                        % Minimal sending:
+                        { ToSendEntries, UpdatedEnvCacheTable } ->
+                            EnvPid ! { set_environment, ToSendEntries },
+                            UpdatedEnvCacheTable
 
-					end,
+                    end,
 
-					NewAllEnvTable = list_table:add_entry( EnvPid,
-						{ EnvRegName, NewEnvCacheTable }, AllEnvTable ),
+                    NewAllEnvTable = list_table:add_entry( EnvPid,
+                        { EnvRegName, NewEnvCacheTable }, AllEnvTable ),
 
-					process_dictionary:put( EnvDictKey, NewAllEnvTable )
+                    process_dictionary:put( EnvDictKey, NewAllEnvTable )
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -1281,8 +1279,8 @@ then will silently supersede any pre-existing ("default") ones.
 """.
 -spec update_from_etf( any_file_path(), env_data() ) -> void().
 update_from_etf( AnyETFFilePath, AnyEnvData ) ->
-	update_from_etf( AnyETFFilePath, AnyEnvData,
-					 _ETFCheckPolicy=strict_tagged_trace ).
+    update_from_etf( AnyETFFilePath, AnyEnvData,
+                     _ETFCheckPolicy=strict_tagged_trace ).
 
 
 -doc """
@@ -1292,71 +1290,71 @@ file, expected to contain the elements of a strict tagged list (see the
 superseding any pre-existing ("default") ones.
 """.
 -spec update_from_etf( any_file_path(), env_data(), etf_check_policy() ) ->
-											void().
+                                            void().
 update_from_etf( AnyETFFilePath, AnyEnvData, _ETFCheckPolicy=no_check ) ->
 
-	LoadedEntries = file_utils:read_etf_file( AnyETFFilePath ),
+    LoadedEntries = file_utils:read_etf_file( AnyETFFilePath ),
 
-	% Just load entries as bulk, no checking, last duplicated entry applies:
-	set( LoadedEntries, AnyEnvData );
+    % Just load entries as bulk, no checking, last duplicated entry applies:
+    set( LoadedEntries, AnyEnvData );
 
 
 % Here we have to detect invalid structure and clashing keys:
 update_from_etf( AnyETFFilePath, AnyEnvData, ETFCheckPolicy ) when
-		ETFCheckPolicy =:= strict_tagged_trace orelse
-		ETFCheckPolicy =:= strict_tagged_throw ->
+        ETFCheckPolicy =:= strict_tagged_trace orelse
+        ETFCheckPolicy =:= strict_tagged_throw ->
 
-	LoadedEntries = file_utils:read_etf_file( AnyETFFilePath ),
+    LoadedEntries = file_utils:read_etf_file( AnyETFFilePath ),
 
-	case tagged_list:is_strict_tagged_list( LoadedEntries ) of
+    case tagged_list:is_strict_tagged_list( LoadedEntries ) of
 
-		true ->
-			ok;
+        true ->
+            ok;
 
-		{ ReasonWhyNot, FirstFaultyEntry } ->
+        { ReasonWhyNot, FirstFaultyEntry } ->
 
-			FileAbsPath = file_utils:ensure_path_is_absolute( AnyETFFilePath ),
+            FileAbsPath = file_utils:ensure_path_is_absolute( AnyETFFilePath ),
 
-			% In all cases:
-			trace_bridge:error_fmt( "Invalid entry in ETF file '~ts': "
-				"~ts for ~p.",
-				[ FileAbsPath, ReasonWhyNot, FirstFaultyEntry ] ),
+            % In all cases:
+            trace_bridge:error_fmt( "Invalid entry in ETF file '~ts': "
+                "~ts for ~p.",
+                [ FileAbsPath, ReasonWhyNot, FirstFaultyEntry ] ),
 
-			throw( { invalid_etf_file, ReasonWhyNot, FirstFaultyEntry,
-					 text_utils:ensure_string( FileAbsPath ) } )
+            throw( { invalid_etf_file, ReasonWhyNot, FirstFaultyEntry,
+                     text_utils:ensure_string( FileAbsPath ) } )
 
 
-	end,
+    end,
 
-	case tagged_list:check_strict_duplicate_keys( LoadedEntries ) of
+    case tagged_list:check_strict_duplicate_keys( LoadedEntries ) of
 
-		_DupInfo=[] ->
-			ok;
+        _DupInfo=[] ->
+            ok;
 
-		DupInfo ->
+        DupInfo ->
 
-			FAbsPath = file_utils:ensure_path_is_absolute( AnyETFFilePath ),
+            FAbsPath = file_utils:ensure_path_is_absolute( AnyETFFilePath ),
 
-			Msg = text_utils:format( "Duplicate keys found in ETF file '~ts': "
-				"~ts; the occurrences taken into account are always the last "
-				"ones.", [ FAbsPath,
-						   list_utils:duplicate_info_to_string( DupInfo ) ] ),
+            Msg = text_utils:format( "Duplicate keys found in ETF file '~ts': "
+                "~ts; the occurrences taken into account are always the last "
+                "ones.", [ FAbsPath,
+                           list_utils:duplicate_info_to_string( DupInfo ) ] ),
 
-			case ETFCheckPolicy of
+            case ETFCheckPolicy of
 
-				strict_tagged_trace ->
-					trace_bridge:warning( Msg );
+                strict_tagged_trace ->
+                    trace_bridge:warning( Msg );
 
-				strict_tagged_throw ->
-					trace_bridge:error( Msg ),
-					throw( { invalid_etf_file, duplicated_keys, DupInfo,
-							 text_utils:ensure_string( FAbsPath ) } )
+                strict_tagged_throw ->
+                    trace_bridge:error( Msg ),
+                    throw( { invalid_etf_file, duplicated_keys, DupInfo,
+                             text_utils:ensure_string( FAbsPath ) } )
 
-			end
+            end
 
-	end,
+    end,
 
-	set( LoadedEntries, AnyEnvData ).
+    set( LoadedEntries, AnyEnvData ).
 
 
 
@@ -1365,29 +1363,29 @@ Returns the non-matching entries (that thus shall be sent to the environment
 server), and an updated environment cache.
 """.
 -spec get_needed_sendings( entries(), env_cache_table(), entries() ) ->
-										{ entries(), env_cache_table() }.
+                                        { entries(), env_cache_table() }.
 get_needed_sendings( _NewEntries=[], EnvCacheTable, AccEntries ) ->
-	{ _ToSendEntries=AccEntries, EnvCacheTable };
+    { _ToSendEntries=AccEntries, EnvCacheTable };
 
 get_needed_sendings( _NewEntries=[ E={ K, V } | T ], EnvCacheTable,
-					 AccEntries ) ->
+                     AccEntries ) ->
 
-	case table:lookup_entry( K, EnvCacheTable ) of
+    case table:lookup_entry( K, EnvCacheTable ) of
 
-		% Not (to be) cached, thus to be sent:
-		key_not_found ->
-			get_needed_sendings( T, EnvCacheTable, [ E | AccEntries ] );
+        % Not (to be) cached, thus to be sent:
+        key_not_found ->
+            get_needed_sendings( T, EnvCacheTable, [ E | AccEntries ] );
 
-		% Cached and already matching, thus nothing to do:
-		{ value, V } ->
-			get_needed_sendings( T, EnvCacheTable, AccEntries );
+        % Cached and already matching, thus nothing to do:
+        { value, V } ->
+            get_needed_sendings( T, EnvCacheTable, AccEntries );
 
-		% Cached and not matching, thus to be updated in cache and sent:
-		{ value, _PreviousOtherV } ->
-			NewEnvCacheTable = table:add_entry( K, V, EnvCacheTable ),
-			get_needed_sendings( T, NewEnvCacheTable, [ E | AccEntries ] )
+        % Cached and not matching, thus to be updated in cache and sent:
+        { value, _PreviousOtherV } ->
+            NewEnvCacheTable = table:add_entry( K, V, EnvCacheTable ),
+            get_needed_sendings( T, NewEnvCacheTable, [ E | AccEntries ] )
 
-	end.
+    end.
 
 
 
@@ -1405,7 +1403,7 @@ environment server.
 """.
 -spec set_cond( key(), value(), env_data() | file_path() ) -> void().
 set_cond( Key, Value, AnyEnvElem ) ->
-	set_cond( _Entries=[ { Key, Value } ], AnyEnvElem ).
+    set_cond( _Entries=[ { Key, Value } ], AnyEnvElem ).
 
 
 
@@ -1422,17 +1420,17 @@ environment server.
 """.
 -spec set_cond( key(), value(), env_reg_name(), file_path() ) -> void().
 set_cond( Key, Value, ServerRegName, FilePath ) ->
-	EnvPid = case naming_utils:is_registered( ServerRegName,
-											  _LookupScope=local ) of
+    EnvPid = case naming_utils:is_registered( ServerRegName,
+                                              _LookupScope=local ) of
 
-		not_registered ->
-			start_link( FilePath );
+        not_registered ->
+            start_link( FilePath );
 
-		ServerPid ->
-			ServerPid
+        ServerPid ->
+            ServerPid
 
-	end,
-	set_cond( _Entries=[ { Key, Value } ], EnvPid ).
+    end,
+    set_cond( _Entries=[ { Key, Value } ], EnvPid ).
 
 
 
@@ -1442,63 +1440,63 @@ environment, based on the designated already-running environment server
 (specified by registration name, environment information or PID).
 """.
 -spec remove( key(), env_data() ) -> void();
-			( [ key() ], env_data() ) -> void().
+            ( [ key() ], env_data() ) -> void().
 remove( Key, EnvPid ) when is_atom( Key ) ->
-	remove( [ Key ], EnvPid );
+    remove( [ Key ], EnvPid );
 
 remove( Keys, _EnvInfo={ _EnvRegName, EnvPid } ) ->
-	remove( Keys, EnvPid );
+    remove( Keys, EnvPid );
 
 remove( Keys, EnvRegName ) when is_atom( EnvRegName ) ->
-	EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
-	remove( Keys, EnvPid );
+    EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
+    remove( Keys, EnvPid );
 
 remove( Keys, EnvPid ) when is_list( Keys ) ->
-	EnvPid ! { remove_from_environment, Keys },
+    EnvPid ! { remove_from_environment, Keys },
 
-	% Cache update as well:
-	EnvDictKey = ?env_dictionary_key,
-	case process_dictionary:get( EnvDictKey ) of
+    % Cache update as well:
+    EnvDictKey = ?env_dictionary_key,
+    case process_dictionary:get( EnvDictKey ) of
 
-		undefined ->
-			% No environment cached at all, no cache to update:
-			ok;
+        undefined ->
+            % No environment cached at all, no cache to update:
+            ok;
 
-		AllEnvTable ->
-			case list_table:lookup_entry( EnvPid, AllEnvTable ) of
+        AllEnvTable ->
+            case list_table:lookup_entry( EnvPid, AllEnvTable ) of
 
-				% Caching used, but not for that environment; thus we are done:
-				key_not_found ->
-					ok;
+                % Caching used, but not for that environment; thus we are done:
+                key_not_found ->
+                    ok;
 
-				% Caching activated, including for this environment, at least
-				% for some keys:
-				%
-				{ value, { EnvRegName, EnvCacheTable } } ->
+                % Caching activated, including for this environment, at least
+                % for some keys:
+                %
+                { value, { EnvRegName, EnvCacheTable } } ->
 
-					% We remove only the cached keys (as it is not an error to
-					% remove a non-existing key):
-					%
-					NewEnvCacheTable =
-						table:remove_entries( Keys, EnvCacheTable ),
+                    % We remove only the cached keys (as it is not an error to
+                    % remove a non-existing key):
+                    %
+                    NewEnvCacheTable =
+                        table:remove_entries( Keys, EnvCacheTable ),
 
-					NewAllEnvTable = case table:is_empty( NewEnvCacheTable ) of
+                    NewAllEnvTable = case table:is_empty( NewEnvCacheTable ) of
 
-						true ->
-							list_table:remove_entry( EnvPid, AllEnvTable );
+                        true ->
+                            list_table:remove_entry( EnvPid, AllEnvTable );
 
-						false ->
-							CacheInfo = { EnvRegName, NewEnvCacheTable },
-							list_table:add_entry( EnvPid, CacheInfo,
-												  AllEnvTable )
+                        false ->
+                            CacheInfo = { EnvRegName, NewEnvCacheTable },
+                            list_table:add_entry( EnvPid, CacheInfo,
+                                                  AllEnvTable )
 
-					end,
+                    end,
 
-					process_dictionary:put( EnvDictKey, NewAllEnvTable )
+                    process_dictionary:put( EnvDictKey, NewAllEnvTable )
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -1509,74 +1507,74 @@ server (specified by registration name, environment information or PID): removes
 these entries (including from any local cache) and returns their value.
 """.
 -spec extract( key(), env_data() ) -> value();
-			 ( [ key() ], env_data() ) -> [ value() ].
+             ( [ key() ], env_data() ) -> [ value() ].
 extract( Key, EnvPid ) when is_atom( Key ) ->
-	hd( extract( [ Key ], EnvPid ) );
+    hd( extract( [ Key ], EnvPid ) );
 
 extract( Keys, _EnvInfo={ _EnvRegName, EnvPid } ) ->
-	extract( Keys, EnvPid );
+    extract( Keys, EnvPid );
 
 extract( Keys, EnvRegName ) when is_atom( EnvRegName ) ->
-	EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
-	extract( Keys, EnvPid );
+    EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
+    extract( Keys, EnvPid );
 
 
 extract( Keys, EnvPid ) when is_list( Keys ) ->
-	% Ignoring cache first, as the server has to be updated anyway:
-	EnvPid ! { extract_from_environment, Keys, self() },
+    % Ignoring cache first, as the server has to be updated anyway:
+    EnvPid ! { extract_from_environment, Keys, self() },
 
-	% Interleaving with cache update:
-	EnvDictKey = ?env_dictionary_key,
-	case process_dictionary:get( EnvDictKey ) of
+    % Interleaving with cache update:
+    EnvDictKey = ?env_dictionary_key,
+    case process_dictionary:get( EnvDictKey ) of
 
-		undefined ->
-			% No environment cached at all, no cache to update:
-			ok;
+        undefined ->
+            % No environment cached at all, no cache to update:
+            ok;
 
-		AllEnvTable ->
-			case list_table:lookup_entry( EnvPid, AllEnvTable ) of
+        AllEnvTable ->
+            case list_table:lookup_entry( EnvPid, AllEnvTable ) of
 
-				% Caching used, but not for that environment; thus we are done:
-				key_not_found ->
-					ok;
+                % Caching used, but not for that environment; thus we are done:
+                key_not_found ->
+                    ok;
 
-				% Caching activated, including for this environment, at least
-				% for some keys:
-				%
-				{ value, { EnvRegName, EnvCacheTable } } ->
+                % Caching activated, including for this environment, at least
+                % for some keys:
+                %
+                { value, { EnvRegName, EnvCacheTable } } ->
 
-					% We remove only the cached keys (as it is not an error to
-					% remove a non-existing key); removal, not extraction, as
-					% the values will be received from the server anyway:
-					%
-					NewEnvCacheTable =
-						table:remove_entries( Keys, EnvCacheTable ),
+                    % We remove only the cached keys (as it is not an error to
+                    % remove a non-existing key); removal, not extraction, as
+                    % the values will be received from the server anyway:
+                    %
+                    NewEnvCacheTable =
+                        table:remove_entries( Keys, EnvCacheTable ),
 
-					NewAllEnvTable = case table:is_empty( NewEnvCacheTable ) of
+                    NewAllEnvTable = case table:is_empty( NewEnvCacheTable ) of
 
-						true ->
-							list_table:remove_entry( EnvPid, AllEnvTable );
+                        true ->
+                            list_table:remove_entry( EnvPid, AllEnvTable );
 
-						false ->
-							CacheInfo = { EnvRegName, NewEnvCacheTable },
-							list_table:add_entry( EnvPid, CacheInfo,
-												  AllEnvTable )
+                        false ->
+                            CacheInfo = { EnvRegName, NewEnvCacheTable },
+                            list_table:add_entry( EnvPid, CacheInfo,
+                                                  AllEnvTable )
 
-					end,
+                    end,
 
-					process_dictionary:put( EnvDictKey, NewAllEnvTable )
+                    process_dictionary:put( EnvDictKey, NewAllEnvTable )
 
-			end
+            end
 
-	end,
+    end,
 
-	% From the extract_from_environment request:
-	receive
+    % From the extract_from_environment request:
+    receive
 
-		{ notify_extract_environment, Values } ->
-			Values
+        { notify_extract_environment, Values } ->
+            Values
 
-	end.
+    end.
 
 
 
@@ -1604,94 +1602,94 @@ their PID).
 """.
 -spec cache( cache_spec(), env_data() ) -> void().
 cache( AnyElem, _EnvInfo={ EnvRegName, EnvPid } ) ->
-	cache( AnyElem, EnvRegName, EnvPid );
+    cache( AnyElem, EnvRegName, EnvPid );
 
 cache( Key, AnyEnvData ) when is_atom( Key ) ->
-	cache( [ Key ], AnyEnvData );
+    cache( [ Key ], AnyEnvData );
 
 cache( Entry, AnyEnvData ) when is_tuple( Entry ) ->
-	cache( [ Entry ], AnyEnvData );
+    cache( [ Entry ], AnyEnvData );
 
 % Not having a registration name here; hopefully this environment is already
 % known of the cache:
 %
 cache( KeysOrEntries, EnvPid ) when is_pid( EnvPid ) ->
 
-	cond_utils:if_defined( myriad_debug_environments,
-		trace_utils:debug_fmt( "Client ~w caching, "
-			"regarding environment ~w:~n~p",
-			[ self(), EnvPid, KeysOrEntries ] ) ),
+    cond_utils:if_defined( myriad_debug_environments,
+        trace_utils:debug_fmt( "Client ~w caching, "
+            "regarding environment ~w:~n~p",
+            [ self(), EnvPid, KeysOrEntries ] ) ),
 
-	% Separates single keys from entries:
-	{ ToCacheKeys, ToCacheEntries } = lists:foldl(
-		fun( E={ _K, _V }, { AccK, AccE } ) ->
-			{ AccK, [ E | AccE ] };
+    % Separates single keys from entries:
+    { ToCacheKeys, ToCacheEntries } = lists:foldl(
+        fun( E={ _K, _V }, { AccK, AccE } ) ->
+            { AccK, [ E | AccE ] };
 
-		   ( K, { AccK, AccE } ) ->
-			{ [ K | AccK ], AccE }
+           ( K, { AccK, AccE } ) ->
+            { [ K | AccK ], AccE }
 
-		end,
-		_Acc0={ _AccK0=[], _AccE0=[] },
-		_List=KeysOrEntries ),
+        end,
+        _Acc0={ _AccK0=[], _AccE0=[] },
+        _List=KeysOrEntries ),
 
-	EnvDictKey = ?env_dictionary_key,
+    EnvDictKey = ?env_dictionary_key,
 
-	% We have to determine the new keys to cache whose values must be fetched
-	% from server:
-	%
-	case process_dictionary:get( EnvDictKey ) of
+    % We have to determine the new keys to cache whose values must be fetched
+    % from server:
+    %
+    case process_dictionary:get( EnvDictKey ) of
 
-		undefined ->
-				trace_utils:error_fmt( "Cannot cache for environment server ~w,"
-					" as the corresponding environment registration name is "
-					"not known (none is known).~nElements were: ~p",
-					[ EnvPid, KeysOrEntries ] ),
-				throw( { unknown_environment_for, EnvPid } );
+        undefined ->
+                trace_utils:error_fmt( "Cannot cache for environment server ~w,"
+                    " as the corresponding environment registration name is "
+                    "not known (none is known).~nElements were: ~p",
+                    [ EnvPid, KeysOrEntries ] ),
+                throw( { unknown_environment_for, EnvPid } );
 
-		PrevAllEnvTable ->
-			case list_table:lookup_entry( EnvPid, PrevAllEnvTable ) of
+        PrevAllEnvTable ->
+            case list_table:lookup_entry( EnvPid, PrevAllEnvTable ) of
 
-				key_not_found ->
-					% Quite same as before, this environment was not cached yet:
-					trace_utils:error_fmt( "Cannot cache for environment "
-						"server ~w, as the corresponding environment "
-						"registration name is not known.",
-						[ EnvPid, KeysOrEntries ] ),
-					throw( { unknown_environment_for, EnvPid } );
+                key_not_found ->
+                    % Quite same as before, this environment was not cached yet:
+                    trace_utils:error_fmt( "Cannot cache for environment "
+                        "server ~w, as the corresponding environment "
+                        "registration name is not known.~nElements were: ~p",
+                        [ EnvPid, KeysOrEntries ] ),
+                    throw( { unknown_environment_for, EnvPid } );
 
-				{ value, { EnvRegName, PrevEnvCacheTable } } ->
-					cond_utils:if_defined( myriad_debug_environments,
-						trace_utils:debug_fmt( "Updating cache for environment "
-							"~ts (server: PID: ~w): ~ts", [ EnvRegName, EnvPid,
-								table:to_string( PrevEnvCacheTable ) ] ) ),
+                { value, { EnvRegName, PrevEnvCacheTable } } ->
+                    cond_utils:if_defined( myriad_debug_environments,
+                        trace_utils:debug_fmt( "Updating cache for environment "
+                            "~ts (server: PID: ~w): ~ts", [ EnvRegName, EnvPid,
+                                table:to_string( PrevEnvCacheTable ) ] ) ),
 
-					% Having to add all single keys not already present in the
-					% cache table:
-					%
-					DictCachedKeys = table:keys( PrevEnvCacheTable ),
+                    % Having to add all single keys not already present in the
+                    % cache table:
+                    %
+                    DictCachedKeys = table:keys( PrevEnvCacheTable ),
 
-					NewToCacheKeys =
-						list_utils:difference( ToCacheKeys, DictCachedKeys ),
+                    NewToCacheKeys =
+                        list_utils:difference( ToCacheKeys, DictCachedKeys ),
 
-					finish_caching( EnvPid, EnvRegName, NewToCacheKeys,
-						ToCacheEntries, PrevEnvCacheTable, PrevAllEnvTable,
-						EnvDictKey )
+                    finish_caching( EnvPid, EnvRegName, NewToCacheKeys,
+                        ToCacheEntries, PrevEnvCacheTable, PrevAllEnvTable,
+                        EnvDictKey )
 
-			end
+            end
 
-	end;
+    end;
 
 cache( KeysOrEntries, EnvRegName ) when is_atom( EnvRegName ) ->
 
-	cond_utils:if_defined( myriad_debug_environments,
-		trace_utils:debug_fmt( "Client ~w caching, "
-			"regarding environment ~ts:~n~p",
-			[ self(), EnvRegName, KeysOrEntries ] ) ),
+    cond_utils:if_defined( myriad_debug_environments,
+        trace_utils:debug_fmt( "Client ~w caching, "
+            "regarding environment ~ts:~n~p",
+            [ self(), EnvRegName, KeysOrEntries ] ) ),
 
-	% As a PID will be needed (at least as key for the environment cache):
-	EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
+    % As a PID will be needed (at least as key for the environment cache):
+    EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
 
-	cache( KeysOrEntries, EnvRegName, EnvPid ).
+    cache( KeysOrEntries, EnvRegName, EnvPid ).
 
 
 
@@ -1713,76 +1711,76 @@ only the entries not already in cache will be requested from the server.
 """.
 -spec cache( cache_spec(), env_reg_name(), env_pid() ) -> void().
 cache( Key, EnvRegName, EnvPid ) when is_atom( Key ) ->
-	cache( [ Key ], EnvRegName, EnvPid );
+    cache( [ Key ], EnvRegName, EnvPid );
 
 cache( Entry, EnvRegName, EnvPid ) when is_tuple( Entry ) ->
-	cache( [ Entry ], EnvRegName, EnvPid );
+    cache( [ Entry ], EnvRegName, EnvPid );
 
 cache( KeysOrEntries, EnvRegName, EnvPid ) ->
 
-	% Separates single keys from entries:
-	{ ToCacheKeys, ToCacheEntries } = lists:foldl(
-		fun( E={ _K, _V }, { AccK, AccE } ) ->
-			{ AccK, [ E | AccE ] };
+    % Separates single keys from entries:
+    { ToCacheKeys, ToCacheEntries } = lists:foldl(
+        fun( E={ _K, _V }, { AccK, AccE } ) ->
+            { AccK, [ E | AccE ] };
 
-		   ( K, { AccK, AccE } ) ->
-			{ [ K | AccK ], AccE }
+           ( K, { AccK, AccE } ) ->
+            { [ K | AccK ], AccE }
 
-		end,
-		_Acc0={ _AccK0=[], _AccE0=[] },
-		_List=KeysOrEntries ),
+        end,
+        _Acc0={ _AccK0=[], _AccE0=[] },
+        _List=KeysOrEntries ),
 
-	EnvDictKey = ?env_dictionary_key,
+    EnvDictKey = ?env_dictionary_key,
 
-	% We have to determine the new keys to cache whose values must be fetched
-	% from server:
-	%
-	{ SingleKeys, Entries, EnvCacheTable, AllEnvTable } =
-			case process_dictionary:get( EnvDictKey ) of
+    % We have to determine the new keys to cache whose values must be fetched
+    % from server:
+    %
+    { SingleKeys, Entries, EnvCacheTable, AllEnvTable } =
+            case process_dictionary:get( EnvDictKey ) of
 
-		undefined ->
-			% All these new elements shall then be cached:
-			cond_utils:if_defined( myriad_debug_environments,
-				trace_utils:debug( "No environment was cached." ) ),
+        undefined ->
+            % All these new elements shall then be cached:
+            cond_utils:if_defined( myriad_debug_environments,
+                trace_utils:debug( "No environment was cached." ) ),
 
-			{ ToCacheKeys, ToCacheEntries, table:new(), list_table:new() };
+            { ToCacheKeys, ToCacheEntries, table:new(), list_table:new() };
 
-		PrevAllEnvTable ->
-			case list_table:lookup_entry( EnvPid, PrevAllEnvTable ) of
+        PrevAllEnvTable ->
+            case list_table:lookup_entry( EnvPid, PrevAllEnvTable ) of
 
-				key_not_found ->
-					% Quite same as before, this environment was not cached yet:
-					cond_utils:if_defined( myriad_debug_environments,
-						trace_utils:debug_fmt( "Environment ~ts "
-							"(server: PID: ~w) was not cached.",
-							[ EnvRegName, EnvPid ] ) ),
+                key_not_found ->
+                    % Quite same as before, this environment was not cached yet:
+                    cond_utils:if_defined( myriad_debug_environments,
+                        trace_utils:debug_fmt( "Environment ~ts "
+                            "(server: PID: ~w) was not cached.",
+                            [ EnvRegName, EnvPid ] ) ),
 
-					{ ToCacheKeys, ToCacheEntries, table:new(),
-					  PrevAllEnvTable };
+                    { ToCacheKeys, ToCacheEntries, table:new(),
+                      PrevAllEnvTable };
 
-				{ value, { _EnvRegName, PrevEnvCacheTable } } ->
-					cond_utils:if_defined( myriad_debug_environments,
-						trace_utils:debug_fmt( "Updating cache for environment "
-							"~ts (server: PID: ~w): ~ts", [ EnvRegName, EnvPid,
-								table:to_string( PrevEnvCacheTable ) ] ) ),
+                { value, { _EnvRegName, PrevEnvCacheTable } } ->
+                    cond_utils:if_defined( myriad_debug_environments,
+                        trace_utils:debug_fmt( "Updating cache for environment "
+                            "~ts (server: PID: ~w): ~ts", [ EnvRegName, EnvPid,
+                                table:to_string( PrevEnvCacheTable ) ] ) ),
 
-					% Having to add all single keys not already present in the
-					% cache table:
-					%
-					DictCachedKeys = table:keys( PrevEnvCacheTable ),
+                    % Having to add all single keys not already present in the
+                    % cache table:
+                    %
+                    DictCachedKeys = table:keys( PrevEnvCacheTable ),
 
-					NewToCacheKeys =
-						list_utils:difference( ToCacheKeys, DictCachedKeys ),
+                    NewToCacheKeys =
+                        list_utils:difference( ToCacheKeys, DictCachedKeys ),
 
-					{ NewToCacheKeys, ToCacheEntries, PrevEnvCacheTable,
-					  PrevAllEnvTable }
+                    { NewToCacheKeys, ToCacheEntries, PrevEnvCacheTable,
+                      PrevAllEnvTable }
 
-			end
+            end
 
-	end,
+    end,
 
-	finish_caching( EnvPid, EnvRegName, SingleKeys, Entries, EnvCacheTable,
-					AllEnvTable, EnvDictKey ).
+    finish_caching( EnvPid, EnvRegName, SingleKeys, Entries, EnvCacheTable,
+                    AllEnvTable, EnvDictKey ).
 
 
 
@@ -1792,37 +1790,37 @@ cache( KeysOrEntries, EnvRegName, EnvPid ) ->
 % (helper)
 %
 finish_caching( EnvPid, EnvRegName, SingleKeys, Entries, EnvCacheTable,
-				AllEnvTable, EnvDictKey ) ->
+                AllEnvTable, EnvDictKey ) ->
 
-	% First the environment must be aware of these new entries:
-	EnvPid ! { set_environment, Entries },
+    % First the environment must be aware of these new entries:
+    EnvPid ! { set_environment, Entries },
 
-	% And the local cache as well:
-	WithEntriesEnvCacheTable = table:add_entries( Entries, EnvCacheTable ),
+    % And the local cache as well:
+    WithEntriesEnvCacheTable = table:add_entries( Entries, EnvCacheTable ),
 
-	% Then update based on the single keys:
-	NewEnvCacheTable = case SingleKeys of
+    % Then update based on the single keys:
+    NewEnvCacheTable = case SingleKeys of
 
-		[] ->
-			WithEntriesEnvCacheTable;
+        [] ->
+            WithEntriesEnvCacheTable;
 
-		_ ->
-			SingleValues = get_from_environment( SingleKeys, EnvPid ),
-			SingleEntries = lists:zip( SingleKeys, SingleValues ),
-			table:add_entries( SingleEntries, WithEntriesEnvCacheTable )
+        _ ->
+            SingleValues = get_from_environment( SingleKeys, EnvPid ),
+            SingleEntries = lists:zip( SingleKeys, SingleValues ),
+            table:add_entries( SingleEntries, WithEntriesEnvCacheTable )
 
-	end,
+    end,
 
-	%trace_utils:debug_fmt( "New cache for environment ~ts (server: ~w): ~ts",
-	%   [ EnvRegName, EnvPid, table:to_string( NewEnvCacheTable ) ] ),
+    %trace_utils:debug_fmt( "New cache for environment ~ts (server: ~w): ~ts",
+    %   [ EnvRegName, EnvPid, table:to_string( NewEnvCacheTable ) ] ),
 
-	NewAllEnvTable = list_table:add_entry( EnvPid,
-		{ EnvRegName, NewEnvCacheTable }, AllEnvTable ),
+    NewAllEnvTable = list_table:add_entry( EnvPid,
+        { EnvRegName, NewEnvCacheTable }, AllEnvTable ),
 
-	%trace_utils:debug_fmt( "New environment table for client ~w: ~ts",
-	%   [ self(), list_table:to_string( NewAllEnvTable ) ] ),
+    %trace_utils:debug_fmt( "New environment table for client ~w: ~ts",
+    %   [ self(), list_table:to_string( NewAllEnvTable ) ] ),
 
-	process_dictionary:put( EnvDictKey, NewAllEnvTable ).
+    process_dictionary:put( EnvDictKey, NewAllEnvTable ).
 
 
 
@@ -1833,13 +1831,13 @@ value.
 Equivalent to a call to cache/2 followed by one to get/2 with the same keys.
 """.
 -spec cache_return( maybe_list( key() ), env_data() ) ->
-								maybe_list( option( value() ) ).
+                                maybe_list( option( value() ) ).
 cache_return( Key, AnyEnvData ) when is_atom( Key ) ->
-	cache_return( [ Key ], AnyEnvData );
+    cache_return( [ Key ], AnyEnvData );
 
 cache_return( Keys, AnyEnvData ) ->
-	cache( Keys, AnyEnvData ),
-	get( Keys, AnyEnvData ).
+    cache( Keys, AnyEnvData ),
+    get( Keys, AnyEnvData ).
 
 
 
@@ -1849,39 +1847,39 @@ subsequent operations on it to happen at the level of its server.
 """.
 -spec uncache( env_data() ) -> void().
 uncache( _EnvInfo={ _EnvRegName, EnvPid } ) ->
-	uncache( EnvPid );
+    uncache( EnvPid );
 
 uncache( EnvRegName ) when is_atom( EnvRegName ) ->
-	EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
-	uncache( EnvPid );
+    EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
+    uncache( EnvPid );
 
 uncache( EnvPid ) ->
 
-	EnvDictKey = ?env_dictionary_key,
+    EnvDictKey = ?env_dictionary_key,
 
-	% Removing any local caching:
-	case process_dictionary:get( EnvDictKey ) of
+    % Removing any local caching:
+    case process_dictionary:get( EnvDictKey ) of
 
-		undefined ->
-			ok;
+        undefined ->
+            ok;
 
-		AllEnvTable ->
-			case list_table:extract_entry_if_existing( EnvPid, AllEnvTable ) of
+        AllEnvTable ->
+            case list_table:extract_entry_if_existing( EnvPid, AllEnvTable ) of
 
-				false ->
-					ok;
+                false ->
+                    ok;
 
-				% It was the last environment:
-				{ _EnvPair, _ShrunkAllEnvTable=[] } ->
-					process_dictionary:remove( EnvDictKey );
+                % It was the last environment:
+                { _EnvPair, _ShrunkAllEnvTable=[] } ->
+                    process_dictionary:remove( EnvDictKey );
 
-				% At least one environment remaining:
-				{ _EnvPair, ShrunkAllEnvTable } ->
-					process_dictionary:put( EnvDictKey, ShrunkAllEnvTable )
+                % At least one environment remaining:
+                { _EnvPair, ShrunkAllEnvTable } ->
+                    process_dictionary:put( EnvDictKey, ShrunkAllEnvTable )
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -1891,7 +1889,7 @@ operations on environments to happen at the level of their server.
 """.
 -spec uncache() -> void().
 uncache() ->
-	process_dictionary:remove( ?env_dictionary_key ).
+    process_dictionary:remove( ?env_dictionary_key ).
 
 
 
@@ -1902,48 +1900,48 @@ ones).
 """.
 -spec sync( env_data() ) -> void().
 sync( _EnvInfo={ _EnvRegName, EnvPid } ) ->
-	sync( EnvPid ) ;
+    sync( EnvPid ) ;
 
 sync( EnvRegName ) when is_atom( EnvRegName ) ->
-	EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
-	sync( EnvPid );
+    EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
+    sync( EnvPid );
 
 sync( EnvPid ) ->
-	EnvDictKey = ?env_dictionary_key,
-	case process_dictionary:get( EnvDictKey ) of
+    EnvDictKey = ?env_dictionary_key,
+    case process_dictionary:get( EnvDictKey ) of
 
-		undefined ->
-			% No caching wanted or applied, nothing to sync:
-			ok;
+        undefined ->
+            % No caching wanted or applied, nothing to sync:
+            ok;
 
-		AllEnvTable ->
-			case list_table:lookup_entry( EnvPid, AllEnvTable ) of
+        AllEnvTable ->
+            case list_table:lookup_entry( EnvPid, AllEnvTable ) of
 
-				% Caching used, but not for that environment; thus we are done:
-				key_not_found ->
-					ok;
+                % Caching used, but not for that environment; thus we are done:
+                key_not_found ->
+                    ok;
 
-				% Caching activated, including for this environment, at least
-				% partially:
-				%
-				{ value, { EnvRegName, EnvCacheTable } } ->
+                % Caching activated, including for this environment, at least
+                % partially:
+                %
+                { value, { EnvRegName, EnvCacheTable } } ->
 
-					AllCachedKeys = table:keys( EnvCacheTable ),
+                    AllCachedKeys = table:keys( EnvCacheTable ),
 
-					AllValues = get_from_environment( AllCachedKeys, EnvPid ),
+                    AllValues = get_from_environment( AllCachedKeys, EnvPid ),
 
-					AllCachedEntries = lists:zip( AllCachedKeys, AllValues ),
+                    AllCachedEntries = lists:zip( AllCachedKeys, AllValues ),
 
-					NewEnvCacheTable = table:new( AllCachedEntries ),
+                    NewEnvCacheTable = table:new( AllCachedEntries ),
 
-					NewAllEnvTable = list_table:add_entry( EnvPid,
-						{ EnvRegName, NewEnvCacheTable }, AllEnvTable ),
+                    NewAllEnvTable = list_table:add_entry( EnvPid,
+                        { EnvRegName, NewEnvCacheTable }, AllEnvTable ),
 
-					process_dictionary:put( EnvDictKey, NewAllEnvTable )
+                    process_dictionary:put( EnvDictKey, NewAllEnvTable )
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -1956,14 +1954,14 @@ internally they should be binary ones.
 """.
 -spec ensure_binary( maybe_list( key() ), env_data() ) -> void().
 ensure_binary( KeyMaybeList, _EnvInfo={ _EnvRegName, EnvPid } ) ->
-	ensure_binary( KeyMaybeList, EnvPid );
+    ensure_binary( KeyMaybeList, EnvPid );
 
 ensure_binary( KeyMaybeList, EnvRegName ) when is_atom( EnvRegName ) ->
-	EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
-	ensure_binary( KeyMaybeList, EnvPid );
+    EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
+    ensure_binary( KeyMaybeList, EnvPid );
 
 ensure_binary( KeyMaybeList, EnvPid ) ->
-	EnvPid ! { ensure_binary, [ KeyMaybeList ] }.
+    EnvPid ! { ensure_binary, [ KeyMaybeList ] }.
 
 
 
@@ -1973,14 +1971,14 @@ file whence it supposedly was loaded initially.
 """.
 -spec store( env_data() ) -> void().
 store( _EnvInfo={ _EnvRegName, EnvPid } ) ->
-	store( EnvPid );
+    store( EnvPid );
 
 store( EnvRegName ) when is_atom( EnvRegName ) ->
-	EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
-	store( EnvPid );
+    EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
+    store( EnvPid );
 
 store( EnvPid ) ->
-	EnvPid ! store.
+    EnvPid ! store.
 
 
 
@@ -1992,15 +1990,15 @@ The specified path becomes the reference one.
 """.
 -spec store( env_data(), any_file_path() ) -> void().
 store( _EnvInfo={ _EnvRegName, EnvPid }, TargetFilePath ) ->
-	store( EnvPid, TargetFilePath );
+    store( EnvPid, TargetFilePath );
 
 store( EnvRegName, TargetFilePath ) when is_atom( EnvRegName ) ->
-	EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
-	store( EnvPid, TargetFilePath );
+    EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
+    store( EnvPid, TargetFilePath );
 
 store( EnvPid, TargetFilePath ) ->
-	BinTargetFilePath = text_utils:ensure_binary( TargetFilePath ),
-	EnvPid ! { store, BinTargetFilePath }.
+    BinTargetFilePath = text_utils:ensure_binary( TargetFilePath ),
+    EnvPid ! { store, BinTargetFilePath }.
 
 
 
@@ -2010,31 +2008,31 @@ based on its cache (if any).
 """.
 -spec to_string() -> ustring().
 to_string() ->
-	case process_dictionary:get( ?env_dictionary_key ) of
+    case process_dictionary:get( ?env_dictionary_key ) of
 
-		undefined ->
-			"no caching of environments";
+        undefined ->
+            "no caching of environments";
 
-		AllEnvTable ->
-			case list_table:enumerate( AllEnvTable ) of
+        AllEnvTable ->
+            case list_table:enumerate( AllEnvTable ) of
 
-				[] ->
-					"no environment cached";
+                [] ->
+                    "no environment cached";
 
-				[ { EnvPid, CacheInfo } ] ->
-					text_utils:format( "a single environment cached, ~ts",
-						[ cache_info_to_string( CacheInfo, EnvPid ) ] );
+                [ { EnvPid, CacheInfo } ] ->
+                    text_utils:format( "a single environment cached, ~ts",
+                        [ cache_info_to_string( CacheInfo, EnvPid ) ] );
 
-				EnvPairs ->
-					text_utils:format( "~B environments cached: ~ts",
-						[ length( EnvPairs ), text_utils:strings_to_string(
-							[ cache_info_to_string( CInf, EPid )
-								|| { CInf, EPid } <- EnvPairs ] ) ] )
+                EnvPairs ->
+                    text_utils:format( "~B environments cached: ~ts",
+                        [ length( EnvPairs ), text_utils:strings_to_string(
+                            [ cache_info_to_string( CInf, EPid )
+                                || { CInf, EPid } <- EnvPairs ] ) ] )
 
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -2046,7 +2044,7 @@ Prefer calling to_bin_string/1.
 """.
 -spec to_string( env_data() | file_path() ) -> ustring().
 to_string( EnvData ) ->
-	text_utils:binary_to_string( to_bin_string( EnvData ) ).
+    text_utils:binary_to_string( to_bin_string( EnvData ) ).
 
 
 
@@ -2058,64 +2056,64 @@ To be preferred to to_string/1.
 """.
 -spec to_bin_string( env_data() | file_path() ) -> bin_string().
 to_bin_string( _EnvInfo={ EnvRegName, _EnvPid } ) ->
-	to_bin_string( EnvRegName );
+    to_bin_string( EnvRegName );
 
 to_bin_string( EnvRegAtom ) when is_atom( EnvRegAtom ) ->
-	case naming_utils:is_registered( EnvRegAtom, local ) of
+    case naming_utils:is_registered( EnvRegAtom, local ) of
 
-		not_registered ->
-			text_utils:bin_format( "environment server for '~ts' not running",
-								   [ EnvRegAtom ] );
+        not_registered ->
+            text_utils:bin_format( "environment server for '~ts' not running",
+                                   [ EnvRegAtom ] );
 
-		EnvSrvPid->
-			to_bin_string( EnvSrvPid )
+        EnvSrvPid->
+            to_bin_string( EnvSrvPid )
 
-	end;
+    end;
 
 to_bin_string( FilePath ) when is_list( FilePath ) ->
 
-	EnvRegAtom = get_env_reg_name_from( FilePath ),
+    EnvRegAtom = get_env_reg_name_from( FilePath ),
 
-	to_bin_string( EnvRegAtom );
+    to_bin_string( EnvRegAtom );
 
 % Then supposed to be existing:
 to_bin_string( EnvSrvPid ) when is_pid( EnvSrvPid ) ->
 
-	EnvSrvPid ! { to_bin_string, self() },
+    EnvSrvPid ! { to_bin_string, self() },
 
-	receive
+    receive
 
-		{ notify_environment_status, EnvBinString } ->
-			EnvBinString
+        { notify_environment_status, EnvBinString } ->
+            EnvBinString
 
-	end.
+    end.
 
 
 
 -spec cache_info_to_string( cache_info(), env_pid() ) -> ustring().
 cache_info_to_string( _CacheInfo={ EnvRegName, EnvCacheTable }, EnvPid ) ->
-	text_utils:format( "environment '~ts' (whose server is ~w), caching ~ts",
-		[ EnvRegName, EnvPid, cache_to_string( EnvCacheTable ) ] ).
+    text_utils:format( "environment '~ts' (whose server is ~w), caching ~ts",
+        [ EnvRegName, EnvPid, cache_to_string( EnvCacheTable ) ] ).
 
 
 -spec cache_to_string( env_cache_table() ) -> ustring().
 cache_to_string( EnvCacheTable ) ->
-	case table:enumerate( EnvCacheTable ) of
+    case table:enumerate( EnvCacheTable ) of
 
-		[] ->
-			"no entry";
+        [] ->
+            "no entry";
 
-		[ { K, V } ] ->
-			text_utils:format( "a single entry, whose key ~p is associated "
-							   "to value ~p", [ K, V ] );
+        [ { K, V } ] ->
+            text_utils:format( "a single entry, whose key ~p is associated "
+                               "to value ~p", [ K, V ] );
 
-		Entries ->
-			text_utils:format( "~B entries: ~ts", [ length( Entries ),
-				text_utils:strings_to_string( [ text_utils:format(
-					"key '~ts' associated to value ~p", [ K, V ] )
-						|| { K, V} <- Entries ], _IdentLevel=2 ) ] )
+        Entries ->
+            text_utils:format( "~B entries: ~ts", [ length( Entries ),
+                text_utils:strings_to_string( [ text_utils:format(
+                    "key '~ts' associated to value ~p", [ K, V ] )
+                        || { K, V} <- Entries ], _IdentLevel=2 ) ] )
 
-	end.
+    end.
 
 
 
@@ -2129,12 +2127,12 @@ For example, the registration name associated to the
 -spec get_env_reg_name_from( file_path() ) -> env_reg_name().
 get_env_reg_name_from( FilePath ) ->
 
-	CoreFilePath = file_utils:remove_upper_levels_and_extension( FilePath ),
+    CoreFilePath = file_utils:remove_upper_levels_and_extension( FilePath ),
 
-	RegistrationName =
-		file_utils:path_to_variable_name( CoreFilePath, _Prefix="" ),
+    RegistrationName =
+        file_utils:path_to_variable_name( CoreFilePath, _Prefix="" ),
 
-	text_utils:string_to_atom( RegistrationName ).
+    text_utils:string_to_atom( RegistrationName ).
 
 
 
@@ -2146,21 +2144,21 @@ Never fails.
 """.
 -spec stop( env_data() | file_path() ) -> void().
 stop( _EnvInfo={ _EnvRegName, EnvPid } ) ->
-	stop( EnvPid );
+    stop( EnvPid );
 
 stop( FilePath ) when is_list( FilePath ) ->
 
-	EnvRegAtom = get_env_reg_name_from( FilePath ),
+    EnvRegAtom = get_env_reg_name_from( FilePath ),
 
-	stop( EnvRegAtom );
+    stop( EnvRegAtom );
 
 stop( EnvRegName ) when is_atom( EnvRegName ) ->
-	EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
-	stop( EnvPid );
+    EnvPid = naming_utils:get_registered_pid_for( EnvRegName, _Scope=local ),
+    stop( EnvPid );
 
 stop( EnvPid ) ->
-	uncache( EnvPid ),
-	EnvPid ! stop.
+    uncache( EnvPid ),
+    EnvPid ! stop.
 
 
 
@@ -2175,41 +2173,41 @@ default entries.
 -spec server_run( pid(), env_reg_name(), option( entries() ) ) -> no_return().
 server_run( SpawnerPid, RegistrationName, MaybeDefaultEntries ) ->
 
-	cond_utils:if_defined( myriad_debug_environments, trace_utils:debug_fmt(
-		"Spawning an environment server named '~ts' from ~w.",
-		[ RegistrationName, SpawnerPid ] ) ),
+    cond_utils:if_defined( myriad_debug_environments, trace_utils:debug_fmt(
+        "Spawning an environment server named '~ts' from ~w.",
+        [ RegistrationName, SpawnerPid ] ) ),
 
-	case naming_utils:register_or_return_registered( RegistrationName,
-													 local_only ) of
+    case naming_utils:register_or_return_registered( RegistrationName,
+                                                     local_only ) of
 
-		registered ->
+        registered ->
 
-			% We gained the shared name, we are the one and only server for that
-			% name.
+            % We gained the shared name, we are the one and only server for that
+            % name.
 
-			InitialTable = case MaybeDefaultEntries of
+            InitialTable = case MaybeDefaultEntries of
 
-				undefined ->
-					table:new();
+                undefined ->
+                    table:new();
 
-				DefaultEntries ->
-					table:new( DefaultEntries )
+                DefaultEntries ->
+                    table:new( DefaultEntries )
 
-			end,
+            end,
 
-			% Spawner could already know that PID in this case:
-			SpawnerPid ! { environment_server_pid, self() },
+            % Spawner could already know that PID in this case:
+            SpawnerPid ! { environment_server_pid, self() },
 
-			% Never returns:
-			server_main_loop( InitialTable, RegistrationName,
-							  _MaybeBinFilePath=undefined );
+            % Never returns:
+            server_main_loop( InitialTable, RegistrationName,
+                              _MaybeBinFilePath=undefined );
 
 
-		ServerPid ->
-			% Notifies and terminates:
-			SpawnerPid ! { environment_server_pid, ServerPid }
+        ServerPid ->
+            % Notifies and terminates:
+            SpawnerPid ! { environment_server_pid, ServerPid }
 
-	end.
+    end.
 
 
 
@@ -2218,233 +2216,233 @@ Launcher of the environment server, to be initialised with any specified default
 entries, then with the specified file.
 """.
 -spec server_run( pid(), env_reg_name(), bin_string(), option( entries() ) ) ->
-												no_return().
+                                                no_return().
 server_run( SpawnerPid, RegistrationName, BinFilePath, MaybeDefaultEntries ) ->
 
-	cond_utils:if_defined( myriad_debug_environments, trace_utils:debug_fmt(
-		"Spawning environment server named '~ts' from ~w, based on file '~ts'.",
-		[ RegistrationName, SpawnerPid, BinFilePath ] ) ),
+    cond_utils:if_defined( myriad_debug_environments, trace_utils:debug_fmt(
+        "Spawning environment server named '~ts' from ~w, based on file '~ts'.",
+        [ RegistrationName, SpawnerPid, BinFilePath ] ) ),
 
-	case naming_utils:register_or_return_registered( RegistrationName,
-													 local_only ) of
+    case naming_utils:register_or_return_registered( RegistrationName,
+                                                     local_only ) of
 
-		registered ->
+        registered ->
 
-			% We gained the shared name, we are the one and only server for that
-			% name.
+            % We gained the shared name, we are the one and only server for that
+            % name.
 
-			InitialTable = case MaybeDefaultEntries of
+            InitialTable = case MaybeDefaultEntries of
 
-				undefined ->
-					table:new();
+                undefined ->
+                    table:new();
 
-				DefaultEntries ->
-					table:new( DefaultEntries )
+                DefaultEntries ->
+                    table:new( DefaultEntries )
 
-			end,
+            end,
 
-			FinalTable =
-					case file_utils:is_existing_file_or_link( BinFilePath ) of
+            FinalTable =
+                    case file_utils:is_existing_file_or_link( BinFilePath ) of
 
-				true ->
-					add_environment_from( BinFilePath, InitialTable );
+                true ->
+                    add_environment_from( BinFilePath, InitialTable );
 
-				false ->
-					trace_bridge:info_fmt( "No environment file found "
-						"(searched for '~ts').", [ BinFilePath ] ),
-					InitialTable
+                false ->
+                    trace_bridge:info_fmt( "No environment file found "
+                        "(searched for '~ts').", [ BinFilePath ] ),
+                    InitialTable
 
-			end,
+            end,
 
-			% Spawner could already know that PID in this case:
-			SpawnerPid ! { environment_server_pid, self() },
+            % Spawner could already know that PID in this case:
+            SpawnerPid ! { environment_server_pid, self() },
 
-			% Never returns:
-			server_main_loop( FinalTable, RegistrationName, BinFilePath );
+            % Never returns:
+            server_main_loop( FinalTable, RegistrationName, BinFilePath );
 
 
-		ServerPid ->
-			% Notifies and terminates:
-			SpawnerPid ! { environment_server_pid, ServerPid }
+        ServerPid ->
+            % Notifies and terminates:
+            SpawnerPid ! { environment_server_pid, ServerPid }
 
-	end.
+    end.
 
 
 
 % (helper)
 -spec get_value_maybes( key(), table() ) -> value();
-					  ( [ key() ], table() ) -> [ value() ].
+                      ( [ key() ], table() ) -> [ value() ].
 get_value_maybes( Key, Table ) when is_atom( Key ) ->
-	table:get_value_with_default( Key, _Def=undefined, Table );
+    table:get_value_with_default( Key, _Def=undefined, Table );
 
 get_value_maybes( Keys, Table ) ->
-	get_value_maybes( Keys, Table, _Acc=[] ).
+    get_value_maybes( Keys, Table, _Acc=[] ).
 
 
 
 % (helper)
 get_value_maybes( _Keys=[], _Table, Acc ) ->
-	lists:reverse( Acc );
+    lists:reverse( Acc );
 
 get_value_maybes( _Keys=[ K | T ], Table, Acc ) ->
-	V = get_value_maybes( K, Table ),
-	get_value_maybes( T, Table, [ V | Acc ] ).
+    V = get_value_maybes( K, Table ),
+    get_value_maybes( T, Table, [ V | Acc ] ).
 
 
 % (helper)
 -spec ensure_binaries( [ key() ], table() ) -> table().
 ensure_binaries( Keys, Table ) ->
-	AnyStrs = table:get_values( Keys, Table ),
-	BinStrs = text_utils:ensure_binaries( AnyStrs ),
-	NewEntries = lists:zip( Keys, BinStrs ),
-	table:add_entries( NewEntries, Table ).
+    AnyStrs = table:get_values( Keys, Table ),
+    BinStrs = text_utils:ensure_binaries( AnyStrs ),
+    NewEntries = lists:zip( Keys, BinStrs ),
+    table:add_entries( NewEntries, Table ).
 
 
 
 -doc "Main loop of the environment server.".
 -spec server_main_loop( table(), env_reg_name(), option( bin_file_path() ) ) ->
-												no_return().
+                                                no_return().
 server_main_loop( Table, EnvRegName, MaybeBinFilePath ) ->
 
-	% Short:
-	%trace_bridge:debug_fmt( "Waiting for environment-related request, "
-	%    "while having ~B recorded entries.", [ table:size( Table ) ] ),
+    % Short:
+    %trace_bridge:debug_fmt( "Waiting for environment-related request, "
+    %    "while having ~B recorded entries.", [ table:size( Table ) ] ),
 
-	% Detailed:
-	%trace_bridge:debug_fmt( "Waiting for environment-related request, "
-	%   "storing a ~ts.", [ table:to_string( Table ) ] ),
+    % Detailed:
+    %trace_bridge:debug_fmt( "Waiting for environment-related request, "
+    %   "storing a ~ts.", [ table:to_string( Table ) ] ),
 
-	% Ad-hoc message conventions are a bit more flexible and involve no external
-	% naming (like wooper_result atoms):
+    % Ad-hoc message conventions are a bit more flexible and involve no external
+    % naming (like wooper_result atoms):
 
-	receive
+    receive
 
-		{ get_environment, KeyMaybes, SenderPid } ->
+        { get_environment, KeyMaybes, SenderPid } ->
 
-			Answer = get_value_maybes( KeyMaybes, Table ),
+            Answer = get_value_maybes( KeyMaybes, Table ),
 
-			SenderPid ! { notify_get_environment, Answer },
+            SenderPid ! { notify_get_environment, Answer },
 
-			server_main_loop( Table, EnvRegName, MaybeBinFilePath );
-
-
-		{ set_environment, Key, Value } ->
-
-			NewTable = table:add_entry( Key, Value, Table ),
-
-			server_main_loop( NewTable, EnvRegName, MaybeBinFilePath );
+            server_main_loop( Table, EnvRegName, MaybeBinFilePath );
 
 
-		{ set_environment, Entries } ->
+        { set_environment, Key, Value } ->
 
-			%trace_utils:debug_fmt( "[environment ~ts (~w)] Setting entries "
-			%                       "~p.", [ EnvRegName, self(), Entries ] ),
+            NewTable = table:add_entry( Key, Value, Table ),
 
-			NewTable = table:add_entries( Entries, Table ),
-
-			server_main_loop( NewTable, EnvRegName, MaybeBinFilePath );
+            server_main_loop( NewTable, EnvRegName, MaybeBinFilePath );
 
 
-		{ remove_from_environment, Keys } ->
+        { set_environment, Entries } ->
 
-			ShrunkTable = table:remove_entries( Keys, Table ),
+            %trace_utils:debug_fmt( "[environment ~ts (~w)] Setting entries "
+            %                       "~p.", [ EnvRegName, self(), Entries ] ),
 
-			server_main_loop( ShrunkTable, EnvRegName, MaybeBinFilePath );
+            NewTable = table:add_entries( Entries, Table ),
 
-
-		{ extract_from_environment, Keys, SenderPid } ->
-
-			{ Values, ShrunkTable } = table:extract_entries( Keys, Table ),
-
-			SenderPid ! { notify_extract_environment, Values },
-
-			server_main_loop( ShrunkTable, EnvRegName, MaybeBinFilePath );
+            server_main_loop( NewTable, EnvRegName, MaybeBinFilePath );
 
 
-		store ->
-			case MaybeBinFilePath of
+        { remove_from_environment, Keys } ->
 
-				undefined ->
-					trace_utils:warning_fmt( "Store request for environment "
-						"server ~w ignored (no file path set).", [ self() ] );
+            ShrunkTable = table:remove_entries( Keys, Table ),
 
-				BinFilePath ->
-
-					cond_utils:if_defined( myriad_debug_environments,
-						trace_utils:debug_fmt( "Storing environment state "
-							"in current file '~ts'.", [ BinFilePath ] ) ),
-
-					file_utils:write_etf_file( table:enumerate( Table ),
-											   BinFilePath )
-
-			end,
-			server_main_loop( Table, EnvRegName, MaybeBinFilePath );
+            server_main_loop( ShrunkTable, EnvRegName, MaybeBinFilePath );
 
 
-		{ store, BinTargetFilePath } ->
+        { extract_from_environment, Keys, SenderPid } ->
 
-			cond_utils:if_defined( myriad_debug_environments,
-				trace_utils:debug_fmt( "Storing environment state "
-					"in specified file '~ts'.", [ BinTargetFilePath ] ) ),
+            { Values, ShrunkTable } = table:extract_entries( Keys, Table ),
 
-			file_utils:write_etf_file( table:enumerate( Table ),
-									   BinTargetFilePath ),
+            SenderPid ! { notify_extract_environment, Values },
 
-			server_main_loop( Table, EnvRegName, BinTargetFilePath );
+            server_main_loop( ShrunkTable, EnvRegName, MaybeBinFilePath );
 
 
-		{ ensure_binary, SingleKey } when is_atom( SingleKey ) ->
-			NewTable = ensure_binaries( [ SingleKey ], Table ),
-			server_main_loop( NewTable, EnvRegName, MaybeBinFilePath );
+        store ->
+            case MaybeBinFilePath of
 
-		{ ensure_binary, KeyMaybes } ->
-			NewTable = ensure_binaries( KeyMaybes, Table ),
-			server_main_loop( NewTable, EnvRegName, MaybeBinFilePath );
+                undefined ->
+                    trace_utils:warning_fmt( "Store request for environment "
+                        "server ~w ignored (no file path set).", [ self() ] );
 
+                BinFilePath ->
 
-		{ to_bin_string, SenderPid } ->
+                    cond_utils:if_defined( myriad_debug_environments,
+                        trace_utils:debug_fmt( "Storing environment state "
+                            "in current file '~ts'.", [ BinFilePath ] ) ),
 
-			Msg = case table:enumerate( Table ) of
+                    file_utils:write_etf_file( table:enumerate( Table ),
+                                               BinFilePath )
 
-				[] ->
-					text_utils:format( "no entry recorded for environment "
-						"'~ts' (server: ~w)", [ EnvRegName, self() ] )
-							++ case MaybeBinFilePath of
-
-						undefined ->
-							"";
-
-						BinfilePath ->
-							text_utils:format( " (associated to file '~ts')",
-											   [ BinfilePath ] )
-
-							end;
-
-				L ->
-
-					% Enforces a consistent order:
-					Strings = [ text_utils:format( "for key '~ts', value is: "
-							"~p", [ K, V ] ) || { K, V } <- lists:sort( L ) ],
-
-					text_utils:format( "~B entries recorded in environment "
-						"'~ts' (server: ~w): ~ts~n",
-						[ length( L ), EnvRegName, self(),
-						  text_utils:strings_to_string( Strings ) ] )
-
-			end,
-
-			BinMsg = text_utils:string_to_binary( Msg ),
-			SenderPid ! { notify_environment_status, BinMsg },
-
-			server_main_loop( Table, EnvRegName, MaybeBinFilePath );
+            end,
+            server_main_loop( Table, EnvRegName, MaybeBinFilePath );
 
 
-		stop ->
-			%trace_bridge:debug_fmt( "Stopping environment server ~w.",
-			%                        [ self() ] ),
-			stopped
+        { store, BinTargetFilePath } ->
 
-	end.
+            cond_utils:if_defined( myriad_debug_environments,
+                trace_utils:debug_fmt( "Storing environment state "
+                    "in specified file '~ts'.", [ BinTargetFilePath ] ) ),
+
+            file_utils:write_etf_file( table:enumerate( Table ),
+                                       BinTargetFilePath ),
+
+            server_main_loop( Table, EnvRegName, BinTargetFilePath );
+
+
+        { ensure_binary, SingleKey } when is_atom( SingleKey ) ->
+            NewTable = ensure_binaries( [ SingleKey ], Table ),
+            server_main_loop( NewTable, EnvRegName, MaybeBinFilePath );
+
+        { ensure_binary, KeyMaybes } ->
+            NewTable = ensure_binaries( KeyMaybes, Table ),
+            server_main_loop( NewTable, EnvRegName, MaybeBinFilePath );
+
+
+        { to_bin_string, SenderPid } ->
+
+            Msg = case table:enumerate( Table ) of
+
+                [] ->
+                    text_utils:format( "no entry recorded for environment "
+                        "'~ts' (server: ~w)", [ EnvRegName, self() ] )
+                            ++ case MaybeBinFilePath of
+
+                        undefined ->
+                            "";
+
+                        BinfilePath ->
+                            text_utils:format( " (associated to file '~ts')",
+                                               [ BinfilePath ] )
+
+                            end;
+
+                L ->
+
+                    % Enforces a consistent order:
+                    Strings = [ text_utils:format( "for key '~ts', value is: "
+                            "~p", [ K, V ] ) || { K, V } <- lists:sort( L ) ],
+
+                    text_utils:format( "~B entries recorded in environment "
+                        "'~ts' (server: ~w): ~ts~n",
+                        [ length( L ), EnvRegName, self(),
+                          text_utils:strings_to_string( Strings ) ] )
+
+            end,
+
+            BinMsg = text_utils:string_to_binary( Msg ),
+            SenderPid ! { notify_environment_status, BinMsg },
+
+            server_main_loop( Table, EnvRegName, MaybeBinFilePath );
+
+
+        stop ->
+            %trace_bridge:debug_fmt( "Stopping environment server ~w.",
+            %                        [ self() ] ),
+            stopped
+
+    end.
 
 
 
@@ -2458,59 +2456,59 @@ server_main_loop( Table, EnvRegName, MaybeBinFilePath ) ->
 %
 add_environment_from( FilePath, Table ) ->
 
-	case file:consult( FilePath ) of
+    case file:consult( FilePath ) of
 
-		{ ok, Entries } ->
+        { ok, Entries } ->
 
-			case check_entries( Entries ) of
+            case check_entries( Entries ) of
 
-				ok ->
-					NewTable = table:add_entries( Entries, Table ),
+                ok ->
+                    NewTable = table:add_entries( Entries, Table ),
 
-					%trace_bridge:debug_fmt( "Loaded from environment file "
-					%    "'~ts' following entries: ~ts",
-					%    [ FilePath, table:to_string( NewTable ) ] ),
+                    %trace_bridge:debug_fmt( "Loaded from environment file "
+                    %    "'~ts' following entries: ~ts",
+                    %    [ FilePath, table:to_string( NewTable ) ] ),
 
-					%trace_bridge:debug_fmt( "Environment file '~ts' loaded.",
-					%                        [ FilePath ] ),
+                    %trace_bridge:debug_fmt( "Environment file '~ts' loaded.",
+                    %                        [ FilePath ] ),
 
-				   NewTable;
+                   NewTable;
 
-				ErrorString ->
-					trace_bridge:error_fmt( "Error when reading environment "
-						"file '~ts' (~ts), no environment read.",
-						[ FilePath, ErrorString ] ),
-					Table
+                ErrorString ->
+                    trace_bridge:error_fmt( "Error when reading environment "
+                        "file '~ts' (~ts), no environment read.",
+                        [ FilePath, ErrorString ] ),
+                    Table
 
-			end;
-
-
-		{ error, { Line, _Mod, Term } } ->
-			FlattenError = text_utils:format( "~p", [ Term ] ),
-			trace_bridge:error_fmt( "Error in environment file '~ts' "
-				"at line ~B (~ts), no environment read.",
-				[ FilePath, Line, FlattenError ] ),
-			Table;
+            end;
 
 
-		{ error, Reason } ->
-			trace_bridge:error_fmt( "Error when reading environment file "
-				"'~ts' (~p), no environment read.", [ FilePath, Reason ] ),
-			Table
+        { error, { Line, _Mod, Term } } ->
+            FlattenError = text_utils:format( "~p", [ Term ] ),
+            trace_bridge:error_fmt( "Error in environment file '~ts' "
+                "at line ~B (~ts), no environment read.",
+                [ FilePath, Line, FlattenError ] ),
+            Table;
 
-	end.
+
+        { error, Reason } ->
+            trace_bridge:error_fmt( "Error when reading environment file "
+                "'~ts' (~p), no environment read.", [ FilePath, Reason ] ),
+            Table
+
+    end.
 
 
 
 % Checks specified entries.
 check_entries( _Entries=[] ) ->
-	ok;
+    ok;
 
 check_entries( _Entries=[ { K, _V } | T ] ) when is_atom( K ) ->
-	check_entries( T );
+    check_entries( T );
 
 check_entries( _Entries=[ { K, _V } | _T ] ) ->
-	text_utils:format( "key '~p' is not an atom", [ K ] );
+    text_utils:format( "key '~p' is not an atom", [ K ] );
 
 check_entries( _Entries=[ E | _T ] ) ->
-	text_utils:format( "entry '~p' is not a key/value pair", [ E ] ).
+    text_utils:format( "entry '~p' is not a key/value pair", [ E ] ).

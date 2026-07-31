@@ -33,9 +33,9 @@
 % @doc Entry point of this escript.
 main( ArgList ) ->
 
-	% First, enable all possible helper code (hence to be done first of all):
-	update_code_path_for_myriad(),
+    % First, enable all possible helper code (hence to be done first of all):
+    update_code_path_for_myriad(),
 
-	ArgTable = script_utils:get_arguments( ArgList ),
+    ArgTable = script_utils:get_arguments( ArgList ),
 
-	myriad_build:main( ArgTable ).
+    myriad_build:main( ArgTable ).

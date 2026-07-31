@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2025 Olivier Boudeville
+% Copyright (C) 2019-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -43,24 +43,24 @@ See the bijective_table.erl tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	TestTable = bijective_table:new( [ { "one", 1 }, { "two", 2 },
-		{ "three", 3 }, { "four", 4 }, { "five", 5 } ] ),
+    TestTable = bijective_table:new( [ { "one", 1 }, { "two", 2 },
+        { "three", 3 }, { "four", 4 }, { "five", 5 } ] ),
 
-	"four" = bijective_table:get_first_for( 4, TestTable ),
+    "four" = bijective_table:get_first_for( 4, TestTable ),
 
-	3 = bijective_table:get_second_for( "three", TestTable ),
+    3 = bijective_table:get_second_for( "three", TestTable ),
 
-	% Failure tests:
-	%FailingTable = bijective_table:new([ { "one", 1 }, { "two", 1 } ] ),
-	_Table = bijective_table:new( [ { "one", 1 }, { "two", 2 } ] ),
+    % Failure tests:
+    %FailingTable = bijective_table:new([ { "one", 1 }, { "two", 1 } ] ),
+    _Table = bijective_table:new( [ { "one", 1 }, { "two", 2 } ] ),
 
-	%bijective_table:get_first_for( 42, FailingTable ),
+    %bijective_table:get_first_for( 42, FailingTable ),
 
-	%bijective_table:get_second_for( "unexpected", FailingTable ),
+    %bijective_table:get_second_for( "unexpected", FailingTable ),
 
-	test_facilities:display( "Test table: ~ts",
-							 [ bijective_table:to_string( TestTable ) ] ),
+    test_facilities:display( "Test table: ~ts",
+                             [ bijective_table:to_string( TestTable ) ] ),
 
-	test_facilities:stop().
+    test_facilities:stop().

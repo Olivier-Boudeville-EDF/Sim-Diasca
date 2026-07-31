@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -56,118 +56,118 @@ test the trace system!).
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	% Allows to support both OTP conventions and ad hoc, automatic ones:
-	wooper_utils:start_for_test(),
+    % Allows to support both OTP conventions and ad hoc, automatic ones:
+    wooper_utils:start_for_test(),
 
-	case executable_utils:is_batch() of
+    case executable_utils:is_batch() of
 
-		true ->
-			test_facilities:display( "Running in batch mode." );
+        true ->
+            test_facilities:display( "Running in batch mode." );
 
-		false ->
-			test_facilities:display( "Running in interactive mode." )
+        false ->
+            test_facilities:display( "Running in interactive mode." )
 
-	end,
-
-
-	test_facilities:display( "Starting Trace system, with a trace aggregator "
-							 "and, if requested, a trace supervisor." ),
-
-	% Test target here:
-	?test_start,
-
-	test_facilities:display( "Creating a TestTraceEmitter." ),
-
-	Name = "I am a test emitter of traces",
-
-	% Should not trigger the launch of another global aggregator:
-	% (as test_start triggers a *synchronous* aggregator):
-	%
-	MyTraceEmitter = class_TestTraceEmitter:synchronous_new_link( Name ),
-
-	% Test target here:
-	?test_emergency( "This is a test of the emergency severity for tests." ),
-	?test_alert(     "This is a test of the alert severity for tests." ),
-	?test_critical(  "This is a test of the critical severity for tests." ),
-	?test_error(     "This is a test of the error severity for tests." ),
-	?test_warning(   "This is a test of the warning severity for tests." ),
-	?test_notice(    "This is a test of the notice severity for tests." ),
-	?test_info(      "This is a test of the info severity for tests."  ),
-	?test_debug(     "This is a test of the debug severity for tests." ),
-	?test_void(      "This is a test of the void severity for tests." ),
-
-	% Useful to test the trace listener:
-	?test_debug(   "This is an additional test with some non-Latin1 "
-				   "characters: àâäéèêëîïôöùûü" ),
+    end,
 
 
-	?test_emergency_fmt( "This is a test of the ~w severity for tests.",
-						 [ emergency ] ),
+    test_facilities:display( "Starting Trace system, with a trace aggregator "
+                             "and, if requested, a trace supervisor." ),
 
-	?test_alert_fmt( "This is a test of the ~w severity for tests.",
-					 [ alert ] ),
+    % Test target here:
+    ?test_start,
 
-	?test_critical_fmt( "This is a test of the ~w severity for tests.",
-						[ critical ] ),
+    test_facilities:display( "Creating a TestTraceEmitter." ),
 
-	?test_error_fmt( "This is a test of the ~w severity for tests.",
-					 [ error ] ),
+    Name = "I am a test emitter of traces",
 
-	?test_warning_fmt( "This is a test of the ~w severity for tests.",
-					   [ warning ] ),
+    % Should not trigger the launch of another global aggregator:
+    % (as test_start triggers a *synchronous* aggregator):
+    %
+    MyTraceEmitterPid = class_TestTraceEmitter:synchronous_new_link( Name ),
 
-	?test_notice_fmt( "This is a test of the ~w severity for tests.",
-					  [ notice ] ),
+    % Test target here:
+    ?test_emergency( "This is a test of the emergency severity for tests." ),
+    ?test_alert(     "This is a test of the alert severity for tests." ),
+    ?test_critical(  "This is a test of the critical severity for tests." ),
+    ?test_error(     "This is a test of the error severity for tests." ),
+    ?test_warning(   "This is a test of the warning severity for tests." ),
+    ?test_notice(    "This is a test of the notice severity for tests." ),
+    ?test_info(      "This is a test of the info severity for tests."  ),
+    ?test_debug(     "This is a test of the debug severity for tests." ),
+    ?test_void(      "This is a test of the void severity for tests." ),
 
-	?test_info_fmt( "This is a test of the ~w severity for tests.",
-					[ info ] ),
-
-	?test_debug_fmt( "This is a test of the ~w severity for tests.",
-					 [ debug ] ),
-
-	?test_void_fmt( "This is a test of the ~w severity for tests.",
-					[ void ] ),
-
-
-	test_facilities:display(
-		"Requesting the TestTraceEmitter to send some traces." ),
-
-	% Waits until there is an answer for this trace emitter:
-	MyTraceEmitter ! { sendTraces, [], self() },
-
-	receive
-
-		{ wooper_result, ok } ->
-			test_facilities:display( "Traces sent." )
-
-	end,
-
-	ExpectedFirstBinaryName = text_utils:string_to_binary( Name ),
-
-	MyTraceEmitter ! { getName, [], self() },
-	ExpectedFirstBinaryName = test_receive(),
-	?test_info( "Correct name returned." ),
+    % Useful to test the trace listener:
+    ?test_debug(   "This is an additional test with some non-Latin1 "
+                   "characters: àâäéèêëîïôöùûü" ),
 
 
-	NewName = "This is my new name",
+    ?test_emergency_fmt( "This is a test of the ~w severity for tests.",
+                         [ emergency ] ),
 
-	MyTraceEmitter ! { setName, [ NewName ] },
+    ?test_alert_fmt( "This is a test of the ~w severity for tests.",
+                     [ alert ] ),
 
-	ExpectedSecondBinaryName = text_utils:string_to_binary( NewName ),
+    ?test_critical_fmt( "This is a test of the ~w severity for tests.",
+                        [ critical ] ),
 
-	MyTraceEmitter ! { getName, [], self() },
-	ExpectedSecondBinaryName = test_receive(),
+    ?test_error_fmt( "This is a test of the ~w severity for tests.",
+                     [ error ] ),
 
-	?test_info( "Correct name returned." ),
+    ?test_warning_fmt( "This is a test of the ~w severity for tests.",
+                       [ warning ] ),
+
+    ?test_notice_fmt( "This is a test of the ~w severity for tests.",
+                      [ notice ] ),
+
+    ?test_info_fmt( "This is a test of the ~w severity for tests.",
+                    [ info ] ),
+
+    ?test_debug_fmt( "This is a test of the ~w severity for tests.",
+                     [ debug ] ),
+
+    ?test_void_fmt( "This is a test of the ~w severity for tests.",
+                    [ void ] ),
 
 
-	test_facilities:display( "Deleting this TestTraceEmitter." ),
+    test_facilities:display(
+        "Requesting the TestTraceEmitter to send some traces." ),
 
-	MyTraceEmitter ! delete,
+    % Waits until there is an answer for this trace emitter:
+    MyTraceEmitterPid ! { sendTraces, [], self() },
 
-	% Test target here:
-	?test_stop,
+    receive
 
-	test_facilities:stop().
+        { wooper_result, ok } ->
+            test_facilities:display( "Traces sent." )
+
+    end,
+
+    ExpectedFirstBinaryName = text_utils:string_to_binary( Name ),
+
+    MyTraceEmitterPid ! { getName, [], self() },
+    ExpectedFirstBinaryName = test_receive(),
+    ?test_info( "Correct name returned." ),
+
+
+    NewName = "This is my new name",
+
+    MyTraceEmitterPid ! { setName, [ NewName ] },
+
+    ExpectedSecondBinaryName = text_utils:string_to_binary( NewName ),
+
+    MyTraceEmitterPid ! { getName, [], self() },
+    ExpectedSecondBinaryName = test_receive(),
+
+    ?test_info( "Correct name returned." ),
+
+
+    test_facilities:display( "Deleting this TestTraceEmitter." ),
+
+    MyTraceEmitterPid ! delete,
+
+    % Test target here:
+    ?test_stop,
+
+    test_facilities:stop().

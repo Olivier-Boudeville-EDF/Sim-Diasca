@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2025 EDF R&D
+% Copyright (C) 2010-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -87,113 +87,113 @@ the dweller and the simulation duration time
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+    ?case_start,
 
-	% Use default simulation settings (50Hz, batch reproducible) except for the
-	% simulation name:
-	%
-	SimulationSettings = #simulation_settings{
-		simulation_name = "Sim-Diasca Ecosystem-related Simple Test",
-		result_specification = no_output },
-
-
-	% Specifies the list of computing hosts that can be used:
-	%
-	% (see the sim-diasca-host-candidates-sample.txt example in the
-	% sim-diasca/conf directory)
-	%
-	DeploymentSettings = #deployment_settings{
-
-		% We want to embed additionally this test and its specific
-		% prerequisites, defined in the Mock Simulators:
-		%
-		additional_elements_to_deploy = [
-			{ "..", code },
-			{ "ssi_test.dat", data },
-			{ "ssi_test.cfg", data } ],
-
-		enable_data_logger = true },
-
-	?test_info_fmt( "This test will deploy a distributed simulation"
-		" based on computing hosts specified as ~p.",
-		[ DeploymentSettings#deployment_settings.computing_hosts ] ),
+    % Use default simulation settings (50Hz, batch reproducible) except for the
+    % simulation name:
+    %
+    SimulationSettings = #simulation_settings{
+        simulation_name = "Sim-Diasca Ecosystem-related Simple Test",
+        result_specification = no_output },
 
 
-	% A deployment manager is created directly on the user node:
-	DeploymentManagerPid =
-		sim_diasca:init( SimulationSettings, DeploymentSettings ),
+    % Specifies the list of computing hosts that can be used:
+    %
+    % (see the sim-diasca-host-candidates-sample.txt example in the
+    % sim-diasca/conf directory)
+    %
+    DeploymentSettings = #deployment_settings{
 
-	?test_info( "Deployment manager created, retrieving the load balancer." ),
-	DeploymentManagerPid ! { getLoadBalancer, [], self() },
-	LoadBalancerPid = test_receive(),
+        % We want to embed additionally this test and its specific
+        % prerequisites, defined in the Mock Simulators:
+        %
+        additional_elements_to_deploy = [
+            { "..", code },
+            { "ssi_test.dat", data },
+            { "ssi_test.cfg", data } ],
 
-	DeploymentManagerPid ! { getRootTimeManager, [], self() },
-	RootTimeManagerPid = test_receive(),
+        enable_data_logger = true },
 
-	PerformanceTrackerPid = class_PerformanceTracker:get_tracker(),
-
-	case PerformanceTrackerPid of
-
-		not_registered ->
-			?test_info( "Performance tracker is not activated." );
-
-		TrackerPid ->
-			% Only an option:
-			TrackerPid ! { setTickerPeriod, _Milliseconds=10 }
-
-	end,
+    ?test_info_fmt( "This test will deploy a distributed simulation"
+        " based on computing hosts specified as ~p.",
+        [ DeploymentSettings#deployment_settings.computing_hosts ] ),
 
 
-	% Following is the actor creation section.
+    % A deployment manager is created directly on the user node:
+    DeploymentManagerPid =
+        sim_diasca:init( SimulationSettings, DeploymentSettings ),
 
-	% Firstly, a forest actor is created with given LoadBalancerPid and the
-	% forest longevity is defined as 2000ms, i.e. 100 ticks for 50Hz.
+    ?test_info( "Deployment manager created, retrieving the load balancer." ),
+    DeploymentManagerPid ! { getLoadBalancer, [], self() },
+    LoadBalancerPid = test_receive(),
 
-	?test_info( "Requesting to the load balancer the creation of "
-				"an initial forest." ),
+    DeploymentManagerPid ! { getRootTimeManager, [], self() },
+    RootTimeManagerPid = test_receive(),
 
-	ForestPid = class_Actor:create_initial_actor( class_Forest,
-		[ _ForestName="Forest", _ForestLongevity=2000 ], LoadBalancerPid ),
+    PerformanceTrackerPid = class_PerformanceTracker:get_tracker(),
 
-	% Then, all initial forest dwellers (placed or non placed) are created by
-	% sending initialForestCreation to forest with the number of initial actor
-	% to be created:
-	%
-	class_Forest:create_initial_foresters( _NbOaks=10, _NbSquirrels=50,
-										   ForestPid ),
+    case PerformanceTrackerPid of
 
-	?test_info( "Starting simulation." ),
-	RootTimeManagerPid ! { start, [ _StopTick=100, self() ] },
+        not_registered ->
+            ?test_info( "Performance tracker is not activated." );
 
-	% Following is the probe relative session, in particular for illustrating
-	% the personnalisation of probe view
+        TrackerPid ->
+            % Only an option:
+            TrackerPid ! { setTickerPeriod, _Milliseconds=10 }
 
-	% Getting one virtual probe created in class_Forest construct
+    end,
 
-	ForestPid ! { getDataLoggerPid, [], self() },
-	DataLoggerPid = test_receive(),
 
-	ForestPid ! { getVirtualProbe, [], self() },
-	ProbePid = test_receive(),
+    % Following is the actor creation section.
 
-	is_pid( DataLoggerPid ) andalso is_pid( ProbePid ) andalso
+    % Firstly, a forest actor is created with given LoadBalancerPid and the
+    % forest longevity is defined as 2000ms, i.e. 100 ticks for 50Hz.
+
+    ?test_info( "Requesting to the load balancer the creation of "
+                "an initial forest." ),
+
+    ForestPid = class_Actor:create_initial_actor( class_Forest,
+        [ _ForestName="Forest", _ForestLongevity=2000 ], LoadBalancerPid ),
+
+    % Then, all initial forest dwellers (placed or non placed) are created by
+    % sending initialForestCreation to forest with the number of initial actor
+    % to be created:
+    %
+    class_Forest:create_initial_foresters( _NbOaks=10, _NbSquirrels=50,
+                                           ForestPid ),
+
+    ?test_info( "Starting simulation." ),
+    RootTimeManagerPid ! { start, [ _StopTick=100, self() ] },
+
+    % Following is the probe relative session, in particular for illustrating
+    % the personnalisation of probe view
+
+    % Getting one virtual probe created in class_Forest construct
+
+    ForestPid ! { getDataLoggerPid, [], self() },
+    DataLoggerPid = test_receive(),
+
+    ForestPid ! { getVirtualProbe, [], self() },
+    ProbePid = test_receive(),
+
+    is_pid( DataLoggerPid ) andalso is_pid( ProbePid ) andalso
         begin
-			?test_info( "Changing the canvas size." ),
-			DataLoggerPid ! { setCanvasSize, [ ProbePid, 800, 500 ] }
+            ?test_info( "Changing the canvas size." ),
+            DataLoggerPid ! { setCanvasSize, [ ProbePid, 800, 500 ] }
         end,
 
-	% Waits until simulation is finished:
-	receive
+    % Waits until simulation is finished:
+    receive
 
-		simulation_stopped ->
-			?test_info( "Simulation stopped spontaneously." )
+        simulation_stopped ->
+            ?test_info( "Simulation stopped spontaneously." )
 
-	end,
+    end,
 
 
-	?test_info( "Browsing the report results, if in batch mode." ),
-	class_ResultManager:browse_reports(),
+    ?test_info( "Browsing the report results, if in batch mode." ),
+    class_ResultManager:browse_reports(),
 
-	sim_diasca:shutdown(),
+    sim_diasca:shutdown(),
 
-	?case_stop.
+    ?case_stop.

@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2025 EDF R&D
+% Copyright (C) 2012-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -25,23 +25,23 @@
 
 
 -define( class_description,
-		 "Class modelling a point of interest, which is basically any named "
-		 "point on a thoroughfare network." ).
+         "Class modelling a point of interest, which is basically any named "
+         "point on a thoroughfare network." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
 -define( superclasses, [ class_GeoContainer, class_Graphable,
-						 class_EngineBaseObject ] ).
+                         class_EngineBaseObject ] ).
 
 
 % The class-specific attributes of an instance of a point of interest are:
 -define( class_attributes, [
 
-	{ inbound_roads, [ road_pid() ],
-	  "listing the PID of the roads pointing to this location of interest" },
+    { inbound_roads, [ road_pid() ],
+      "listing the PID of the roads pointing to this location of interest" },
 
-	{ outbound_roads, [ road_pid() ],
-	  "listing the PID of the roads pointing from this location of interest" }
+    { outbound_roads, [ road_pid() ],
+      "listing the PID of the roads pointing from this location of interest" }
 
 ] ).
 
@@ -100,23 +100,23 @@ class_GIS:geolocation_coordinate() }
 - Location :: the corresponding (static) location
 """.
 -spec construct( wooper:state(), class_TraceEmitter:emitter_init(),
-				 class_GIS:static_location(), gis_pid() ) -> wooper:state().
+                 class_GIS:static_location(), gis_pid() ) -> wooper:state().
 construct( State, Name, Location, GISPid ) ->
 
-	GISPid ! { recordPointOfInterest, [ self(), Location ] },
+    GISPid ! { recordPointOfInterest, [ self(), Location ] },
 
-	TraceState = class_EngineBaseObject:construct( State,
-												   ?trace_categorize(Name) ),
+    TraceState = class_EngineBaseObject:construct( State,
+                                                   ?trace_categorize(Name) ),
 
-	GeoState = class_GeoContainer:construct( TraceState, Location ),
+    GeoState = class_GeoContainer:construct( TraceState, Location ),
 
-	Label = Name ++ "\\n" ++ text_utils:pid_to_string( self() ),
+    Label = Name ++ "\\n" ++ text_utils:pid_to_string( self() ),
 
-	GraphableState = class_Graphable:construct( GeoState,
-		[ { label, Label }, { color, black } ] ),
+    GraphableState = class_Graphable:construct( GeoState,
+        [ { label, Label }, { color, black } ] ),
 
-	setAttributes( GraphableState, [ { inbound_roads, [] },
-									 { outbound_roads, [] } ] ).
+    setAttributes( GraphableState, [ { inbound_roads, [] },
+                                     { outbound_roads, [] } ] ).
 
 
 
@@ -134,23 +134,23 @@ Note: not to be mixed up with the `class_GeoContainer:requestEntry/1` request.
 -spec requestEntry( wooper:state(), vehicle_pid() ) -> actor_oneway_return().
 requestEntry( State, VehiclePid ) ->
 
-	% Each POI is a geo-container:
-	{ ReqState, EnterRequestOutcome } =
-		class_GeoContainer:request_entry( VehiclePid, State ),
+    % Each POI is a geo-container:
+    { ReqState, EnterRequestOutcome } =
+        class_GeoContainer:request_entry( VehiclePid, State ),
 
-	?debug_fmt( "Vehicle ~w requested entry, answer is ~p.",
-				[ VehiclePid, EnterRequestOutcome ] ),
+    ?debug_fmt( "Vehicle ~w requested entry, answer is ~p.",
+                [ VehiclePid, EnterRequestOutcome ] ),
 
-	% We must call a method to resolve the actual class name (probably a child
-	% class of PointOfInterest:
-	%
-	{ _SameState, Classname } = executeRequest( ReqState, getClassname ),
+    % We must call a method to resolve the actual class name (probably a child
+    % class of PointOfInterest:
+    %
+    { _SameState, Classname } = executeRequest( ReqState, getClassname ),
 
-	% Sends back the result:
-	SentState = class_Actor:send_actor_message( VehiclePid,
-		{ notifyEntryOutcome, [ EnterRequestOutcome, Classname ] }, ReqState ),
+    % Sends back the result:
+    SentState = class_Actor:send_actor_message( VehiclePid,
+        { notifyEntryOutcome, [ EnterRequestOutcome, Classname ] }, ReqState ),
 
-	actor:return_state( SentState ).
+    actor:return_state( SentState ).
 
 
 
@@ -162,19 +162,19 @@ POI, and requests that road to accept it.
                                             actor_oneway_return().
 takeRoadTo( State, TargetPOI, VehiclePid ) ->
 
-	RoadPid = find_road_to( TargetPOI, State ),
+    RoadPid = find_road_to( TargetPOI, State ),
 
-	?debug_fmt( "Notifying on behalf of vehicle ~w road ~w that "
-		"it enters it in order to go to POI ~w.",
-		[ VehiclePid, RoadPid, TargetPOI ] ),
+    ?debug_fmt( "Notifying on behalf of vehicle ~w road ~w that "
+        "it enters it in order to go to POI ~w.",
+        [ VehiclePid, RoadPid, TargetPOI ] ),
 
-	% Sends the request on behalf of the vehicle, which will be notified
-	% directly by the road thanks to a notifyRoadEntry call:
-	%
-	SentState = class_Actor:send_actor_message( RoadPid,
-		{ driveIn, VehiclePid }, State ),
+    % Sends the request on behalf of the vehicle, which will be notified
+    % directly by the road thanks to a notifyRoadEntry call:
+    %
+    SentState = class_Actor:send_actor_message( RoadPid,
+        { driveIn, VehiclePid }, State ),
 
-	actor:return_state( SentState ).
+    actor:return_state( SentState ).
 
 
 
@@ -185,24 +185,24 @@ takeRoadTo( State, TargetPOI, VehiclePid ) ->
 -doc "Declares an additional inbound road.".
 -spec declareInboundRoad( wooper:state(), road_pid() ) -> actor_oneway_return().
 declareInboundRoad( State, RoadPid ) ->
-	actor:return_state( appendToAttribute( State, inbound_roads, RoadPid ) ).
+    actor:return_state( appendToAttribute( State, inbound_roads, RoadPid ) ).
 
 
 
 -doc "Declares an additional outbound road.".
 -spec declareOutboundRoad( wooper:state(), road_pid() ) ->
-								actor_oneway_return().
+                                actor_oneway_return().
 declareOutboundRoad( State, RoadPid ) ->
-	actor:return_state( appendToAttribute( State, outbound_roads, RoadPid ) ).
+    actor:return_state( appendToAttribute( State, outbound_roads, RoadPid ) ).
 
 
 
 -doc "Returns the road connectivity of this point of interest.".
 -spec getConnectivity( wooper:state() ) ->
-					const_request_return( { [ road_pid() ], [ road_pid() ] } ).
+                    const_request_return( { [ road_pid() ], [ road_pid() ] } ).
 getConnectivity( State ) ->
-	wooper:const_return_result(
-		{ ?getAttr(inbound_roads), ?getAttr(outbound_roads) } ).
+    wooper:const_return_result(
+        { ?getAttr(inbound_roads), ?getAttr(outbound_roads) } ).
 
 
 
@@ -211,27 +211,27 @@ Returns a list of the outbound POIs, i.e. the POIs that can be reached with a
 road starting from this POI.
 """.
 -spec getOutboundPOIs( wooper:state() ) ->
-						const_request_return( [ poi_pid() ] ).
+                        const_request_return( [ poi_pid() ] ).
 getOutboundPOIs( State ) ->
 
-	% We must rely on the AAIs in order to return a reproducible PID list:
-	%
-	% (we receive an unordered list of {RoadAAI, POIPID} pairs)
-	%
-	ReceivedPOIPairs = wooper:obtain_results_for_requests(
-		_RequestName=getTargetPOI, _RequestArgs=[],
-		_TargetInstancePIDs=?getAttr(outbound_roads) ),
+    % We must rely on the AAIs in order to return a reproducible PID list:
+    %
+    % (we receive an unordered list of {RoadAAI, POIPID} pairs)
+    %
+    ReceivedPOIPairs = wooper:obtain_results_for_requests(
+        _RequestName=getTargetPOI, _RequestArgs=[],
+        _TargetInstancePIDs=?getAttr(outbound_roads) ),
 
-	% We use AAI to sort POI PIDs reproducibly:
-	SortedPairs = lists:keysort( _AAIIndex=1, ReceivedPOIPairs ),
+    % We use AAI to sort POI PIDs reproducibly:
+    SortedPairs = lists:keysort( _AAIIndex=1, ReceivedPOIPairs ),
 
-	% Drop AAI and avoid useless duplicates:
-	%SelectedPOIs = list_utils:uniquify(
-	%    [ PoiPID || { _RoadAAI, PoiPID } <- SortedPairs ] ),
+    % Drop AAI and avoid useless duplicates:
+    %SelectedPOIs = list_utils:uniquify(
+    %    [ PoiPID || { _RoadAAI, PoiPID } <- SortedPairs ] ),
 
-	SelectedPOIs = [ PoiPID || { _RoadAAI, PoiPID } <- SortedPairs ],
+    SelectedPOIs = [ PoiPID || { _RoadAAI, PoiPID } <- SortedPairs ],
 
-	wooper:const_return_result( SelectedPOIs ).
+    wooper:const_return_result( SelectedPOIs ).
 
 
 
@@ -243,9 +243,9 @@ Note: not blocking, beware to synchronicity!
 -spec registerInGIS( wooper:state(), gis_pid() ) -> const_oneway_return().
 registerInGIS( State, GISPid ) ->
 
-	GISPid ! { declarePOI, self() },
+    GISPid ! { declarePOI, self() },
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 
@@ -253,35 +253,35 @@ registerInGIS( State, GISPid ) ->
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
-	TrackerPid = ?getAttr(local_tracker_pid),
+    TrackerPid = ?getAttr(local_tracker_pid),
 
-	Inbounds = ?getAttr(inbound_roads),
-	Outbounds = ?getAttr(outbound_roads),
+    Inbounds = ?getAttr(inbound_roads),
+    Outbounds = ?getAttr(outbound_roads),
 
-	RoadFun = fun( RoadPid, AccStrings ) ->
+    RoadFun = fun( RoadPid, AccStrings ) ->
 
-		RoadAAI = class_InstanceTracker:get_identifier_for( RoadPid,
-															TrackerPid ),
+        RoadAAI = class_InstanceTracker:get_identifier_for( RoadPid,
+                                                            TrackerPid ),
 
-		[ text_utils:format( "~B (~w)",
-							 [ RoadAAI, RoadPid ] ) | AccStrings ]
+        [ text_utils:format( "~B (~w)",
+                             [ RoadAAI, RoadPid ] ) | AccStrings ]
 
-	end,
+    end,
 
-	InStrings = lists:foldl( RoadFun, _AccIn0=[], _InList=Inbounds ),
+    InStrings = lists:foldl( RoadFun, _AccIn0=[], _InList=Inbounds ),
 
-	InString = text_utils:join( ", ", lists:reverse( InStrings ) ),
+    InString = text_utils:join( ", ", lists:reverse( InStrings ) ),
 
-	OutStrings = lists:foldl( RoadFun, _AccOut0=[], _OutList=Outbounds ),
+    OutStrings = lists:foldl( RoadFun, _AccOut0=[], _OutList=Outbounds ),
 
-	OutString = text_utils:join( ", ", lists:reverse( OutStrings ) ),
+    OutString = text_utils:join( ", ", lists:reverse( OutStrings ) ),
 
-	text_utils:format( "point of interest '~ts' located at ~ts, "
-		"having ~B inbound road(s) (i.e. ~ts) and "
-		"~B outbound road(s) (i.e. ~ts)",
-		[ ?getAttr(name),
-		  class_GeolocalizedElement:interpret_location( State ),
-		  length( Inbounds ), InString, length( Outbounds ), OutString ] ).
+    text_utils:format( "point of interest '~ts' located at ~ts, "
+        "having ~B inbound road(s) (i.e. ~ts) and "
+        "~B outbound road(s) (i.e. ~ts)",
+        [ ?getAttr(name),
+          class_GeolocalizedElement:interpret_location( State ),
+          length( Inbounds ), InString, length( Outbounds ), OutString ] ).
 
 
 
@@ -294,27 +294,27 @@ random.
 """.
 find_road_to( TargetPOI, State ) ->
 
-	OutboundRoads = ?getAttr(outbound_roads),
+    OutboundRoads = ?getAttr(outbound_roads),
 
-	% Allowed as connectivity is static:
-	CandidateRoads = lists:foldl(
-		fun( OutBoundRoad, Acc ) ->
-			OutBoundRoad ! { getTargetPOI, [], self() },
-			receive
+    % Allowed as connectivity is static:
+    CandidateRoads = lists:foldl(
+        fun( OutBoundRoad, Acc ) ->
+            OutBoundRoad ! { getTargetPOI, [], self() },
+            receive
 
-				{ wooper_result, { _RoadAAI, TargetPOI } } ->
-					[ OutBoundRoad | Acc ];
+                { wooper_result, { _RoadAAI, TargetPOI } } ->
+                    [ OutBoundRoad | Acc ];
 
-				{ wooper_result, { _RoadAAI, _OtherPOI } } ->
-					Acc
+                { wooper_result, { _RoadAAI, _OtherPOI } } ->
+                    Acc
 
-			end
-		end,
-		_Acc0=[],
-		_List=OutboundRoads ),
+            end
+        end,
+        _Acc0=[],
+        _List=OutboundRoads ),
 
-	CandidateRoads =:= [] andalso
-			throw( { cannot_reach, { from, self() }, { to, TargetPOI },
-						{ using_roads, OutboundRoads } } ),
+    CandidateRoads =:= [] andalso
+            throw( { cannot_reach, { from, self() }, { to, TargetPOI },
+                        { using_roads, OutboundRoads } } ),
 
-	list_utils:draw_element( CandidateRoads ).
+    list_utils:draw_element( CandidateRoads ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2025 EDF R&D
+% Copyright (C) 2012-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -27,8 +27,8 @@
 
 
 -define( class_description,
-		 "Class modelling a waste loading point, i.e. a physical location "
-		 "from which wastes can be loaded, by garbage trucks." ).
+         "Class modelling a waste loading point, i.e. a physical location "
+         "from which wastes can be loaded, by garbage trucks." ).
 
 
 % For waste_tank() and al:
@@ -52,8 +52,8 @@
 % The class-specific attributes of an instance of loading point are:
 -define( class_attributes, [
 
-	{ waste_capacity, [ waste_capacity() ],
-	  "a plain list storing the state of the waste storage tanks" } ] ).
+    { waste_capacity, [ waste_capacity() ],
+      "a plain list storing the state of the waste storage tanks" } ] ).
 
 
 
@@ -87,11 +87,11 @@ Construction parameters are:
                                                 wooper:state().
 construct( State, Location, CapacityInformation ) ->
 
-	ContainerState = class_GeoContainer:construct( State, Location ),
+    ContainerState = class_GeoContainer:construct( State, Location ),
 
-	Tanks = manage_capacity_information( CapacityInformation ),
+    Tanks = manage_capacity_information( CapacityInformation ),
 
-	setAttribute( ContainerState, waste_capacity, Tanks ).
+    setAttribute( ContainerState, waste_capacity, Tanks ).
 
 
 
@@ -113,60 +113,60 @@ The answer (the actor message sent back) will be:
 (transaction failed)
 """.
 -spec loadWaste( wooper:state(), waste_type(), unit_utils:tons(),
-				 sending_actor_pid() ) -> actor_oneway_return().
+                 sending_actor_pid() ) -> actor_oneway_return().
 loadWaste( State, WasteType, MaxWantedMass, WasteLoaderPid ) ->
 
-	WasteTanks = ?getAttr(waste_capacity),
+    WasteTanks = ?getAttr(waste_capacity),
 
-	[ waste_utils:check_waste_tank( T ) || T <- WasteTanks ],
+    [ waste_utils:check_waste_tank( T ) || T <- WasteTanks ],
 
-	{ _State, DescString } = executeRequest( State, toString ),
+    { _State, DescString } = executeRequest( State, toString ),
 
-	?info_fmt( "Trying to load up to ~f tons of waste of "
-		"type compatible with '~ts' from the ~B tanks of ~ts "
-		"to docked waste transport ~w.",
-		[ MaxWantedMass, WasteType, length( WasteTanks ),
-		  DescString, WasteLoaderPid ] ),
+    ?info_fmt( "Trying to load up to ~f tons of waste of "
+        "type compatible with '~ts' from the ~B tanks of ~ts "
+        "to docked waste transport ~w.",
+        [ MaxWantedMass, WasteType, length( WasteTanks ),
+          DescString, WasteLoaderPid ] ),
 
-	LoadState = case get_waste_from_tanks( WasteType, MaxWantedMass,
-										   WasteTanks ) of
+    LoadState = case get_waste_from_tanks( WasteType, MaxWantedMass,
+                                           WasteTanks ) of
 
-		false ->
-			?info_fmt( "No waste could be loaded to transport ~w.",
-					   [ WasteLoaderPid ] ),
+        false ->
+            ?info_fmt( "No waste could be loaded to transport ~w.",
+                       [ WasteLoaderPid ] ),
 
-			class_Actor:send_actor_message( WasteLoaderPid,
-											notifyNoLoadedWaste, State );
+            class_Actor:send_actor_message( WasteLoaderPid,
+                                            notifyNoLoadedWaste, State );
 
 
-		{ NewWasteTanks, RemainingFreeMass, Type } ->
+        { NewWasteTanks, RemainingFreeMass, Type } ->
 
-			% Waste loaded:
-			LoadedMass = MaxWantedMass - RemainingFreeMass,
+            % Waste loaded:
+            LoadedMass = MaxWantedMass - RemainingFreeMass,
 
-			LoadingTickCount = get_loading_duration( Type, LoadedMass, State ),
+            LoadingTickCount = get_loading_duration( Type, LoadedMass, State ),
 
-			?info_fmt( "Loading, to transport ~w, ~f tons of waste "
-				"of type ~ts, this will last for ~B ticks.",
-				[ WasteLoaderPid, LoadedMass, Type, LoadingTickCount ] ),
+            ?info_fmt( "Loading, to transport ~w, ~f tons of waste "
+                "of type ~ts, this will last for ~B ticks.",
+                [ WasteLoaderPid, LoadedMass, Type, LoadingTickCount ] ),
 
-			SentState = class_Actor:send_actor_message( WasteLoaderPid,
-				{ notifyLoadedWaste,
-					[ LoadedMass, Type, LoadingTickCount ] },
-				State ),
+            SentState = class_Actor:send_actor_message( WasteLoaderPid,
+                { notifyLoadedWaste,
+                    [ LoadedMass, Type, LoadingTickCount ] },
+                State ),
 
-			setAttribute( SentState, waste_capacity, NewWasteTanks )
+            setAttribute( SentState, waste_capacity, NewWasteTanks )
 
-	end,
+    end,
 
-	[ waste_utils:check_waste_tank( T )
-		|| T <- getAttribute( LoadState, waste_capacity ) ],
+    [ waste_utils:check_waste_tank( T )
+        || T <- getAttribute( LoadState, waste_capacity ) ],
 
-	{ _SameState, Desc } = executeRequest( LoadState, toString ),
+    { _SameState, Desc } = executeRequest( LoadState, toString ),
 
-	?info_fmt( "After this loading attempt, new state is: ~ts.", [ Desc ] ),
+    ?info_fmt( "After this loading attempt, new state is: ~ts.", [ Desc ] ),
 
-	actor:return_state( LoadState ).
+    actor:return_state( LoadState ).
 
 
 
@@ -180,80 +180,80 @@ could not be transferred (if any) and the overall type of the waste that has
 been loaded.
 """.
 get_waste_from_tanks( WasteType, MaxWantedMass, WasteTanks ) ->
-	get_waste_from_tanks( WasteType, MaxWantedMass, WasteTanks, _AccTanks=[],
-						  _LoadedWasteType=undefined ).
+    get_waste_from_tanks( WasteType, MaxWantedMass, WasteTanks, _AccTanks=[],
+                          _LoadedWasteType=undefined ).
 
 
 get_waste_from_tanks( _WasteType, _RemainingFreeMass, _WasteTanks=[], _AccTanks,
-					  _LoadedWasteType=undefined ) ->
-	% No loaded waste type defined, hence nothing loaded:
-	false;
+                      _LoadedWasteType=undefined ) ->
+    % No loaded waste type defined, hence nothing loaded:
+    false;
 
 get_waste_from_tanks( _WasteType, RemainingFreeMass, _WasteTanks=[], AccTanks,
-					  LoadedWasteType ) ->
-	{ AccTanks, RemainingFreeMass, LoadedWasteType };
+                      LoadedWasteType ) ->
+    { AccTanks, RemainingFreeMass, LoadedWasteType };
 
 
 get_waste_from_tanks( WasteType, RemainingFreeMass, _WasteTanks=[
-		Tank=#waste_tank{ current_mass_stored=CurrentTankMass } | T ],
-		AccTanks, LoadedWasteType ) ->
+        Tank=#waste_tank{ current_mass_stored=CurrentTankMass } | T ],
+        AccTanks, LoadedWasteType ) ->
 
-	case math_utils:is_null( CurrentTankMass ) of
+    case math_utils:is_null( CurrentTankMass ) of
 
-		true ->
-			% An empty tank is of no use here, continuing iterating:
-			get_waste_from_tanks( WasteType, RemainingFreeMass, T,
-								  [ Tank | AccTanks ], LoadedWasteType );
+        true ->
+            % An empty tank is of no use here, continuing iterating:
+            get_waste_from_tanks( WasteType, RemainingFreeMass, T,
+                                  [ Tank | AccTanks ], LoadedWasteType );
 
-		% Non-empty tank here:
-		false ->
-			TankWasteType = Tank#waste_tank.current_type,
+        % Non-empty tank here:
+        false ->
+            TankWasteType = Tank#waste_tank.current_type,
 
-			case waste_utils:can_be_mixed( WasteType, TankWasteType ) of
+            case waste_utils:can_be_mixed( WasteType, TankWasteType ) of
 
-				true ->
+                true ->
 
-					% Yes, so let's empty this tank as much as possible:
-					case CurrentTankMass > RemainingFreeMass of
+                    % Yes, so let's empty this tank as much as possible:
+                    case CurrentTankMass > RemainingFreeMass of
 
-						true ->
+                        true ->
 
-							% Here we will saturate the truck with this tank:
-							UpdatedTank = waste_utils:remove_waste_from_tank(
-								Tank, RemainingFreeMass ),
+                            % Here we will saturate the truck with this tank:
+                            UpdatedTank = waste_utils:remove_waste_from_tank(
+                                Tank, RemainingFreeMass ),
 
-							% Truck full, hence no need to recurse more:
-							NewTanks = [ UpdatedTank | T ] ++ AccTanks,
+                            % Truck full, hence no need to recurse more:
+                            NewTanks = [ UpdatedTank | T ] ++ AccTanks,
 
-							% We update the type as well, otherwise we could
-							% keep the one of the possibly empty truck which
-							% would then be 'none':
-							%
-							{ NewTanks, _NoMoreMass=0.0, TankWasteType };
+                            % We update the type as well, otherwise we could
+                            % keep the one of the possibly empty truck which
+                            % would then be 'none':
+                            %
+                            { NewTanks, _NoMoreMass=0.0, TankWasteType };
 
-						false ->
-							% Here we will fully deplete the tank:
-							UpdatedTank = waste_utils:remove_waste_from_tank(
-								Tank, CurrentTankMass ),
+                        false ->
+                            % Here we will fully deplete the tank:
+                            UpdatedTank = waste_utils:remove_waste_from_tank(
+                                Tank, CurrentTankMass ),
 
-							NewRemainingFreeMass =
-								RemainingFreeMass - CurrentTankMass,
+                            NewRemainingFreeMass =
+                                RemainingFreeMass - CurrentTankMass,
 
-							% Same remark for the update of waste type:
-							get_waste_from_tanks( WasteType,
-								NewRemainingFreeMass, T,
-								[ UpdatedTank | AccTanks ], TankWasteType )
+                            % Same remark for the update of waste type:
+                            get_waste_from_tanks( WasteType,
+                                NewRemainingFreeMass, T,
+                                [ UpdatedTank | AccTanks ], TankWasteType )
 
-					end ;
+                    end ;
 
-				false ->
-					% Unmatching waste type for this tank, let's continue then:
-					get_waste_from_tanks( WasteType, RemainingFreeMass,  T,
-						[ Tank | AccTanks ], LoadedWasteType )
+                false ->
+                    % Unmatching waste type for this tank, let's continue then:
+                    get_waste_from_tanks( WasteType, RemainingFreeMass,  T,
+                        [ Tank | AccTanks ], LoadedWasteType )
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -263,8 +263,8 @@ get_waste_from_tanks( WasteType, RemainingFreeMass, _WasteTanks=[
 
 -doc "Checkings.".
 manage_capacity_information( CapacityInformation ) ->
-	[ waste_utils:check_waste_tank( Tank ) || Tank <- CapacityInformation ],
-	CapacityInformation.
+    [ waste_utils:check_waste_tank( Tank ) || Tank <- CapacityInformation ],
+    CapacityInformation.
 
 
 
@@ -274,10 +274,10 @@ specified waste type in a waste transport.
 """.
 get_loading_duration( _WasteType, LoadedMass, State ) ->
 
-	% A base of 3 minutes, plus 2 minutes per ton (the waste type does not
-	% matter in this model):
-	%
-	Seconds = ( 3 + 2 * LoadedMass ) * 60,
+    % A base of 3 minutes, plus 2 minutes per ton (the waste type does not
+    % matter in this model):
+    %
+    Seconds = ( 3 + 2 * LoadedMass ) * 60,
 
-	class_Actor:convert_seconds_to_ticks( Seconds, ?city_max_relative_error,
-										  State ).
+    class_Actor:convert_seconds_to_ticks( Seconds, ?city_max_relative_error,
+                                          State ).

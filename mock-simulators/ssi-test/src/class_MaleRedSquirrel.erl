@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -69,23 +69,23 @@ Constructs a male red squirrel actor:
 - ForestPid is the PID of the forest this squirrel is in
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(), ustring(), age(),
-				 actor_pid() ) -> wooper:state().
+                 actor_pid() ) -> wooper:state().
 construct( State, ActorSettings, SquirrelName, GivenAge, ForestPid ) ->
 
-	% First, the mother class:
-	SquirrelState = class_Squirrel:construct( State, ActorSettings,
-		?trace_categorize(SquirrelName), GivenAge, ForestPid ),
+    % First, the mother class:
+    SquirrelState = class_Squirrel:construct( State, ActorSettings,
+        ?trace_categorize(SquirrelName), GivenAge, ForestPid ),
 
-	% Attribute descriptions:
-	% - frame_of_mind: can be 'available' or 'weak'
+    % Attribute descriptions:
+    % - frame_of_mind: can be 'available' or 'weak'
 
-	StartingState = setAttributes( SquirrelState, [
-		{ frame_of_mind, undefined },
-		{ tail_length, get_initial_tail_length() } ] ),
+    StartingState = setAttributes( SquirrelState, [
+        { frame_of_mind, undefined },
+        { tail_length, get_initial_tail_length() } ] ),
 
-	?send_info( StartingState, "Creating a male red squirrel." ),
+    ?send_info( StartingState, "Creating a male red squirrel." ),
 
-	StartingState.
+    StartingState.
 
 
 
@@ -96,12 +96,12 @@ construct( State, ActorSettings, SquirrelName, GivenAge, ForestPid ) ->
 
 -doc "Simply schedules this just created actor at the next tick (diasca 0).".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-							actor_oneway_return().
+                            actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
-	ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),
+    ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),
 
-	actor:return_state( ScheduledState ).
+    actor:return_state( ScheduledState ).
 
 
 
@@ -109,20 +109,20 @@ onFirstDiasca( State, _SendingActorPid ) ->
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
-	TerminationOffset = ?getAttr(termination_tick_offset),
+    TerminationOffset = ?getAttr(termination_tick_offset),
 
-	% Terminates if the termination offset is reached or exceeded:
-	NewState = case ?getAttr(current_tick_offset) of
+    % Terminates if the termination offset is reached or exceeded:
+    NewState = case ?getAttr(current_tick_offset) of
 
-		PastOffset when PastOffset >= TerminationOffset ->
-			termination_relative_activities( State );
+        PastOffset when PastOffset >= TerminationOffset ->
+            termination_relative_activities( State );
 
-		_CurrentOffset ->
-			spontaneous_activities( State )
+        _CurrentOffset ->
+            spontaneous_activities( State )
 
-	end,
+    end,
 
-	wooper:return_state( NewState ).
+    wooper:return_state( NewState ).
 
 
 
@@ -136,17 +136,17 @@ frame_of_mind for a defined period.
 -spec youWon( wooper:state(), sending_actor_pid() ) -> actor_oneway_return().
 youWon( State, _SendingActorPid ) ->
 
-	?notice( "I am the winner, I am the most beautiful squirrel." ),
+    ?notice( "I am the winner, I am the most beautiful squirrel." ),
 
-	FrameState = setAttribute( State, frame_of_mind, arrogant ),
+    FrameState = setAttribute( State, frame_of_mind, arrogant ),
 
-	NextAvailableTick = ?getAttr(current_tick_offset)
-		+ ?getAttr(arrogant_period),
+    NextAvailableTick = ?getAttr(current_tick_offset)
+        + ?getAttr(arrogant_period),
 
-	FinalState = executeOneway( FrameState, addSpontaneousTick,
-								NextAvailableTick ),
+    FinalState = executeOneway( FrameState, addSpontaneousTick,
+                                NextAvailableTick ),
 
-	actor:return_state( FinalState ).
+    actor:return_state( FinalState ).
 
 
 
@@ -154,51 +154,51 @@ youWon( State, _SendingActorPid ) ->
 -spec youLose( wooper:state(), sending_actor_pid() ) -> actor_oneway_return().
 youLose( State, _SendingActorPid ) ->
 
-	?notice( "I am so sad, I am not the winner." ),
+    ?notice( "I am so sad, I am not the winner." ),
 
-	NextState = executeOneway( State, scheduleNextSpontaneousTick ),
+    NextState = executeOneway( State, scheduleNextSpontaneousTick ),
 
-	actor:return_state( setAttribute( NextState, frame_of_mind, available ) ).
+    actor:return_state( setAttribute( NextState, frame_of_mind, available ) ).
 
 
 
 
 -doc "Called when an alert message is received from the forest.".
 -spec beAlert( wooper:state(), alert(), sending_actor_pid() ) ->
-										actor_oneway_return().
+                                        actor_oneway_return().
 beAlert( State, Alert, _SendingActorPid ) ->
 
-	NewState = case Alert of
+    NewState = case Alert of
 
-		savage ->
-			?notice( "A savage alert is received, I am preparing my deferred "
-					 "termination." ),
-			executeOneway( State, notifyTermination );
+        savage ->
+            ?notice( "A savage alert is received, I am preparing my deferred "
+                     "termination." ),
+            executeOneway( State, notifyTermination );
 
-		famine ->
-			case ?getAttr(frame_of_mind) of
+        famine ->
+            case ?getAttr(frame_of_mind) of
 
-				Mindset when (Mindset=:=weak) orelse (Mindset=:=gestation) ->
-					?notice_fmt( "I am in ~p frame of mind and "
-						"a famine alert is received, I am preparing "
-						"my deferred termination.", [ Mindset ] ),
-					executeOneway( State, notifyTermination );
+                Mindset when (Mindset=:=weak) orelse (Mindset=:=gestation) ->
+                    ?notice_fmt( "I am in ~p frame of mind and "
+                        "a famine alert is received, I am preparing "
+                        "my deferred termination.", [ Mindset ] ),
+                    executeOneway( State, notifyTermination );
 
-				_OtherMindset ->
-					?notice_fmt( "I received a ~p alert, but I am surviving.",
-								 [ Alert ] ),
-					State
+                _OtherMindset ->
+                    ?notice_fmt( "I received a ~p alert, but I am surviving.",
+                                 [ Alert ] ),
+                    State
 
-			end;
+            end;
 
-		_OtherAlert ->
-			?notice_fmt( "I received a ~p alert, but I am surviving.",
-						 [ Alert ] ),
-			State
+        _OtherAlert ->
+            ?notice_fmt( "I received a ~p alert, but I am surviving.",
+                         [ Alert ] ),
+            State
 
-	end,
+    end,
 
-	actor:return_state( NewState ).
+    actor:return_state( NewState ).
 
 
 
@@ -206,27 +206,27 @@ beAlert( State, Alert, _SendingActorPid ) ->
 A competition invitation is received, the squirrel replies with its tail length.
 """.
 -spec beInvited( wooper:state(), actor_pid(), sending_actor_pid() ) ->
-											actor_oneway_return().
+                                            actor_oneway_return().
 beInvited( State, LauncherPid, SendingActorPid ) ->
 
-	?notice_fmt( "I, male red squirrel ~w, receive a invitation.", [ self() ] ),
+    ?notice_fmt( "I, male red squirrel ~w, receive a invitation.", [ self() ] ),
 
-	TailLength = case ?getAttr(frame_of_mind) of
+    TailLength = case ?getAttr(frame_of_mind) of
 
-		weak ->
-			 ?notice( "I cannot participate to the competition, "
-					  "I am too young." ),
-			 refused;
+        weak ->
+             ?notice( "I cannot participate to the competition, "
+                      "I am too young." ),
+             refused;
 
-		_Others ->
-			?notice( "I received a competition invitation, "
-					 "I believe that I will win." ),
-			?getAttr(tail_length)
+        _Others ->
+            ?notice( "I received a competition invitation, "
+                     "I believe that I will win." ),
+            ?getAttr(tail_length)
 
-	end,
+    end,
 
-	SentState = class_Actor:send_actor_message( SendingActorPid,
-		{ informedParticipation, [ LauncherPid, TailLength ] }, State ),
+    SentState = class_Actor:send_actor_message( SendingActorPid,
+        { informedParticipation, [ LauncherPid, TailLength ] }, State ),
 
   actor:return_state( SentState ).
 
@@ -241,12 +241,12 @@ beInvited( State, LauncherPid, SendingActorPid ) ->
 -doc "Once a squirrel eats, its tail gains 0.1cm.".
 eat_nuts( State ) ->
 
-	NewLength = math_utils:round_after( ?getAttr(tail_length) + 0.1,
-										_Digits=1 ),
+    NewLength = math_utils:round_after( ?getAttr(tail_length) + 0.1,
+                                        _Digits=1 ),
 
-	?notice( "How delicious the nuts are, my tail is more beautiful." ),
+    ?notice( "How delicious the nuts are, my tail is more beautiful." ),
 
-	setAttribute( State, tail_length, NewLength ).
+    setAttribute( State, tail_length, NewLength ).
 
 
 
@@ -256,35 +256,35 @@ Returns a random tail length, between 3 - 6 for a newborn.
 This function is called only one time when a male is created.
 """.
 get_initial_tail_length()->
-	3 + random_utils:get_uniform_value( 3 ).
+    3 + random_utils:get_uniform_value( 3 ).
 
 
 
 -doc "This helper function groups all termination-related activities.".
 termination_relative_activities( State ) ->
 
-	WaitTicks = ?getAttr(termination_waiting_ticks),
-	CurrentOffset = ?getAttr(current_tick_offset),
+    WaitTicks = ?getAttr(termination_waiting_ticks),
+    CurrentOffset = ?getAttr(current_tick_offset),
 
-	case ?getAttr(termination_initiated) of
+    case ?getAttr(termination_initiated) of
 
-		false ->
-			?notice( "I am preparing deferred termination." ),
-			executeOneway( State, notifyTermination );
+        false ->
+            ?notice( "I am preparing deferred termination." ),
+            executeOneway( State, notifyTermination );
 
-		true when WaitTicks > 0 ->
+        true when WaitTicks > 0 ->
 
-			NextState = executeOneway( State, scheduleNextSpontaneousTick ),
+            NextState = executeOneway( State, scheduleNextSpontaneousTick ),
 
-			NewWaitTick = ?getAttr(termination_waiting_ticks) - 1,
+            NewWaitTick = ?getAttr(termination_waiting_ticks) - 1,
 
-			setAttribute( NextState, termination_waiting_ticks, NewWaitTick );
+            setAttribute( NextState, termination_waiting_ticks, NewWaitTick );
 
-		_Other ->
-			?notice_fmt( "I am terminating at tick #~B.", [ CurrentOffset ] ),
-			executeOneway( State, declareTermination )
+        _Other ->
+            ?notice_fmt( "I am terminating at tick #~B.", [ CurrentOffset ] ),
+            executeOneway( State, declareTermination )
 
-	end.
+    end.
 
 
 
@@ -292,34 +292,34 @@ termination_relative_activities( State ) ->
 -doc "This helper function groups all spontaneous activities of this actor.".
 spontaneous_activities( State ) ->
 
-	CurrentOffset = ?getAttr(current_tick_offset),
-	AvailableTick = ?getAttr(available_tick),
+    CurrentOffset = ?getAttr(current_tick_offset),
+    AvailableTick = ?getAttr(available_tick),
 
-	case ?getAttr(is_registered) of
+    case ?getAttr(is_registered) of
 
-		false ->
-			% Apparently fakes an actor oneway (strange):
-			executeOneway( State, tryToRegister, [ ?MODULE, self() ] );
+        false ->
+            % Apparently fakes an actor oneway (strange):
+            executeOneway( State, tryToRegister, [ ?MODULE, self() ] );
 
-		true ->
-			case ?getAttr(frame_of_mind) of
+        true ->
+            case ?getAttr(frame_of_mind) of
 
-				weak when CurrentOffset >= AvailableTick ->
+                weak when CurrentOffset >= AvailableTick ->
 
-					?notice( "I am an adult squirrel now!" ),
+                    ?notice( "I am an adult squirrel now!" ),
 
-					FrameState = setAttribute( State, frame_of_mind,
-											   available ),
+                    FrameState = setAttribute( State, frame_of_mind,
+                                               available ),
 
-					executeOneway( FrameState, scheduleNextSpontaneousTick );
+                    executeOneway( FrameState, scheduleNextSpontaneousTick );
 
-				arrogant when CurrentOffset < AvailableTick ->
-					?notice( "I am the most beautiful squirrel." ),
-					State;
+                arrogant when CurrentOffset < AvailableTick ->
+                    ?notice( "I am the most beautiful squirrel." ),
+                    State;
 
-				_Others ->
-					eat_nuts( State )
+                _Others ->
+                    eat_nuts( State )
 
-			end
+            end
 
-	end.
+    end.

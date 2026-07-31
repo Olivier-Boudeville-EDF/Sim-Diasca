@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 EDF R&D
+% Copyright (C) 2016-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -28,11 +28,11 @@ and triggering an associated dataflow.
 
 
 -define( class_description,
-		 "The experiment entry point is a singleton instance in charge of "
-		 "being the (logical) starting point that impulses the evaluation of "
-		 "the registered dataflows, possibly at each timestep; technically it "
-		 "is run in second position during a tick, just after the experiment "
-		 "exit point that triggers it." ).
+         "The experiment entry point is a singleton instance in charge of "
+         "being the (logical) starting point that impulses the evaluation of "
+         "the registered dataflows, possibly at each timestep; technically it "
+         "is run in second position during a tick, just after the experiment "
+         "exit point that triggers it." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -60,13 +60,13 @@ and triggering an associated dataflow.
 % The attributes that are specific to the experiment entry point are:
 -define( class_attributes, [
 
-	{ experiment_manager_pid, experiment_manager_pid(),
-	  "PID of the experiment manager" },
+    { experiment_manager_pid, experiment_manager_pid(),
+      "PID of the experiment manager" },
 
-	{ world_manager_pid, world_manager_pid(), "PID of the world manager" },
+    { world_manager_pid, world_manager_pid(), "PID of the world manager" },
 
-	{ dataflows, [ dataflow_pid() ],
-	  "a list of the dataflow instances known of this experiment manager" } ] ).
+    { dataflows, [ dataflow_pid() ],
+      "a list of the dataflow instances known of this experiment manager" } ] ).
 
 
 % Helpers:
@@ -107,32 +107,32 @@ actor, as assigned by the load balancer
 - WorldManagerPid is the PID of the world manager
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-		[ dataflow_pid() ], experiment_manager_pid(), world_manager_pid() ) ->
-						wooper:state().
+        [ dataflow_pid() ], experiment_manager_pid(), world_manager_pid() ) ->
+                        wooper:state().
 construct( State, ActorSettings, Dataflows, ExperimentManagerPid,
-		   WorldManagerPid ) ->
+           WorldManagerPid ) ->
 
-	% Auto-subscribing:
-	RegistrationMessage = { registerExperimentEntryPoint, [], self() },
+    % Auto-subscribing:
+    RegistrationMessage = { registerExperimentEntryPoint, [], self() },
 
-	ExperimentManagerPid ! RegistrationMessage,
-	WorldManagerPid ! RegistrationMessage,
+    ExperimentManagerPid ! RegistrationMessage,
+    WorldManagerPid ! RegistrationMessage,
 
-	% First the direct mother class:
-	ActorState = class_Actor:construct( State, ActorSettings,
-		?trace_categorize("ExperimentEntryPoint") ),
+    % First the direct mother class:
+    ActorState = class_Actor:construct( State, ActorSettings,
+        ?trace_categorize("ExperimentEntryPoint") ),
 
-	% Then the class-specific actions:
-	FinalState = setAttributes( ActorState, [
-		{ experiment_manager_pid, ExperimentManagerPid },
-		{ world_manager_pid, WorldManagerPid },
-		{ dataflows, Dataflows } ] ),
+    % Then the class-specific actions:
+    FinalState = setAttributes( ActorState, [
+        { experiment_manager_pid, ExperimentManagerPid },
+        { world_manager_pid, WorldManagerPid },
+        { dataflows, Dataflows } ] ),
 
-	% From both registerExperimentEntryPoint requests:
-	wooper:wait_for_request_acknowledgements( _Count=2,
-		_AckAtom=experiment_entry_point_registered ),
+    % From both registerExperimentEntryPoint requests:
+    wooper:wait_for_request_acknowledgements( _Count=2,
+        _AckAtom=experiment_entry_point_registered ),
 
-	FinalState.
+    FinalState.
 
 
 
@@ -144,12 +144,12 @@ construct( State, ActorSettings, Dataflows, ExperimentManagerPid,
 Callback executed on the first diasca of existence of this entry point.
 """.
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-							const_actor_oneway_return().
+                            const_actor_oneway_return().
 onFirstDiasca( State, _CallerPid ) ->
 
-	?debug_fmt( "Created ~ts.", [ to_string( State ) ] ),
+    ?debug_fmt( "Created ~ts.", [ to_string( State ) ] ),
 
-	actor:const_return().
+    actor:const_return().
 
 
 
@@ -161,27 +161,27 @@ Typically called by the experiment exit point.
 Mostly empty implementation, meant to be overridden.
 """.
 -spec startExperimentTick( wooper:state(), sending_actor_pid() ) ->
-								const_actor_oneway_return().
+                                const_actor_oneway_return().
 startExperimentTick( State, _SendingActorPid ) ->
 
-	?warning( "Default, do-nothing implementation of "
-			  "startExperimentTick/2 called." ),
+    ?warning( "Default, do-nothing implementation of "
+              "startExperimentTick/2 called." ),
 
-	% This is an empty implementation.
-	%
-	% Actual ones may fetch information from any source (e.g. thanks to a REST
-	% call), and may update accordingly the corresponding dataflow elements
-	% (typically dataflow actors), possibly directly or through the various
-	% registered dataflows.
-	%
-	% Then corresponding blocks may be activated, and the dataflow evaluated.
+    % This is an empty implementation.
+    %
+    % Actual ones may fetch information from any source (e.g. thanks to a REST
+    % call), and may update accordingly the corresponding dataflow elements
+    % (typically dataflow actors), possibly directly or through the various
+    % registered dataflows.
+    %
+    % Then corresponding blocks may be activated, and the dataflow evaluated.
 
-	%SentState = class_Actor:send_actor_messages( ?getAttr(dataflows),
-	%   { startExperimentTick, [...], State },
+    %SentState = class_Actor:send_actor_messages( ?getAttr(dataflows),
+    %   { startExperimentTick, [...], State },
 
-	%actor:return_state( SentState ).
+    %actor:return_state( SentState ).
 
-	actor:const_return().
+    actor:const_return().
 
 
 
@@ -193,22 +193,22 @@ startExperimentTick( State, _SendingActorPid ) ->
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
-	DataflowString = case ?getAttr(dataflows) of
+    DataflowString = case ?getAttr(dataflows) of
 
-		[] ->
-			"not referencing any dataflow";
+        [] ->
+            "not referencing any dataflow";
 
-		[ Dataflow ] ->
-			text_utils:format( "referencing a single dataflow instance: ~p",
-							   [ Dataflow ] );
+        [ Dataflow ] ->
+            text_utils:format( "referencing a single dataflow instance: ~p",
+                               [ Dataflow ] );
 
-		Dataflows ->
-			text_utils:format( "referencing ~B dataflow instances: ~w",
-							   [ length( Dataflows ), Dataflows ] )
+        Dataflows ->
+            text_utils:format( "referencing ~B dataflow instances: ~w",
+                               [ length( Dataflows ), Dataflows ] )
 
-	end,
+    end,
 
-	text_utils:format( "Experiment entry point, associated to "
-		"the experiment manager ~w, to the world manager ~w, and ~ts",
-		[ ?getAttr(experiment_manager_pid),
-		  ?getAttr(world_manager_pid), DataflowString ] ).
+    text_utils:format( "Experiment entry point, associated to "
+        "the experiment manager ~w, to the world manager ~w, and ~ts",
+        [ ?getAttr(experiment_manager_pid),
+          ?getAttr(world_manager_pid), DataflowString ] ).

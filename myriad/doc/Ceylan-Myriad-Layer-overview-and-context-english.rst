@@ -12,7 +12,7 @@ This **toolbox layer** provides its (generally lightweight, simple) services jus
 
 .. [#] If needing to discover/learn Erlang, we recommend browsing `Learn You Some Erlang for great good! <https://learnyousomeerlang.com>`_ or, even better, buying their book!
 
-	   See also our `Erlang HOW-TO <http://howtos.esperide.org/Erlang.html>`_.
+       See also our `Erlang HOW-TO <http://howtos.esperide.org/Erlang.html>`_.
 
 .. comment .. [#] Still in the domain of functional programming, an Haskell cookbook was started as well, as `Ceylan-Curry <https://curry.esperide.org>`_.
 

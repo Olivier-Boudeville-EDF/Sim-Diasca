@@ -81,7 +81,7 @@ then it is the symptom that a similarly-named Erlang virtual machine is already 
 
 .. [#] This can happen if for example you issued ``CTRL-Z`` then put that task in the background (``bg``) and forgot that it was still running.
 
-	Note that Sim-Diasca includes various mechanisms to ensure that no two runs can silently interfere by mistake (e.g. using UUID-based cookies, uniquely named directories according to case, user and a generated identifier, etc.).
+    Note that Sim-Diasca includes various mechanisms to ensure that no two runs can silently interfere by mistake (e.g. using UUID-based cookies, uniquely named directories according to case, user and a generated identifier, etc.).
 
 
 
@@ -248,7 +248,18 @@ Indeed an actor message must have been sent, returning an updated state tracking
 
 
 
-**Issue #12**: Simulation runs, but is slow.
+**Issue #12**: A runtime an error occurs, yet unfortunately its report seems truncated.
+---------------------------------------------------------------------------------------
+
+By default, as error terms may be very large, Myriad performs `an ellipsing of the error reports <https://myriad.esperide.org/#settings-in-terms-of-error-reports>`_ that are displayed on the console.
+
+If such a truncated standard output is not wanted, just set the ``error_report_output`` field of the ``deployment_settings`` record to, typically, ``standard_full`` (instead of the default ``standard_ellipsed``).
+
+The engine will then ensure that such a setting is applied to all nodes (user and computing ones) involved in the corresponding simulations.
+
+
+
+**Issue #13**: Simulation runs, but is slow.
 --------------------------------------------
 
 This is a difficult issue to tackle generically. Some slowness are more acceptable than others:
@@ -270,7 +281,7 @@ Most efficient solutions to increase speed are:
 
 
 
-**Issue #13**: Simulation seems to freeze, or to be surprisingly slow, or more generally does not behave as expected, and I do not want to stick ``io:format`` calls everywhere to understand what is happening.
+**Issue #14**: Simulation seems to freeze, or to be surprisingly slow, or more generally does not behave as expected, and I do not want to stick ``io:format`` calls everywhere to understand what is happening.
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 If not using the simulation traces either to figure out what is happening, then a good approach could be to connect to the busiest computing nodes (use simply ``top`` on each host) to determine what they are doing; to do so, track in the console the line which reminds the user of the names of the computing nodes and of the simulation cookie, like in:
@@ -298,10 +309,10 @@ Then hit CTRL-G and enter:
 
  --> r 'Scheduling_scalability_test-boudevil@server2'
  --> j
-	1  {shell,start,[init]}
-	2* {'Scheduling_scalability_test-boudevil@server2',shell,start,[]}
+    1  {shell,start,[init]}
+    2* {'Scheduling_scalability_test-boudevil@server2',shell,start,[]}
  --> c 2
-	  (Scheduling_scalability_test-boudevil@server2)1> etop:start().
+      (Scheduling_scalability_test-boudevil@server2)1> etop:start().
 
 
 (note that the ping is not necessary, just issuing ``r 'Scheduling_scalability_test-boudevil@server2'`` then ``c`` would suffice)
@@ -325,14 +336,14 @@ And then we have:
 
 
 
-**Issue #14**: Simulation runs, but result generation fails.
+**Issue #15**: Simulation runs, but result generation fails.
 ------------------------------------------------------------
 
 If the error message mentions ``unknown or ambiguous terminal type``, this means that ``gnuplot`` (used by probes to generate graphical outputs) is (surprisingly enough) *not* able to generate PNG files. Either rebuild it accordingly, or select a gnuplot package in your distribution whose PNG support has been enabled beforehand.
 
 
 
-**Issue #15**: At start-up, no available computing node is found, each candidate node being apparently successfully launched, but not responding.
+**Issue #16**: At start-up, no available computing node is found, each candidate node being apparently successfully launched, but not responding.
 -------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -345,7 +356,7 @@ Indeed their node name will be correct, so no attempt to launch them will be mad
 
 
 
-**Issue #16**: Simulation runs and fails with no specific error message in the traces.
+**Issue #17**: Simulation runs and fails with no specific error message in the traces.
 --------------------------------------------------------------------------------------
 
 Of course this never happens usually, as it is precisely what we want to avoid.
@@ -381,7 +392,7 @@ So chances are that this corresponds to a user implementation error.
 
 
 
-**Issue #17** [now unlikely to happen, as ``run_erl`` not used by default anymore]: A simulation case is launched, yet it freezes just after the line telling the trace aggregator has been created, and stays unresponsive until CTRL-C is entered.
+**Issue #18** [now unlikely to happen, as ``run_erl`` not used by default anymore]: A simulation case is launched, yet it freezes just after the line telling the trace aggregator has been created, and stays unresponsive until CTRL-C is entered.
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This typically happens after a first failed launch: a virtual machine bearing the same name is already running on the background, thus preventing another one to be launched. The solution may be as simple as a brutal, yet efficient, ``killall -9 beam.smp``.
@@ -390,7 +401,7 @@ This issue used to occur more frequently when the default launching mode was set
 
 
 
-**Issue #18** Simulation is not reproducible.
+**Issue #19** Simulation is not reproducible.
 ---------------------------------------------
 
 One may run, in reproducible mode, a simulation twice, and unfortunately realize that results happen to differ.
@@ -414,7 +425,7 @@ To considerably increase the chances of spotting that different outcomes stem fr
 
 
 
-**Issue #19** Problem when rebuilding the documentation.
+**Issue #20** Problem when rebuilding the documentation.
 --------------------------------------------------------
 
 In some cases the generated documentation encountered problems, typically the table of contents of the technical manual was empty.
@@ -470,4 +481,3 @@ In the sense of:
 
 
 In terms of `speedup <https://en.wikipedia.org/wiki/Speedup>`_, in link with this question and the previous ones, `Amdahl's law <https://en.wikipedia.org/wiki/Amdahl%27s_law>`_ gives an upper bound to one's expectations in the cases where the problem size is fixed.
-

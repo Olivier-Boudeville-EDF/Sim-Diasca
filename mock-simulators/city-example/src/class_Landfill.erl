@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2025 EDF R&D
+% Copyright (C) 2012-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -29,7 +29,7 @@
 
 % Determines what are the direct mother classes of this class (if any):
 -define( superclasses, [ class_Actor, class_WasteUnloadingPoint,
-						 class_PointOfInterest ] ).
+                         class_PointOfInterest ] ).
 
 
 % Exported helpers:
@@ -40,7 +40,7 @@
 -define( class_attributes, [
 
    { probe_ref, class_Probe:probe_ref(), "the PID (if any) of the probe "
-	 "declared to track waste stocks in this landfill" } ] ).
+     "declared to track waste stocks in this landfill" } ] ).
 
 
 % Inherited attributes of interest:
@@ -100,37 +100,37 @@ Construction parameters are:
 """.
 
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 class_Actor:name(), class_GIS:static_location(), gis_pid() ) ->
-						wooper:state().
+                 class_Actor:name(), class_GIS:static_location(), gis_pid() ) ->
+                        wooper:state().
 construct( State, ActorSettings, Name, Location, GISPid ) ->
 
-	ActorState = class_Actor:construct( State, ActorSettings,
-										?trace_categorize(Name) ),
+    ActorState = class_Actor:construct( State, ActorSettings,
+                                        ?trace_categorize(Name) ),
 
-	{ CapacityInformation, TankCurveNames } = build_capacity(),
+    { CapacityInformation, TankCurveNames } = build_capacity(),
 
-	UnloadState = class_WasteUnloadingPoint:construct( ActorState, Location,
-													   CapacityInformation ),
+    UnloadState = class_WasteUnloadingPoint:construct( ActorState, Location,
+                                                       CapacityInformation ),
 
-	PointState = class_PointOfInterest:construct( UnloadState, Name, Location,
-												  GISPid ),
+    PointState = class_PointOfInterest:construct( UnloadState, Name, Location,
+                                                  GISPid ),
 
-	% Depending on the choice of the result manager, it will be either a PID (if
-	% the corresponding result is wanted) or a 'non_wanted_probe' atom:
-	%
-	WasteStockProbeRef = class_Actor:declare_probe(
-		_Name=text_utils:format( "~ts Waste Stock Probe", [ Name ] ),
-		_Curves=TankCurveNames,
-		_Zones=[],
-		_Title=text_utils:format( "Waste Storage Monitoring "
-								  "for Landfill ~ts", [ Name ] ),
-		_XLabel="Simulation time",
-		_YLabel="Tons of wastes in each tank of this landfill",
-		PointState ),
+    % Depending on the choice of the result manager, it will be either a PID (if
+    % the corresponding result is wanted) or a 'non_wanted_probe' atom:
+    %
+    WasteStockProbeRef = class_Actor:declare_probe(
+        _Name=text_utils:format( "~ts Waste Stock Probe", [ Name ] ),
+        _Curves=TankCurveNames,
+        _Zones=[],
+        _Title=text_utils:format( "Waste Storage Monitoring "
+                                  "for Landfill ~ts", [ Name ] ),
+        _XLabel="Simulation time",
+        _YLabel="Tons of wastes in each tank of this landfill",
+        PointState ),
 
-	setAttributes( PointState, [ { waste_capacity, CapacityInformation },
-								 { probe_ref, WasteStockProbeRef },
-								 { color, orange } ] ).
+    setAttributes( PointState, [ { waste_capacity, CapacityInformation },
+                                 { probe_ref, WasteStockProbeRef },
+                                 { color, orange } ] ).
 
 
 
@@ -140,27 +140,27 @@ construct( State, ActorSettings, Name, Location, GISPid ) ->
 
 -doc "First scheduling of a landfill.".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-										actor_oneway_return().
+                                        actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
-	% A landfill is mostly passive.
+    % A landfill is mostly passive.
 
-	case ?getAttr(probe_ref) of
+    case ?getAttr(probe_ref) of
 
-		non_wanted_probe ->
-			ok;
+        non_wanted_probe ->
+            ok;
 
-		ProbePid ->
-			ProbePid ! { setTickOffset, ?getAttr(current_tick_offset) }
+        ProbePid ->
+            ProbePid ! { setTickOffset, ?getAttr(current_tick_offset) }
 
-	end,
+    end,
 
-	?info_fmt( "Landfill just created: ~ts", [ to_string( State ) ] ),
+    ?info_fmt( "Landfill just created: ~ts", [ to_string( State ) ] ),
 
-	% To record initial state in probe (and possibly trace state):
-	PlanState = class_Actor:scheduleNextSpontaneousTick( State ),
+    % To record initial state in probe (and possibly trace state):
+    PlanState = class_Actor:scheduleNextSpontaneousTick( State ),
 
-	actor:return_state( PlanState ).
+    actor:return_state( PlanState ).
 
 
 
@@ -168,12 +168,12 @@ onFirstDiasca( State, _SendingActorPid ) ->
 -spec actSpontaneous( wooper:state() ) -> const_oneway_return().
 actSpontaneous( State ) ->
 
-	% No spontaneous life by itself (mostly triggered).
-	send_data_to_probe( State ),
+    % No spontaneous life by itself (mostly triggered).
+    send_data_to_probe( State ),
 
-	?info_fmt( "~ts just created", [ to_string( State ) ] ),
+    ?info_fmt( "~ts just created", [ to_string( State ) ] ),
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 
@@ -191,17 +191,17 @@ time (transaction failed)
 
 """.
 -spec unloadWaste( wooper:state(), waste_type(), unit_utils:tons(),
-				   sending_actor_pid() ) -> actor_oneway_return().
+                   sending_actor_pid() ) -> actor_oneway_return().
 unloadWaste( State, WasteType, ProposedMass, WasteUnloaderPid ) ->
 
-	% First call the parent base implementation:
-	ParentState = executeOnewayAs( State, class_WasteUnloadingPoint,
-		unloadWaste, [ WasteType, ProposedMass, WasteUnloaderPid ] ),
+    % First call the parent base implementation:
+    ParentState = executeOnewayAs( class_WasteUnloadingPoint, State,
+        unloadWaste, [ WasteType, ProposedMass, WasteUnloaderPid ] ),
 
-	% Then update the probe:
-	send_data_to_probe( ParentState ),
+    % Then update the probe:
+    send_data_to_probe( ParentState ),
 
-	actor:return_state( ParentState ).
+    actor:return_state( ParentState ).
 
 
 
@@ -214,18 +214,18 @@ Generates a list of instance definitions for the specified number of initial
 landfills.
 """.
 -spec generate_definitions( count(), location_generator_pid(), gis_info() ) ->
-		 static_return( [ class_Actor:instance_creation_spec() ] ).
+         static_return( [ class_Actor:instance_creation_spec() ] ).
 generate_definitions( LandfillCount, LocationGeneratorPid, GISInfo ) ->
 
-	% Triggers the location generation request in parallel:
-	LocationGeneratorPid ! { generateNonAdjacentLocations,
-		[ LandfillCount,
-		  get_min_distance_between_landfills_and_others(),
-		  get_min_distance_between_two_landfills() ], self() },
+    % Triggers the location generation request in parallel:
+    LocationGeneratorPid ! { generateNonAdjacentLocations,
+        [ LandfillCount,
+          get_min_distance_between_landfills_and_others(),
+          get_min_distance_between_two_landfills() ], self() },
 
-	CreationSpecs = define_landfills( LandfillCount, GISInfo, _Acc=[] ),
+    CreationSpecs = define_landfills( LandfillCount, GISInfo, _Acc=[] ),
 
-	wooper:return_static( CreationSpecs ).
+    wooper:return_static( CreationSpecs ).
 
 
 
@@ -234,25 +234,25 @@ generate_definitions( LandfillCount, LocationGeneratorPid, GISInfo ) ->
 
 define_landfills( _LandfillCount=0, GISInfo, Acc ) ->
 
-	% All landfills defined, adding locations as returned by the
-	% generateNonAdjacentLocations request:
-	%
-	receive
+    % All landfills defined, adding locations as returned by the
+    % generateNonAdjacentLocations request:
+    %
+    receive
 
-		{ wooper_result, Locations } when is_list( Locations ) ->
-			% Creates now the full construction parameters:
-			merge_parameters( Acc, Locations, GISInfo )
+        { wooper_result, Locations } when is_list( Locations ) ->
+            % Creates now the full construction parameters:
+            merge_parameters( Acc, Locations, GISInfo )
 
-	end;
+    end;
 
 define_landfills( LandfillCount, GISInfo, Acc ) ->
 
-	% Defines the build parameters for a new landfill; we want to end up with a
-	% list of {class_Landfill, [Name, Location]} elements.
+    % Defines the build parameters for a new landfill; we want to end up with a
+    % list of {class_Landfill, [Name, Location]} elements.
 
-	Name = text_utils:format( "Landfill-~B", [ LandfillCount ] ),
+    Name = text_utils:format( "Landfill-~B", [ LandfillCount ] ),
 
-	define_landfills( LandfillCount-1, GISInfo, [ Name | Acc ] ).
+    define_landfills( LandfillCount-1, GISInfo, [ Name | Acc ] ).
 
 
 
@@ -260,31 +260,31 @@ define_landfills( LandfillCount, GISInfo, Acc ) ->
 Adds the location to the landfill build parameters (a kind of zip operation).
 """.
 merge_parameters( Params, Locations, GISInfo ) ->
-	% In-order is better:
-	lists:reverse( merge_parameters( Params, Locations, _Acc=[], GISInfo ) ).
+    % In-order is better:
+    lists:reverse( merge_parameters( Params, Locations, _Acc=[], GISInfo ) ).
 
 
 merge_parameters( _Params=[], _Locations=[], Acc, _GISInfo ) ->
-	Acc;
+    Acc;
 
 merge_parameters( _Params=[ Name | Tp ], _Locations=[ Loc | Tl ], Acc,
-				  GISInfo ) ->
+                  GISInfo ) ->
 
-	NewLandfillDef = { class_Landfill,
-						[ Name, { wgs84_cartesian, Loc }, GISInfo ] },
+    NewLandfillDef = { class_Landfill,
+                        [ Name, { wgs84_cartesian, Loc }, GISInfo ] },
 
-	merge_parameters( Tp, Tl, [ NewLandfillDef | Acc ], GISInfo ).
+    merge_parameters( Tp, Tl, [ NewLandfillDef | Acc ], GISInfo ).
 
 
 
 % In meters:
 get_min_distance_between_landfills_and_others() ->
-	40.
+    40.
 
 
 % In meters:
 get_min_distance_between_two_landfills() ->
-	300.
+    300.
 
 
 
@@ -292,24 +292,24 @@ get_min_distance_between_two_landfills() ->
 -spec send_data_to_probe( wooper:state() ) -> void().
 send_data_to_probe( State ) ->
 
-	% Avoid doing useless operations:
-	case ?getAttr(probe_ref) of
+    % Avoid doing useless operations:
+    case ?getAttr(probe_ref) of
 
-		non_wanted_probe ->
-			ok;
+        non_wanted_probe ->
+            ok;
 
-		ProbePid ->
+        ProbePid ->
 
-			% Already correctly ordered by design:
-			TankList = ?getAttr(waste_capacity),
+            % Already correctly ordered by design:
+            TankList = ?getAttr(waste_capacity),
 
-			WasteStockSample = list_to_tuple( [
-				Tank#waste_tank.current_mass_stored || Tank <- TankList ] ),
+            WasteStockSample = list_to_tuple( [
+                Tank#waste_tank.current_mass_stored || Tank <- TankList ] ),
 
-			class_Probe:send_data( ProbePid, ?getAttr(current_tick_offset),
-								   WasteStockSample )
+            class_Probe:send_data( ProbePid, ?getAttr(current_tick_offset),
+                                   WasteStockSample )
 
-	end.
+    end.
 
 
 
@@ -317,16 +317,16 @@ send_data_to_probe( State ) ->
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
-	CapacityInfo =
-		waste_utils:waste_capacity_to_string( ?getAttr(waste_capacity) ),
+    CapacityInfo =
+        waste_utils:waste_capacity_to_string( ?getAttr(waste_capacity) ),
 
-	text_utils:format( "landfill '~ts' (AAI: ~B) located at ~ts (~ts) "
-		"making use of ~ts, whose random state is ~p",
-		[ ?getAttr(name),
-		  class_Actor:get_abstract_identifier( State ),
-		  class_GeolocalizedElement:interpret_location( State ),
-		  class_PointOfInterest:to_string( State ), CapacityInfo,
-		  random_utils:get_random_state() ] ).
+    text_utils:format( "landfill '~ts' (AAI: ~B) located at ~ts (~ts) "
+        "making use of ~ts, whose random state is ~p",
+        [ ?getAttr(name),
+          class_Actor:get_abstract_identifier( State ),
+          class_GeolocalizedElement:interpret_location( State ),
+          class_PointOfInterest:to_string( State ), CapacityInfo,
+          random_utils:get_random_state() ] ).
 
 
 
@@ -335,38 +335,38 @@ Returns a pair made of the waste capacities for a landfill, and a list of
 corresponding curve descriptions.
 """.
 build_capacity() ->
-	% We create one (big) waste tank for each waste type:
-	create_waste_tank( waste_utils:get_waste_types(), _AccTank=[], _AccDesc=[],
-					   _Count=0 ).
+    % We create one (big) waste tank for each waste type:
+    create_waste_tank( waste_utils:get_waste_types(), _AccTank=[], _AccDesc=[],
+                       _Count=0 ).
 
 
 % (helper)
 create_waste_tank( _WasteType=[], AccTank, AccDesc, _Count ) ->
-	{ AccTank, lists:reverse( AccDesc ) };
+    { AccTank, lists:reverse( AccDesc ) };
 
 create_waste_tank( _WasteType=[ Type | T ], AccTank, AccDesc, Count ) ->
 
-	Id = Count + 1,
+    Id = Count + 1,
 
-	% All tanks start initially empty, and are huge:
-	NewTank = #waste_tank{ id=Id,
-						   allowed_types=[ Type ],
-						   current_type=none,
-						   current_volume_stored=0.0,
-						   max_volume_stored=5000000000.0,
+    % All tanks start initially empty, and are huge:
+    NewTank = #waste_tank{ id=Id,
+                           allowed_types=[ Type ],
+                           current_type=none,
+                           current_volume_stored=0.0,
+                           max_volume_stored=5000000000.0,
 
-						   % The current mass of waste stored:
-						   current_mass_stored=0.0,
+                           % The current mass of waste stored:
+                           current_mass_stored=0.0,
 
-						   % The maximum mass of waste stored:
-						   max_mass_stored=40000000000.0,
+                           % The maximum mass of waste stored:
+                           max_mass_stored=40000000000.0,
 
-						   % Tells whether the tank is being processed (used) or
-						   % idle:
-						   %
-						   busy=false },
+                           % Tells whether the tank is being processed (used) or
+                           % idle:
+                           %
+                           busy=false },
 
-	NewDesc = text_utils:format( "Quantity of waste stored in waste tank #~B "
-		"used for waste type '~ts' (in tons)", [ Id, Type ] ),
+    NewDesc = text_utils:format( "Quantity of waste stored in waste tank #~B "
+        "used for waste type '~ts' (in tons)", [ Id, Type ] ),
 
-	create_waste_tank( T, [ NewTank | AccTank ], [ NewDesc | AccDesc ], Id ).
+    create_waste_tank( T, [ NewTank | AccTank ], [ NewDesc | AccDesc ], Id ).

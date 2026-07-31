@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -80,9 +80,9 @@ do_soft_purge/2 in erts_code_purger.erl for that).
 
 
 -define( class_description,
-		 "Interface implementing the Upgradable trait, for all instances able "
-		 "to be upgraded/downgraded on the fly, at runtime, with no specific "
-		 "restarting." ).
+         "Interface implementing the Upgradable trait, for all instances able "
+         "to be upgraded/downgraded on the fly, at runtime, with no specific "
+         "restarting." ).
 
 
 % Emitting traces in useful, but cannot be class_Traceable as we are at the
@@ -93,13 +93,13 @@ do_soft_purge/2 in erts_code_purger.erl for that).
 
 -define( class_attributes, [
 
-	% Previously, for a better controllability, this information was at
-	% instance-level, but a static information is fully sufficient:
-	%
-	%{ wooper_upgradable_version, any_version(),
-	%  "the current version of this class" }
+    % Previously, for a better controllability, this information was at
+    % instance-level, but a static information is fully sufficient:
+    %
+    %{ wooper_upgradable_version, any_version(),
+    %  "the current version of this class" }
 
-						   ] ).
+                           ] ).
 
 
 
@@ -148,7 +148,7 @@ A report sent by an instance that failed in updating itself and ended up in the
 specified version (most probably its pre-update one).
 """.
 -type update_failure_report() ::
-		{ error_reason(), classname(), instance_pid(), any_version() }.
+        { error_reason(), classname(), instance_pid(), any_version() }.
 
 
 
@@ -159,13 +159,13 @@ This is a message (possibly interpreted as a oneway call) sent back to the
 caller by an instance having being requested to update.
 """.
 -type update_outcome() :: { 'onUpdateSuccess', update_success_report() }
-						| { 'onUpdateFailure', update_failure_report() }.
+                        | { 'onUpdateFailure', update_failure_report() }.
 
 
 -export_type([ upgradable_pid/0, extra_data/0,
-			   freeze_notification/0,
-			   update_success_report/0, update_failure_report/0,
-			   update_outcome/0 ]).
+               freeze_notification/0,
+               update_success_report/0, update_failure_report/0,
+               update_outcome/0 ]).
 
 
 % Exported helper functions that can be applied to Upgradable instances (only):
@@ -285,11 +285,11 @@ The corresponding version is determined statically.
 """.
 -spec construct( wooper:state() ) -> wooper:state().
 construct( State ) ->
-	% Traceable trait now optional:
-	%TraceState = class_Traceable:construct( State ),
-	%setAttribute( TraceState, wooper_upgradable_version,
-	%              basic_utils:check_any_version( InitialVersion ) ).
-	State.
+    % Traceable trait now optional:
+    %TraceState = class_Traceable:construct( State ),
+    %setAttribute( TraceState, wooper_upgradable_version,
+    %              basic_utils:check_any_version( InitialVersion ) ).
+    State.
 
 
 % No destructor.
@@ -303,10 +303,10 @@ construct( State ) ->
 -spec getVersion( wooper:state() ) -> const_request_return( any_version() ).
 getVersion( State ) ->
 
-	% Previously: CurrentVer = ?getAttr(wooper_upgradable_version),
-	CurrentVer = get_version( State ),
+    % Previously: CurrentVer = ?getAttr(wooper_upgradable_version),
+    CurrentVer = get_version( State ),
 
-	wooper:const_return_result( CurrentVer ).
+    wooper:const_return_result( CurrentVer ).
 
 
 
@@ -332,36 +332,36 @@ in the context of a prior freezeUntilVersionChange special call.
 See also manage_version_change/4.
 """.
 -spec upgradeVersion( wooper:state(), any_version(), any_version(),
-			option( extra_data() ) ) -> request_return( base_outcome() ).
+            option( extra_data() ) ) -> request_return( base_outcome() ).
 upgradeVersion( State, OriginalVersion, TargetVersion, MaybeExtraData ) ->
 
-	cond_utils:if_defined( wooper_debug_hot_update,
-		trace_bridge:debug_fmt( "Instance ~w upgrading from version ~ts to "
-			"~ts, using extra data '~p'.",
-			[ self(), text_utils:version_to_string( OriginalVersion ),
-			  text_utils:version_to_string( TargetVersion ),
-			  MaybeExtraData ] ),
-		basic_utils:ignore_unused( MaybeExtraData ) ),
+    cond_utils:if_defined( wooper_debug_hot_update,
+        trace_bridge:debug_fmt( "Instance ~w upgrading from version ~ts to "
+            "~ts, using extra data '~p'.",
+            [ self(), text_utils:version_to_string( OriginalVersion ),
+              text_utils:version_to_string( TargetVersion ),
+              MaybeExtraData ] ),
+        basic_utils:ignore_unused( MaybeExtraData ) ),
 
-	cond_utils:if_defined( wooper_check_hot_update,
-		case get_version( State ) of
+    cond_utils:if_defined( wooper_check_hot_update,
+        case get_version( State ) of
 
-			% Expected to be already at target:
-			TargetVersion ->
-				ok;
+            % Expected to be already at target:
+            TargetVersion ->
+                ok;
 
-			OtherVersion ->
-				throw( { invalid_version_on_upgrade, { read, OtherVersion },
-						 { original, OriginalVersion },
-						 { target, TargetVersion },
-						 State#state_holder.actual_class, self() } )
+            OtherVersion ->
+                throw( { invalid_version_on_upgrade, { read, OtherVersion },
+                         { original, OriginalVersion },
+                         { target, TargetVersion },
+                         State#state_holder.actual_class, self() } )
 
-		end ),
+        end ),
 
-	% In this default implementation, the state remains const:
-	UpgradedState = State,
+    % In this default implementation, the state remains const:
+    UpgradedState = State,
 
-	wooper:return_state_result( UpgradedState, ok ).
+    wooper:return_state_result( UpgradedState, ok ).
 
 
 
@@ -387,37 +387,37 @@ in the context of a prior freezeUntilVersionChange special call.
 See also manage_version_change/4.
 """.
 -spec downgradeVersion( wooper:state(), any_version(), any_version(),
-			option( extra_data() ) ) -> request_return( base_outcome() ).
+            option( extra_data() ) ) -> request_return( base_outcome() ).
 downgradeVersion( State, OriginalVersion, TargetVersion, MaybeExtraData ) ->
 
-	cond_utils:if_defined( wooper_debug_hot_update,
-		trace_bridge:debug_fmt( "Downgrading from version ~ts to ~ts, "
-			"using extra data '~p'.",
-			[ text_utils:version_to_string( OriginalVersion ),
-			  text_utils:version_to_string( TargetVersion ),
-			  MaybeExtraData ] ),
-		basic_utils:ignore_unused( MaybeExtraData ) ),
+    cond_utils:if_defined( wooper_debug_hot_update,
+        trace_bridge:debug_fmt( "Downgrading from version ~ts to ~ts, "
+            "using extra data '~p'.",
+            [ text_utils:version_to_string( OriginalVersion ),
+              text_utils:version_to_string( TargetVersion ),
+              MaybeExtraData ] ),
+        basic_utils:ignore_unused( MaybeExtraData ) ),
 
 
-	cond_utils:if_defined( wooper_check_hot_update,
-		case get_version( State ) of
+    cond_utils:if_defined( wooper_check_hot_update,
+        case get_version( State ) of
 
-			% Expected to be already at target:
-			TargetVersion ->
-				ok;
+            % Expected to be already at target:
+            TargetVersion ->
+                ok;
 
-			OtherVersion ->
-				throw( { invalid_version_on_upgrade, { read, OtherVersion },
-						 { original, OriginalVersion },
-						 { target, TargetVersion },
-						 State#state_holder.actual_class, self() } )
+            OtherVersion ->
+                throw( { invalid_version_on_upgrade, { read, OtherVersion },
+                         { original, OriginalVersion },
+                         { target, TargetVersion },
+                         State#state_holder.actual_class, self() } )
 
-		end ),
+        end ),
 
-	% In this default implementation, the state remains const:
-	DowngradedState = State,
+    % In this default implementation, the state remains const:
+    DowngradedState = State,
 
-	wooper:return_state_result( DowngradedState, ok ).
+    wooper:return_state_result( DowngradedState, ok ).
 
 
 
@@ -432,8 +432,8 @@ Each version of a class should define its own version of this static method.
 """.
 -spec get_version() -> static_return( any_version() ).
 get_version() ->
-	% Each concrete Upgradable class is typically to return its own define:
-	wooper:return_static( ?this_class_version ).
+    % Each concrete Upgradable class is typically to return its own define:
+    wooper:return_static( ?this_class_version ).
 
 
 
@@ -448,13 +448,13 @@ This implementation bypasses the WOOPER main loop (directly collecting messages,
 instead of interpreting them as oneway calls).
 """.
 -spec freeze_instances( [ instance_pid() ], any_version() ) ->
-								static_return( [ freeze_info() ] ).
+                                static_return( [ freeze_info() ] ).
 freeze_instances( InstancePids, TargetVersion ) ->
 
-	FreezeInfos = freeze_instances( InstancePids, TargetVersion,
-									_MaybeExtraData=undefined ),
+    FreezeInfos = freeze_instances( InstancePids, TargetVersion,
+                                    _MaybeExtraData=undefined ),
 
-	wooper:return_static( FreezeInfos ).
+    wooper:return_static( FreezeInfos ).
 
 
 
@@ -469,30 +469,30 @@ This implementation bypasses the WOOPER main loop (directly collecting messages,
 instead of interpreting them as oneway calls).
 """.
 -spec freeze_instances( [ instance_pid() ], any_version(),
-			option( extra_data() ) ) -> static_return( [ freeze_info() ] ).
+            option( extra_data() ) ) -> static_return( [ freeze_info() ] ).
 freeze_instances( InstancePids, TargetVersion, MaybeExtraData ) ->
 
-	InstCount = length( InstancePids ),
+    InstCount = length( InstancePids ),
 
-	cond_utils:if_defined( wooper_debug_hot_update,
-		trace_bridge:debug_fmt( "Freezing ~B instances: ~ts.",
-			[ InstCount, text_utils:pids_to_short_string( InstancePids ) ] ) ),
+    cond_utils:if_defined( wooper_debug_hot_update,
+        trace_bridge:debug_fmt( "Freezing ~B instances: ~ts.",
+            [ InstCount, text_utils:pids_to_short_string( InstancePids ) ] ) ),
 
-	% The special message understood by the main loop of all Upgradables:
-	FreezeMsg = { freezeUntilVersionChange, TargetVersion, MaybeExtraData,
-				  _CallerPid=self() },
+    % The special message understood by the main loop of all Upgradables:
+    FreezeMsg = { freezeUntilVersionChange, TargetVersion, MaybeExtraData,
+                  _CallerPid=self() },
 
-	[ IPid ! FreezeMsg || IPid <- InstancePids ],
+    [ IPid ! FreezeMsg || IPid <- InstancePids ],
 
-	FreezeInfos = collect_freeze_acks( InstCount ),
+    FreezeInfos = collect_freeze_acks( InstCount ),
 
-	cond_utils:if_defined( wooper_debug_hot_update,
-		trace_bridge:debug_fmt( "~B instances frozen:~n ~p",
-			[ length( FreezeInfos ), FreezeInfos ] ) ),
+    cond_utils:if_defined( wooper_debug_hot_update,
+        trace_bridge:debug_fmt( "~B instances frozen:~n ~p",
+            [ length( FreezeInfos ), FreezeInfos ] ) ),
 
-	% Now that in a stable situation, the class update can take place:
+    % Now that in a stable situation, the class update can take place:
 
-	wooper:return_static( FreezeInfos ).
+    wooper:return_static( FreezeInfos ).
 
 
 
@@ -519,30 +519,30 @@ as the class will *not* be updated. If ignoring that failure, the old code will
 attempt to operate on newer instance states, which of course should not be done.
 """.
 -spec update_class( classname(), boolean(), [ define() ], boolean() ) ->
-									static_return( base_status() ).
+                                    static_return( base_status() ).
 update_class( Classname, ForceRecompilation, Defines,
-			  KillAnyLingeringProcess ) ->
+              KillAnyLingeringProcess ) ->
 
-	% Refer to implementation notes.
+    % Refer to implementation notes.
 
-	% First, we recompile that class:
-	Res = case code_utils:recompile( Classname, ForceRecompilation, Defines ) of
+    % First, we recompile that class:
+    Res = case code_utils:recompile( Classname, ForceRecompilation, Defines ) of
 
-		ok ->
-			trace_utils:debug_fmt( "Class '~ts' successfully recompiled.",
-								   [ Classname ] ),
+        ok ->
+            trace_utils:debug_fmt( "Class '~ts' successfully recompiled.",
+                                   [ Classname ] ),
 
-			purge_and_reload_class( Classname, KillAnyLingeringProcess );
+            purge_and_reload_class( Classname, KillAnyLingeringProcess );
 
-		RecompErr={ error, Reason } ->
-			trace_utils:error_fmt( "Class '~ts' could not be recompiled; "
-								   "reason: ~ts.", [ Classname, Reason ] ),
+        RecompErr={ error, Reason } ->
+            trace_utils:error_fmt( "Class '~ts' could not be recompiled; "
+                                   "reason: ~ts.", [ Classname, Reason ] ),
 
-			RecompErr
+            RecompErr
 
-	end,
+    end,
 
-	wooper:return_static( Res ).
+    wooper:return_static( Res ).
 
 
 
@@ -554,18 +554,18 @@ These instances are expected to have been frozen beforehand (see
 request_instances_to_update/1).
 """.
 -spec request_instances_to_update( [ instance_pid() ] ) -> static_return(
-		  { [ update_success_report() ], [ update_failure_report() ] } ).
+          { [ update_success_report() ], [ update_failure_report() ] } ).
 request_instances_to_update( Instances ) ->
 
-	% The frozen instances already know the PID of this caller:
-	[ I ! updateFromUpgradableClass || I <- Instances ],
+    % The frozen instances already know the PID of this caller:
+    [ I ! updateFromUpgradableClass || I <- Instances ],
 
-	% Better than just counting, to be able to determine any lacking outcome:
-	WaitedSet = set_utils:from_list( Instances ),
+    % Better than just counting, to be able to determine any lacking outcome:
+    WaitedSet = set_utils:from_list( Instances ),
 
-	AccPair = wait_update_outcomes( WaitedSet, _SuccessAcc=[], _FailureAcc=[] ),
+    AccPair = wait_update_outcomes( WaitedSet, _SuccessAcc=[], _FailureAcc=[] ),
 
-	wooper:return_static( AccPair ).
+    wooper:return_static( AccPair ).
 
 
 
@@ -581,166 +581,166 @@ Sends back to the caller first a freeze_notification() message, then, once
 requested to update and having attempted to do so, an update_outcome() message.
 """.
 -spec manage_version_change( any_version(), extra_data(), pid(),
-							 wooper:state() ) -> 'deleted'. % no_return().
+                             wooper:state() ) -> 'deleted'. % no_return().
 manage_version_change( TargetVersion, MaybeExtraData, CallerPid, State ) ->
 
-	ActualClassMod = State#state_holder.actual_class,
+    ActualClassMod = State#state_holder.actual_class,
 
-	% No interleaving possible; yet still safe to fetch by design, as the class
-	% has not been reloaded yet:
-	%
-	OriginalVersion = case get_maybe_version( State ) of
+    % No interleaving possible; yet still safe to fetch by design, as the class
+    % has not been reloaded yet:
+    %
+    OriginalVersion = case get_maybe_version( State ) of
 
-		undefined ->
-			% Faulty upgradable or wrong instance:
-			throw( { no_get_version_defined, ActualClassMod, self() } );
+        undefined ->
+            % Faulty upgradable or wrong instance:
+            throw( { no_get_version_defined, ActualClassMod, self() } );
 
-		V ->
-			V
+        V ->
+            V
 
-	end,
+    end,
 
-	% Synchronisation needed, typically so that the caller can execute
-	% class_Upgradable:update_class/2 on its own only once all instances are
-	% frozen (i.e. not too early, whereas some of them may still be busy
-	% executing their current methods):
-	%
-	% (sending of a freeze_notification() possibly-oneway message, possibly
-	% interpreted as a oneway call, and preferably sending a pair instead of a
-	% list)
-	%
-	CallerPid ! { onInstanceFrozen, _FreezeInfo={ ActualClassMod, self() } },
+    % Synchronisation needed, typically so that the caller can execute
+    % class_Upgradable:update_class/2 on its own only once all instances are
+    % frozen (i.e. not too early, whereas some of them may still be busy
+    % executing their current methods):
+    %
+    % (sending of a freeze_notification() possibly-oneway message, possibly
+    % interpreted as a oneway call, and preferably sending a pair instead of a
+    % list)
+    %
+    CallerPid ! { onInstanceFrozen, _FreezeInfo={ ActualClassMod, self() } },
 
-	% Trying to anticipate work as much as possible:
-	MaybeTargetRequest = case basic_utils:compare_versions( OriginalVersion,
-															TargetVersion ) of
+    % Trying to anticipate work as much as possible:
+    MaybeTargetRequest = case basic_utils:compare_versions( OriginalVersion,
+                                                            TargetVersion ) of
 
-		second_bigger ->
-			cond_utils:if_defined( wooper_debug_hot_update,
-				trace_bridge:debug_fmt( "Instance ~w will upgrade from "
-					"version ~ts to ~ts.", [ self(),
-						text_utils:version_to_string( OriginalVersion ),
-						text_utils:version_to_string( TargetVersion ) ] ) ),
-			upgradeVersion;
-
-
-		equal ->
-			% Believed to be abnormal:
-			trace_bridge:warning_fmt( "No update will be done, as the original "
-				"and target versions are the same (~ts).",
-				[ text_utils:version_to_string( OriginalVersion ) ] ),
-
-			undefined;
+        second_bigger ->
+            cond_utils:if_defined( wooper_debug_hot_update,
+                trace_bridge:debug_fmt( "Instance ~w will upgrade from "
+                    "version ~ts to ~ts.", [ self(),
+                        text_utils:version_to_string( OriginalVersion ),
+                        text_utils:version_to_string( TargetVersion ) ] ) ),
+            upgradeVersion;
 
 
-		first_bigger ->
-			cond_utils:if_defined( wooper_debug_hot_update,
-				trace_bridge:debug_fmt(
-					"Instance ~w will downgrade from version ~ts to ~ts.",
-					[ self(), text_utils:version_to_string( OriginalVersion ),
-					  text_utils:version_to_string( TargetVersion ) ] ) ),
-			downgradeVersion
+        equal ->
+            % Believed to be abnormal:
+            trace_bridge:warning_fmt( "No update will be done, as the original "
+                "and target versions are the same (~ts).",
+                [ text_utils:version_to_string( OriginalVersion ) ] ),
 
-	end,
+            undefined;
 
-	Args = [ OriginalVersion, TargetVersion, MaybeExtraData ],
 
-	% Should the update succeed:
-	SuccessOutcome =
-		{ onUpdateSuccess, [ ActualClassMod, self(), TargetVersion ] },
+        first_bigger ->
+            cond_utils:if_defined( wooper_debug_hot_update,
+                trace_bridge:debug_fmt(
+                    "Instance ~w will downgrade from version ~ts to ~ts.",
+                    [ self(), text_utils:version_to_string( OriginalVersion ),
+                      text_utils:version_to_string( TargetVersion ) ] ) ),
+            downgradeVersion
 
-	% Fully prepared, just waiting then, frozen until the next selective receive
-	% is triggered:
-	%
-	% (any method calls pending in the mailbox to be processed just afterwards)
-	%
-	receive
+    end,
 
-		% Sent only once the new class module has been loaded:
-		updateFromUpgradableClass ->
+    Args = [ OriginalVersion, TargetVersion, MaybeExtraData ],
 
-			cond_utils:if_defined( wooper_debug_hot_update,
-				trace_bridge:debug_fmt( "Instance ~w requested now to update.",
-										[ self() ] ) ),
+    % Should the update succeed:
+    SuccessOutcome =
+        { onUpdateSuccess, [ ActualClassMod, self(), TargetVersion ] },
 
-			{ UpdateOutcome, FinalState } = case MaybeTargetRequest of
+    % Fully prepared, just waiting then, frozen until the next selective receive
+    % is triggered:
+    %
+    % (any method calls pending in the mailbox to be processed just afterwards)
+    %
+    receive
 
-				% Nothing done, still considering it a success:
-				undefined ->
-					{ SuccessOutcome, State };
+        % Sent only once the new class module has been loaded:
+        updateFromUpgradableClass ->
 
-				TargetMethod ->
-					% Thanks to the virtual table (implying a module-qualified
-					% call), this will be resolved with the latest version of
-					% the modules involved:
-					%
-					{ UpdatedState, UpdateRes } =
-						executeRequest( State, TargetMethod, Args ),
+            cond_utils:if_defined( wooper_debug_hot_update,
+                trace_bridge:debug_fmt( "Instance ~w requested now to update.",
+                                        [ self() ] ) ),
 
-					%trace_utils:debug_fmt( "Updated state:~n ~p",
-					%                       [ UpdatedState ] ),
+            { UpdateOutcome, FinalState } = case MaybeTargetRequest of
 
-					Outcome = case UpdateRes of
+                % Nothing done, still considering it a success:
+                undefined ->
+                    { SuccessOutcome, State };
 
-						ok ->
-							SuccessOutcome;
+                TargetMethod ->
+                    % Thanks to the virtual table (implying a module-qualified
+                    % call), this will be resolved with the latest version of
+                    % the modules involved:
+                    %
+                    { UpdatedState, UpdateRes } =
+                        executeRequest( State, TargetMethod, Args ),
 
-						{ error, ErrorReason } ->
-							% So we consider that we remained in the original
-							% version, retaining nevertheless the returned
-							% state (which is probably the original one):
-							%
-							{ onUpdateFailure, [ ErrorReason, ActualClassMod,
-												 self(), OriginalVersion ] }
+                    %trace_utils:debug_fmt( "Updated state:~n ~p",
+                    %                       [ UpdatedState ] ),
 
-					end,
+                    Outcome = case UpdateRes of
 
-					{ Outcome, UpdatedState }
+                        ok ->
+                            SuccessOutcome;
 
-			end,
+                        { error, ErrorReason } ->
+                            % So we consider that we remained in the original
+                            % version, retaining nevertheless the returned
+                            % state (which is probably the original one):
+                            %
+                            { onUpdateFailure, [ ErrorReason, ActualClassMod,
+                                                 self(), OriginalVersion ] }
 
-			CallerPid ! UpdateOutcome,
+                    end,
 
-			% The special-cased module-qualified call, to branch to the
-			% new implementation for this loop as well:
-			%
-			% (the update could even change the class name!)
-			%
-			FinalClassMod = FinalState#state_holder.actual_class,
+                    { Outcome, UpdatedState }
 
-			cond_utils:if_defined( wooper_debug_hot_update,
+            end,
 
-				%trace_bridge:debug_fmt( "Update done (outcome: ~p), "
-				%   "state:~n ~p.", [ UpdateOutcome, FinalState ] ) ),
+            CallerPid ! UpdateOutcome,
 
-				trace_bridge:debug_fmt( "Update done (outcome: ~p).",
-										[ UpdateOutcome ] ) ),
+            % The special-cased module-qualified call, to branch to the
+            % new implementation for this loop as well:
+            %
+            % (the update could even change the class name!)
+            %
+            FinalClassMod = FinalState#state_holder.actual_class,
 
-			FinalClassMod:wooper_main_loop( FinalState )
+            cond_utils:if_defined( wooper_debug_hot_update,
 
-	end.
+                %trace_bridge:debug_fmt( "Update done (outcome: ~p), "
+                %   "state:~n ~p.", [ UpdateOutcome, FinalState ] ) ),
+
+                trace_bridge:debug_fmt( "Update done (outcome: ~p).",
+                                        [ UpdateOutcome ] ) ),
+
+            FinalClassMod:wooper_main_loop( FinalState )
+
+    end.
 
 
 
 -doc "Collects the specified number of freeze information messages.".
 -spec collect_freeze_acks( count() ) -> [ freeze_info() ].
 collect_freeze_acks( InstCount ) ->
-	collect_freeze_acks( InstCount, _Acc=[] ).
+    collect_freeze_acks( InstCount, _Acc=[] ).
 
 
 % (helper)
 collect_freeze_acks( _InstCount=0, Acc ) ->
-	% No order matters:
-	Acc;
+    % No order matters:
+    Acc;
 
 collect_freeze_acks( InstCount, Acc ) ->
-	receive
+    receive
 
-		% Could be stored in a table(classname(),[instance_pid()]) if useful:
-		{ onInstanceFrozen, FreezeInfoPair } ->
-			collect_freeze_acks( InstCount-1, [ FreezeInfoPair | Acc ] )
+        % Could be stored in a table(classname(),[instance_pid()]) if useful:
+        { onInstanceFrozen, FreezeInfoPair } ->
+            collect_freeze_acks( InstCount-1, [ FreezeInfoPair | Acc ] )
 
-	end.
+    end.
 
 
 
@@ -752,15 +752,15 @@ Returns the current version of this upgradable version.
 """.
 -spec get_version( wooper:state() ) -> any_version().
 get_version( State ) ->
-	basic_utils:check_not_undefined( get_maybe_version( State ) ).
+    basic_utils:check_not_undefined( get_maybe_version( State ) ).
 
 
 
 -doc "Returns a textual description of this instance.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
-	text_utils:format( "upgradable instance ~ts",
-					   [ to_maybe_string( State ) ] ).
+    text_utils:format( "upgradable instance ~ts",
+                       [ to_maybe_string( State ) ] ).
 
 
 
@@ -776,11 +776,11 @@ Tells whether the corresponding instance implements the Upgradable interface.
 """.
 -spec is_upgradable( wooper:state() ) -> boolean().
 is_upgradable( State ) ->
-	% Previously instance-level:
-	%hasAttribute( State, wooper_upgradable_version ).
+    % Previously instance-level:
+    %hasAttribute( State, wooper_upgradable_version ).
 
-	% Now statically determined:
-	lists:member( ?MODULE, wooper:get_all_superclasses( State ) ).
+    % Now statically determined:
+    lists:member( ?MODULE, wooper:get_all_superclasses( State ) ).
 
 
 
@@ -795,18 +795,18 @@ Upgradable one or not.
 -spec get_maybe_version( wooper:state() ) -> option( any_version() ).
 get_maybe_version( State ) ->
 
-	ActualClassMod = State#state_holder.actual_class,
+    ActualClassMod = State#state_holder.actual_class,
 
-	case meta_utils:is_function_exported( ActualClassMod, get_version,
-										  _Arity=0 ) of
+    case meta_utils:is_function_exported( ActualClassMod, get_version,
+                                          _Arity=0 ) of
 
-		true ->
-			ActualClassMod:get_version();
+        true ->
+            ActualClassMod:get_version();
 
-		false ->
-			undefined
+        false ->
+            undefined
 
-	end.
+    end.
 
 
 
@@ -818,16 +818,16 @@ it implement the Upgradable interface.
 """.
 -spec to_maybe_string( wooper:state() ) -> option( ustring() ).
 to_maybe_string( State ) ->
-	case get_maybe_version( State ) of
+    case get_maybe_version( State ) of
 
-		undefined ->
-			undefined;
+        undefined ->
+            undefined;
 
-		AnyVer ->
-			text_utils:format( "whose version is ~ts",
-							   [ text_utils:version_to_string( AnyVer ) ] )
+        AnyVer ->
+            text_utils:format( "whose version is ~ts",
+                               [ text_utils:version_to_string( AnyVer ) ] )
 
-	end.
+    end.
 
 
 
@@ -843,48 +843,48 @@ Purges and reloads the specified class, expected to be already recompiled.
 -spec purge_and_reload_class( classname(), boolean() ) -> base_status().
 purge_and_reload_class( Classname, KillAnyLingeringProcess ) ->
 
-	% Removes code marked as old - but only if no process lingers in it:
-	case code:soft_purge( Classname ) of
+    % Removes code marked as old - but only if no process lingers in it:
+    case code:soft_purge( Classname ) of
 
-		% No process to clear:
-		true ->
-			trace_utils:debug_fmt( "(soft purge of '~ts' succeeded)",
-								   [ Classname ] ),
-			reload_class( Classname );
+        % No process to clear:
+        true ->
+            trace_utils:debug_fmt( "(soft purge of '~ts' succeeded)",
+                                   [ Classname ] ),
+            reload_class( Classname );
 
-		% Process(es) in the way:
-		false ->
-			case KillAnyLingeringProcess of
+        % Process(es) in the way:
+        false ->
+            case KillAnyLingeringProcess of
 
-				true ->
-					trace_utils:warning_fmt( "Classname '~ts' cannot be "
-						"soft-purged, as there is at least one process "
-						"lingering in the old code; such processes to be "
-						"killed now through a hard purge. "
-						"If this test VM gets killed in the process, ensure "
-						"that the module corresponding to this class was "
-						"not compiled with LCO disabled "
-						"(refer to the MYRIAD_LCO_OPT for that).",
-						[ Classname ] ),
+                true ->
+                    trace_utils:warning_fmt( "Classname '~ts' cannot be "
+                        "soft-purged, as there is at least one process "
+                        "lingering in the old code; such processes to be "
+                        "killed now through a hard purge. "
+                        "If this test VM gets killed in the process, ensure "
+                        "that the module corresponding to this class was "
+                        "not compiled with LCO disabled "
+                        "(refer to the MYRIAD_LCO_OPT for that).",
+                        [ Classname ] ),
 
-					case code:purge( Classname ) of
+                    case code:purge( Classname ) of
 
-						% Understood as being successful:
-						true ->
-							trace_utils:debug( "(purge succeeded)" ),
-							reload_class( Classname );
+                        % Understood as being successful:
+                        true ->
+                            trace_utils:debug( "(purge succeeded)" ),
+                            reload_class( Classname );
 
-						false ->
-							{ error, { purged_failed, Classname } }
+                        false ->
+                            { error, { purged_failed, Classname } }
 
-					end;
+                    end;
 
-				false ->
-					{ error, { lingering_processes, Classname } }
+                false ->
+                    { error, { lingering_processes, Classname } }
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -896,19 +896,19 @@ Reloads the specified class, expected to be already recompiled and purged.
 -spec reload_class( classname() ) -> base_status().
 reload_class( Classname ) ->
 
-	case code:load_file( Classname ) of
+    case code:load_file( Classname ) of
 
-		{ module, Classname } ->
-			trace_utils:debug_fmt( "Class '~ts' successfully reloaded.",
-								   [ Classname ] ),
-			ok;
+        { module, Classname } ->
+            trace_utils:debug_fmt( "Class '~ts' successfully reloaded.",
+                                   [ Classname ] ),
+            ok;
 
-		LoadErr={ error, Reason } ->
-			trace_utils:error_fmt( "Class '~ts' could not be reloaded; "
-								   "reason: ~ts.", [ Classname, Reason ] ),
-			LoadErr
+        LoadErr={ error, Reason } ->
+            trace_utils:error_fmt( "Class '~ts' could not be reloaded; "
+                                   "reason: ~ts.", [ Classname, Reason ] ),
+            LoadErr
 
-	end.
+    end.
 
 
 
@@ -917,34 +917,34 @@ reload_class( Classname ) ->
 %
 wait_update_outcomes( WaitedSet, SuccessAcc, FailureAcc ) ->
 
-	% Cannot be tested in a guard:
-	case set_utils:is_empty( WaitedSet ) of
+    % Cannot be tested in a guard:
+    case set_utils:is_empty( WaitedSet ) of
 
-		true ->
-			{ SuccessAcc, FailureAcc };
+        true ->
+            { SuccessAcc, FailureAcc };
 
-		false ->
-			receive
+        false ->
+            receive
 
-				{ onUpdateSuccess, SuccessReport=[ _Classname, InstancePid,
-												   _ResultingVersion ] } ->
+                { onUpdateSuccess, SuccessReport=[ _Classname, InstancePid,
+                                                   _ResultingVersion ] } ->
 
-					NewWaitedSet =
-						set_utils:delete_existing( InstancePid, WaitedSet ),
+                    NewWaitedSet =
+                        set_utils:delete_existing( InstancePid, WaitedSet ),
 
-					wait_update_outcomes( NewWaitedSet,
-						[ SuccessReport | SuccessAcc ], FailureAcc );
+                    wait_update_outcomes( NewWaitedSet,
+                        [ SuccessReport | SuccessAcc ], FailureAcc );
 
 
-				{ onUpdateFailure, FailureReport=[ _ErrorReason, _Classname,
-						InstancePid, _ResultingVersion ] } ->
+                { onUpdateFailure, FailureReport=[ _ErrorReason, _Classname,
+                        InstancePid, _ResultingVersion ] } ->
 
-					NewWaitedSet =
-						set_utils:delete_existing( InstancePid, WaitedSet ),
+                    NewWaitedSet =
+                        set_utils:delete_existing( InstancePid, WaitedSet ),
 
-					wait_update_outcomes( NewWaitedSet, SuccessAcc,
-										  [ FailureReport | FailureAcc ] )
+                    wait_update_outcomes( NewWaitedSet, SuccessAcc,
+                                          [ FailureReport | FailureAcc ] )
 
-			end
+            end
 
-	end.
+    end.

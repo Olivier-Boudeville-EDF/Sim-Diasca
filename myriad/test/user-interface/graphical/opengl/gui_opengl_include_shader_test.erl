@@ -1,4 +1,4 @@
-% Copyright (C) 2024-2025 Olivier Boudeville
+% Copyright (C) 2024-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -48,17 +48,17 @@ Testing of the feature for basic **header include** for shaders.
 %
 -record( my_gui_state, {
 
-	% The main frame of this test:
-	main_frame :: frame(),
+    % The main frame of this test:
+    main_frame :: frame(),
 
-	% The OpenGL canvas on which rendering will be done:
-	canvas :: gl_canvas(),
+    % The OpenGL canvas on which rendering will be done:
+    canvas :: gl_canvas(),
 
-	% The OpenGL context being used:
-	context :: gl_context(),
+    % The OpenGL context being used:
+    context :: gl_context(),
 
-	% In more complex cases, would store the loaded textures, etc.
-	opengl_state :: option( my_opengl_state() ) } ).
+    % In more complex cases, would store the loaded textures, etc.
+    opengl_state :: option( my_opengl_state() ) } ).
 
 
 -doc "Test-specific overall GUI state.".
@@ -68,10 +68,10 @@ Testing of the feature for basic **header include** for shaders.
 
 -record( my_opengl_state, {
 
-	% The identifier of our GLSL program:
-	program_id :: program_id()
+    % The identifier of our GLSL program:
+    program_id :: program_id()
 
-						  } ).
+                          } ).
 
 
 -doc """
@@ -116,22 +116,22 @@ properly once not needed anymore.
 -spec run_actual_test() -> void().
 run_actual_test() ->
 
-	test_facilities:display( "This test checks that includes within shaders "
-							 "work as expected." ),
+    test_facilities:display( "This test checks that includes within shaders "
+                             "work as expected." ),
 
-	gui:start(),
+    gui:start(),
 
-	% Could be batched (see gui:batch/1) to be more effective:
-	InitialGUIState = init_test_gui(),
+    % Could be batched (see gui:batch/1) to be more effective:
+    InitialGUIState = init_test_gui(),
 
-	gui_frame:show( InitialGUIState#my_gui_state.main_frame ),
+    gui_frame:show( InitialGUIState#my_gui_state.main_frame ),
 
-	% OpenGL will be initialised only when the corresponding frame will be ready
-	% (that is once first reported as resized):
-	%
-	gui_main_loop( InitialGUIState ),
+    % OpenGL will be initialised only when the corresponding frame will be ready
+    % (that is once first reported as resized):
+    %
+    gui_main_loop( InitialGUIState ),
 
-	gui:stop().
+    gui:stop().
 
 
 
@@ -145,26 +145,26 @@ displayed.
 -spec init_test_gui() -> my_gui_state().
 init_test_gui() ->
 
-	MainFrame = gui_frame:create( "MyriadGUI OpenGL Shader-based Texture Test",
-								  _Size={ 1024, 768 } ),
+    MainFrame = gui_frame:create( "MyriadGUI OpenGL Shader-based Texture Test",
+                                  _Size={ 1024, 768 } ),
 
-	% Using mostly default GL attributes:
-	GLCanvasAttrs =
-		[ use_core_profile | gui_opengl:get_default_canvas_attributes() ],
+    % Using mostly default GL attributes:
+    GLCanvasAttrs =
+        [ use_core_profile | gui_opengl:get_default_canvas_attributes() ],
 
-	GLCanvas = gui_opengl:create_canvas(
-		_CanvasOpts=[ { gl_attributes, GLCanvasAttrs } ], _Parent=MainFrame ),
+    GLCanvas = gui_opengl:create_canvas(
+        _CanvasOpts=[ { gl_attributes, GLCanvasAttrs } ], _Parent=MainFrame ),
 
-	% Created, yet not bound yet (must wait for the main frame to be shown):
-	GLContext = gui_opengl:create_context( GLCanvas ),
+    % Created, yet not bound yet (must wait for the main frame to be shown):
+    GLContext = gui_opengl:create_context( GLCanvas ),
 
-	gui:subscribe_to_events( { [ onShown, onWindowClosed ], MainFrame } ),
+    gui:subscribe_to_events( { [ onShown, onWindowClosed ], MainFrame } ),
 
-	% No OpenGL state yet (GL context cannot be set as current yet), actual
-	% OpenGL initialisation to happen when available, i.e. when the main frame
-	% is shown:
-	%
-	#my_gui_state{ main_frame=MainFrame, canvas=GLCanvas, context=GLContext }.
+    % No OpenGL state yet (GL context cannot be set as current yet), actual
+    % OpenGL initialisation to happen when available, i.e. when the main frame
+    % is shown:
+    %
+    #my_gui_state{ main_frame=MainFrame, canvas=GLCanvas, context=GLContext }.
 
 
 
@@ -174,54 +174,54 @@ The main loop of this test, driven by the receiving of MyriadGUI messages.
 -spec gui_main_loop( my_gui_state() ) -> void().
 gui_main_loop( GUIState ) ->
 
-	%trace_utils:debug( "Main loop." ),
+    %trace_utils:debug( "Main loop." ),
 
-	% Matching the least-often received messages last:
-	receive
+    % Matching the least-often received messages last:
+    receive
 
-		% Less frequent messages looked up last:
+        % Less frequent messages looked up last:
 
-		% The most suitable first location to initialise OpenGL, as making a GL
-		% context current requires a shown window:
-		%
-		{ onShown, [ ParentFrame, _ParentFrameId, _EventContext ] } ->
+        % The most suitable first location to initialise OpenGL, as making a GL
+        % context current requires a shown window:
+        %
+        { onShown, [ ParentFrame, _ParentFrameId, _EventContext ] } ->
 
-			trace_utils:debug_fmt( "Parent window (main frame) just shown "
-				"(initial size of ~w).",
-				[ gui_widget:get_size( ParentFrame ) ] ),
+            trace_utils:debug_fmt( "Parent window (main frame) just shown "
+                "(initial size of ~w).",
+                [ gui_widget:get_size( ParentFrame ) ] ),
 
-			% Optional yet better:
-			gui:unsubscribe_from_events( { onShown, ParentFrame } ),
+            % Optional yet better:
+            gui:unsubscribe_from_events( { onShown, ParentFrame } ),
 
-			% Done once for all:
-			_InitGUIState = initialise_opengl( GUIState ),
+            % Done once for all:
+            _InitGUIState = initialise_opengl( GUIState ),
 
-			% Test over, no more recursing:
-			gui_frame:destruct( ParentFrame );
-
-
-
-		{ onWindowClosed, [ ParentFrame, _ParentFrameId, _EventContext ] } ->
-
-			cleanup_opengl( GUIState ),
-			trace_utils:info( "Main frame closed, test success." ),
-
-			% Very final check, while there is still an OpenGL context:
-			gui_opengl:check_error(),
-
-			% No more recursing:
-			gui_frame:destruct( ParentFrame );
+            % Test over, no more recursing:
+            gui_frame:destruct( ParentFrame );
 
 
-		OtherEvent ->
-			trace_utils:warning_fmt( "Test ignored following event:~n ~p",
-									 [ OtherEvent ] ),
 
-			gui_main_loop( GUIState )
+        { onWindowClosed, [ ParentFrame, _ParentFrameId, _EventContext ] } ->
 
-	% No 'after': no spontaneous action taken here, in the absence of events.
+            cleanup_opengl( GUIState ),
+            trace_utils:info( "Main frame closed, test success." ),
 
-	end.
+            % Very final check, while there is still an OpenGL context:
+            gui_opengl:check_error(),
+
+            % No more recursing:
+            gui_frame:destruct( ParentFrame );
+
+
+        OtherEvent ->
+            trace_utils:warning_fmt( "Test ignored following event:~n ~p",
+                                     [ OtherEvent ] ),
+
+            gui_main_loop( GUIState )
+
+    % No 'after': no spontaneous action taken here, in the absence of events.
+
+    end.
 
 
 
@@ -231,83 +231,83 @@ OpenGL context is available.
 """.
 -spec initialise_opengl( my_gui_state() ) -> my_gui_state().
 initialise_opengl( _GUIState=#my_gui_state{ canvas=GLCanvas,
-											context=GLContext,
-											opengl_state=undefined } ) ->
+                                            context=GLContext,
+                                            opengl_state=undefined } ) ->
 
-	% Initial size of canvas is typically 20x20 pixels:
-	trace_utils:debug_fmt( "Initialising OpenGL (whereas canvas is of initial "
-						   "size ~w).", [ gui_widget:get_size( GLCanvas ) ] ),
+    % Initial size of canvas is typically 20x20 pixels:
+    trace_utils:debug_fmt( "Initialising OpenGL (whereas canvas is of initial "
+                           "size ~w).", [ gui_widget:get_size( GLCanvas ) ] ),
 
-	% So done only once, with appropriate measures for a first setting:
-	gui_opengl:set_context_on_shown( GLCanvas, GLContext ),
+    % So done only once, with appropriate measures for a first setting:
+    gui_opengl:set_context_on_shown( GLCanvas, GLContext ),
 
-	% First possible moment:
-	test_facilities:display( "Description of the current OpenGL support: ~ts",
-							 [ gui_opengl:get_support_description() ] ),
+    % First possible moment:
+    test_facilities:display( "Description of the current OpenGL support: ~ts",
+                             [ gui_opengl:get_support_description() ] ),
 
-	% These test shaders are in 3.3 core (cf. their '#version 330 core'):
-	MinOpenGLVersion = { 3, 3 },
-	%MinOpenGLVersion = { 4, 6 },
-	%MinOpenGLVersion = { 99, 0 },
+    % These test shaders are in 3.3 core (cf. their '#version 330 core'):
+    MinOpenGLVersion = { 3, 3 },
+    %MinOpenGLVersion = { 4, 6 },
+    %MinOpenGLVersion = { 99, 0 },
 
-	% Not found available at least in some configurations:
-	%TargetProfile = core,
+    % Not found available at least in some configurations:
+    %TargetProfile = core,
 
-	TargetProfile = compatibility,
-	%TargetProfile = non_existing_profile,
+    TargetProfile = compatibility,
+    %TargetProfile = non_existing_profile,
 
-	%RequiredExts = [ non_existing_extension ],
-	%RequiredExts = [ 'GL_ARB_draw_buffers' ],
-	RequiredExts = [],
+    %RequiredExts = [ non_existing_extension ],
+    %RequiredExts = [ 'GL_ARB_draw_buffers' ],
+    RequiredExts = [],
 
-	gui_opengl:check_requirements( MinOpenGLVersion, TargetProfile,
-								   RequiredExts ),
+    gui_opengl:check_requirements( MinOpenGLVersion, TargetProfile,
+                                   RequiredExts ),
 
-	% These settings will not change afterwards here (hence set once for all):
+    % These settings will not change afterwards here (hence set once for all):
 
-	% Clears in white (otherwise black background):
-	gl:clearColor( _R=1.0, _G=1.0, _B=1.0, ?alpha_fully_opaque ),
+    % Clears in white (otherwise black background):
+    gl:clearColor( _R=1.0, _G=1.0, _B=1.0, ?alpha_fully_opaque ),
 
-	% Specifies the location of the vertex attributes, so that the vertex shader
-	% will be able to match its input variables with the vertex attributes of
-	% the application:
-	%
-	UserVertexAttrs = [
-		{ "my_input_vertex",    ?my_vertex_attribute_index },
-		{ "my_input_tex_coord", ?my_texture_coords_attribute_index } ],
+    % Specifies the location of the vertex attributes, so that the vertex shader
+    % will be able to match its input variables with the vertex attributes of
+    % the application:
+    %
+    UserVertexAttrs = [
+        { "my_input_vertex",    ?my_vertex_attribute_index },
+        { "my_input_tex_coord", ?my_texture_coords_attribute_index } ],
 
-	% For test_include_shader.glsl.h (MyriadGUI ones automatically found):
-	IncludeSearchDirs = [ "." ],
+    % For test_include_shader.glsl.h (MyriadGUI ones automatically found):
+    IncludeSearchDirs = [ "." ],
 
-	% Creates, compiles and links our GLSL program from the two specified
-	% shaders, that are, in the same movement, automatically attached and
-	% linked, then detached and deleted:
-	%
-	ProgramId = gui_shader:generate_program_from(
-		"gui_opengl_include_shader.vertex.glsl",
-		"gui_opengl_include_shader.fragment.glsl", UserVertexAttrs,
-		IncludeSearchDirs ),
+    % Creates, compiles and links our GLSL program from the two specified
+    % shaders, that are, in the same movement, automatically attached and
+    % linked, then detached and deleted:
+    %
+    ProgramId = gui_shader:generate_program_from(
+        "gui_opengl_include_shader.vertex.glsl",
+        "gui_opengl_include_shader.fragment.glsl", UserVertexAttrs,
+        IncludeSearchDirs ),
 
 
-	% Rely on our shaders; can be used from now:
-	gui_shader:install_program( ProgramId ),
+    % Rely on our shaders; can be used from now:
+    gui_shader:install_program( ProgramId ),
 
-	test_facilities:display(
-	  "Shader fully built and installed, test success." ).
+    test_facilities:display(
+      "Shader fully built and installed, test success." ).
 
 
 
 -doc "Cleans up OpenGL.".
 -spec cleanup_opengl( my_gui_state() ) -> void().
 cleanup_opengl( #my_gui_state{ opengl_state=undefined } ) ->
-	ok;
+    ok;
 
 cleanup_opengl( #my_gui_state{ opengl_state=#my_opengl_state{
-												program_id=ProgramId } } ) ->
+                                                program_id=ProgramId } } ) ->
 
-	trace_utils:debug( "Cleaning up OpenGL." ),
+    trace_utils:debug( "Cleaning up OpenGL." ),
 
-	gui_shader:delete_program( ProgramId ).
+    gui_shader:delete_program( ProgramId ).
 
 
 
@@ -315,10 +315,10 @@ cleanup_opengl( #my_gui_state{ opengl_state=#my_opengl_state{
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	gui_opengl_for_testing:can_be_run(
-			"the test of texture support with OpenGL shaders" ) =:= yes
-		andalso run_actual_test(),
+    gui_opengl_for_testing:can_be_run(
+            "the test of texture support with OpenGL shaders" ) =:= yes
+        andalso run_actual_test(),
 
-	test_facilities:stop().
+    test_facilities:stop().

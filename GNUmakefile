@@ -10,7 +10,7 @@
 	install to-archive to-archive-full vcs-archive archive              \
 	update-third-party-mirror release stats stats-full                  \
 	info-context info-versions                                          \
-	info info-files info-local-files info-paths info-build              \
+	info info-user info-files info-local-files info-paths info-build    \
 	info-archive info-version info-release
 
 
@@ -441,7 +441,12 @@ info-versions:
 	@echo "TRACES_VERSION = $(TRACES_VERSION)"
 
 
-info: info-files info-paths info-archive info-release
+info: info-user info-files info-paths info-archive info-release
+
+
+info-user:
+	@echo "ARCHIVE_USER = $(ARCHIVE_USER)"
+	@echo "PRINT_USER = $(PRINT_USER)"
 
 
 info-files: info-local-files

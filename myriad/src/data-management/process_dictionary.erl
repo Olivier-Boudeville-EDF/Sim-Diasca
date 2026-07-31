@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2025 Olivier Boudeville
+% Copyright (C) 2018-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -53,13 +53,13 @@ as not defining at all such an entry.
 
 
 -export_type([ key/0, value/0, entry/0, entries/0, entry_count/0,
-			   process_dictionary/0 ]).
+               process_dictionary/0 ]).
 
 
 -export([ put/2, put_as_new/2, get/1, get_existing/1,
-		  remove/1, remove_existing/1,
-		  get_dictionary/0, get_keys/0, get_keys_for/1,
-		  blank/0, to_string/0, to_short_string/0 ]).
+          remove/1, remove_existing/1,
+          get_dictionary/0, get_keys/0, get_keys_for/1,
+          blank/0, to_string/0, to_short_string/0 ]).
 
 
 
@@ -87,7 +87,7 @@ previously associated to that key.
 """.
 -spec put( key(), value() ) -> option( value() ).
 put( Key, Value ) ->
-	erlang:put( Key, Value ).
+    erlang:put( Key, Value ).
 
 
 
@@ -98,15 +98,15 @@ the specified key was already registered in the process dictionary.
 -spec put_as_new( key(), value() ) -> void().
 put_as_new( Key, Value ) ->
 
-	case erlang:get( Key ) of
+    case erlang:get( Key ) of
 
-		undefined ->
-			erlang:put( Key, Value );
+        undefined ->
+            erlang:put( Key, Value );
 
-		Other ->
-			throw( { already_registered_key, Key, Other } )
+        Other ->
+            throw( { already_registered_key, Key, Other } )
 
-	end.
+    end.
 
 
 
@@ -116,8 +116,8 @@ dictionary, otherwise the 'undefined' atom.
 """.
 -spec get( key() ) -> option( value() ).
 get( Key ) ->
-	%trace_utils:debug_fmt( "Getting key '~ts' (as ~p).", [ Key, self() ] ),
-	erlang:get( Key ).
+    %trace_utils:debug_fmt( "Getting key '~ts' (as ~p).", [ Key, self() ] ),
+    erlang:get( Key ).
 
 
 
@@ -128,15 +128,15 @@ dictionary, otherwise throws an exception.
 -spec get_existing( key() ) -> value().
 get_existing( Key ) ->
 
-	case erlang:get( Key ) of
+    case erlang:get( Key ) of
 
-		undefined ->
-			throw( { non_registered_key, Key } );
+        undefined ->
+            throw( { non_registered_key, Key } );
 
-		Other ->
-			Other
+        Other ->
+            Other
 
-	end.
+    end.
 
 
 
@@ -146,7 +146,7 @@ returning any value that was associated to it.
 """.
 -spec remove( key() ) -> option( value() ).
 remove( Key ) ->
-	erlang:erase( Key ).
+    erlang:erase( Key ).
 
 
 
@@ -158,29 +158,29 @@ associated to specified key.
 -spec remove_existing( key() ) -> value().
 remove_existing( Key ) ->
 
-	case erlang:erase( Key ) of
+    case erlang:erase( Key ) of
 
-		undefined ->
-			throw( { non_registered_key, Key } );
+        undefined ->
+            throw( { non_registered_key, Key } );
 
-		Other ->
-			Other
+        Other ->
+            Other
 
-	end.
+    end.
 
 
 
 -doc "Returns the full process dictionary, as a list of {Key,Value} pairs.".
 -spec get_dictionary() -> process_dictionary().
 get_dictionary() ->
-	erlang:get().
+    erlang:get().
 
 
 
 -doc "Returns a list of all keys present in the process dictionary.".
 -spec get_keys() -> [ key() ].
 get_keys() ->
-	erlang:get_keys().
+    erlang:get_keys().
 
 
 
@@ -190,7 +190,7 @@ dictionary.
 """.
 -spec get_keys_for( value() ) -> [ key() ].
 get_keys_for( Value ) ->
-	erlang:get_keys( Value ).
+    erlang:get_keys( Value ).
 
 
 
@@ -200,7 +200,7 @@ Blanks the process dictionary (erases all entries), and returns its past content
 """.
 -spec blank() -> process_dictionary().
 blank() ->
-	erlang:erase().
+    erlang:erase().
 
 
 
@@ -209,8 +209,8 @@ Returns a textual description of the current state of the process dictionary.
 """.
 -spec to_string() -> ustring().
 to_string() ->
-	text_utils:format( "the process dictionary of ~p ~ts",
-					   [ self(), to_short_string() ] ).
+    text_utils:format( "the process dictionary of ~p ~ts",
+                       [ self(), to_short_string() ] ).
 
 
 
@@ -221,22 +221,22 @@ dictionary.
 -spec to_short_string() -> ustring().
 to_short_string() ->
 
-	% Keys can be any terms (not only atoms):
-	case erlang:get() of
+    % Keys can be any terms (not only atoms):
+    case erlang:get() of
 
-		[] ->
-			"is empty";
+        [] ->
+            "is empty";
 
-		[ { K, V } ] ->
-			text_utils:format( "contains a single key, '~p', "
-				"associated to the following value:~n  ~p", [ K, V ] );
+        [ { K, V } ] ->
+            text_utils:format( "contains a single key, '~p', "
+                "associated to the following value:~n  ~p", [ K, V ] );
 
-		Pairs ->
-			Strings = lists:sort( [ text_utils:format(
-				"key '~p' associated to value '~p'",
-				[ K, V ] ) || { K, V } <- Pairs ] ),
+        Pairs ->
+            Strings = lists:sort( [ text_utils:format(
+                "key '~p' associated to value '~p'",
+                [ K, V ] ) || { K, V } <- Pairs ] ),
 
-			text_utils:format( "contains ~B entries: ~ts", [ length( Pairs ),
-				text_utils:strings_to_string( Strings ) ] )
+            text_utils:format( "contains ~B entries: ~ts", [ length( Pairs ),
+                text_utils:strings_to_string( Strings ) ] )
 
-	end.
+    end.

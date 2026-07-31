@@ -9,9 +9,9 @@ This model will be implemented in the ``SodaVendingMachine`` class, named ``clas
 
 Each of its instances will be **created** based on three parameters, telling for each machine:
 
-	1. the name of the machine, to help understanding the simulation traces being produced
-	2. how many soda cans there are in stock initially
-	3. how much money a can of soda from that machine costs (expressed as an integer number of euros)
+    1. the name of the machine, to help understanding the simulation traces being produced
+    2. how many soda cans there are in stock initially
+    3. how much money a can of soda from that machine costs (expressed as an integer number of euros)
 
 
 The **state** of a machine will be defined by largely similar variables [#]_:
@@ -46,15 +46,15 @@ A customer who is asked for money will accept iff he has the requested amount of
 
 Each customer will be **created** based on five parameters, telling:
 
-	1. the name of this customer, to help understanding the simulation traces being produced
+    1. the name of this customer, to help understanding the simulation traces being produced
 
-	2. what is the vending machine he can use
+    2. what is the vending machine he can use
 
-	3. what are the other customers he knows of
+    3. what are the other customers he knows of
 
-	4. how much time will elapse before being thirsty again, once having drunk a can (expressed as an integer number of minutes)
+    4. how much time will elapse before being thirsty again, once having drunk a can (expressed as an integer number of minutes)
 
-	5. what is the total amount of money this customer has initially in pocket, and therefore can spend (expressed as an integer number of euros)
+    5. what is the total amount of money this customer has initially in pocket, and therefore can spend (expressed as an integer number of euros)
 
 
 
@@ -86,8 +86,8 @@ The **state** of a thirsty customer will be defined by largely similar variables
 
 In terms of behaviour, a customer will buy soda and wait until being thirsty again, then he will buy soda, etc. This cycle will stop only once:
 
-	- the customer has no money left
-	- and/or the machine has no can left
+    - the customer has no money left
+    - and/or the machine has no can left
 
 Initially, the customer will not be thirsty at all.
 
@@ -151,9 +151,9 @@ As the model of the machine does not exhibit any spontaneous behaviour, its ``ac
   % The core of the soda vending machine behaviour.
   % (oneway)
   act(State) ->
-	  % Here a machine as no spontaneous behaviour, so it does not do
-	  % anything special.
-	  ?wooper_return_state_only( class_Actor:manage_end_of_tick(State) ).
+      % Here a machine as no spontaneous behaviour, so it does not do
+      % anything special.
+      ?wooper_return_state_only( class_Actor:manage_end_of_tick(State) ).
 
 
 .. [#] It could have even been left undefined, so that the default do-nothing implementation could be naturally inherited.
@@ -161,14 +161,14 @@ As the model of the machine does not exhibit any spontaneous behaviour, its ``ac
 
 The heart of the machine behaviour is in its ``orderSoda`` method instead. It will be triggered by a customer, and in return will trigger one of the following methods on the customer's side:
 
-	- ``getCan``, if the transaction succeeded
-	- ``onNoCanAvailable``, if the transaction failed due to a lack of can in the machine
-	- ``onNotEnoughMoney``, if the transaction failed due to insufficient funds given to the machine
+    - ``getCan``, if the transaction succeeded
+    - ``onNoCanAvailable``, if the transaction failed due to a lack of can in the machine
+    - ``onNotEnoughMoney``, if the transaction failed due to insufficient funds given to the machine
 
 depending on:
 
-	- the remaining stock available in that vending machine
-	- the remaining budget of the customer
+    - the remaining stock available in that vending machine
+    - the remaining budget of the customer
 
 Of course the state of both parties will be updated accordingly: after a successful transaction, there will be one fewer can in the machine, and a somewhat poorer, but less thirsty, customer.
 
@@ -188,16 +188,16 @@ We can see the machine is given the customer budget, so that it can tell whether
 
 There is a lot of room for improvement in that simple test case:
 
-	- money could be collected coin-per-coin until the cost of a can is reached
-	- the ordering of a soda could last for longer than one simulation tick, and the duration could depend on the outcome of the transaction
-	- here we considered that one simulation tick corresponded to 1 virtual minute, we should instead make the duration independent from the scheduler frequency (e.g. by using ``class_Actor:convertSecondsToTicks/2``)
-	- more than one can could be bought at once (i.e. in one interaction)
-	- multiple kinds of sodas could be offered
-	- the machine could request spontaneously the operating staff to renew its stock
-	- an employee of the soda vendor could come regularly and refill the machine
-	- the machine could fail and be repaired
-	- the model of the machine could be run at a frequency lower than the fundamental one of the simulation or, still better, could be purely event-driven (i.e. not scheduled by the time manager on a regular basis), since it has here no spontaneous behaviour
-	- etc.
+    - money could be collected coin-per-coin until the cost of a can is reached
+    - the ordering of a soda could last for longer than one simulation tick, and the duration could depend on the outcome of the transaction
+    - here we considered that one simulation tick corresponded to 1 virtual minute, we should instead make the duration independent from the scheduler frequency (e.g. by using ``class_Actor:convertSecondsToTicks/2``)
+    - more than one can could be bought at once (i.e. in one interaction)
+    - multiple kinds of sodas could be offered
+    - the machine could request spontaneously the operating staff to renew its stock
+    - an employee of the soda vendor could come regularly and refill the machine
+    - the machine could fail and be repaired
+    - the model of the machine could be run at a frequency lower than the fundamental one of the simulation or, still better, could be purely event-driven (i.e. not scheduled by the time manager on a regular basis), since it has here no spontaneous behaviour
+    - etc.
 
 
 
@@ -208,13 +208,13 @@ We chose to implement this *deterministic* thirsty customer as a basic simulatio
 
 There is a lot of room for improvement:
 
-	- a customer might use multiple vending machines and optimise his purchasing depending on cost and availability
+    - a customer might use multiple vending machines and optimise his purchasing depending on cost and availability
 
-	- money could be inserted coin-per-coin by the customer, until the cost of a can is reached
+    - money could be inserted coin-per-coin by the customer, until the cost of a can is reached
 
-	- a thirsty customer could stop trying to buy cans from a machine he knows having none
+    - a thirsty customer could stop trying to buy cans from a machine he knows having none
 
-	- etc.
+    - etc.
 
 
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 Olivier Boudeville
+% Copyright (C) 2008-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -30,7 +30,7 @@
 -moduledoc """
 Unit tests for the **file_utils toolbox**.
 
-See the file_utils.erl tested module.
+See the `file_utils` tested module.
 """.
 
 
@@ -39,200 +39,201 @@ See the file_utils.erl tested module.
 -include("test_facilities.hrl").
 
 
+
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	CurrentDir = file_utils:get_current_directory(),
+    CurrentDir = file_utils:get_current_directory(),
 
-	{ _RegularFiles, _Symlinks, _Directories, _OtherFiles, _Devices } =
-		Elements = file_utils:list_dir_elements( CurrentDir ),
+    { _RegularFiles, _Symlinks, _Directories, _OtherFiles, _Devices } =
+        Elements = file_utils:list_dir_elements( CurrentDir ),
 
-	BeamExtension = ".beam",
+    BeamExtension = ".beam",
 
-	test_facilities:display(
-		"File elements in the current directory (~ts):~n~p",
-		[ CurrentDir, Elements ] ),
+    test_facilities:display(
+        "File elements in the current directory (~ts):~n~p",
+        [ CurrentDir, Elements ] ),
 
-	% Too many outputs:
-	%test_facilities:display( "Regular BEAM files in the current directory: "
-	% ~n~p", [ file_utils:filter_by_extension( RegularFiles, BeamExtension) ] ),
+    % Too many outputs:
+    %test_facilities:display( "Regular BEAM files in the current directory: "
+    % ~n~p", [ file_utils:filter_by_extension( RegularFiles, BeamExtension) ] ),
 
-	test_facilities:display( "All files found recursively "
-		"from the current directory:~n~p",
-		[ file_utils:find_files_from( CurrentDir ) ] ),
+    test_facilities:display( "All files found recursively "
+        "from the current directory:~n~p",
+        [ file_utils:find_files_from( CurrentDir ) ] ),
 
 
-	test_facilities:display( "All BEAM files found recursively "
-		"from the current directory:~n~p",
-		[ file_utils:find_files_with_extension_from( CurrentDir,
-													 BeamExtension ) ] ),
+    test_facilities:display( "All BEAM files found recursively "
+        "from the current directory:~n~p",
+        [ file_utils:find_files_with_extension_from( CurrentDir,
+                                                     BeamExtension ) ] ),
 
-	ExcludedDirs = [ ".svn", "non-existing-dir" ],
+    ExcludedDirs = [ ".svn", "non-existing-dir" ],
 
-	test_facilities:display( "All files found recursively "
-		"from the current directory, with directories ~p excluded:~n~p",
-		[ ExcludedDirs, file_utils:find_files_with_excluded_dirs( CurrentDir,
-			ExcludedDirs ) ] ),
+    test_facilities:display( "All files found recursively "
+        "from the current directory, with directories ~p excluded:~n~p",
+        [ ExcludedDirs, file_utils:find_files_with_excluded_dirs( CurrentDir,
+            ExcludedDirs ) ] ),
 
 
-	ExcludedSuffixes = [ ".erl", ".beam", "non-existing-suffix" ],
+    ExcludedSuffixes = [ ".erl", ".beam", "non-existing-suffix" ],
 
-	test_facilities:display( "All files found recursively "
-		"from the current directory, with suffixes ~p excluded:~n~p",
-		[ ExcludedSuffixes, file_utils:find_files_with_excluded_suffixes(
-			CurrentDir, ExcludedSuffixes ) ] ),
+    test_facilities:display( "All files found recursively "
+        "from the current directory, with suffixes ~p excluded:~n~p",
+        [ ExcludedSuffixes, file_utils:find_files_with_excluded_suffixes(
+            CurrentDir, ExcludedSuffixes ) ] ),
 
 
-	test_facilities:display( "All files found recursively "
-		"from the current directory, with directories ~p and suffixes ~p "
-		"excluded:~n~p",
-		[ ExcludedDirs, ExcludedSuffixes,
-		  file_utils:find_files_with_excluded_dirs_and_suffixes(
-			CurrentDir, ExcludedDirs, ExcludedSuffixes ) ] ),
+    test_facilities:display( "All files found recursively "
+        "from the current directory, with directories ~p and suffixes ~p "
+        "excluded:~n~p",
+        [ ExcludedDirs, ExcludedSuffixes,
+          file_utils:find_files_with_excluded_dirs_and_suffixes(
+            CurrentDir, ExcludedDirs, ExcludedSuffixes ) ] ),
 
 
-	true  = file_utils:is_absolute_path( "/etc/host.conf" ),
-	false = file_utils:is_absolute_path( "my-dir/my-file" ),
-	false = file_utils:is_absolute_path( "" ),
+    true  = file_utils:is_absolute_path( "/etc/host.conf" ),
+    false = file_utils:is_absolute_path( "my-dir/my-file" ),
+    false = file_utils:is_absolute_path( "" ),
 
-	RelativePath = "my-local-dir/a-file",
+    RelativePath = "my-local-dir/a-file",
 
-	test_facilities:display( "Ensuring '~ts' is absolute: ~ts", [ RelativePath,
-		file_utils:ensure_path_is_absolute( RelativePath ) ] ),
+    test_facilities:display( "Ensuring '~ts' is absolute: ~ts", [ RelativePath,
+        file_utils:ensure_path_is_absolute( RelativePath ) ] ),
 
-	BasePath ="/etc",
+    BasePath ="/etc",
 
-	test_facilities:display(
-		"Ensuring '~ts' is absolute with base path '~ts': '~ts'",
-		[ RelativePath, BasePath,
-		  file_utils:ensure_path_is_absolute( RelativePath, BasePath ) ] ),
+    test_facilities:display(
+        "Ensuring '~ts' is absolute with base path '~ts': '~ts'",
+        [ RelativePath, BasePath,
+          file_utils:ensure_path_is_absolute( RelativePath, BasePath ) ] ),
 
 
-	"/home/lisa/tube" =
-		file_utils:normalise_path( "/home/garfield/../lisa/./src/.././tube" ),
+    "/home/lisa/tube" =
+        file_utils:normalise_path( "/home/garfield/../lisa/./src/.././tube" ),
 
-	"../homer/bart.beam" =
-		file_utils:normalise_path( "../src/../homer/./bart.beam" ),
+    "../homer/bart.beam" =
+        file_utils:normalise_path( "../src/../homer/./bart.beam" ),
 
-	% Define suitable paths for testing:
+    % Define suitable paths for testing:
 
-	LowerPath = "../../a/b",
-	LowerPath = file_utils:make_relative( LowerPath ),
+    LowerPath = "../../a/b",
+    LowerPath = file_utils:make_relative( LowerPath ),
 
-	LowerPathAbs = file_utils:ensure_path_is_absolute( LowerPath ),
-	LowerPath = file_utils:make_relative( LowerPathAbs ),
+    LowerPathAbs = file_utils:ensure_path_is_absolute( LowerPath ),
+    LowerPath = file_utils:make_relative( LowerPathAbs ),
 
-	HigherPath = "c/d/e",
-	HigherPath = file_utils:make_relative( HigherPath ),
+    HigherPath = "c/d/e",
+    HigherPath = file_utils:make_relative( HigherPath ),
 
-	HigherPathAbs = file_utils:ensure_path_is_absolute( HigherPath ),
-	HigherPath = file_utils:make_relative( HigherPathAbs ),
+    HigherPathAbs = file_utils:ensure_path_is_absolute( HigherPath ),
+    HigherPath = file_utils:make_relative( HigherPathAbs ),
 
-	file_utils:make_relative( "/etc/host.conf" ),
+    file_utils:make_relative( "/etc/host.conf" ),
 
-	OtherRelativePath = "my-dir/my-file",
-	OtherRelativePath = file_utils:make_relative( OtherRelativePath ),
+    OtherRelativePath = "my-dir/my-file",
+    OtherRelativePath = file_utils:make_relative( OtherRelativePath ),
 
-	LeafName = "hello.txt",
+    LeafName = "hello.txt",
 
-	LeafPath = "/tmp/test/" ++ LeafName,
+    LeafPath = "/tmp/test/" ++ LeafName,
 
 
-	false = file_utils:is_leaf_among( LeafName, [ "aa", "bb" ] ),
+    false = file_utils:is_leaf_among( LeafName, [ "aa", "bb" ] ),
 
-	TestPaths = [ "test", "/test/foobar", LeafPath, "another_element" ],
+    TestPaths = [ "test", "/test/foobar", LeafPath, "another_element" ],
 
-	LeafPath = file_utils:is_leaf_among( LeafName, TestPaths ),
+    LeafPath = file_utils:is_leaf_among( LeafName, TestPaths ),
 
 
 
-	ToResolve = [ home, "hello", user_name, "hi", locale_charset, "goodbye",
-				  fqdn, "finished" ],
+    ToResolve = [ home, "hello", user_name, "hi", locale_charset, "goodbye",
+                  fqdn, "finished" ],
 
-	% Checks at least it does not fail:
-	_ResolvedPath = file_utils:resolve_path( ToResolve ),
+    % Checks at least it does not fail:
+    _ResolvedPath = file_utils:resolve_path( ToResolve ),
 
 
 
-	FirstFilename = "media/frame/1-23-2-98.oaf",
+    FirstFilename = "media/frame/1-23-2-98.oaf",
 
-	test_facilities:display(
-		"Path '~ts', once transformed into a variable name, results in: ~ts",
-		[ FirstFilename, file_utils:path_to_variable_name( FirstFilename ) ] ),
+    test_facilities:display(
+        "Path '~ts', once transformed into a variable name, results in: ~ts",
+        [ FirstFilename, file_utils:path_to_variable_name( FirstFilename ) ] ),
 
 
 
-	SecondFilename = "./mnt/zadok/44_12.oaf",
+    SecondFilename = "./mnt/zadok/44_12.oaf",
 
-	test_facilities:display( "Path '~ts', once transformed into a variable "
-		"name, results in: ~ts", [ SecondFilename,
-						file_utils:path_to_variable_name( SecondFilename ) ] ),
+    test_facilities:display( "Path '~ts', once transformed into a variable "
+        "name, results in: ~ts", [ SecondFilename,
+            file_utils:path_to_variable_name( SecondFilename ) ] ),
 
 
-	FirstString = "My name is Bond",
-	test_facilities:display( "String '~ts', "
-		"once transformed into a file name, results in: '~ts'",
-		[ FirstString, file_utils:convert_to_filename( FirstString ) ] ),
+    FirstString = "My name is Bond",
+    test_facilities:display( "String '~ts', "
+        "once transformed into a file name, results in: '~ts'",
+        [ FirstString, file_utils:convert_to_filename( FirstString ) ] ),
 
 
-	SecondString = "James,  James <Bond> ('Special' \"Agent\"), Sir",
-	test_facilities:display( "String '~ts', once transformed into a file name,"
-		"results in: '~ts'",
-		[ SecondString, file_utils:convert_to_filename( SecondString ) ] ),
+    SecondString = "James,  James <Bond> ('Special' \"Agent\"), Sir",
+    test_facilities:display( "String '~ts', once transformed into a file name,"
+        "results in: '~ts'",
+        [ SecondString, file_utils:convert_to_filename( SecondString ) ] ),
 
 
-	NoExtensionFilename = "my_foobar",
+    NoExtensionFilename = "my_foobar",
 
-	no_extension = file_utils:get_extensions( NoExtensionFilename ),
-	no_extension = file_utils:get_extension( NoExtensionFilename ),
+    no_extension = file_utils:get_extensions( NoExtensionFilename ),
+    no_extension = file_utils:get_extension( NoExtensionFilename ),
 
 
-	ExtensionFilename = "foobar.baz.json",
+    ExtensionFilename = "foobar.baz.json",
 
-	[ "baz", "json" ] = file_utils:get_extensions( ExtensionFilename ),
-	"json" = file_utils:get_extension( ExtensionFilename ),
+    [ "baz", "json" ] = file_utils:get_extensions( ExtensionFilename ),
+    "json" = file_utils:get_extension( ExtensionFilename ),
 
 
-	SourceFilename  = "/home/jack/rosie.ttf",
-	SourceExtension = ".ttf",
-	TargetExtension = ".wav",
+    SourceFilename  = "/home/jack/rosie.ttf",
+    SourceExtension = ".ttf",
+    TargetExtension = ".wav",
 
-	NewFilename = file_utils:replace_extension( SourceFilename, SourceExtension,
-												TargetExtension ),
+    NewFilename = file_utils:replace_extension( SourceFilename, SourceExtension,
+                                                TargetExtension ),
 
-	test_facilities:display( "Replacing extension '~ts' by '~ts' in '~ts' "
-		"results in: '~ts'.",
-		[ SourceExtension, TargetExtension, SourceFilename, NewFilename ] ),
+    test_facilities:display( "Replacing extension '~ts' by '~ts' in '~ts' "
+        "results in: '~ts'.",
+        [ SourceExtension, TargetExtension, SourceFilename, NewFilename ] ),
 
 
-	% Commented out, as not wanting to have too many side-effects:
+    % Commented out, as not wanting to have too many side-effects:
 
-	%file_utils:create_directory( "tmp-tst" ),
-	%file_utils:create_directory( "tmp-tst/first/second", create_parents ),
+    %file_utils:create_directory( "tmp-tst" ),
+    %file_utils:create_directory( "tmp-tst/first/second", create_parents ),
 
-	Bin = file_utils:read_whole( "GNUmakefile" ),
-	test_facilities:display( "Read file: ~p.", [ Bin ] ),
-	%file_utils:write_whole( "test.dat", Bin ),
+    Bin = file_utils:read_whole( "GNUmakefile" ),
+    test_facilities:display( "Read file: ~p.", [ Bin ] ),
+    %file_utils:write_whole( "test.dat", Bin ),
 
-	% On some systems, ls, cat, etc. are found in /usr/bin/ before being found
-	% in /bin:
-	%
-	%LsPath = "/bin/ls" = executable_utils:find_executable( "ls" ),
-	LsPath = executable_utils:find_executable( "ls" ),
-	true = file_utils:is_owner_executable( LsPath ),
+    % On some systems, ls, cat, etc. are found in /usr/bin/ before being found
+    % in /bin:
+    %
+    %LsPath = "/bin/ls" = executable_utils:find_executable( "ls" ),
+    LsPath = executable_utils:find_executable( "ls" ),
+    true = file_utils:is_owner_executable( LsPath ),
 
-	NonExistingPath = "ls-non-existing-exec",
-	false = executable_utils:lookup_executable( NonExistingPath ),
-	false = file_utils:is_owner_executable( NonExistingPath ),
+    NonExistingPath = "ls-non-existing-exec",
+    false = executable_utils:lookup_executable( NonExistingPath ),
+    false = file_utils:is_owner_executable( NonExistingPath ),
 
 
-	test_facilities:display( "Testing compression support." ),
+    test_facilities:display( "Testing compression support." ),
 
-	TargetFilename = "GNUmakefile",
+    TargetFilename = "GNUmakefile",
 
-	OriginalContent = file_utils:read_whole( TargetFilename ),
+    OriginalContent = file_utils:read_whole( TargetFilename ),
 
     % We copy the original file, as we will remove it when testing
     % decompression, since overwriting it may fail in some contexts
@@ -243,114 +244,115 @@ run() ->
     file_utils:copy_file( TargetFilename, TestFilename ),
 
 
-	ZippedFilename = file_utils:compress( TestFilename, zip ),
+    ZippedFilename = file_utils:compress( TestFilename, zip ),
 
     % To be able to decompress it with no possible overwriting:
     file_utils:remove_file( TestFilename ),
 
-	TestFilename = file_utils:decompress( ZippedFilename, zip ),
-	UnzippedContent = file_utils:read_whole( TestFilename ),
+    TestFilename = file_utils:decompress( ZippedFilename, zip ),
+    UnzippedContent = file_utils:read_whole( TestFilename ),
 
-	case UnzippedContent =:= OriginalContent of
+    case UnzippedContent =:= OriginalContent of
 
-		true ->
-			test_facilities:display( "Original file and unzipped one "
-									 "(~ts) match.", [ TestFilename ] );
+        true ->
+            test_facilities:display( "Original file and unzipped one "
+                                     "(~ts) match.", [ TestFilename ] );
 
-		false ->
-			throw( unzipped_content_differs )
+        false ->
+            throw( unzipped_content_differs )
 
-	end,
+    end,
 
 
-	Bzip2Filename = file_utils:compress( TestFilename, bzip2 ),
-
-    % To be able to decompress it with no possible overwriting:
-    file_utils:remove_file( TestFilename ),
-
-	TestFilename = file_utils:decompress( Bzip2Filename, bzip2 ),
-	UnbzippedContent = file_utils:read_whole( TestFilename ),
-
-	case UnbzippedContent =:= OriginalContent of
-
-		true ->
-			test_facilities:display( "Original file and unbzip2-ed one "
-									 "(~ts) match.", [ TestFilename ] );
-
-		false ->
-			throw( unbzip2ed_content_differs )
-
-	end,
-
-	XzFilename = file_utils:compress( TestFilename, xz ),
+    Bzip2Filename = file_utils:compress( TestFilename, bzip2 ),
 
     % To be able to decompress it with no possible overwriting:
     file_utils:remove_file( TestFilename ),
 
-	TestFilename = file_utils:decompress( XzFilename, xz ),
-	UnxzContent = file_utils:read_whole( TestFilename ),
+    TestFilename = file_utils:decompress( Bzip2Filename, bzip2 ),
+    UnbzippedContent = file_utils:read_whole( TestFilename ),
 
-	case UnxzContent =:= OriginalContent of
+    case UnbzippedContent =:= OriginalContent of
 
-		true ->
-			test_facilities:display(
-			  "Original file and unxz-ed one (~ts) match.", [ TestFilename ] );
+        true ->
+            test_facilities:display( "Original file and unbzip2-ed one "
+                                     "(~ts) match.", [ TestFilename ] );
 
-		false ->
-			throw( unxz_content_differs )
+        false ->
+            throw( unbzip2ed_content_differs )
 
-	end,
+    end,
 
-	InfoPath = TestFilename,
+    XzFilename = file_utils:compress( TestFilename, xz ),
 
-	test_facilities:display( "Information about '~ts': owner_id=~B, "
-		"group_id=~B, permissions=~w.",
-		[ InfoPath, file_utils:get_owner_of( InfoPath ),
-		  file_utils:get_group_of( InfoPath ),
-		  file_utils:get_permissions_of( InfoPath ) ] ),
+    % To be able to decompress it with no possible overwriting:
+    file_utils:remove_file( TestFilename ),
+
+    TestFilename = file_utils:decompress( XzFilename, xz ),
+    UnxzContent = file_utils:read_whole( TestFilename ),
+
+    case UnxzContent =:= OriginalContent of
+
+        true ->
+            test_facilities:display(
+                "Original file and unxz-ed one (~ts) match.",
+                [ TestFilename ] );
+
+        false ->
+            throw( unxz_content_differs )
+
+    end,
+
+    InfoPath = TestFilename,
+
+    test_facilities:display( "Information about '~ts': owner_id=~B, "
+        "group_id=~B, permissions=~w.",
+        [ InfoPath, file_utils:get_owner_of( InfoPath ),
+          file_utils:get_group_of( InfoPath ),
+          file_utils:get_permissions_of( InfoPath ) ] ),
 
     % Now useless:
     file_utils:remove_file( TestFilename ),
 
 
-	TargetPath = "/foo",
+    TargetPath = "/foo",
 
-	% Shall fail with eacces (of not root of course):
-	Caught = try
+    % Shall fail with eacces (of not root of course):
+    Caught = try
 
-		F = file_utils:open( TargetPath, _Opts=[ write ] ),
+        F = file_utils:open( TargetPath, _Opts=[ write ] ),
 
-		UserName = system_utils:get_user_name_safe(),
+        UserName = system_utils:get_user_name_safe(),
 
-		test_facilities:display( "Unexpectedly able to open '~ts' (as '~ts').",
-			[ TargetPath, UserName ] ),
+        test_facilities:display( "Unexpectedly able to open '~ts' (as '~ts').",
+                                 [ TargetPath, UserName ] ),
 
-		file_utils:write_ustring( F, "I should not be able to write there." ),
+        file_utils:write_ustring( F, "I should not be able to write there." ),
 
-		file_utils:close( F ),
+        file_utils:close( F ),
 
-		case UserName of
+        case UserName of
 
-			% This happens with Github CI:
-			"root" ->
-				true;
+            % This happens with Github CI:
+            "root" ->
+                true;
 
-			_ ->
-				false
+            _ ->
+                false
 
-		end
+        end
 
-	catch _:E ->
+    catch _:E ->
 
-		test_facilities:display( "Error intercepted as expected, when writing "
-								 "'~ts':~n ~p.", [ TargetPath, E ] ),
-		true
+        test_facilities:display( "Error intercepted as expected, when writing "
+                                 "'~ts':~n ~p.", [ TargetPath, E ] ),
+        true
 
-	end,
+    end,
 
-	% Check:
-	Caught = true,
+    % Check:
+    Caught = true,
 
-	file_utils:remove_files( [ ZippedFilename, Bzip2Filename, XzFilename ] ),
+    file_utils:remove_files( [ ZippedFilename, Bzip2Filename, XzFilename ] ),
 
-	test_facilities:stop().
+    test_facilities:stop().

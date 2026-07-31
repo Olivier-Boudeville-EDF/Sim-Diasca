@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2025 EDF R&D
+% Copyright (C) 2012-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -28,9 +28,9 @@ world**.
 
 
 -define( class_description,
-		 "Class modelling any model element that can be geolocalized in the "
-		 "simulation world."
-		 "See also: class_GIS.erl" ).
+         "Class modelling any model element that can be geolocalized in the "
+         "simulation world."
+         "See also: class_GIS.erl" ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -67,11 +67,11 @@ world**.
 % The class-specific attributes of an instance of a geolocalized element are:
 -define( class_attributes, [
 
-	{ location, class_GIS:geo_coordinate(), "is either the current location of "
-	  "this element or the PID of its immediate including geocontainer" },
+    { location, class_GIS:geo_coordinate(), "is either the current location of "
+      "this element or the PID of its immediate including geocontainer" },
 
-	{ local_tracker_pid, instance_tracker_pid(),
-	  "the PID of the local instance tracker (only for debugging purposes)" }
+    { local_tracker_pid, instance_tracker_pid(),
+      "the PID of the local instance tracker (only for debugging purposes)" }
 
 ] ).
 
@@ -92,24 +92,24 @@ The only parameter is the starting location, which is either:
 """.
 -spec construct( wooper:state(), class_GIS:location() ) -> wooper:state().
 construct( State, GeoContainerPid ) when is_pid( GeoContainerPid ) ->
-	enter_in( GeoContainerPid, State );
+    enter_in( GeoContainerPid, State );
 
 
 construct( State, { wgs84_polar, PolarCoord } ) ->
 
-	CartesianCoord = class_GIS:wgs84_polar_to_cartesian( PolarCoord ),
+    CartesianCoord = class_GIS:wgs84_polar_to_cartesian( PolarCoord ),
 
-	construct( State, { wgs84_cartesian, CartesianCoord } );
+    construct( State, { wgs84_cartesian, CartesianCoord } );
 
 
 construct( State, { wgs84_cartesian, CartesianCoord } ) ->
-	setAttributes( State, [ { location, CartesianCoord },
-							{ local_tracker_pid,
-							  class_InstanceTracker:get_local_tracker() } ] );
+    setAttributes( State, [ { location, CartesianCoord },
+                            { local_tracker_pid,
+                              class_InstanceTracker:get_local_tracker() } ] );
 
 
 construct( State, ImplicitlyWGS84PolarCoord ) ->
-	construct( State, { wgs84_polar, ImplicitlyWGS84PolarCoord } ).
+    construct( State, { wgs84_polar, ImplicitlyWGS84PolarCoord } ).
 
 
 
@@ -121,47 +121,47 @@ construct( State, ImplicitlyWGS84PolarCoord ) ->
 Returns the current location of this element (possibly the PID of a container).
 """.
 -spec getLocation( wooper:state() ) ->
-							const_request_return( class_GIS:geo_coordinate() ).
+                            const_request_return( class_GIS:geo_coordinate() ).
 getLocation( State ) ->
-	wooper:const_return_result( ?getAttr(location) ).
+    wooper:const_return_result( ?getAttr(location) ).
 
 
 
 -doc "Returns the current actual (raw) location of this element.".
 -spec getActualLocation( wooper:state() ) ->
-						 const_request_return( class_GIS:raw_location() ).
+                         const_request_return( class_GIS:raw_location() ).
 getActualLocation( State ) ->
 
-	Loc = case ?getAttr(location) of
+    Loc = case ?getAttr(location) of
 
-		ContainerPid when is_pid( ContainerPid ) ->
+        ContainerPid when is_pid( ContainerPid ) ->
 
-			% Recurses:
-			ContainerPid ! { getActualLocation, [], self() },
-			receive
+            % Recurses:
+            ContainerPid ! { getActualLocation, [], self() },
+            receive
 
-				{ wooper_result, ActualLocation } ->
-					ActualLocation
+                { wooper_result, ActualLocation } ->
+                    ActualLocation
 
-			end;
+            end;
 
-		CartesianCoord  ->
-			CartesianCoord
+        CartesianCoord  ->
+            CartesianCoord
 
-	end,
+    end,
 
-	wooper:const_return_result( Loc ).
+    wooper:const_return_result( Loc ).
 
 
 
 -doc "Sets the current location of this element.".
 -spec setLocation( wooper:state(), class_GIS:geo_coordinate() ) ->
-						 oneway_return().
+                         oneway_return().
 setLocation( State, NewLocation ) ->
 
-	NewState = setAttribute( State, location, NewLocation ),
+    NewState = setAttribute( State, location, NewLocation ),
 
-	wooper:return_state( NewState ).
+    wooper:return_state( NewState ).
 
 
 
@@ -177,20 +177,20 @@ Note: not synchronised to simulation (internal use only).
 """.
 enter_in( GeoContainerPid, State ) ->
 
-	GeoContainerPid ! { requestEntry, [], self() },
+    GeoContainerPid ! { requestEntry, [], self() },
 
-	receive
+    receive
 
-		{ wooper_result, entered } ->
-			setAttributes( State, [
-				{ location, GeoContainerPid },
-				{ local_tracker_pid,
-				  class_InstanceTracker:get_local_tracker() } ] );
+        { wooper_result, entered } ->
+            setAttributes( State, [
+                { location, GeoContainerPid },
+                { local_tracker_pid,
+                  class_InstanceTracker:get_local_tracker() } ] );
 
-		{ wooper_result, entry_refused } ->
-			throw( { entry_refused, GeoContainerPid } )
+        { wooper_result, entry_refused } ->
+            throw( { entry_refused, GeoContainerPid } )
 
-	end.
+    end.
 
 
 
@@ -198,12 +198,12 @@ enter_in( GeoContainerPid, State ) ->
 -spec interpret_location( wooper:state() ) -> ustring().
 interpret_location( State ) ->
 
-	case ?getAttr(location) of
+    case ?getAttr(location) of
 
-		Pid when is_pid( Pid ) ->
-			text_utils:format( "inside geocontainer ~w", [ Pid ] );
+        Pid when is_pid( Pid ) ->
+            text_utils:format( "inside geocontainer ~w", [ Pid ] );
 
-		Loc ->
-			class_GIS:wgs84_cartesian_to_string( Loc )
+        Loc ->
+            class_GIS:wgs84_cartesian_to_string( Loc )
 
-	end.
+    end.

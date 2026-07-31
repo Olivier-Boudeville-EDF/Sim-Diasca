@@ -1,4 +1,4 @@
-% Copyright (C) 2013-2025 Olivier Boudeville
+% Copyright (C) 2013-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -42,69 +42,69 @@ See the graph_utils.erl tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	% Let's create a very simple (yet cyclic) type of graph, described by a list
-	% of:
-	%
-	% { Vertex, Children } :: { vertex_name(), [ vertex_name() ] }
+    % Let's create a very simple (yet cyclic) type of graph, described by a list
+    % of:
+    %
+    % { Vertex, Children } :: { vertex_name(), [ vertex_name() ] }
 
-	% a ->
-	%     b ->
-	%          b (0-length cycle created!)
-	%          e
-	%     c ->
-	%          f ->
-	%               g ->
-	%                    a (cycle created!)
-	%               h
-	%     d
-	%
-	%
-	%
-	LetterGraph = [ { a, [ b, c, d ] },
-					{ b, [ e ] },
-					{ c, [ f ] },
-					{ d, [] },
-					{ e, [] },
-					{ f, [ g, h ] },
-					{ g, [ a ] },
-					{ h, [] } ],
+    % a ->
+    %     b ->
+    %          b (0-length cycle created!)
+    %          e
+    %     c ->
+    %          f ->
+    %               g ->
+    %                    a (cycle created!)
+    %               h
+    %     d
+    %
+    %
+    %
+    LetterGraph = [ { a, [ b, c, d ] },
+                    { b, [ e ] },
+                    { c, [ f ] },
+                    { d, [] },
+                    { e, [] },
+                    { f, [ g, h ] },
+                    { g, [ a ] },
+                    { h, [] } ],
 
-	test_facilities:display( "Using following cyclic test graph:~n ~p.",
-							 [ LetterGraph ] ),
+    test_facilities:display( "Using following cyclic test graph:~n ~p.",
+                             [ LetterGraph ] ),
 
-	% Predicate to find h:
-	HPredicate = fun( h, _Graph ) -> true ;
-					( _OtherLetter, _Graph ) -> false
-				 end,
+    % Predicate to find h:
+    HPredicate = fun( h, _Graph ) -> true ;
+                    ( _OtherLetter, _Graph ) -> false
+                 end,
 
-	% Returns the children of a given vertex (letter):
-	Feeder = fun( Letter, Graph ) ->
-				{ _Letter, Children } = lists:keyfind( _K=Letter, _N=1, Graph ),
-				Children
-			 end,
+    % Returns the children of a given vertex (letter):
+    Feeder = fun( Letter, Graph ) ->
+                { _Letter, Children } = lists:keyfind( _K=Letter, _N=1, Graph ),
+                Children
+             end,
 
-	InitialVertex = a,
+    InitialVertex = a,
 
-	UserData = LetterGraph,
+    UserData = LetterGraph,
 
-	HRes = graph_utils:find_breadth_first( InitialVertex, HPredicate, Feeder,
-										   UserData ),
+    HRes = graph_utils:find_breadth_first( InitialVertex, HPredicate, Feeder,
+                                           UserData ),
 
-	test_facilities:display( "Path from a to h: ~p.", [ HRes ] ),
+    test_facilities:display( "Path from a to h: ~p.", [ HRes ] ),
 
-	%[ a, c, f, h ] = HRes,
+    %[ a, c, f, h ] = HRes,
 
-	ZPredicate = fun( z, _Graph ) -> true ;
-					( _OtherLetter, _Graph ) -> false
-				 end,
+    ZPredicate = fun( z, _Graph ) -> true ;
+                    ( _OtherLetter, _Graph ) -> false
+                 end,
 
-	ZRes = graph_utils:find_breadth_first( InitialVertex, ZPredicate, Feeder,
-										   UserData ),
+    ZRes = graph_utils:find_breadth_first( InitialVertex, ZPredicate, Feeder,
+                                           UserData ),
 
-	test_facilities:display( "Path from a to z: ~p.", [ ZRes ] ),
+    test_facilities:display( "Path from a to z: ~p.", [ ZRes ] ),
 
-	no_path_found = ZRes,
+    no_path_found = ZRes,
 
-	test_facilities:stop().
+    test_facilities:stop().

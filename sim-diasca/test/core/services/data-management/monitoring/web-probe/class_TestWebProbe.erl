@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2025 EDF R&D
+% Copyright (C) 2019-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -34,7 +34,7 @@
 
 % Attributes that are specific to a web probe instance are:
 -define( class_attributes, [
-	{ counter, count(), "a counter to track state updates" } ] ).
+    { counter, count(), "a counter to track state updates" } ] ).
 
 
 % Must be included before class_TraceEmitter header:
@@ -67,11 +67,11 @@ manager, actors are not expected to create directly such a probe, they ought to
 call declare_result_probe/1 instead.
 """.
 -spec construct( wooper:state(), class_Probe:probe_name_init() |
-		{ class_Probe:probe_name_init(), class_WebProbe:web_probe_options() },
-				 class_ResultManager:meta_data() ) -> wooper:state().
+        { class_Probe:probe_name_init(), class_WebProbe:web_probe_options() },
+                 class_ResultManager:meta_data() ) -> wooper:state().
 construct( State, NameInit, Metadata ) ->
-	ProbeState = class_WebProbe:construct( State, NameInit, Metadata ),
-	setAttribute( ProbeState, counter, 1 ).
+    ProbeState = class_WebProbe:construct( State, NameInit, Metadata ),
+    setAttribute( ProbeState, counter, 1 ).
 
 
 
@@ -96,20 +96,20 @@ acknowledged as a wanted result by the result manager), or the
 'non_wanted_probe' atom.
 """.
 -spec declare_result_probe( class_WebProbe:name_options() ) ->
-								static_return( class_WebProbe:probe_ref() ).
+                                static_return( class_WebProbe:probe_ref() ).
 declare_result_probe( NameOptions ) ->
 
-	case class_WebProbe:is_wanted( NameOptions ) of
+    case class_WebProbe:is_wanted( NameOptions ) of
 
-		false ->
-			wooper:return_static( non_wanted_probe );
+        false ->
+            wooper:return_static( non_wanted_probe );
 
-		Metadata ->
-			% Created in current directory (i.e. the one for temporary data):
-			wooper:return_static(
-				synchronous_new_link( NameOptions, Metadata ) )
+        Metadata ->
+            % Created in current directory (i.e. the one for temporary data):
+            wooper:return_static(
+                synchronous_new_link( NameOptions, Metadata ) )
 
-	end.
+    end.
 
 
 
@@ -117,13 +117,13 @@ declare_result_probe( NameOptions ) ->
 -spec update( wooper:state(), count() ) -> request_return( 'probe_updated' ).
 update( State, NewCount ) ->
 
-	NewState = setAttribute( State, counter, NewCount ),
+    NewState = setAttribute( State, counter, NewCount ),
 
-	GenState = generate_html( NewState ),
+    GenState = generate_html( NewState ),
 
-	?notice_fmt( "Updating probe: ~ts", [ to_string( GenState ) ] ),
+    ?notice_fmt( "Updating probe: ~ts", [ to_string( GenState ) ] ),
 
-	wooper:return_state_result( GenState, probe_updated ).
+    wooper:return_state_result( GenState, probe_updated ).
 
 
 
@@ -135,16 +135,16 @@ update( State, NewCount ) ->
 -spec generate_html( wooper:state() ) -> wooper:state().
 generate_html( State ) ->
 
-	Content = "Testing!!!",
+    Content = "Testing (<b>as HTML</b>)!!!",
 
-	{ SetState, content_set } =
-		executeRequest( State, setMainContent, [ Content ] ),
+    { SetState, content_set } =
+        executeRequest( State, setMainContent, [ Content ] ),
 
-	SetState.
+    SetState.
 
 
 
 -doc "Returns a textual description of this web probe.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
-	text_utils:format( "test ~ts", [ class_WebProbe:to_string( State ) ] ).
+    text_utils:format( "test ~ts", [ class_WebProbe:to_string( State ) ] ).

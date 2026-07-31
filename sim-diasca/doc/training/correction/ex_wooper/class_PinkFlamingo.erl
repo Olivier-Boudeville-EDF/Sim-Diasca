@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of the Sim-Diasca training material.
 %
@@ -45,13 +45,13 @@ Note: this is *not* a Sim-Diasca actor.
 construct( State, Name, Height ) when is_list( Name )
                                     andalso is_float( Height ) ->
 
-	% First the direct mother classes:
-	ViviparousBeingState = class_ViviparousBeing:construct( State ),
+    % First the direct mother classes:
+    ViviparousBeingState = class_ViviparousBeing:construct( State ),
 
-	% Then the class-specific attributes:
-	setAttributes( ViviparousBeingState, [ { name, Name },
-										   { height, Height },
-										   { feather_color, pink } ] ).
+    % Then the class-specific attributes:
+    setAttributes( ViviparousBeingState, [ { name, Name },
+                                           { height, Height },
+                                           { feather_color, pink } ] ).
 
 
 
@@ -62,22 +62,22 @@ Requests the flamingo to filter plankton in the specified location.
                                             oneway_return().
 filterPlankton( State, camargue ) ->
 
-	NewHeight = ?getAttr(height) + 2.5,
+    NewHeight = ?getAttr(height) + 2.5,
 
-	trace_utils:notice( "[~ts] Gobble, gobble, my height is now ~f cm.",
-						[ ?getAttr(name), NewHeight ] ),
+    trace_utils:notice( "[~ts] Gobble, gobble, my height is now ~f cm.",
+                        [ ?getAttr(name), NewHeight ] ),
 
-	wooper:return_state( setAttribute( State, height, NewHeight ) );
+    wooper:return_state( setAttribute( State, height, NewHeight ) );
 
 
 filterPlankton( State, chile ) ->
 
-	NewHeight = ?getAttr(height) + 1,
+    NewHeight = ?getAttr(height) + 1,
 
-	trace_utils:notice( "[~ts] Gurgle, gurgle, my height is now ~f cm.",
-						[ ?getAttr(name), NewHeight ] ),
+    trace_utils:notice( "[~ts] Gurgle, gurgle, my height is now ~f cm.",
+                        [ ?getAttr(name), NewHeight ] ),
 
-	wooper:return_state( setAttribute( State, height, NewHeight ) ).
+    wooper:return_state( setAttribute( State, height, NewHeight ) ).
 
 
 
@@ -88,7 +88,7 @@ Could be a static method if we knew for sure that all flamingos were pink.
 """.
 -spec getFeatherColor( wooper:state() ) -> const_request_return( color() ).
 getFeatherColor( State ) ->
-	wooper:const_return( ?getAttr(feather_color) ).
+    wooper:const_return( ?getAttr(feather_color) ).
 
 
 
@@ -97,9 +97,9 @@ Returns the mean children count for that flamingo (actually does not depend on
 any specific flamingo).
 """.
 -spec getMeanChildrenCount( wooper:state() ) ->
-								const_request_return( basic_utils:count() ).
+                                const_request_return( basic_utils:count() ).
 getMeanChildrenCount( State ) ->
-	wooper:const_return_result( 1.7 ).
+    wooper:const_return_result( 1.7 ).
 
 
 
@@ -112,4 +112,4 @@ Let's say an average means something here.
 (this is a static method, as it does not depend on a state)
 """.
 get_mean_children_count() ->
-	wooper:return_static( 1.7 ).
+    wooper:return_static( 1.7 ).

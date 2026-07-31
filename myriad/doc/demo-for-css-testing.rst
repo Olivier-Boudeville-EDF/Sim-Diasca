@@ -19,8 +19,8 @@
 
 :Author: David Goodger
 :Address: 123 Example Street
-		  Example, EX  Canada
-		  A1B 2C3
+          Example, EX  Canada
+          A1B 2C3
 :Contact: goodger@python.org
 :Authors: Me; Myself; I
 :organization: humankind
@@ -29,33 +29,33 @@
 :revision: $Revision: 4564 $
 :version: 1
 :copyright: This document has been placed in the public domain. You
-			may do with it as you wish. You may copy, modify,
-			redistribute, reattribute, sell, buy, rent, lease,
-			destroy, or improve it, quote it at length, excerpt,
-			incorporate, collate, fold, staple, or mutilate it, or do
-			anything else to it that your or anyone else's heart
-			desires.
+            may do with it as you wish. You may copy, modify,
+            redistribute, reattribute, sell, buy, rent, lease,
+            destroy, or improve it, quote it at length, excerpt,
+            incorporate, collate, fold, staple, or mutilate it, or do
+            anything else to it that your or anyone else's heart
+            desires.
 :field name: This is a generic bibliographic field.
 :field name 2:
-	Generic bibliographic fields may contain multiple body elements.
+    Generic bibliographic fields may contain multiple body elements.
 
-	Like this.
+    Like this.
 
 :Dedication:
 
-	For Docutils users & co-developers.
+    For Docutils users & co-developers.
 
 :abstract:
 
-	This document is a demonstration of the reStructuredText markup
-	language, containing examples of all basic reStructuredText
-	constructs and many advanced constructs.
+    This document is a demonstration of the reStructuredText markup
+    language, containing examples of all basic reStructuredText
+    constructs and many advanced constructs.
 
 .. meta::
    :keywords: reStructuredText, demonstration, demo, parser
    :description lang=en: A demonstration of the reStructuredText
-	   markup language, containing examples of all basic
-	   constructs and many advanced constructs.
+       markup language, containing examples of all basic
+       constructs and many advanced constructs.
 
 .. contents:: Table of Contents
 .. section-numbering::
@@ -162,8 +162,8 @@ Bullet Lists
   * Nested bullet list.
   * Nested item 2.
 
-	- Third level.
-	- Item 2.
+    - Third level.
+    - Item 2.
 
   * Nested item 3.
 
@@ -174,11 +174,11 @@ Enumerated Lists
 
    a) lower alpha)
 
-	  (i) (lower roman)
+      (i) (lower roman)
 
-		  A. upper alpha.
+          A. upper alpha.
 
-			 I) upper roman)
+             I) upper roman)
 
 2. Lists that don't start at 1:
 
@@ -200,27 +200,27 @@ Definition Lists
 ----------------
 
 Term
-	Definition
+    Definition
 Term : classifier
-	Definition paragraph 1.
+    Definition paragraph 1.
 
-	Definition paragraph 2.
+    Definition paragraph 2.
 Term
-	Definition
+    Definition
 
 Field Lists
 -----------
 
 :what: Field lists map field names to field bodies, like database
-	   records.  They are often part of an extension syntax.  They are
-	   an unambiguous variant of RFC 2822 fields.
+       records.  They are often part of an extension syntax.  They are
+       an unambiguous variant of RFC 2822 fields.
 
 :how arg1 arg2:
 
-	The field marker is a colon, the field name, and a colon.
+    The field marker is a colon, the field name, and a colon.
 
-	The field body may contain one or more body elements, indented
-	relative to the field marker.
+    The field body may contain one or more body elements, indented
+    relative to the field marker.
 
 Option Lists
 ------------
@@ -229,21 +229,21 @@ For listing command-line options:
 
 -a            command-line option "a"
 -b file       options can have arguments
-			  and long descriptions
+              and long descriptions
 --long        options can be long also
 --input=file  long options can also have
-			  arguments
+              arguments
 
 --very-long-option
-			  The description can also start on the next line.
+              The description can also start on the next line.
 
-			  The description may contain multiple body elements,
-			  regardless of where it starts.
+              The description may contain multiple body elements,
+              regardless of where it starts.
 
 -x, -y, -z    Multiple options are an "option group".
 -v, --verbose  Commonly-seen: short & long options.
 -1 file, --one=file, --two file
-			  Multiple options with arguments.
+              Multiple options with arguments.
 /V            DOS/VMS-style options too
 
 There must be at least two spaces between the option and the
@@ -255,10 +255,10 @@ Literal Blocks
 Literal blocks are indicated with a double-colon ("::") at the end of
 the preceding paragraph (over there ``-->``).  They can be indented::
 
-	if literal_block:
-		text = 'is left as-is'
-		spaces_and_linebreaks = 'are preserved'
-		markup_processing = None
+    if literal_block:
+        text = 'is left as-is'
+        spaces_and_linebreaks = 'are preserved'
+        markup_processing = None
 
 Or they can be quoted without indentation::
 
@@ -283,32 +283,32 @@ Line Blocks
 
 Take it away, Eric the Orchestra Leader!
 
-	| A one, two, a one two three four
-	|
-	| Half a bee, philosophically,
-	|     must, *ipso facto*, half not be.
-	| But half the bee has got to be,
-	|     *vis a vis* its entity.  D'you see?
-	|
-	| But can a bee be said to be
-	|     or not to be an entire bee,
-	|         when half the bee is not a bee,
-	|             due to some ancient injury?
-	|
-	| Singing...
+    | A one, two, a one two three four
+    |
+    | Half a bee, philosophically,
+    |     must, *ipso facto*, half not be.
+    | But half the bee has got to be,
+    |     *vis a vis* its entity.  D'you see?
+    |
+    | But can a bee be said to be
+    |     or not to be an entire bee,
+    |         when half the bee is not a bee,
+    |             due to some ancient injury?
+    |
+    | Singing...
 
 Block Quotes
 ------------
 
 Block quotes consist of indented body elements:
 
-	My theory by A. Elk.  Brackets Miss, brackets.  This theory goes
-	as follows and begins now.  All brontosauruses are thin at one
-	end, much much thicker in the middle and then thin again at the
-	far end.  That is my theory, it is mine, and belongs to me and I
-	own it, and what it is too.
+    My theory by A. Elk.  Brackets Miss, brackets.  This theory goes
+    as follows and begins now.  All brontosauruses are thin at one
+    end, much much thicker in the middle and then thin again at the
+    far end.  That is my theory, it is mine, and belongs to me and I
+    own it, and what it is too.
 
-	-- Anne Elk (Miss)
+    -- Anne Elk (Miss)
 
 Doctest Blocks
 --------------
@@ -428,8 +428,8 @@ Directives
 
 
 .. contents:: List of appendices
-	:local:
-	:depth: 1
+    :local:
+    :depth: 1
 
 These are just a sample of the many reStructuredText Directives.  For
 others, please see
@@ -553,9 +553,9 @@ Compound Paragraph
 
    This paragraph contains a literal block::
 
-	   Connecting... OK
-	   Transmitting data... OK
-	   Disconnecting... OK
+       Connecting... OK
+       Transmitting data... OK
+       Disconnecting... OK
 
    and thus consists of a simple paragraph, a literal block, and
    another simple paragraph.  Nonetheless it is semantically *one*

@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2025 Olivier Boudeville
+% Copyright (C) 2018-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -51,7 +51,7 @@ then `Rep(TS) = {A,Value}`.
 Actual type maybe be omitted.
 """.
 -type type_specifier() ::
-		type_utils:type_name() | { type_utils:type_name(), integer() }.
+        type_utils:type_name() | { type_utils:type_name(), integer() }.
 
 
 
@@ -80,7 +80,7 @@ General form of a bitstring constructor, as a polymorphic type so that it can be
 specialised for dedicated contexts (for example in guards, expressions, etc.).
 """.
 -type constructor( ContentType ) ::
-		{ 'bin', file_loc(), [ bin_element( ContentType ) ] }.
+        { 'bin', file_loc(), [ bin_element( ContentType ) ] }.
 
 
 
@@ -93,21 +93,21 @@ specialised for dedicated contexts (for example in guards, expressions, etc.).
 A binary element within a bitstring constructor, with a specific content type.
 """.
 -type bin_element( ContentType ) :: { 'bin_element', ast_base:file_loc(),
-			ContentType, maybe_size(), maybe_type_specifier_list() }.
+            ContentType, maybe_size(), maybe_type_specifier_list() }.
 
 
 -type element_transform_fun() :: ast_transform:transform_fun( bin_element() ).
 
 
 -export_type([ maybe_size/0, type_specifier/0,
-			   type_specifier_list/0, tsl/0, maybe_type_specifier_list/0,
-			   constructor/1, bin_element/0, bin_element/1,
-			   element_transform_fun/0 ]).
+               type_specifier_list/0, tsl/0, maybe_type_specifier_list/0,
+               constructor/1, bin_element/0, bin_element/1,
+               element_transform_fun/0 ]).
 
 
 
 -export([ transform_bin_elements/2, transform_bin_elements/3,
-		  transform_bin_element/3 ]).
+          transform_bin_element/3 ]).
 
 
 % Type shorthands:
@@ -132,17 +132,17 @@ Transforms specified list of binary elements involved in a bitstring expression.
 Note: finally common to patterns, expressions and guard expressions.
 """.
 -spec transform_bin_elements( [ bin_element() ], ast_transforms() ) ->
-									{ [ bin_element() ], ast_transforms() }.
+                                    { [ bin_element() ], ast_transforms() }.
 transform_bin_elements( BinElements, Transforms ) ?rec_guard ->
 
-	% Note: context-insensitive function, considering that any kind of
-	% expression can be found here.
-	%
-	%transform_bin_elements( BinElements, Transforms,
-	%   fun ast_expression:transform_expression/2 ) .
+    % Note: context-insensitive function, considering that any kind of
+    % expression can be found here.
+    %
+    %transform_bin_elements( BinElements, Transforms,
+    %   fun ast_expression:transform_expression/2 ) .
 
-	lists:mapfoldl( fun transform_bin_element/2, _Acc0=Transforms,
-					_List=BinElements ).
+    lists:mapfoldl( fun transform_bin_element/2, _Acc0=Transforms,
+                    _List=BinElements ).
 
 
 
@@ -154,47 +154,47 @@ Note: finally common to patterns, expressions and guard expressions.
 (corresponds to `pattern_grp/1` in `erl_id_trans`)
 """.
 -spec transform_bin_element( bin_element(), ast_transforms() ) ->
-									{ bin_element(), ast_transforms() }.
+                                    { bin_element(), ast_transforms() }.
 transform_bin_element(
   _BinElem={ 'bin_element', FileLoc, Element, Size, TypeSpecifierList },
   Transforms ) ?rec_guard ->
 
-	{ [ NewElement ], ElemTransforms } =
-		ast_expression:transform_expression( Element, Transforms ),
+    { [ NewElement ], ElemTransforms } =
+        ast_expression:transform_expression( Element, Transforms ),
 
-	{ NewSize, SizeTransforms } = case Size of
+    { NewSize, SizeTransforms } = case Size of
 
-		default ->
-			{ default, ElemTransforms };
+        default ->
+            { default, ElemTransforms };
 
-		_ ->
-			{ [ NewSizeElem ], NewSizeTransforms } =
-				ast_expression:transform_expression( Size, ElemTransforms ),
-			{ NewSizeElem, NewSizeTransforms }
+        _ ->
+            { [ NewSizeElem ], NewSizeTransforms } =
+                ast_expression:transform_expression( Size, ElemTransforms ),
+            { NewSizeElem, NewSizeTransforms }
 
-	end,
+    end,
 
-	{ NewTypeSpecifierList, TypeTransforms } = case TypeSpecifierList of
+    { NewTypeSpecifierList, TypeTransforms } = case TypeSpecifierList of
 
-		default ->
-			{ default, SizeTransforms };
+        default ->
+            { default, SizeTransforms };
 
-		_ ->
-			lists:mapfoldl( fun transform_type_specifier/2,
-							_Acc0=SizeTransforms,
-							_List=TypeSpecifierList )
+        _ ->
+            lists:mapfoldl( fun transform_type_specifier/2,
+                            _Acc0=SizeTransforms,
+                            _List=TypeSpecifierList )
 
-	end,
+    end,
 
-	NewExpr =
-		{ 'bin_element', FileLoc, NewElement, NewSize, NewTypeSpecifierList },
+    NewExpr =
+        { 'bin_element', FileLoc, NewElement, NewSize, NewTypeSpecifierList },
 
-	{ NewExpr, TypeTransforms };
+    { NewExpr, TypeTransforms };
 
 
 transform_bin_element( Unexpected, Transforms )
-						when is_record( Transforms, ast_transforms )->
-	ast_utils:raise_error( [ unexpected_bitstring_bin_element, Unexpected ] ).
+                        when is_record( Transforms, ast_transforms )->
+    ast_utils:raise_error( [ unexpected_bitstring_bin_element, Unexpected ] ).
 
 
 
@@ -205,16 +205,16 @@ relevant transformations (that depends on the context; for example if being in a
 guard, in an expression, etc.).
 """.
 -spec transform_bin_elements( [ bin_element() ], ast_transforms(),
-		element_transform_fun() ) -> { [ bin_element() ], ast_transforms() }.
+        element_transform_fun() ) -> { [ bin_element() ], ast_transforms() }.
 transform_bin_elements( BinElements, Transforms, TransformFun ) ?rec_guard ->
 
-	% Closure, to capture TransformFun:
-	ActualFun = fun( E, AccTransforms ) ->
-						transform_bin_element( E, AccTransforms,
-											   TransformFun )
-				end,
+    % Closure, to capture TransformFun:
+    ActualFun = fun( E, AccTransforms ) ->
+                        transform_bin_element( E, AccTransforms,
+                                               TransformFun )
+                end,
 
-	lists:mapfoldl( ActualFun, _Acc0=Transforms, _List=BinElements ).
+    lists:mapfoldl( ActualFun, _Acc0=Transforms, _List=BinElements ).
 
 
 
@@ -225,44 +225,44 @@ Note: context-insensitive function, considering that any kind of expression can
 be found here (for example a guard test).
 """.
 -spec transform_bin_element( bin_element(), ast_transforms(),
-			element_transform_fun() ) -> { bin_element(), ast_transforms() }.
+            element_transform_fun() ) -> { bin_element(), ast_transforms() }.
 transform_bin_element(
   _BinElem={ 'bin_element', FileLoc, Element, Size, TypeSpecifierList },
   Transforms, TransformFun ) ?rec_guard ->
 
-	{ NewElement, ElemTransforms } = TransformFun( Element, Transforms ),
+    { NewElement, ElemTransforms } = TransformFun( Element, Transforms ),
 
-	{ NewSize, SizeTransforms } = case Size of
+    { NewSize, SizeTransforms } = case Size of
 
-		default ->
-			{ default, ElemTransforms };
+        default ->
+            { default, ElemTransforms };
 
-		_ ->
-			ast_expression:transform_expression( Size, ElemTransforms )
+        _ ->
+            ast_expression:transform_expression( Size, ElemTransforms )
 
-	end,
+    end,
 
-	{ NewTypeSpecifierList, TypeTransforms } = case TypeSpecifierList of
+    { NewTypeSpecifierList, TypeTransforms } = case TypeSpecifierList of
 
-		default ->
-			{ default, SizeTransforms };
+        default ->
+            { default, SizeTransforms };
 
-		_ ->
-			lists:mapfoldl( fun transform_type_specifier/2,
-							_Acc0=SizeTransforms,
-							_List=TypeSpecifierList )
+        _ ->
+            lists:mapfoldl( fun transform_type_specifier/2,
+                            _Acc0=SizeTransforms,
+                            _List=TypeSpecifierList )
 
-	end,
+    end,
 
-	NewExpr = { 'bin_element', FileLoc, NewElement, NewSize,
-				NewTypeSpecifierList },
+    NewExpr = { 'bin_element', FileLoc, NewElement, NewSize,
+                NewTypeSpecifierList },
 
-	{ NewExpr, TypeTransforms };
+    { NewExpr, TypeTransforms };
 
 
 transform_bin_element( Unexpected, Transforms, _TransformFun )
-				when is_record( Transforms, ast_transforms ) ->
-	ast_utils:raise_error( [ unexpected_bitstring_bin_element, Unexpected ] ).
+                when is_record( Transforms, ast_transforms ) ->
+    ast_utils:raise_error( [ unexpected_bitstring_bin_element, Unexpected ] ).
 
 
 
@@ -278,13 +278,13 @@ then `Rep(TS) = {A,Value}`."
 Note: maybe the types there shall be transformed as well.
 """.
 transform_type_specifier( TypeSpecifier, Transforms )
-						when is_atom( TypeSpecifier ) ->
-	{ TypeSpecifier, Transforms };
+                        when is_atom( TypeSpecifier ) ->
+    { TypeSpecifier, Transforms };
 
 transform_type_specifier( TypeSpecifier={ A, Value }, Transforms )
-						when is_atom( A ) andalso is_integer( Value ) ->
-	{ TypeSpecifier, Transforms };
+                        when is_atom( A ) andalso is_integer( Value ) ->
+    { TypeSpecifier, Transforms };
 
 transform_type_specifier( Unexpected, _Transforms ) ->
-	ast_utils:raise_error(
-		[ unexpected_bitstring_type_specifier, Unexpected ] ).
+    ast_utils:raise_error(
+        [ unexpected_bitstring_type_specifier, Unexpected ] ).

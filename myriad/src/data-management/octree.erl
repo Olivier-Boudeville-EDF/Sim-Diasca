@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -340,7 +340,7 @@ is defined as a single term (used by a given process), unlike
 concurrent_octree/0.
 """.
 -opaque sequential_octree() ::
-	{ node_content(), option( sequential_octants() ) }.
+    { node_content(), option( sequential_octants() ) }.
 
 
 
@@ -377,7 +377,7 @@ This octree type is concurrent (as opposed to sequential), in the sense that it
 is defined as a (single) process, unlike sequential_octree/0.
 """.
 -opaque concurrent_octree() ::
-	{ node_content(), option( concurrent_octants() ) }.
+    { node_content(), option( concurrent_octants() ) }.
 
 
 
@@ -482,7 +482,7 @@ For H=2, Xi, Yi, Zi each are in -2, -1, +1, +2.
 For H=n, Xi, Yi, Zi each are in -n, -n+1, [...], -2, -1, +1; +2, [...], n-1, n.
 """.
 -type octant_id() ::
-		{ H :: height(), Xi :: x_index(), Yi :: y_index(), Zi :: z_index() }.
+        { H :: height(), Xi :: x_index(), Yi :: y_index(), Zi :: z_index() }.
 
 
 
@@ -493,7 +493,7 @@ of octant coordinates.
 For example {Xi=-1, Yi=2, Zi=1}, for H=2.
 """.
 -type octant_short_id() ::
-		{ Xi :: x_index(), Yi :: y_index(), Zi :: z_index() }.
+        { Xi :: x_index(), Yi :: y_index(), Zi :: z_index() }.
 
 
 
@@ -507,7 +507,7 @@ a concurrent octree.
 
 -doc "Describes a function that can be folded onto the content of an octree".
 -type content_fold_fun() ::
-		fun( ( node_content(), accumulator() ) -> accumulator() ).
+        fun( ( node_content(), accumulator() ) -> accumulator() ).
 
 
 
@@ -520,26 +520,26 @@ elements whose center lies inside this octant.
 
 -export_type([ node_content/0,
 
-			   sequential_octree/0, sequential_octree/1,
-			   sequential_octants/0, sequential_octants/1,
+               sequential_octree/0, sequential_octree/1,
+               sequential_octants/0, sequential_octants/1,
 
-			   concurrent_octree/0, concurrent_octree/1,
-			   concurrent_octants/0, concurrent_octants/1,
-			   concurrent_octree_state/1,
+               concurrent_octree/0, concurrent_octree/1,
+               concurrent_octants/0, concurrent_octants/1,
+               concurrent_octree_state/1,
 
-			   hybrid_octree/0, hybrid_octree/1,
-			   hybrid_octants/0, hybrid_octants/1,
+               hybrid_octree/0, hybrid_octree/1,
+               hybrid_octants/0, hybrid_octants/1,
 
-			   octree_term/0,
-			   octree_pid/0, octree_designator/0,
+               octree_term/0,
+               octree_pid/0, octree_designator/0,
 
-			   octant_index/0, x_index/0, y_index/0, z_index/0, octant_id/0,
-			   octant_short_id/0,
+               octant_index/0, x_index/0, y_index/0, z_index/0, octant_id/0,
+               octant_short_id/0,
 
-			   %octree_state/1,
+               %octree_state/1,
 
-			   content_fold_fun/0, height/0,
-			   locatable_container/0 ]).
+               content_fold_fun/0, height/0,
+               locatable_container/0 ]).
 
 
 -export([ new/0, new/1 ]).
@@ -583,12 +583,12 @@ diameter (largest distance between two points) of this locatable.
 -doc "Creates an empty (regarding content and octants), sequential, octree.".
 -spec new() -> any(). % octreeXXX().
 new() ->
-	%{ _NodeContent=undefined, #octants{} }.
-	fixme.
+    %{ _NodeContent=undefined, #octants{} }.
+    fixme.
 
 
 
 -doc "Creates a sequential, octree having specified content, and no octants.".
 -spec new( node_content() ) -> any(). %octree().
 new( NodeContent ) ->
-	{ NodeContent, _Octants=undefined }.
+    { NodeContent, _Octants=undefined }.

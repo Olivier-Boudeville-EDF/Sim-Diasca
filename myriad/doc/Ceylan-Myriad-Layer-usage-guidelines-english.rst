@@ -1,5 +1,3 @@
-
-
 ----------------
 Usage Guidelines
 ----------------
@@ -56,5 +54,3 @@ We do our best to test, at least lightly, each element provided. All services of
 Note that however we have not reached the discipline level of an exhaustive ``eunit`` test suite for each service (most of them being mostly trivial).
 
 See also the `type-checking`_ section.
-
-

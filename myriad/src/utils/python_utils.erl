@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 Olivier Boudeville
+% Copyright (C) 2016-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -43,8 +43,8 @@ See also: java_utils.erl for a similar binding.
 
 % Helper exports:
 -export([ get_beam_directories_for_binding/0,
-		  send_oneway/3, wait_for_request_result/2,
-		  pep8_class_to_pep8_module/1 ]).
+          send_oneway/3, wait_for_request_result/2,
+          pep8_class_to_pep8_module/1 ]).
 
 
 -doc "(Erlang) PID corresponding to a Python interpreter.".
@@ -78,7 +78,7 @@ See also: java_utils.erl for a similar binding.
 
 
 -export_type([ interpreter_pid/0, title/0, body/0, result/0,
-			   pep8_classname/0, pep8_class_module/0 ]).
+               pep8_classname/0, pep8_class_module/0 ]).
 
 
 
@@ -105,26 +105,26 @@ Finds the BEAM locations of all the dependencies required for binding to Python.
 -spec get_beam_directories_for_binding() -> [ file_utils:directory_name() ].
 get_beam_directories_for_binding() ->
 
-	% A single directory is apparently necessary and sufficient so that the
-	% computing nodes have access both to ErlPort.
-	%
-	% Previously we thought that system_utils:get_dependency_base_directory(
-	% "ErlPort" ) was needed as well, so that initialization of the interpreters
-	% would not fail with {not_found,"erlport/priv"}, short of being able to
-	% find erlport.beam, yet it was due to the base directory bearing a
-	% different name than 'erlport' in our installation settings.
+    % A single directory is apparently necessary and sufficient so that the
+    % computing nodes have access both to ErlPort.
+    %
+    % Previously we thought that system_utils:get_dependency_base_directory(
+    % "ErlPort" ) was needed as well, so that initialization of the interpreters
+    % would not fail with {not_found,"erlport/priv"}, short of being able to
+    % find erlport.beam, yet it was due to the base directory bearing a
+    % different name than 'erlport' in our installation settings.
 
-	% Needed so that python:start/1 and all are found:
-	[ system_utils:get_dependency_code_directory( "ErlPort" ) ].
+    % Needed so that python:start/1 and all are found:
+    [ system_utils:get_dependency_code_directory( "ErlPort" ) ].
 
 
 
 -doc "Requests specified interpreter to execute specified oneway.".
 -spec send_oneway( interpreter_pid(), title(), body() ) -> void().
 send_oneway( InterpreterPid, MessageTitle, MessageBody )
-										when is_atom( MessageTitle ) ->
+                                        when is_atom( MessageTitle ) ->
 
-	python:cast( InterpreterPid, { self(), MessageTitle, MessageBody } ).
+    python:cast( InterpreterPid, { self(), MessageTitle, MessageBody } ).
 
 
 
@@ -137,44 +137,44 @@ different accepted types of messages.
 wait_for_request_result( InterpreterPid, MessageTitle )
   when is_atom( MessageTitle ) ->
 
-	% Waits for the response:
-	Message = receive
+    % Waits for the response:
+    Message = receive
 
-		_Msg={ Headers, Body } when is_tuple( Headers )
-				andalso erlang:element( 1, Headers ) == python_message ->
+        _Msg={ Headers, Body } when is_tuple( Headers )
+                andalso erlang:element( 1, Headers ) == python_message ->
 
-			erlang:append_element( erlang:delete_element( 1, Headers ), Body )
+            erlang:append_element( erlang:delete_element( 1, Headers ), Body )
 
-	end,
+    end,
 
-	case Message of
+    case Message of
 
-		% Return of a successful request:
-		{ request_completed, _ReceivedData } ->
-			Message;
+        % Return of a successful request:
+        { request_completed, _ReceivedData } ->
+            Message;
 
-		% Trace emitted from Python:
-		TraceMessage = { trace_emitted, TraceType, _TraceFormattedMessage }
-										when is_atom( TraceType ) ->
-			TraceMessage;
-
-
-		% Exception raised from Python:
-		ExceptionMessage = { exception_raised, ExceptionType,
-							 _ExceptionFormattedMessage }
-										when is_atom( ExceptionType ) ->
-			ExceptionMessage;
+        % Trace emitted from Python:
+        TraceMessage = { trace_emitted, TraceType, _TraceFormattedMessage }
+                                        when is_atom( TraceType ) ->
+            TraceMessage;
 
 
-		% Catch-all clause for message receiving:
-		OtherMessage ->
-			trace_utils:error_fmt( "A message received from the Python "
-				"interpreter driven by ~w, in answer to '~p', does not "
-				"respect the expected format: ~p~n",
-				[ InterpreterPid, MessageTitle, OtherMessage ] ),
-			throw( { invalid_python_message_received, OtherMessage } )
+        % Exception raised from Python:
+        ExceptionMessage = { exception_raised, ExceptionType,
+                             _ExceptionFormattedMessage }
+                                        when is_atom( ExceptionType ) ->
+            ExceptionMessage;
 
-	end.
+
+        % Catch-all clause for message receiving:
+        OtherMessage ->
+            trace_utils:error_fmt( "A message received from the Python "
+                "interpreter driven by ~w, in answer to '~p', does not "
+                "respect the expected format: ~p~n",
+                [ InterpreterPid, MessageTitle, OtherMessage ] ),
+            throw( { invalid_python_message_received, OtherMessage } )
+
+    end.
 
 
 
@@ -187,31 +187,31 @@ For example: `Partner__TransportModel__MyFoobarExample` resulting in
 `partner.transport_model.my_foobar_example`.
 """.
 -spec pep8_class_to_pep8_module( pep8_classname() | ustring() ) ->
-										pep8_class_module().
+                                        pep8_class_module().
 pep8_class_to_pep8_module( Classname ) when is_atom( Classname ) ->
-	pep8_class_to_pep8_module( text_utils:atom_to_string( Classname ) );
+    pep8_class_to_pep8_module( text_utils:atom_to_string( Classname ) );
 
 pep8_class_to_pep8_module( ClassnameString ) ->
 
-	% Splits the classname on "__", so that for example
-	% "Partner__TransportModel__MyFoobarExample" becomes
-	% [ "Partner", "TransportModel", "MyFoobarExample" ]:
-	%
-	TokensCamel = string:split( ClassnameString, _Pattern="__", _Where=all ),
+    % Splits the classname on "__", so that for example
+    % "Partner__TransportModel__MyFoobarExample" becomes
+    % [ "Partner", "TransportModel", "MyFoobarExample" ]:
+    %
+    TokensCamel = string:split( ClassnameString, _Pattern="__", _Where=all ),
 
-	% All of them will be switched from CamelCase to snake_case, so:
-	% [ "Partner", "TransportModel", "MyFoobarExample" ] becomes:
-	% [ "partner", "transport_model", "my_foobar_example" ].
-	%
-	TokensSnake = [ string:join( [ string:to_lower( CamelWord )
-				|| CamelWord <- text_utils:split_camel_case( CamelCaseToken ) ],
-								 _Separator="_" )
-					|| CamelCaseToken <- TokensCamel ],
+    % All of them will be switched from CamelCase to snake_case, so:
+    % [ "Partner", "TransportModel", "MyFoobarExample" ] becomes:
+    % [ "partner", "transport_model", "my_foobar_example" ].
+    %
+    TokensSnake = [ string:join( [ string:to_lower( CamelWord )
+                || CamelWord <- text_utils:split_camel_case( CamelCaseToken ) ],
+                                 _Separator="_" )
+                    || CamelCaseToken <- TokensCamel ],
 
-	% The concatenation of those should lead to a valid package name, so that
-	% ["partner", "transport_model", "my_foobar_example"] becomes ultimately the
-	% 'partner.transport_model.my_foobar_example' atom:
-	%
-	ModuleRef = string:join( TokensSnake, "." ),
+    % The concatenation of those should lead to a valid package name, so that
+    % ["partner", "transport_model", "my_foobar_example"] becomes ultimately the
+    % 'partner.transport_model.my_foobar_example' atom:
+    %
+    ModuleRef = string:join( TokensSnake, "." ),
 
-	text_utils:string_to_atom( ModuleRef ).
+    text_utils:string_to_atom( ModuleRef ).

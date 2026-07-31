@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
@@ -22,85 +22,85 @@ See the class_Creature.erl tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	% Allows to support both OTP conventions and ad hoc, automatic ones:
-	wooper_utils:start_for_test(),
+    % Allows to support both OTP conventions and ad hoc, automatic ones:
+    wooper_utils:start_for_test(),
 
-	test_facilities:display( "Debug mode: ~ts.",
-							 [ class_Creature:is_wooper_debug() ] ),
+    test_facilities:display( "Debug mode: ~ts.",
+                             [ class_Creature:is_wooper_debug() ] ),
 
-	test_facilities:display( "Class name is , superclasses are ~w.",
-							 [ class_Creature:get_superclasses() ] ),
+    test_facilities:display( "Class name is , superclasses are ~w.",
+                             [ class_Creature:get_superclasses() ] ),
 
-	MyC = class_Creature:new_link( 30, male ),
+    MyC = class_Creature:new_link( 30, male ),
 
-	MyC ! { getAge, [], self() },
-	receive
+    MyC ! { getAge, [], self() },
+    receive
 
-		{ wooper_result, 30 } ->
-			test_facilities:display(
-				"After constructor, getAge returned 30 as expected." );
+        { wooper_result, 30 } ->
+            test_facilities:display(
+                "After constructor, getAge returned 30 as expected." );
 
-		{ wooper_result, UnexpectedAge } ->
-			test_facilities:fail( "wrong age: ~p", [ UnexpectedAge ] )
+        { wooper_result, UnexpectedAge } ->
+            test_facilities:fail( "wrong age: ~p", [ UnexpectedAge ] )
 
-	end,
+    end,
 
-	MyC ! { getGender, [], self() },
-	receive
+    MyC ! { getGender, [], self() },
+    receive
 
-		{ wooper_result, male } ->
-			test_facilities:display(
-				"After constructor, getGender returned male as expected." );
+        { wooper_result, male } ->
+            test_facilities:display(
+                "After constructor, getGender returned male as expected." );
 
-		{ wooper_result, UnexpectedGender } ->
-			test_facilities:fail( "wrong gender: ~p", [ UnexpectedGender ] )
+        { wooper_result, UnexpectedGender } ->
+            test_facilities:fail( "wrong gender: ~p", [ UnexpectedGender ] )
 
-	end,
+    end,
 
-	MyC ! { setAge, 5 },
+    MyC ! { setAge, 5 },
 
-	% class_Creature:getAge returns always 36 for executeRequest test purposes:
-	MyC ! { getAge, [], self() },
-	receive
+    % class_Creature:getAge returns always 36 for executeRequest test purposes:
+    MyC ! { getAge, [], self() },
+    receive
 
-		{ wooper_result, 36 } ->
-			test_facilities:display(
-				"After setAge, getAge returned 36 as expected.");
+        { wooper_result, 36 } ->
+            test_facilities:display(
+                "After setAge, getAge returned 36 as expected.");
 
-		{ wooper_result, UnexpectedNewAge } ->
-			test_facilities:fail( "wrong age: ~p", [ UnexpectedNewAge ] )
+        { wooper_result, UnexpectedNewAge } ->
+            test_facilities:fail( "wrong age: ~p", [ UnexpectedNewAge ] )
 
-	end,
-	MyC ! declareBirthday,
+    end,
+    MyC ! declareBirthday,
 
-	MyC ! { getAge, [], self() },
-	receive
+    MyC ! { getAge, [], self() },
+    receive
 
-		{ wooper_result, 37 }->
-			test_facilities:display(
-				"After declareBirthday, getAge returned 37 as expected." );
+        { wooper_result, 37 }->
+            test_facilities:display(
+                "After declareBirthday, getAge returned 37 as expected." );
 
-		{ wooper_result, UnexpectedLastAge } ->
-			test_facilities:fail( "wrong age: ~p", [ UnexpectedLastAge ] )
+        { wooper_result, UnexpectedLastAge } ->
+            test_facilities:fail( "wrong age: ~p", [ UnexpectedLastAge ] )
 
-	end,
+    end,
 
-	MyC ! declareBirthday,
-
-
-	% Some more technical checkings:
-
-	% Note to be called here, otherwise will fail:
-	%MyC ! { testDirectMethodExecution, 36 },
-
-	MyC ! testSingleExecution,
+    MyC ! declareBirthday,
 
 
-	% Ensures a synchronous ending:
-	wooper:delete_synchronously_instance( MyC ),
+    % Some more technical checkings:
 
-	test_facilities:display( "Synchronous deletion succeedeed." ),
+    % Note to be called here, otherwise will fail:
+    %MyC ! { testDirectMethodExecution, 36 },
 
-	test_facilities:stop().
+    MyC ! testSingleExecution,
+
+
+    % Ensures a synchronous ending:
+    wooper:delete_synchronously_instance( MyC ),
+
+    test_facilities:display( "Synchronous deletion succeedeed." ),
+
+    test_facilities:stop().

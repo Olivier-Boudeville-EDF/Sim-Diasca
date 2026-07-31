@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2025 EDF R&D
+% Copyright (C) 2018-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -48,4 +48,4 @@
 
 
 -export_type([ actor_pid/0, sending_actor_pid/0, created_actor_pid/0,
-			   actor_oneway_return/0, const_actor_oneway_return/0 ]).
+               actor_oneway_return/0, const_actor_oneway_return/0 ]).

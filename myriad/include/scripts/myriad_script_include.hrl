@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 Olivier Boudeville
+% Copyright (C) 2016-2026 Olivier Boudeville
 %
 % Include file meant to simplify the writing of Myriad-using escripts.
 %
@@ -11,9 +11,9 @@
 
 % To silence unused warnings:
 -export([ get_script_base_directory/0,
-		  get_myriad_base_directory/0,
-		  update_code_path_for_myriad/0,
-		  update_code_path_for_myriad_from_module/0 ]).
+          get_myriad_base_directory/0,
+          update_code_path_for_myriad/0,
+          update_code_path_for_myriad_from_module/0 ]).
 
 
 % For the file_info record:
@@ -35,35 +35,35 @@ a regular Erlang program.
 -spec is_running_as_escript() -> boolean().
 is_running_as_escript() ->
 
-	% We thought that escript:script_name/0 was only meant to succeed iff
-	% executed from an escript; yet, if simply run from a module, it will still
-	% succeed if at least an extra command-line line was specified.
-	%
-	% So escript:script_name() will fail if erl is launched with no option,
-	% whereas it will succeed if launched with 'erl -extra foobar' for example.
-	%
-	% The best solution we see currently is to look whether the returned script
-	% name bears the '.escript' extension (better than just including a path
-	% separator or not): from 'erl -extra foobar', escript:script_name/0 will
-	% return "foobar", whereas from hello.escript it will return
-	% "./hello.escript"; so:
+    % We thought that escript:script_name/0 was only meant to succeed iff
+    % executed from an escript; yet, if simply run from a module, it will still
+    % succeed if at least an extra command-line line was specified.
+    %
+    % So escript:script_name() will fail if erl is launched with no option,
+    % whereas it will succeed if launched with 'erl -extra foobar' for example.
+    %
+    % The best solution we see currently is to look whether the returned script
+    % name bears the '.escript' extension (better than just including a path
+    % separator or not): from 'erl -extra foobar', escript:script_name/0 will
+    % return "foobar", whereas from hello.escript it will return
+    % "./hello.escript"; so:
 
-	try
+    try
 
-		case escript:script_name() of
+        case escript:script_name() of
 
-			Name ->
-				%io:format( "Script name: '~ts'.~n", [ Name ] ),
-				filename:extension( Name ) =:= ".escript"
+            Name ->
+                %io:format( "Script name: '~ts'.~n", [ Name ] ),
+                filename:extension( Name ) =:= ".escript"
 
-		end
+        end
 
-	% Typically {badmatch,[]} from escript.erl:
-	catch error:_Error ->
+    % Typically {badmatch,[]} from escript.erl:
+    catch error:_Error ->
 
-		false
+        false
 
-	end.
+    end.
 
 
 
@@ -77,50 +77,50 @@ script and needed by it.
 -spec get_script_base_directory() -> file_utils:directory_path().
 get_script_base_directory() ->
 
-	case is_running_as_escript() of
+    case is_running_as_escript() of
 
-		true ->
+        true ->
 
-			%io:format( "Found running as escript.~n" ),
+            %io:format( "Found running as escript.~n" ),
 
-			% filename:absname/1 could be used instead:
-			FullPath = case escript:script_name() of
+            % filename:absname/1 could be used instead:
+            FullPath = case escript:script_name() of
 
-				ScriptPath=( "/" ++ _ ) ->
-					% Is already absolute here:
-					ScriptPath;
+                ScriptPath=( "/" ++ _ ) ->
+                    % Is already absolute here:
+                    ScriptPath;
 
-				RelativePath ->
-					% Let's make it absolute then:
-					{ ok, CurrentDir } = file:get_cwd(),
-					filename:join( CurrentDir, RelativePath )
+                RelativePath ->
+                    % Let's make it absolute then:
+                    { ok, CurrentDir } = file:get_cwd(),
+                    filename:join( CurrentDir, RelativePath )
 
-			end,
+            end,
 
-			%file_utils:get_base_path( FullPath );
+            %file_utils:get_base_path( FullPath );
 
-			BaseDir = filename:dirname( FullPath ),
+            BaseDir = filename:dirname( FullPath ),
 
-			%io:format( "Script base directory: '~ts'.~n", [ BaseDir ] ),
+            %io:format( "Script base directory: '~ts'.~n", [ BaseDir ] ),
 
-			BaseDir;
+            BaseDir;
 
 
-		false ->
+        false ->
 
-			%io:format( "Found not running as escript.~n" ),
+            %io:format( "Found not running as escript.~n" ),
 
-			% Supposing Myriad is already available then?
-			CodePath = code_utils:get_code_path(),
+            % Supposing Myriad is already available then?
+            CodePath = code_utils:get_code_path(),
 
-			MyriadPath = get_myriad_path_from( CodePath ),
+            MyriadPath = get_myriad_path_from( CodePath ),
 
-			% We cannot use file_utils:normalise_path/1 here: Myriad not usable
-			% from that point yet!
-			%
-			file_utils:join( [ MyriadPath, "src", "scripts" ] )
+            % We cannot use file_utils:normalise_path/1 here: Myriad not usable
+            % from that point yet!
+            %
+            file_utils:join( [ MyriadPath, "src", "scripts" ] )
 
-	end.
+    end.
 
 
 
@@ -128,49 +128,49 @@ get_script_base_directory() ->
 % (helper)
 get_myriad_path_from( CodePath ) ->
 
-	% Two base directories are licit for Myriad, a reference one and a
-	% shorthand:
-	%
-	case get_myriad_path_from( CodePath, "Ceylan-Myriad" ) of
+    % Two base directories are licit for Myriad, a reference one and a
+    % shorthand:
+    %
+    case get_myriad_path_from( CodePath, "Ceylan-Myriad" ) of
 
-		undefined ->
+        undefined ->
 
-			case get_myriad_path_from( CodePath, "myriad" ) of
+            case get_myriad_path_from( CodePath, "myriad" ) of
 
-				undefined ->
-					throw( unable_to_determine_myriad_root );
+                undefined ->
+                    throw( unable_to_determine_myriad_root );
 
-				Path ->
-					%trace_utils:debug_fmt( "Found from myriad: '~ts'.",
-					%                       [ Path ] ),
-					Path
+                Path ->
+                    %trace_utils:debug_fmt( "Found from myriad: '~ts'.",
+                    %                       [ Path ] ),
+                    Path
 
-			end;
+            end;
 
-		Path ->
-			%trace_utils:debug_fmt( "Found from Ceylan-Myriad: '~ts'.",
-			%                       [ Path ] ),
-			Path
+        Path ->
+            %trace_utils:debug_fmt( "Found from Ceylan-Myriad: '~ts'.",
+            %                       [ Path ] ),
+            Path
 
-	end.
+    end.
 
 
 % (sub-helper)
 get_myriad_path_from( _Paths=[], _BaseDirName ) ->
-	undefined;
+    undefined;
 
 get_myriad_path_from( [ Path | T ], BaseDirName ) ->
-	case string:split( Path, BaseDirName ) of
+    case string:split( Path, BaseDirName ) of
 
-		[ Prefix, _Suffix ] ->
-			% Just the full path to the root wanted:
-			file_utils:join( Prefix, BaseDirName );
+        [ Prefix, _Suffix ] ->
+            % Just the full path to the root wanted:
+            file_utils:join( Prefix, BaseDirName );
 
-		% Layer name not found:
-		_ ->
-			get_myriad_path_from( T, BaseDirName )
+        % Layer name not found:
+        _ ->
+            get_myriad_path_from( T, BaseDirName )
 
-	end.
+    end.
 
 
 
@@ -189,7 +189,7 @@ in which it is stored).
 """.
 -spec update_code_path_for_myriad() -> file_utils:directory_path().
 update_code_path_for_myriad() ->
-	update_code_path_for_myriad( get_myriad_base_directory() ).
+    update_code_path_for_myriad( get_myriad_base_directory() ).
 
 
 
@@ -204,9 +204,9 @@ other sibling base directories).
 """.
 -spec update_code_path_for_myriad_from_module() -> file_utils:directory_path().
 update_code_path_for_myriad_from_module() ->
-	{ ok, CurrentDir } = file:get_cwd(),
-	MyriadBaseDirectory = filename:join( [ CurrentDir, "..", ".." ] ),
-	update_code_path_for_myriad( MyriadBaseDirectory ).
+    { ok, CurrentDir } = file:get_cwd(),
+    MyriadBaseDirectory = filename:join( [ CurrentDir, "..", ".." ] ),
+    update_code_path_for_myriad( MyriadBaseDirectory ).
 
 
 
@@ -226,47 +226,47 @@ it is stored).
 % (original version located in script_utils.erl, copied verbatim here)
 %
 -spec update_code_path_for_myriad( file_utils:directory_path() ) ->
-										file_utils:directory_path().
+                                        file_utils:directory_path().
 update_code_path_for_myriad( MyriadRootDir ) ->
 
-	% Should not use trace_utils for that, as Myriad not found yet here:
-	%io:format( "Root of 'Myriad': '~ts'.~n", [ MyriadRootDir ] ),
+    % Should not use trace_utils for that, as Myriad not found yet here:
+    %io:format( "Root of 'Myriad': '~ts'.~n", [ MyriadRootDir ] ),
 
-	MyriadSrcDir = filename:join( MyriadRootDir, "src" ),
+    MyriadSrcDir = filename:join( MyriadRootDir, "src" ),
 
-	% An up-to-date version can be obtained thanks to the
-	% 'list-beam-relative-paths' make target:
-	%
-	MyriadBeamSubDirs = [ "apps/generate-password", "apps/merge-tool",
-		"data-management", "maths", "meta", "scripts",
-		"user-interface", "user-interface/audio", "user-interface/textual",
-		"user-interface/graphical", "user-interface/graphical/opengl",
-		"utils" ],
+    % An up-to-date version can be obtained thanks to the
+    % 'list-beam-relative-paths' make target:
+    %
+    MyriadBeamSubDirs = [ "apps/generate-password", "apps/merge-tool",
+        "data-management", "maths", "meta", "scripts",
+        "user-interface", "user-interface/audio", "user-interface/textual",
+        "user-interface/graphical", "user-interface/graphical/opengl",
+        "utils" ],
 
 
-	MyriadBeamDirs =
-		[ filename:join( MyriadSrcDir, D ) || D <- MyriadBeamSubDirs ],
+    MyriadBeamDirs =
+        [ filename:join( MyriadSrcDir, D ) || D <- MyriadBeamSubDirs ],
 
-	%io:format( "'Myriad' beam dirs: ~p.~n", [ MyriadBeamDirs ] ),
+    %io:format( "'Myriad' beam dirs: ~p.~n", [ MyriadBeamDirs ] ),
 
-	ok = code:add_pathsa( MyriadBeamDirs ),
+    ok = code:add_pathsa( MyriadBeamDirs ),
 
-	% One thing is that the relevant paths are declared, another one is that
-	% they have been built:
-	%
-	try
+    % One thing is that the relevant paths are declared, another one is that
+    % they have been built:
+    %
+    try
 
-		test = basic_utils:identity( test )
+        test = basic_utils:identity( test )
 
-	catch error:undef ->
+    catch error:undef ->
 
-		io:format( "Error, Ceylan-Myriad is not fully built.~n", [] ),
+        io:format( "Error, Ceylan-Myriad is not fully built.~n", [] ),
 
-		exit( myriad_not_built )
+        exit( myriad_not_built )
 
-	end,
+    end,
 
-	MyriadRootDir.
+    MyriadRootDir.
 
 
 
@@ -281,46 +281,46 @@ hardly be avoided)
 -spec get_myriad_base_directory() -> file_utils:directory_path().
 get_myriad_base_directory() ->
 
-	% We cannot use file_utils:normalise_path/1 here, as Myriad is not usable
-	% from that point yet.
-	%
-	% Two main possibilities here: the current escript is located in src/scripts
-	% or in src/apps/SOME_APP; trying them in turn, using src/meta as an
-	% indicator, a candidate designating a possible Myriad root.
-	%
-	% So, maybe script is in src/scripts:
+    % We cannot use file_utils:normalise_path/1 here, as Myriad is not usable
+    % from that point yet.
+    %
+    % Two main possibilities here: the current escript is located in src/scripts
+    % or in src/apps/SOME_APP; trying them in turn, using src/meta as an
+    % indicator, a candidate designating a possible Myriad root.
+    %
+    % So, maybe script is in src/scripts:
 
-	ScriptBaseDir = get_script_base_directory(),
+    ScriptBaseDir = get_script_base_directory(),
 
-	FirstBaseCandidate =
-		filename:join( [ ScriptBaseDir, "..", "..", "..", "myriad" ] ),
+    FirstBaseCandidate =
+        filename:join( [ ScriptBaseDir, "..", "..", "..", "myriad" ] ),
 
-	FirstMetaPath = filename:join( [ FirstBaseCandidate, "src", "meta" ] ),
+    FirstMetaPath = filename:join( [ FirstBaseCandidate, "src", "meta" ] ),
 
-	case file:read_file_info( FirstMetaPath ) of
+    case file:read_file_info( FirstMetaPath ) of
 
-		{ ok, #file_info{ type=directory } } ->
-			FirstBaseCandidate;
+        { ok, #file_info{ type=directory } } ->
+            FirstBaseCandidate;
 
-		{ error, _FirstReason } ->
+        { error, _FirstReason } ->
 
-			% Defined specifically, for any error report:
-			SecondBaseCandidate = filename:join(
-				[ ScriptBaseDir, "..", "..", "..", "..", "myriad" ] ),
+            % Defined specifically, for any error report:
+            SecondBaseCandidate = filename:join(
+                [ ScriptBaseDir, "..", "..", "..", "..", "myriad" ] ),
 
-			% Maybe in src/apps/SOME_APP then:
-			SecondMetaPath =
-				filename:join( [ SecondBaseCandidate, "src", "meta" ] ),
+            % Maybe in src/apps/SOME_APP then:
+            SecondMetaPath =
+                filename:join( [ SecondBaseCandidate, "src", "meta" ] ),
 
-			case file:read_file_info( SecondMetaPath ) of
+            case file:read_file_info( SecondMetaPath ) of
 
-				{ ok, #file_info{ type=directory } } ->
-					SecondBaseCandidate;
+                { ok, #file_info{ type=directory } } ->
+                    SecondBaseCandidate;
 
-				{ error, _SecondReason } ->
-					throw( { myriad_base_directory_not_found,
-							 FirstBaseCandidate, SecondBaseCandidate } )
+                { error, _SecondReason } ->
+                    throw( { myriad_base_directory_not_found,
+                             FirstBaseCandidate, SecondBaseCandidate } )
 
-			end
+            end
 
-	end.
+    end.

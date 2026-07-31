@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -151,8 +151,8 @@ origin.
 
 -doc "A tuple of 12 or 16 coordinates.".
 -type tuple_matrix4() :: % Not exported yet: gl:m12() | gl:m16().
-						 type_utils:tuple( coordinate(), 12 )
-					   | type_utils:tuple( coordinate(), 16 ).
+                         type_utils:tuple( coordinate(), 12 )
+                       | type_utils:tuple( coordinate(), 16 ).
 
 
 
@@ -161,50 +161,50 @@ origin.
 
 
 -export_type([ user_matrix4/0, matrix4/0, canonical_matrix4/0,
-			   compact_matrix4/0, rot_matrix4/0, homogeneous_matrix4/0,
-			   transition_matrix4/0, tuple_matrix4/0,
-			   scale_factors/0 ]).
+               compact_matrix4/0, rot_matrix4/0, homogeneous_matrix4/0,
+               transition_matrix4/0, tuple_matrix4/0,
+               scale_factors/0 ]).
 
 
 
 -export([ new/1, new/3, null/0, identity/0, translation/1, scaling/1,
-		  rotation/2, transition/4,
-		  from_columns/4, from_rows/4,
-		  compact_from_columns/4,
-		  from_coordinates/16, from_compact_coordinates/12,
-		  from_arbitrary/1, to_arbitrary/1,
-		  dimension/0, dimensions/0,
-		  row/2, column/2,
-		  compact_column/2,
+          rotation/2, transition/4,
+          from_columns/4, from_rows/4,
+          compact_from_columns/4,
+          from_coordinates/16, from_compact_coordinates/12,
+          from_arbitrary/1, to_arbitrary/1,
+          dimension/0, dimensions/0,
+          row/2, column/2,
+          compact_column/2,
 
-		  get_column_i/1, get_column_j/1, get_column_k/1, get_column_o/1,
-		  get_translation/1,
+          get_column_i/1, get_column_j/1, get_column_k/1, get_column_o/1,
+          get_translation/1,
 
-		  set_column_i/2, set_column_j/2, set_column_k/2, set_column_o/2,
+          set_column_i/2, set_column_j/2, set_column_k/2, set_column_o/2,
 
-		  get_element/3, set_element/4,
-		  transpose/1,
-		  scale/2,
-		  add/2, sub/2, mult/2, mult/1,
-		  apply/2, apply_homogeneous_left/2, apply_homogeneous_right/2,
-		  are_equal/2,
-		  translate_homogeneous_left/2, translate_homogeneous_right/2,
-		  rotate_homogeneous_left/3, rotate_homogeneous_right/3,
+          get_element/3, set_element/4,
+          transpose/1,
+          scale/2,
+          add/2, sub/2, mult/2, mult/1,
+          apply/2, apply_homogeneous_left/2, apply_homogeneous_right/2,
+          are_equal/2,
+          translate_homogeneous_left/2, translate_homogeneous_right/2,
+          rotate_homogeneous_left/3, rotate_homogeneous_right/3,
 
-		  scale_homogeneous/2,
+          scale_homogeneous/2,
 
-		  scale_homogeneous_left/2, scale_homogeneous_right/2,
+          scale_homogeneous_left/2, scale_homogeneous_right/2,
 
-		  scale_homogeneous_x/2, scale_homogeneous_y/2, scale_homogeneous_z/2,
+          scale_homogeneous_x/2, scale_homogeneous_y/2, scale_homogeneous_z/2,
 
-		  scale_homogeneous_x_t/2, scale_homogeneous_y_t/2,
-		  scale_homogeneous_z_t/2,
+          scale_homogeneous_x_t/2, scale_homogeneous_y_t/2,
+          scale_homogeneous_z_t/2,
 
-		  determinant/1, comatrix/1, inverse/1,
-		  to_canonical/1, to_compact/1,
-		  from_tuple/1, to_tuple/1,
-		  check/1,
-		  to_string/1 ] ).
+          determinant/1, comatrix/1, inverse/1,
+          to_canonical/1, to_compact/1,
+          from_tuple/1, to_tuple/1,
+          check/1,
+          to_string/1 ] ).
 
 
 % For homogeneous matrices:
@@ -257,11 +257,11 @@ Returns a 4D (canonical) matrix corresponding to the user-specified matrix.
 -spec new( user_matrix4() ) -> canonical_matrix4().
 new( UserMatrix ) ->
 
-	CoordList = [ type_utils:ensure_float( C )
-					|| C <- list_utils:flatten_once( UserMatrix ) ],
+    CoordList = [ type_utils:ensure_float( C )
+                    || C <- list_utils:flatten_once( UserMatrix ) ],
 
-	% Returns a #matrix4 record (i.e. a tagged tuple):
-	list_to_tuple( [ 'matrix4' | CoordList ] ).
+    % Returns a #matrix4 record (i.e. a tagged tuple):
+    list_to_tuple( [ 'matrix4' | CoordList ] ).
 
 
 
@@ -269,32 +269,32 @@ new( UserMatrix ) ->
 Returns a 4D compact matrix corresponding to the user-specified row vectors.
 """.
 -spec new( user_vector4(), user_vector4(), user_vector4() ) ->
-											compact_matrix4().
+                                            compact_matrix4().
 new( UserVecRow1, UserVecRow2, UserVecRow3 ) ->
 
-	Rows = [ vector4:new( UVR )
-				|| UVR <- [ UserVecRow1, UserVecRow2, UserVecRow3 ] ],
+    Rows = [ vector4:new( UVR )
+                || UVR <- [ UserVecRow1, UserVecRow2, UserVecRow3 ] ],
 
-	CoordList = list_utils:flatten_once( Rows ),
+    CoordList = list_utils:flatten_once( Rows ),
 
-	% Returns a #compact_matrix4 record (i.e. a tagged tuple):
-	list_to_tuple( [ 'compact_matrix4' | CoordList ] ).
+    % Returns a #compact_matrix4 record (i.e. a tagged tuple):
+    list_to_tuple( [ 'compact_matrix4' | CoordList ] ).
 
 
 
 -doc "Returns the null (4x4) matrix.".
 -spec null() -> canonical_matrix4().
 null() ->
-	Zero = 0.0,
-	CoordList = lists:duplicate( _N=?dim * ?dim, Zero ),
-	list_to_tuple( [ 'matrix4' | CoordList ] ).
+    Zero = 0.0,
+    CoordList = lists:duplicate( _N=?dim * ?dim, Zero ),
+    list_to_tuple( [ 'matrix4' | CoordList ] ).
 
 
 
 -doc "Returns the identity (4x4) matrix.".
 -spec identity() -> matrix4().
 identity() ->
-	identity_4.
+    identity_4.
 
 
 
@@ -304,11 +304,11 @@ translation of the specified vector.
 """.
 -spec translation( vector3() ) -> compact_matrix4().
 translation( _VT=[ Tx, Ty, Tz ] ) ->
-	Zero = 0.0,
-	One = 1.0,
-	#compact_matrix4{ m11=One,  m12=Zero, m13=Zero, tx=Tx,
-					  m21=Zero, m22=One,  m23=Zero, ty=Ty,
-					  m31=Zero, m32=Zero, m33=One,  tz=Tz }.
+    Zero = 0.0,
+    One = 1.0,
+    #compact_matrix4{ m11=One,  m12=Zero, m13=Zero, tx=Tx,
+                      m21=Zero, m22=One,  m23=Zero, ty=Ty,
+                      m31=Zero, m32=Zero, m33=One,  tz=Tz }.
 
 
 
@@ -317,18 +317,18 @@ Returns the (4x4) homogeneous (thus compact) matrix corresponding to the scaling
 of the specified factors.
 """.
 -spec scaling( scale_factors() ) -> compact_matrix4();
-			 ( vector3() ) -> compact_matrix4().
+             ( vector3() ) -> compact_matrix4().
 scaling( { Sx, Sy, Sz } ) ->
-	Zero = 0.0,
-	#compact_matrix4{ m11=Sx,   m12=Zero, m13=Zero, tx=Zero,
-					  m21=Zero, m22=Sy,   m23=Zero, ty=Zero,
-					  m31=Zero, m32=Zero, m33=Sz,   tz=Zero };
+    Zero = 0.0,
+    #compact_matrix4{ m11=Sx,   m12=Zero, m13=Zero, tx=Zero,
+                      m21=Zero, m22=Sy,   m23=Zero, ty=Zero,
+                      m31=Zero, m32=Zero, m33=Sz,   tz=Zero };
 
 scaling( [ Sx, Sy, Sz ] ) ->
-	Zero = 0.0,
-	#compact_matrix4{ m11=Sx,   m12=Zero, m13=Zero, tx=Zero,
-					  m21=Zero, m22=Sy,   m23=Zero, ty=Zero,
-					  m31=Zero, m32=Zero, m33=Sz,   tz=Zero }.
+    Zero = 0.0,
+    #compact_matrix4{ m11=Sx,   m12=Zero, m13=Zero, tx=Zero,
+                      m21=Zero, m22=Sy,   m23=Zero, ty=Zero,
+                      m31=Zero, m32=Zero, m33=Sz,   tz=Zero }.
 
 
 
@@ -346,40 +346,40 @@ use, at least here), but this corresponds to (4x4) homogeneous matrices.
 -spec rotation( unit_vector3(), radians() ) -> compact_matrix4().
 rotation( UnitAxis=[ Ux, Uy, Uz ], RadAngle ) ->
 
-	% Not an assertion, as UnitAxis must be ignored if no check is done:
-	cond_utils:if_defined( myriad_check_linear,
-						   true = vector3:is_unitary( UnitAxis ),
-						   basic_utils:ignore_unused( UnitAxis ) ),
+    % Not an assertion, as UnitAxis must be ignored if no check is done:
+    cond_utils:if_defined( myriad_check_linear,
+                           true = vector3:is_unitary( UnitAxis ),
+                           basic_utils:ignore_unused( UnitAxis ) ),
 
-	% Directly taken from matrix3:rotation/2.
+    % Directly taken from matrix3:rotation/2.
 
-	C = math:cos( RadAngle ),
-	S = math:sin( RadAngle ),
+    C = math:cos( RadAngle ),
+    S = math:sin( RadAngle ),
 
-	% One minus C:
-	OmC = 1 - C,
+    % One minus C:
+    OmC = 1 - C,
 
-	Uxy = Ux * Uy,
-	Uxz = Ux * Uz,
-	Uyz = Uy * Uz,
+    Uxy = Ux * Uy,
+    Uxz = Ux * Uz,
+    Uyz = Uy * Uz,
 
-	M11 = C + Ux*Ux*OmC,
-	M12 = Uxy*OmC - Uz*S,
-	M13 = Uxz*OmC + Uy*S,
+    M11 = C + Ux*Ux*OmC,
+    M12 = Uxy*OmC - Uz*S,
+    M13 = Uxz*OmC + Uy*S,
 
-	M21 = Uxy*OmC + Uz*S,
-	M22 = C + Uy*Uy*OmC,
-	M23 = Uyz*OmC - Ux*S,
+    M21 = Uxy*OmC + Uz*S,
+    M22 = C + Uy*Uy*OmC,
+    M23 = Uyz*OmC - Ux*S,
 
-	M31 = Uxz*OmC - Uy*S,
-	M32 = Uyz*OmC + Ux*S,
-	M33 = C + Uz*Uz*OmC,
+    M31 = Uxz*OmC - Uy*S,
+    M32 = Uyz*OmC + Ux*S,
+    M33 = C + Uz*Uz*OmC,
 
-	Zero = 0.0,
+    Zero = 0.0,
 
-	#compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=Zero,
-					  m21=M21, m22=M22, m23=M23, ty=Zero,
-					  m31=M31, m32=M32, m33=M33, tz=Zero }.
+    #compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=Zero,
+                      m21=M21, m22=M22, m23=M23, ty=Zero,
+                      m31=M31, m32=M32, m33=M33, tz=Zero }.
 
 
 
@@ -393,24 +393,24 @@ Refer to
 for further details.
 """.
 -spec transition( point3(), unit_vector3(), unit_vector3(), unit_vector3() ) ->
-								compact_matrix4().
+                                compact_matrix4().
 transition( Origin, X, Y, Z ) ->
 
-	cond_utils:if_defined( myriad_debug_linear,
-		trace_utils:debug_fmt( "Computing the transition matrix to "
-			"a coordinate system of origin ~w, axes being ~w, ~w and ~w.",
-			[ Origin, X, Y, Z ] ) ),
+    cond_utils:if_defined( myriad_debug_linear,
+        trace_utils:debug_fmt( "Computing the transition matrix to "
+            "a coordinate system of origin ~w, axes being ~w, ~w and ~w.",
+            [ Origin, X, Y, Z ] ) ),
 
-	cond_utils:if_defined( myriad_check_linear,
-		begin
-			point3:check( Origin ),
-			vector3:check_unit_vectors( [ X, Y, Z ] ),
-			vector3:check_orthogonal( X, Y ),
-			vector3:check_orthogonal( X, Z ),
-			vector3:check_orthogonal( Y, Z )
-		end ),
+    cond_utils:if_defined( myriad_check_linear,
+        begin
+            point3:check( Origin ),
+            vector3:check_unit_vectors( [ X, Y, Z ] ),
+            vector3:check_orthogonal( X, Y ),
+            vector3:check_orthogonal( X, Z ),
+            vector3:check_orthogonal( Y, Z )
+        end ),
 
-	compact_from_columns( X, Y, Z, Origin ).
+    compact_from_columns( X, Y, Z, Origin ).
 
 
 
@@ -426,13 +426,13 @@ Returns thus:
 ```
 """.
 -spec from_columns( vector4(), vector4(), vector4(), vector4() ) ->
-														canonical_matrix4().
+                                                        canonical_matrix4().
 from_columns( _Va=[Xa,Ya,Za,Wa], _Vb=[Xb,Yb,Zb,Wb],
-			  _Vc=[Xc,Yc,Zc,Wc], _Vd=[Xd,Yd,Zd,Wd] ) ->
-	#matrix4{ m11=Xa, m12=Xb, m13=Xc, m14=Xd,
-			  m21=Ya, m22=Yb, m23=Yc, m24=Yd,
-			  m31=Za, m32=Zb, m33=Zc, m34=Zd,
-			  m41=Wa, m42=Wb, m43=Wc, m44=Wd }.
+              _Vc=[Xc,Yc,Zc,Wc], _Vd=[Xd,Yd,Zd,Wd] ) ->
+    #matrix4{ m11=Xa, m12=Xb, m13=Xc, m14=Xd,
+              m21=Ya, m22=Yb, m23=Yc, m24=Yd,
+              m31=Za, m32=Zb, m33=Zc, m34=Zd,
+              m41=Wa, m42=Wb, m43=Wc, m44=Wd }.
 
 
 
@@ -449,12 +449,12 @@ Returns thus:
 ```
 """.
 -spec compact_from_columns( vector3(), vector3(), vector3(), point3() ) ->
-														compact_matrix4().
+                                                        compact_matrix4().
 compact_from_columns( _Va=[Xa,Ya,Za], _Vb=[Xb,Yb,Zb],
-					  _Vc=[Xc,Yc,Zc], _P={Xp,Yp,Zp} ) ->
-	#compact_matrix4{ m11=Xa, m12=Xb, m13=Xc, tx=Xp,
-					  m21=Ya, m22=Yb, m23=Yc, ty=Yp,
-					  m31=Za, m32=Zb, m33=Zc, tz=Zp }.
+                      _Vc=[Xc,Yc,Zc], _P={Xp,Yp,Zp} ) ->
+    #compact_matrix4{ m11=Xa, m12=Xb, m13=Xc, tx=Xp,
+                      m21=Ya, m22=Yb, m23=Yc, ty=Yp,
+                      m31=Za, m32=Zb, m33=Zc, tz=Zp }.
 
 
 
@@ -470,13 +470,13 @@ Returns thus:
 ```
 """.
 -spec from_rows( vector4(), vector4(), vector4(), vector4() ) ->
-							canonical_matrix4().
+                            canonical_matrix4().
 from_rows( _Va=[Xa,Ya,Za,Wa], _Vb=[Xb,Yb,Zb,Wb],
-		   _Vc=[Xc,Yc,Zc,Wc], _Vd=[Xd,Yd,Zd,Wd] ) ->
-	#matrix4{ m11=Xa, m12=Ya, m13=Za, m14=Wa,
-			  m21=Xb, m22=Yb, m23=Zb, m24=Wb,
-			  m31=Xc, m32=Yc, m33=Zc, m34=Wc,
-			  m41=Xd, m42=Yd, m43=Zd, m44=Wd }.
+           _Vc=[Xc,Yc,Zc,Wc], _Vd=[Xd,Yd,Zd,Wd] ) ->
+    #matrix4{ m11=Xa, m12=Ya, m13=Za, m14=Wa,
+              m21=Xb, m22=Yb, m23=Zb, m24=Wb,
+              m31=Xc, m32=Yc, m33=Zc, m34=Wc,
+              m41=Xd, m42=Yd, m43=Zd, m44=Wd }.
 
 
 
@@ -485,18 +485,18 @@ Returns the (4x4, canonical) matrix whose (16) coordinates are the specified
 ones, as listed row after row.
 """.
 -spec from_coordinates( coordinate(), coordinate(), coordinate(), coordinate(),
-						coordinate(), coordinate(), coordinate(), coordinate(),
-						coordinate(), coordinate(), coordinate(), coordinate(),
-						coordinate(), coordinate(), coordinate(), coordinate() )
-											-> canonical_matrix4().
+                        coordinate(), coordinate(), coordinate(), coordinate(),
+                        coordinate(), coordinate(), coordinate(), coordinate(),
+                        coordinate(), coordinate(), coordinate(), coordinate() )
+                                            -> canonical_matrix4().
 from_coordinates( M11, M12, M13, M14,
-				  M21, M22, M23, M24,
-				  M31, M32, M33, M34,
-				  M41, M42, M43, M44 ) ->
-	#matrix4{ m11=M11, m12=M12, m13=M13, m14=M14,
-			  m21=M21, m22=M22, m23=M23, m24=M24,
-			  m31=M31, m32=M32, m33=M33, m34=M34,
-			  m41=M41, m42=M42, m43=M43, m44=M44 }.
+                  M21, M22, M23, M24,
+                  M31, M32, M33, M34,
+                  M41, M42, M43, M44 ) ->
+    #matrix4{ m11=M11, m12=M12, m13=M13, m14=M14,
+              m21=M21, m22=M22, m23=M23, m24=M24,
+              m31=M31, m32=M32, m33=M33, m34=M34,
+              m41=M41, m42=M42, m43=M43, m44=M44 }.
 
 
 
@@ -505,16 +505,16 @@ Returns the "4x4" (actually 3x4) compact matrix whose 12 actual coordinates are
 the specified ones, as listed row after row.
 """.
 -spec from_compact_coordinates(
-					coordinate(), coordinate(), coordinate(), coordinate(),
-					coordinate(), coordinate(), coordinate(), coordinate(),
-					coordinate(), coordinate(), coordinate(), coordinate() ) ->
-							compact_matrix4().
+                    coordinate(), coordinate(), coordinate(), coordinate(),
+                    coordinate(), coordinate(), coordinate(), coordinate(),
+                    coordinate(), coordinate(), coordinate(), coordinate() ) ->
+                            compact_matrix4().
 from_compact_coordinates( M11, M12, M13, Tx,
-						  M21, M22, M23, Ty,
-						  M31, M32, M33, Tz ) ->
-	#compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=Tx,
-					  m21=M21, m22=M22, m23=M23, ty=Ty,
-					  m31=M31, m32=M32, m33=M33, tz=Tz }.
+                          M21, M22, M23, Ty,
+                          M31, M32, M33, Tz ) ->
+    #compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=Tx,
+                      m21=M21, m22=M22, m23=M23, ty=Ty,
+                      m31=M31, m32=M32, m33=M33, tz=Tz }.
 
 
 
@@ -524,7 +524,7 @@ matrix.
 """.
 -spec from_arbitrary( matrix() ) -> matrix4().
 from_arbitrary( Matrix ) ->
-	erlang:apply( fun from_rows/?dim, Matrix ).
+    erlang:apply( fun from_rows/?dim, Matrix ).
 
 
 
@@ -534,9 +534,9 @@ matrix.
 """.
 -spec to_arbitrary( matrix4() ) -> matrix().
 to_arbitrary( Matrix4 ) ->
-	M = to_canonical( Matrix4 ),
-	[ _RecordTag | Coords ] = tuple_to_list( M ),
-	matrix:from_coordinates( Coords, _ColumCount=?dim ).
+    M = to_canonical( Matrix4 ),
+    [ _RecordTag | Coords ] = tuple_to_list( M ),
+    matrix:from_coordinates( Coords, _ColumCount=?dim ).
 
 
 
@@ -547,7 +547,7 @@ Not useless, when using polymorphism based on module name.
 """.
 -spec dimension() -> dimension().
 dimension() ->
-	?dim.
+    ?dim.
 
 
 
@@ -558,75 +558,75 @@ Not useless, when using polymorphism based on module name.
 """.
 -spec dimensions() -> dimensions().
 dimensions() ->
-	{ ?dim, ?dim }.
+    { ?dim, ?dim }.
 
 
 
 -doc "Returns the specified row of the specified matrix.".
 -spec row( dimension(), matrix4() ) -> vector4().
 row( _RowCount=1, #matrix4{ m11=M11, m12=M12, m13=M13, m14=M14 } ) ->
-	[ M11, M12, M13, M14 ];
+    [ M11, M12, M13, M14 ];
 
 row( _RowCount=2, #matrix4{ m21=M21, m22=M22, m23=M23, m24=M24 } ) ->
-	[ M21, M22, M23, M24 ];
+    [ M21, M22, M23, M24 ];
 
 row( _RowCount=3, #matrix4{ m31=M31, m32=M32, m33=M33, m34=M34 } ) ->
-	[ M31, M32, M33, M34 ];
+    [ M31, M32, M33, M34 ];
 
 row( _RowCount=4, #matrix4{ m41=M41, m32=M42, m33=M43, m34=M44 } ) ->
-	[ M41, M42, M43, M44 ];
+    [ M41, M42, M43, M44 ];
 
 row( RowCount, OtherMatrix ) ->
-	row( RowCount, to_canonical( OtherMatrix ) ).
+    row( RowCount, to_canonical( OtherMatrix ) ).
 
 
 
 -doc "Returns the specified column of the specified matrix.".
 -spec column( dimension(), matrix4() ) -> vector4().
 column( _ColumnCount=1, #matrix4{ m11=M11, m21=M21, m31=M31, m41=M41 } ) ->
-	[ M11, M21, M31, M41 ];
+    [ M11, M21, M31, M41 ];
 
 column( _ColumnCount=2, #matrix4{ m12=M12, m22=M22, m32=M32, m42=M42 } ) ->
-	[ M12, M22, M32, M42 ];
+    [ M12, M22, M32, M42 ];
 
 column( _ColumnCount=3, #matrix4{ m13=M13, m23=M23, m33=M33, m43=M43 } ) ->
-	[ M13, M23, M33, M43 ];
+    [ M13, M23, M33, M43 ];
 
 column( _ColumnCount=4, #matrix4{ m14=M14, m24=M24, m34=M34, m44=M44 } ) ->
-	[ M14, M24, M34, M44 ];
+    [ M14, M24, M34, M44 ];
 
 column( ColCount, OtherMatrix ) ->
-	column( ColCount, to_canonical( OtherMatrix ) ).
+    column( ColCount, to_canonical( OtherMatrix ) ).
 
 
 
 -doc "Returns the specified column of the specified compact matrix.".
 -spec compact_column( dimension(), compact_matrix4() ) -> vector3().
 compact_column( _ColumnCount=1,
-				#compact_matrix4{ m11=M11, m21=M21, m31=M31 } ) ->
-	[ M11, M21, M31 ];
+                #compact_matrix4{ m11=M11, m21=M21, m31=M31 } ) ->
+    [ M11, M21, M31 ];
 
 compact_column( _ColumnCount=2,
-				#compact_matrix4{ m12=M12, m22=M22, m32=M32 } ) ->
-	[ M12, M22, M32 ];
+                #compact_matrix4{ m12=M12, m22=M22, m32=M32 } ) ->
+    [ M12, M22, M32 ];
 
 compact_column( _ColumnCount=3,
-				#compact_matrix4{ m13=M13, m23=M23, m33=M33} ) ->
-	[ M13, M23, M33 ];
+                #compact_matrix4{ m13=M13, m23=M23, m33=M33} ) ->
+    [ M13, M23, M33 ];
 
 compact_column( _ColumnCount=4,
-				#compact_matrix4{ tx=Tx, ty=Ty, tz=Tz } ) ->
-	[ Tx, Ty, Tz ].
+                #compact_matrix4{ tx=Tx, ty=Ty, tz=Tz } ) ->
+    [ Tx, Ty, Tz ].
 
 
 
 -doc "Returns the first (3D) column of the specified transition matrix.".
 -spec get_column_i( transition_matrix4() ) -> unit_vector3().
 get_column_i( identity_4 ) ->
-	vector3:x_axis();
+    vector3:x_axis();
 
 get_column_i( CptMatrix ) ->
-	compact_column( _ColumnCount=1, CptMatrix ).
+    compact_column( _ColumnCount=1, CptMatrix ).
 
 
 
@@ -636,26 +636,26 @@ updated with the specified one.
 """.
 -spec set_column_i( transition_matrix4(), unit_vector3() ) -> unit_vector3().
 set_column_i( identity_4, _Column=[ X, Y, Z ] ) ->
-	Zero = 0.0,
-	One = 1.0,
-	#compact_matrix4{ m11=X, m12=Zero, m13=Zero, tx=Zero,
-					  m21=Y, m22=One,  m23=Zero, ty=Zero,
-					  m31=Z, m32=Zero, m33=One,  tz=Zero };
+    Zero = 0.0,
+    One = 1.0,
+    #compact_matrix4{ m11=X, m12=Zero, m13=Zero, tx=Zero,
+                      m21=Y, m22=One,  m23=Zero, ty=Zero,
+                      m31=Z, m32=Zero, m33=One,  tz=Zero };
 
 set_column_i( CptMatrix, _Column=[ X, Y, Z ] ) ->
-	CptMatrix#compact_matrix4{ m11=X,
-							   m21=Y,
-							   m31=Z }.
+    CptMatrix#compact_matrix4{ m11=X,
+                               m21=Y,
+                               m31=Z }.
 
 
 
 -doc "Returns the second (3D) column of the specified transition matrix.".
 -spec get_column_j( transition_matrix4() ) -> unit_vector3().
 get_column_j( identity_4 ) ->
-	vector3:y_axis();
+    vector3:y_axis();
 
 get_column_j( CptMatrix ) ->
-	compact_column( _ColumnCount=2, CptMatrix ).
+    compact_column( _ColumnCount=2, CptMatrix ).
 
 
 
@@ -665,26 +665,26 @@ updated with the specified one.
 """.
 -spec set_column_j( transition_matrix4(), unit_vector3() ) -> unit_vector3().
 set_column_j( identity_4, _Column=[ X, Y, Z ] ) ->
-	Zero = 0.0,
-	One = 1.0,
-	#compact_matrix4{ m11=One,  m12=X, m13=Zero, tx=Zero,
-					  m21=Zero, m22=Y, m23=Zero, ty=Zero,
-					  m31=Zero, m32=Z, m33=One,  tz=Zero };
+    Zero = 0.0,
+    One = 1.0,
+    #compact_matrix4{ m11=One,  m12=X, m13=Zero, tx=Zero,
+                      m21=Zero, m22=Y, m23=Zero, ty=Zero,
+                      m31=Zero, m32=Z, m33=One,  tz=Zero };
 
 set_column_j( CptMatrix, _Column=[ X, Y, Z ] ) ->
-	CptMatrix#compact_matrix4{ m12=X,
-							   m22=Y,
-							   m32=Z }.
+    CptMatrix#compact_matrix4{ m12=X,
+                               m22=Y,
+                               m32=Z }.
 
 
 
 -doc "Returns the third (3D) column of the specified transition matrix.".
 -spec get_column_k( transition_matrix4() ) -> unit_vector3().
 get_column_k( identity_4 ) ->
-	vector3:z_axis();
+    vector3:z_axis();
 
 get_column_k( CptMatrix ) ->
-	compact_column( _ColumnCount=3, CptMatrix ).
+    compact_column( _ColumnCount=3, CptMatrix ).
 
 
 
@@ -694,16 +694,16 @@ updated with the specified one.
 """.
 -spec set_column_k( transition_matrix4(), unit_vector3() ) -> unit_vector3().
 set_column_k( identity_4, _Column=[ X, Y, Z ] ) ->
-	Zero = 0.0,
-	One = 1.0,
-	#compact_matrix4{ m11=One,  m12=Zero, m13=X, tx=Zero,
-					  m21=Zero, m22=One,  m23=Y, ty=Zero,
-					  m31=Zero, m32=Zero, m33=Z, tz=Zero };
+    Zero = 0.0,
+    One = 1.0,
+    #compact_matrix4{ m11=One,  m12=Zero, m13=X, tx=Zero,
+                      m21=Zero, m22=One,  m23=Y, ty=Zero,
+                      m31=Zero, m32=Zero, m33=Z, tz=Zero };
 
 set_column_k( CptMatrix, _Column=[ X, Y, Z ] ) ->
-	CptMatrix#compact_matrix4{ m13=X,
-							   m23=Y,
-							   m33=Z }.
+    CptMatrix#compact_matrix4{ m13=X,
+                               m23=Y,
+                               m33=Z }.
 
 
 
@@ -714,10 +714,10 @@ This one is generally not a unit vector.
 """.
 -spec get_column_o( transition_matrix4() ) -> vector3().
 get_column_o( identity_4 ) ->
-	vector3:null();
+    vector3:null();
 
 get_column_o( CptMatrix ) ->
-	compact_column( _ColumnCount=4, CptMatrix ).
+    compact_column( _ColumnCount=4, CptMatrix ).
 
 
 
@@ -729,11 +729,11 @@ For an homogeneous matrix, this corresponds to a translation.
 """.
 -spec get_translation( compact_matrix4() ) -> point3().
 get_translation( _CptMatrix=#compact_matrix4{ tx=Tx, ty=Ty, tz=Tz } ) ->
-	{ Tx, Ty, Tz };
+    { Tx, Ty, Tz };
 
 get_translation( _CptMatrix=identity_4 ) ->
-	Zero = 0.0,
-	{ Zero, Zero, Zero }.
+    Zero = 0.0,
+    { Zero, Zero, Zero }.
 
 
 
@@ -743,16 +743,16 @@ updated with the specified one.
 """.
 -spec set_column_o( transition_matrix4(), unit_vector3() ) -> unit_vector3().
 set_column_o( identity_4, _Column=[ X, Y, Z ] ) ->
-	Zero = 0.0,
-	One = 1.0,
-	#compact_matrix4{ m11=One,  m12=Zero, m13=Zero, tx=X,
-					  m21=Zero, m22=One,  m23=Zero, ty=Y,
-					  m31=Zero, m32=Zero, m33=One,  tz=Z };
+    Zero = 0.0,
+    One = 1.0,
+    #compact_matrix4{ m11=One,  m12=Zero, m13=Zero, tx=X,
+                      m21=Zero, m22=One,  m23=Zero, ty=Y,
+                      m31=Zero, m32=Zero, m33=One,  tz=Z };
 
 set_column_o( CptMatrix, _Column=[ X, Y, Z ] ) ->
-	CptMatrix#compact_matrix4{ tx=X,
-							   ty=Y,
-							   tz=Z }.
+    CptMatrix#compact_matrix4{ tx=X,
+                               ty=Y,
+                               tz=Z }.
 
 
 
@@ -761,58 +761,58 @@ Returns the element at the specified row and column of the specified matrix.
 """.
 -spec get_element( dimension(), dimension(), matrix4() ) -> coordinate().
 get_element( _R=1, _C=1, #matrix4{ m11=M11 } ) ->
-	M11;
+    M11;
 
 get_element( _R=1, _C=2, #matrix4{ m12=M12 } ) ->
-	M12;
+    M12;
 
 get_element( _R=1, _C=3, #matrix4{ m13=M13 } ) ->
-	M13;
+    M13;
 
 get_element( _R=1, _C=4, #matrix4{ m14=M14 } ) ->
-	M14;
+    M14;
 
 
 get_element( _R=2, _C=1, #matrix4{ m21=M21 } ) ->
-	M21;
+    M21;
 
 get_element( _R=2, _C=2, #matrix4{ m22=M22 } ) ->
-	M22;
+    M22;
 
 get_element( _R=2, _C=3, #matrix4{ m23=M23 } ) ->
-	M23;
+    M23;
 
 get_element( _R=2, _C=4, #matrix4{ m24=M24 } ) ->
-	M24;
+    M24;
 
 
 get_element( _R=3, _C=1, #matrix4{ m31=M31 } ) ->
-	M31;
+    M31;
 
 get_element( _R=3, _C=2, #matrix4{ m32=M32 } ) ->
-	M32;
+    M32;
 
 get_element( _R=3, _C=3, #matrix4{ m33=M33 } ) ->
-	M33;
+    M33;
 
 get_element( _R=3, _C=4, #matrix4{ m34=M34 } ) ->
-	M34;
+    M34;
 
 
 get_element( _R=4, _C=1, #matrix4{ m41=M41 } ) ->
-	M41;
+    M41;
 
 get_element( _R=4, _C=2, #matrix4{ m42=M42 } ) ->
-	M42;
+    M42;
 
 get_element( _R=4, _C=3, #matrix4{ m43=M43 } ) ->
-	M43;
+    M43;
 
 get_element( _R=4, _C=4, #matrix4{ m44=M44 } ) ->
-	M44;
+    M44;
 
 get_element( R, C, OtherMatrix ) ->
-	get_element( R, C, to_canonical( OtherMatrix ) ).
+    get_element( R, C, to_canonical( OtherMatrix ) ).
 
 
 
@@ -821,60 +821,60 @@ Returns a matrix identical to the specified one except that its specified
 element at specified location has been set to the specified value.
 """.
 -spec set_element( dimension(), dimension(), coordinate(), matrix4() ) ->
-									matrix4().
+                                    matrix4().
 set_element( _R=1, _C=1, Value, Matrix=#matrix4{} ) ->
-	Matrix#matrix4{ m11=Value };
+    Matrix#matrix4{ m11=Value };
 
 set_element( _R=1, _C=2, Value, Matrix=#matrix4{} ) ->
-	Matrix#matrix4{ m12=Value };
+    Matrix#matrix4{ m12=Value };
 
 set_element( _R=1, _C=3, Value, Matrix=#matrix4{} ) ->
-	Matrix#matrix4{ m13=Value };
+    Matrix#matrix4{ m13=Value };
 
 set_element( _R=1, _C=4, Value, Matrix=#matrix4{} ) ->
-	Matrix#matrix4{ m14=Value };
+    Matrix#matrix4{ m14=Value };
 
 
 set_element( _R=2, _C=1, Value, Matrix=#matrix4{} ) ->
-	Matrix#matrix4{ m21=Value };
+    Matrix#matrix4{ m21=Value };
 
 set_element( _R=2, _C=2, Value, Matrix=#matrix4{} ) ->
-	Matrix#matrix4{ m22=Value };
+    Matrix#matrix4{ m22=Value };
 
 set_element( _R=2, _C=3, Value, Matrix=#matrix4{} ) ->
-	Matrix#matrix4{ m23=Value };
+    Matrix#matrix4{ m23=Value };
 
 set_element( _R=2, _C=4, Value, Matrix=#matrix4{} ) ->
-	Matrix#matrix4{ m24=Value };
+    Matrix#matrix4{ m24=Value };
 
 
 set_element( _R=3, _C=1, Value, Matrix=#matrix4{} ) ->
-	Matrix#matrix4{ m31=Value };
+    Matrix#matrix4{ m31=Value };
 
 set_element( _R=3, _C=2, Value, Matrix=#matrix4{} ) ->
-	Matrix#matrix4{ m32=Value };
+    Matrix#matrix4{ m32=Value };
 
 set_element( _R=3, _C=3, Value, Matrix=#matrix4{} ) ->
-	Matrix#matrix4{ m33=Value };
+    Matrix#matrix4{ m33=Value };
 
 set_element( _R=3, _C=4, Value, Matrix=#matrix4{} ) ->
-	Matrix#matrix4{ m34=Value };
+    Matrix#matrix4{ m34=Value };
 
 
 set_element( _R=4, _C=1, Value, Matrix=#matrix4{} ) ->
-	Matrix#matrix4{ m41=Value };
+    Matrix#matrix4{ m41=Value };
 
 set_element( _R=4, _C=2, Value, Matrix=#matrix4{} ) ->
-	Matrix#matrix4{ m42=Value };
+    Matrix#matrix4{ m42=Value };
 
 set_element( _R=4, _C=3, Value, Matrix=#matrix4{} ) ->
-	Matrix#matrix4{ m43=Value };
+    Matrix#matrix4{ m43=Value };
 
 set_element( _R=4, _C=4, Value, Matrix=#matrix4{} ) ->
-	Matrix#matrix4{ m44=Value };
+    Matrix#matrix4{ m44=Value };
 
 set_element( R, C, Value, OtherMatrix ) ->
-	set_element( R, C, Value, to_canonical( OtherMatrix ) ).
+    set_element( R, C, Value, to_canonical( OtherMatrix ) ).
 
 
 
@@ -882,106 +882,106 @@ set_element( R, C, Value, OtherMatrix ) ->
 -spec transpose( matrix4() ) -> matrix4().
 % Diagonal untouched:
 transpose( M=#matrix4{ m12=M12, m13=M13, m14=M14,
-					   m21=M21, m23=M23, m24=M24,
-					   m31=M31, m32=M32, m34=M34,
-					   m41=M41, m42=M42, m43=M43 } ) ->
-	M#matrix4{ m12=M21, m13=M31, m14=M41,
-			   m21=M12, m23=M32, m24=M42,
-			   m31=M13, m32=M23, m34=M43,
-			   m41=M14, m42=M24, m43=M34 };
+                       m21=M21, m23=M23, m24=M24,
+                       m31=M31, m32=M32, m34=M34,
+                       m41=M41, m42=M42, m43=M43 } ) ->
+    M#matrix4{ m12=M21, m13=M31, m14=M41,
+               m21=M12, m23=M32, m24=M42,
+               m31=M13, m32=M23, m34=M43,
+               m41=M14, m42=M24, m43=M34 };
 
 transpose( M=identity_4 ) ->
-	M;
+    M;
 
 % A compact matrix is not anymore compact:
 transpose( CompactMatrix ) ->
-	transpose( to_canonical( CompactMatrix ) ).
+    transpose( to_canonical( CompactMatrix ) ).
 
 
 
 -doc "Scales the specified (4D) matrix of the specified factor.".
 -spec scale( matrix4(), scale_factor() ) -> matrix4().
 scale( #compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=Tx,
-						 m21=M21, m22=M22, m23=M23, ty=Ty,
-						 m31=M31, m32=M32, m33=M33, tz=Tz }, Factor ) ->
-	% Not anymore a compact matrix, as last (bottom-right) implicit coordinate
-	% (1.0) must be scaled as well:
-	%
-	#matrix4{
-		m11=Factor*M11, m12=Factor*M12, m13=Factor*M13, m14=Factor*Tx,
-		m21=Factor*M21, m22=Factor*M22, m23=Factor*M23, m24=Factor*Ty,
-		m31=Factor*M31, m32=Factor*M32, m33=Factor*M33, m34=Factor*Tz,
-		m41=0.0,        m42=0.0,        m43=0.0,        m44=Factor      };
+                         m21=M21, m22=M22, m23=M23, ty=Ty,
+                         m31=M31, m32=M32, m33=M33, tz=Tz }, Factor ) ->
+    % Not anymore a compact matrix, as last (bottom-right) implicit coordinate
+    % (1.0) must be scaled as well:
+    %
+    #matrix4{
+        m11=Factor*M11, m12=Factor*M12, m13=Factor*M13, m14=Factor*Tx,
+        m21=Factor*M21, m22=Factor*M22, m23=Factor*M23, m24=Factor*Ty,
+        m31=Factor*M31, m32=Factor*M32, m33=Factor*M33, m34=Factor*Tz,
+        m41=0.0,        m42=0.0,        m43=0.0,        m44=Factor      };
 
 scale( #matrix4{ m11=M11, m12=M12, m13=M13, m14=M14,
-				 m21=M21, m22=M22, m23=M23, m24=M24,
-				 m31=M31, m32=M32, m33=M33, m34=M34,
-				 m41=M41, m42=M42, m43=M43, m44=M44 }, Factor ) ->
-	#matrix4{ m11=Factor*M11, m12=Factor*M12, m13=Factor*M13, m14=Factor*M14,
-			  m21=Factor*M21, m22=Factor*M22, m23=Factor*M23, m24=Factor*M24,
-			  m31=Factor*M31, m32=Factor*M32, m33=Factor*M33, m34=Factor*M34,
-			  m41=Factor*M41, m42=Factor*M42, m43=Factor*M43, m44=Factor*M44 };
+                 m21=M21, m22=M22, m23=M23, m24=M24,
+                 m31=M31, m32=M32, m33=M33, m34=M34,
+                 m41=M41, m42=M42, m43=M43, m44=M44 }, Factor ) ->
+    #matrix4{ m11=Factor*M11, m12=Factor*M12, m13=Factor*M13, m14=Factor*M14,
+              m21=Factor*M21, m22=Factor*M22, m23=Factor*M23, m24=Factor*M24,
+              m31=Factor*M31, m32=Factor*M32, m33=Factor*M33, m34=Factor*M34,
+              m41=Factor*M41, m42=Factor*M42, m43=Factor*M43, m44=Factor*M44 };
 
 scale( M=identity_4, Factor ) ->
 
-	% Not necessarily an homogeneous matrix:
-	%Zero = 0.0,
-	%#compact_matrix4{ m11=Factor, m12=Zero,   m13=Zero,   tx=Zero,
-	%                  m21=Zero,   m22=Factor, m23=Zero,   ty=Zero,
-	%                  m31=Zero,   m32=Zero,   m33=Factor, tz=Zero }.
+    % Not necessarily an homogeneous matrix:
+    %Zero = 0.0,
+    %#compact_matrix4{ m11=Factor, m12=Zero,   m13=Zero,   tx=Zero,
+    %                  m21=Zero,   m22=Factor, m23=Zero,   ty=Zero,
+    %                  m31=Zero,   m32=Zero,   m33=Factor, tz=Zero }.
 
-	scale( to_canonical( M ), Factor ).
+    scale( to_canonical( M ), Factor ).
 
 
 
 -doc "Returns the sum of the two specified matrices: `M = Ma + Mb`.".
 -spec add( matrix4(), matrix4() ) -> matrix4().
 add( _Ma=#matrix4{ m11=A11, m12=A12, m13=A13, m14=A14,
-				   m21=A21, m22=A22, m23=A23, m24=A24,
-				   m31=A31, m32=A32, m33=A33, m34=A34,
-				   m41=A41, m42=A42, m43=A43, m44=A44 },
-	 _Mb=#matrix4{ m11=B11, m12=B12, m13=B13, m14=B14,
-				   m21=B21, m22=B22, m23=B23, m24=B24,
-				   m31=B31, m32=B32, m33=B33, m34=B34,
-				   m41=B41, m42=B42, m43=B43, m44=B44 } ) ->
+                   m21=A21, m22=A22, m23=A23, m24=A24,
+                   m31=A31, m32=A32, m33=A33, m34=A34,
+                   m41=A41, m42=A42, m43=A43, m44=A44 },
+     _Mb=#matrix4{ m11=B11, m12=B12, m13=B13, m14=B14,
+                   m21=B21, m22=B22, m23=B23, m24=B24,
+                   m31=B31, m32=B32, m33=B33, m34=B34,
+                   m41=B41, m42=B42, m43=B43, m44=B44 } ) ->
 
-	#matrix4{ m11=A11+B11, m12=A12+B12, m13=A13+B13, m14=A14+B14,
-			  m21=A21+B21, m22=A22+B22, m23=A23+B23, m24=A24+B24,
-			  m31=A31+B31, m32=A32+B32, m33=A33+B33, m34=A34+B34,
-			  m41=A41+B41, m42=A42+B42, m43=A43+B43, m44=A44+B44 };
+    #matrix4{ m11=A11+B11, m12=A12+B12, m13=A13+B13, m14=A14+B14,
+              m21=A21+B21, m22=A22+B22, m23=A23+B23, m24=A24+B24,
+              m31=A31+B31, m32=A32+B32, m33=A33+B33, m34=A34+B34,
+              m41=A41+B41, m42=A42+B42, m43=A43+B43, m44=A44+B44 };
 
 
 add( _Ma=#compact_matrix4{ m11=A11, m12=A12, m13=A13, tx=Tx,
-						   m21=A21, m22=A22, m23=A23, ty=Ty,
-						   m31=A31, m32=A32, m33=A33, tz=Tz },
-	 _Mb=#matrix4{ m11=B11, m12=B12, m13=B13, m14=B14,
-				   m21=B21, m22=B22, m23=B23, m24=B24,
-				   m31=B31, m32=B32, m33=B33, m34=B34,
-				   m41=B41, m42=B42, m43=B43, m44=B44 } ) ->
-	#matrix4{ m11=A11+B11, m12=A12+B12, m13=A13+B13, m14=Tx+B14,
-			  m21=A21+B21, m22=A22+B22, m23=A23+B23, m24=Ty+B24,
-			  m31=A31+B31, m32=A32+B32, m33=A33+B33, m34=Tz+B34,
-			  m41=B41,     m42=B42,     m43=B43,     m44=1.0+B44 };
+                           m21=A21, m22=A22, m23=A23, ty=Ty,
+                           m31=A31, m32=A32, m33=A33, tz=Tz },
+     _Mb=#matrix4{ m11=B11, m12=B12, m13=B13, m14=B14,
+                   m21=B21, m22=B22, m23=B23, m24=B24,
+                   m31=B31, m32=B32, m33=B33, m34=B34,
+                   m41=B41, m42=B42, m43=B43, m44=B44 } ) ->
+    #matrix4{ m11=A11+B11, m12=A12+B12, m13=A13+B13, m14=Tx+B14,
+              m21=A21+B21, m22=A22+B22, m23=A23+B23, m24=Ty+B24,
+              m31=A31+B31, m32=A32+B32, m33=A33+B33, m34=Tz+B34,
+              m41=B41,     m42=B42,     m43=B43,     m44=1.0+B44 };
 
 
 add( Ma=#matrix4{}, Mb=#compact_matrix4{} ) ->
-	add( Mb, Ma );
+    add( Mb, Ma );
 
 
 % Preserve compactness:
 add( _Ma=#compact_matrix4{ m11=A11, m12=A12, m13=A13, tx=Ax,
-						   m21=A21, m22=A22, m23=A23, ty=Ay,
-						   m31=A31, m32=A32, m33=A33, tz=Az },
-	 _Mb=#compact_matrix4{ m11=B11, m12=B12, m13=B13, tx=Bx,
-						   m21=B21, m22=B22, m23=B23, ty=By,
-						   m31=B31, m32=B32, m33=B33, tz=Bz } ) ->
+                           m21=A21, m22=A22, m23=A23, ty=Ay,
+                           m31=A31, m32=A32, m33=A33, tz=Az },
+     _Mb=#compact_matrix4{ m11=B11, m12=B12, m13=B13, tx=Bx,
+                           m21=B21, m22=B22, m23=B23, ty=By,
+                           m31=B31, m32=B32, m33=B33, tz=Bz } ) ->
 
-	#compact_matrix4{ m11=A11+B11, m12=A12+B12, m13=A13+B13, tx=Ax+Bx,
-					  m21=A21+B21, m22=A22+B22, m23=A23+B23, ty=Ay+By,
-					  m31=A31+B31, m32=A32+B32, m33=A33+B33, tz=Az+Bz };
+    #compact_matrix4{ m11=A11+B11, m12=A12+B12, m13=A13+B13, tx=Ax+Bx,
+                      m21=A21+B21, m22=A22+B22, m23=A23+B23, ty=Ay+By,
+                      m31=A31+B31, m32=A32+B32, m33=A33+B33, tz=Az+Bz };
 
 add( Ma, Mb ) ->
-	add( to_canonical( Ma ), to_canonical( Mb ) ).
+    add( to_canonical( Ma ), to_canonical( Mb ) ).
 
 
 
@@ -989,205 +989,205 @@ add( Ma, Mb ) ->
 -spec sub( matrix4(), matrix4() ) -> matrix4().
 % Quick and dirty, yet not satisfactory as expands compact matrices:
 %sub( Ma, Mb ) ->
-	%MinusMb = scale( Mb, -1.0 ),
-	%add( Ma, MinusMb ).
+    %MinusMb = scale( Mb, -1.0 ),
+    %add( Ma, MinusMb ).
 sub( _Ma=#matrix4{ m11=A11, m12=A12, m13=A13, m14=A14,
-				   m21=A21, m22=A22, m23=A23, m24=A24,
-				   m31=A31, m32=A32, m33=A33, m34=A34,
-				   m41=A41, m42=A42, m43=A43, m44=A44 },
-	 _Mb=#matrix4{ m11=B11, m12=B12, m13=B13, m14=B14,
-				   m21=B21, m22=B22, m23=B23, m24=B24,
-				   m31=B31, m32=B32, m33=B33, m34=B34,
-				   m41=B41, m42=B42, m43=B43, m44=B44 } ) ->
+                   m21=A21, m22=A22, m23=A23, m24=A24,
+                   m31=A31, m32=A32, m33=A33, m34=A34,
+                   m41=A41, m42=A42, m43=A43, m44=A44 },
+     _Mb=#matrix4{ m11=B11, m12=B12, m13=B13, m14=B14,
+                   m21=B21, m22=B22, m23=B23, m24=B24,
+                   m31=B31, m32=B32, m33=B33, m34=B34,
+                   m41=B41, m42=B42, m43=B43, m44=B44 } ) ->
 
-	#matrix4{ m11=A11-B11, m12=A12-B12, m13=A13-B13, m14=A14-B14,
-			  m21=A21-B21, m22=A22-B22, m23=A23-B23, m24=A24-B24,
-			  m31=A31-B31, m32=A32-B32, m33=A33-B33, m34=A34-B34,
-			  m41=A41-B41, m42=A42-B42, m43=A43-B43, m44=A44-B44 };
+    #matrix4{ m11=A11-B11, m12=A12-B12, m13=A13-B13, m14=A14-B14,
+              m21=A21-B21, m22=A22-B22, m23=A23-B23, m24=A24-B24,
+              m31=A31-B31, m32=A32-B32, m33=A33-B33, m34=A34-B34,
+              m41=A41-B41, m42=A42-B42, m43=A43-B43, m44=A44-B44 };
 
 
 sub( _Ma=#compact_matrix4{ m11=A11, m12=A12, m13=A13, tx=Tx,
-						   m21=A21, m22=A22, m23=A23, ty=Ty,
-						   m31=A31, m32=A32, m33=A33, tz=Tz },
-	 _Mb=#matrix4{ m11=B11, m12=B12, m13=B13, m14=B14,
-				   m21=B21, m22=B22, m23=B23, m24=B24,
-				   m31=B31, m32=B32, m33=B33, m34=B34,
-				   m41=B41, m42=B42, m43=B43, m44=B44 } ) ->
-	#matrix4{ m11=A11-B11, m12=A12-B12, m13=A13-B13, m14=Tx-B14,
-			  m21=A21-B21, m22=A22-B22, m23=A23-B23, m24=Ty-B24,
-			  m31=A31-B31, m32=A32-B32, m33=A33-B33, m34=Tz-B34,
-			  m41=-B41,    m42=-B42,    m43=-B43,    m44=1.0-B44 };
+                           m21=A21, m22=A22, m23=A23, ty=Ty,
+                           m31=A31, m32=A32, m33=A33, tz=Tz },
+     _Mb=#matrix4{ m11=B11, m12=B12, m13=B13, m14=B14,
+                   m21=B21, m22=B22, m23=B23, m24=B24,
+                   m31=B31, m32=B32, m33=B33, m34=B34,
+                   m41=B41, m42=B42, m43=B43, m44=B44 } ) ->
+    #matrix4{ m11=A11-B11, m12=A12-B12, m13=A13-B13, m14=Tx-B14,
+              m21=A21-B21, m22=A22-B22, m23=A23-B23, m24=Ty-B24,
+              m31=A31-B31, m32=A32-B32, m33=A33-B33, m34=Tz-B34,
+              m41=-B41,    m42=-B42,    m43=-B43,    m44=1.0-B44 };
 
 
 sub( _Ma=#matrix4{ m11=A11, m12=A12, m13=A13, m14=A14,
-				   m21=A21, m22=A22, m23=A23, m24=A24,
-				   m31=A31, m32=A32, m33=A33, m34=A34,
-				   m41=A41, m42=A42, m43=A43, m44=A44 },
-	 _Mb=#compact_matrix4{ m11=B11, m12=B12, m13=B13, tx=Bx,
-						   m21=B21, m22=B22, m23=B23, ty=By,
-						   m31=B31, m32=B32, m33=B33, tz=Bz } ) ->
-	#matrix4{ m11=A11-B11, m12=A12-B12, m13=A13-B13, m14=A14-Bx,
-			  m21=A21-B21, m22=A22-B22, m23=A23-B23, m24=A24-By,
-			  m31=A31-B31, m32=A32-B32, m33=A33-B33, m34=A34-Bz,
-			  m41=A41,     m42=A42,     m43=A43,     m44=A44-1.0 };
+                   m21=A21, m22=A22, m23=A23, m24=A24,
+                   m31=A31, m32=A32, m33=A33, m34=A34,
+                   m41=A41, m42=A42, m43=A43, m44=A44 },
+     _Mb=#compact_matrix4{ m11=B11, m12=B12, m13=B13, tx=Bx,
+                           m21=B21, m22=B22, m23=B23, ty=By,
+                           m31=B31, m32=B32, m33=B33, tz=Bz } ) ->
+    #matrix4{ m11=A11-B11, m12=A12-B12, m13=A13-B13, m14=A14-Bx,
+              m21=A21-B21, m22=A22-B22, m23=A23-B23, m24=A24-By,
+              m31=A31-B31, m32=A32-B32, m33=A33-B33, m34=A34-Bz,
+              m41=A41,     m42=A42,     m43=A43,     m44=A44-1.0 };
 
 
 % Preserve compactness:
 sub( _Ma=#compact_matrix4{ m11=A11, m12=A12, m13=A13, tx=Ax,
-						   m21=A21, m22=A22, m23=A23, ty=Ay,
-						   m31=A31, m32=A32, m33=A33, tz=Az },
-	 _Mb=#compact_matrix4{ m11=B11, m12=B12, m13=B13, tx=Bx,
-						   m21=B21, m22=B22, m23=B23, ty=By,
-						   m31=B31, m32=B32, m33=B33, tz=Bz } ) ->
+                           m21=A21, m22=A22, m23=A23, ty=Ay,
+                           m31=A31, m32=A32, m33=A33, tz=Az },
+     _Mb=#compact_matrix4{ m11=B11, m12=B12, m13=B13, tx=Bx,
+                           m21=B21, m22=B22, m23=B23, ty=By,
+                           m31=B31, m32=B32, m33=B33, tz=Bz } ) ->
 
-	#compact_matrix4{ m11=A11-B11, m12=A12-B12, m13=A13-B13, tx=Ax-Bx,
-					  m21=A21-B21, m22=A22-B22, m23=A23-B23, ty=Ay-By,
-					  m31=A31-B31, m32=A32-B32, m33=A33-B33, tz=Az-Bz };
+    #compact_matrix4{ m11=A11-B11, m12=A12-B12, m13=A13-B13, tx=Ax-Bx,
+                      m21=A21-B21, m22=A22-B22, m23=A23-B23, ty=Ay-By,
+                      m31=A31-B31, m32=A32-B32, m33=A33-B33, tz=Az-Bz };
 
 % At least one identity:
 sub( Ma, Mb ) ->
-	sub( to_canonical( Ma ), to_canonical( Mb ) ).
+    sub( to_canonical( Ma ), to_canonical( Mb ) ).
 
 
 
 -doc "Multiplies the first matrix by the second one: returns `M = Ma.Mb`.".
 -spec mult( Ma:: matrix4(), Mb :: matrix4() ) -> matrix4().
 mult( _Ma=identity_4, Mb ) ->
-	Mb;
+    Mb;
 
 mult( Ma, _Mb=identity_4 ) ->
-	Ma;
+    Ma;
 
 mult( _Ma=#matrix4{ m11=A11, m12=A12, m13=A13, m14=A14,
-					m21=A21, m22=A22, m23=A23, m24=A24,
-					m31=A31, m32=A32, m33=A33, m34=A34,
-					m41=A41, m42=A42, m43=A43, m44=A44 },
-	  _Mb=#matrix4{ m11=B11, m12=B12, m13=B13, m14=B14,
-					m21=B21, m22=B22, m23=B23, m24=B24,
-					m31=B31, m32=B32, m33=B33, m34=B34,
-					m41=B41, m42=B42, m43=B43, m44=B44 } ) ->
+                    m21=A21, m22=A22, m23=A23, m24=A24,
+                    m31=A31, m32=A32, m33=A33, m34=A34,
+                    m41=A41, m42=A42, m43=A43, m44=A44 },
+      _Mb=#matrix4{ m11=B11, m12=B12, m13=B13, m14=B14,
+                    m21=B21, m22=B22, m23=B23, m24=B24,
+                    m31=B31, m32=B32, m33=B33, m34=B34,
+                    m41=B41, m42=B42, m43=B43, m44=B44 } ) ->
 
-	%trace_utils:debug_fmt( "Multiplying Ma = ~ts by Mb = ~ts",
-	%                       [ to_string( Ma ), to_string( Mb ) ] ),
+    %trace_utils:debug_fmt( "Multiplying Ma = ~ts by Mb = ~ts",
+    %                       [ to_string( Ma ), to_string( Mb ) ] ),
 
-	C11 = A11*B11 + A12*B21 + A13*B31 + A14*B41,
-	C12 = A11*B12 + A12*B22 + A13*B32 + A14*B42,
-	C13 = A11*B13 + A12*B23 + A13*B33 + A14*B43,
-	C14 = A11*B14 + A12*B24 + A13*B34 + A14*B44,
+    C11 = A11*B11 + A12*B21 + A13*B31 + A14*B41,
+    C12 = A11*B12 + A12*B22 + A13*B32 + A14*B42,
+    C13 = A11*B13 + A12*B23 + A13*B33 + A14*B43,
+    C14 = A11*B14 + A12*B24 + A13*B34 + A14*B44,
 
-	C21 = A21*B11 + A22*B21 + A23*B31 + A24*B41,
-	C22 = A21*B12 + A22*B22 + A23*B32 + A24*B42,
-	C23 = A21*B13 + A22*B23 + A23*B33 + A24*B43,
-	C24 = A21*B14 + A22*B24 + A23*B34 + A24*B44,
+    C21 = A21*B11 + A22*B21 + A23*B31 + A24*B41,
+    C22 = A21*B12 + A22*B22 + A23*B32 + A24*B42,
+    C23 = A21*B13 + A22*B23 + A23*B33 + A24*B43,
+    C24 = A21*B14 + A22*B24 + A23*B34 + A24*B44,
 
-	C31 = A31*B11 + A32*B21 + A33*B31 + A34*B41,
-	C32 = A31*B12 + A32*B22 + A33*B32 + A34*B42,
-	C33 = A31*B13 + A32*B23 + A33*B33 + A34*B43,
-	C34 = A31*B14 + A32*B24 + A33*B34 + A34*B44,
+    C31 = A31*B11 + A32*B21 + A33*B31 + A34*B41,
+    C32 = A31*B12 + A32*B22 + A33*B32 + A34*B42,
+    C33 = A31*B13 + A32*B23 + A33*B33 + A34*B43,
+    C34 = A31*B14 + A32*B24 + A33*B34 + A34*B44,
 
-	C41 = A41*B11 + A42*B21 + A43*B31 + A44*B41,
-	C42 = A41*B12 + A42*B22 + A43*B32 + A44*B42,
-	C43 = A41*B13 + A42*B23 + A43*B33 + A44*B43,
-	C44 = A41*B14 + A42*B24 + A43*B34 + A44*B44,
+    C41 = A41*B11 + A42*B21 + A43*B31 + A44*B41,
+    C42 = A41*B12 + A42*B22 + A43*B32 + A44*B42,
+    C43 = A41*B13 + A42*B23 + A43*B33 + A44*B43,
+    C44 = A41*B14 + A42*B24 + A43*B34 + A44*B44,
 
-	#matrix4{ m11=C11, m12=C12, m13=C13, m14=C14,
-			  m21=C21, m22=C22, m23=C23, m24=C24,
-			  m31=C31, m32=C32, m33=C33, m34=C34,
-			  m41=C41, m42=C42, m43=C43, m44=C44 };
+    #matrix4{ m11=C11, m12=C12, m13=C13, m14=C14,
+              m21=C21, m22=C22, m23=C23, m24=C24,
+              m31=C31, m32=C32, m33=C33, m34=C34,
+              m41=C41, m42=C42, m43=C43, m44=C44 };
 
 mult( _Ma=#compact_matrix4{ m11=A11, m12=A12, m13=A13, tx=Tx,
-							m21=A21, m22=A22, m23=A23, ty=Ty,
-							m31=A31, m32=A32, m33=A33, tz=Tz },
-	  _Mb=#matrix4{ m11=B11, m12=B12, m13=B13, m14=B14,
-					m21=B21, m22=B22, m23=B23, m24=B24,
-					m31=B31, m32=B32, m33=B33, m34=B34,
-					m41=B41, m42=B42, m43=B43, m44=B44 } ) ->
+                            m21=A21, m22=A22, m23=A23, ty=Ty,
+                            m31=A31, m32=A32, m33=A33, tz=Tz },
+      _Mb=#matrix4{ m11=B11, m12=B12, m13=B13, m14=B14,
+                    m21=B21, m22=B22, m23=B23, m24=B24,
+                    m31=B31, m32=B32, m33=B33, m34=B34,
+                    m41=B41, m42=B42, m43=B43, m44=B44 } ) ->
 
-	C11 = A11*B11 + A12*B21 + A13*B31 + Tx*B41,
-	C12 = A11*B12 + A12*B22 + A13*B32 + Tx*B42,
-	C13 = A11*B13 + A12*B23 + A13*B33 + Tx*B43,
-	C14 = A11*B14 + A12*B24 + A13*B34 + Tx*B44,
+    C11 = A11*B11 + A12*B21 + A13*B31 + Tx*B41,
+    C12 = A11*B12 + A12*B22 + A13*B32 + Tx*B42,
+    C13 = A11*B13 + A12*B23 + A13*B33 + Tx*B43,
+    C14 = A11*B14 + A12*B24 + A13*B34 + Tx*B44,
 
-	C21 = A21*B11 + A22*B21 + A23*B31 + Ty*B41,
-	C22 = A21*B12 + A22*B22 + A23*B32 + Ty*B42,
-	C23 = A21*B13 + A22*B23 + A23*B33 + Ty*B43,
-	C24 = A21*B14 + A22*B24 + A23*B34 + Ty*B44,
+    C21 = A21*B11 + A22*B21 + A23*B31 + Ty*B41,
+    C22 = A21*B12 + A22*B22 + A23*B32 + Ty*B42,
+    C23 = A21*B13 + A22*B23 + A23*B33 + Ty*B43,
+    C24 = A21*B14 + A22*B24 + A23*B34 + Ty*B44,
 
-	C31 = A31*B11 + A32*B21 + A33*B31 + Tz*B41,
-	C32 = A31*B12 + A32*B22 + A33*B32 + Tz*B42,
-	C33 = A31*B13 + A32*B23 + A33*B33 + Tz*B43,
-	C34 = A31*B14 + A32*B24 + A33*B34 + Tz*B44,
+    C31 = A31*B11 + A32*B21 + A33*B31 + Tz*B41,
+    C32 = A31*B12 + A32*B22 + A33*B32 + Tz*B42,
+    C33 = A31*B13 + A32*B23 + A33*B33 + Tz*B43,
+    C34 = A31*B14 + A32*B24 + A33*B34 + Tz*B44,
 
-	C41 = B41,
-	C42 = B42,
-	C43 = B43,
-	C44 = B44,
+    C41 = B41,
+    C42 = B42,
+    C43 = B43,
+    C44 = B44,
 
-	#matrix4{ m11=C11, m12=C12, m13=C13, m14=C14,
-			  m21=C21, m22=C22, m23=C23, m24=C24,
-			  m31=C31, m32=C32, m33=C33, m34=C34,
-			  m41=C41, m42=C42, m43=C43, m44=C44 };
+    #matrix4{ m11=C11, m12=C12, m13=C13, m14=C14,
+              m21=C21, m22=C22, m23=C23, m24=C24,
+              m31=C31, m32=C32, m33=C33, m34=C34,
+              m41=C41, m42=C42, m43=C43, m44=C44 };
 
 mult( _Ma=#matrix4{ m11=A11, m12=A12, m13=A13, m14=A14,
-					m21=A21, m22=A22, m23=A23, m24=A24,
-					m31=A31, m32=A32, m33=A33, m34=A34,
-					m41=A41, m42=A42, m43=A43, m44=A44 },
-	  _Mb=#compact_matrix4{ m11=B11, m12=B12, m13=B13, tx=Tx,
-							m21=B21, m22=B22, m23=B23, ty=Ty,
-							m31=B31, m32=B32, m33=B33, tz=Tz } ) ->
+                    m21=A21, m22=A22, m23=A23, m24=A24,
+                    m31=A31, m32=A32, m33=A33, m34=A34,
+                    m41=A41, m42=A42, m43=A43, m44=A44 },
+      _Mb=#compact_matrix4{ m11=B11, m12=B12, m13=B13, tx=Tx,
+                            m21=B21, m22=B22, m23=B23, ty=Ty,
+                            m31=B31, m32=B32, m33=B33, tz=Tz } ) ->
 
-	C11 = A11*B11 + A12*B21 + A13*B31,
-	C12 = A11*B12 + A12*B22 + A13*B32,
-	C13 = A11*B13 + A12*B23 + A13*B33,
-	C14 = A11*Tx  + A12*Ty  + A13*Tz + A14,
+    C11 = A11*B11 + A12*B21 + A13*B31,
+    C12 = A11*B12 + A12*B22 + A13*B32,
+    C13 = A11*B13 + A12*B23 + A13*B33,
+    C14 = A11*Tx  + A12*Ty  + A13*Tz + A14,
 
-	C21 = A21*B11 + A22*B21 + A23*B31,
-	C22 = A21*B12 + A22*B22 + A23*B32,
-	C23 = A21*B13 + A22*B23 + A23*B33,
-	C24 = A21*Tx  + A22*Ty  + A23*Tz + A24,
+    C21 = A21*B11 + A22*B21 + A23*B31,
+    C22 = A21*B12 + A22*B22 + A23*B32,
+    C23 = A21*B13 + A22*B23 + A23*B33,
+    C24 = A21*Tx  + A22*Ty  + A23*Tz + A24,
 
-	C31 = A31*B11 + A32*B21 + A33*B31,
-	C32 = A31*B12 + A32*B22 + A33*B32,
-	C33 = A31*B13 + A32*B23 + A33*B33,
-	C34 = A31*Tx  + A32*Ty  + A33*Tz + A34,
+    C31 = A31*B11 + A32*B21 + A33*B31,
+    C32 = A31*B12 + A32*B22 + A33*B32,
+    C33 = A31*B13 + A32*B23 + A33*B33,
+    C34 = A31*Tx  + A32*Ty  + A33*Tz + A34,
 
-	C41 = A41*B11 + A42*B21 + A43*B31,
-	C42 = A41*B12 + A42*B22 + A43*B32,
-	C43 = A41*B13 + A42*B23 + A43*B33,
-	C44 = A41*Tx  + A42*Ty  + A43*Tz + A44,
+    C41 = A41*B11 + A42*B21 + A43*B31,
+    C42 = A41*B12 + A42*B22 + A43*B32,
+    C43 = A41*B13 + A42*B23 + A43*B33,
+    C44 = A41*Tx  + A42*Ty  + A43*Tz + A44,
 
-	#matrix4{ m11=C11, m12=C12, m13=C13, m14=C14,
-			  m21=C21, m22=C22, m23=C23, m24=C24,
-			  m31=C31, m32=C32, m33=C33, m34=C34,
-			  m41=C41, m42=C42, m43=C43, m44=C44 };
+    #matrix4{ m11=C11, m12=C12, m13=C13, m14=C14,
+              m21=C21, m22=C22, m23=C23, m24=C24,
+              m31=C31, m32=C32, m33=C33, m34=C34,
+              m41=C41, m42=C42, m43=C43, m44=C44 };
 
 mult( _Ma=#compact_matrix4{ m11=A11, m12=A12, m13=A13, tx=Ax,
-							m21=A21, m22=A22, m23=A23, ty=Ay,
-							m31=A31, m32=A32, m33=A33, tz=Az },
-	  _Mb=#compact_matrix4{ m11=B11, m12=B12, m13=B13, tx=Bx,
-							m21=B21, m22=B22, m23=B23, ty=By,
-							m31=B31, m32=B32, m33=B33, tz=Bz } ) ->
+                            m21=A21, m22=A22, m23=A23, ty=Ay,
+                            m31=A31, m32=A32, m33=A33, tz=Az },
+      _Mb=#compact_matrix4{ m11=B11, m12=B12, m13=B13, tx=Bx,
+                            m21=B21, m22=B22, m23=B23, ty=By,
+                            m31=B31, m32=B32, m33=B33, tz=Bz } ) ->
 
-	C11 = A11*B11 + A12*B21 + A13*B31,
-	C12 = A11*B12 + A12*B22 + A13*B32,
-	C13 = A11*B13 + A12*B23 + A13*B33,
-	Cx  = A11*Bx  + A12*By  + A13*Bz + Ax,
+    C11 = A11*B11 + A12*B21 + A13*B31,
+    C12 = A11*B12 + A12*B22 + A13*B32,
+    C13 = A11*B13 + A12*B23 + A13*B33,
+    Cx  = A11*Bx  + A12*By  + A13*Bz + Ax,
 
-	C21 = A21*B11 + A22*B21 + A23*B31,
-	C22 = A21*B12 + A22*B22 + A23*B32,
-	C23 = A21*B13 + A22*B23 + A23*B33,
-	Cy  = A21*Bx  + A22*By  + A23*Bz + Ay,
+    C21 = A21*B11 + A22*B21 + A23*B31,
+    C22 = A21*B12 + A22*B22 + A23*B32,
+    C23 = A21*B13 + A22*B23 + A23*B33,
+    Cy  = A21*Bx  + A22*By  + A23*Bz + Ay,
 
-	C31 = A31*B11 + A32*B21 + A33*B31,
-	C32 = A31*B12 + A32*B22 + A33*B32,
-	C33 = A31*B13 + A32*B23 + A33*B33,
-	Cz  = A31*Bx  + A32*By  + A33*Bz + Az,
+    C31 = A31*B11 + A32*B21 + A33*B31,
+    C32 = A31*B12 + A32*B22 + A33*B32,
+    C33 = A31*B13 + A32*B23 + A33*B33,
+    Cz  = A31*Bx  + A32*By  + A33*Bz + Az,
 
-	% C4{1,2,3} are 0.0, C44 is 1.0.
+    % C4{1,2,3} are 0.0, C44 is 1.0.
 
-	#compact_matrix4{ m11=C11, m12=C12, m13=C13, tx=Cx,
-					  m21=C21, m22=C22, m23=C23, ty=Cy,
-					  m31=C31, m32=C32, m33=C33, tz=Cz }.
+    #compact_matrix4{ m11=C11, m12=C12, m13=C13, tx=Cx,
+                      m21=C21, m22=C22, m23=C23, ty=Cy,
+                      m31=C31, m32=C32, m33=C33, tz=Cz }.
 
 
 
@@ -1198,10 +1198,10 @@ For example `mult([Ma, Mb, Mc]) = mult(mult(Ma,Mb),Mc) = Ma.Mb.Mc`.
 """.
 -spec mult( [ matrix4() ] ) -> matrix4().
 mult( [ Ma, Mb | T ] ) ->
-	mult( [ mult( Ma, Mb ) | T ] );
+    mult( [ mult( Ma, Mb ) | T ] );
 
 mult( [ M ] ) ->
-	M.
+    M.
 
 
 
@@ -1218,135 +1218,135 @@ coordinate resulting from the application of that extended point.
 Not a clause of mult/2 for an increased clarity.
 """.
 -spec apply( matrix4(), vector3() ) -> vector3();
-		   ( matrix4(), vector4() ) -> vector4();
-		   ( matrix4(), point3() ) -> point3();
-		   ( matrix4(), point4() ) -> point4().
+           ( matrix4(), vector4() ) -> vector4();
+           ( matrix4(), point3() ) -> point3();
+           ( matrix4(), point4() ) -> point4().
 apply( _M=identity_4, VorP ) ->
-	VorP;
+    VorP;
 
 % A nice feature is that the actual, lowest-level types of vectors and points
 % are different (list vs tuple) and thus can be discriminated.
 %
 % First with a vector3 (implicitly Vw is 0.0):
 apply( _M=#matrix4{ m11=M11,  m12=M12,  m13=M13,  m14=_M14,
-					m21=M21,  m22=M22,  m23=M23,  m24=_M24,
-					m31=M31,  m32=M32,  m33=M33,  m34=_M34,
-					m41=_M41, m42=_M42, m43=_M43, m44=_M44 },
-	   _V=[ Vx, Vy, Vz ] ) ->
+                    m21=M21,  m22=M22,  m23=M23,  m24=_M24,
+                    m31=M31,  m32=M32,  m33=M33,  m34=_M34,
+                    m41=_M41, m42=_M42, m43=_M43, m44=_M44 },
+       _V=[ Vx, Vy, Vz ] ) ->
 
-	%Vw = 0.0,
-	ResX = M11*Vx + M12*Vy + M13*Vz,
-	ResY = M21*Vx + M22*Vy + M23*Vz,
-	ResZ = M31*Vx + M32*Vy + M33*Vz,
-	%ResW = M41*Vx + M42*Vy + M43*Vz,
+    %Vw = 0.0,
+    ResX = M11*Vx + M12*Vy + M13*Vz,
+    ResY = M21*Vx + M22*Vy + M23*Vz,
+    ResZ = M31*Vx + M32*Vy + M33*Vz,
+    %ResW = M41*Vx + M42*Vy + M43*Vz,
 
-	[ ResX, ResY, ResZ ];
+    [ ResX, ResY, ResZ ];
 
 
 apply( _M=#compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=_Tx,
-							m21=M21, m22=M22, m23=M23, ty=_Ty,
-							m31=M31, m32=M32, m33=M33, tz=_Tz },
-	   _V=[ Vx, Vy, Vz ] ) ->
-	%Vw = 0.0,
-	ResX = M11*Vx + M12*Vy + M13*Vz,
-	ResY = M21*Vx + M22*Vy + M23*Vz,
-	ResZ = M31*Vx + M32*Vy + M33*Vz,
-	% Here ResW = Vw = 0.0,
+                            m21=M21, m22=M22, m23=M23, ty=_Ty,
+                            m31=M31, m32=M32, m33=M33, tz=_Tz },
+       _V=[ Vx, Vy, Vz ] ) ->
+    %Vw = 0.0,
+    ResX = M11*Vx + M12*Vy + M13*Vz,
+    ResY = M21*Vx + M22*Vy + M23*Vz,
+    ResZ = M31*Vx + M32*Vy + M33*Vz,
+    % Here ResW = Vw = 0.0,
 
-	[ ResX, ResY, ResZ ];
+    [ ResX, ResY, ResZ ];
 
 
 % Then with a point3 (implicitly Pw is 1.0):
 apply( _M=#matrix4{ m11=M11, m12=M12, m13=M13, m14=M14,
-					m21=M21, m22=M22, m23=M23, m24=M24,
-					m31=M31, m32=M32, m33=M33, m34=M34,
-					m41=M41, m42=M42, m43=M43, m44=M44 },
-	   _P={ Px, Py, Pz } ) ->
+                    m21=M21, m22=M22, m23=M23, m24=M24,
+                    m31=M31, m32=M32, m33=M33, m34=M34,
+                    m41=M41, m42=M42, m43=M43, m44=M44 },
+       _P={ Px, Py, Pz } ) ->
 
-	%Pw = 1.0,
-	ResX = M11*Px + M12*Py + M13*Pz + M14,
-	ResY = M21*Px + M22*Py + M23*Pz + M24,
-	ResZ = M31*Px + M32*Py + M33*Pz + M34,
-	ResW = M41*Px + M42*Py + M43*Pz + M44,
+    %Pw = 1.0,
+    ResX = M11*Px + M12*Py + M13*Pz + M14,
+    ResY = M21*Px + M22*Py + M23*Pz + M24,
+    ResZ = M31*Px + M32*Py + M33*Pz + M34,
+    ResW = M41*Px + M42*Py + M43*Pz + M44,
 
-	% A point shall be normalised:
-	case math_utils:is_null( ResW ) of
+    % A point shall be normalised:
+    case math_utils:is_null( ResW ) of
 
-		true ->
-			throw( null_w_coordinate );
+        true ->
+            throw( null_w_coordinate );
 
-		false ->
-			{ ResX/ResW, ResY/ResW, ResZ/ResW }
+        false ->
+            { ResX/ResW, ResY/ResW, ResZ/ResW }
 
-	end;
+    end;
 
 
 apply( _M=#compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=Tx,
-							m21=M21, m22=M22, m23=M23, ty=Ty,
-							m31=M31, m32=M32, m33=M33, tz=Tz },
-	   _P={ Px, Py, Pz } ) ->
-	%Pw = 1.0,
-	ResX = M11*Px + M12*Py + M13*Pz + Tx,
-	ResY = M21*Px + M22*Py + M23*Pz + Ty,
-	ResZ = M31*Px + M32*Py + M33*Pz + Tz,
-	% Here ResW = Pw = 1.0,
+                            m21=M21, m22=M22, m23=M23, ty=Ty,
+                            m31=M31, m32=M32, m33=M33, tz=Tz },
+       _P={ Px, Py, Pz } ) ->
+    %Pw = 1.0,
+    ResX = M11*Px + M12*Py + M13*Pz + Tx,
+    ResY = M21*Px + M22*Py + M23*Pz + Ty,
+    ResZ = M31*Px + M32*Py + M33*Pz + Tz,
+    % Here ResW = Pw = 1.0,
 
-	% Already normalised:
-	{ ResX, ResY, ResZ };
+    % Already normalised:
+    { ResX, ResY, ResZ };
 
 
 % Then with a vector4:
 apply( _M=#matrix4{ m11=M11, m12=M12, m13=M13, m14=M14,
-					m21=M21, m22=M22, m23=M23, m24=M24,
-					m31=M31, m32=M32, m33=M33, m34=M34,
-					m41=M41, m42=M42, m43=M43, m44=M44 },
-	   _V=[ Vx, Vy, Vz, Vw ] ) ->
+                    m21=M21, m22=M22, m23=M23, m24=M24,
+                    m31=M31, m32=M32, m33=M33, m34=M34,
+                    m41=M41, m42=M42, m43=M43, m44=M44 },
+       _V=[ Vx, Vy, Vz, Vw ] ) ->
 
-	ResX = M11*Vx + M12*Vy + M13*Vz + M14*Vw,
-	ResY = M21*Vx + M22*Vy + M23*Vz + M24*Vw,
-	ResZ = M31*Vx + M32*Vy + M33*Vz + M34*Vw,
-	ResW = M41*Vx + M42*Vy + M43*Vz + M44*Vw,
+    ResX = M11*Vx + M12*Vy + M13*Vz + M14*Vw,
+    ResY = M21*Vx + M22*Vy + M23*Vz + M24*Vw,
+    ResZ = M31*Vx + M32*Vy + M33*Vz + M34*Vw,
+    ResW = M41*Vx + M42*Vy + M43*Vz + M44*Vw,
 
-	[ ResX, ResY, ResZ, ResW ];
+    [ ResX, ResY, ResZ, ResW ];
 
 
 apply( _M=#compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=Tx,
-							m21=M21, m22=M22, m23=M23, ty=Ty,
-							m31=M31, m32=M32, m33=M33, tz=Tz },
-	   _V=[ Vx, Vy, Vz, Vw ] ) ->
-	ResX = M11*Vx + M12*Vy + M13*Vz + Tx*Vw,
-	ResY = M21*Vx + M22*Vy + M23*Vz + Ty*Vw,
-	ResZ = M31*Vx + M32*Vy + M33*Vz + Tz*Vw,
-	ResW = Vw,
+                            m21=M21, m22=M22, m23=M23, ty=Ty,
+                            m31=M31, m32=M32, m33=M33, tz=Tz },
+       _V=[ Vx, Vy, Vz, Vw ] ) ->
+    ResX = M11*Vx + M12*Vy + M13*Vz + Tx*Vw,
+    ResY = M21*Vx + M22*Vy + M23*Vz + Ty*Vw,
+    ResZ = M31*Vx + M32*Vy + M33*Vz + Tz*Vw,
+    ResW = Vw,
 
-	[ ResX, ResY, ResZ, ResW ];
+    [ ResX, ResY, ResZ, ResW ];
 
 
 % Finally with a point4 (mostly the same as for vector4):
 apply( _M=#matrix4{ m11=M11, m12=M12, m13=M13, m14=M14,
-					m21=M21, m22=M22, m23=M23, m24=M24,
-					m31=M31, m32=M32, m33=M33, m34=M34,
-					m41=M41, m42=M42, m43=M43, m44=M44 },
-	   _P={ Px, Py, Pz, Pw } ) ->
+                    m21=M21, m22=M22, m23=M23, m24=M24,
+                    m31=M31, m32=M32, m33=M33, m34=M34,
+                    m41=M41, m42=M42, m43=M43, m44=M44 },
+       _P={ Px, Py, Pz, Pw } ) ->
 
-	ResX = M11*Px + M12*Py + M13*Pz + M14*Pw,
-	ResY = M21*Px + M22*Py + M23*Pz + M24*Pw,
-	ResZ = M31*Px + M32*Py + M33*Pz + M34*Pw,
-	ResW = M41*Px + M42*Py + M43*Pz + M44*Pw,
+    ResX = M11*Px + M12*Py + M13*Pz + M14*Pw,
+    ResY = M21*Px + M22*Py + M23*Pz + M24*Pw,
+    ResZ = M31*Px + M32*Py + M33*Pz + M34*Pw,
+    ResW = M41*Px + M42*Py + M43*Pz + M44*Pw,
 
-	{ ResX, ResY, ResZ, ResW };
+    { ResX, ResY, ResZ, ResW };
 
 
 apply( _M=#compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=Tx,
-							m21=M21, m22=M22, m23=M23, ty=Ty,
-							m31=M31, m32=M32, m33=M33, tz=Tz },
-	   _P={ Px, Py, Pz, Pw } ) ->
-	ResX = M11*Px + M12*Py + M13*Pz + Tx*Pw,
-	ResY = M21*Px + M22*Py + M23*Pz + Ty*Pw,
-	ResZ = M31*Px + M32*Py + M33*Pz + Tz*Pw,
-	ResW = Pw,
+                            m21=M21, m22=M22, m23=M23, ty=Ty,
+                            m31=M31, m32=M32, m33=M33, tz=Tz },
+       _P={ Px, Py, Pz, Pw } ) ->
+    ResX = M11*Px + M12*Py + M13*Pz + Tx*Pw,
+    ResY = M21*Px + M22*Py + M23*Pz + Ty*Pw,
+    ResZ = M31*Px + M32*Py + M33*Pz + Tz*Pw,
+    ResW = Pw,
 
-	{ ResX, ResY, ResZ, ResW }.
+    { ResX, ResY, ResZ, ResW }.
 
 
 
@@ -1363,24 +1363,24 @@ yield the intended result.
 """.
 -spec apply_homogeneous_left( point3(), homogeneous_matrix4() ) -> point3().
 apply_homogeneous_left( _P={ Px, Py, Pz },
-						_HM=#compact_matrix4{
-								m11=M11, m12=M12, m13=M13, tx=Tx,
-								m21=M21, m22=M22, m23=M23, ty=Ty,
-								m31=M31, m32=M32, m33=M33, tz=Tz } ) ->
+                        _HM=#compact_matrix4{
+                                m11=M11, m12=M12, m13=M13, tx=Tx,
+                                m21=M21, m22=M22, m23=M23, ty=Ty,
+                                m31=M31, m32=M32, m33=M33, tz=Tz } ) ->
 
-	% The fourth (Pw) coordinate of P is considered to be 1.0 (point, not
-	% vector), which yields to a renormalisation:
+    % The fourth (Pw) coordinate of P is considered to be 1.0 (point, not
+    % vector), which yields to a renormalisation:
 
-	Pw = Px*Tx + Py*Ty + Pz*Tz + 1,
+    Pw = Px*Tx + Py*Ty + Pz*Tz + 1,
 
-	math_utils:is_null( Pw ) andalso throw( cannot_normalise_point ),
+    math_utils:is_null( Pw ) andalso throw( cannot_normalise_point ),
 
-	{ ( Px*M11 + Py*M21 + Pz*M31 + Tx ) / Pw,
-	  ( Px*M12 + Py*M22 + Pz*M32 + Ty ) / Pw,
-	  ( Px*M13 + Py*M23 + Pz*M33 + Tz ) / Pw };
+    { ( Px*M11 + Py*M21 + Pz*M31 + Tx ) / Pw,
+      ( Px*M12 + Py*M22 + Pz*M32 + Ty ) / Pw,
+      ( Px*M13 + Py*M23 + Pz*M33 + Tz ) / Pw };
 
 apply_homogeneous_left( P, _HM=identity_4 ) ->
-	P.
+    P.
 
 
 
@@ -1393,82 +1393,82 @@ This is thus a specialised, stripped-down version of apply/2.
 """.
 -spec apply_homogeneous_right( homogeneous_matrix4(), point3() ) -> vector3().
 apply_homogeneous_right( _HM=#compact_matrix4{
-								m11=M11, m12=M12, m13=M13, tx=Tx,
-								m21=M21, m22=M22, m23=M23, ty=Ty,
-								m31=M31, m32=M32, m33=M33, tz=Tz },
-						 _P={ Px, Py, Pz } ) ->
+                                m11=M11, m12=M12, m13=M13, tx=Tx,
+                                m21=M21, m22=M22, m23=M23, ty=Ty,
+                                m31=M31, m32=M32, m33=M33, tz=Tz },
+                         _P={ Px, Py, Pz } ) ->
 
-	% The fourth (Pw) coordinate of P is considered to be 1.0 (point, not
-	% vector):
+    % The fourth (Pw) coordinate of P is considered to be 1.0 (point, not
+    % vector):
 
-	{ M11*Px + M12*Py + M13*Pz + Tx,
-	  M21*Px + M22*Py + M23*Pz + Ty,
-	  M31*Px + M32*Py + M33*Pz + Tz };
+    { M11*Px + M12*Py + M13*Pz + Tx,
+      M21*Px + M22*Py + M23*Pz + Ty,
+      M31*Px + M32*Py + M33*Pz + Tz };
 
 apply_homogeneous_right( _HM=identity_4, P ) ->
-	P.
+    P.
 
 
 
 -doc "Tells whether the two specified (4x4) matrices are equal.".
 -spec are_equal( matrix4(), matrix4() ) -> boolean().
 are_equal( _Ma=#matrix4{ m11=A11, m12=A12, m13=A13, m14=A14,
-						 m21=A21, m22=A22, m23=A23, m24=A24,
-						 m31=A31, m32=A32, m33=A33, m34=A34,
-						 m41=A41, m42=A42, m43=A43, m44=A44 },
-		   _Mb=#matrix4{ m11=B11, m12=B12, m13=B13, m14=B14,
-						 m21=B21, m22=B22, m23=B23, m24=B24,
-						 m31=B31, m32=B32, m33=B33, m34=B34,
-						 m41=B41, m42=B42, m43=B43, m44=B44 } ) ->
-	are_close( A11, B11 ) andalso are_close( A12, B12 )
-		andalso are_close( A13, B13 ) andalso are_close( A14, B14 )
-		andalso are_close( A21, B21 ) andalso are_close( A22, B22 )
-		andalso are_close( A23, B23 ) andalso are_close( A24, B24 )
-		andalso are_close( A31, B31 ) andalso are_close( A32, B32 )
-		andalso are_close( A33, B33 ) andalso are_close( A34, B34 )
-		andalso are_close( A41, B41 ) andalso are_close( A42, B42 )
-		andalso are_close( A43, B43 ) andalso are_close( A44, B44 );
+                         m21=A21, m22=A22, m23=A23, m24=A24,
+                         m31=A31, m32=A32, m33=A33, m34=A34,
+                         m41=A41, m42=A42, m43=A43, m44=A44 },
+           _Mb=#matrix4{ m11=B11, m12=B12, m13=B13, m14=B14,
+                         m21=B21, m22=B22, m23=B23, m24=B24,
+                         m31=B31, m32=B32, m33=B33, m34=B34,
+                         m41=B41, m42=B42, m43=B43, m44=B44 } ) ->
+    are_close( A11, B11 ) andalso are_close( A12, B12 )
+        andalso are_close( A13, B13 ) andalso are_close( A14, B14 )
+        andalso are_close( A21, B21 ) andalso are_close( A22, B22 )
+        andalso are_close( A23, B23 ) andalso are_close( A24, B24 )
+        andalso are_close( A31, B31 ) andalso are_close( A32, B32 )
+        andalso are_close( A33, B33 ) andalso are_close( A34, B34 )
+        andalso are_close( A41, B41 ) andalso are_close( A42, B42 )
+        andalso are_close( A43, B43 ) andalso are_close( A44, B44 );
 
 are_equal( _Ma=#compact_matrix4{ m11=A11, m12=A12, m13=A13, tx=Ax,
-								 m21=A21, m22=A22, m23=A23, ty=Ay,
-								 m31=A31, m32=A32, m33=A33, tz=Az },
-		   _Mb=#compact_matrix4{ m11=B11, m12=B12, m13=B13, tx=Bx,
-								 m21=B21, m22=B22, m23=B23, ty=By,
-								 m31=B31, m32=B32, m33=B33, tz=Bz } ) ->
-	are_close( A11, B11 ) andalso are_close( A12, B12 )
-		andalso are_close( A13, B13 ) andalso are_close( Ax,  Bx )
-		andalso are_close( A21, B21 ) andalso are_close( A22, B22 )
-		andalso are_close( A23, B23 ) andalso are_close( Ay,  By )
-		andalso are_close( A31, B31 ) andalso are_close( A32, B32 )
-		andalso are_close( A33, B33 ) andalso are_close( Az,  Bz );
+                                 m21=A21, m22=A22, m23=A23, ty=Ay,
+                                 m31=A31, m32=A32, m33=A33, tz=Az },
+           _Mb=#compact_matrix4{ m11=B11, m12=B12, m13=B13, tx=Bx,
+                                 m21=B21, m22=B22, m23=B23, ty=By,
+                                 m31=B31, m32=B32, m33=B33, tz=Bz } ) ->
+    are_close( A11, B11 ) andalso are_close( A12, B12 )
+        andalso are_close( A13, B13 ) andalso are_close( Ax,  Bx )
+        andalso are_close( A21, B21 ) andalso are_close( A22, B22 )
+        andalso are_close( A23, B23 ) andalso are_close( Ay,  By )
+        andalso are_close( A31, B31 ) andalso are_close( A32, B32 )
+        andalso are_close( A33, B33 ) andalso are_close( Az,  Bz );
 
 are_equal( _Ma=#matrix4{ m11=A11, m12=A12, m13=A13, m14=A14,
-						 m21=A21, m22=A22, m23=A23, m24=A24,
-						 m31=A31, m32=A32, m33=A33, m34=A34,
-						 m41=A41, m42=A42, m43=A43, m44=A44 },
-		   _Mb=#compact_matrix4{ m11=B11, m12=B12, m13=B13, tx=Bx,
-								 m21=B21, m22=B22, m23=B23, ty=By,
-								 m31=B31, m32=B32, m33=B33, tz=Bz } ) ->
-	are_close( A11, B11 ) andalso are_close( A12, B12 )
-		andalso are_close( A13, B13 ) andalso are_close( A14, Bx  )
-		andalso are_close( A21, B21 ) andalso are_close( A22, B22 )
-		andalso are_close( A23, B23 ) andalso are_close( A24, By  )
-		andalso are_close( A31, B31 ) andalso are_close( A32, B32 )
-		andalso are_close( A33, B33 ) andalso are_close( A34, Bz  )
-		andalso is_null( A41 ) andalso is_null( A42 )
-		andalso is_null( A43 ) andalso are_close( A44, 1.0 );
+                         m21=A21, m22=A22, m23=A23, m24=A24,
+                         m31=A31, m32=A32, m33=A33, m34=A34,
+                         m41=A41, m42=A42, m43=A43, m44=A44 },
+           _Mb=#compact_matrix4{ m11=B11, m12=B12, m13=B13, tx=Bx,
+                                 m21=B21, m22=B22, m23=B23, ty=By,
+                                 m31=B31, m32=B32, m33=B33, tz=Bz } ) ->
+    are_close( A11, B11 ) andalso are_close( A12, B12 )
+        andalso are_close( A13, B13 ) andalso are_close( A14, Bx  )
+        andalso are_close( A21, B21 ) andalso are_close( A22, B22 )
+        andalso are_close( A23, B23 ) andalso are_close( A24, By  )
+        andalso are_close( A31, B31 ) andalso are_close( A32, B32 )
+        andalso are_close( A33, B33 ) andalso are_close( A34, Bz  )
+        andalso is_null( A41 ) andalso is_null( A42 )
+        andalso is_null( A43 ) andalso are_close( A44, 1.0 );
 
 are_equal( Ma=#compact_matrix4{}, Mb=#matrix4{} ) ->
-	are_equal( Mb, Ma );
+    are_equal( Mb, Ma );
 
 are_equal( _Ma=identity_4, _Mb=identity_4 ) ->
-	true;
+    true;
 
 are_equal( Ma, Mb=identity_4 ) ->
-	are_equal( Ma, to_canonical( Mb ) );
+    are_equal( Ma, to_canonical( Mb ) );
 
 are_equal( Ma=identity_4, Mb ) ->
-	are_equal( Mb, Ma ).
+    are_equal( Mb, Ma ).
 
 
 
@@ -1484,18 +1484,18 @@ A lot more efficient than creating a dedicated translation matrix TM and
 computing from scratch the result.
 """.
 -spec translate_homogeneous_left( vector3(), HM :: homogeneous_matrix4() ) ->
-											homogeneous_matrix4().
+                                            homogeneous_matrix4().
 translate_homogeneous_left( _VT=[ Tx, Ty, Tz ],
-							HM=#compact_matrix4{ tx=M14,
-												 ty=M24,
-												 tz=M34 } ) ->
-	% NewHM = TM.HM:
-	HM#compact_matrix4{ tx=M14+Tx,
-						ty=M24+Ty,
-						tz=M34+Tz };
+                            HM=#compact_matrix4{ tx=M14,
+                                                 ty=M24,
+                                                 tz=M34 } ) ->
+    % NewHM = TM.HM:
+    HM#compact_matrix4{ tx=M14+Tx,
+                        ty=M24+Ty,
+                        tz=M34+Tz };
 
 translate_homogeneous_left( VT, _HM=identity_4 ) ->
-	translation( VT ).
+    translation( VT ).
 
 
 
@@ -1505,39 +1505,39 @@ right by a translation matrix (TM) of a vector VT: returns therefore `HM' =
 HM.TM`.
 """.
 -spec translate_homogeneous_right( HM :: homogeneous_matrix4(), vector3() ) ->
-											homogeneous_matrix4().
+                                            homogeneous_matrix4().
 translate_homogeneous_right( _HM=identity_4, VT ) ->
-	translation( VT );
+    translation( VT );
 
 translate_homogeneous_right( HM=#compact_matrix4{
-								m11=M11, m12=M12, m13=M13, tx=Tx,
-								m21=M21, m22=M22, m23=M23, ty=Ty,
-								m31=M31, m32=M32, m33=M33, tz=Tz },
-							 VT=[ Vx, Vy, Vz ] ) ->
-	% Could be directly:
-	%TM = translation( VT ),
-	%mult( HM, TM ).
+                                m11=M11, m12=M12, m13=M13, tx=Tx,
+                                m21=M21, m22=M22, m23=M23, ty=Ty,
+                                m31=M31, m32=M32, m33=M33, tz=Tz },
+                             VT=[ Vx, Vy, Vz ] ) ->
+    % Could be directly:
+    %TM = translation( VT ),
+    %mult( HM, TM ).
 
-	% A bit more optimised:
+    % A bit more optimised:
 
-	NewTx = Tx + M11*Vx + M12*Vy + M13*Vz,
-	NewTy = Ty + M21*Vx + M22*Vy + M23*Vz,
-	NewTz = Tz + M31*Vx + M32*Vy + M33*Vz,
+    NewTx = Tx + M11*Vx + M12*Vy + M13*Vz,
+    NewTy = Ty + M21*Vx + M22*Vy + M23*Vz,
+    NewTz = Tz + M31*Vx + M32*Vy + M33*Vz,
 
-	Res = HM#compact_matrix4{ tx=NewTx,
-							  ty=NewTy,
-							  tz=NewTz },
+    Res = HM#compact_matrix4{ tx=NewTx,
+                              ty=NewTy,
+                              tz=NewTz },
 
-	% No need to check more, it is correct:
-	cond_utils:if_defined( myriad_check_paranoid_linear,
-						   begin
-								TM = translation( VT ),
-								CorrectRes = mult( HM, TM ),
-								true = are_equal( Res, CorrectRes )
-						   end,
-						   basic_utils:ignore_unused( VT ) ),
+    % No need to check more, it is correct:
+    cond_utils:if_defined( myriad_check_paranoid_linear,
+                           begin
+                                TM = translation( VT ),
+                                CorrectRes = mult( HM, TM ),
+                                true = are_equal( Res, CorrectRes )
+                           end,
+                           basic_utils:ignore_unused( VT ) ),
 
-	Res.
+    Res.
 
 
 
@@ -1548,10 +1548,10 @@ left by a matrix (RotM) corresponding to the rotation around the specified unit
 axis of the specified angle: returns therefore HM' = RotM.HM.
 """.
 -spec rotate_homogeneous_left( unit_vector3(), radians(),
-		HM :: homogeneous_matrix4() ) -> homogeneous_matrix4().
+        HM :: homogeneous_matrix4() ) -> homogeneous_matrix4().
 rotate_homogeneous_left( UnitAxis, RadAngle, HM ) ->
-	RotM = rotation( UnitAxis, RadAngle ),
-	mult( RotM, HM ).
+    RotM = rotation( UnitAxis, RadAngle ),
+    mult( RotM, HM ).
 
 
 
@@ -1561,10 +1561,10 @@ right by a matrix (RotM) corresponding to the rotation around the specified unit
 axis of the specified angle: returns therefore HM' = HM.RotM.
 """.
 -spec rotate_homogeneous_right( HM :: homogeneous_matrix4(),
-		unit_vector3(), radians() ) -> homogeneous_matrix4().
+        unit_vector3(), radians() ) -> homogeneous_matrix4().
 rotate_homogeneous_right( HM, UnitAxis, RadAngle ) ->
-	RotM = rotation( UnitAxis, RadAngle ),
-	mult( HM, RotM ).
+    RotM = rotation( UnitAxis, RadAngle ),
+    mult( HM, RotM ).
 
 
 
@@ -1574,24 +1574,24 @@ left by a matrix (SclM) corresponding to a scaling of the specified factors:
 returns therefore HM' = SclM.HM.
 """.
 -spec scale_homogeneous_left( scale_factors(), homogeneous_matrix4() ) ->
-										homogeneous_matrix4().
+                                        homogeneous_matrix4().
 scale_homogeneous_left( _ScaleFactors={ Sx, Sy, Sz },
-		HM=#compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=Tx,
-							 m21=M21, m22=M22, m23=M23, ty=Ty,
-							 m31=M31, m32=M32, m33=M33, tz=Tz } ) ->
+        HM=#compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=Tx,
+                             m21=M21, m22=M22, m23=M23, ty=Ty,
+                             m31=M31, m32=M32, m33=M33, tz=Tz } ) ->
 
-	% Do not reuse tx, ty and tz as they are, they have to be scaled as well
-	% (refer to the actual 4x4 matrix multiplication to check):
-	%
-	HM#compact_matrix4{ m11=Sx*M11, m12=Sx*M12, m13=Sx*M13, tx=Sx*Tx,
-						m21=Sy*M21, m22=Sy*M22, m23=Sy*M23, ty=Sy*Ty,
-						m31=Sz*M31, m32=Sz*M32, m33=Sz*M33, tz=Sz*Tz };
+    % Do not reuse tx, ty and tz as they are, they have to be scaled as well
+    % (refer to the actual 4x4 matrix multiplication to check):
+    %
+    HM#compact_matrix4{ m11=Sx*M11, m12=Sx*M12, m13=Sx*M13, tx=Sx*Tx,
+                        m21=Sy*M21, m22=Sy*M22, m23=Sy*M23, ty=Sy*Ty,
+                        m31=Sz*M31, m32=Sz*M32, m33=Sz*M33, tz=Sz*Tz };
 
 scale_homogeneous_left( _ScaleFactors={ Sx, Sy, Sz }, _HM=identity_4 ) ->
-	Zero = 0.0,
-	#compact_matrix4{ m11=Sx,   m12=Zero, m13=Zero, tx=Zero,
-					  m21=Zero, m22=Sy,   m23=Zero, ty=Zero,
-					  m31=Zero, m32=Zero, m33=Sz,   tz=Zero }.
+    Zero = 0.0,
+    #compact_matrix4{ m11=Sx,   m12=Zero, m13=Zero, tx=Zero,
+                      m21=Zero, m22=Sy,   m23=Zero, ty=Zero,
+                      m31=Zero, m32=Zero, m33=Sz,   tz=Zero }.
 
 
 
@@ -1601,23 +1601,23 @@ right by a matrix (SclM) corresponding to a scaling of the specified factors:
 returns therefore HM' = HM.SclM.
 """.
 -spec scale_homogeneous_right( homogeneous_matrix4(), scale_factors() ) ->
-										homogeneous_matrix4().
+                                        homogeneous_matrix4().
 scale_homogeneous_right(
-		HM=#compact_matrix4{ m11=M11, m12=M12, m13=M13,
-							 m21=M21, m22=M22, m23=M23,
-							 m31=M31, m32=M32, m33=M33 },
-		_ScaleFactors={ Sx, Sy, Sz } ) ->
+        HM=#compact_matrix4{ m11=M11, m12=M12, m13=M13,
+                             m21=M21, m22=M22, m23=M23,
+                             m31=M31, m32=M32, m33=M33 },
+        _ScaleFactors={ Sx, Sy, Sz } ) ->
 
-	% Reuse tx, ty and tz as they are (as multiplied by a 1.0 factor):
-	HM#compact_matrix4{ m11=Sx*M11, m12=Sy*M12, m13=Sz*M13,
-						m21=Sx*M21, m22=Sy*M22, m23=Sz*M23,
-						m31=Sx*M31, m32=Sy*M32, m33=Sz*M33 };
+    % Reuse tx, ty and tz as they are (as multiplied by a 1.0 factor):
+    HM#compact_matrix4{ m11=Sx*M11, m12=Sy*M12, m13=Sz*M13,
+                        m21=Sx*M21, m22=Sy*M22, m23=Sz*M23,
+                        m31=Sx*M31, m32=Sy*M32, m33=Sz*M33 };
 
 scale_homogeneous_right( _ScaleFactors={ Sx, Sy, Sz }, _HM=identity_4 ) ->
-	Zero = 0.0,
-	#compact_matrix4{ m11=Sx,   m12=Zero, m13=Zero, tx=Zero,
-					  m21=Zero, m22=Sy,   m23=Zero, ty=Zero,
-					  m31=Zero, m32=Zero, m33=Sz,   tz=Zero }.
+    Zero = 0.0,
+    #compact_matrix4{ m11=Sx,   m12=Zero, m13=Zero, tx=Zero,
+                      m21=Zero, m22=Sy,   m23=Zero, ty=Zero,
+                      m31=Zero, m32=Zero, m33=Sz,   tz=Zero }.
 
 
 
@@ -1627,26 +1627,26 @@ shearing factor to the top-left 3x3 matrix (rightmost column not modified):
 returns therefore HM' = f.HM.
 """.
 -spec scale_homogeneous( HM :: homogeneous_matrix4(), scale_factor() ) ->
-											compact_matrix4().
+                                            compact_matrix4().
 % Note that, due to the role of the w (bottom-right) coordinate, a basic matrix
 % scaling would have no consequence, in the sense that once renormalised (all
 % coordinates divided by w) the original matrix would be obtained back. So the
 % rightmost remains untouched as a whole.
 %
 scale_homogeneous( HM=#compact_matrix4{ m11=M11, m12=M12, m13=M13,   %tx=Tx,
-										m21=M21, m22=M22, m23=M23,   %ty=Ty,
-										m31=M31, m32=M32, m33=M33 }, %tz=Tz },
-				   Factor ) ->
-	HM#compact_matrix4{ m11=Factor*M11, m12=Factor*M12, m13=Factor*M13,
-						m21=Factor*M21, m22=Factor*M22, m23=Factor*M23,
-						m31=Factor*M31, m32=Factor*M32, m33=Factor*M33 };
+                                        m21=M21, m22=M22, m23=M23,   %ty=Ty,
+                                        m31=M31, m32=M32, m33=M33 }, %tz=Tz },
+                   Factor ) ->
+    HM#compact_matrix4{ m11=Factor*M11, m12=Factor*M12, m13=Factor*M13,
+                        m21=Factor*M21, m22=Factor*M22, m23=Factor*M23,
+                        m31=Factor*M31, m32=Factor*M32, m33=Factor*M33 };
 
 
 scale_homogeneous( _HM=identity_4, Factor ) ->
-	Zero = 0.0,
-	#compact_matrix4{ m11=Factor, m12=Zero,   m13=Zero,   tx=Zero,
-					  m21=Zero,   m22=Factor, m23=Zero,   ty=Zero,
-					  m31=Zero,   m32=Zero,   m33=Factor, tz=Zero }.
+    Zero = 0.0,
+    #compact_matrix4{ m11=Factor, m12=Zero,   m13=Zero,   tx=Zero,
+                      m21=Zero,   m22=Factor, m23=Zero,   ty=Zero,
+                      m31=Zero,   m32=Zero,   m33=Factor, tz=Zero }.
 
 
 
@@ -1658,21 +1658,21 @@ diagonal element, which would be equal to the specified factor; returns
 therefore HM' = HM.SxM.
 """.
 -spec scale_homogeneous_x( HM :: homogeneous_matrix4(), scale_factor() ) ->
-											compact_matrix4().
+                                            compact_matrix4().
 scale_homogeneous_x( HM=#compact_matrix4{ m11=M11,   %m12=M12, m13=M13, tx=Tx,
-										  m21=M21,   %m22=M22, m23=M23, ty=Ty,
-										  m31=M31 }, %m32=M32, m33=M33  tz=Tz },
-					 Factor ) ->
-	HM#compact_matrix4{ m11=Factor*M11,
-						m21=Factor*M21,
-						m31=Factor*M31 };
+                                          m21=M21,   %m22=M22, m23=M23, ty=Ty,
+                                          m31=M31 }, %m32=M32, m33=M33  tz=Tz },
+                     Factor ) ->
+    HM#compact_matrix4{ m11=Factor*M11,
+                        m21=Factor*M21,
+                        m31=Factor*M31 };
 
 scale_homogeneous_x( identity_4, Factor ) ->
-	Zero = 0.0,
-	One =  1.0,
-	#compact_matrix4{ m11=Factor, m12=Zero,   m13=Zero, tx=Zero,
-					  m21=Zero,   m22=One,    m23=Zero, ty=Zero,
-					  m31=Zero,   m32=Zero,   m33=One,  tz=Zero }.
+    Zero = 0.0,
+    One =  1.0,
+    #compact_matrix4{ m11=Factor, m12=Zero,   m13=Zero, tx=Zero,
+                      m21=Zero,   m22=One,    m23=Zero, ty=Zero,
+                      m31=Zero,   m32=Zero,   m33=One,  tz=Zero }.
 
 
 
@@ -1686,19 +1686,19 @@ scaled by the specified factor.
 A lot cheaper than multiplying by a mostly-identity matrix.
 """.
 -spec scale_homogeneous_x_t( HM :: homogeneous_matrix4(), scale_factor() ) ->
-											compact_matrix4().
+                                            compact_matrix4().
 scale_homogeneous_x_t( HM=#compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=Tx },
-					   Factor ) ->
-	HM#compact_matrix4{ m11=Factor*M11, m12=Factor*M12,
-						m13=Factor*M13, tx=Factor*Tx };
+                       Factor ) ->
+    HM#compact_matrix4{ m11=Factor*M11, m12=Factor*M12,
+                        m13=Factor*M13, tx=Factor*Tx };
 
 % Like for the non-transposed case:
 scale_homogeneous_x_t( identity_4, Factor ) ->
-	Zero = 0.0,
-	One =  1.0,
-	#compact_matrix4{ m11=Factor, m12=Zero,   m13=Zero, tx=Zero,
-					  m21=Zero,   m22=One,    m23=Zero, ty=Zero,
-					  m31=Zero,   m32=Zero,   m33=One,  tz=Zero }.
+    Zero = 0.0,
+    One =  1.0,
+    #compact_matrix4{ m11=Factor, m12=Zero,   m13=Zero, tx=Zero,
+                      m21=Zero,   m22=One,    m23=Zero, ty=Zero,
+                      m31=Zero,   m32=Zero,   m33=One,  tz=Zero }.
 
 
 
@@ -1710,21 +1710,21 @@ diagonal element, which would be equal to the specified factor; returns
 therefore HM' = HM.SyM.
 """.
 -spec scale_homogeneous_y( HM :: homogeneous_matrix4(), scale_factor() ) ->
-											compact_matrix4().
+                                            compact_matrix4().
 scale_homogeneous_y( HM=#compact_matrix4{ m12=M12,
-										  m22=M22,
-										  m32=M32 },
-					 Factor ) ->
-	HM#compact_matrix4{ m12=Factor*M12,
-						m22=Factor*M22,
-						m32=Factor*M32 };
+                                          m22=M22,
+                                          m32=M32 },
+                     Factor ) ->
+    HM#compact_matrix4{ m12=Factor*M12,
+                        m22=Factor*M22,
+                        m32=Factor*M32 };
 
 scale_homogeneous_y( identity_4, Factor ) ->
-	Zero = 0.0,
-	One =  1.0,
-	#compact_matrix4{ m11=One,  m12=Zero,   m13=Zero, tx=Zero,
-					  m21=Zero, m22=Factor, m23=Zero, ty=Zero,
-					  m31=Zero, m32=Zero,   m33=One,  tz=Zero }.
+    Zero = 0.0,
+    One =  1.0,
+    #compact_matrix4{ m11=One,  m12=Zero,   m13=Zero, tx=Zero,
+                      m21=Zero, m22=Factor, m23=Zero, ty=Zero,
+                      m31=Zero, m32=Zero,   m33=One,  tz=Zero }.
 
 
 
@@ -1738,19 +1738,19 @@ scaled by the specified factor.
 A lot cheaper than multiplying by a mostly-identity matrix.
 """.
 -spec scale_homogeneous_y_t( HM :: homogeneous_matrix4(), scale_factor() ) ->
-											compact_matrix4().
+                                            compact_matrix4().
 scale_homogeneous_y_t( HM=#compact_matrix4{ m21=M21, m22=M22, m23=M23, ty=Ty },
-					   Factor ) ->
-	HM#compact_matrix4{ m21=Factor*M21, m22=Factor*M22,
-						m23=Factor*M23, ty=Factor*Ty };
+                       Factor ) ->
+    HM#compact_matrix4{ m21=Factor*M21, m22=Factor*M22,
+                        m23=Factor*M23, ty=Factor*Ty };
 
 % Like for the non-transposed case:
 scale_homogeneous_y_t( identity_4, Factor ) ->
-	Zero = 0.0,
-	One =  1.0,
-	#compact_matrix4{ m11=One,  m12=Zero,   m13=Zero, tx=Zero,
-					  m21=Zero, m22=Factor, m23=Zero, ty=Zero,
-					  m31=Zero, m32=Zero,   m33=One,  tz=Zero }.
+    Zero = 0.0,
+    One =  1.0,
+    #compact_matrix4{ m11=One,  m12=Zero,   m13=Zero, tx=Zero,
+                      m21=Zero, m22=Factor, m23=Zero, ty=Zero,
+                      m31=Zero, m32=Zero,   m33=One,  tz=Zero }.
 
 
 
@@ -1762,21 +1762,21 @@ diagonal element, which would be equal to the specified factor; returns
 therefore HM' = HM.SzM.
 """.
 -spec scale_homogeneous_z( HM :: homogeneous_matrix4(), scale_factor() ) ->
-											compact_matrix4().
+                                            compact_matrix4().
 scale_homogeneous_z( HM=#compact_matrix4{ m13=M13,
-										  m23=M23,
-										  m33=M33 },
-					 Factor ) ->
-	HM#compact_matrix4{ m13=Factor*M13,
-						m23=Factor*M23,
-						m33=Factor*M33 };
+                                          m23=M23,
+                                          m33=M33 },
+                     Factor ) ->
+    HM#compact_matrix4{ m13=Factor*M13,
+                        m23=Factor*M23,
+                        m33=Factor*M33 };
 
 scale_homogeneous_z( identity_4, Factor ) ->
-	Zero = 0.0,
-	One =  1.0,
-	#compact_matrix4{ m11=One,  m12=Zero,  m13=Zero,   tx=Zero,
-					  m21=Zero, m22=One,   m23=Zero,   ty=Zero,
-					  m31=Zero, m32=Zero,  m33=Factor, tz=Zero }.
+    Zero = 0.0,
+    One =  1.0,
+    #compact_matrix4{ m11=One,  m12=Zero,  m13=Zero,   tx=Zero,
+                      m21=Zero, m22=One,   m23=Zero,   ty=Zero,
+                      m31=Zero, m32=Zero,  m33=Factor, tz=Zero }.
 
 
 
@@ -1790,48 +1790,48 @@ scaled by the specified factor.
 A lot cheaper than multiplying by a mostly-identity matrix.
 """.
 -spec scale_homogeneous_z_t( HM :: homogeneous_matrix4(), scale_factor() ) ->
-											compact_matrix4().
+                                            compact_matrix4().
 scale_homogeneous_z_t( HM=#compact_matrix4{ m31=M31, m32=M32, m33=M33, tz=Tz },
-					   Factor ) ->
-	HM#compact_matrix4{ m31=Factor*M31, m32=Factor*M32,
-						m33=Factor*M33, tz=Factor*Tz };
+                       Factor ) ->
+    HM#compact_matrix4{ m31=Factor*M31, m32=Factor*M32,
+                        m33=Factor*M33, tz=Factor*Tz };
 
 % Like for the non-transposed case:
 scale_homogeneous_z_t( identity_4, Factor ) ->
-	Zero = 0.0,
-	One =  1.0,
-	#compact_matrix4{ m11=One,  m12=Zero, m13=Zero, tx=Zero,
-					  m21=Zero, m22=One,  m23=Zero, ty=Zero,
-					  m31=Zero, m32=Zero, m33=Factor,  tz=Zero }.
+    Zero = 0.0,
+    One =  1.0,
+    #compact_matrix4{ m11=One,  m12=Zero, m13=Zero, tx=Zero,
+                      m21=Zero, m22=One,  m23=Zero, ty=Zero,
+                      m31=Zero, m32=Zero, m33=Factor,  tz=Zero }.
 
 
 
 -doc "Returns the determinant of the specified matrix.".
 -spec determinant( matrix4() ) -> scalar().
 determinant( _M=#matrix4{ m11=M11, m12=M12, m13=M13, m14=M14,
-						  m21=M21, m22=M22, m23=M23, m24=M24,
-						  m31=M31, m32=M32, m33=M33, m34=M34,
-						  m41=M41, m42=M42, m43=M43, m44=M44 } ) ->
-		  M11*M22*M33*M44 - M11*M22*M34*M43 - M11*M23*M32*M44 + M11*M23*M34*M42
-		+ M11*M24*M32*M43 - M11*M24*M33*M42 - M12*M21*M33*M44 + M12*M21*M34*M43
-		+ M12*M23*M31*M44 - M12*M23*M34*M41 - M12*M24*M31*M43 + M12*M24*M33*M41
-		+ M13*M21*M32*M44 - M13*M21*M34*M42 - M13*M22*M31*M44 + M13*M22*M34*M41
-		+ M13*M24*M31*M42 - M13*M24*M32*M41 - M14*M21*M32*M43 + M14*M21*M33*M42
-		+ M14*M22*M31*M43 - M14*M22*M33*M41 - M14*M23*M31*M42 + M14*M23*M32*M41;
+                          m21=M21, m22=M22, m23=M23, m24=M24,
+                          m31=M31, m32=M32, m33=M33, m34=M34,
+                          m41=M41, m42=M42, m43=M43, m44=M44 } ) ->
+          M11*M22*M33*M44 - M11*M22*M34*M43 - M11*M23*M32*M44 + M11*M23*M34*M42
+        + M11*M24*M32*M43 - M11*M24*M33*M42 - M12*M21*M33*M44 + M12*M21*M34*M43
+        + M12*M23*M31*M44 - M12*M23*M34*M41 - M12*M24*M31*M43 + M12*M24*M33*M41
+        + M13*M21*M32*M44 - M13*M21*M34*M42 - M13*M22*M31*M44 + M13*M22*M34*M41
+        + M13*M24*M31*M42 - M13*M24*M32*M41 - M14*M21*M32*M43 + M14*M21*M33*M42
+        + M14*M22*M31*M43 - M14*M22*M33*M41 - M14*M23*M31*M42 + M14*M23*M32*M41;
 
 determinant( _M=#compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=_Mx,
-								  m21=M21, m22=M22, m23=M23, ty=_My,
-								  m31=M31, m32=M32, m33=M33, tz=_Mz } ) ->
-	M11*M22*M33 - M11*M23*M32 - M12*M21*M33 + M12*M23*M31
-		+ M13*M21*M32 - M13*M22*M31 ;
+                                  m21=M21, m22=M22, m23=M23, ty=_My,
+                                  m31=M31, m32=M32, m33=M33, tz=_Mz } ) ->
+    M11*M22*M33 - M11*M23*M32 - M12*M21*M33 + M12*M23*M31
+        + M13*M21*M32 - M13*M22*M31 ;
 
 
 determinant( _M=identity_4 ) ->
-	1.0;
+    1.0;
 
 determinant( M ) ->
-	% Could be simplified a lot for compact matrices thanks to their zeros:
-	determinant( to_canonical( M ) ).
+    % Could be simplified a lot for compact matrices thanks to their zeros:
+    determinant( to_canonical( M ) ).
 
 
 
@@ -1841,126 +1841,126 @@ cofactors).
 """.
 -spec comatrix( matrix4() ) -> matrix4().
 comatrix( identity_4 ) ->
-	identity_4;
+    identity_4;
 
 comatrix( _M=#matrix4{ m11=M11, m12=M12, m13=M13, m14=M14,
-					   m21=M21, m22=M22, m23=M23, m24=M24,
-					   m31=M31, m32=M32, m33=M33, m34=M34,
-					   m41=M41, m42=M42, m43=M43, m44=M44 } ) ->
+                       m21=M21, m22=M22, m23=M23, m24=M24,
+                       m31=M31, m32=M32, m33=M33, m34=M34,
+                       m41=M41, m42=M42, m43=M43, m44=M44 } ) ->
 
-	% Term reordering done in order to possibly remove extra negations: '-A + B'
-	% translated to 'B - A'.
+    % Term reordering done in order to possibly remove extra negations: '-A + B'
+    % translated to 'B - A'.
 
-	CM11 = M22*M33*M44 + M23*M34*M42 + M24*M32*M43
-		- M24*M33*M42 - M23*M32*M44 - M22*M34*M43,
+    CM11 = M22*M33*M44 + M23*M34*M42 + M24*M32*M43
+        - M24*M33*M42 - M23*M32*M44 - M22*M34*M43,
 
-	CM12 = M24*M33*M41 + M23*M31*M44 + M21*M34*M43
-		- M21*M33*M44 - M23*M34*M41 - M24*M31*M43,
+    CM12 = M24*M33*M41 + M23*M31*M44 + M21*M34*M43
+        - M21*M33*M44 - M23*M34*M41 - M24*M31*M43,
 
-	CM13 = M21*M32*M44 + M22*M34*M41 + M24*M31*M42
-		- M24*M32*M41 - M22*M31*M44 - M21*M34*M42,
+    CM13 = M21*M32*M44 + M22*M34*M41 + M24*M31*M42
+        - M24*M32*M41 - M22*M31*M44 - M21*M34*M42,
 
-	CM14 = M23*M32*M41 + M22*M31*M43 + M21*M33*M42
-		- M21*M32*M43 - M22*M33*M41 - M23*M31*M42,
-
-
-	CM21 = M14*M33*M42 + M13*M32*M44 + M12*M34*M43
-		- M12*M33*M44 - M13*M34*M42 - M14*M32*M43,
-
-	CM22 = M11*M33*M44 + M13*M34*M41 + M14*M31*M43
-		- M14*M33*M41 - M13*M31*M44 - M11*M34*M43,
-
-	CM23 = M14*M32*M41 + M12*M31*M44 + M11*M34*M42
-		- M11*M32*M44 - M12*M34*M41 - M14*M31*M42,
-
-	CM24 = M11*M32*M43 + M12*M33*M41 + M13*M31*M42
-		- M13*M32*M41 - M12*M31*M43 - M11*M33*M42,
+    CM14 = M23*M32*M41 + M22*M31*M43 + M21*M33*M42
+        - M21*M32*M43 - M22*M33*M41 - M23*M31*M42,
 
 
-	CM31 = M12*M23*M44 + M13*M24*M42 + M14*M22*M43
-		- M14*M23*M42 - M13*M22*M44 - M12*M24*M43,
+    CM21 = M14*M33*M42 + M13*M32*M44 + M12*M34*M43
+        - M12*M33*M44 - M13*M34*M42 - M14*M32*M43,
 
-	CM32 = M14*M23*M41 + M13*M21*M44 + M11*M24*M43
-		- M11*M23*M44 - M13*M24*M41 - M14*M21*M43,
+    CM22 = M11*M33*M44 + M13*M34*M41 + M14*M31*M43
+        - M14*M33*M41 - M13*M31*M44 - M11*M34*M43,
 
-	CM33 = M11*M22*M44 + M12*M24*M41 + M14*M21*M42
-		- M14*M22*M41 - M12*M21*M44 - M11*M24*M42,
+    CM23 = M14*M32*M41 + M12*M31*M44 + M11*M34*M42
+        - M11*M32*M44 - M12*M34*M41 - M14*M31*M42,
 
-	CM34 = M13*M22*M41 + M12*M21*M43 + M11*M23*M42
-		- M11*M22*M43 - M12*M23*M41 - M13*M21*M42,
+    CM24 = M11*M32*M43 + M12*M33*M41 + M13*M31*M42
+        - M13*M32*M41 - M12*M31*M43 - M11*M33*M42,
 
 
-	CM41 =  M14*M23*M32 + M13*M22*M34 + M12*M24*M33
-		- M12*M23*M34 - M13*M24*M32 - M14*M22*M33,
+    CM31 = M12*M23*M44 + M13*M24*M42 + M14*M22*M43
+        - M14*M23*M42 - M13*M22*M44 - M12*M24*M43,
 
-	CM42 = M11*M23*M34 + M13*M24*M31 + M14*M21*M33
-		- M14*M23*M31 - M13*M21*M34 - M11*M24*M33,
+    CM32 = M14*M23*M41 + M13*M21*M44 + M11*M24*M43
+        - M11*M23*M44 - M13*M24*M41 - M14*M21*M43,
 
-	CM43 = M14*M22*M31 + M12*M21*M34 + M11*M24*M32
-		- M11*M22*M34 - M12*M24*M31 - M14*M21*M32,
+    CM33 = M11*M22*M44 + M12*M24*M41 + M14*M21*M42
+        - M14*M22*M41 - M12*M21*M44 - M11*M24*M42,
 
-	CM44 = M11*M22*M33 + M12*M23*M31 + M13*M21*M32
-		- M13*M22*M31 - M12*M21*M33 - M11*M23*M32,
+    CM34 = M13*M22*M41 + M12*M21*M43 + M11*M23*M42
+        - M11*M22*M43 - M12*M23*M41 - M13*M21*M42,
 
-	#matrix4{ m11=CM11, m12=CM12, m13=CM13, m14=CM14,
-			  m21=CM21, m22=CM22, m23=CM23, m24=CM24,
-			  m31=CM31, m32=CM32, m33=CM33, m34=CM34,
-			  m41=CM41, m42=CM42, m43=CM43, m44=CM44 };
+
+    CM41 =  M14*M23*M32 + M13*M22*M34 + M12*M24*M33
+        - M12*M23*M34 - M13*M24*M32 - M14*M22*M33,
+
+    CM42 = M11*M23*M34 + M13*M24*M31 + M14*M21*M33
+        - M14*M23*M31 - M13*M21*M34 - M11*M24*M33,
+
+    CM43 = M14*M22*M31 + M12*M21*M34 + M11*M24*M32
+        - M11*M22*M34 - M12*M24*M31 - M14*M21*M32,
+
+    CM44 = M11*M22*M33 + M12*M23*M31 + M13*M21*M32
+        - M13*M22*M31 - M12*M21*M33 - M11*M23*M32,
+
+    #matrix4{ m11=CM11, m12=CM12, m13=CM13, m14=CM14,
+              m21=CM21, m22=CM22, m23=CM23, m24=CM24,
+              m31=CM31, m32=CM32, m33=CM33, m34=CM34,
+              m41=CM41, m42=CM42, m43=CM43, m44=CM44 };
 
 
 comatrix( _M=#compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=Tx,
-							   m21=M21, m22=M22, m23=M23, ty=Ty,
-							   m31=M31, m32=M32, m33=M33, tz=Tz } ) ->
+                               m21=M21, m22=M22, m23=M23, ty=Ty,
+                               m31=M31, m32=M32, m33=M33, tz=Tz } ) ->
 
-	% Huge simplification; yet not even the transpose of a compact matrix, as
-	% the last coordinate (M44) is not necessarily 1.0 (being the determinant):
+    % Huge simplification; yet not even the transpose of a compact matrix, as
+    % the last coordinate (M44) is not necessarily 1.0 (being the determinant):
 
-	% Term reordering done in order to possibly remove extra negations: '-A + B'
-	% translated to 'B - A'.
+    % Term reordering done in order to possibly remove extra negations: '-A + B'
+    % translated to 'B - A'.
 
-	CM11 = M22*M33 - M23*M32,
+    CM11 = M22*M33 - M23*M32,
 
-	CM12 = M23*M31 - M21*M33,
+    CM12 = M23*M31 - M21*M33,
 
-	CM13 = M21*M32 - M22*M31,
+    CM13 = M21*M32 - M22*M31,
 
-	CM14 = 0.0,
-
-
-	CM21 = M13*M32 - M12*M33 ,
-
-	CM22 = M11*M33 - M13*M31,
-
-	CM23 = M12*M31 - M11*M32 ,
-
-	CM24 = 0.0,
+    CM14 = 0.0,
 
 
-	CM31 = M12*M23 - M13*M22,
+    CM21 = M13*M32 - M12*M33 ,
 
-	CM32 = M13*M21 - M11*M23,
+    CM22 = M11*M33 - M13*M31,
 
-	CM33 = M11*M22 - M12*M21,
+    CM23 = M12*M31 - M11*M32 ,
 
-	CM34 = 0.0,
+    CM24 = 0.0,
 
 
-	CM41 = Tx*M23*M32 + M13*M22*Tz + M12*Ty*M33
-		- M12*M23*Tz - M13*Ty*M32 - Tx*M22*M33,
+    CM31 = M12*M23 - M13*M22,
 
-	CM42 =  M11*M23*Tz + M13*Ty*M31 + Tx*M21*M33
-		- Tx*M23*M31 - M13*M21*Tz - M11*Ty*M33,
+    CM32 = M13*M21 - M11*M23,
 
-	CM43 = Tx*M22*M31 + M12*M21*Tz + M11*Ty*M32
-		- M11*M22*Tz - M12*Ty*M31 - Tx*M21*M32,
+    CM33 = M11*M22 - M12*M21,
 
-	CM44 = M11*M22*M33 + M12*M23*M31 + M13*M21*M32
-		- M13*M22*M31 - M12*M21*M33 - M11*M23*M32,
+    CM34 = 0.0,
 
-	#matrix4{ m11=CM11, m12=CM12, m13=CM13, m14=CM14,
-			  m21=CM21, m22=CM22, m23=CM23, m24=CM24,
-			  m31=CM31, m32=CM32, m33=CM33, m34=CM34,
-			  m41=CM41, m42=CM42, m43=CM43, m44=CM44 }.
+
+    CM41 = Tx*M23*M32 + M13*M22*Tz + M12*Ty*M33
+        - M12*M23*Tz - M13*Ty*M32 - Tx*M22*M33,
+
+    CM42 =  M11*M23*Tz + M13*Ty*M31 + Tx*M21*M33
+        - Tx*M23*M31 - M13*M21*Tz - M11*Ty*M33,
+
+    CM43 = Tx*M22*M31 + M12*M21*Tz + M11*Ty*M32
+        - M11*M22*Tz - M12*Ty*M31 - Tx*M21*M32,
+
+    CM44 = M11*M22*M33 + M12*M23*M31 + M13*M21*M32
+        - M13*M22*M31 - M12*M21*M33 - M11*M23*M32,
+
+    #matrix4{ m11=CM11, m12=CM12, m13=CM13, m14=CM14,
+              m21=CM21, m22=CM22, m23=CM23, m24=CM24,
+              m31=CM31, m32=CM32, m33=CM33, m34=CM34,
+              m41=CM41, m42=CM42, m43=CM43, m44=CM44 }.
 
 
 
@@ -1973,49 +1973,49 @@ its determinant is non-null), otherwise returns undefined.
 % intermediary comatrix is generally not one):
 %
 inverse( M=identity_4 ) ->
-	M;
+    M;
 
 inverse( M ) when is_record( M, matrix4 ) ->
-	Det = determinant( M ),
-	case math_utils:is_null( Det ) of
+    Det = determinant( M ),
+    case math_utils:is_null( Det ) of
 
-		true ->
-			cond_utils:if_defined( myriad_debug_linear,
-				trace_utils:warning_fmt( "Cannot determine the inverse of the "
-					"following matrix, considered singular: ~ts",
-					[ to_string( M ) ] ) ),
-			undefined;
+        true ->
+            cond_utils:if_defined( myriad_debug_linear,
+                trace_utils:warning_fmt( "Cannot determine the inverse of the "
+                    "following matrix, considered singular: ~ts",
+                    [ to_string( M ) ] ) ),
+            undefined;
 
-		false ->
-			scale( transpose( comatrix( M ) ), 1/Det )
+        false ->
+            scale( transpose( comatrix( M ) ), 1/Det )
 
-	end;
+    end;
 
 % Special-cased as performs less operations, and returns a compact form:
 inverse( M ) when is_record( M, compact_matrix4 ) ->
-	Det = determinant( M ),
-	case math_utils:is_null( Det ) of
+    Det = determinant( M ),
+    case math_utils:is_null( Det ) of
 
-		true ->
-			cond_utils:if_defined( myriad_debug_linear,
-				trace_utils:warning_fmt( "Cannot determine the inverse of the "
-					"following compact matrix, considered singular: ~ts",
-					[ to_string( M ) ] ) ),
-			undefined;
+        true ->
+            cond_utils:if_defined( myriad_debug_linear,
+                trace_utils:warning_fmt( "Cannot determine the inverse of the "
+                    "following compact matrix, considered singular: ~ts",
+                    [ to_string( M ) ] ) ),
+            undefined;
 
-		false ->
-			% We take advantage of the fact that the comatrix of a compact
-			% matrix requires less computations, and/but it returns a canonical
-			% matrix:
-			%
-			InvCan = scale( transpose( comatrix( M ) ), 1/Det ),
+        false ->
+            % We take advantage of the fact that the comatrix of a compact
+            % matrix requires less computations, and/but it returns a canonical
+            % matrix:
+            %
+            InvCan = scale( transpose( comatrix( M ) ), 1/Det ),
 
-			% As expected to be ultimately a compact matrix:
-			% (to_compact/1 must come last)
-			%
-			to_compact( InvCan )
+            % As expected to be ultimately a compact matrix:
+            % (to_compact/1 must come last)
+            %
+            to_compact( InvCan )
 
-	end.
+    end.
 
 
 
@@ -2032,17 +2032,17 @@ Returns the 4x4 compact matrix obtained from the specified 3x3 matrix (M) and 3D
 % homogeneous_matrix4().
 %
 from_3D( _M=#matrix3{ m11=M11, m12=M12, m13=M13,
-				   m21=M21, m22=M22, m23=M23,
-				   m31=M31, m32=M32, m33=M33 },
-		 _V=[ X, Y, Z ] ) ->
-	#compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=X,
-					  m21=M21, m22=M22, m23=M23, ty=Y,
-					  m31=M31, m32=M32, m33=M33, tz=Z };
+                   m21=M21, m22=M22, m23=M23,
+                   m31=M31, m32=M32, m33=M33 },
+         _V=[ X, Y, Z ] ) ->
+    #compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=X,
+                      m21=M21, m22=M22, m23=M23, ty=Y,
+                      m31=M31, m32=M32, m33=M33, tz=Z };
 
 % Not specifically managing identity_3:
 from_3D( OtherMatrix3, Vec3 ) ->
-	CanOtherMatrix3 = matrix3:to_canonical( OtherMatrix3 ),
-	from_3D( CanOtherMatrix3, Vec3 ).
+    CanOtherMatrix3 = matrix3:to_canonical( OtherMatrix3 ),
+    from_3D( CanOtherMatrix3, Vec3 ).
 
 
 
@@ -2052,42 +2052,42 @@ from the specified 4x4 homogeneous matrix.
 """.
 -spec to_3D( homogeneous_matrix4() ) -> { M :: matrix3(), V :: vector3() }.
 to_3D( identity_4 ) ->
-	{ _M=identity_3, _V=vector3:null() };
+    { _M=identity_3, _V=vector3:null() };
 
 to_3D( #compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=Tx,
-						 m21=M21, m22=M22, m23=M23, ty=Ty,
-						 m31=M31, m32=M32, m33=M33, tz=Tz } ) ->
-	M = #matrix3{ m11=M11, m12=M12, m13=M13,
-				  m21=M21, m22=M22, m23=M23,
-				  m31=M31, m32=M32, m33=M33 },
+                         m21=M21, m22=M22, m23=M23, ty=Ty,
+                         m31=M31, m32=M32, m33=M33, tz=Tz } ) ->
+    M = #matrix3{ m11=M11, m12=M12, m13=M13,
+                  m21=M21, m22=M22, m23=M23,
+                  m31=M31, m32=M32, m33=M33 },
 
-	V = [ Tx, Ty, Tz ],
+    V = [ Tx, Ty, Tz ],
 
-	{ M, V }.
+    { M, V }.
 
 
 
 -doc "Returns the canonical form of the specified 4x4 matrix.".
 -spec to_canonical( matrix4() ) -> canonical_matrix4().
 to_canonical( #compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=Tx,
-								m21=M21, m22=M22, m23=M23, ty=Ty,
-								m31=M31, m32=M32, m33=M33, tz=Tz } ) ->
-	Zero = 0.0,
-	#matrix4{ m11=M11,  m12=M12,  m13=M13,  m14=Tx,
-			  m21=M21,  m22=M22,  m23=M23,  m24=Ty,
-			  m31=M31,  m32=M32,  m33=M33,  m34=Tz,
-			  m41=Zero, m42=Zero, m43=Zero, m44=1.0 };
+                                m21=M21, m22=M22, m23=M23, ty=Ty,
+                                m31=M31, m32=M32, m33=M33, tz=Tz } ) ->
+    Zero = 0.0,
+    #matrix4{ m11=M11,  m12=M12,  m13=M13,  m14=Tx,
+              m21=M21,  m22=M22,  m23=M23,  m24=Ty,
+              m31=M31,  m32=M32,  m33=M33,  m34=Tz,
+              m41=Zero, m42=Zero, m43=Zero, m44=1.0 };
 
 to_canonical( identity_4 ) ->
-	Zero = 0.0,
-	One = 1.0,
-	#matrix4{ m11=One,  m12=Zero, m13=Zero, m14=Zero,
-			  m21=Zero, m22=One,  m23=Zero, m24=Zero,
-			  m31=Zero, m32=Zero, m33=One,  m34=Zero,
-			  m41=Zero, m42=Zero, m43=Zero, m44=One };
+    Zero = 0.0,
+    One = 1.0,
+    #matrix4{ m11=One,  m12=Zero, m13=Zero, m14=Zero,
+              m21=Zero, m22=One,  m23=Zero, m24=Zero,
+              m31=Zero, m32=Zero, m33=One,  m34=Zero,
+              m41=Zero, m42=Zero, m43=Zero, m44=One };
 
 to_canonical( M ) when is_record( M, matrix4 ) ->
-	M.
+    M.
 
 
 
@@ -2099,35 +2099,35 @@ one.
 """.
 -spec to_compact( matrix4() ) -> compact_matrix4().
 to_compact( M=#matrix4{ m11=M11, m12=M12, m13=M13, m14=M14,
-						m21=M21, m22=M22, m23=M23, m24=M24,
-						m31=M31, m32=M32, m33=M33, m34=M34,
-						m41=M41, m42=M42, m43=M43, m44=M44 } ) ->
-	case is_null( M41 ) andalso is_null( M42 ) andalso is_null( M43 )
-			andalso are_close( M44, 1.0 ) of
+                        m21=M21, m22=M22, m23=M23, m24=M24,
+                        m31=M31, m32=M32, m33=M33, m34=M34,
+                        m41=M41, m42=M42, m43=M43, m44=M44 } ) ->
+    case is_null( M41 ) andalso is_null( M42 ) andalso is_null( M43 )
+            andalso are_close( M44, 1.0 ) of
 
-		true ->
-			% Just drop the last row then:
-			#compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=M14,
-							  m21=M21, m22=M22, m23=M23, ty=M24,
-							  m31=M31, m32=M32, m33=M33, tz=M34 };
+        true ->
+            % Just drop the last row then:
+            #compact_matrix4{ m11=M11, m12=M12, m13=M13, tx=M14,
+                              m21=M21, m22=M22, m23=M23, ty=M24,
+                              m31=M31, m32=M32, m33=M33, tz=M34 };
 
-		false ->
-			trace_utils:error_fmt( "Canonical 4D matrix ~ts cannot be "
-				"expressed as a compact one.", [ to_string( M ) ] ),
+        false ->
+            trace_utils:error_fmt( "Canonical 4D matrix ~ts cannot be "
+                "expressed as a compact one.", [ to_string( M ) ] ),
 
-			throw( { not_compactable, M } )
+            throw( { not_compactable, M } )
 
-	end;
+    end;
 
 to_compact( identity_4 ) ->
-	Zero = 0.0,
-	One = 1.0,
-	#compact_matrix4{ m11=One,  m12=Zero, m13=Zero, tx=Zero,
-					  m21=Zero, m22=One,  m23=Zero, ty=Zero,
-					  m31=Zero, m32=Zero, m33=One,  tz=Zero };
+    Zero = 0.0,
+    One = 1.0,
+    #compact_matrix4{ m11=One,  m12=Zero, m13=Zero, tx=Zero,
+                      m21=Zero, m22=One,  m23=Zero, ty=Zero,
+                      m31=Zero, m32=Zero, m33=One,  tz=Zero };
 
 to_compact( CM ) when is_record( CM, compact_matrix4 ) ->
-	CM.
+    CM.
 
 
 
@@ -2138,77 +2138,77 @@ The elements are expected to be already floats().
 """.
 -spec from_tuple( tuple_matrix4() ) -> matrix4().
 from_tuple( Tuple ) when is_tuple( Tuple ) andalso size( Tuple ) =:= 12 ->
-	erlang:insert_element( _Index=1, Tuple, compact_matrix4 );
+    erlang:insert_element( _Index=1, Tuple, compact_matrix4 );
 
 from_tuple( Tuple ) when is_tuple( Tuple ) andalso size( Tuple ) =:= 16 ->
-	erlang:insert_element( _Index=1, Tuple, matrix4 ).
+    erlang:insert_element( _Index=1, Tuple, matrix4 ).
 
 
 
 -doc "Returns a tuple-based version of the specified matrix.".
 -spec to_tuple( matrix4() ) -> tuple_matrix4().
 to_tuple( M=identity_4 ) ->
-	to_tuple( to_compact( M ) );
+    to_tuple( to_compact( M ) );
 
 % Here either a canonical_matrix4() | compact_matrix4() record:
 to_tuple( M ) ->
-	% Just chop the record tag, returning either m16() or m12():
-	erlang:delete_element( _Index=1, M ).
+    % Just chop the record tag, returning either m16() or m12():
+    erlang:delete_element( _Index=1, M ).
 
 
 
 -doc "Checks that the specified matrix is legit, and returns it.".
 -spec check( matrix4() ) -> matrix4().
 check( M=identity_4 ) ->
-	M;
+    M;
 
 check( M ) ->
-	Coords = case tuple_to_list( M ) of
+    Coords = case tuple_to_list( M ) of
 
-		[ matrix4 | Cs ] ->
-			Cs;
+        [ matrix4 | Cs ] ->
+            Cs;
 
-		[ compact_matrix4 | Cs ] ->
-			Cs
+        [ compact_matrix4 | Cs ] ->
+            Cs
 
-	end,
+    end,
 
-	[ type_utils:check_float( C ) || C <- Coords ],
+    [ type_utils:check_float( C ) || C <- Coords ],
 
-	M.
+    M.
 
 
 
 -doc "Returns a textual representation of the specified (4x4) matrix.".
 -spec to_string( matrix4() ) -> ustring().
 to_string( _Matrix=identity_4 ) ->
-	"4x4 identity";
+    "4x4 identity";
 
 to_string( Matrix4=#matrix4{} ) ->
 
-	[ _AtomMatrix4 | AllCoords ] = tuple_to_list( Matrix4 ),
+    [ _AtomMatrix4 | AllCoords ] = tuple_to_list( Matrix4 ),
 
-	Strs = linear:coords_to_best_width_strings( AllCoords ),
+    Strs = linear:coords_to_best_width_strings( AllCoords ),
 
-	% No need for ~ts here:
-	RowFormatStr = "[ " ++ text_utils:duplicate( ?dim, "~s " ) ++ "]~n",
+    % No need for ~ts here:
+    RowFormatStr = "[ " ++ text_utils:duplicate( ?dim, "~s " ) ++ "]~n",
 
-	FormatStr = "~n" ++ text_utils:duplicate( ?dim, RowFormatStr ),
+    FormatStr = "~n" ++ text_utils:duplicate( ?dim, RowFormatStr ),
 
-	text_utils:format( FormatStr, Strs );
+    text_utils:format( FormatStr, Strs );
 
 
 to_string( CptMatrix=#compact_matrix4{} ) ->
 
-	[ _AtomCompactMatrix4 | CompactCoords ] = tuple_to_list( CptMatrix ),
+    [ _AtomCompactMatrix4 | CompactCoords ] = tuple_to_list( CptMatrix ),
 
-	AllCoords = CompactCoords ++ [ 0.0, 0.0, 0.0, 1.0 ],
+    AllCoords = CompactCoords ++ [ 0.0, 0.0, 0.0, 1.0 ],
 
-	Strs = linear:coords_to_best_width_strings( AllCoords ),
+    Strs = linear:coords_to_best_width_strings( AllCoords ),
 
-	% No need for ~ts here:
-	RowFormatStr = "[ " ++ text_utils:duplicate( ?dim, "~s " ) ++ "]~n",
+    % No need for ~ts here:
+    RowFormatStr = "[ " ++ text_utils:duplicate( ?dim, "~s " ) ++ "]~n",
 
-	FormatStr = "~n" ++ text_utils:duplicate( ?dim, RowFormatStr ),
+    FormatStr = "~n" ++ text_utils:duplicate( ?dim, RowFormatStr ),
 
-	text_utils:format( FormatStr, Strs ).
+    text_utils:format( FormatStr, Strs ).

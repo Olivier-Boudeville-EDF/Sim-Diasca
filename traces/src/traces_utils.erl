@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2025 Olivier Boudeville
+% Copyright (C) 2020-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -42,7 +42,7 @@ clash).
 
 
 -export([ get_aggregator_registration_scope/0, get_aggregator_lookup_scope/0,
-		  name_trace_file_from/1 ]).
+          name_trace_file_from/1 ]).
 
 
 % For trace_aggregator_name:
@@ -71,15 +71,15 @@ clash).
 -doc "Returns the version of the Traces library being used.".
 -spec get_traces_version() -> three_digit_version().
 get_traces_version() ->
-	basic_utils:parse_version( get_traces_version_string() ).
+    basic_utils:parse_version( get_traces_version_string() ).
 
 
 
 -doc "Returns the version of the Traces library being used, as a string.".
 -spec get_traces_version_string() -> ustring().
 get_traces_version_string() ->
-	% As defined (uniquely) in GNUmakevars.inc:
-	?traces_version.
+    % As defined (uniquely) in GNUmakevars.inc:
+    ?traces_version.
 
 
 
@@ -90,67 +90,67 @@ current context.
 -spec get_aggregator_registration_scope() -> registration_scope().
 get_aggregator_registration_scope() ->
 
-	% Possibly read from any *.config file specified (e.g. refer to the
-	% INTERNAL_OPTIONS make variable):
-	%
-	% Supporting this not deemed useful:
-	%AggRegName = case application:get_env(
-	%                   trace_aggregator_registration_name ) of
-	%
-	%   undefined ->
-	%       ?trace_aggregator_name;
-	%
-	%   { ok, CfgRegName } when is_atom( RegName ) ->
-	%       CfgRegName;
-	%
-	%   { ok, InvalidRegName } ->
-	%       trace_utils:error_fmt( "Invalid registration name read for the "
-	%           "trace aggregator: '~p'.", [ InvalidRegName ] ),
-	%       throw( { invalid_trace_aggregator_registration_name,
-	%                 InvalidRegName } )
-	%
-	%end,
+    % Possibly read from any *.config file specified (e.g. refer to the
+    % INTERNAL_OPTIONS make variable):
+    %
+    % Supporting this not deemed useful:
+    %AggRegName = case application:get_env(
+    %                   trace_aggregator_registration_name ) of
+    %
+    %   undefined ->
+    %       ?trace_aggregator_name;
+    %
+    %   { ok, CfgRegName } when is_atom( RegName ) ->
+    %       CfgRegName;
+    %
+    %   { ok, InvalidRegName } ->
+    %       trace_utils:error_fmt( "Invalid registration name read for the "
+    %           "trace aggregator: '~p'.", [ InvalidRegName ] ),
+    %       throw( { invalid_trace_aggregator_registration_name,
+    %                 InvalidRegName } )
+    %
+    %end,
 
-	% Specifying the application is essential, as this function is to be called
-	% from any process of any other application:
-	%
-	case application:get_env( _Application=traces,
-							  trace_aggregator_registration_scope ) of
+    % Specifying the application is essential, as this function is to be called
+    % from any process of any other application:
+    %
+    case application:get_env( _Application=traces,
+                              trace_aggregator_registration_scope ) of
 
-		undefined ->
-			AggRegScope = ?default_trace_aggregator_registration_scope,
-			cond_utils:if_defined( traces_debug_registration,
-				trace_bridge:debug_fmt( "Trace aggregator (default) scope: "
-										"'~ts'.", [ AggRegScope ] ) ),
-			AggRegScope;
-
-
-		{ ok, CfgRegScope } when is_atom( CfgRegScope ) ->
-			case naming_utils:vet_registration_scope( CfgRegScope ) of
-
-				true ->
-					cond_utils:if_defined( traces_debug_registration,
-						trace_bridge:debug_fmt( "Trace aggregator scope "
-							"(as configured): '~ts'.", [ CfgRegScope ] ) ),
-					CfgRegScope;
-
-				false ->
-					trace_utils:error_fmt( "Invalid registration scope (type) "
-						"read for the trace aggregator: '~p'.",
-						[ CfgRegScope ] ),
-					throw( { invalid_trace_aggregator_registration_scope,
-							 CfgRegScope } )
-
-			end;
+        undefined ->
+            AggRegScope = ?default_trace_aggregator_registration_scope,
+            cond_utils:if_defined( traces_debug_registration,
+                trace_bridge:debug_fmt( "Trace aggregator (default) scope: "
+                                        "'~ts'.", [ AggRegScope ] ) ),
+            AggRegScope;
 
 
-		{ ok, InvalidRegScope } ->
-			trace_utils:error_fmt( "Invalid registration scope read for the "
-				"trace aggregator: '~p'.", [ InvalidRegScope ] ),
-			throw( { invalid_trace_aggregator_registration_scope,
-					 InvalidRegScope } )
+        { ok, CfgRegScope } when is_atom( CfgRegScope ) ->
+            case naming_utils:vet_registration_scope( CfgRegScope ) of
 
-	end.
+                true ->
+                    cond_utils:if_defined( traces_debug_registration,
+                        trace_bridge:debug_fmt( "Trace aggregator scope "
+                            "(as configured): '~ts'.", [ CfgRegScope ] ) ),
+                    CfgRegScope;
+
+                false ->
+                    trace_utils:error_fmt( "Invalid registration scope (type) "
+                        "read for the trace aggregator: '~p'.",
+                        [ CfgRegScope ] ),
+                    throw( { invalid_trace_aggregator_registration_scope,
+                             CfgRegScope } )
+
+            end;
+
+
+        { ok, InvalidRegScope } ->
+            trace_utils:error_fmt( "Invalid registration scope read for the "
+                "trace aggregator: '~p'.", [ InvalidRegScope ] ),
+            throw( { invalid_trace_aggregator_registration_scope,
+                     InvalidRegScope } )
+
+    end.
 
 
 
@@ -160,7 +160,7 @@ context.
 """.
 -spec get_aggregator_lookup_scope() -> lookup_scope().
 get_aggregator_lookup_scope() ->
-	naming_utils:registration_to_lookup_scope(
+    naming_utils:registration_to_lookup_scope(
         get_aggregator_registration_scope() ).
 
 
@@ -177,10 +177,10 @@ Typically useful from an OTP context, where the Traces application is started
 without being able to defined programatically the resulting trace file.
 """.
 -spec name_trace_file_from( module_name() ) ->
-								{ bin_file_name(), aggregator_pid() }.
+                                { bin_file_name(), aggregator_pid() }.
 name_trace_file_from( ModName ) ->
-	AggLookupScope = get_aggregator_lookup_scope(),
-	name_trace_file_from( ModName, AggLookupScope ).
+    AggLookupScope = get_aggregator_lookup_scope(),
+    name_trace_file_from( ModName, AggLookupScope ).
 
 
 
@@ -196,20 +196,20 @@ Typically useful from an OTP context, where the Traces application is started
 without being able to defined programatically the resulting trace file.
 """.
 -spec name_trace_file_from( module_name(), lookup_scope() ) ->
-									{ bin_file_name(), aggregator_pid() }.
+                                    { bin_file_name(), aggregator_pid() }.
 name_trace_file_from( ModName, AggLookupScope ) ->
 
-	NewTraceFilename = traces:get_trace_filename( ModName ),
+    NewTraceFilename = traces:get_trace_filename( ModName ),
 
-	trace_utils:info_fmt( "Requesting the renaming of trace aggregator "
-		"file to '~ts'.", [ NewTraceFilename ] ),
+    trace_utils:info_fmt( "Requesting the renaming of trace aggregator "
+        "file to '~ts'.", [ NewTraceFilename ] ),
 
-	NewTraceFilenameBin = text_utils:string_to_binary( NewTraceFilename ),
+    NewTraceFilenameBin = text_utils:string_to_binary( NewTraceFilename ),
 
-	AggPid = naming_utils:get_registered_pid_for(
-		_Name=?trace_aggregator_name, AggLookupScope ),
+    AggPid = naming_utils:get_registered_pid_for(
+        _Name=?trace_aggregator_name, AggLookupScope ),
 
-	% Oneway:
-	AggPid ! { renameTraceFile, NewTraceFilenameBin },
+    % Oneway:
+    AggPid ! { renameTraceFile, NewTraceFilenameBin },
 
-	{ NewTraceFilenameBin, AggPid }.
+    { NewTraceFilenameBin, AggPid }.

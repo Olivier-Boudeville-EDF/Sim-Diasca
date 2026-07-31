@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -41,8 +41,8 @@ WOOPER instance, whether or not it has this trait or not.
 
 
 -define( class_description,
-		 "Interface to be implemented by all instances able to return "
-		 "an identifier thereof." ).
+         "Interface to be implemented by all instances able to return "
+         "an identifier thereof." ).
 
 
 % No superclasses.
@@ -54,9 +54,9 @@ WOOPER instance, whether or not it has this trait or not.
 %
 -define( class_attributes, [
 
-	{ wooper_identifiable_id, id(), "the identifier of this instance" }
+    { wooper_identifiable_id, id(), "the identifier of this instance" }
 
-						   ] ).
+                           ] ).
 
 
 -doc "Designates the identifiers used by identifiable instances.".
@@ -85,7 +85,7 @@ Constructs an identifiable instance, whose identifier is the specified one.
 """.
 -spec construct( wooper:state(), id() ) -> wooper:state().
 construct( State, Identifier ) ->
-	setAttribute( State, wooper_identifiable_id, Identifier ).
+    setAttribute( State, wooper_identifiable_id, Identifier ).
 
 
 
@@ -96,15 +96,15 @@ construct( State, Identifier ) ->
 -doc "Returns the identifier of this Identifiable.".
 -spec getIdentifier( wooper:state() ) -> const_request_return( id() ).
 getIdentifier( State ) ->
-	wooper:const_return_result( ?getAttr(wooper_identifiable_id) ).
+    wooper:const_return_result( ?getAttr(wooper_identifiable_id) ).
 
 
 
 -doc "Sets the identifier of this Identifiable.".
 -spec setIdentifier( wooper:state(), id() ) -> oneway_return().
 setIdentifier( State, Identifier ) ->
-	wooper:return_state(
-		setAttribute( State, wooper_identifiable_id, Identifier ) ).
+    wooper:return_state(
+        setAttribute( State, wooper_identifiable_id, Identifier ) ).
 
 
 
@@ -115,23 +115,23 @@ Identifiable: returns whether these identifiers are equal.
 Note that comparing an identifiable with itself will deadlock it.
 """.
 -spec compareWith( wooper:state(), identifiable_pid()  ) ->
-						const_request_return( boolean() ).
+                        const_request_return( boolean() ).
 compareWith( State, IdentifiablePid ) ->
-	IdentifiablePid ! { getIdentifier, [], self() },
+    IdentifiablePid ! { getIdentifier, [], self() },
 
-	MyId = ?getAttr(wooper_identifiable_id),
+    MyId = ?getAttr(wooper_identifiable_id),
 
-	receive
+    receive
 
-		% Matching:
-		{ wooper_result, MyId } ->
-			% Somewhat surprising/abnormal:
-			wooper:const_return_result( true );
+        % Matching:
+        { wooper_result, MyId } ->
+            % Somewhat surprising/abnormal:
+            wooper:const_return_result( true );
 
-		{ wooper_result, _OtherId } ->
-			wooper:const_return_result( false )
+        { wooper_result, _OtherId } ->
+            wooper:const_return_result( false )
 
-	end.
+    end.
 
 
 
@@ -147,31 +147,31 @@ If yes, presumably they are expected to be the same, even if their PIDs are not
 directly compared.
 """.
 -spec compare( identifiable_pid(), identifiable_pid() ) ->
-							static_return( boolean() ).
+                            static_return( boolean() ).
 compare( FirstIdPid, SecondIdPid ) ->
-	Msg = { getIdentifier, [], self() },
+    Msg = { getIdentifier, [], self() },
 
-	% Special case where interleaving is possible:
-	FirstIdPid ! Msg,
-	SecondIdPid ! Msg,
+    % Special case where interleaving is possible:
+    FirstIdPid ! Msg,
+    SecondIdPid ! Msg,
 
-	FirstIdReceived = receive
+    FirstIdReceived = receive
 
-		{ wooper_result, Id } ->
-			Id
+        { wooper_result, Id } ->
+            Id
 
-	end,
+    end,
 
-	receive
+    receive
 
-		% Matching:
-		{ wooper_result, FirstIdReceived } ->
-			wooper:return_static( true );
+        % Matching:
+        { wooper_result, FirstIdReceived } ->
+            wooper:return_static( true );
 
-		{ wooper_result, _SecondIdReceived } ->
-			wooper:return_static( false )
+        { wooper_result, _SecondIdReceived } ->
+            wooper:return_static( false )
 
-	end.
+    end.
 
 
 
@@ -186,7 +186,7 @@ Tells whether the corresponding instance implements the Identifiable interface.
 """.
 -spec is_identifiable( wooper:state() ) -> boolean().
 is_identifiable( State ) ->
-	hasAttribute( State, wooper_identifiable_id ).
+    hasAttribute( State, wooper_identifiable_id ).
 
 
 
@@ -200,7 +200,7 @@ Identifiable one or not.
 """.
 -spec get_maybe_identifier( wooper:state() ) -> option( id() ).
 get_maybe_identifier( State ) ->
-	% Allowed, as the type of this attribute does not include the 'undefined'
-	% atom:
-	%
-	?getMaybeAttr(wooper_identifiable_id).
+    % Allowed, as the type of this attribute does not include the 'undefined'
+    % atom:
+    %
+    ?getMaybeAttr(wooper_identifiable_id).

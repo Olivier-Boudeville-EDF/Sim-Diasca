@@ -1,4 +1,4 @@
-% Copyright (C) 2024-2025 Olivier Boudeville
+% Copyright (C) 2024-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -42,60 +42,60 @@ See the tagged_list.erl tested module.
 
 test_tagged() ->
 
-	TL = [ f, { a, 1 }, b, { c, 2 }, {a, 2 }, b, a, { d, 1 }, e ],
+    TL = [ f, { a, 1 }, b, { c, 2 }, {a, 2 }, b, a, { d, 1 }, e ],
 
 
-	test_facilities:display( "Testing tagged lists." ),
+    test_facilities:display( "Testing tagged lists." ),
 
-	tagged_list:check_tagged_list( TL ),
+    tagged_list:check_tagged_list( TL ),
 
-	% No (first) b:
-	NobTL = [ f, { a, 1 }, { c, 2 }, {a, 2 }, b, a, { d, 1 }, e ],
+    % No (first) b:
+    NobTL = [ f, { a, 1 }, { c, 2 }, {a, 2 }, b, a, { d, 1 }, e ],
 
-	NobTL = tagged_list:extract_atom_if_existing( b, TL ),
-	not_found = tagged_list:extract_atom_if_existing( z, TL ),
+    NobTL = tagged_list:extract_atom_if_existing( b, TL ),
+    not_found = tagged_list:extract_atom_if_existing( z, TL ),
 
-	{ b, NobTL } = tagged_list:extract_atom_with_default( b, w, TL ),
-	{ w, TL } = tagged_list:extract_atom_with_default( z, w, TL ),
+    { b, NobTL } = tagged_list:extract_atom_with_default( b, w, TL ),
+    { w, TL } = tagged_list:extract_atom_with_default( z, w, TL ),
 
-	% No first a:
-	NoFirstaTL = [ f, b, { c, 2 }, {a, 2 }, b, a, { d, 1 }, e ],
+    % No first a:
+    NoFirstaTL = [ f, b, { c, 2 }, {a, 2 }, b, a, { d, 1 }, e ],
 
-	{ 1, NoFirstaTL } = tagged_list:extract_pair_if_existing( a, TL ),
-	{ w, TL } = tagged_list:extract_pair_with_default( z, w, TL ),
+    { 1, NoFirstaTL } = tagged_list:extract_pair_if_existing( a, TL ),
+    { w, TL } = tagged_list:extract_pair_with_default( z, w, TL ),
 
-	true = list_utils:unordered_compare( [ { a, 3 }, { b, 2 } ],
-		tagged_list:check_duplicate_keys( TL ) ).
+    true = list_utils:unordered_compare( [ { a, 3 }, { b, 2 } ],
+        tagged_list:check_duplicate_keys( TL ) ).
 
 
 
 test_strict_tagged() ->
 
-	STL = [ { f, 1 }, { a, 1 }, { c, 2 }, {a, 2 }, { d, 1 }, { c, 4 },
-			{ c, 3 } ],
+    STL = [ { f, 1 }, { a, 1 }, { c, 2 }, {a, 2 }, { d, 1 }, { c, 4 },
+            { c, 3 } ],
 
-	test_facilities:display( "Testing strict tagged lists." ),
+    test_facilities:display( "Testing strict tagged lists." ),
 
-	tagged_list:check_strict_tagged_list( STL ),
+    tagged_list:check_strict_tagged_list( STL ),
 
 
-	% No first a:
-	NoFirstaSTL = [ { f, 1 }, { c, 2 }, {a, 2 }, { d, 1 }, { c, 4 }, { c, 3 } ],
+    % No first a:
+    NoFirstaSTL = [ { f, 1 }, { c, 2 }, {a, 2 }, { d, 1 }, { c, 4 }, { c, 3 } ],
 
-	{ 1, NoFirstaSTL } = tagged_list:extract_pair_if_existing_strict( a, STL ),
-	{ w, STL } = tagged_list:extract_pair_with_default_strict( z, w, STL ),
+    { 1, NoFirstaSTL } = tagged_list:extract_pair_if_existing_strict( a, STL ),
+    { w, STL } = tagged_list:extract_pair_with_default_strict( z, w, STL ),
 
-	true = list_utils:unordered_compare( [ { a, 2 }, { c, 3 } ],
-		tagged_list:check_strict_duplicate_keys( STL ) ).
+    true = list_utils:unordered_compare( [ { a, 2 }, { c, 3 } ],
+        tagged_list:check_strict_duplicate_keys( STL ) ).
 
 
 
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	test_tagged(),
-	test_strict_tagged(),
+    test_tagged(),
+    test_strict_tagged(),
 
-	test_facilities:stop().
+    test_facilities:stop().

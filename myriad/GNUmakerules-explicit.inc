@@ -20,7 +20,7 @@
 			install-src install-include install-examples install-test          \
 			install-doc info-install info-install-locations                    \
 			info-install-content create-myriad-checkout create-app-file        \
-			rebar3-application rebar3-upgrade-lock                             \
+			rebar3-application rebar3-upgrade-lock rebar3-bump-lock            \
 			set-rebar-conf set-rebar-conf-for-hex                              \
 			rebar3-release rebar3-development-release                          \
 			rebar3-production-release rebar3-hide-unsupported-sources          \
@@ -47,6 +47,7 @@
 			clean clean-erlang clean-layer-ebin clean-python clean-protobuf    \
 			clean-database clean-recurse clean-outputs clean-ast-debug         \
 			clean-previous real-clean track check-ci                           \
+            list-src-dirs list-extra-src-dirs                                  \
 			info-platform info-hardware info-software info-source-layout       \
 			info-erlang-target-version                                         \
 			info info-files info-meta info-erlang info-python info-java        \
@@ -261,7 +262,7 @@ test-recurse:
 # (e.g. 'make test-interactive UI_TEST_BACKEND=text_ui' or by modifying this
 # variable directly in GNUmakevars.inc)
 #
-test-interactive: #all test-interactive-recurse
+test-interactive: all test-interactive-recurse
 	@for t in $(TEST_TARGETS); do if ! $(MAKE) -s $$(echo $$t|sed 's|_test$$|_run|1') CMD_LINE_OPT="${CMD_LINE_OPT} -extra $(UI_TEST_OPT)"; then echo "Interactive test failed." 1>&2; exit 11; else echo; fi; done
 
 
@@ -656,6 +657,10 @@ rebar3-upgrade-lock: create-app-file
 	@$(MYRIAD_REBAR_EXEC) upgrade --all
 
 
+rebar3-bump-lock: rebar3-upgrade-lock
+	@git add -u rebar.lock && git commit -m "Prerequisite versions bumped."
+
+
 # If making a rebar application or release, a symlink suffices, yet not if
 # publishing an hex package (conf/ not included in the package, hence no symlink
 # shall point to it, hence an actual copy of rebar configuration file), so we
@@ -983,8 +988,11 @@ test-hex-package: rebar3-test-clean
 generate-protobuf: $(PROTOBUF_GENERATED_ERL_FILES)
 
 
-# To synchronise the selected source content of the current layer, from the
-# local tree to the specified server location, with no VCS commit involved.
+# To synchronise the selected source content of the current layer (including any
+# locally-generated content like BEAM files), from the local tree to the
+# specified server location, as defined by
+# "$(SYNC_HOST):$(CEYLAN_SYNC_TARGET_ROOT)" (run 'make info-sync' to check),
+# with no VCS commit involved.
 #
 # Note that files removed from the local sources will remain in the target
 # server.
@@ -996,16 +1004,21 @@ generate-protobuf: $(PROTOBUF_GENERATED_ERL_FILES)
 #
 # Note that, here, only the content of the 'src' and 'include' tree is
 # synchronised (e.g. not the makefiles, not the configuration files, etc. that
-# are elsewhere); see the next 'sync-all-to-server' target.
+# are elsewhere); see the next 'sync-all-to-server' target for a complete
+# transfer.
 #
-sync-sources-to-server: all
-	@echo "  Synchronising the selected source content of the $$(basename $$(pwd)) layer to $(WEB_SRV):$(CEYLAN_SYNC_TARGET_ROOT)"
-	@if [ -n "$(WEB_SRV)" ]; then if [ -n "$(CEYLAN_SYNC_TARGET_ROOT)" ]; then $(SYNC_TOOL) $(SYNC_OPT) src include $(WEB_SRV):$(CEYLAN_SYNC_TARGET_ROOT)/$$(basename $$(pwd)); else echo "Error, no CEYLAN_SYNC_TARGET_ROOT variable set." 1>&2; exit 4; fi; else echo "Error, no WEB_SRV variable set." 1>&2; exit 5; fi
-	@echo "(source synchronisation to $(WEB_SRV):$(CEYLAN_SYNC_TARGET_ROOT) done)"
+# Currently not wanting to trigger a rebuild that may fail: 'all' prerequisite
+# target commented out.
+#
+sync-sources-to-server:
+	@echo "  Synchronising the selected source content of the $$(basename $$(pwd)) layer to $(SYNC_HOST):$(CEYLAN_SYNC_TARGET_ROOT)"
+	@if [ -n "$(SYNC_HOST)" ]; then if [ -n "$(CEYLAN_SYNC_TARGET_ROOT)" ]; then $(SYNC_TOOL) $(SYNC_OPT) src include $(SYNC_HOST):$(CEYLAN_SYNC_TARGET_ROOT)/$$(basename $$(pwd)); else echo "Error, no CEYLAN_SYNC_TARGET_ROOT variable set." 1>&2; exit 4; fi; else echo "Error, no SYNC_HOST variable set." 1>&2; exit 5; fi
+	@echo "(source synchronisation to $(SYNC_HOST):$(CEYLAN_SYNC_TARGET_ROOT) done)"
 
 
 # To synchronise the full content of the current layer to the specified server
-# location, with no VCS commit involved.
+# location, as defined by "$(SYNC_HOST):$(CEYLAN_SYNC_TARGET_ROOT)" (run 'make
+# info-sync' to check), with no VCS commit involved.
 #
 # A rebuild is triggered just before, as the BEAM files are transferred as well:
 # on arrival timestamps may not be respected, and we want the right BEAMs to be
@@ -1013,9 +1026,9 @@ sync-sources-to-server: all
 # problem).
 #
 sync-all-to-server: all
-	@echo "  Synchronising the full content of the $$(basename $$(pwd)) layer to $(WEB_SRV):$(CEYLAN_SYNC_TARGET_ROOT)"
-	@if [ -n "$(WEB_SRV)" ]; then if [ -n "$(CEYLAN_SYNC_TARGET_ROOT)" ]; then $(SYNC_TOOL) $(SYNC_OPT) $(LAYER_TOP) $(WEB_SRV):$(CEYLAN_SYNC_TARGET_ROOT)/$$(basename $$(pwd)); else echo "Error, no CEYLAN_SYNC_TARGET_ROOT variable set." 1>&2; exit 4; fi; else echo "Error, no WEB_SRV variable set." 1>&2; exit 5; fi
-	@echo "(full synchronisation to $(WEB_SRV):$(CEYLAN_SYNC_TARGET_ROOT) done)"
+	@echo "  Synchronising the full content of the $$(basename $$(pwd)) layer to $(SYNC_HOST):$(CEYLAN_SYNC_TARGET_ROOT)"
+	@if [ -n "$(SYNC_HOST)" ]; then if [ -n "$(CEYLAN_SYNC_TARGET_ROOT)" ]; then $(SYNC_TOOL) $(SYNC_OPT) $(LAYER_TOP) $(SYNC_HOST):$(CEYLAN_SYNC_TARGET_ROOT)/$$(basename $$(pwd)); else echo "Error, no CEYLAN_SYNC_TARGET_ROOT variable set." 1>&2; exit 4; fi; else echo "Error, no SYNC_HOST variable set." 1>&2; exit 5; fi
+	@echo "(full synchronisation to $(SYNC_HOST):$(CEYLAN_SYNC_TARGET_ROOT) done)"
 
 
 
@@ -1079,6 +1092,22 @@ clean-api-alt-doc:
 	@echo "  Cleaning alternate generated API documentation"
 	@/bin/rm -rf "$(API_DOC_ALT_ROOT)" 2>/dev/null
 
+
+
+# Returns a comma-separated list of all directories containing Erlang source
+# files found recursively from the root of this layer.
+#
+# Useful to configure tools inspecting source files (for example output to be
+# inserted in the src_dirs entry of conf/buid_info.json)
+#
+# No need to take header files into account; removes the last comma:
+list-src-dirs:
+	@echo $$(for d in $$(find . \( -path ./_build -prune -o -path ./test -prune \) -o -name '*\.erl' -exec dirname '{}' ';' | sort | uniq); do echo "           \"$$d\","; done) | sed 's|,$$|\n|'
+
+
+# Same for the extra source directories:
+list-extra-src-dirs:
+	@echo $$(for d in $$(find test -path ./_build -prune -o -name '*\.erl' -exec dirname '{}' ';' | sort | uniq); do echo "           \"$$d\","; done) | sed 's|,$$|\n|'
 
 
 # Allows to generate a file listing all the types defined in the specified
@@ -1426,7 +1455,7 @@ info-sync:
 	@echo "SYNC_TARGET_GROUP= $(SYNC_TARGET_GROUP)"
 	@echo "SYNC_TARGET_GROUP_OPT= $(SYNC_TARGET_GROUP_OPT)"
 	@echo "SYNC_OPT = $(SYNC_OPT)"
-	@echo "WEB_SRV = $(WEB_SRV)"
+	@echo "SYNC_HOST = $(SYNC_HOST)"
 	@echo "CEYLAN_SYNC_TARGET_ROOT = $(CEYLAN_SYNC_TARGET_ROOT)"
 
 

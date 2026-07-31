@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -41,81 +41,81 @@ specified user duration, since having no more actor to schedule.
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+    ?case_start,
 
-	% Default simulation settings (50Hz, batch reproducible) are used, except
-	% for the name:
-	%
-	SimulationSettings = #simulation_settings{
+    % Default simulation settings (50Hz, batch reproducible) are used, except
+    % for the name:
+    %
+    SimulationSettings = #simulation_settings{
 
-		simulation_name=
-			"Initial actor programmatic and data-based creations test",
+        simulation_name=
+            "Initial actor programmatic and data-based creations test",
 
-		initialisation_files=[ "test-instances.init" ] },
-
-
-	% Default deployment settings (unavailable nodes allowed, on-the-fly
-	% generation of the deployment package requested), but computing hosts are
-	% specified (to be updated depending on your environment):
-	%
-	% (note that localhost is implied)
-	%
-	DeploymentSettings = #deployment_settings{
-
-		computing_hosts=
-			{ use_host_file_otherwise_local, "sim-diasca-host-candidates.etf" }
-
-	},
+        initialisation_files=[ "test-instances.init" ] },
 
 
-	% Default load balancing settings (round-robin placement heuristic):
-	LoadBalancingSettings = #load_balancing_settings{},
+    % Default deployment settings (unavailable nodes allowed, on-the-fly
+    % generation of the deployment package requested), but computing hosts are
+    % specified (to be updated depending on your environment):
+    %
+    % (note that localhost is implied)
+    %
+    DeploymentSettings = #deployment_settings{
+
+        computing_hosts=
+            { use_host_file_otherwise_local, "sim-diasca-host-candidates.etf" }
+
+    },
 
 
-	?test_notice_fmt( "This test will deploy a distributed simulation "
-		"based on computing hosts specified as ~p.",
-		[ DeploymentSettings#deployment_settings.computing_hosts ] ),
+    % Default load balancing settings (round-robin placement heuristic):
+    LoadBalancingSettings = #load_balancing_settings{},
 
 
-	% Directly created on the user node:
-	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-		DeploymentSettings, LoadBalancingSettings ),
-
-	?test_info( "Deployment manager created." ),
-
-	% No need to retrieve explicitly the load balancer, to create initial
-	% actors, yet useful for this test to monitor its state:
-
-	LoadBalancerPid = class_LoadBalancer:get_balancer(),
-
-	LoadBalancerPid ! { traceState, [ "at start-up, once the initialisation "
-									  "file has been read" ] },
-
-	?test_info( "Requesting the creation of a first programmatic initial "
-				"test actor." ),
-
-	_FirstActorPid = class_Actor:create_initial_actor( class_TestActor,
-		[ _FirstName="First programmatic test actor",
-		  _FirstSchedulingSettings={ erratic, 7 },
-		  _FirstCreationSettings=no_creation,
-		  _FirstTerminationTickOffset=80 ] ),
-
-	LoadBalancerPid ! { traceState,
-						[ "after first programmatic initial creation" ] },
+    ?test_notice_fmt( "This test will deploy a distributed simulation "
+        "based on computing hosts specified as ~p.",
+        [ DeploymentSettings#deployment_settings.computing_hosts ] ),
 
 
-	_SecondActorPid = class_Actor:create_initial_placed_actor( class_TestActor,
-		[ _SecondName="Second programmatic test actor",
-		  _SecondchedulingSettings={ erratic, 6 },
-		  _SecondCreationSettings=no_creation,
-		  _SecondTerminationTickOffset=100 ], my_second_placement_hint ),
+    % Directly created on the user node:
+    DeploymentManagerPid = sim_diasca:init( SimulationSettings,
+        DeploymentSettings, LoadBalancingSettings ),
 
-	LoadBalancerPid ! { traceState,
-						[ "after second programmatic initial creation" ] },
+    ?test_info( "Deployment manager created." ),
+
+    % No need to retrieve explicitly the load balancer, to create initial
+    % actors, yet useful for this test to monitor its state:
+
+    LoadBalancerPid = class_LoadBalancer:get_balancer(),
+
+    LoadBalancerPid ! { traceState, [ "at start-up, once the initialisation "
+                                      "file has been read" ] },
+
+    ?test_info( "Requesting the creation of a first programmatic initial "
+                "test actor." ),
+
+    _FirstActorPid = class_Actor:create_initial_actor( class_TestActor,
+        [ _FirstName="First programmatic test actor",
+          _FirstSchedulingSettings={ erratic, 7 },
+          _FirstCreationSettings=no_creation,
+          _FirstTerminationTickOffset=80 ] ),
+
+    LoadBalancerPid ! { traceState,
+                        [ "after first programmatic initial creation" ] },
 
 
-	ActorList = [ _ThirdActorPid, _FourthActorPid, _FifthActorPid ] =
-		class_Actor:create_initial_actors( [
+    _SecondActorPid = class_Actor:create_initial_placed_actor( class_TestActor,
+        [ _SecondName="Second programmatic test actor",
+          _SecondchedulingSettings={ erratic, 6 },
+          _SecondCreationSettings=no_creation,
+          _SecondTerminationTickOffset=100 ], my_second_placement_hint ),
+
+    LoadBalancerPid ! { traceState,
+                        [ "after second programmatic initial creation" ] },
+
+
+    ActorList = [ _ThirdActorPid, _FourthActorPid, _FifthActorPid ] =
+        class_Actor:create_initial_actors( [
 
             { class_TestActor, [ "Third programmatic actor", {erratic,5},
                                  no_creation, 120 ] },
@@ -127,48 +127,48 @@ run() ->
             { class_TestActor, [ "Fifth programmatic actor", {erratic,5},
                                  no_creation, 200 ] } ] ),
 
-	LoadBalancerPid ! { traceState,
-		[ "after third (multiple) programmatic initial creation" ] },
+    LoadBalancerPid ! { traceState,
+        [ "after third (multiple) programmatic initial creation" ] },
 
-	?test_notice_fmt( "Actor list created: ~p.", [ ActorList ] ),
+    ?test_notice_fmt( "Actor list created: ~p.", [ ActorList ] ),
 
-	DeploymentManagerPid ! { getRootTimeManager, [], self() },
-	RootTimeManagerPid = test_receive(),
+    DeploymentManagerPid ! { getRootTimeManager, [], self() },
+    RootTimeManagerPid = test_receive(),
 
-	LoadBalancerPid ! { traceState, [ "just before starting simulation" ] },
+    LoadBalancerPid ! { traceState, [ "just before starting simulation" ] },
 
-	?test_info( "Starting simulation." ),
-	RootTimeManagerPid ! { start, [ _StopTick=120, self() ] },
+    ?test_info( "Starting simulation." ),
+    RootTimeManagerPid ! { start, [ _StopTick=120, self() ] },
 
 
-	?test_info( "Requesting textual timings (first)." ),
+    ?test_info( "Requesting textual timings (first)." ),
 
-	RootTimeManagerPid ! { getTextualTimings, [], self() },
-	FirstTimingString = test_receive(),
+    RootTimeManagerPid ! { getTextualTimings, [], self() },
+    FirstTimingString = test_receive(),
 
-	?test_notice_fmt( "Received first time: ~ts.", [ FirstTimingString ] ),
+    ?test_notice_fmt( "Received first time: ~ts.", [ FirstTimingString ] ),
 
-	LoadBalancerPid ! { traceState, [ "possibly during simulation" ] },
+    LoadBalancerPid ! { traceState, [ "possibly during simulation" ] },
 
-	% Waits until simulation is finished:
-	receive
+    % Waits until simulation is finished:
+    receive
 
-		simulation_stopped ->
-			?test_info( "Simulation stopped spontaneously." )
+        simulation_stopped ->
+            ?test_info( "Simulation stopped spontaneously." )
 
-	end,
+    end,
 
-	LoadBalancerPid ! { traceState, [ "just after stopping simulation" ] },
+    LoadBalancerPid ! { traceState, [ "just after stopping simulation" ] },
 
-	?test_info( "Requesting textual timings (second)." ),
+    ?test_info( "Requesting textual timings (second)." ),
 
-	RootTimeManagerPid ! { getTextualTimings, [], self() },
-	SecondTimingString = test_receive(),
+    RootTimeManagerPid ! { getTextualTimings, [], self() },
+    SecondTimingString = test_receive(),
 
-	?test_notice_fmt( "Received second time: ~ts.", [ SecondTimingString ] ),
+    ?test_notice_fmt( "Received second time: ~ts.", [ SecondTimingString ] ),
 
-	LoadBalancerPid ! { traceState, [ "at shutdown" ] },
+    LoadBalancerPid ! { traceState, [ "at shutdown" ] },
 
-	sim_diasca:shutdown(),
+    sim_diasca:shutdown(),
 
-	?case_stop.
+    ?case_stop.

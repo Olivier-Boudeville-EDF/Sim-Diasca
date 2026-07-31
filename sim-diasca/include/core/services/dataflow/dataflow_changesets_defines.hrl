@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 EDF R&D
+% Copyright (C) 2016-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -60,13 +60,13 @@ The actual synchronisation events that may apply to the state of the simulation
 world (forward declarations).
 """.
 -type world_event() :: creation_event()
-					 | destruction_event()
-					 | association_event()
-					 | binary_association_event()
-					 | disassociation_event()
-					 | connection_event()
-					 | disconnection_event()
-					 | update_event().
+                     | destruction_event()
+                     | association_event()
+                     | binary_association_event()
+                     | disassociation_event()
+                     | connection_event()
+                     | disconnection_event()
+                     | update_event().
 
 
 
@@ -99,44 +99,44 @@ positive).
 %
 -record( creation_event, {
 
-	% The identifier of this world event:
-	id = undefined :: option( event_id() ),
+    % The identifier of this world event:
+    id = undefined :: option( event_id() ),
 
 
-	% A timestamp associated to the scheduling of this world event:
-	timestamp = undefined :: option( class_TimeManager:logical_timestamp() ),
+    % A timestamp associated to the scheduling of this world event:
+    timestamp = undefined :: option( class_TimeManager:logical_timestamp() ),
 
 
-	% The type (classname) of the dataflow object to which this event applies:
-	object_type :: dataflow_object_type(),
+    % The type (classname) of the dataflow object to which this event applies:
+    object_type :: dataflow_object_type(),
 
 
-	% The external identifier (if any) of the simulation object to be created in
-	% the dataflow:
-	%
-	external_id = undefined :: option( external_id() ),
+    % The external identifier (if any) of the simulation object to be created in
+    % the dataflow:
+    %
+    external_id = undefined :: option( external_id() ),
 
 
-	% The PID (if any, i.e. if already created) of the dataflow object
-	% corresponding to this creation:
-	%
-	object_pid = undefined :: option( object_pid() ),
+    % The PID (if any, i.e. if already created) of the dataflow object
+    % corresponding to this creation:
+    %
+    object_pid = undefined :: option( object_pid() ),
 
 
-	% The construction parameters that define this creation:
-	%
-	% (name omitted: this is the first construction parameter, and it
-	% corresponds to a (stringified version) of the external_id field)
-	%
-	construction_parameters :: wooper:construction_parameters(),
+    % The construction parameters that define this creation:
+    %
+    % (name omitted: this is the first construction parameter, and it
+    % corresponds to a (stringified version) of the external_id field)
+    %
+    construction_parameters :: wooper:construction_parameters(),
 
 
-	% The dataflow in which this creation is to happen:
-	dataflow_pid :: dataflow_pid(),
+    % The dataflow in which this creation is to happen:
+    dataflow_pid :: dataflow_pid(),
 
 
-	% The other events (if any) induced by this creation:
-	induced_events = [] :: [ world_event() ] } ).
+    % The other events (if any) induced by this creation:
+    induced_events = [] :: [ world_event() ] } ).
 
 
 -doc """
@@ -153,38 +153,38 @@ happen in the dataflow as well.
 %
 -record( destruction_event, {
 
-	% The identifier of this world event:
-	id = undefined :: option( event_id() ),
+    % The identifier of this world event:
+    id = undefined :: option( event_id() ),
 
 
-	% A timestamp associated to the scheduling of this world event:
-	timestamp = undefined :: option( class_TimeManager:logical_timestamp() ),
+    % A timestamp associated to the scheduling of this world event:
+    timestamp = undefined :: option( class_TimeManager:logical_timestamp() ),
 
 
-	% The type (classname) of the dataflow object to which this event applies:
-	object_type :: dataflow_object_type(),
+    % The type (classname) of the dataflow object to which this event applies:
+    object_type :: dataflow_object_type(),
 
 
-	% The external identifier (if any) of the simulation object to be created in
-	% the dataflow:
-	%
-	external_id = undefined :: option( external_id() ),
+    % The external identifier (if any) of the simulation object to be created in
+    % the dataflow:
+    %
+    external_id = undefined :: option( external_id() ),
 
 
-	% The PID (if any, i.e. if not yet deleted) of the dataflow object
-	% corresponding to this destruction:
-	%
-	object_pid = undefined :: option( object_pid() ),
+    % The PID (if any, i.e. if not yet deleted) of the dataflow object
+    % corresponding to this destruction:
+    %
+    object_pid = undefined :: option( object_pid() ),
 
 
-	% The dataflow in which this destruction is to happen:
-	% (at least useful to filter matches)
-	%
-	dataflow_pid :: dataflow_pid(),
+    % The dataflow in which this destruction is to happen:
+    % (at least useful to filter matches)
+    %
+    dataflow_pid :: dataflow_pid(),
 
 
-	% The other events (if any) induced by this destruction:
-	induced_events = [] :: [ world_event() ] } ).
+    % The other events (if any) induced by this destruction:
+    induced_events = [] :: [ world_event() ] } ).
 
 
 -doc """
@@ -208,8 +208,8 @@ The 'any_association_type' atom is a reserved value (type wildcard), no actual
 association type shall be named as such.
 """.
 -type association_type() :: 'peer_type_association'
-						  | 'any_association_type'
-						  | user_defined_association_type().
+                          | 'any_association_type'
+                          | user_defined_association_type().
 
 
 -doc "A user-defined type of association.".
@@ -235,46 +235,46 @@ other objects to which it may apply).
 %
 -record( association_event, {
 
-	% The identifier of this world event:
-	id = undefined :: option( event_id() ),
+    % The identifier of this world event:
+    id = undefined :: option( event_id() ),
 
 
-	% A timestamp associated to the scheduling of this world event:
-	timestamp = undefined :: option( class_TimeManager:logical_timestamp() ),
+    % A timestamp associated to the scheduling of this world event:
+    timestamp = undefined :: option( class_TimeManager:logical_timestamp() ),
 
 
-	% The type of this association (e.g. 'located_in_areas'):
-	association_type :: association_type(),
+    % The type of this association (e.g. 'located_in_areas'):
+    association_type :: association_type(),
 
 
-	% The type (classname) of the (source) dataflow object to which this event
-	% applies:
-	%
-	object_type :: dataflow_object_type(),
+    % The type (classname) of the (source) dataflow object to which this event
+    % applies:
+    %
+    object_type :: dataflow_object_type(),
 
 
-	% The external identifier (if any) of the (source) simulation object that is
-	% to be associated:
-	%
-	external_id = undefined :: option( external_id() ),
+    % The external identifier (if any) of the (source) simulation object that is
+    % to be associated:
+    %
+    external_id = undefined :: option( external_id() ),
 
 
-	% The PID of the (source) dataflow object that is to be associated:
-	object_pid = undefined :: option( object_pid() ),
+    % The PID of the (source) dataflow object that is to be associated:
+    object_pid = undefined :: option( object_pid() ),
 
 
-	% Any extra information applying to this association (e.g. to which other
-	% target dataflow objects it applies, etc.):
-	%
-	association_information :: association_info(),
+    % Any extra information applying to this association (e.g. to which other
+    % target dataflow objects it applies, etc.):
+    %
+    association_information :: association_info(),
 
 
-	% The dataflow in which this association is to happen:
-	dataflow_pid :: dataflow_pid(),
+    % The dataflow in which this association is to happen:
+    dataflow_pid :: dataflow_pid(),
 
 
-	% The other events (if any) induced by this association event:
-	induced_events = [] :: [ world_event() ] } ).
+    % The other events (if any) induced by this association event:
+    induced_events = [] :: [ world_event() ] } ).
 
 
 -doc """
@@ -296,60 +296,60 @@ object.
 %
 -record( binary_association_event, {
 
-	% The identifier of this world event:
-	id = undefined :: option( event_id() ),
+    % The identifier of this world event:
+    id = undefined :: option( event_id() ),
 
 
-	% A timestamp associated to the scheduling of this world event:
-	timestamp = undefined :: option( class_TimeManager:logical_timestamp() ),
+    % A timestamp associated to the scheduling of this world event:
+    timestamp = undefined :: option( class_TimeManager:logical_timestamp() ),
 
 
-	% The type of this association (e.g. 'located_in_district'):
-	association_type :: association_type(),
+    % The type of this association (e.g. 'located_in_district'):
+    association_type :: association_type(),
 
 
-	% The type (classname) of the source dataflow object to which this event
-	% applies:
-	%
-	source_object_type :: dataflow_object_type(),
+    % The type (classname) of the source dataflow object to which this event
+    % applies:
+    %
+    source_object_type :: dataflow_object_type(),
 
 
-	% The type (classname) of the target dataflow object to which this event
-	% applies:
-	%
-	target_object_type :: dataflow_object_type(),
+    % The type (classname) of the target dataflow object to which this event
+    % applies:
+    %
+    target_object_type :: dataflow_object_type(),
 
 
-	% The external identifier (if any) of the source simulation object that is
-	% to be associated:
-	%
-	source_external_id = undefined :: option( external_id() ),
+    % The external identifier (if any) of the source simulation object that is
+    % to be associated:
+    %
+    source_external_id = undefined :: option( external_id() ),
 
 
-	% The external identifier (if any) of the target simulation object that is
-	% to be associated:
-	%
-	target_external_id = undefined :: option( external_id() ),
+    % The external identifier (if any) of the target simulation object that is
+    % to be associated:
+    %
+    target_external_id = undefined :: option( external_id() ),
 
 
-	% The PID of the source dataflow object that is to be associated:
-	source_object_pid = undefined :: option( object_pid() ),
+    % The PID of the source dataflow object that is to be associated:
+    source_object_pid = undefined :: option( object_pid() ),
 
 
-	% The PID of the target dataflow object that is to be associated:
-	target_object_pid = undefined :: option( object_pid() ),
+    % The PID of the target dataflow object that is to be associated:
+    target_object_pid = undefined :: option( object_pid() ),
 
 
-	% Any extra information applying to this association.
-	association_information = undefined :: option( association_info() ),
+    % Any extra information applying to this association.
+    association_information = undefined :: option( association_info() ),
 
 
-	% The dataflow in which this association is to happen:
-	dataflow_pid :: dataflow_pid(),
+    % The dataflow in which this association is to happen:
+    dataflow_pid :: dataflow_pid(),
 
 
-	% The other events (if any) induced by this association event:
-	induced_events = [] :: [ world_event() ] } ).
+    % The other events (if any) induced by this association event:
+    induced_events = [] :: [ world_event() ] } ).
 
 
 -doc """
@@ -377,40 +377,40 @@ BuildingExternalId}.
 %
 -record( disassociation_event, {
 
-	% The identifier of this world event:
-	id = undefined :: option( event_id() ),
+    % The identifier of this world event:
+    id = undefined :: option( event_id() ),
 
 
-	% A timestamp associated to the scheduling of this world event:
-	timestamp = undefined :: option( class_TimeManager:logical_timestamp() ),
+    % A timestamp associated to the scheduling of this world event:
+    timestamp = undefined :: option( class_TimeManager:logical_timestamp() ),
 
 
-	% The type (classname) of the dataflow object to which this event applies:
-	object_type :: dataflow_object_type(),
+    % The type (classname) of the dataflow object to which this event applies:
+    object_type :: dataflow_object_type(),
 
 
-	% The external identifier (if any) of the simulation object that is to be
-	% disassociated:
-	%
-	external_id = undefined :: option( external_id() ),
+    % The external identifier (if any) of the simulation object that is to be
+    % disassociated:
+    %
+    external_id = undefined :: option( external_id() ),
 
 
-	% The PID of the dataflow object that is to be disassociated:
-	object_pid = undefined :: option( object_pid() ),
+    % The PID of the dataflow object that is to be disassociated:
+    object_pid = undefined :: option( object_pid() ),
 
 
-	% Any information applying to this disassociation (e.g. the type/name of the
-	% former association, to which other dataflow objects it applied, etc.)
-	%
-	disassociation_information :: disassociation_info(),
+    % Any information applying to this disassociation (e.g. the type/name of the
+    % former association, to which other dataflow objects it applied, etc.)
+    %
+    disassociation_information :: disassociation_info(),
 
 
-	% The dataflow in which this disassociation is to happen:
-	dataflow_pid :: dataflow_pid(),
+    % The dataflow in which this disassociation is to happen:
+    dataflow_pid :: dataflow_pid(),
 
 
-	% The other events (if any) induced by this disassociation event:
-	induced_events = [] :: [ world_event() ] } ).
+    % The other events (if any) induced by this disassociation event:
+    induced_events = [] :: [ world_event() ] } ).
 
 
 -doc """
@@ -428,69 +428,69 @@ involved in the simulation, which shall happen in the dataflow as well.
 %
 -record( connection_event, {
 
-	% The identifier of this world event:
-	id = undefined :: option( event_id() ),
+    % The identifier of this world event:
+    id = undefined :: option( event_id() ),
 
 
-	% A timestamp associated to the scheduling of this world event:
-	timestamp = undefined :: option( class_TimeManager:logical_timestamp() ),
+    % A timestamp associated to the scheduling of this world event:
+    timestamp = undefined :: option( class_TimeManager:logical_timestamp() ),
 
 
-	% The type (classname) of the dataflow block which is at the source endpoint
-	% of the channel.
-	%
-	source_block_type :: block_type(),
+    % The type (classname) of the dataflow block which is at the source endpoint
+    % of the channel.
+    %
+    source_block_type :: block_type(),
 
 
-	% The type (classname) of the dataflow block which is at the target endpoint
-	% of the channel.
-	%
-	target_block_type :: block_type(),
+    % The type (classname) of the dataflow block which is at the target endpoint
+    % of the channel.
+    %
+    target_block_type :: block_type(),
 
 
-	% The external identifier (if any) of the dataflow block which is at the
-	% source endpoint of the channel.
-	%
-	source_external_id = undefined :: option( external_id() ),
+    % The external identifier (if any) of the dataflow block which is at the
+    % source endpoint of the channel.
+    %
+    source_external_id = undefined :: option( external_id() ),
 
 
-	% The external identifier (if any) of the dataflow block which is at the
-	% target endpoint of the channel.
-	%
-	target_external_id = undefined :: option( external_id() ),
+    % The external identifier (if any) of the dataflow block which is at the
+    % target endpoint of the channel.
+    %
+    target_external_id = undefined :: option( external_id() ),
 
 
 
-	% The PID of the dataflow block which is at the source endpoint of the
-	% channel.
-	%
-	source_block_pid = undefined :: option( object_pid() ),
+    % The PID of the dataflow block which is at the source endpoint of the
+    % channel.
+    %
+    source_block_pid = undefined :: option( object_pid() ),
 
 
-	% The PID of the dataflow block which is at the target endpoint of the
-	% channel.
-	%
-	target_block_pid = undefined :: option( object_pid() ),
+    % The PID of the dataflow block which is at the target endpoint of the
+    % channel.
+    %
+    target_block_pid = undefined :: option( object_pid() ),
 
 
-	% The name of the output port of the source dataflow block from which the
-	% channel will be created.
-	%
-	output_port_name :: output_port_string_name(),
+    % The name of the output port of the source dataflow block from which the
+    % channel will be created.
+    %
+    output_port_name :: output_port_string_name(),
 
 
-	% The name of the input port of the target dataflow block to which the
-	% channel will be created.
-	%
-	input_port_name :: input_port_string_name(),
+    % The name of the input port of the target dataflow block to which the
+    % channel will be created.
+    %
+    input_port_name :: input_port_string_name(),
 
 
-	% The dataflow in which this connection is to happen:
-	dataflow_pid :: dataflow_pid(),
+    % The dataflow in which this connection is to happen:
+    dataflow_pid :: dataflow_pid(),
 
 
-	% The other events (if any) induced by this connection:
-	induced_events = [] :: [ world_event() ] } ).
+    % The other events (if any) induced by this connection:
+    induced_events = [] :: [ world_event() ] } ).
 
 
 -doc """
@@ -509,69 +509,69 @@ dataflow block.
 %
 -record( disconnection_event, {
 
-	% The identifier of this world event:
-	id = undefined :: option( event_id() ),
+    % The identifier of this world event:
+    id = undefined :: option( event_id() ),
 
 
-	% A timestamp associated to the scheduling of this world event:
-	timestamp = undefined :: option( class_TimeManager:logical_timestamp() ),
+    % A timestamp associated to the scheduling of this world event:
+    timestamp = undefined :: option( class_TimeManager:logical_timestamp() ),
 
 
-	% The type (classname) of the dataflow block which was at the source
-	% endpoint of the channel.
-	%
-	source_block_type :: block_type(),
+    % The type (classname) of the dataflow block which was at the source
+    % endpoint of the channel.
+    %
+    source_block_type :: block_type(),
 
 
-	% The type (classname) of the dataflow block which was at the target
-	% endpoint of the channel.
-	%
-	target_block_type :: block_type(),
+    % The type (classname) of the dataflow block which was at the target
+    % endpoint of the channel.
+    %
+    target_block_type :: block_type(),
 
 
-	% The external identifier (if any) of the dataflow block which was at the
-	% source endpoint of the channel.
-	%
-	source_external_id = undefined :: option( external_id() ),
+    % The external identifier (if any) of the dataflow block which was at the
+    % source endpoint of the channel.
+    %
+    source_external_id = undefined :: option( external_id() ),
 
 
-	% The external identifier (if any) of the dataflow block which was at the
-	% target endpoint of the channel.
-	%
-	target_external_id = undefined :: option( external_id() ),
+    % The external identifier (if any) of the dataflow block which was at the
+    % target endpoint of the channel.
+    %
+    target_external_id = undefined :: option( external_id() ),
 
 
 
-	% The PID of the dataflow block which was at the source endpoint of the
-	% channel.
-	%
-	source_block_pid = undefined :: option( object_pid() ),
+    % The PID of the dataflow block which was at the source endpoint of the
+    % channel.
+    %
+    source_block_pid = undefined :: option( object_pid() ),
 
 
-	% The PID of the dataflow block which was at the target endpoint of the
-	% channel.
-	%
-	target_block_pid = undefined :: option( object_pid() ),
+    % The PID of the dataflow block which was at the target endpoint of the
+    % channel.
+    %
+    target_block_pid = undefined :: option( object_pid() ),
 
 
-	% The name of the output port of the source dataflow block from which the
-	% channel will be deleted.
-	%
-	output_port_name :: output_port_string_name(),
+    % The name of the output port of the source dataflow block from which the
+    % channel will be deleted.
+    %
+    output_port_name :: output_port_string_name(),
 
 
-	% The name of the input port of the target dataflow block to which the
-	% channel will be deleted.
-	%
-	input_port_name :: input_port_string_name(),
+    % The name of the input port of the target dataflow block to which the
+    % channel will be deleted.
+    %
+    input_port_name :: input_port_string_name(),
 
 
-	% The dataflow in which this disconnection is to happen:
-	dataflow_pid :: dataflow_pid(),
+    % The dataflow in which this disconnection is to happen:
+    dataflow_pid :: dataflow_pid(),
 
 
-	% The other events (if any) induced by this disconnection:
-	induced_events = [] :: [ world_event() ] } ).
+    % The other events (if any) induced by this disconnection:
+    induced_events = [] :: [ world_event() ] } ).
 
 
 -doc """
@@ -589,44 +589,44 @@ dataflow block.
 %
 -record( update_event, {
 
-	% The identifier of this world event:
-	id = undefined :: option( event_id() ),
+    % The identifier of this world event:
+    id = undefined :: option( event_id() ),
 
 
-	% A timestamp associated to the scheduling of this world event:
-	timestamp = undefined :: option( class_TimeManager:logical_timestamp() ),
+    % A timestamp associated to the scheduling of this world event:
+    timestamp = undefined :: option( class_TimeManager:logical_timestamp() ),
 
 
-	% The type (classname) of the dataflow object to which this event applies:
-	object_type :: dataflow_object_type(),
+    % The type (classname) of the dataflow object to which this event applies:
+    object_type :: dataflow_object_type(),
 
 
-	% The external identifier (if any) of the simulation object to be created in
-	% the dataflow:
-	%
-	external_id = undefined :: option( external_id() ),
+    % The external identifier (if any) of the simulation object to be created in
+    % the dataflow:
+    %
+    external_id = undefined :: option( external_id() ),
 
 
-	% The PID (if any, i.e. if already created) of the dataflow object
-	% corresponding to this update:
-	%
-	object_pid = undefined :: option( object_pid() ),
+    % The PID (if any, i.e. if already created) of the dataflow object
+    % corresponding to this update:
+    %
+    object_pid = undefined :: option( object_pid() ),
 
 
-	% A list of the attribute update pairs, i.e. a list containing
-	% {AttributeName,NewAttributeValue} pairs.
-	%
-	updates = [] :: [ class_DataflowObject:attribute_update() ],
+    % A list of the attribute update pairs, i.e. a list containing
+    % {AttributeName,NewAttributeValue} pairs.
+    %
+    updates = [] :: [ class_DataflowObject:attribute_update() ],
 
 
-	% The dataflow in which this update is to happen: (at least useful to filter
-	% matches)
-	%
-	dataflow_pid :: dataflow_pid(),
+    % The dataflow in which this update is to happen: (at least useful to filter
+    % matches)
+    %
+    dataflow_pid :: dataflow_pid(),
 
 
-	% The other events (if any) induced by this update:
-	induced_events = [] :: [ world_event() ] } ).
+    % The other events (if any) induced by this update:
+    induced_events = [] :: [ world_event() ] } ).
 
 
 -doc """
@@ -679,7 +679,7 @@ embed.
 Allows to match creation events based on the construction parameters they embed.
 """.
 -type construction_parameters_match() :: wooper:construction_parameters()
-									   | 'any_construction_parameters'.
+                                       | 'any_construction_parameters'.
 
 
 -doc """
@@ -700,7 +700,7 @@ Allows to match (disassociation) events based on the disassociation information
 they embed.
 """.
 -type disassociation_info_match() ::
-		disassociation_info() | 'any_disassociation_info'.
+        disassociation_info() | 'any_disassociation_info'.
 
 
 
@@ -715,7 +715,7 @@ they operate on.
 Allows to match (update) events based on the (ordered) updates that they embed.
 """.
 -type attribute_update_match() ::
-		[ class_DataflowObject:attribute_update() ] | 'any_attribute_update'.
+        [ class_DataflowObject:attribute_update() ] | 'any_attribute_update'.
 
 
 
@@ -724,14 +724,14 @@ Allows the unit managers to define to which synchronisation events they may be
 receptive.
 """.
 -type event_match() :: creation_event_match()
-					 | destruction_event_match()
-					 | association_event_match()
-					 | binary_association_event_match()
-					 | disassociation_event_match()
-					 | connection_event_match()
-					 | disconnection_event_match()
-					 | update_event_match()
-					 | 'any_event_type'.
+                     | destruction_event_match()
+                     | association_event_match()
+                     | binary_association_event_match()
+                     | disassociation_event_match()
+                     | connection_event_match()
+                     | disconnection_event_match()
+                     | update_event_match()
+                     | 'any_event_type'.
 
 
 
@@ -748,25 +748,25 @@ receptive.
 % The description of a possible match in terms of creation events.
 -record( creation_event_match, {
 
-	% If the type of the created object matters for the match:
-	object_type_match = any_object_type :: object_type_match(),
+    % If the type of the created object matters for the match:
+    object_type_match = any_object_type :: object_type_match(),
 
 
-	% If the external identifier of the created object matters for the match:
-	external_id_match = any_external_id :: external_id_match(),
+    % If the external identifier of the created object matters for the match:
+    external_id_match = any_external_id :: external_id_match(),
 
 
-	% If the (Erlang) PID of the created object matters for the match:
-	object_pid_match = any_object_pid :: object_pid_match(),
+    % If the (Erlang) PID of the created object matters for the match:
+    object_pid_match = any_object_pid :: object_pid_match(),
 
 
-	% If the construction parameters matter for the match:
-	construction_parameters_match =
-		any_construction_parameters :: construction_parameters_match(),
+    % If the construction parameters matter for the match:
+    construction_parameters_match =
+        any_construction_parameters :: construction_parameters_match(),
 
 
-	% If the (Erlang) PID of the associated dataflow matters for the match:
-	dataflow_pid_match = any_dataflow_pid :: dataflow_pid_match() } ).
+    % If the (Erlang) PID of the associated dataflow matters for the match:
+    dataflow_pid_match = any_dataflow_pid :: dataflow_pid_match() } ).
 
 
 -doc "The description of a possible match in terms of creation events.".
@@ -778,20 +778,20 @@ receptive.
 % The description of a possible match in terms of destruction events.
 -record( destruction_event_match, {
 
-	% If the type of the deleted object matters for the match:
-	object_type_match = any_object_type :: object_type_match(),
+    % If the type of the deleted object matters for the match:
+    object_type_match = any_object_type :: object_type_match(),
 
 
-	% If the external identifier of the deleted object matters for the match:
-	external_id_match = any_external_id :: external_id_match(),
+    % If the external identifier of the deleted object matters for the match:
+    external_id_match = any_external_id :: external_id_match(),
 
 
-	% If the (Erlang) PID of the deleted object matters for the match:
-	object_pid_match = any_object_pid :: object_pid_match(),
+    % If the (Erlang) PID of the deleted object matters for the match:
+    object_pid_match = any_object_pid :: object_pid_match(),
 
 
-	% If the (Erlang) PID of the associated dataflow matters for the match:
-	dataflow_pid_match = any_dataflow_pid :: dataflow_pid_match() } ).
+    % If the (Erlang) PID of the associated dataflow matters for the match:
+    dataflow_pid_match = any_dataflow_pid :: dataflow_pid_match() } ).
 
 
 -doc "The description of a possible match in terms of destruction events.".
@@ -803,24 +803,24 @@ receptive.
 % The description of a possible match in terms of association events.
 -record( association_event_match, {
 
-	% If the type of the associated object matters for the match:
-	object_type_match = any_object_type :: object_type_match(),
+    % If the type of the associated object matters for the match:
+    object_type_match = any_object_type :: object_type_match(),
 
 
-	% If the external identifier of the associated object matters for the match:
-	external_id_match = any_external_id :: external_id_match(),
+    % If the external identifier of the associated object matters for the match:
+    external_id_match = any_external_id :: external_id_match(),
 
 
-	% If the (Erlang) PID of the associated object matters for the match:
-	object_pid_match = any_object_pid :: object_pid_match(),
+    % If the (Erlang) PID of the associated object matters for the match:
+    object_pid_match = any_object_pid :: object_pid_match(),
 
 
-	% If the information applying to this association matters for the match:
-	association_info_match = any_association_info :: association_info_match(),
+    % If the information applying to this association matters for the match:
+    association_info_match = any_association_info :: association_info_match(),
 
 
-	% If the (Erlang) PID of the associated dataflow matters for the match:
-	dataflow_pid_match = any_dataflow_pid :: dataflow_pid_match() } ).
+    % If the (Erlang) PID of the associated dataflow matters for the match:
+    dataflow_pid_match = any_dataflow_pid :: dataflow_pid_match() } ).
 
 
 -doc "The description of a possible match in terms of association events.".
@@ -832,48 +832,48 @@ receptive.
 % The description of a possible match in terms of binary association events.
 -record( binary_association_event_match, {
 
-	% If the type of the association matters for the match:
-	association_type_match = any_association_type
-			:: association_type_match(),
+    % If the type of the association matters for the match:
+    association_type_match = any_association_type
+            :: association_type_match(),
 
 
-	% If the type of the source associated object matters for the match:
-	source_object_type_match = any_object_type :: object_type_match(),
+    % If the type of the source associated object matters for the match:
+    source_object_type_match = any_object_type :: object_type_match(),
 
 
-	% If the type of the target associated object matters for the match:
-	target_object_type_match = any_object_type :: object_type_match(),
-
-
-
-	% If the external identifier of the source associated object matters for the
-	% match:
-	%
-	source_external_id_match = any_external_id :: external_id_match(),
-
-
-	% If the external identifier of the target associated object matters for the
-	% match:
-	%
-	target_external_id_match = any_external_id :: external_id_match(),
+    % If the type of the target associated object matters for the match:
+    target_object_type_match = any_object_type :: object_type_match(),
 
 
 
-	% If the (Erlang) PID of the source associated object matters for the match:
-	source_object_pid_match = any_object_pid :: object_pid_match(),
+    % If the external identifier of the source associated object matters for the
+    % match:
+    %
+    source_external_id_match = any_external_id :: external_id_match(),
 
 
-	% If the (Erlang) PID of the target associated object matters for the match:
-	target_object_pid_match = any_object_pid :: object_pid_match(),
+    % If the external identifier of the target associated object matters for the
+    % match:
+    %
+    target_external_id_match = any_external_id :: external_id_match(),
 
 
 
-	% If the information applying to this association matters for the match:
-	association_info_match = any_association_info :: association_info_match(),
+    % If the (Erlang) PID of the source associated object matters for the match:
+    source_object_pid_match = any_object_pid :: object_pid_match(),
 
 
-	% If the (Erlang) PID of the associated dataflow matters for the match:
-	dataflow_pid_match = any_dataflow_pid :: dataflow_pid_match() } ).
+    % If the (Erlang) PID of the target associated object matters for the match:
+    target_object_pid_match = any_object_pid :: object_pid_match(),
+
+
+
+    % If the information applying to this association matters for the match:
+    association_info_match = any_association_info :: association_info_match(),
+
+
+    % If the (Erlang) PID of the associated dataflow matters for the match:
+    dataflow_pid_match = any_dataflow_pid :: dataflow_pid_match() } ).
 
 
 -doc """
@@ -886,25 +886,25 @@ The description of a possible match in terms of binary association events.
 % The description of a possible match in terms of disassociation events.
 -record( disassociation_event_match, {
 
-	% If the type of the associated object matters for the match:
-	object_type_match = any_object_type :: object_type_match(),
+    % If the type of the associated object matters for the match:
+    object_type_match = any_object_type :: object_type_match(),
 
 
-	% If the external identifier of the associated object matters for the match:
-	external_id_match = any_external_id :: external_id_match(),
+    % If the external identifier of the associated object matters for the match:
+    external_id_match = any_external_id :: external_id_match(),
 
 
-	% If the (Erlang) PID of the associated object matters for the match:
-	object_pid_match = any_object_pid :: object_pid_match(),
+    % If the (Erlang) PID of the associated object matters for the match:
+    object_pid_match = any_object_pid :: object_pid_match(),
 
 
-	% If the information applying to this disassociation matters for the match:
-	disassociation_info_match =
-		any_disassociation_info :: disassociation_info_match(),
+    % If the information applying to this disassociation matters for the match:
+    disassociation_info_match =
+        any_disassociation_info :: disassociation_info_match(),
 
 
-	% If the (Erlang) PID of the associated dataflow matters for the match:
-	dataflow_pid_match = any_dataflow_pid :: dataflow_pid_match() } ).
+    % If the (Erlang) PID of the associated dataflow matters for the match:
+    dataflow_pid_match = any_dataflow_pid :: dataflow_pid_match() } ).
 
 
 -doc "The description of a possible match in terms of disassociation events".
@@ -916,45 +916,45 @@ The description of a possible match in terms of binary association events.
 % The description of a possible match in terms of connection events.
 -record( connection_event_match, {
 
-	% If the type of the source block matters for the connection:
-	source_block_type_match = any_block_type :: block_type_match(),
+    % If the type of the source block matters for the connection:
+    source_block_type_match = any_block_type :: block_type_match(),
 
 
-	% If the type of the target block matters for the connection:
-	target_block_type_match = any_block_type :: block_type_match(),
-
-
-
-	% If the external identifier of the source block matters for the match:
-	source_external_id_match = any_external_id :: external_id_match(),
-
-
-	% If the external identifier of the target block matters for the match:
-	target_external_id_match = any_external_id :: external_id_match(),
+    % If the type of the target block matters for the connection:
+    target_block_type_match = any_block_type :: block_type_match(),
 
 
 
-	% If the (Erlang) PID of the source block matters for the match:
-	source_block_pid_match = any_block_pid :: block_pid_match(),
+    % If the external identifier of the source block matters for the match:
+    source_external_id_match = any_external_id :: external_id_match(),
 
 
-	% If the (Erlang) PID of the target block matters for the match:
-	target_block_pid_match = any_block_pid :: block_pid_match(),
-
-
-
-	% If the name of the output port of the source block matters for the match:
-	output_port_name_match = any_port_name :: port_name_match(),
-
-
-	% If the name of the input port of the target block matters for the
-	% match:
-	input_port_name_match = any_port_name :: port_name_match(),
+    % If the external identifier of the target block matters for the match:
+    target_external_id_match = any_external_id :: external_id_match(),
 
 
 
-	% If the (Erlang) PID of the associated dataflow matters for the match:
-	dataflow_pid_match = any_dataflow_pid :: dataflow_pid_match() } ).
+    % If the (Erlang) PID of the source block matters for the match:
+    source_block_pid_match = any_block_pid :: block_pid_match(),
+
+
+    % If the (Erlang) PID of the target block matters for the match:
+    target_block_pid_match = any_block_pid :: block_pid_match(),
+
+
+
+    % If the name of the output port of the source block matters for the match:
+    output_port_name_match = any_port_name :: port_name_match(),
+
+
+    % If the name of the input port of the target block matters for the
+    % match:
+    input_port_name_match = any_port_name :: port_name_match(),
+
+
+
+    % If the (Erlang) PID of the associated dataflow matters for the match:
+    dataflow_pid_match = any_dataflow_pid :: dataflow_pid_match() } ).
 
 
 -doc "The description of a possible match in terms of connection events.".
@@ -966,43 +966,43 @@ The description of a possible match in terms of binary association events.
 % The description of a possible match in terms of disconnection events.
 -record( disconnection_event_match, {
 
-	% If the type of the source block matters for the disconnection:
-	source_block_type_match = any_block_type :: block_type_match(),
+    % If the type of the source block matters for the disconnection:
+    source_block_type_match = any_block_type :: block_type_match(),
 
 
-	% If the type of the target block matters for the disconnection:
-	target_block_type_match = any_block_type :: block_type_match(),
-
-
-
-	% If the external identifier of the source block matters for the match:
-	source_external_id_match = any_external_id :: external_id_match(),
-
-
-	% If the external identifier of the target block matters for the match:
-	target_external_id_match = any_external_id :: external_id_match(),
+    % If the type of the target block matters for the disconnection:
+    target_block_type_match = any_block_type :: block_type_match(),
 
 
 
-	% If the (Erlang) PID of the source block matters for the match:
-	source_block_pid_match = any_block_pid :: block_pid_match(),
+    % If the external identifier of the source block matters for the match:
+    source_external_id_match = any_external_id :: external_id_match(),
 
 
-	% If the (Erlang) PID of the target block matters for the match:
-	target_block_pid_match = any_block_pid :: block_pid_match(),
+    % If the external identifier of the target block matters for the match:
+    target_external_id_match = any_external_id :: external_id_match(),
 
 
 
-	% If the name of the output port of the source block matters for the match:
-	output_port_name_match = any_port_name :: port_name_match(),
+    % If the (Erlang) PID of the source block matters for the match:
+    source_block_pid_match = any_block_pid :: block_pid_match(),
 
 
-	% If the name of the input port of the target block matters for the match:
-	input_port_name_match = any_port_name :: port_name_match(),
+    % If the (Erlang) PID of the target block matters for the match:
+    target_block_pid_match = any_block_pid :: block_pid_match(),
 
 
-	% If the (Erlang) PID of the associated dataflow matters for the match:
-	dataflow_pid_match = any_dataflow_pid :: dataflow_pid_match() } ).
+
+    % If the name of the output port of the source block matters for the match:
+    output_port_name_match = any_port_name :: port_name_match(),
+
+
+    % If the name of the input port of the target block matters for the match:
+    input_port_name_match = any_port_name :: port_name_match(),
+
+
+    % If the (Erlang) PID of the associated dataflow matters for the match:
+    dataflow_pid_match = any_dataflow_pid :: dataflow_pid_match() } ).
 
 
 -doc "The description of a possible match in terms of disconnection events.".
@@ -1014,24 +1014,24 @@ The description of a possible match in terms of binary association events.
 % The description of a possible match in terms of update events.
 -record( update_event_match, {
 
-	% If the type of the updated object matters for the match:
-	object_type_match = any_object_type :: object_type_match(),
+    % If the type of the updated object matters for the match:
+    object_type_match = any_object_type :: object_type_match(),
 
 
-	% If the external identifier of the updated object matters for the match:
-	external_id_match = any_external_id :: external_id_match(),
+    % If the external identifier of the updated object matters for the match:
+    external_id_match = any_external_id :: external_id_match(),
 
 
-	% If the (Erlang) PID of the updated object matters for the match:
-	object_pid_match = any_object_pid :: object_pid_match(),
+    % If the (Erlang) PID of the updated object matters for the match:
+    object_pid_match = any_object_pid :: object_pid_match(),
 
 
-	% If the actual attribute updates matter for the match:
-	attribute_update_match = any_attribute_update :: attribute_update_match(),
+    % If the actual attribute updates matter for the match:
+    attribute_update_match = any_attribute_update :: attribute_update_match(),
 
 
-	% If the (Erlang) PID of the associated dataflow matters for the match:
-	dataflow_pid_match :: dataflow_pid_match() } ).
+    % If the (Erlang) PID of the associated dataflow matters for the match:
+    dataflow_pid_match :: dataflow_pid_match() } ).
 
 
 -doc "The description of a possible match in terms of update events.".

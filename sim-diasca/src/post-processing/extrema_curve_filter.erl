@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2025 EDF R&D
+% Copyright (C) 2011-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -45,86 +45,86 @@ We specify at creation the name of that curve.
 -spec create( ustring(), [] ) -> 'ok' | { 'onFilterEnded', pid() }.
 create( CurveName, [] ) ->
 
-	% The state of that process is the name of the curve, and respectively
-	% {MinValue, MinTicks} and {MaxValue, MaxTicks} pairs.
-	%
-	filter_loop( CurveName, { undefined, undefined },
-				 { undefined, undefined } ).
+    % The state of that process is the name of the curve, and respectively
+    % {MinValue, MinTicks} and {MaxValue, MaxTicks} pairs.
+    %
+    filter_loop( CurveName, { undefined, undefined },
+                 { undefined, undefined } ).
 
 
 % (helper)
 filter_loop( CurveName, MinE={ MinValue, MinTicks },
-			 MaxE={ MaxValue, MaxTicks } ) ->
+             MaxE={ MaxValue, MaxTicks } ) ->
 
-	receive
+    receive
 
-		{ setSample, [ Tick, Value ] } ->
+        { setSample, [ Tick, Value ] } ->
 
-			NewMinEntry = case MinValue of
+            NewMinEntry = case MinValue of
 
-				undefined ->
-					{ Value, [ Tick ] };
+                undefined ->
+                    { Value, [ Tick ] };
 
-				Value ->
-					{ Value, [ Tick | MinTicks ] };
+                Value ->
+                    { Value, [ Tick | MinTicks ] };
 
-				Vi when Vi > Value ->
-					{ Value, [ Tick ] };
+                Vi when Vi > Value ->
+                    { Value, [ Tick ] };
 
-				_ ->
-					MinE
+                _ ->
+                    MinE
 
-			end,
+            end,
 
-			NewMaxEntry = case MaxValue of
+            NewMaxEntry = case MaxValue of
 
-				undefined ->
-					{ Value, [ Tick ] };
+                undefined ->
+                    { Value, [ Tick ] };
 
-				Value ->
-					{ Value, [ Tick | MaxTicks ] };
+                Value ->
+                    { Value, [ Tick | MaxTicks ] };
 
-				Va when Va < Value  ->
-					{ Value, [ Tick ] };
+                Va when Va < Value  ->
+                    { Value, [ Tick ] };
 
-				_ ->
-					MaxE
+                _ ->
+                    MaxE
 
-			end,
+            end,
 
-			filter_loop( CurveName, NewMinEntry, NewMaxEntry );
+            filter_loop( CurveName, NewMinEntry, NewMaxEntry );
 
 
-		{ onEndOfCurveData, ScannerPid } ->
+        { onEndOfCurveData, ScannerPid } ->
 
-			%io:format( "Min entry = ~p, max = ~p.~n", [ MinE, MaxE ] ),
+            %io:format( "Min entry = ~p, max = ~p.~n", [ MinE, MaxE ] ),
 
-			% Either Min and Max are both defined, or none:
-			case MinValue of
+            % Either Min and Max are both defined, or none:
+            case MinValue of
 
-				undefined ->
-					io:format( "The curve '~ts' had not recorded value, "
-						"thus no extremum could be determined.~n",
-						[ CurveName ] );
+                undefined ->
+                    io:format( "The curve '~ts' had not recorded value, "
+                        "thus no extremum could be determined.~n",
+                        [ CurveName ] );
 
-				_ ->
-					io:format( "The curve '~ts' had for minimum value ~f, "
-						"which was reached ~B times, at ticks ~w, and "
-						"for maximum value ~f, "
-						"which was reached ~B times, at ticks ~w.~n~n",
-						[ CurveName, MinValue, length( MinTicks ),
-						  lists:reverse( MinTicks ), MaxValue,
-						  length( MaxTicks ), lists:reverse( MaxTicks ) ] )
+                _ ->
+                    io:format( "The curve '~ts' had for minimum value ~f, "
+                        "which was reached ~B times, at ticks ~w, and "
+                        "for maximum value ~f, "
+                        "which was reached ~B times, at ticks ~w.~n~n",
+                        [ CurveName, MinValue, length( MinTicks ),
+                          lists:reverse( MinTicks ), MaxValue,
+                          length( MaxTicks ), lists:reverse( MaxTicks ) ] )
 
-			% Terminating.
-			end,
+            % Terminating.
+            end,
 
-			ScannerPid ! { onFilterEnded, self() };
+            ScannerPid ! { onFilterEnded, self() };
 
-		delete ->
-			ok;
+        delete ->
+            ok;
 
-		Other ->
-			throw( { unexpected_curve_filter_message, Other } )
+        Other ->
+            throw( { unexpected_curve_filter_message, Other } )
 
-	end.
+    end.

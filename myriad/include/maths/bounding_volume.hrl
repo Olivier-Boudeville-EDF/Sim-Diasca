@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2025 Olivier Boudeville
+% Copyright (C) 2010-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -49,25 +49,25 @@
 %
 -record( right_cuboid, {
 
-	% The base vertex of the cuboid, its bottom-left-near vertex:
-	base_vertex :: point3:point3(),
+    % The base vertex of the cuboid, its bottom-left-near vertex:
+    base_vertex :: point3:point3(),
 
-	% The length along the abscissa axis (X):
-	abscissa_length :: linear:distance(),
+    % The length along the abscissa axis (X):
+    abscissa_length :: linear:distance(),
 
-	% The length along the ordinate axis (Y):
-	ordinate_length :: linear:distance(),
+    % The length along the ordinate axis (Y):
+    ordinate_length :: linear:distance(),
 
-	% The length along the elevation axis (Z):
-	elevation_length :: linear:distance() } ).
+    % The length along the elevation axis (Z):
+    elevation_length :: linear:distance() } ).
 
 
 
 % Sphere-based bounding volume.
 -record( sphere, {
 
-	% The center of the sphere:
-	center :: point3:point3(),
+    % The center of the sphere:
+    center :: point3:point3(),
 
-	% The square of the radius (R^2) of this sphere:
-	square_radius :: linear:square_distance() } ).
+    % The square of the radius (R^2) of this sphere:
+    square_radius :: linear:square_distance() } ).

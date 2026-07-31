@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -56,64 +56,64 @@ Testing the **support for the management of (mostly built-in) bitmaps**.
 -spec run_bitmap_test() -> void().
 run_bitmap_test() ->
 
-	test_facilities:display( "Starting the bitmap test, "
-		"simply by displaying the built-in bitmaps in a resizable window." ),
+    test_facilities:display( "Starting the bitmap test, "
+        "simply by displaying the built-in bitmaps in a resizable window." ),
 
-	trace_utils:notice( "A resizable frame displaying the bitmaps shall "
-		"appear. The test will end as soon as this frame is closed." ),
+    trace_utils:notice( "A resizable frame displaying the bitmaps shall "
+        "appear. The test will end as soon as this frame is closed." ),
 
-	gui:start(),
+    gui:start(),
 
-	MainFrame = gui_frame:create( _Title="MyriadGUI Bitmap Test",
-								  gui_overall_test:get_main_window_size() ),
+    MainFrame = gui_frame:create( _Title="MyriadGUI Bitmap Test",
+                                  gui_overall_test:get_main_window_size() ),
 
-	% No need to add _Opts=[{style, full_repaint_on_resize}]:
-	Panel = gui_panel:create( MainFrame ),
+    % No need to add _Opts=[{style, full_repaint_on_resize}]:
+    Panel = gui_panel:create( MainFrame ),
 
-	ColumnCount = 8,
+    ColumnCount = 8,
 
-	% Will auto-adjust the number of rows:
-	GridSizer = gui_sizer:create_grid( _RowCount=0, ColumnCount,
-									   _HorizGap=3, _VertGap=3 ),
+    % Will auto-adjust the number of rows:
+    GridSizer = gui_sizer:create_grid( _RowCount=0, ColumnCount,
+                                       _HorizGap=3, _VertGap=3 ),
 
-	{ standard_bitmap_name_id, BitmapEntries, _ElemLookup } =
-		gui_constants:get_standard_bitmap_name_id_topic_spec(),
+    { standard_bitmap_name_id, BitmapEntries, _ElemLookup } =
+        gui_constants:get_standard_bitmap_name_id_topic_spec(),
 
-	AllBitmapIds = pair:firsts( BitmapEntries ),
+    AllBitmapIds = pair:firsts( BitmapEntries ),
 
-	BitmapIdss = list_utils:group_by( ColumnCount, AllBitmapIds ),
+    BitmapIdss = list_utils:group_by( ColumnCount, AllBitmapIds ),
 
-	BitmapStrs = [ text_utils:atoms_to_listed_string( Ids )
-						|| Ids <- BitmapIdss ],
+    BitmapStrs = [ text_utils:atoms_to_listed_string( Ids )
+                        || Ids <- BitmapIdss ],
 
-	trace_utils:debug_fmt(
-		"All ~B standard bitmap identifiers, listed per row: ~ts",
-		[ length( AllBitmapIds ),
-		  text_utils:strings_to_enumerated_string( BitmapStrs ) ] ),
+    trace_utils:debug_fmt(
+        "All ~B standard bitmap identifiers, listed per row: ~ts",
+        [ length( AllBitmapIds ),
+          text_utils:strings_to_enumerated_string( BitmapStrs ) ] ),
 
-	BitmapParent = Panel,
+    BitmapParent = Panel,
 
-	Dims = { 32, 32 },
+    Dims = { 32, 32 },
 
-	AllBitmaps = [ gui_bitmap:get_standard( BId, Dims )
-								|| BId <- AllBitmapIds ],
+    AllBitmaps = [ gui_bitmap:get_standard( BId, Dims )
+                                || BId <- AllBitmapIds ],
 
-	AllBitmapDisplays = [ gui_bitmap:create_display( B, BitmapParent )
-								|| B <- AllBitmaps ],
+    AllBitmapDisplays = [ gui_bitmap:create_display( B, BitmapParent )
+                                || B <- AllBitmaps ],
 
-	gui_sizer:add_elements( GridSizer, AllBitmapDisplays, _BitmapFlags=[] ),
+    gui_sizer:add_elements( GridSizer, AllBitmapDisplays, _BitmapFlags=[] ),
 
-	gui_widget:set_sizer( Panel, GridSizer ),
+    gui_widget:set_sizer( Panel, GridSizer ),
 
-	% No need to subscribe to 'onRepaintNeeded' for the panel:
-	gui:subscribe_to_events( { onWindowClosed, MainFrame } ),
+    % No need to subscribe to 'onRepaintNeeded' for the panel:
+    gui:subscribe_to_events( { onWindowClosed, MainFrame } ),
 
-	% Renders the GUI:
-	gui_frame:show( MainFrame ),
+    % Renders the GUI:
+    gui_frame:show( MainFrame ),
 
-	test_main_loop( MainFrame ),
+    test_main_loop( MainFrame ),
 
-	gui:stop().
+    gui:stop().
 
 
 
@@ -121,27 +121,27 @@ run_bitmap_test() ->
 -spec test_main_loop( frame() ) -> void().
 test_main_loop( MainFrame ) ->
 
-	receive
+    receive
 
-		{ onWindowClosed, [ MainFrame, _MainFrameId, EventContext ] } ->
+        { onWindowClosed, [ MainFrame, _MainFrameId, EventContext ] } ->
 
-			cond_utils:if_defined( myriad_gui_test_verbose,
-				trace_utils:notice_fmt( "Test main frame ~ts has been closed "
-					"(~ts), test success.",
-					[ gui:object_to_string( MainFrame ),
-					  gui_event:context_to_string( EventContext ) ] ),
-				basic_utils:ignore_unused( EventContext ) ),
+            cond_utils:if_defined( myriad_gui_test_verbose,
+                trace_utils:notice_fmt( "Test main frame ~ts has been closed "
+                    "(~ts), test success.",
+                    [ gui:object_to_string( MainFrame ),
+                      gui_event:context_to_string( EventContext ) ] ),
+                basic_utils:ignore_unused( EventContext ) ),
 
-			gui_frame:destruct( MainFrame );
+            gui_frame:destruct( MainFrame );
 
 
-		Other ->
-			% Extra newline for better separation:
-			trace_utils:warning_fmt( "Test main loop ignored following "
-									 "message:~n ~p.~n", [ Other ] ),
-			test_main_loop( MainFrame )
+        Other ->
+            % Extra newline for better separation:
+            trace_utils:warning_fmt( "Test main loop ignored following "
+                                     "message:~n ~p.~n", [ Other ] ),
+            test_main_loop( MainFrame )
 
-	end.
+    end.
 
 
 
@@ -149,17 +149,17 @@ test_main_loop( MainFrame ) ->
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	case executable_utils:is_batch() of
+    case executable_utils:is_batch() of
 
-		true ->
-			test_facilities:display(
-				"(not running the bitmap test, being in batch mode)" );
+        true ->
+            test_facilities:display(
+                "(not running the bitmap test, being in batch mode)" );
 
-		false ->
-			run_bitmap_test()
+        false ->
+            run_bitmap_test()
 
-	end,
+    end,
 
-	test_facilities:stop().
+    test_facilities:stop().

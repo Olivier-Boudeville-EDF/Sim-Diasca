@@ -64,5 +64,3 @@ These helpers (code and typing information) are thematically aggregated in modul
 - a bit of **locale management**, in ``locale_utils.erl``
 - minor services about the **monitoring of Erlang processes**, in ``monitor_utils.erl`` and their **registering** in naming services, in ``naming_utils.erl``
 - facilities to better **interface Erlang to other languages**, in ``language_utils.erl`` and ``{python,java}_utils.erl``; nothing as advanced as `Ceylan-Seaplus <http://seaplus.esperide.org/>`_, though
-
-

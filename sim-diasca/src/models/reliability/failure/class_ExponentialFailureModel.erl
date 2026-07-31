@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -28,11 +28,11 @@ exponential law (probability density).
 
 
 -define( class_description,
-		 "Class modelling the failure behaviour of equipments according to an "
-		 "exponential law (probability density)."
-		 "Note: it is the most common failure model, most electronic "
-		 "equipments respect this statistical rule."
-		 "See also: class_GaussianFailureModel." ).
+         "Class modelling the failure behaviour of equipments according to an "
+         "exponential law (probability density)."
+         "Note: it is the most common failure model, most electronic "
+         "equipments respect this statistical rule."
+         "See also: class_GaussianFailureModel." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -41,7 +41,7 @@ exponential law (probability density).
 
 % Must be included before class_TraceEmitter header:
 -define( trace_emitter_categorization,
-		 "Actor.StochasticActor.FailureModel.ExponentialFailureModel" ).
+         "Actor.StochasticActor.FailureModel.ExponentialFailureModel" ).
 
 
 % Allows to use macros for trace sending:
@@ -63,31 +63,31 @@ inheritance) will ensure each will act independently from the other equipments,
 according to the exponential distribution.
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 class_FailureModel:mttf() ) -> wooper:state().
+                 class_FailureModel:mttf() ) -> wooper:state().
 construct( State, ActorSettings, MTTF ) ->
 
-	% First the direct mother classes:
+    % First the direct mother classes:
 
-	% Computing MTTF (expressed in seconds):
-	MTTFInSec = time_utils:dhms_to_seconds( MTTF ),
+    % Computing MTTF (expressed in seconds):
+    MTTFInSec = time_utils:dhms_to_seconds( MTTF ),
 
-	% The mean value of drawn samples is 1/Lambda:
-	% (it is a floating-point value)
+    % The mean value of drawn samples is 1/Lambda:
+    % (it is a floating-point value)
 
-	Lambda = 1 / MTTFInSec,
+    Lambda = 1 / MTTFInSec,
 
-	% Defines an exponential failure profile, for stochastic class to manage it:
-	FailureState = class_FailureModel:construct( State, ActorSettings,
-		?trace_categorize("Exponential failure model"),
-		{ exponential_1p, Lambda } ),
+    % Defines an exponential failure profile, for stochastic class to manage it:
+    FailureState = class_FailureModel:construct( State, ActorSettings,
+        ?trace_categorize("Exponential failure model"),
+        { exponential_1p, Lambda } ),
 
-	% Then the class-specific actions:
+    % Then the class-specific actions:
 
-	?send_info_fmt( FailureState,
-		"Creating an exponential failure model whose MTTF is ~B seconds "
-		"(lambda is ~f).", [ MTTFInSec, Lambda ] ),
+    ?send_info_fmt( FailureState,
+        "Creating an exponential failure model whose MTTF is ~B seconds "
+        "(lambda is ~f).", [ MTTFInSec, Lambda ] ),
 
-	FailureState.
+    FailureState.
 
 
 

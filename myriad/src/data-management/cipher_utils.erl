@@ -1,4 +1,4 @@
-% Copyright (C) 2013-2025 Olivier Boudeville
+% Copyright (C) 2013-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -28,18 +28,29 @@
 -module(cipher_utils).
 
 -moduledoc """
-Gathering of various **cipher-related facilities**.
+Gathering of various **cipher-related facilities**, for all kinds of data
+streams (for example files).
 
-We focus on symmetric ciphering here.
+We focus on symmetric ciphering here, hence implying a prior, private exchange
+between parties of the key of interest.
 
-See `cipher_utils_test.erl` for testing.
+We believe that this (symmetric, ad hoc/very specific) mode of operation is
+quite complementary to the standard asymmetric private/public key pairs, in the
+sense that backdoors/loopholes/non-public solving approaches may exist for the
+most common algorithms (now, or in some future), whereas overcoming the
+approaches used in this module would require very targeted attacks on
+nevertheless very strong safety measures.
+
+Using both approaches (public and standard/ad hoc here) may be the safest route.
+
+See the `cipher_utils_test` module for testing.
 """.
 
 
--export([ generate_key/2, key_to_string/1,
-		  encrypt/3, decrypt/3,
-		  generate_mealy_table/1, compute_inverse_mealy_table/1,
-		  mealy_table_to_string/1 ]).
+-export([ write_key_file/2, key_to_string/1,
+          encrypt/3, decrypt/3,
+          generate_mealy_table/1, compute_inverse_mealy_table/1,
+          mealy_table_to_string/1 ]).
 
 
 % This pseudo-export allows to avoid a spurious Dialyzer warning about the final
@@ -54,12 +65,14 @@ See `cipher_utils_test.erl` for testing.
 % To encrypt a file, one shall use a key file, whose extension is by convention
 % 'cipher' (e.g. "my-key-file.cipher").
 %
-% The same file can be used to perform the reverse operation.
+% The same key file can be used to perform the reverse operation.
 %
 % The mode of operation is to chain a series of elementary transformations that
 % can be reversed. These operations are listed and described in the
-% aforementioned file, which contains Erlang terms for that.
-
+% aforementioned key file, which contains Erlang terms for that.
+%
+% Of course both the key and the content to encrypt/decrypt can come from any
+% source (data stream; not only files).
 
 % When ciphering or deciphering a file of size N, as much as possible:
 %
@@ -69,8 +82,8 @@ See `cipher_utils_test.erl` for testing.
 %
 % - we could apply all transformations in-memory once (instead of writing as
 % many intermediate files as there are transformations), however it would be
-% difficult to implement (as such, and because of streaming, and because, from a
-% transformation to another, the access patterns are usually different)
+% difficult to implement (as such, and also because of streaming, and because,
+% from a transformation to another, the access patterns are usually different)
 
 
 
@@ -78,31 +91,31 @@ See `cipher_utils_test.erl` for testing.
 
 
 -doc """
-Identity (content not changed).
+Identity (content stream unchanged).
 
-Just for testing.
+Of course just for testing.
 """.
 -type id_transform() :: 'id'.
 
 
 
 -doc """
-The specified offset value is added to all bytes of the file.
+The specified (signed) offset value is added to all bytes of the content stream.
 """.
--type offset_transform() :: { 'offset', integer() }.
+-type offset_transform() :: { 'offset', Offset :: integer() }.
 
 
 
 -doc """
 The stream content is replaced by a compressed version thereof, using one of the
-supported formats (see compress_format/0).
+supported formats (see `compress_format/0`).
 """.
 -type compress_transform() :: { 'compress', compression_format() }.
 
 
 
 -doc """
-The stream content is replaced by a decompressed version thereof, using one of
+The content stream is replaced by a decompressed version thereof, using one of
 the supported formats (see `compress_format/0`).
 """.
 -type decompress_transform() :: { 'decompress', compression_format() }.
@@ -110,22 +123,27 @@ the supported formats (see `compress_format/0`).
 
 
 -doc """
-Based on the specified seed and on the specified range R, a series of strictly
-positive values is uniformly drawn in [1,R]; these values are offsets relative
-to the last random insertion (initial one is 0); at each position determined
-thanks to offsets, a random value in [0,255] is inserted.
+Inserts random elements at random positions in the content stream, in each
+window whose size is based on the user-specified offset.
+
+Based on the specified seed and on the specified maximum insertion offset R, a
+series of strictly positive values is uniformly drawn in `[1,R]`; these values
+are offsets relative to the last random insertion (initial one being 0); at each
+position determined thanks to offsets, a random value in `[0,255]` is inserted.
 """.
--type insert_random_transform() :: { 'insert_random', seed(), count() }.
+-type insert_random_transform() ::
+    { 'insert_random', seed(), MaxInsertionOffset :: count() }.
 
 
 
 -doc """
-Based on the specified seed and on the specified range R, a series of strictly
-positive values is uniformly drawn in `[1,R]`; these values are offsets relative
-to the last random insertion (initial one is 0); at each position determined
-thanks to offsets, a random value in `[0,255]` is extracted.
+Based on the specified seed and on the specified maximum insertion offset R, a
+series of strictly positive values is uniformly drawn in `[1,R]`; these values
+are offsets relative to the last random insertion (initial one being 0); at each
+position determined thanks to offsets, a random value in `[0,255]` is extracted.
 """.
--type extract_random_transform() :: { 'extract_random', seed(), count() }.
+-type extract_random_transform() ::
+    { 'extract_random', seed(), MaxExtractionOffset :: count() }.
 
 
 
@@ -142,23 +160,21 @@ hence Bk+1 is replaced by `Bk+1 - Bk` (Bk having obeyed the same rule).
 
 
 -doc """
-Based on the specified seed and length L, each series of up to L bytes is
-uniformly shuffled.
+Based on the specified seed and maximum length L, each series of up to L bytes
+is uniformly shuffled.
 """.
--type shuffle_transform() :: { 'shuffle', seed(), count() }.
+-type shuffle_transform() :: { 'shuffle', seed(), MaxLen :: count() }.
 
 
 
 -doc "Reverse operation of `shuffle_transform/0`.".
 -type reciprocal_shuffle_transform() ::
-		{ 'reciprocal_shuffle', seed(), count() }.
+    { 'reciprocal_shuffle', seed(), MaxLen :: count() }.
 
 
 
--doc """
-Based on the specified list of bytes, the content of the stream is XOR'ed.
-""".
--type xor_transform() :: { 'xor', [ integer() ] }.
+-doc "The content of the stream is XOR'ed with the specified list of bytes.".
+-type xor_transform() :: { 'xor', XORMask :: [ integer() ] }.
 
 
 
@@ -202,7 +218,7 @@ The Mealy table is implemented (easier to build) as a fixed-size array, one
 element per possible state (corresponding to a column of the 2D array).
 
 Each element of this table is itself an array, having as many elements as the
-size of the input alphabet, hence 256 of them, in [0,255].
+size of the input alphabet, hence 256 of them, in `[0,255]`.
 
 Each element of these inner arrays corresponds to the aforementioned cell.
 """.
@@ -215,11 +231,12 @@ Each element of these inner arrays corresponds to the aforementioned cell.
 
 -doc """
 The content of a target stream can be modified according to the specified
-state-transition data, ; the input and output alphabet are the same, B, the set
-of all bytes (i.e. integers in `[0,255]`), while the states are strictly
-positive integers; the transition and output function are coalesced into a
-single function: `f({ CurrentState, InputByte }) -> {NewState, OutputByte}`; see
-[this page](https://en.wikipedia.org/wiki/Mealy_machine) for more information.
+state-transition data; the input and output alphabet are the same: the set of
+all bytes (i.e. integers in `[0,255]`), while the states are strictly positive
+integers; the transition and output function are coalesced into a single
+function, taking a cell and returning one: `f({CurrentState, InputByte}) ->
+{NewState, OutputByte}`; see [this
+page](https://en.wikipedia.org/wiki/Mealy_machine) for more information.
 """.
 -type mealy_transform() :: { 'mealy', mealy_state(), mealy_table() }.
 
@@ -227,13 +244,13 @@ single function: `f({ CurrentState, InputByte }) -> {NewState, OutputByte}`; see
 
 -doc "All supported cipher transformations.".
 -type cipher_transform() :: id_transform()
-						  | offset_transform()
-						  | compress_transform()
-						  | insert_random_transform()
-						  | delta_combine_transform()
-						  | shuffle_transform()
-						  | xor_transform()
-						  | mealy_transform().
+                          | offset_transform()
+                          | compress_transform()
+                          | insert_random_transform()
+                          | delta_combine_transform()
+                          | shuffle_transform()
+                          | xor_transform()
+                          | mealy_transform().
 
 
 -doc """
@@ -241,29 +258,31 @@ All supported decipher transformations, for ciphers that require specific
 reverse transformations.
 """.
 -type decipher_transform() :: decompress_transform()
-							| extract_random_transform()
-							| delta_combine_reverse_transform()
-							| reciprocal_shuffle_transform().
+                            | extract_random_transform()
+                            | delta_combine_reverse_transform()
+                            | reciprocal_shuffle_transform().
 
 
 -doc "Any transformation".
 -type any_transform() :: cipher_transform() | decipher_transform().
 
 
--doc """
-User may specify either some licit transform, or possibly mistakes.
-""".
+-doc "User may specify either some licit transform, or possibly mistakes.".
 -type user_specified_transform() :: any().
 
 
 
--doc "A key is an (ordered) list of (parametrised) transformations.".
--type key() :: [ any_transform() ].
+-doc "A key is an (ordered) list of (parametrised) cipher transformations.".
+% Not accepting decipher_transform/0, as some of them (e.g. extract_random) are
+% lossy by design:
+%
+-type key() :: [ cipher_transform() ].
 
 
 -export_type([ cipher_transform/0, decipher_transform/0 ]).
 
 
+% For file I/O:
 -define( bin_read_opts, [ read, raw, binary, read_ahead ] ).
 -define( bin_write_opts, [ write, raw, delayed_write ] ).
 
@@ -286,71 +305,44 @@ User may specify either some licit transform, or possibly mistakes.
 
 
 
--doc "Generates a key file.".
--spec generate_key( file_path(), [ cipher_transform() ] ) -> void().
-generate_key( KeyFilePath, Transforms ) ->
 
-	file_utils:exists( KeyFilePath ) andalso
-		throw( { already_existing_key_file, KeyFilePath } ),
+-doc "Creates a file storing the specified key.".
+-spec write_key_file( file_path(), key() ) -> void().
+write_key_file( KeyFilePath, Transforms ) ->
 
-	% No delayed_write wanted:
-	KeyFile = file_utils:open( KeyFilePath, _Opts=[ write, raw ] ),
+    file_utils:exists( KeyFilePath ) andalso
+        throw( { already_existing_key_file, KeyFilePath } ),
 
-	Header = text_utils:format( "% Key generated on ~ts, by ~ts, on ~ts.~n",
-		[ time_utils:get_textual_timestamp(), system_utils:get_user_name(),
-		  net_utils:localhost() ] ),
+    % No delayed_write wanted:
+    KeyFile = file_utils:open( KeyFilePath, _Opts=[ write, raw ] ),
 
-	file_utils:write_ustring( KeyFile, Header ),
+    Header = text_utils:format( "% Key generated on ~ts, by ~ts, on ~ts.~n",
+        [ time_utils:get_textual_timestamp(), system_utils:get_user_name(),
+          net_utils:localhost() ] ),
 
-	file_utils:write_ustring( KeyFile, "~n~w.~n~n", [ Transforms ] ),
+    file_utils:write_ustring( KeyFile, Header ),
 
-	file_utils:write_ustring( KeyFile, "% End of key file.~n", [] ),
+    file_utils:write_ustring( KeyFile, "~n~w.~n~n", [ Transforms ] ),
 
-	file_utils:close( KeyFile ).
+    file_utils:write_ustring( KeyFile, "% End of key file.~n", [] ),
+
+    file_utils:close( KeyFile ).
+
 
 
 
 -doc "Returns a textual description of the specified key.".
 -spec key_to_string( key() ) -> ustring().
 key_to_string( Key ) ->
-	text_utils:format( "Key composed of following ~B cipher(s): ~ts",
-		[ length( Key ), text_utils:strings_to_string(
-			key_to_strings( Key, _Acc=[] ) ) ] ).
+    text_utils:format( "key made of ~B ciphers: ~ts", [ length( Key ),
+        text_utils:strings_to_string(
+            [ transform_to_string( C ) || C <- Key ] ) ] ).
 
-
-% (helper)
-key_to_strings( _Ciphers=[], Acc ) ->
-	lists:reverse( Acc );
-
-
-key_to_strings( [ _Cipher={ mealy, InitialState, Table } | T ], Acc ) ->
-
-	% Much info:
-	%CipherString = text_utils:format(
-	%   "Mealy cipher with initial state S~B and a ~ts",
-	%   [ InitialState, mealy_table_to_string( Table ) ] ),
-
-	% Shorter:
-
-	StateCount = array:size( Table ),
-	AlphabetSize = array:size( array:get( 0, Table ) ),
-
-	CipherString = text_utils:format(
-		"Mealy cipher with initial state S~B for a table of "
-		"~B states and an alphabet of ~B letters",
-		[ InitialState, StateCount, AlphabetSize ] ),
-
-	key_to_strings( T, [ CipherString | Acc ] );
-
-
-key_to_strings( [ Cipher | T ], Acc ) ->
-	CipherString = text_utils:format( "~p", [ Cipher ] ),
-	key_to_strings( T, [ CipherString | Acc ] ).
 
 
 
 -doc """
-Encrypts the specified source file using specified key file, and writes the
+Encrypts the specified source file using the specified key file, and writes the
 result in the specified target file.
 
 The original file is kept as is.
@@ -358,62 +350,61 @@ The original file is kept as is.
 -spec encrypt( file_path(), file_path(), file_path() ) -> void().
 encrypt( SourceFilePath, TargetFilePath, KeyFilePath ) ->
 
-	file_utils:is_existing_file_or_link( SourceFilePath ) orelse
-		throw( { non_existing_source_file, SourceFilePath } ),
+    file_utils:is_existing_file_or_link( SourceFilePath ) orelse
+        throw( { non_existing_source_file, SourceFilePath } ),
 
+    file_utils:exists( TargetFilePath ) andalso
+        throw( { already_existing_target_file, TargetFilePath } ),
 
-	file_utils:exists( TargetFilePath ) andalso
-		throw( { already_existing_target_file, TargetFilePath } ),
+    KeyInfos = read_key( KeyFilePath ),
 
-	KeyInfos = read_key( KeyFilePath ),
+    io:format( "Encrypting source file '~ts' with key file '~ts', "
+        "storing the result in '~ts'.~n~ts~n",
+        [ SourceFilePath, KeyFilePath, TargetFilePath,
+          key_to_string( KeyInfos ) ] ),
 
-	io:format( "Encrypting source file '~ts' with key file '~ts', "
-		"storing the result in '~ts'.~n~ts~n",
-		[ SourceFilePath, KeyFilePath, TargetFilePath,
-		  key_to_string( KeyInfos ) ] ),
+    % We may use randomised ciphers:
+    random_utils:start_random_source( default_seed ),
 
-	% We may use randomised ciphers:
-	random_utils:start_random_source( default_seed ),
+    TempFilePath = apply_key( KeyInfos, SourceFilePath ),
 
-	TempFilePath = apply_key( KeyInfos, SourceFilePath ),
-
-	file_utils:rename( TempFilePath, TargetFilePath ).
+    file_utils:rename( TempFilePath, TargetFilePath ).
 
 
 
 -doc """
-Decrypts specified source file using specified key file, and writes the result
-in specified target file.
+Decrypts the specified source file using the specified key file, and writes the
+result in the specified target file.
 
 The ciphered file is kept as is.
 """.
 -spec decrypt( file_path(), file_path(), file_path() ) -> void().
 decrypt( SourceFilePath, TargetFilePath, KeyFilePath ) ->
 
-	file_utils:is_existing_file_or_link( SourceFilePath ) orelse
-		throw( { non_existing_source_file, SourceFilePath } ),
+    file_utils:is_existing_file_or_link( SourceFilePath ) orelse
+        throw( { non_existing_source_file, SourceFilePath } ),
 
-	file_utils:exists( TargetFilePath ) andalso
-		throw( { already_existing_target_file, TargetFilePath } ),
+    file_utils:exists( TargetFilePath ) andalso
+        throw( { already_existing_target_file, TargetFilePath } ),
 
-	KeyInfos = read_key( KeyFilePath ),
+    KeyInfos = read_key( KeyFilePath ),
 
-	io:format( "Decrypting source file '~ts' with key file '~ts', "
-		"storing the result in '~ts'.~n~ts~n",
-		[ SourceFilePath, KeyFilePath, TargetFilePath,
-		  key_to_string( KeyInfos ) ] ),
+    io:format( "Decrypting source file '~ts' with key file '~ts', "
+        "storing the result in '~ts'.~n~ts~n",
+        [ SourceFilePath, KeyFilePath, TargetFilePath,
+          key_to_string( KeyInfos ) ] ),
 
-	% We may use randomised ciphers:
-	random_utils:start_random_source( default_seed ),
+    % We may use randomised ciphers:
+    random_utils:start_random_source( default_seed ),
 
-	ReverseKey = get_reverse_key_from( KeyInfos ),
+    ReverseKey = get_reverse_key_from( KeyInfos ),
 
-	io:format( "Determined reverse key:~n~ts~n",
+    io:format( "Determined reverse key:~n~ts~n",
                [ key_to_string( ReverseKey ) ] ),
 
-	TempFilePath = apply_key( ReverseKey, SourceFilePath ),
+    TempFilePath = apply_key( ReverseKey, SourceFilePath ),
 
-	file_utils:rename( TempFilePath, TargetFilePath ).
+    file_utils:rename( TempFilePath, TargetFilePath ).
 
 
 
@@ -425,44 +416,44 @@ decrypt( SourceFilePath, TargetFilePath, KeyFilePath ) ->
 -spec read_key( file_path() ) -> [ user_specified_transform() ].
 read_key( KeyFilePath ) ->
 
-	case file_utils:is_existing_file_or_link( KeyFilePath ) of
+    case file_utils:is_existing_file_or_link( KeyFilePath ) of
 
-		true ->
-			case file_utils:read_etf_file( KeyFilePath ) of
+        true ->
+            case file_utils:read_etf_file( KeyFilePath ) of
 
-				[] ->
-					throw( { empty_key, KeyFilePath } );
+                [] ->
+                    throw( { empty_key, KeyFilePath } );
 
-				[ Key ] when is_list( Key ) ->
-					Key;
+                [ Key ] when is_list( Key ) ->
+                    Key;
 
-				Invalid ->
-					throw( { invalid_multiline_key, Invalid } )
+                Invalid ->
+                    throw( { invalid_multiline_key, Invalid } )
 
-			end;
+            end;
 
-		false ->
-			throw( { non_existing_key_file, KeyFilePath } )
+        false ->
+            throw( { non_existing_key_file, KeyFilePath } )
 
-	end.
+    end.
 
 
 
 -doc "Returns the reverse key of the specified one.".
 -spec get_reverse_key_from( [ user_specified_transform() ] ) ->
-									[ any_transform() ].
+                                    [ any_transform() ].
 get_reverse_key_from( KeyInfos ) ->
-	get_reverse_key_from( KeyInfos, _Acc=[] ).
+    get_reverse_key_from( KeyInfos, _Acc=[] ).
 
 
 
 get_reverse_key_from( _KeyInfos=[], Acc ) ->
-	% Order already reversed by design:
-	Acc;
+    % Order already reversed by design:
+    Acc;
 
-get_reverse_key_from( _KeyInfos=[ K | H ], Acc ) ->
-	ReversedK = reverse_cipher( K ),
-	get_reverse_key_from( H, [ ReversedK | Acc ] ).
+get_reverse_key_from( _KeyInfos=[ K | T ], Acc ) ->
+    ReversedK = reverse_cipher( K ),
+    get_reverse_key_from( T, [ ReversedK | Acc ] ).
 
 
 
@@ -472,39 +463,87 @@ Applies the specified key to the specified file.
 Returns the filename of the resulting file.
 """.
 apply_key( KeyInfos, SourceFilePath ) ->
-	apply_key( KeyInfos, SourceFilePath, _CipherCount=1 ).
+    apply_key( KeyInfos, SourceFilePath, _CipherCount=1 ).
 
 
+% (helper)
 apply_key( _KeyInfos=[], SourceFilePath, _CipherCount ) ->
-	SourceFilePath;
+    SourceFilePath;
 
-apply_key( _KeyInfos=[ C | H ], SourceFilePath, CipherCount ) ->
+apply_key( _KeyInfos=[ C | T ], SourceFilePath, CipherCount ) ->
 
-	io:format( " - applying cipher #~B: '~p'~n",
-			   [ CipherCount, get_cipher_description( C ) ] ),
+    io:format( " - applying cipher #~B: ~ts~n",
+               [ CipherCount, transform_to_string( C ) ] ),
 
-	% FilePath of the ciphered version:
-	CipheredFilePath = generate_filename(),
+    % FilePath of the ciphered version:
+    CipheredFilePath = generate_filename(),
 
-	apply_cipher( C, SourceFilePath, CipheredFilePath ),
+    apply_cipher( C, SourceFilePath, CipheredFilePath ),
 
-	CipherCount =:= 1 orelse
-		% Not wanting to saturate the storage space with intermediate files:
-		file_utils:remove_file( SourceFilePath ),
+    CipherCount =:= 1 orelse
+        % Not wanting to saturate the storage space with intermediate files:
+        file_utils:remove_file( SourceFilePath ),
 
-	apply_key( H, CipheredFilePath, CipherCount + 1 ).
+    apply_key( T, CipheredFilePath, CipherCount + 1 ).
 
 
 
--doc "Returns a description, as a term, of the specified transformation.".
--spec get_cipher_description( any_transform() ) -> term().
-% Table way too big to be displayed:
-get_cipher_description( { mealy, InitialState, _Table } ) ->
-	text_utils:format( "Mealy transform, with initial state ~p",
-					   [ InitialState ] );
+-doc "Returns a description of the specified transformation.".
+-spec transform_to_string( any_transform() ) -> ustring().
+transform_to_string( _Transform=id ) ->
+    "identity transform";
 
-get_cipher_description( OtherCipher ) ->
-	OtherCipher.
+transform_to_string( _Transform={ offset, Offset } ) ->
+    text_utils:format( "transform of offset ~B", [ Offset ] );
+
+transform_to_string( _Transform={ compress, CompFormat } ) ->
+    text_utils:format( "~ts-based compression transform", [ CompFormat ] );
+
+transform_to_string( _Transform={ decompress, CompFormat } ) ->
+    text_utils:format( "~ts-based decompression transform", [ CompFormat ] );
+
+transform_to_string( _Transform={ insert_random, Seed, MaxInsertionOffset } ) ->
+    text_utils:format( "random insertion transform of maximum offset ~B "
+                     "and seed ~w", [ MaxInsertionOffset, Seed ] );
+
+transform_to_string(
+        _Transform={ extract_random, Seed, MaxExtractionOffset } ) ->
+    text_utils:format( "random extraction transform of maximum offset ~B "
+                     "and seed ~w", [ MaxExtractionOffset, Seed ] );
+
+transform_to_string( _Transform=delta_combine ) ->
+    "delta-combine transform";
+
+transform_to_string( _Transform=delta_combine_reverse ) ->
+    "delta-combine reverse transform";
+
+transform_to_string( _Transform={ shuffle, Seed, MaxLen } ) ->
+    text_utils:format( "shuffle transform over a maximum length of ~B "
+                       "and seed ~w", [ MaxLen, Seed ] );
+
+transform_to_string( _Transform={ reciprocal_shuffle, Seed, MaxLen } ) ->
+    text_utils:format( "reciprocal shuffle transform over a maximum "
+                       "length of ~B and seed ~w", [ MaxLen, Seed ] );
+
+transform_to_string( _Transform={ 'xor', XORMask } ) ->
+    text_utils:format( "xor transform for mask ~w", [ XORMask ] );
+
+transform_to_string( _Transform={ mealy, InitialState, Table } ) ->
+
+    % Table way too big to be displayed:
+    %CipherString = text_utils:format(
+    %   "Mealy cipher with initial state S~B and a ~ts",
+    %   [ InitialState, mealy_table_to_string( Table ) ] ),
+
+    % Shorter:
+
+    StateCount = array:size( Table ),
+    AlphabetSize = array:size( array:get( 0, Table ) ),
+
+    text_utils:format( "Mealy transform with initial state S~B, for a table of "
+        "~B states and an alphabet of ~B letters",
+        [ InitialState, StateCount, AlphabetSize ] ).
+
 
 
 
@@ -516,136 +555,134 @@ base (yet generic) mechanisms.
 """.
 -spec apply_cipher( any(), file_path(), file_path() ) -> void().
 apply_cipher( id, SourceFilePath, CipheredFilePath ) ->
-	id_cipher( SourceFilePath, CipheredFilePath );
+    id_cipher( SourceFilePath, CipheredFilePath );
 
 
 apply_cipher( { offset, Offset }, SourceFilePath, CipheredFilePath ) ->
 
-	% CypherState is simply the constant offset used:
+    % CypherState is simply the constant offset used:
 
-	OffsetFun = fun( InputByte, CypherState ) ->
-						OutputByte = InputByte + Offset,
-						{ OutputByte, CypherState }
-				end,
+    OffsetFun = fun( InputByte, CypherState ) ->
+                        OutputByte = InputByte + Offset,
+                        { OutputByte, CypherState }
+                end,
 
-	apply_byte_level_cipher( SourceFilePath, CipheredFilePath,
-							 _Transform=OffsetFun, _InitialCipherState=Offset );
+    apply_byte_level_cipher( SourceFilePath, CipheredFilePath,
+                             _Transform=OffsetFun, _InitialCipherState=Offset );
 
 
 apply_cipher( { compress, CompressFormat }, SourceFilePath,
-			  CipheredFilePath ) ->
-	compress_cipher( SourceFilePath, CipheredFilePath, CompressFormat );
+              CipheredFilePath ) ->
+    compress_cipher( SourceFilePath, CipheredFilePath, CompressFormat );
 
 
 apply_cipher( { decompress, CompressFormat }, SourceFilePath,
-			  CipheredFilePath ) ->
-	decompress_cipher( SourceFilePath, CipheredFilePath, CompressFormat );
+              CipheredFilePath ) ->
+    decompress_cipher( SourceFilePath, CipheredFilePath, CompressFormat );
 
 
 apply_cipher( { insert_random, Seed, Range }, SourceFilePath,
-			  CipheredFilePath ) ->
+              CipheredFilePath ) ->
 
-	random_utils:reset_random_source( Seed ),
+    random_utils:reset_random_source( Seed ),
 
-	insert_random_cipher( SourceFilePath, CipheredFilePath, Range );
+    insert_random_cipher( SourceFilePath, CipheredFilePath, Range );
 
 
 apply_cipher( { extract_random, Seed, Range }, SourceFilePath,
-			  CipheredFilePath ) ->
+              CipheredFilePath ) ->
 
-	random_utils:reset_random_source( Seed ),
+    random_utils:reset_random_source( Seed ),
 
-	extract_random_cipher( SourceFilePath, CipheredFilePath, Range );
+    extract_random_cipher( SourceFilePath, CipheredFilePath, Range );
 
 
 apply_cipher( delta_combine, SourceFilePath, CipheredFilePath ) ->
 
-	% CypherState is simply the last value read:
+    % CypherState is simply the last value read:
 
-	DeltaFun = fun( InputByte, CypherState ) ->
-						OutputByte = InputByte - CypherState,
-						{ OutputByte, InputByte }
+    DeltaFun = fun( InputByte, CypherState ) ->
+                        OutputByte = InputByte - CypherState,
+                        { OutputByte, InputByte }
                end,
 
-	apply_byte_level_cipher( SourceFilePath, CipheredFilePath,
-							 _Transform=DeltaFun, _InitialCipherState=100 );
+    apply_byte_level_cipher( SourceFilePath, CipheredFilePath,
+                             _Transform=DeltaFun, _InitialCipherState=100 );
 
 
 apply_cipher( delta_combine_reverse, SourceFilePath, CipheredFilePath ) ->
 
-	% CypherState is simply the last value read:
+    % CypherState is simply the last value read:
 
-	ReverseDeltaFun = fun( InputByte, CypherState ) ->
-						OutputByte = InputByte + CypherState,
-						{ OutputByte, OutputByte }
+    ReverseDeltaFun = fun( InputByte, CypherState ) ->
+                        OutputByte = InputByte + CypherState,
+                        { OutputByte, OutputByte }
                       end,
 
-	apply_byte_level_cipher( SourceFilePath, CipheredFilePath,
-					_Transform=ReverseDeltaFun, _InitialCipherState=100 );
+    apply_byte_level_cipher( SourceFilePath, CipheredFilePath,
+        _Transform=ReverseDeltaFun, _InitialCipherState=100 );
 
 
 apply_cipher( { shuffle, Seed, Length }, SourceFilePath, CipheredFilePath ) ->
 
-	random_utils:reset_random_source( Seed ),
-
-	shuffle_cipher( SourceFilePath, CipheredFilePath, Length, direct );
+    shuffle_cipher( SourceFilePath, CipheredFilePath, Length, Seed,
+                    _Dir=direct );
 
 
 apply_cipher( { reciprocal_shuffle, Seed, Length }, SourceFilePath,
-			  CipheredFilePath ) ->
+              CipheredFilePath ) ->
 
-	random_utils:reset_random_source( Seed ),
-
-	shuffle_cipher( SourceFilePath, CipheredFilePath, Length, reciprocal );
+    shuffle_cipher( SourceFilePath, CipheredFilePath, Length, Seed,
+                    _Dir=reciprocal );
 
 
 apply_cipher( { 'xor', XORList }, SourceFilePath, CipheredFilePath ) ->
 
-	xor_cipher( SourceFilePath, CipheredFilePath, XORList );
+    xor_cipher( SourceFilePath, CipheredFilePath, XORList );
 
 
 apply_cipher( { mealy, InitialMealyState, MealyTable }, SourceFilePath,
-			  CipheredFilePath ) ->
+              CipheredFilePath ) ->
 
-	mealy_cipher( SourceFilePath, CipheredFilePath, InitialMealyState,
-				  MealyTable );
+    mealy_cipher( SourceFilePath, CipheredFilePath, InitialMealyState,
+                  MealyTable );
 
 apply_cipher( C, _SourceFilePath, _CipheredFilePath ) ->
-	throw( { unknown_cipher_to_apply, C } ).
+    throw( { unknown_cipher_to_apply, C } ).
 
 
 
 -doc "Returns the reverse cipher of the specified one.".
 -spec reverse_cipher( any_transform() ) -> any_transform().
 reverse_cipher( C=id ) ->
-	C;
+    C;
 
 reverse_cipher( { offset, Offset } ) ->
-	{ offset, 256 - Offset };
+    { offset, 256 - Offset };
 
 reverse_cipher( { compress, CompressFormat } ) ->
-	{ decompress, CompressFormat };
+    { decompress, CompressFormat };
 
 reverse_cipher( { insert_random, Seed, Range } ) ->
-	{ extract_random, Seed, Range };
+    { extract_random, Seed, Range };
 
 reverse_cipher( delta_combine ) ->
-	delta_combine_reverse;
+    delta_combine_reverse;
 
 reverse_cipher( delta_combine_reverse ) ->
-	delta_reverse;
+    delta_reverse;
 
 reverse_cipher( { shuffle, _Seed, _Length } ) ->
-	{ reciprocal_shuffle, _Seed, _Length };
+    { reciprocal_shuffle, _Seed, _Length };
 
 reverse_cipher( C={ 'xor', _XORList } ) ->
-	C;
+    C;
 
 reverse_cipher( { mealy, InitialState, MealyMachine } ) ->
-	{ mealy, InitialState, compute_inverse_mealy_table( MealyMachine ) };
+    { mealy, InitialState, compute_inverse_mealy_table( MealyMachine ) };
 
 reverse_cipher( C ) ->
-	throw( { unknown_cipher_to_reverse, C } ).
+    throw( { unknown_cipher_to_reverse, C } ).
 
 
 
@@ -657,62 +694,62 @@ For all ciphers that can be expressed by a byte-level, stateful transformation
 fun.
 """.
 apply_byte_level_cipher( SourceFilePath, CipheredFilePath, CipherFun,
-						 CipherInitialState ) ->
+                         CipherInitialState ) ->
 
-	% No need for intermediate buffering, thanks to read_ahead and
-	% delayed_write;
+    % No need for intermediate buffering, thanks to read_ahead and
+    % delayed_write;
 
-	SourceFile = file_utils:open( SourceFilePath, ?bin_read_opts ),
+    SourceFile = file_utils:open( SourceFilePath, ?bin_read_opts ),
 
-	TargetFile = file_utils:open( CipheredFilePath, ?bin_write_opts ),
+    TargetFile = file_utils:open( CipheredFilePath, ?bin_write_opts ),
 
-	apply_byte_level_helper( SourceFile, TargetFile, CipherFun,
-							 CipherInitialState ).
+    apply_byte_level_helper( SourceFile, TargetFile, CipherFun,
+                             CipherInitialState ).
 
 
 
 % Actual application of a byte-level transform.
 apply_byte_level_helper( SourceFile, TargetFile, CipherFun,
-						 CipherInitialState ) ->
+                         CipherInitialState ) ->
 
-	Count = 1024 * 8,
+    Count = 1024 * 8,
 
-	case file_utils:read( SourceFile, Count ) of
+    case file_utils:read( SourceFile, Count ) of
 
-		eof ->
-			file_utils:close( SourceFile ),
-			file_utils:close( TargetFile );
+        eof ->
+            file_utils:close( SourceFile ),
+            file_utils:close( TargetFile );
 
-		{ ok, DataBin } ->
+        { ok, DataBin } ->
 
-			{ NewDataBin, NewCipherState } = transform_bytes( DataBin,
-				CipherFun, CipherInitialState ),
+            { NewDataBin, NewCipherState } = transform_bytes( DataBin,
+                CipherFun, CipherInitialState ),
 
-			file_utils:write( TargetFile, NewDataBin ),
+            file_utils:write( TargetFile, NewDataBin ),
 
-			apply_byte_level_helper( SourceFile, TargetFile, CipherFun,
-									 NewCipherState )
+            apply_byte_level_helper( SourceFile, TargetFile, CipherFun,
+                                     NewCipherState )
 
-	end.
+    end.
 
 
 
 % Bitstring comprehensions could be used.
 transform_bytes( DataBin, CipherFun, CipherInitialState ) ->
-	transform_bytes( DataBin, CipherFun, CipherInitialState, _AccBin = <<>> ).
+    transform_bytes( DataBin, CipherFun, CipherInitialState, _AccBin = <<>> ).
 
 
 % (helper)
 transform_bytes( <<>>, _CipherFun, CipherState, AccBin ) ->
-	{ AccBin, CipherState };
+    { AccBin, CipherState };
 
 transform_bytes( _A = << InputByte:8, T/binary >>, CipherFun,
-				 CipherState, AccBin ) ->
+                 CipherState, AccBin ) ->
 
-	{ OutputByte, NewCipherState } = CipherFun( InputByte, CipherState ),
+    { OutputByte, NewCipherState } = CipherFun( InputByte, CipherState ),
 
-	transform_bytes( T, CipherFun, NewCipherState,
-					 << AccBin/binary, OutputByte >> ).
+    transform_bytes( T, CipherFun, NewCipherState,
+                     << AccBin/binary, OutputByte >> ).
 
 
 
@@ -724,253 +761,263 @@ file in all cases.
 """.
 
 id_cipher( SourceFilePath, CipheredFilePath ) ->
-	file_utils:copy_file( SourceFilePath, CipheredFilePath ).
+    file_utils:copy_file( SourceFilePath, CipheredFilePath ).
 
 
 
 compress_cipher( SourceFilePath, CipheredFilePath, CompressFormat ) ->
 
-	CompressedFilePath = file_utils:compress( SourceFilePath, CompressFormat ),
+    CompressedFilePath = file_utils:compress( SourceFilePath, CompressFormat ),
 
-	% Preserves the caller-naming convention:
-	file_utils:rename( CompressedFilePath, CipheredFilePath ).
+    % Preserves the caller-naming convention:
+    file_utils:rename( CompressedFilePath, CipheredFilePath ).
 
 
 decompress_cipher( CipheredFilePath, TargetFilePath, CompressFormat ) ->
 
-	% The decompressing function will check for the relevant extension:
+    % The decompressing function will check for the relevant extension:
 
-	% We must avoid, to decompress X, to rename it to X.bzip2 and then to
-	% decompress it, as this would produce a new decompressed file named X,
-	% overwriting the initial one.
+    % We must avoid, to decompress X, to rename it to X.bzip2 and then to
+    % decompress it, as this would produce a new decompressed file named X,
+    % overwriting the initial one.
 
-	%NewCipheredFilePath = CipheredFilePath
-	NewCipheredFilePath = generate_filename()
-		++ file_utils:get_dotted_extension_for( CompressFormat ),
+    %NewCipheredFilePath = CipheredFilePath
+    NewCipheredFilePath = generate_filename()
+        ++ file_utils:get_dotted_extension_for( CompressFormat ),
 
-	file_utils:rename( CipheredFilePath, NewCipheredFilePath ),
+    file_utils:rename( CipheredFilePath, NewCipheredFilePath ),
 
-	DecompressedFilePath =
-		file_utils:decompress( NewCipheredFilePath, CompressFormat ),
+    DecompressedFilePath =
+        file_utils:decompress( NewCipheredFilePath, CompressFormat ),
 
-	file_utils:rename( NewCipheredFilePath, CipheredFilePath ),
+    file_utils:rename( NewCipheredFilePath, CipheredFilePath ),
 
-	% Preserves the caller-naming convention:
-	file_utils:rename( DecompressedFilePath, TargetFilePath ).
+    % Preserves the caller-naming convention:
+    file_utils:rename( DecompressedFilePath, TargetFilePath ).
 
 
 
 insert_random_cipher( SourceFilePath, CipheredFilePath, Range )
                                             when Range > 1 ->
 
-	SourceFile = file_utils:open( SourceFilePath, ?bin_read_opts ),
+    SourceFile = file_utils:open( SourceFilePath, ?bin_read_opts ),
 
-	TargetFile = file_utils:open( CipheredFilePath, ?bin_write_opts ),
+    TargetFile = file_utils:open( CipheredFilePath, ?bin_write_opts ),
 
-	_InsertedCount = insert_helper( SourceFile, TargetFile, Range, _Count=0 ).
+    _InsertedCount = insert_helper( SourceFile, TargetFile, Range, _Count=0 ).
 
-	%trace_utils:debug_fmt( "insert_random_cipher: inserted ~B bytes.",
-	%                       [ InsertedCount ] ).
+    %trace_utils:debug_fmt( "insert_random_cipher: inserted ~B bytes.",
+    %                       [ InsertedCount ] ).
 
 
 % We insert at random places random values in the content:
 insert_helper( SourceFile, TargetFile, Range, Count ) ->
 
-	NextInsertionOffset = random_utils:get_uniform_value( Range ),
+    NextInsertionOffset = random_utils:get_uniform_value( Range ),
 
-	case file_utils:read( SourceFile, NextInsertionOffset ) of
+    case file_utils:read( SourceFile, NextInsertionOffset ) of
 
-		eof ->
-			file_utils:close( SourceFile ),
-			file_utils:close( TargetFile ),
-			Count;
+        eof ->
+            file_utils:close( SourceFile ),
+            file_utils:close( TargetFile ),
+            Count;
 
-		{ ok, DataBin } when size( DataBin ) =:= NextInsertionOffset ->
+        { ok, DataBin } when size( DataBin ) =:= NextInsertionOffset ->
 
-			RandomByte = random_utils:get_uniform_value( 255 ),
+            RandomByte = random_utils:get_uniform_value( 255 ),
 
-			NewDataBin = << DataBin/binary, RandomByte:8 >>,
+            NewDataBin = << DataBin/binary, RandomByte:8 >>,
 
-			file_utils:write( TargetFile, NewDataBin ),
+            file_utils:write( TargetFile, NewDataBin ),
 
-			insert_helper( SourceFile, TargetFile, Range, Count + 1 );
+            insert_helper( SourceFile, TargetFile, Range, Count + 1 );
 
-		{ ok, PartialDataBin } ->
+        { ok, PartialDataBin } ->
 
-			% Drawn offset not reachable, just finished then:
-			file_utils:write( TargetFile, PartialDataBin ),
-			file_utils:close( SourceFile ),
-			file_utils:close( TargetFile ),
-			Count
+            % Drawn offset not reachable, just finished then:
+            file_utils:write( TargetFile, PartialDataBin ),
+            file_utils:close( SourceFile ),
+            file_utils:close( TargetFile ),
+            Count
 
-	end.
+    end.
 
 
 
 extract_random_cipher( CipheredFilePath, TargetFilePath, Range )
                                             when Range > 1 ->
 
-	CipheredFile = file_utils:open( CipheredFilePath, ?bin_read_opts ),
+    CipheredFile = file_utils:open( CipheredFilePath, ?bin_read_opts ),
 
-	TargetFile = file_utils:open( TargetFilePath, ?bin_write_opts ),
+    TargetFile = file_utils:open( TargetFilePath, ?bin_write_opts ),
 
-	_ExtractedCount =
-		extract_helper( CipheredFile, TargetFile, Range, _Count=0 ).
+    _ExtractedCount =
+        extract_helper( CipheredFile, TargetFile, Range, _Count=0 ).
 
-	%trace_utils:debug_fmt( "extract_random_cipher: extracted ~B bytes.~n",
-	%                       [ ExtractedCount ] ).
+    %trace_utils:debug_fmt( "extract_random_cipher: extracted ~B bytes.~n",
+    %                       [ ExtractedCount ] ).
 
 
 
 % We extract at random places the bytes found in the content:
 extract_helper( CipheredFile, TargetFile, Range, Count ) ->
 
-	NextExtractionOffset = random_utils:get_uniform_value( Range ),
+    NextExtractionOffset = random_utils:get_uniform_value( Range ),
 
-	case file_utils:read( CipheredFile, NextExtractionOffset ) of
+    case file_utils:read( CipheredFile, NextExtractionOffset ) of
 
-		eof ->
-			file_utils:close( CipheredFile ),
-			file_utils:close( TargetFile ),
-			Count;
+        eof ->
+            file_utils:close( CipheredFile ),
+            file_utils:close( TargetFile ),
+            Count;
 
-		{ ok, DataBin } when size( DataBin ) =:= NextExtractionOffset ->
+        { ok, DataBin } when size( DataBin ) =:= NextExtractionOffset ->
 
-			% We drop on the floor the previously inserted byte:
-			case file_utils:read( CipheredFile, 1 ) of
+            % We drop on the floor the previously inserted byte:
+            case file_utils:read( CipheredFile, 1 ) of
 
-				eof ->
-					file_utils:close( CipheredFile ),
-					file_utils:close( TargetFile ),
-					Count;
+                eof ->
+                    file_utils:close( CipheredFile ),
+                    file_utils:close( TargetFile ),
+                    Count;
 
-				{ ok, <<_ExtractedByte:8>> } ->
+                { ok, <<_ExtractedByte:8>> } ->
 
-					% Dummy operation, needed to reproduce the insertion random
-					% state:
-					_RandomByte = random_utils:get_uniform_value( 255 ),
+                    % Dummy operation, needed to reproduce the insertion random
+                    % state:
+                    _RandomByte = random_utils:get_uniform_value( 255 ),
 
-					file_utils:write( TargetFile, DataBin ),
+                    file_utils:write( TargetFile, DataBin ),
 
-					extract_helper( CipheredFile, TargetFile, Range, Count + 1 )
+                    extract_helper( CipheredFile, TargetFile, Range, Count + 1 )
 
-			end;
+            end;
 
-		{ ok, PartialDataBin } ->
-			% Finished:
-			file_utils:write( TargetFile, PartialDataBin ),
-			file_utils:close( CipheredFile ),
-			file_utils:close( TargetFile ),
-			Count
+        { ok, PartialDataBin } ->
+            % Finished:
+            file_utils:write( TargetFile, PartialDataBin ),
+            file_utils:close( CipheredFile ),
+            file_utils:close( TargetFile ),
+            Count
 
-	end.
+    end.
+
 
 
 % Direction is either 'direct' or 'reciprocal':
-shuffle_cipher( SourceFilePath, CipheredFilePath, Length, Direction ) ->
+shuffle_cipher( SourceFilePath, CipheredFilePath, Length, Seed, Direction ) ->
 
-	% Wanting to read lists, not binaries:
-	SourceFile = file_utils:open( SourceFilePath, ?list_read_opts ),
+    % Wanting to read lists, not binaries:
+    SourceFile = file_utils:open( SourceFilePath, ?list_read_opts ),
 
-	TargetFile = file_utils:open( CipheredFilePath, ?list_write_opts ),
+    TargetFile = file_utils:open( CipheredFilePath, ?list_write_opts ),
 
-	shuffle_helper( SourceFile, TargetFile, Length, Direction ).
+    FirstRandomState = random_utils:reset_random_source( Seed ),
+
+    shuffle_helper( SourceFile, TargetFile, Length, Direction,
+                    FirstRandomState ).
 
 
 
-shuffle_helper( SourceFile, TargetFile, Length, Direction ) ->
+% (helper)
+shuffle_helper( SourceFile, TargetFile, Length, Direction, RandomState ) ->
 
-	case file_utils:read( SourceFile, Length ) of
+    case file_utils:read( SourceFile, Length ) of
 
-		eof ->
-			file_utils:close( SourceFile ),
-			file_utils:close( TargetFile );
+        % End of processing; the final random state is dropped:
+        eof ->
+            file_utils:close( SourceFile ),
+            file_utils:close( TargetFile );
 
-		% When will hit the end of file, may perform shuffle on a smaller chunk:
-		{ ok, ByteList } ->
+        % When hits the end of file, may perform shuffle on a smaller chunk:
+        { ok, ByteList } ->
 
-			ShuffledByteList = case Direction of
+            % Processes per chunk:
+            { ShuffledByteList, NewRandState } = case Direction of
 
-				direct ->
-					list_utils:random_permute( ByteList );
+                direct ->
+                    list_utils:random_invertible_permute( ByteList,
+                        RandomState );
 
-				reciprocal ->
-					list_utils:random_permute_reciprocal( ByteList )
+                reciprocal ->
+                    list_utils:random_invertible_permute_reciprocal( ByteList,
+                        RandomState )
 
-			end,
+            end,
 
-			file_utils:write( TargetFile, ShuffledByteList ),
+            file_utils:write( TargetFile, ShuffledByteList ),
 
-			shuffle_helper( SourceFile, TargetFile, Length, Direction )
+            shuffle_helper( SourceFile, TargetFile, Length, Direction,
+                            NewRandState )
 
-	end.
+    end.
 
 
 
 xor_cipher( SourceFilePath, CipheredFilePath, XORList ) ->
 
-	% Wanting to read lists, not binaries:
-	SourceFile = file_utils:open( SourceFilePath, ?list_read_opts ),
+    % Wanting to read lists, not binaries:
+    SourceFile = file_utils:open( SourceFilePath, ?list_read_opts ),
 
-	TargetFile = file_utils:open( CipheredFilePath, ?list_write_opts ),
+    TargetFile = file_utils:open( CipheredFilePath, ?list_write_opts ),
 
-	XORRing = ring_utils:from_list( XORList ),
+    XORRing = ring_utils:from_list( XORList ),
 
-	xor_helper( SourceFile, TargetFile, XORRing ).
+    xor_helper( SourceFile, TargetFile, XORRing ).
 
 
 xor_helper( SourceFile, TargetFile, XORRing ) ->
 
-	case file_utils:read( SourceFile, 1 ) of
+    case file_utils:read( SourceFile, 1 ) of
 
-		eof ->
-			file_utils:close( SourceFile ),
-			file_utils:close( TargetFile );
+        eof ->
+            file_utils:close( SourceFile ),
+            file_utils:close( TargetFile );
 
-		{ ok, [ Byte ] } ->
+        { ok, [ Byte ] } ->
 
-			{ H, NewXORRing } = ring_utils:head( XORRing ),
+            { H, NewXORRing } = ring_utils:head( XORRing ),
 
-			NewByte = Byte bxor H,
+            NewByte = Byte bxor H,
 
-			% In a list, as an integer is not licit, io_list() needed:
-			file_utils:write( TargetFile, [ NewByte ] ),
+            % In a list, as an integer is not licit, io_list() needed:
+            file_utils:write( TargetFile, [ NewByte ] ),
 
-			xor_helper( SourceFile, TargetFile, NewXORRing )
+            xor_helper( SourceFile, TargetFile, NewXORRing )
 
-	end.
+    end.
 
 
 
 mealy_cipher( SourceFilePath, CipheredFilePath, InitialMealyState,
-			  MealyTable ) ->
+              MealyTable ) ->
 
-	% Wanting to read lists, not binaries:
-	SourceFile = file_utils:open( SourceFilePath, ?list_read_opts ),
+    % Wanting to read lists, not binaries:
+    SourceFile = file_utils:open( SourceFilePath, ?list_read_opts ),
 
-	TargetFile = file_utils:open( CipheredFilePath, ?list_write_opts ),
+    TargetFile = file_utils:open( CipheredFilePath, ?list_write_opts ),
 
-	mealy_helper( SourceFile, TargetFile, InitialMealyState, MealyTable ).
+    mealy_helper( SourceFile, TargetFile, InitialMealyState, MealyTable ).
 
 
 mealy_helper( SourceFile, TargetFile, CurrentMealyState, MealyTable ) ->
 
-	case file_utils:read( SourceFile, 1 ) of
+    case file_utils:read( SourceFile, 1 ) of
 
-		eof ->
-			file_utils:close( SourceFile ),
-			file_utils:close( TargetFile );
+        eof ->
+            file_utils:close( SourceFile ),
+            file_utils:close( TargetFile );
 
-		{ ok, [ InputByte ] } ->
+        { ok, [ InputByte ] } ->
 
-			{ NextMealyState, OutputByte } =
-				apply_mealy( InputByte, CurrentMealyState, MealyTable ),
+            { NextMealyState, OutputByte } =
+                apply_mealy( InputByte, CurrentMealyState, MealyTable ),
 
-			file_utils:write( TargetFile, [ OutputByte ] ),
+            file_utils:write( TargetFile, [ OutputByte ] ),
 
-			mealy_helper( SourceFile, TargetFile, NextMealyState, MealyTable )
+            mealy_helper( SourceFile, TargetFile, NextMealyState, MealyTable )
 
-	end.
+    end.
 
 
 
@@ -980,29 +1027,29 @@ mealy_helper( SourceFile, TargetFile, CurrentMealyState, MealyTable ) ->
 %
 apply_mealy( InputByte, CurrentMealyState, MealyTable ) ->
 
-	% Zero-indexed:
-	InnerArray = array:get( CurrentMealyState - 1, MealyTable ),
+    % Zero-indexed:
+    InnerArray = array:get( CurrentMealyState - 1, MealyTable ),
 
-	% Returns the cell:
-	array:get( InputByte, InnerArray ).
+    % Returns the cell:
+    array:get( InputByte, InnerArray ).
 
 
 
 
 generate_filename() ->
 
-	FilePath = ".cipher-" ++ id_utils:generate_uuid(),
+    FilePath = ".cipher-" ++ id_utils:generate_uuid(),
 
-	case file_utils:is_existing_file( FilePath ) of
+    case file_utils:is_existing_file( FilePath ) of
 
-		% Rather unlikely:
-		true ->
-			generate_filename();
+        % Rather unlikely:
+        true ->
+            generate_filename();
 
-		false ->
-			FilePath
+        false ->
+            FilePath
 
-	end.
+    end.
 
 
 
@@ -1030,12 +1077,12 @@ generate_filename() ->
 -doc """
 Generates a Mealy table for the specified number of states.
 
-Relies on the current random state.
+Relies on any existing random state, otherwise will create a default one.
 """.
 -spec generate_mealy_table( count() ) -> mealy_table().
 generate_mealy_table( StateCount ) ->
-	% Default alphabet is all byte values:
-	generate_mealy_table( StateCount, _AlphabetSize=256 ).
+    % Default alphabet is all byte values:
+    generate_mealy_table( StateCount, _AlphabetSize=256 ).
 
 
 
@@ -1043,78 +1090,80 @@ generate_mealy_table( StateCount ) ->
 Generates a Mealy table for the specified number of states and alphabet size.
 
 We manage index to designate symbols of the alphabet; for example, if the
-alphabet is [alpha, beta, gamma], then the alpha symbol is coded by 1, the beta
-one by 2, etc.
+alphabet is `[alpha, beta, gamma]`, then the alpha symbol is coded by 1, the
+beta one by 2, etc.
 
-Relies on the current random state.
+Relies on any existing random state, otherwise will create a default one.
 """.
 -spec generate_mealy_table( count(), count() ) -> mealy_table().
 generate_mealy_table( StateCount, AlphabetSize ) ->
 
-	io:format( "Generating a Mealy table for ~B states and "
-			   "an alphabet of ~B symbols.~n", [ StateCount, AlphabetSize ] ),
+    trace_utils:debug_fmt( "Generating a Mealy table for ~B states and "
+        "an alphabet of ~B symbols.", [ StateCount, AlphabetSize ] ),
 
-	Table = array:new( StateCount ),
+    random_utils:ensure_random_state(),
 
-	% Prebuilt for easier permutations in [0;255]:
-	Alphabet = lists:seq( 0, AlphabetSize - 1 ),
+    Table = array:new( StateCount ),
 
-	% Arrays are zero-indexed:
-	fill_table( Table, _Index=0, _FinalIndex=StateCount, Alphabet,
-				AlphabetSize ).
+    % Prebuilt for easier permutations in [0;255]:
+    Alphabet = lists:seq( 0, AlphabetSize - 1 ),
+
+    % Arrays are zero-indexed:
+    fill_table( Table, _Index=0, _FinalIndex=StateCount, Alphabet,
+                AlphabetSize ).
 
 
 % Adds the inner arrays:
 fill_table( Table, _Index=FinalIndex, FinalIndex, _Alphabet, _AlphabetSize ) ->
-	Table;
+    Table;
 
 fill_table( Table, Index, FinalIndex, Alphabet, AlphabetSize ) ->
 
-	% FinalIndex is StateCount:
-	InnerArray = create_inner_array( Alphabet, AlphabetSize, FinalIndex ),
+    % FinalIndex is StateCount:
+    InnerArray = create_inner_array( Alphabet, AlphabetSize, FinalIndex ),
 
-	NewTable = array:set( Index, InnerArray, Table ),
+    NewTable = array:set( Index, InnerArray, Table ),
 
-	fill_table( NewTable, Index+1, FinalIndex, Alphabet, AlphabetSize ).
+    fill_table( NewTable, Index+1, FinalIndex, Alphabet, AlphabetSize ).
 
 
 
 % Will have as many elements as there are input letters:
 create_inner_array( Alphabet, AlphabetSize, StateCount ) ->
 
-	Array = array:new( AlphabetSize ),
+    Array = array:new( AlphabetSize ),
 
-	% To fill this inner array (corresponding to a given state), we must, for
-	% each of the possible input letter, specify the corresponding cell.
-	%
-	% The corresponding pair is made of a new state (uniformly chosen at random
-	% among the possible states - some states can appear multiple times, other
-	% none) and an output letter; in each inner array, these output letters must
-	% form an exact permutation of the alphabet, for reversibility purpose.
+    % To fill this inner array (corresponding to a given state), we must, for
+    % each of the possible input letter, specify the corresponding cell.
+    %
+    % The corresponding pair is made of a new state (uniformly chosen at random
+    % among the possible states - some states can appear multiple times, other
+    % none) and an output letter; in each inner array, these output letters must
+    % form an exact permutation of the alphabet, for reversibility purpose.
 
-	% Updates also the random state:
-	Letters = list_utils:random_permute( Alphabet ),
+    % Updates also the random state:
+    Letters = list_utils:random_permute( Alphabet ),
 
-	% No, a fold would not be clearer:
-	fill_inner_array( Array, _Index=0, _FinalIndex=AlphabetSize, Letters,
-					  StateCount ).
+    % No, a fold would not be clearer:
+    fill_inner_array( Array, _Index=0, _FinalIndex=AlphabetSize, Letters,
+                      StateCount ).
 
 
 % We iterate through the permuted letters:
 fill_inner_array( Array, _Index=FinalIndex, FinalIndex, _Letters=[],
-				  _StateCount ) ->
-	Array;
+                  _StateCount ) ->
+    Array;
 
 fill_inner_array( Array, Index, FinalIndex, _Letters=[ L | T ], StateCount ) ->
 
-	% Returns a value in [1,StateCount]:
-	NextState = random_utils:get_uniform_value( StateCount ),
+    % Returns a value in [1,StateCount]:
+    NextState = random_utils:get_uniform_value( StateCount ),
 
-	Cell = { NextState, L },
+    Cell = { NextState, L },
 
-	NewArray = array:set( Index, Cell, Array ),
+    NewArray = array:set( Index, Cell, Array ),
 
-	fill_inner_array( NewArray, Index+1, FinalIndex, T, StateCount ).
+    fill_inner_array( NewArray, Index+1, FinalIndex, T, StateCount ).
 
 
 
@@ -1122,65 +1171,65 @@ fill_inner_array( Array, Index, FinalIndex, _Letters=[ L | T ], StateCount ) ->
 -spec compute_inverse_mealy_table( mealy_table() ) -> mealy_table().
 compute_inverse_mealy_table( Table ) ->
 
-	StateCount = array:size( Table ),
+    StateCount = array:size( Table ),
 
-	% At least one state defined:
-	AlphabetSize = array:size( array:get( 0, Table ) ),
+    % At least one state defined:
+    AlphabetSize = array:size( array:get( 0, Table ) ),
 
-	% To inverse a Mealy table: when we read the first encrypted byte while in
-	% initial state S, we look up in the original table to which input byte it
-	% corresponded for state S, and write that byte. The state in that cell is
-	% the next state. Then we iterate.
+    % To inverse a Mealy table: when we read the first encrypted byte while in
+    % initial state S, we look up in the original table to which input byte it
+    % corresponded for state S, and write that byte. The state in that cell is
+    % the next state. Then we iterate.
 
-	% So the inverse table can be computed simply by finding, for each read
-	% byte, what is the input byte which corresponded.
+    % So the inverse table can be computed simply by finding, for each read
+    % byte, what is the input byte which corresponded.
 
-	InverseTable = array:new( StateCount ),
+    InverseTable = array:new( StateCount ),
 
-	% Iterate first on inner arrays:
+    % Iterate first on inner arrays:
 
-	InnerArrays = array:to_list( Table ),
+    InnerArrays = array:to_list( Table ),
 
-	fill_reverse_table( InverseTable, InnerArrays, _Index=0,
-						_FinalIndex=StateCount, AlphabetSize ).
+    fill_reverse_table( InverseTable, InnerArrays, _Index=0,
+                        _FinalIndex=StateCount, AlphabetSize ).
 
 
 fill_reverse_table( InverseTable, _InnerArrays=[], _Index=FinalIndex,
-						FinalIndex, _AlphabetSize ) ->
-	InverseTable;
+                        FinalIndex, _AlphabetSize ) ->
+    InverseTable;
 
 fill_reverse_table( InverseTable, _InnerArrays=[ A | T ], Index, FinalIndex,
-					AlphabetSize ) ->
+                    AlphabetSize ) ->
 
-	ReversedInnerArray = inverse_inner_array( A, AlphabetSize ),
+    ReversedInnerArray = inverse_inner_array( A, AlphabetSize ),
 
-	NewInverseTable = array:set( Index, ReversedInnerArray, InverseTable ),
+    NewInverseTable = array:set( Index, ReversedInnerArray, InverseTable ),
 
-	fill_reverse_table( NewInverseTable, T, Index+1, FinalIndex,
-						AlphabetSize ).
+    fill_reverse_table( NewInverseTable, T, Index+1, FinalIndex,
+                        AlphabetSize ).
 
 
 
 inverse_inner_array( InnerArray, AlphabetSize ) ->
 
-	Cells = array:to_list( InnerArray ),
+    Cells = array:to_list( InnerArray ),
 
-	NewInnerArray = array:new( AlphabetSize ),
+    NewInnerArray = array:new( AlphabetSize ),
 
-	inverse_cells( Cells, _Index=0, NewInnerArray ).
+    inverse_cells( Cells, _Index=0, NewInnerArray ).
 
 
 inverse_cells( _Cells=[], _Index, AccArray ) ->
-	AccArray;
+    AccArray;
 
 % We will branch to the same next state, but we output what the direct machine
 % must have read for that output letter:
 %
 inverse_cells( _Cells=[ { NextState, OutputLetter } | T ], Index, AccArray ) ->
 
-	NewAccArray = array:set( OutputLetter, { NextState, Index }, AccArray ),
+    NewAccArray = array:set( OutputLetter, { NextState, Index }, AccArray ),
 
-	inverse_cells( T, Index+1, NewAccArray ).
+    inverse_cells( T, Index+1, NewAccArray ).
 
 
 
@@ -1188,42 +1237,42 @@ inverse_cells( _Cells=[ { NextState, OutputLetter } | T ], Index, AccArray ) ->
 -spec mealy_table_to_string( mealy_table() ) -> ustring().
 mealy_table_to_string( Table ) ->
 
-	StateCount = array:size( Table ),
+    StateCount = array:size( Table ),
 
-	StateStrings = get_inner_info( Table, _Index=0, _FinalIndex=StateCount,
-								   _Acc=[] ),
+    StateStrings = get_inner_info( Table, _Index=0, _FinalIndex=StateCount,
+                                   _Acc=[] ),
 
-	AlphabetSize = array:size( array:get( 0, Table ) ),
+    AlphabetSize = array:size( array:get( 0, Table ) ),
 
-	text_utils:format( "Mealy table with ~B states and an alphabet of "
-		"~B letters: ~ts", [ StateCount, AlphabetSize,
-							 text_utils:strings_to_string( StateStrings ) ] ).
+    text_utils:format( "Mealy table with ~B states and an alphabet of "
+        "~B letters: ~ts", [ StateCount, AlphabetSize,
+                             text_utils:strings_to_string( StateStrings ) ] ).
 
 
 get_inner_info( _Table, _Index=FinalIndex, FinalIndex, Acc ) ->
-	lists:reverse( Acc );
+    lists:reverse( Acc );
 
 get_inner_info( Table, Index, FinalIndex, Acc ) ->
 
-	% List of cells:
-	InnerList = array:to_list( array:get( Index, Table ) ),
+    % List of cells:
+    InnerList = array:to_list( array:get( Index, Table ) ),
 
-	S = text_utils:format( "for state S~B:~n~ts",
-						   [ Index+1, get_cells_info( InnerList ) ] ),
+    S = text_utils:format( "for state S~B:~n~ts",
+                           [ Index+1, get_cells_info( InnerList ) ] ),
 
-	get_inner_info( Table, Index+1, FinalIndex, [ S | Acc ] ).
+    get_inner_info( Table, Index+1, FinalIndex, [ S | Acc ] ).
 
 get_cells_info( InnerList ) ->
-	% To avoid many ineffective concatenations:
-	get_cells_info( lists:reverse( InnerList ), _StringAcc=[] ).
+    % To avoid many ineffective concatenations:
+    get_cells_info( lists:reverse( InnerList ), _StringAcc=[] ).
 
 
 get_cells_info( _InnerList=[], StringAcc ) ->
-	StringAcc;
+    StringAcc;
 
 get_cells_info( _InnerList=[ _C={ NewState, OutputByte } | T ], StringAcc ) ->
 
-	NewAcc = text_utils:format( "{~p,~B} ", [ NewState, OutputByte ] )
-		++ StringAcc,
+    NewAcc = text_utils:format( "{~p,~B} ", [ NewState, OutputByte ] )
+        ++ StringAcc,
 
-	get_cells_info( T, NewAcc ).
+    get_cells_info( T, NewAcc ).

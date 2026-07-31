@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 Olivier Boudeville
+% Copyright (C) 2014-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -54,124 +54,124 @@ See the myriad_parse_transform.erl module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	MyH1 = table:new( 10 ),
+    MyH1 = table:new( 10 ),
 
-	true = table:is_empty( MyH1 ),
+    true = table:is_empty( MyH1 ),
 
-	table:display( "Vanilla table", MyH1 ),
-	MyH1Optimised = table:optimise( MyH1 ),
-	table:display( "Optimised table", MyH1Optimised ),
+    table:display( "Vanilla table", MyH1 ),
+    MyH1Optimised = table:optimise( MyH1 ),
+    table:display( "Optimised table", MyH1Optimised ),
 
-	table:display( MyH1 ),
-	MyH2 = table:new( 4 ),
+    table:display( MyH1 ),
+    MyH2 = table:new( 4 ),
 
-	MyFirstValue = "MyFirstValue",
-	MyH3 = table:add_entry( ?MyFirstKey, MyFirstValue, MyH2 ),
-	false = table:is_empty( MyH3 ),
+    MyFirstValue = "MyFirstValue",
+    MyH3 = table:add_entry( ?MyFirstKey, MyFirstValue, MyH2 ),
+    false = table:is_empty( MyH3 ),
 
-	MySecondValue = [ 1, 2, 3 ],
-	MyH4 = table:add_entry( ?MySecondKey, MySecondValue, MyH3 ),
-	false = table:is_empty( MyH4 ),
+    MySecondValue = [ 1, 2, 3 ],
+    MyH4 = table:add_entry( ?MySecondKey, MySecondValue, MyH3 ),
+    false = table:is_empty( MyH4 ),
 
-	table:display( MyH4 ),
+    table:display( MyH4 ),
 
-	MyH4Size = table:size( MyH4 ),
-	test_facilities:display( "Size of table '~ts': ~B entries",
-							 [ table:to_string( MyH4 ), MyH4Size ] ),
+    MyH4Size = table:size( MyH4 ),
+    test_facilities:display( "Size of table '~ts': ~B entries",
+                             [ table:to_string( MyH4 ), MyH4Size ] ),
 
-	test_facilities:display( "Looking up for ~ts: ~p", [ ?MyFirstKey,
-		table:lookup_entry( ?MyFirstKey, MyH4 ) ] ),
-	{ value, MyFirstValue } = table:lookup_entry( ?MyFirstKey, MyH4 ),
+    test_facilities:display( "Looking up for ~ts: ~p", [ ?MyFirstKey,
+        table:lookup_entry( ?MyFirstKey, MyH4 ) ] ),
+    { value, MyFirstValue } = table:lookup_entry( ?MyFirstKey, MyH4 ),
 
-	test_facilities:display( "Removing that entry." ),
-	MyH5 = table:remove_entry( ?MyFirstKey, MyH4 ),
-	false = table:is_empty( MyH5 ),
+    test_facilities:display( "Removing that entry." ),
+    MyH5 = table:remove_entry( ?MyFirstKey, MyH4 ),
+    false = table:is_empty( MyH5 ),
 
-	test_facilities:display( "Extracting the same entry from "
-							 "the same initial table." ),
-	{ MyFirstValue, MyH5 } = table:extract_entry( ?MyFirstKey, MyH4 ),
+    test_facilities:display( "Extracting the same entry from "
+                             "the same initial table." ),
+    { MyFirstValue, MyH5 } = table:extract_entry( ?MyFirstKey, MyH4 ),
 
-	test_facilities:display( "Looking up for ~ts: ~p",
-		[ ?MyFirstKey, table:lookup_entry( ?MyFirstKey, MyH5 ) ] ),
+    test_facilities:display( "Looking up for ~ts: ~p",
+        [ ?MyFirstKey, table:lookup_entry( ?MyFirstKey, MyH5 ) ] ),
 
-	key_not_found  = table:lookup_entry( ?MyFirstKey, MyH5 ),
+    key_not_found  = table:lookup_entry( ?MyFirstKey, MyH5 ),
 
-	[ MySecondValue, MyFirstValue ] = table:get_all_values(
-										[ ?MySecondKey, ?MyFirstKey ], MyH4 ),
+    [ MySecondValue, MyFirstValue ] = table:get_all_values(
+                                        [ ?MySecondKey, ?MyFirstKey ], MyH4 ),
 
-	% remove_entry can also be used if the specified key is not here, will
-	% return an identical table.
+    % remove_entry can also be used if the specified key is not here, will
+    % return an identical table.
 
-	table:display( MyH5 ),
-	test_facilities:display( "Testing double key registering." ),
-	MyH6 = table:add_entry( ?MySecondKey, anything, MyH5 ),
-	table:display( MyH6 ),
+    table:display( MyH5 ),
+    test_facilities:display( "Testing double key registering." ),
+    MyH6 = table:add_entry( ?MySecondKey, anything, MyH5 ),
+    table:display( MyH6 ),
 
-	test_facilities:display( "Enumerating the table: ~p",
-		[ table:enumerate( MyH4 ) ] ),
+    test_facilities:display( "Enumerating the table: ~p",
+        [ table:enumerate( MyH4 ) ] ),
 
-	test_facilities:display( "Listing the table keys: ~p",
-		[ table:keys( MyH4 ) ] ),
+    test_facilities:display( "Listing the table keys: ~p",
+        [ table:keys( MyH4 ) ] ),
 
-	test_facilities:display( "Listing the table values: ~p",
-		[ table:values( MyH4 ) ] ),
-
-
-	test_facilities:display( "Applying a fun to all values of "
-							 "previous table:" ),
-
-	FunValue = fun( V ) ->
-					test_facilities:display( " - hello value '~p'!~n", [ V ] ),
-					% Unchanged here:
-					 V
-			   end,
-
-	table:map_on_values( FunValue, MyH4 ),
+    test_facilities:display( "Listing the table values: ~p",
+        [ table:values( MyH4 ) ] ),
 
 
-	test_facilities:display( "Applying a fun to all entries of "
-							 "previous table:" ),
+    test_facilities:display( "Applying a fun to all values of "
+                             "previous table:" ),
 
-	FunEntry = fun( E={ K, V } ) ->
-					test_facilities:display(
-						 " - hello, key '~p' associated to value '~p'!~n",
-						 [ K, V ] ),
-					% Unchanged here:
-					E
-			   end,
+    FunValue = fun( V ) ->
+                    test_facilities:display( " - hello value '~p'!~n", [ V ] ),
+                    % Unchanged here:
+                     V
+               end,
 
-	table:map_on_entries( FunEntry, MyH4 ),
+    table:map_on_values( FunValue, MyH4 ),
 
-	test_facilities:display( "Folding on the same initial table to "
-							 "count the number of entries." ),
 
-	FunCount = fun( _Entry, AccCount ) ->
-					   AccCount + 1
-			   end,
+    test_facilities:display( "Applying a fun to all entries of "
+                             "previous table:" ),
 
-	InitialCount = 0,
+    FunEntry = fun( E={ K, V } ) ->
+                    test_facilities:display(
+                         " - hello, key '~p' associated to value '~p'!~n",
+                         [ K, V ] ),
+                    % Unchanged here:
+                    E
+               end,
 
-	2 = table:fold_on_entries( FunCount, InitialCount, MyH4 ),
+    table:map_on_entries( FunEntry, MyH4 ),
 
-	0 = table:fold_on_entries( FunCount, InitialCount, MyH1 ),
+    test_facilities:display( "Folding on the same initial table to "
+                             "count the number of entries." ),
 
-	true = list_utils:unordered_compare( [ ?MyFirstKey, ?MySecondKey ],
-										 table:keys( MyH4 ) ),
+    FunCount = fun( _Entry, AccCount ) ->
+                       AccCount + 1
+               end,
 
-	MyH7 = table:add_entry( ?MyThirdKey, 3, MyH6 ),
+    InitialCount = 0,
 
-	% MyH8 should have {MySecondKey, [1,2,3]} and {?MyThirdKey, 3}:
-	MyH8 = table:merge( MyH4, MyH7 ),
-	test_facilities:display( "Merged table: ~ts", [ table:to_string( MyH8 ) ] ),
+    2 = table:fold_on_entries( FunCount, InitialCount, MyH4 ),
 
-	MyH9 = table:optimise( MyH8 ),
-	table:display( "Optimised merged table", MyH9 ),
+    0 = table:fold_on_entries( FunCount, InitialCount, MyH1 ),
 
-	Keys = [ ?MyFirstKey, ?MyThirdKey ],
+    true = list_utils:unordered_compare( [ ?MyFirstKey, ?MySecondKey ],
+                                         table:keys( MyH4 ) ),
 
-	test_facilities:display( "Listing the entries for keys ~p:~n ~p",
-							 [ Keys, table:select_entries( Keys, MyH9 ) ] ),
+    MyH7 = table:add_entry( ?MyThirdKey, 3, MyH6 ),
 
-	test_facilities:stop().
+    % MyH8 should have {MySecondKey, [1,2,3]} and {?MyThirdKey, 3}:
+    MyH8 = table:merge( MyH4, MyH7 ),
+    test_facilities:display( "Merged table: ~ts", [ table:to_string( MyH8 ) ] ),
+
+    MyH9 = table:optimise( MyH8 ),
+    table:display( "Optimised merged table", MyH9 ),
+
+    Keys = [ ?MyFirstKey, ?MyThirdKey ],
+
+    test_facilities:display( "Listing the entries for keys ~p:~n ~p",
+                             [ Keys, table:select_entries( Keys, MyH9 ) ] ),
+
+    test_facilities:stop().

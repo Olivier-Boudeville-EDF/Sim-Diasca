@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -34,130 +34,133 @@ Overall unit test of the Sim-Diasca **result management** facilities.
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+    ?case_start,
 
-	% Default simulation settings (50Hz, batch reproducible) are used, except
-	% for the name:
-	%
-	SimulationSettings = #simulation_settings{
+    % Default simulation settings (50Hz, batch reproducible) are used, except
+    % for the name:
+    %
+    SimulationSettings = #simulation_settings{
 
-		simulation_name="Result management test"
+        simulation_name="Result management test"
 
-		% Allows to test various combinations of result specifications:
+        % Allows to test various combinations of result specifications:
 
-		% Default result specification can be left. Otherwise add a comma above
-		% and uncomment one of the specifications below:
+        % Default result specification can be left. Otherwise add a comma above
+        % and uncomment one of the specifications below:
 
-		% Correct, accepted specifications:
+        % Correct, accepted specifications:
 
-		%result_specification=no_output
-		%result_specification=all_outputs
-		%result_specification=all_basic_probes_only
-		%result_specification=all_virtual_probes_only
+        %result_specification=no_output
+        %result_specification=all_outputs
+        %result_specification=all_basic_probes_only
+        %result_specification=all_virtual_probes_only
 
-		% Will select nothing:
-		%result_specification=[]
+        % Will select nothing:
+        %result_specification=[]
 
-		% Will select all (basic) probes:
-		%result_specification=[ { targeted_patterns, [ ".*" ] } ]
+        % Will select all (basic) probes:
+        %result_specification=[ { targeted_patterns, [ ".*" ] } ]
 
-		% Will select nothing here, as blacklisted:
-		%result_specification=[
-		%   { targeted_patterns, [ {".*",[rendering_only]} ] },
-		%   { blacklisted_patterns, [ "My virtual probe" ] } ]
-
-
-		% Incorrect, rejected specifications:
-
-		%result_specification=unexpected_option
-		%result_specification=[ { targeted_patterns, unexpected_pattern } ]
-		%result_specification=[ { targeted_patterns, [ ".*" ] },
-		%                       unexpected_option ]
-
-	},
+        % Will select nothing here, as blacklisted:
+        %result_specification=[
+        %   { targeted_patterns, [ {".*",[rendering_only]} ] },
+        %   { blacklisted_patterns, [ "My virtual probe" ] } ]
 
 
-	% Default deployment settings (unavailable nodes allowed, on-the-fly
-	% generation of the deployment package requested), but computing hosts are
-	% specified (to be updated depending on your environment):
-	% (note that localhost is implied)
-	%
-	DeploymentSettings = #deployment_settings{ enable_data_logger=true },
+        % Incorrect, rejected specifications:
+
+        %result_specification=unexpected_option
+        %result_specification=[ { targeted_patterns, unexpected_pattern } ]
+        %result_specification=[ { targeted_patterns, [ ".*" ] },
+        %                       unexpected_option ]
+
+    },
 
 
-	% Default load balancing settings (round-robin placement heuristic):
-	LoadBalancingSettings = #load_balancing_settings{},
+    % Default deployment settings (unavailable nodes allowed, on-the-fly
+    % generation of the deployment package requested), but computing hosts are
+    % specified (to be updated depending on your environment):
+    % (note that localhost is implied)
+    %
+    DeploymentSettings = #deployment_settings{ enable_data_logger=true },
 
 
-	?test_notice_fmt( "This test will deploy a distributed simulation "
-		"based on computing hosts specified as ~p.",
-		[ DeploymentSettings#deployment_settings.computing_hosts ] ),
+    % Default load balancing settings (round-robin placement heuristic):
+    LoadBalancingSettings = #load_balancing_settings{},
 
 
-	% Directly created on the user node:
-	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-		DeploymentSettings, LoadBalancingSettings ),
+    ?test_notice_fmt( "This test will deploy a distributed simulation "
+        "based on computing hosts specified as ~p.",
+        [ DeploymentSettings#deployment_settings.computing_hosts ] ),
 
 
-	?test_info( "Deployment manager created, retrieving the load balancer." ),
+    % Directly created on the user node:
+    DeploymentManagerPid = sim_diasca:init( SimulationSettings,
+        DeploymentSettings, LoadBalancingSettings ),
 
-	DeploymentManagerPid ! { getLoadBalancer, [], self() },
-	LoadBalancerPid = test_receive(),
+
+    ?test_info( "Deployment manager created, retrieving the load balancer." ),
+
+    DeploymentManagerPid ! { getLoadBalancer, [], self() },
+    LoadBalancerPid = test_receive(),
 
 
-	?test_info( "Requesting to the load balancer the creation of "
-				"a first initial test actor." ),
+    ?test_info( "Requesting to the load balancer the creation of "
+                "a first initial test actor." ),
 
-	IsBatch = executable_utils:is_batch(),
+    IsBatch = executable_utils:is_batch(),
 
-	?test_info( "Creating an actor that will make use of two virtual probes." ),
+    ?test_info( "Creating an actor that will make use of two virtual probes." ),
 
-	_ActorPid = class_Actor:create_initial_actor(
-		class_DataLoggingActor,
-		[ "First data-logging test actor", _TerminationTickOffset=200,
+    _ActorPid = class_Actor:create_initial_actor(
+        class_DataLoggingActor,
+        [ "First data-logging test actor", _TerminationTickOffset=200,
           _Listener=self() ], LoadBalancerPid ),
 
 
-	?test_info( "Creating also a basic probe directly from the test." ),
+    ?test_info( "Creating also a basic probe directly from the test." ),
 
-	class_Probe_test:manage_facility_probe(
-		"My basic probe created from test", _UseTickOffsets=true ),
+    class_Probe_test:manage_facility_probe(
+        "My basic probe created from test", _UseTickOffsets=true ),
 
-	?test_info( "Creating also a virtual probe directly from the test." ),
-	datalogging_test:manage_facility_probe(
-		"My virtual probe created from test" ),
-
-
-	DeploymentManagerPid ! { getRootTimeManager, [], self() },
-	RootTimeManagerPid = test_receive(),
+    ?test_info( "Creating also a virtual probe directly from the test." ),
+    datalogging_test:manage_facility_probe(
+        "My virtual probe created from test" ),
 
 
-	?test_info( "Starting simulation." ),
-	RootTimeManagerPid ! { start, [ _StopTick=120, self() ] },
-
-	% Waits until simulation is finished:
-	receive
-
-		simulation_stopped ->
-			?test_info( "Simulation stopped spontaneously." )
-
-	end,
+    DeploymentManagerPid ! { getRootTimeManager, [], self() },
+    RootTimeManagerPid = test_receive(),
 
 
-	?test_info( "Browsing the report results, if in batch mode." ),
-	class_ResultManager:browse_reports(),
+    ?test_info( "Starting simulation." ),
+    RootTimeManagerPid ! { start, [ _StopTick=120, self() ] },
 
-	sim_diasca:shutdown(),
+    % Waits until simulation is finished:
+    receive
 
-	IsBatch orelse
-		begin
-			% Display more information in interactive mode:
-			mnesia:start(),
-			mnesia:info(),
-			observer:start(),
-			io:format( "~n(hit CTRL-M on the TV window to view "
-					   "the virtual probe tables, by double-clicking "
-					   "on their name)~n~n" )
-		end,
+        simulation_stopped ->
+            ?test_info( "Simulation stopped spontaneously." )
 
-	?case_stop.
+    end,
+
+
+    ?test_info( "Browsing the report results, if in batch mode." ),
+    class_ResultManager:browse_reports(),
+
+    sim_diasca:shutdown(),
+
+    IsBatch orelse
+        begin
+            % Display more information in interactive mode:
+            mnesia:start(),
+            mnesia:info(),
+
+            % Requires a proper wx support:
+            %observer:start(),
+
+            io:format( "~n(hit CTRL-M on the TV window to view "
+                       "the virtual probe tables, by double-clicking "
+                       "on their name)~n~n" )
+        end,
+
+    ?case_stop.

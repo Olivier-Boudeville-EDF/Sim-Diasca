@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2025 Olivier Boudeville
+% Copyright (C) 2018-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -39,29 +39,29 @@ be done by an instance.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	% Allows to support both OTP conventions and ad hoc, automatic ones:
-	wooper_utils:start_for_test(),
+    % Allows to support both OTP conventions and ad hoc, automatic ones:
+    wooper_utils:start_for_test(),
 
-	test_facilities:display( "Running attribute test." ),
+    test_facilities:display( "Running attribute test." ),
 
-	TestedPid = class_AttributeTester:new_link(),
+    TestedPid = class_AttributeTester:new_link(),
 
-	TestedPid ! { test, [], self() },
+    TestedPid ! { test, [], self() },
 
-	receive
+    receive
 
-		{ wooper_result, test_ok } ->
-			ok;
+        { wooper_result, test_ok } ->
+            ok;
 
-		Other ->
-			test_facilities:fail( "Test failed: ~p.", [ Other ] )
+        Other ->
+            test_facilities:fail( "Test failed: ~p.", [ Other ] )
 
-	end,
+    end,
 
-	test_facilities:display( "Test success." ),
+    test_facilities:display( "Test success." ),
 
-	wooper:delete_synchronously_instance( TestedPid ),
+    wooper:delete_synchronously_instance( TestedPid ),
 
-	test_facilities:stop().
+    test_facilities:stop().

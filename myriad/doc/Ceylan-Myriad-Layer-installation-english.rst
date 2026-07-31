@@ -1,5 +1,3 @@
-
-
 --------------
 Getting Myriad
 --------------
@@ -26,21 +24,30 @@ Myriad can be built and tested successfully on the ``Windows`` platform; for tha
 People reported uses of Myriad on ``macOS``, yet no extensive testing has been done there.
 
 
-.. _`getting-erlang`:
-
-.. _`getting erlang`:
 
 
 
 Software Prerequisites
 ----------------------
 
-The main tool prerequisite is of course having the `Erlang <http://erlang.org>`_ environment available, in its ``28.0`` version [#]_ or more recent.
 
-.. [#] Most probably that older versions of Erlang would be more than sufficient in order to build Myriad (possibly at the expense of minor changes in a few calls to standard modules having been deprecated since then). It is just that in general we prefer sticking to the latest stable versions of software such as Erlang, and advise you to do so.
+.. _`getting-erlang`:
 
-	   To determine programmatically the recommended version of Myriad-based code, just execute our `install-erlang.sh <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/conf/install-erlang.sh>`_ script with its ``--version`` option (this is the sole source of reference, and it is used in our full software stack).
+.. _`getting erlang`:
 
+The main tool prerequisite is of course having the `Erlang <http://erlang.org>`_ environment available, in its ``28.5`` version [#]_ or more recent.
+
+.. [#] Most probably that older versions of Erlang would be more than sufficient in order to build Myriad (possibly at the expense of minor changes in a few calls to standard modules having been deprecated since then).
+
+	   It is just that in general we prefer sticking to the latest stable versions of software such as Erlang, and advise you to do so.
+
+
+To determine programmatically the recommended Erlang version for Myriad-based code, just execute our `install-erlang.sh <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/conf/install-erlang.sh>`_ script with its ``--version`` option (this is the sole source of reference, and it is used in our full software stack).
+
+
+
+Securing a Basic, GUI-less Erlang environment
+.............................................
 
 There are various ways of obtaining it (from your distribution [#]_, from prebuilt packages, directly from the sources), one of which being the `install-erlang.sh <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/conf/install-erlang.sh>`_ script that we devised.
 
@@ -51,14 +58,51 @@ A simple use of it is:
 
 .. code:: bash
 
- $ ./install-erlang.sh --doc-install --generate-plt
+ $ ./install-erlang.sh --doc-install
+
+.. Could be added: --generate-plt
 
 
 As using a Just-In-Time compiler increases the performances significantly, we chose to force its use. As a result, a C++ 17 compiler, like a recent enough ``g++`` one,  is required by our script.
 
-One may execute ``./install-erlang.sh --help`` for more guidance about how to configure it, notably in order to enable all modules of interest (``crypto``, ``wx``, etc.). See also the `Base GUI Backend`_ section to secure any related prerequisite.
+
+.. Note:: Building Erlang from sources this way may result in an Erlang environment not able to provide any GUI service.
+
+		  We however recommend enabling the GUI support of Erlang in all cases, whether planning to use MyriadGUI or not: for example the ``observer`` module, very convenient in Erlang, requires such a GUI support.
+
+		  To do so, just apply the next section first.
+
+
+One may execute ``./install-erlang.sh --help`` for more guidance about how to configure it, notably in order to enable all modules of interest (``crypto``, ``wx``, etc.), generate a PLT, etc.
 
 By default, such an installation is done so that it requires no specific permissions, and will be available only from the account of the current user. For all uses requiring a system-wide availability of that version, root-like permissions will be needed at some point; this script shall then be run with sudo, like in: ``sudo install-erlang.sh [...]``, and for example the interpreter will be available as ``/usr/local/bin/erl``.
+
+
+
+.. _`wx availability`:
+
+Securing an Erlang environment with GUI Support (recommended)
+.............................................................
+
+For such a support to be available, `wxWidgets <https://www.wxwidgets.org/>`_ (including its header files) must be installed on the host at build-time (otherwise it will not be detected by the Erlang configure script, and will end up disabled) *and* at runtime (as, when needed, these libraries will be loaded dynamically; otherwise at GUI start a ``{load_driver,"No driver found"}`` exception will be raised).
+
+
+.. Not found anymore: This can be tested by executing ``wx-config --version`` on a shell.
+
+
+Another (simpler, more reliable) way of securing such prerequisites is to install the ``erlang`` package (of course *not* the ``erlang-nox`` one) of one's favorite distribution, prior to configuring (first step of building) Erlang: the Erlang version installed from sources shall be able to make use of them.
+
+A drawback of this simple approach is that there will be at least two versions of Erlang on one's host (the system one, and the one built from sources), which creates room for confusion.
+
+So, instead of installing Erlang as a whole, securing more precisely its wx-enabling (at least build) dependencies could be better, with:
+
+- on Arch: install the union of the build deps that are obtained with ``pacman -Si erlang`` and the runtime deps returned by ``pacman -Si erlang-wx`` (this may install for example ``wxwidgets-gtk3``, ``gtk3``, ``mesa`` and ``glu``)
+- on Debian: ``sudo apt-get build-dep erlang`` (this may install for example ``libwxgtk3.2-gtk3-dev``, ``libgl1-mesa-dev``, ``libglu1-mesa-dev`` and ``libpng-dev``; ``libwxgtk-webview3.2-dev`` could be added)
+
+
+So in all cases ``wxWidgets`` must be installed *prior* to building Erlang, so that it is detected by its configuration script and a proper ``wx`` module can be used afterwards.
+
+Running then from the Erlang shell ``wx:demo()`` is a good test of the actual support; alternatively ``observer:start()`` can be run.
 
 
 
@@ -402,7 +446,7 @@ For more details, one may have a look at:
 Other OTP-related Make Targets of Interest
 ------------------------------------------
 
-To populate/update the OTP build tree (by default, from the GIT root, for example ``_build/default/lib/myriad/`` for Myriad) of the current Ceylan layer, one may use::
+To populate/update the OTP build tree (by default, from the Git root, for example ``_build/default/lib/myriad/`` for Myriad) of the current Ceylan layer, one may use::
 
  $ make rebar3-compile
 

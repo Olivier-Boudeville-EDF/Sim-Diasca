@@ -30,7 +30,7 @@ Some Information About The Sim-Diasca **City-Example** Benchmarking Case
 :Version: 0.3
 :Dedication:
 
-	For people interested in this `Sim-Diasca` urban benchmarking case, wanting to run and/or parametrise it.
+    For people interested in this `Sim-Diasca` urban benchmarking case, wanting to run and/or parametrise it.
 :Abstract:
 
 
@@ -47,7 +47,7 @@ As a consequence, it is designed to be potentially largely scalable, both in ter
 :raw-latex:`\pagebreak`
 
 .. contents:: Table of Contents
-	:depth: 2
+    :depth: 2
 
 .. section-numbering::
 
@@ -161,7 +161,7 @@ The user may tune the size of the simulation (either from the command-line or di
 For example::
 
   make city_benchmarking_run CMD_LINE_OPT="--batch \
-	   --duration short --scale tiny"
+       --duration short --scale tiny"
 
 
 The city generator (see ``class_CityGenerator.erl``) will determine, based on the city description (see the ``city_description`` record), the various elements that compose this city (procedural generation).
@@ -174,8 +174,8 @@ The city generator will create randomly the specified numbers of these various e
 The aforementioned ``make batch`` command simply corresponds to::
 
   make city_benchmarking_run CMD_LINE_OPT="--batch \
-	--duration short --scale tiny"                 \
-	EXECUTION_TARGET=production
+    --duration short --scale tiny"                 \
+    EXECUTION_TARGET=production
 
 (not that ``EXECUTION_TARGET`` is a compile-time option, so it would apply here only for any module that would have been to be rebuilt)
 

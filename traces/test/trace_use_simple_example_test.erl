@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2025 Olivier Boudeville
+% Copyright (C) 2020-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -44,45 +44,45 @@ CMD_LINE_OPT="--batch"`.
 -spec run() -> no_return().
 run() ->
 
-	?test_start,
+    ?test_start,
 
-	?test_debug( "Hello debug!" ),
+    ?test_debug( "Hello debug!" ),
 
-	test_facilities:display( "The version of this currently tested Traces "
-		"library is ~ts (i.e. ~w).", [ traces_utils:get_traces_version_string(),
-									   traces_utils:get_traces_version() ] ),
+    test_facilities:display( "The version of this currently tested Traces "
+        "library is ~ts (i.e. ~w).", [ traces_utils:get_traces_version_string(),
+                                       traces_utils:get_traces_version() ] ),
 
-	case executable_utils:is_batch() of
+    case executable_utils:is_batch() of
 
-		true ->
-			?test_warning( "Running in batch mode." );
+        true ->
+            ?test_warning( "Running in batch mode." );
 
-		false ->
-			?test_warning( "Running in interactive mode." )
+        false ->
+            ?test_warning( "Running in interactive mode." )
 
-	end,
+    end,
 
-	% Pipe being the field separator used internally for traces:
-	?test_debug( "Testing a message with pipes: AA|BB|CC|" ),
+    % Pipe being the field separator used internally for traces:
+    ?test_debug( "Testing a message with pipes: AA|BB|CC|" ),
 
-	?test_debug( "Testing a message with non-Latin1 characters: "
-				 "àâäéèêëîïôöùûü" ),
+    ?test_debug( "Testing a message with non-Latin1 characters: "
+                 "àâäéèêëîïôöùûü" ),
 
-	?test_info_fmt(
-		"Testing a longer, multi-line message~nThis is a line.~n"
-		"This is another, long line. The role of the Traces layer "
-		"(part of the Ceylan project) is to provide Erlang "
-		"applications with advanced trace services, so that the user "
-		"can efficiently log, browse and search through detailed "
-		"runtime messages that may be emitted concurrently "
-		"(i.e. in a parallel, distributed way) by all kinds of "
-		"processes.~n"
-		"We present here a short overview of these services, to "
-		"introduce them to newcomers. The next level of information "
-		"is either to browse the Traces API documentation or simply "
-		"to read the corresponding source files, which are intensely "
-		"commented and generally straightforward. àâäéèêëîïôöùûü", [] ),
+    ?test_info_fmt(
+        "Testing a longer, multi-line message~nThis is a line.~n"
+        "This is another, long line. The role of the Traces layer "
+        "(part of the Ceylan project) is to provide Erlang "
+        "applications with advanced trace services, so that the user "
+        "can efficiently log, browse and search through detailed "
+        "runtime messages that may be emitted concurrently "
+        "(i.e. in a parallel, distributed way) by all kinds of "
+        "processes.~n"
+        "We present here a short overview of these services, to "
+        "introduce them to newcomers. The next level of information "
+        "is either to browse the Traces API documentation or simply "
+        "to read the corresponding source files, which are intensely "
+        "commented and generally straightforward. àâäéèêëîïôöùûü", [] ),
 
-	?test_debug_fmt( "End of test for ~ts.", [ ?MODULE ] ),
+    ?test_debug_fmt( "End of test for ~ts.", [ ?MODULE ] ),
 
-	?test_stop.
+    ?test_stop.

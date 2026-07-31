@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2025 Olivier Boudeville
+% Copyright (C) 2018-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -25,6 +25,8 @@
 % Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 % Creation date: Saturday, February 3, 2018.
 
+
+% Centralised facilities, notably with variations for debugging.
 
 -define( rec_base_guard, is_record( Transforms, ast_transforms ) ).
 

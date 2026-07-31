@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2025 Olivier Boudeville
+% Copyright (C) 2018-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -192,10 +192,10 @@ Useful to define the interface wanted and to interpret its outcome.
 
 
 -export_type([ text/0, label/0, prompt/0, title/0, bin_title/0,
-			   caption/0, message/0, help_info/0,
-			   binary_choice/0,
-			   choice_text/0, choice_designator/0, choice_index/0,
-			   choice_element/0, choice_spec/0 ]).
+               caption/0, message/0, help_info/0,
+               binary_choice/0,
+               choice_text/0, choice_designator/0, choice_index/0,
+               choice_element/0, choice_spec/0 ]).
 
 
 
@@ -242,12 +242,12 @@ Useful to define the interface wanted and to interpret its outcome.
 
 -doc "A table storing UI settings (either top-level or backend-specific).".
 -type setting_table() ::
-	?ui_table:?ui_table( ui_setting_key(), ui_setting_value() ).
+    ?ui_table:?ui_table( ui_setting_key(), ui_setting_value() ).
 
 
 -export_type([ ui_setting_key/0, ui_setting_value/0, ui_setting_entry/0,
-			   common_entry/0, backtitle_entry/0, title_entry/0,
-			   setting_table/0 ]).
+               common_entry/0, backtitle_entry/0, title_entry/0,
+               setting_table/0 ]).
 
 
 
@@ -266,54 +266,54 @@ Useful to define the interface wanted and to interpret its outcome.
 % Directly forwarded section:
 -export([ set/1, set/2, unset/1,
 
-		  display/1, display/2,
+          display/1, display/2,
 
-		  display_numbered_list/2,
+          display_numbered_list/2,
 
-		  display_instant/1, display_instant/2,
+          display_instant/1, display_instant/2,
 
-		  display_warning/1, display_warning/2,
+          display_warning/1, display_warning/2,
 
-		  display_error/1, display_error/2,
-		  display_error_numbered_list/2,
+          display_error/1, display_error/2,
+          display_error_numbered_list/2,
 
-		  add_separation/0,
+          add_separation/0,
 
-		  get_text/1, get_text/2,
-		  get_text_as_integer/1, get_text_as_integer/2,
-		  get_text_as_maybe_integer/1, get_text_as_maybe_integer/2,
-		  read_text_as_integer/1, read_text_as_integer/2,
-		  read_text_as_maybe_integer/1, read_text_as_maybe_integer/2,
+          get_text/1, get_text/2,
+          get_text_as_integer/1, get_text_as_integer/2,
+          get_text_as_maybe_integer/1, get_text_as_maybe_integer/2,
+          read_text_as_integer/1, read_text_as_integer/2,
+          read_text_as_maybe_integer/1, read_text_as_maybe_integer/2,
 
-		  ask_yes_no/1, ask_yes_no/2,
+          ask_yes_no/1, ask_yes_no/2,
 
-		  choose_designated_item/1, choose_designated_item/2,
-		  choose_designated_item/3,
+          choose_designated_item/1, choose_designated_item/2,
+          choose_designated_item/3,
 
-		  choose_designated_item_with_default/2,
-		  choose_designated_item_with_default/3,
-		  choose_designated_item_with_default/4,
+          choose_designated_item_with_default/2,
+          choose_designated_item_with_default/3,
+          choose_designated_item_with_default/4,
 
-		  choose_numbered_item/1, choose_numbered_item/2,
-		  choose_numbered_item/3,
+          choose_numbered_item/1, choose_numbered_item/2,
+          choose_numbered_item/3,
 
-		  choose_numbered_item_with_default/2,
-		  choose_numbered_item_with_default/3,
-		  choose_numbered_item_with_default/4,
+          choose_numbered_item_with_default/2,
+          choose_numbered_item_with_default/3,
+          choose_numbered_item_with_default/4,
 
-		  set_setting/2, set_setting/3,
-		  set_settings/1, set_settings/2,
+          set_setting/2, set_setting/3,
+          set_settings/1, set_settings/2,
 
-		  unset_setting/1, unset_setting/2,
-		  unset_settings/1, unset_settings/2,
+          unset_setting/1, unset_setting/2,
+          unset_settings/1, unset_settings/2,
 
-		  get_setting/1 ]).
+          get_setting/1 ]).
 
 
 -export([ trace/1, trace/2,
-		  clear/0,
-		  stop/0,
-		  settings_to_string/1 ]).
+          clear/0,
+          stop/0,
+          settings_to_string/1 ]).
 
 
 
@@ -338,7 +338,7 @@ Useful to define the interface wanted and to interpret its outcome.
 -doc "Starts the UI with default settings.".
 -spec start() -> void().
 start() ->
-	start( _Opts=[] ).
+    start( _Opts=[] ).
 
 
 
@@ -351,10 +351,10 @@ Stores the corresponding state in the process dictionary.
 -spec start( ui_options() ) -> argument_table().
 start( Options ) ->
 
-	% Here, no argument table is specified, fetching it (thus supposedly not
-	% running as an escript):
-	%
-	start( Options, cmd_line_utils:get_argument_table() ).
+    % Here, no argument table is specified, fetching it (thus supposedly not
+    % running as an escript):
+    %
+    start( Options, cmd_line_utils:get_argument_table() ).
 
 
 
@@ -368,81 +368,81 @@ Stores the corresponding state in the process dictionary.
 -spec start( ui_options(), argument_table() ) -> argument_table().
 start( Options, ArgumentTable ) ->
 
-	cond_utils:if_defined( myriad_debug_user_interface, trace_utils:debug_fmt(
-		"UI got following full argument(s): ~ts",
-		[ cmd_line_utils:argument_table_to_string( ArgumentTable ) ] ) ),
+    cond_utils:if_defined( myriad_debug_user_interface, trace_utils:debug_fmt(
+        "UI got following full argument(s): ~ts",
+        [ cmd_line_utils:argument_table_to_string( ArgumentTable ) ] ) ),
 
-	% Just a check:
-	case process_dictionary:get( ?ui_name_key ) of
+    % Just a check:
+    case process_dictionary:get( ?ui_name_key ) of
 
-		undefined ->
-			ok;
+        undefined ->
+            ok;
 
-		AlreadyUI ->
-			throw( { ui_already_started, AlreadyUI } )
+        AlreadyUI ->
+            throw( { ui_already_started, AlreadyUI } )
 
-	end,
+    end,
 
-	% With the leading dash removed:
-	OptName = ?ui_backend_opt,
+    % With the leading dash removed:
+    OptName = ?ui_backend_opt,
 
-	{ BackendModuleName, RemainingArgTable } =
-		case cmd_line_utils:extract_command_arguments_for_option( OptName,
-			ArgumentTable ) of
+    { BackendModuleName, RemainingArgTable } =
+        case cmd_line_utils:extract_command_arguments_for_option( OptName,
+            ArgumentTable ) of
 
-		{ undefined, ArgTable } ->
+        { undefined, ArgTable } ->
 
-			cond_utils:if_defined( myriad_debug_user_interface,
-				trace_utils:debug( "No backend specified, determining it." ) ),
+            cond_utils:if_defined( myriad_debug_user_interface,
+                trace_utils:debug( "No backend specified, determining it." ) ),
 
-			{ get_best_ui_backend(), ArgTable };
+            { get_best_ui_backend(), ArgTable };
 
 
-		{ [ [ BackendName ] ], OtherArgTable } ->
+        { [ [ BackendName ] ], OtherArgTable } ->
 
-			cond_utils:if_defined( myriad_debug_user_interface,
-				trace_utils:debug_fmt( "Following backend was specified: "
-					"'~ts'.", [ BackendName ] ) ),
+            cond_utils:if_defined( myriad_debug_user_interface,
+                trace_utils:debug_fmt( "Following backend was specified: "
+                    "'~ts'.", [ BackendName ] ) ),
 
-			BackendModName = text_utils:string_to_atom( BackendName ),
+            BackendModName = text_utils:string_to_atom( BackendName ),
 
-			case code_utils:is_beam_in_path( BackendModName ) of
+            case code_utils:is_beam_in_path( BackendModName ) of
 
-				not_found ->
-					trace_utils:error_fmt( "No BEAM file found in code path "
-						"for user-specified UI backend module '~ts'.",
-						[ BackendModName ] ),
-					throw( { ui_backend_module_not_found, BackendModName } );
+                not_found ->
+                    trace_utils:error_fmt( "No BEAM file found in code path "
+                        "for user-specified UI backend module '~ts'.",
+                        [ BackendModName ] ),
+                    throw( { ui_backend_module_not_found, BackendModName } );
 
-				[ SinglePath ] ->
-					cond_utils:if_defined( myriad_debug_user_interface,
-						trace_utils:debug_fmt( "UI backend module found "
-							"as '~ts'.", [ SinglePath ] ),
-						basic_utils:ignore_unused( SinglePath ) ),
-					{ BackendModName, OtherArgTable };
+                [ SinglePath ] ->
+                    cond_utils:if_defined( myriad_debug_user_interface,
+                        trace_utils:debug_fmt( "UI backend module found "
+                            "as '~ts'.", [ SinglePath ] ),
+                        basic_utils:ignore_unused( SinglePath ) ),
+                    { BackendModName, OtherArgTable };
 
-				MultiplePaths ->
-					throw( { multiple_ui_backend_modules_found,
-							 MultiplePaths } )
+                MultiplePaths ->
+                    throw( { multiple_ui_backend_modules_found,
+                             MultiplePaths } )
 
-			end;
+            end;
 
-		{ OtherValues, _OtherArgTable } ->
-			throw( { invalid_ui_options, OtherValues } )
+        { OtherValues, _OtherArgTable } ->
+            throw( { invalid_ui_options, OtherValues } )
 
-	end,
+    end,
 
-	cond_utils:if_defined( myriad_debug_user_interface, trace_utils:debug_fmt(
-		"The '~ts' backend module has been selected.",
-		[ BackendModuleName ] ) ),
+    cond_utils:if_defined( myriad_debug_user_interface, trace_utils:debug_fmt(
+        "The '~ts' backend module has been selected.",
+        [ BackendModuleName ] ) ),
 
-	% Expects this backend to register its name and state in the process
-	% dictionary:
-	%
-	BackendModuleName:start( Options ),
+    % Expects this backend to register its name and state in the process
+    % dictionary:
+    %
+    BackendModuleName:start( Options ),
 
-	% Pass along the unexploited command-line arguments:
-	RemainingArgTable.
+    % Pass along the unexploited command-line arguments:
+    RemainingArgTable.
 
 
 
@@ -453,24 +453,24 @@ start( Options, ArgumentTable ) ->
 -doc "Sets the specified UI setting.".
 -spec set( ui_setting_key(), ui_setting_value() ) -> void().
 set( SettingKey, SettingValue ) ->
-	UIModule = get_backend_name(),
-	UIModule:set( SettingKey, SettingValue ).
+    UIModule = get_backend_name(),
+    UIModule:set( SettingKey, SettingValue ).
 
 
 
 -doc "Sets the specified UI settings.".
 -spec set( [ ui_setting_entry() ] ) -> void().
 set( SettingEntries ) ->
-	UIModule = get_backend_name(),
-	UIModule:set( SettingEntries ).
+    UIModule = get_backend_name(),
+    UIModule:set( SettingEntries ).
 
 
 
 -doc "Unsets the specified UI setting(s).".
 -spec unset( [ ui_setting_key() ] | ui_setting_key() ) -> void().
 unset( SettingElement ) ->
-	UIModule = get_backend_name(),
-	UIModule:unset( SettingElement ).
+    UIModule = get_backend_name(),
+    UIModule:unset( SettingElement ).
 
 
 
@@ -481,17 +481,17 @@ Note: all types of quotes are allowed in the specified text.
 """.
 -spec display( text() ) -> void().
 display( Text ) ->
-	%trace_utils:debug_fmt( "Displaying '~ts'.", [ Text ] ),
-	UIModule = get_backend_name(),
-	UIModule:display( Text ).
+    %trace_utils:debug_fmt( "Displaying '~ts'.", [ Text ] ),
+    UIModule = get_backend_name(),
+    UIModule:display( Text ).
 
 
 
 -doc "Displays the specified formatted text, as a normal modal message.".
 -spec display( format_string(), format_values() ) -> void().
 display( FormatString, Values ) ->
-	UIModule = get_backend_name(),
-	UIModule:display( FormatString, Values ).
+    UIModule = get_backend_name(),
+    UIModule:display( FormatString, Values ).
 
 
 
@@ -500,24 +500,24 @@ Displays in-order the items of the specified list, as a normal modal message.
 """.
 -spec display_numbered_list( label(), [ text() ] ) -> void().
 display_numbered_list( Label, Lines ) ->
-	UIModule = get_backend_name(),
-	UIModule:display_numbered_list( Label, Lines ).
+    UIModule = get_backend_name(),
+    UIModule:display_numbered_list( Label, Lines ).
 
 
 
 -doc "Displays the specified text, as a normal non-modal message.".
 -spec display_instant( text() ) -> void().
 display_instant( Text ) ->
-	UIModule = get_backend_name(),
-	UIModule:display_instant( Text ).
+    UIModule = get_backend_name(),
+    UIModule:display_instant( Text ).
 
 
 
 -doc "Displays the specified formatted text, as a normal non-modal message.".
 -spec display_instant( format_string(), format_values() ) -> void().
 display_instant( FormatString, Values ) ->
-	UIModule = get_backend_name(),
-	UIModule:display_instant( FormatString, Values ).
+    UIModule = get_backend_name(),
+    UIModule:display_instant( FormatString, Values ).
 
 
 
@@ -528,48 +528,48 @@ Note: all types of quotes are allowed in the specified text.
 """.
 -spec display_warning( text() ) -> void().
 display_warning( Text ) ->
-	UIModule = get_backend_name(),
-	UIModule:display( "Warning: " ++ Text ).
+    UIModule = get_backend_name(),
+    UIModule:display( "Warning: " ++ Text ).
 
 
 
 -doc "Displays the specified formatted text, as a warning message.".
 -spec display_warning( format_string(), format_values() ) -> void().
 display_warning( FormatString, Values ) ->
-	UIModule = get_backend_name(),
-	UIModule:display( "Warning: " ++ FormatString, Values ).
+    UIModule = get_backend_name(),
+    UIModule:display( "Warning: " ++ FormatString, Values ).
 
 
 
 -doc "Displays the specified text, as an error message.".
 -spec display_error( text() ) -> void().
 display_error( Text ) ->
-	UIModule = get_backend_name(),
-	UIModule:display_error( Text ).
+    UIModule = get_backend_name(),
+    UIModule:display_error( Text ).
 
 
 
 -doc "Displays the specified formatted text, as an error message.".
 -spec display_error( format_string(), format_values() ) -> void().
 display_error( FormatString, Values ) ->
-	UIModule = get_backend_name(),
-	UIModule:display_error( FormatString, Values ).
+    UIModule = get_backend_name(),
+    UIModule:display_error( FormatString, Values ).
 
 
 
 -doc "Displays in-order the items of the specified list, as an error message.".
 -spec display_error_numbered_list( label(), [ text() ] ) -> void().
 display_error_numbered_list( Label, Lines ) ->
-	UIModule = get_backend_name(),
-	UIModule:display_error_numbered_list( Label, Lines ).
+    UIModule = get_backend_name(),
+    UIModule:display_error_numbered_list( Label, Lines ).
 
 
 
 -doc "Adds a default separation between previous and next content.".
 -spec add_separation() -> void().
 add_separation() ->
-	UIModule = get_backend_name(),
-	UIModule:add_separation().
+    UIModule = get_backend_name(),
+    UIModule:add_separation().
 
 
 
@@ -581,8 +581,8 @@ state.
 """.
 -spec get_text( prompt() ) -> text().
 get_text( Prompt ) ->
-	UIModule = get_backend_name(),
-	UIModule:get_text( Prompt ).
+    UIModule = get_backend_name(),
+    UIModule:get_text( Prompt ).
 
 
 
@@ -594,8 +594,8 @@ state.
 """.
 -spec get_text( prompt(), ui_state() ) -> text().
 get_text( Prompt, UIState ) ->
-	UIModule = get_backend_name(),
-	UIModule:get_text( Prompt, UIState ).
+    UIModule = get_backend_name(),
+    UIModule:get_text( Prompt, UIState ).
 
 
 
@@ -607,8 +607,8 @@ integer, based on an implicit state.
 """.
 -spec get_text_as_integer( prompt() ) -> text().
 get_text_as_integer( Prompt ) ->
-	UIModule = get_backend_name(),
-	UIModule:get_text_as_integer( Prompt ).
+    UIModule = get_backend_name(),
+    UIModule:get_text_as_integer( Prompt ).
 
 
 
@@ -620,8 +620,8 @@ integer, based on an explicit state.
 """.
 -spec get_text_as_integer( prompt(), ui_state() ) -> text().
 get_text_as_integer( Prompt, UIState ) ->
-	UIModule = get_backend_name(),
-	UIModule:get_text_as_integer( Prompt, UIState ).
+    UIModule = get_backend_name(),
+    UIModule:get_text_as_integer( Prompt, UIState ).
 
 
 
@@ -634,8 +634,8 @@ obtained.
 """.
 -spec read_text_as_integer( prompt() ) -> text().
 read_text_as_integer( Prompt ) ->
-	UIModule = get_backend_name(),
-	UIModule:read_text_as_integer( Prompt ).
+    UIModule = get_backend_name(),
+    UIModule:read_text_as_integer( Prompt ).
 
 
 
@@ -648,8 +648,8 @@ obtained.
 """.
 -spec read_text_as_integer( prompt(), ui_state() ) -> text().
 read_text_as_integer( Prompt, UIState ) ->
-	UIModule = get_backend_name(),
-	UIModule:read_text_as_integer( Prompt, UIState ).
+    UIModule = get_backend_name(),
+    UIModule:read_text_as_integer( Prompt, UIState ).
 
 
 
@@ -661,8 +661,8 @@ translated to (possibly) an integer, based on an implicit state.
 """.
 -spec get_text_as_maybe_integer( prompt() ) -> option( text() ).
 get_text_as_maybe_integer( Prompt ) ->
-	UIModule = get_backend_name(),
-	UIModule:get_text_as_maybe_integer( Prompt ).
+    UIModule = get_backend_name(),
+    UIModule:get_text_as_maybe_integer( Prompt ).
 
 
 
@@ -674,8 +674,8 @@ translated to (possibly) an integer, based on an explicit state.
 """.
 -spec get_text_as_maybe_integer( prompt(), ui_state() ) -> option( text() ).
 get_text_as_maybe_integer( Prompt, UIState ) ->
-	UIModule = get_backend_name(),
-	UIModule:get_text_as_maybe_integer( Prompt, UIState ).
+    UIModule = get_backend_name(),
+    UIModule:get_text_as_maybe_integer( Prompt, UIState ).
 
 
 
@@ -689,8 +689,8 @@ that resolves to an integer (then returned), or an empty string (then returning
 """.
 -spec read_text_as_maybe_integer( prompt() ) -> option( text() ).
 read_text_as_maybe_integer( Prompt ) ->
-	UIModule = get_backend_name(),
-	UIModule:read_text_as_maybe_integer( Prompt ).
+    UIModule = get_backend_name(),
+    UIModule:read_text_as_maybe_integer( Prompt ).
 
 
 
@@ -704,8 +704,8 @@ that resolves to an integer (then returned), or an empty string (then returning
 """.
 -spec read_text_as_maybe_integer( prompt(), ui_state() ) -> option( text() ).
 read_text_as_maybe_integer( Prompt, UIState ) ->
-	UIModule = get_backend_name(),
-	UIModule:read_text_as_maybe_integer( Prompt, UIState ).
+    UIModule = get_backend_name(),
+    UIModule:read_text_as_maybe_integer( Prompt, UIState ).
 
 
 
@@ -715,7 +715,7 @@ Displays specified prompt, lets the user choose between two options, 'yes' and
 """.
 -spec ask_yes_no( prompt() ) -> binary_choice().
 ask_yes_no( Prompt ) ->
-	ask_yes_no( Prompt, _BinaryDefault=no ).
+    ask_yes_no( Prompt, _BinaryDefault=no ).
 
 
 
@@ -725,8 +725,8 @@ Displays specified prompt, lets the user choose between two options, "yes" and
 """.
 -spec ask_yes_no( prompt(), binary_choice() ) -> binary_choice().
 ask_yes_no( Prompt, BinaryDefault ) ->
-	UIModule = get_backend_name(),
-	UIModule:ask_yes_no( Prompt, BinaryDefault ).
+    UIModule = get_backend_name(),
+    UIModule:ask_yes_no( Prompt, BinaryDefault ).
 
 
 
@@ -741,8 +741,8 @@ prefer to cancel that operation.
 """.
 -spec choose_designated_item( [ choice_element() ] ) -> choice_designator().
 choose_designated_item( Choices ) ->
-	UIModule = get_backend_name(),
-	UIModule:choose_designated_item( Choices ).
+    UIModule = get_backend_name(),
+    UIModule:choose_designated_item( Choices ).
 
 
 
@@ -756,10 +756,10 @@ prefer to cancel that operation.
 (const)
 """.
 -spec choose_designated_item( prompt(), [ choice_element() ] ) ->
-									choice_designator().
+                                    choice_designator().
 choose_designated_item( Prompt, Choices ) ->
-	UIModule = get_backend_name(),
-	UIModule:choose_designated_item( Prompt, Choices ).
+    UIModule = get_backend_name(),
+    UIModule:choose_designated_item( Prompt, Choices ).
 
 
 
@@ -774,10 +774,10 @@ prefer to cancel that operation.
 (const)
 """.
 -spec choose_designated_item( prompt(), [ choice_element() ], ui_state() ) ->
-									choice_designator().
+                                    choice_designator().
 choose_designated_item( Prompt, Choices, UIState ) ->
-	UIModule = get_backend_name(),
-	UIModule:choose_designated_item( Prompt, Choices, UIState ).
+    UIModule = get_backend_name(),
+    UIModule:choose_designated_item( Prompt, Choices, UIState ).
 
 
 
@@ -793,10 +793,10 @@ prefer to cancel that operation.
 (const)
 """.
 -spec choose_designated_item_with_default( [ choice_element() ],
-				choice_designator() ) -> choice_designator().
+                choice_designator() ) -> choice_designator().
 choose_designated_item_with_default( Choices, DefaultChoiceDesignator ) ->
-	UIModule = get_backend_name(),
-	UIModule:choose_designated_item( Choices, DefaultChoiceDesignator ).
+    UIModule = get_backend_name(),
+    UIModule:choose_designated_item( Choices, DefaultChoiceDesignator ).
 
 
 
@@ -812,12 +812,12 @@ prefer to cancel that operation.
 (const)
 """.
 -spec choose_designated_item_with_default( prompt(), [ choice_element() ],
-				choice_designator() ) -> choice_designator().
+                choice_designator() ) -> choice_designator().
 choose_designated_item_with_default( Prompt, Choices,
-									 DefaultChoiceDesignator ) ->
-	UIModule = get_backend_name(),
-	UIModule:choose_designated_item_with_default( Prompt, Choices,
-												  DefaultChoiceDesignator ).
+                                     DefaultChoiceDesignator ) ->
+    UIModule = get_backend_name(),
+    UIModule:choose_designated_item_with_default( Prompt, Choices,
+                                                  DefaultChoiceDesignator ).
 
 
 
@@ -833,12 +833,12 @@ prefer to cancel that operation.
 (const)
 """.
 -spec choose_designated_item_with_default( prompt(), [ choice_element() ],
-				choice_designator(), ui_state() ) -> choice_designator().
+                choice_designator(), ui_state() ) -> choice_designator().
 choose_designated_item_with_default( Prompt, Choices,
-								DefaultChoiceDesignator, UIState ) ->
-	UIModule = get_backend_name(),
-	UIModule:choose_designated_item_with_default( Prompt, Choices,
-								DefaultChoiceDesignator, UIState ).
+                                DefaultChoiceDesignator, UIState ) ->
+    UIModule = get_backend_name(),
+    UIModule:choose_designated_item_with_default( Prompt, Choices,
+                                DefaultChoiceDesignator, UIState ).
 
 
 
@@ -853,8 +853,8 @@ atom, should the user prefer to cancel that operation.
 
 -spec choose_numbered_item( [ choice_element() ] ) -> choice_index().
 choose_numbered_item( Choices ) ->
-	UIModule = get_backend_name(),
-	UIModule:choose_numbered_item( Choices ).
+    UIModule = get_backend_name(),
+    UIModule:choose_numbered_item( Choices ).
 
 
 
@@ -867,11 +867,11 @@ Note that index zero can also be returned, corresponding to the 'ui_cancel'
 atom, should the user prefer to cancel that operation.
 """.
 -spec choose_numbered_item( [ choice_element() ], ui_state() ) ->
-									choice_index();
-						  ( prompt(), [ choice_element() ] ) -> choice_index().
+                                    choice_index();
+                          ( prompt(), [ choice_element() ] ) -> choice_index().
 choose_numbered_item( Choices, UIState ) ->
-	UIModule = get_backend_name(),
-	UIModule:choose_numbered_item( Choices, UIState ).
+    UIModule = get_backend_name(),
+    UIModule:choose_numbered_item( Choices, UIState ).
 
 
 
@@ -885,10 +885,10 @@ atom, should the user prefer to cancel that operation.
 
 """.
 -spec choose_numbered_item( prompt(), [ choice_element() ], ui_state() ) ->
-									choice_index().
+                                    choice_index().
 choose_numbered_item( Prompt, Choices, UIState ) ->
-	UIModule = get_backend_name(),
-	UIModule:choose_numbered_item( Prompt, Choices, UIState ).
+    UIModule = get_backend_name(),
+    UIModule:choose_numbered_item( Prompt, Choices, UIState ).
 
 
 
@@ -901,10 +901,10 @@ Note that index zero can also be returned, corresponding to the 'ui_cancel'
 atom, should the user prefer to cancel that operation.
 """.
 -spec choose_numbered_item_with_default( [ choice_element() ],
-										 choice_index() ) -> choice_index().
+                                         choice_index() ) -> choice_index().
 choose_numbered_item_with_default( Choices, DefaultChoiceIndex ) ->
-	UIModule = get_backend_name(),
-	UIModule:choose_numbered_item_with_default( Choices, DefaultChoiceIndex ).
+    UIModule = get_backend_name(),
+    UIModule:choose_numbered_item_with_default( Choices, DefaultChoiceIndex ).
 
 
 
@@ -920,14 +920,14 @@ Note that index zero can also be returned, corresponding to the 'ui_cancel'
 atom, should the user prefer to cancel that operation.
 """.
 -spec choose_numbered_item_with_default( [ choice_element() ], choice_index(),
-										 ui_state() ) -> choice_index();
-									   ( prompt(), [ choice_element() ],
-										 option( choice_index() ) ) ->
-												choice_index().
+                                         ui_state() ) -> choice_index();
+                                       ( prompt(), [ choice_element() ],
+                                         option( choice_index() ) ) ->
+                                                choice_index().
 choose_numbered_item_with_default( Choices, DefaultChoiceIndex, UIState ) ->
-	UIModule = get_backend_name(),
-	UIModule:choose_numbered_item_with_default( Choices, DefaultChoiceIndex,
-												UIState ).
+    UIModule = get_backend_name(),
+    UIModule:choose_numbered_item_with_default( Choices, DefaultChoiceIndex,
+                                                UIState ).
 
 
 
@@ -940,13 +940,13 @@ Note that index zero can also be returned, corresponding to the 'ui_cancel'
 atom, should the user prefer to cancel that operation.
 """.
 -spec choose_numbered_item_with_default( prompt(), [ choice_element() ],
-			option( choice_index() ), ui_state() ) -> choice_index().
+            option( choice_index() ), ui_state() ) -> choice_index().
 choose_numbered_item_with_default( Prompt, Choices, DefaultChoiceIndex,
-								   UIState ) ->
-	UIModule = get_backend_name(),
+                                   UIState ) ->
+    UIModule = get_backend_name(),
 
-	UIModule:choose_numbered_item_with_default( Prompt, Choices,
-												DefaultChoiceIndex, UIState ).
+    UIModule:choose_numbered_item_with_default( Prompt, Choices,
+                                                DefaultChoiceIndex, UIState ).
 
 
 
@@ -955,8 +955,8 @@ Sets the specified setting to the specified value, in the (implicit) UI state.
 """.
 -spec set_setting( ui_setting_key(), ui_setting_value() ) -> void().
 set_setting( SettingKey, SettingValue ) ->
-	UIModule = get_backend_name(),
-	UIModule:set_setting( SettingKey, SettingValue ).
+    UIModule = get_backend_name(),
+    UIModule:set_setting( SettingKey, SettingValue ).
 
 
 
@@ -964,10 +964,10 @@ set_setting( SettingKey, SettingValue ) ->
 Sets the specified setting to the specified value, in the specified UI state.
 """.
 -spec set_setting( ui_setting_key(), ui_setting_value(), ui_state() ) ->
-												   ui_state().
+                                                   ui_state().
 set_setting( SettingKey, SettingValue, UIState ) ->
-	UIModule = get_backend_name(),
-	UIModule:set_setting( SettingKey, SettingValue, UIState ).
+    UIModule = get_backend_name(),
+    UIModule:set_setting( SettingKey, SettingValue, UIState ).
 
 
 
@@ -976,8 +976,8 @@ Sets the specified settings to the specified values, in the (implicit) UI state.
 """.
 -spec set_settings( [ ui_setting_entry() ] ) -> void().
 set_settings( SettingEntries ) ->
-	UIModule = get_backend_name(),
-	UIModule:set_settings( SettingEntries ).
+    UIModule = get_backend_name(),
+    UIModule:set_settings( SettingEntries ).
 
 
 
@@ -986,40 +986,40 @@ Sets the specified settings to the specified values, in the specified UI state.
 """.
 -spec set_settings( [ ui_setting_entry() ], ui_state() ) -> ui_state().
 set_settings( SettingEntries, UIState ) ->
-	UIModule = get_backend_name(),
-	UIModule:set_settings( SettingEntries, UIState ).
+    UIModule = get_backend_name(),
+    UIModule:set_settings( SettingEntries, UIState ).
 
 
 
 -doc "Unsets the specified setting, in the (implicit) UI state.".
 -spec unset_setting( ui_setting_key() ) -> void().
 unset_setting( SettingKey ) ->
-	UIModule = get_backend_name(),
-	UIModule:unset_setting( SettingKey ).
+    UIModule = get_backend_name(),
+    UIModule:unset_setting( SettingKey ).
 
 
 
 -doc "Unsets the specified settings, in the (implicit) UI state.".
 -spec unset_settings( [ ui_setting_key() ] ) -> void().
 unset_settings( SettingKeys ) ->
-	UIModule = get_backend_name(),
-	UIModule:unset_settings( SettingKeys ).
+    UIModule = get_backend_name(),
+    UIModule:unset_settings( SettingKeys ).
 
 
 
 -doc "Unsets the specified setting, in the specified UI state.".
 -spec unset_setting( ui_setting_key(), ui_state() ) -> void().
 unset_setting( SettingKey, UIState ) ->
-	UIModule = get_backend_name(),
-	UIModule:unset_setting( SettingKey, UIState ).
+    UIModule = get_backend_name(),
+    UIModule:unset_setting( SettingKey, UIState ).
 
 
 
 -doc "Unsets the specified settings, in the specified UI state.".
 -spec unset_settings( [ ui_setting_key() ], ui_state() ) -> void().
 unset_settings( SettingKeys, UIState ) ->
-	UIModule = get_backend_name(),
-	UIModule:unset_settings( SettingKeys, UIState ).
+    UIModule = get_backend_name(),
+    UIModule:unset_settings( SettingKeys, UIState ).
 
 
 
@@ -1029,8 +1029,8 @@ specified setting.
 """.
 -spec get_setting( ui_setting_key() ) -> option( ui_setting_value() ).
 get_setting( SettingKey ) ->
-	UIModule = get_backend_name(),
-	UIModule:get_setting( SettingKey ).
+    UIModule = get_backend_name(),
+    UIModule:get_setting( SettingKey ).
 
 
 
@@ -1043,32 +1043,32 @@ Traces the specified status string, by displaying it, and possibly logging it.
 """.
 -spec trace( ustring() ) -> void().
 trace( Message ) ->
-	UIModule = get_backend_name(),
-	UIModule:trace( Message ).
+    UIModule = get_backend_name(),
+    UIModule:trace( Message ).
 
 
 
 -doc "Displays and logs the specified formatted text.".
 -spec trace( format_string(), format_values() ) -> void().
 trace( FormatString, Values ) ->
-	UIModule = get_backend_name(),
-	UIModule:trace( FormatString, Values ).
+    UIModule = get_backend_name(),
+    UIModule:trace( FormatString, Values ).
 
 
 
 -doc "Clears the interface.".
 -spec clear() -> void().
 clear() ->
-	UIModule = get_backend_name(),
-	UIModule:clear().
+    UIModule = get_backend_name(),
+    UIModule:clear().
 
 
 
 -doc "Stops the UI.".
 -spec stop() -> void().
 stop() ->
-	UIModuleName = get_backend_name(),
-	UIModuleName:stop().
+    UIModuleName = get_backend_name(),
+    UIModuleName:stop().
 
 
 
@@ -1080,15 +1080,15 @@ Returns the module name of the current UI backend.
 -spec get_backend_name() -> module_name().
 get_backend_name() ->
 
-	case process_dictionary:get( ?ui_name_key ) of
+    case process_dictionary:get( ?ui_name_key ) of
 
-		undefined ->
-			throw( no_backend_started );
+        undefined ->
+            throw( no_backend_started );
 
-		ModName ->
-			ModName
+        ModName ->
+            ModName
 
-	end.
+    end.
 
 
 
@@ -1100,60 +1100,60 @@ By decreasing order of preference: gui, term_ui and text_ui.
 -spec get_best_ui_backend() -> module_name().
 get_best_ui_backend() ->
 
-	_RightResult = case gui:is_available() of
+    _RightResult = case gui:is_available() of
 
-		true ->
-			%cond_utils:if_defined( myriad_debug_user_interface,
-			%   trace_utils:debug( "GUI backend found available, using it." ) ),
-			gui;
+        true ->
+            %cond_utils:if_defined( myriad_debug_user_interface,
+            %   trace_utils:debug( "GUI backend found available, using it." ) ),
+            gui;
 
-		false ->
-			case term_ui:is_available() of
+        false ->
+            case term_ui:is_available() of
 
-				true ->
-					cond_utils:if_defined( myriad_debug_user_interface,
-						trace_utils:debug( "No graphical backend available, "
-							"but terminal UI is available, using it." ) ),
-					term_ui;
+                true ->
+                    cond_utils:if_defined( myriad_debug_user_interface,
+                        trace_utils:debug( "No graphical backend available, "
+                            "but terminal UI is available, using it." ) ),
+                    term_ui;
 
-				false ->
-					cond_utils:if_defined( myriad_debug_user_interface,
-						trace_utils:debug( "No graphical or terminal UI "
-							"using textual one." ) ),
-					text_ui
+                false ->
+                    cond_utils:if_defined( myriad_debug_user_interface,
+                        trace_utils:debug( "No graphical or terminal UI "
+                            "using textual one." ) ),
+                    text_ui
 
-			end
+            end
 
-	end,
+    end,
 
-	% For testing:
-	%RiggedResult = text_ui,
-	RiggedResult = term_ui,
+    % For testing:
+    %RiggedResult = text_ui,
+    RiggedResult = term_ui,
 
-	%trace_utils:warning_fmt( "Selecting '~ts', as currently hardcoded "
-	%   "(should have been '~ts').", [ RiggedResult, RightResult ] ),
+    %trace_utils:warning_fmt( "Selecting '~ts', as currently hardcoded "
+    %   "(should have been '~ts').", [ RiggedResult, RightResult ] ),
 
-	%RightResult.
-	RiggedResult.
+    %RightResult.
+    RiggedResult.
 
 
 
 -doc "Returns a textual description of the specified setting table.".
 -spec settings_to_string( setting_table() ) -> ustring().
 settings_to_string( SettingTable ) ->
-	case ?ui_table:size( SettingTable ) of
+    case ?ui_table:size( SettingTable ) of
 
-		0 ->
-			"having no setting recorded";
+        0 ->
+            "having no setting recorded";
 
-		Count ->
+        Count ->
 
-			SetPairs = lists:sort( ?ui_table:enumerate( SettingTable ) ),
+            SetPairs = lists:sort( ?ui_table:enumerate( SettingTable ) ),
 
-			SetStrings = [ text_utils:format( "'~ts' set to ~p",
-								[ K, V ] ) || { K, V } <- SetPairs ],
+            SetStrings = [ text_utils:format( "'~ts' set to ~p",
+                                [ K, V ] ) || { K, V } <- SetPairs ],
 
-			text_utils:format( "with ~B settings recorded: ~ts",
-				[ Count, text_utils:strings_to_string( SetStrings ) ] )
+            text_utils:format( "with ~B settings recorded: ~ts",
+                [ Count, text_utils:strings_to_string( SetStrings ) ] )
 
-	end.
+    end.

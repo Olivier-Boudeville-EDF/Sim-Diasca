@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 Olivier Boudeville
+% Copyright (C) 2008-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -41,31 +41,31 @@ See the class_Describable module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	test_facilities:display( "Creating a test Describable." ),
+    test_facilities:display( "Creating a test Describable." ),
 
-	MyDescribable = class_Describable:new_link(),
+    MyDescribable = class_Describable:new_link(),
 
-	% Previously description was stored by the describable and thus could be
-	% checked, set, etc.
+    % Previously description was stored by the describable and thus could be
+    % checked, set, etc.
 
-	MyDescribable ! { getDescription, [], self() },
+    MyDescribable ! { getDescription, [], self() },
 
-	BinDescription = text_utils:string_to_binary(
-		class_Describable:to_string( undefined ) ),
+    BinDescription = text_utils:string_to_binary(
+        class_Describable:to_string( undefined ) ),
 
-	% Check:
-	BinDescription = receive
+    % Check:
+    BinDescription = receive
 
-		{ wooper_result, FirstDesc } ->
-			FirstDesc
+        { wooper_result, FirstDesc } ->
+            FirstDesc
 
-	end,
+    end,
 
-	test_facilities:display( "Correct description returned: '~ts'.",
-							 [ BinDescription ] ),
+    test_facilities:display( "Correct description returned: '~ts'.",
+                             [ BinDescription ] ),
 
-	wooper:delete_synchronously_instance( MyDescribable ),
+    wooper:delete_synchronously_instance( MyDescribable ),
 
-	test_facilities:stop().
+    test_facilities:stop().

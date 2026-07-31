@@ -136,6 +136,15 @@ endif
 # 'X_exec' becomes 'X_app:exec()':
 
 
+# Silent rule versions try to display nothing on the console.
+
+%_silent_exec: %_app.beam %.beam
+	@$(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $@-$${USER} --run basic_utils exec $$(echo $@ | sed 's|_silent_exec$$|_app)|1') $(ALL_CMD_LINE_OPTIONS)
+
+# Legacy -eval based variation:
+#@$(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $@-$${USER} --eval $$(echo $@ | sed 's|_silent_exec$$|_app:exec()|1') $(ALL_CMD_LINE_OPTIONS)
+
+
 %_exec: %_app.beam %.beam
 	@echo "		Executing application $^ (first form)"
 	@$(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $@-$${USER} --run basic_utils exec $$(echo $@ | sed 's|_exec$$|_app)|1') $(ALL_CMD_LINE_OPTIONS)
@@ -144,12 +153,20 @@ endif
 #@$(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $@-$${USER} --eval $$(echo $@ | sed 's|_exec$$|_app:exec()|1') $(ALL_CMD_LINE_OPTIONS)
 
 
+%_silent_exec: %_app.beam
+	@$(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $@-$${USER} --run basic_utils exec $$(echo $@ | sed 's|_silent_exec$$|_app|1') $(ALL_CMD_LINE_OPTIONS)
+
+# Legacy -eval based variation:
+#@$(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $@-$${USER} --eval $$(echo $@ | sed 's|_silent_exec$$|_app:exec()|1') $(ALL_CMD_LINE_OPTIONS)
+
+
 %_exec: %_app.beam
 	@echo "		Executing application $^ (second form)"
 	@$(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $@-$${USER} --run basic_utils exec $$(echo $@ | sed 's|_exec$$|_app|1') $(ALL_CMD_LINE_OPTIONS)
 
 # Legacy -eval based variation:
 #@$(ERL_PARAMETERIZED_LAUNCHER) $(NODE_NAMING) $@-$${USER} --eval $$(echo $@ | sed 's|_exec$$|_app:exec()|1') $(ALL_CMD_LINE_OPTIONS)
+
 
 
 # 'X_non_interactive_exec' becomes 'X_app:exec()' and is launched as a

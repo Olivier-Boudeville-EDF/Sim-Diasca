@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -28,11 +28,11 @@ a Gaussian (normal) law (probability density).
 
 
 -define( class_description,
-		 "Class modelling the reparation behaviour of equipments according to "
-		 "a Gaussian (normal) law (probability density). "
-		 "It is the most common repair model, most equipments respect this "
-		 "statistical rule. "
-		 "See also: class_UniformRepairModel." ).
+         "Class modelling the reparation behaviour of equipments according to "
+         "a Gaussian (normal) law (probability density). "
+         "It is the most common repair model, most equipments respect this "
+         "statistical rule. "
+         "See also: class_UniformRepairModel." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -41,7 +41,7 @@ a Gaussian (normal) law (probability density).
 
 % Must be included before class_TraceEmitter header:
 -define( trace_emitter_categorization,
-		 "Actor.StochasticActor.RepairModel.GaussianRepairModel" ).
+         "Actor.StochasticActor.RepairModel.GaussianRepairModel" ).
 
 
 % Allows to use macros for trace sending:
@@ -62,28 +62,28 @@ Hours, Minutes, Seconds}`
 - RepairStdDeviation is the standard deviation of the repair gaussian law
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 class_RepairModel:mttr(), math_utils:standard_deviation() ) ->
-						wooper:state().
+                 class_RepairModel:mttr(), math_utils:standard_deviation() ) ->
+                        wooper:state().
 construct( State, ActorSettings,
-		  { MTTRday, MTTRhour, MTTRminute, MTTRsecond }, MTTRStdDeviation ) ->
+          { MTTRday, MTTRhour, MTTRminute, MTTRsecond }, MTTRStdDeviation ) ->
 
-	% First the direct mother classes:
+    % First the direct mother classes:
 
-	% Computing MTTR (expressed in seconds):
-	MTTR = MTTRsecond + 60*( MTTRminute + 60*( MTTRhour + 24*MTTRday ) ),
+    % Computing MTTR (expressed in seconds):
+    MTTR = MTTRsecond + 60*( MTTRminute + 60*( MTTRhour + 24*MTTRday ) ),
 
-	% Defines a gaussian repair profile, for stochastic class to manage it:
-	RepairState = class_RepairModel:construct( State, ActorSettings,
-		?trace_categorize("Gaussian repair model"),
-		{ positive_integer_gaussian, MTTR, MTTRStdDeviation } ),
+    % Defines a gaussian repair profile, for stochastic class to manage it:
+    RepairState = class_RepairModel:construct( State, ActorSettings,
+        ?trace_categorize("Gaussian repair model"),
+        { positive_integer_gaussian, MTTR, MTTRStdDeviation } ),
 
-	% Then the class-specific actions:
+    % Then the class-specific actions:
 
-	?send_info_fmt( RepairState, "Creating a Gaussian repair model "
-		"whose MTTR is ~p and whose standard deviation is ~p.",
-		[ MTTR, MTTRStdDeviation ] ),
+    ?send_info_fmt( RepairState, "Creating a Gaussian repair model "
+        "whose MTTR is ~p and whose standard deviation is ~p.",
+        [ MTTR, MTTRStdDeviation ] ),
 
-	RepairState.
+    RepairState.
 
 
 % Methods section.

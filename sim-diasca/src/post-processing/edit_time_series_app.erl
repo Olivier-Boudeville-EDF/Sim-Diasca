@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2025 EDF R&D
+% Copyright (C) 2010-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -34,8 +34,8 @@ wrapper script, for convenience.
 -spec exec() -> no_return().
 exec() ->
 
-	app_facilities:start( ?MODULE ),
+    app_facilities:start( ?MODULE ),
 
-	io:format( "Parameters received: ~p~n.", [ init:get_plain_arguments() ] ),
+    io:format( "Parameters received: ~p~n.", [ init:get_plain_arguments() ] ),
 
-	app_facilities:stop().
+    app_facilities:stop().

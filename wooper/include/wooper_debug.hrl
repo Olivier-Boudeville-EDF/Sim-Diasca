@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -35,16 +35,16 @@
  -define( display_trace( S ), trace_utils:info( "[WOOPER] " ++ S ) ).
 
  -define( display_trace( S, F ),
-		  trace_utils:info_fmt( "[WOOPER] " ++ S, F ) ).
+          trace_utils:info_fmt( "[WOOPER] " ++ S, F ) ).
 
 -else. % enable_wooper_traces
 
 % To avoid variables being reported as unused depending on the mode:
 
  -define( display_trace( S ),
-		  basic_utils:ignore_unused( { wooper_trace_disabled, S } ) ).
+          basic_utils:ignore_unused( { wooper_trace_disabled, S } ) ).
 
  -define( display_trace( S, F ),
-		  basic_utils:ignore_unused({ wooper_trace_disabled, S, F } ) ).
+          basic_utils:ignore_unused({ wooper_trace_disabled, S, F } ) ).
 
 -endif. % enable_wooper_traces

@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -43,51 +43,51 @@ See the `naming_utils` tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	UnregisteredName = test_non_registered,
+    UnregisteredName = test_non_registered,
 
-	try naming_utils:get_registered_pid_for( UnregisteredName ) of
+    try naming_utils:get_registered_pid_for( UnregisteredName ) of
 
-		_Anything ->
-			throw( test_should_have_failed )
+        _Anything ->
+            throw( test_should_have_failed )
 
-	catch
+    catch
 
         { registration_lookup_failed, test_non_registered,
           local_otherwise_global} ->
-			ok
+            ok
 
-	end,
+    end,
 
-	not_registered = naming_utils:is_registered( UnregisteredName ),
+    not_registered = naming_utils:is_registered( UnregisteredName ),
 
-	RegisteredName = test_registered,
-	PidToRegister = self(),
-	naming_utils:register_as( PidToRegister, RegisteredName, global_only ),
+    RegisteredName = test_registered,
+    PidToRegister = self(),
+    naming_utils:register_as( PidToRegister, RegisteredName, global_only ),
 
-	try naming_utils:get_registered_pid_for( RegisteredName ) of
+    try naming_utils:get_registered_pid_for( RegisteredName ) of
 
-		PidToRegister ->
-			ok
+        PidToRegister ->
+            ok
 
-	catch
+    catch
 
-		Exception ->
-			throw( { test_should_have_succeeded, Exception } )
+        Exception ->
+            throw( { test_should_have_succeeded, Exception } )
 
-	end,
+    end,
 
 
-	case naming_utils:is_registered( RegisteredName ) of
+    case naming_utils:is_registered( RegisteredName ) of
 
-		not_registered ->
-			throw( { neither_registered_locally_nor_globally,
-					 RegisteredName } );
+        not_registered ->
+            throw( { neither_registered_locally_nor_globally,
+                     RegisteredName } );
 
-		Pid when is_pid(Pid) ->
-			ok
+        Pid when is_pid(Pid) ->
+            ok
 
-	end,
+    end,
 
-	test_facilities:stop().
+    test_facilities:stop().

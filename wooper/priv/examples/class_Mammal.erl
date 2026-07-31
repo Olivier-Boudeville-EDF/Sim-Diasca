@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
@@ -33,20 +33,20 @@
 
 -doc "Constructs a mammal.".
 -spec construct( wooper:state(), age(), gender(), fur_color() ) ->
-						wooper:state().
+                        wooper:state().
 construct( State, Age, Gender, FurColor ) ->
 
-	CreatureState = class_Creature:construct( State, Age, Gender ),
+    CreatureState = class_Creature:construct( State, Age, Gender ),
 
-	{ RequestedState, ActualClass } =
-		executeRequest( CreatureState, getClassname ),
+    { RequestedState, ActualClass } =
+        executeRequest( CreatureState, getClassname ),
 
-	% Even when constructing a cat, we should see the right class (class_Cat)
-	% and not the current class (class_Mammal):
-	%
-	io:format( "Actual class from constructor: ~ts.~n", [ ActualClass ] ),
+    % Even when constructing a cat, we should see the right class (class_Cat)
+    % and not the current class (class_Mammal):
+    %
+    io:format( "Actual class from constructor: ~ts.~n", [ ActualClass ] ),
 
-	setAttribute( RequestedState, fur_color, FurColor ).
+    setAttribute( RequestedState, fur_color, FurColor ).
 
 
 
@@ -57,17 +57,17 @@ be called in leaf-to-root order in inheritance tree.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
-	{ RequestedState, ActualClass } =
-		executeRequest( State, getClassname ),
+    { RequestedState, ActualClass } =
+        executeRequest( State, getClassname ),
 
-	% Even when constructing a cat, we should see the right class (class_Cat)
-	% and not the current class (class_Mammal):
-	%
-	io:format( "Actual class from destructor: ~ts.~n", [ ActualClass ] ),
+    % Even when constructing a cat, we should see the right class (class_Cat)
+    % and not the current class (class_Mammal):
+    %
+    io:format( "Actual class from destructor: ~ts.~n", [ ActualClass ] ),
 
-	io:format( "Deleting mammal ~w! (overridden destructor)~n", [ self() ] ),
+    io:format( "Deleting mammal ~w! (overridden destructor)~n", [ self() ] ),
 
-	RequestedState.
+    RequestedState.
 
 
 
@@ -83,21 +83,21 @@ Overridden from Creature, useful to show the use of executeOneway.
 -spec setAge( wooper:state(), age() ) -> oneway_return().
 setAge( State, NewAge ) ->
 
-	%trace_utils:debug( "class_Mammal:setAge/2 called." ),
+    %trace_utils:debug( "class_Mammal:setAge/2 called." ),
 
-	% If needing to test the crash of a oneway:
-	%A=1,
-	%B=2,
-	%A=B,
+    % If needing to test the crash of a oneway:
+    %A=1,
+    %B=2,
+    %A=B,
 
-	wooper:return_state( setAttribute( State, age, NewAge ) ).
+    wooper:return_state( setAttribute( State, age, NewAge ) ).
 
 
 
 -doc "All mammals are hot-blooded.".
 -spec isHotBlooded( wooper:state() ) -> const_request_return( boolean() ).
 isHotBlooded( State ) ->
-	wooper:const_return_result( true ).
+    wooper:const_return_result( true ).
 
 
 
@@ -107,7 +107,7 @@ ensure consistency.
 """.
 -spec getFurColor( wooper:state() ) -> const_request_return( fur_color() ).
 getFurColor( State ) ->
-	wooper:const_return_result( ?getAttr(fur_color) ).
+    wooper:const_return_result( ?getAttr(fur_color) ).
 
 
 
@@ -119,19 +119,19 @@ Overridden from Creature, useful to show the use of executeRequest.
 -spec getArbitraryNumber( wooper:state() ) -> request_return( number() ).
 getArbitraryNumber( State ) ->
 
-	{ RequestedState, ActualClass } =
-		executeRequest( State, getClassname ),
+    { RequestedState, ActualClass } =
+        executeRequest( State, getClassname ),
 
-	% Even when constructing a cat, we should see the right class (class_Cat)
-	% and not the current class (class_Mammal):
-	%
-	io:format( "Actual class from non-overridden method: ~ts.~n",
-			   [ ActualClass ] ),
+    % Even when constructing a cat, we should see the right class (class_Cat)
+    % and not the current class (class_Mammal):
+    %
+    io:format( "Actual class from non-overridden method: ~ts.~n",
+               [ ActualClass ] ),
 
-	% Interesting test for the stack trace, when called from the Mammal test:
-	%throw( exception_throw_test_from_request ),
+    % Interesting test for the stack trace, when called from the Mammal test:
+    %throw( exception_throw_test_from_request ),
 
-	wooper:return_state_result( RequestedState, 15 ).
+    wooper:return_state_result( RequestedState, 15 ).
 
 
 
@@ -142,12 +142,12 @@ method, not only the latest overridden one.
 -spec testExplicitClassSelection( wooper:state() ) -> oneway_return().
 testExplicitClassSelection( State ) ->
 
-	% Using just executeOneway(State, setAge, 20) would call the class_Mammal
-	% version, we call the class_Creature version instead, which sets the age to
-	% 36 regardless of the specified one:
-	%
-	NewState = executeOnewayAs( State, class_Creature, setAge, 20 ),
+    % Using just executeOneway(State, setAge, 20) would call the class_Mammal
+    % version, we call the class_Creature version instead, which sets the age to
+    % 36 regardless of the specified one:
+    %
+    NewState = executeOnewayAs( class_Creature, State, setAge, 20 ),
 
-	36 = getAttribute( NewState, age ),
+    36 = getAttribute( NewState, age ),
 
-	wooper:return_state( NewState ).
+    wooper:return_state( NewState ).

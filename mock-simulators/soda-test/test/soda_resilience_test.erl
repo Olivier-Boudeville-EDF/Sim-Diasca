@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -25,16 +25,19 @@
 Test case for **resilience** obtained from the soda benchmarking case.
 
 See also:
-- class_SodaVendingMachine.erl
-- class_DeterministicThirstyCustomer.erl
+- `class_SodaVendingMachine.erl`
+- `class_DeterministicThirstyCustomer.erl`
 """.
 
 
 % To silence a Dialyzer never-match warning:
 -export([ run/1 ]).
 
+% Not a simulation case, just a test:
+%-include("traces_for_tests.hrl").
 
-% For facilities common to all cases:
+
+% For facilities common to all cases (e.g. setting records):
 -include("sim_diasca_for_cases.hrl").
 
 
@@ -48,6 +51,7 @@ See also:
 % benchmarking purposes.
 
 
+
 % Type shorthands:
 
 -type count() :: basic_utils:count().
@@ -56,44 +60,45 @@ See also:
 
 
 -type deterministic_customer_pid() ::
-		class_DeterministicThirstyCustomer:customer_pid().
+        class_DeterministicThirstyCustomer:customer_pid().
 
 -type stochastic_customer_pid() ::
-		class_StochasticThirstyCustomer:customer_pid().
+        class_StochasticThirstyCustomer:customer_pid().
 
 
 -type customer_pid() ::
-		deterministic_customer_pid() | stochastic_customer_pid().
+        deterministic_customer_pid() | stochastic_customer_pid().
+
 
 
 -doc "Returns the main settings to select the size of this test.".
 get_benchmark_settings( Scale ) ->
 
-	% Sets these parameters according to how numerous and powerful your
-	% computing hosts are:
-	%
-	% (prefer having many more machines than customers, to ensure no machine
-	% will remain idle, leading to warnings when generating empty plots):
+    % Sets these parameters according to how numerous and powerful your
+    % computing hosts are:
+    %
+    % (prefer having many more machines than customers, to ensure no machine
+    % will remain idle, leading to warnings when generating empty plots):
 
-	{ MachineCount, CustomerCount } = case Scale of
+    { MachineCount, CustomerCount } = case Scale of
 
-		minimal ->
-			{ 0, 0 };
+        minimal ->
+            { 0, 0 };
 
-		normal ->
-			{ 6, 36 }
+        normal ->
+            { 6, 36 }
 
-	end,
+    end,
 
-	% We want this test to end once a specified number of ticks are elapsed:
-	%
-	% (note that the simulation may end sooner, if no machine has a can anymore
-	% and/or if no customer has enough money to buy a can in his machine of
-	% choice)
-	%
-	StopTick = 1000,
+    % We want this test to end once a specified number of ticks are elapsed:
+    %
+    % (note that the simulation may end sooner, if no machine has a can anymore
+    % and/or if no customer has enough money to buy a can in his machine of
+    % choice)
+    %
+    StopTick = 1000,
 
-	{ MachineCount, CustomerCount, StopTick }.
+    { MachineCount, CustomerCount, StopTick }.
 
 
 
@@ -103,30 +108,30 @@ their PID.
 """.
 -spec create_vending_machines( count() ) -> [ machine_pid() ].
 create_vending_machines( Count ) ->
-	create_vending_machines( Count, _Acc=[] ).
+    create_vending_machines( Count, _Acc=[] ).
 
 
 create_vending_machines( _Count=0, Acc ) ->
-	Acc;
+    Acc;
 
 create_vending_machines( Count, Acc ) ->
 
-	MachineName = text_utils:format( "Soda machine #~B", [ Count ] ),
+    MachineName = text_utils:format( "Soda machine #~B", [ Count ] ),
 
-	% On average, a machine will hold 200 cans initially:
-	InitialCanCount = 120
-		+ class_RandomManager:get_positive_integer_gaussian_value(
-			_Mu=80, _Sigma=5.0 ),
+    % On average, a machine will hold 200 cans initially:
+    InitialCanCount = 120
+        + class_RandomManager:get_positive_integer_gaussian_value(
+            _Mu=80, _Sigma=5.0 ),
 
-	% Any can of this machine will cost anything between 1 euro and 6 euros
-	% (bounds included):
-	%
-	CanCost = float( class_RandomManager:get_uniform_value( 6 ) ),
+    % Any can of this machine will cost anything between 1 euro and 6 euros
+    % (bounds included):
+    %
+    CanCost = float( class_RandomManager:get_uniform_value( 6 ) ),
 
-	SVMPid = class_Actor:create_initial_actor( class_SodaVendingMachine,
-		[ MachineName, InitialCanCount, CanCost ] ),
+    SVMPid = class_Actor:create_initial_actor( class_SodaVendingMachine,
+        [ MachineName, InitialCanCount, CanCost ] ),
 
-	create_vending_machines( Count-1, [ SVMPid | Acc ] ).
+    create_vending_machines( Count-1, [ SVMPid | Acc ] ).
 
 
 
@@ -136,29 +141,29 @@ machine among the specified ones, and returns a list of the PID of these
 customers.
 """.
 -spec create_thirsty_customers( count(), [ machine_pid() ] ) ->
-									[ customer_pid() ].
+                                    [ customer_pid() ].
 create_thirsty_customers( CustomerCount, VendingMachines ) ->
-	create_thirsty_customers( CustomerCount, VendingMachines, _Acc=[] ).
+    create_thirsty_customers( CustomerCount, VendingMachines, _Acc=[] ).
 
 
 create_thirsty_customers( _CustomerCount=0, _VendingMachines, Acc ) ->
-	Acc;
+    Acc;
 
 create_thirsty_customers( CustomerCount, VendingMachines, Acc ) ->
 
-	% 2/3 of them will be stochastic on average:
-	CustomerPid = case class_RandomManager:get_uniform_value( 3 ) of
+    % 2/3 of them will be stochastic on average:
+    CustomerPid = case class_RandomManager:get_uniform_value( 3 ) of
 
-		1 ->
-			create_deterministic_customer( VendingMachines, CustomerCount );
+        1 ->
+            create_deterministic_customer( VendingMachines, CustomerCount );
 
-		_ ->
-			create_stochastic_customer( VendingMachines, CustomerCount )
+        _ ->
+            create_stochastic_customer( VendingMachines, CustomerCount )
 
-	end,
+    end,
 
-	create_thirsty_customers( CustomerCount-1, VendingMachines,
-							  [ CustomerPid | Acc ] ).
+    create_thirsty_customers( CustomerCount-1, VendingMachines,
+                              [ CustomerPid | Acc ] ).
 
 
 
@@ -168,22 +173,22 @@ machines.
 """.
 create_deterministic_customer( VendingMachines, CustomerCount ) ->
 
-	CustomerName = text_utils:format( "Customer #~B - deterministic",
-									  [ CustomerCount ] ),
+    CustomerName = text_utils:format( "Customer #~B - deterministic",
+                                      [ CustomerCount ] ),
 
-	ElectedMachineIndex = class_RandomManager:get_uniform_value(
-		length( VendingMachines ) ),
+    ElectedMachineIndex = class_RandomManager:get_uniform_value(
+        length( VendingMachines ) ),
 
-	ElectedMachine = list_utils:get_element_at( VendingMachines,
-												ElectedMachineIndex ),
+    ElectedMachine = list_utils:get_element_at( VendingMachines,
+                                                ElectedMachineIndex ),
 
-	RepletionDuration = 250
-		+ round( class_RandomManager:get_exponential_1p_value( _Lamba=0.05 ) ),
+    RepletionDuration = 250
+        + round( class_RandomManager:get_exponential_1p_value( _Lamba=0.05 ) ),
 
-	InitialBudget = 15.0 + class_RandomManager:get_uniform_value( 200 ),
+    InitialBudget = 15.0 + class_RandomManager:get_uniform_value( 200 ),
 
-	class_Actor:create_initial_actor( class_DeterministicThirstyCustomer,
-		[ CustomerName, ElectedMachine, RepletionDuration, InitialBudget ] ).
+    class_Actor:create_initial_actor( class_DeterministicThirstyCustomer,
+        [ CustomerName, ElectedMachine, RepletionDuration, InitialBudget ] ).
 
 
 
@@ -194,24 +199,24 @@ machines.
 """.
 create_stochastic_customer( VendingMachines, CustomerCount ) ->
 
-	CustomerName = text_utils:format( "Customer #~B - stochastic",
-									  [ CustomerCount ] ),
+    CustomerName = text_utils:format( "Customer #~B - stochastic",
+                                      [ CustomerCount ] ),
 
-	ElectedMachineIndex = class_RandomManager:get_uniform_value(
-		length( VendingMachines ) ),
+    ElectedMachineIndex = class_RandomManager:get_uniform_value(
+        length( VendingMachines ) ),
 
-	ElectedMachine = list_utils:get_element_at( VendingMachines,
-												ElectedMachineIndex ),
+    ElectedMachine = list_utils:get_element_at( VendingMachines,
+                                                ElectedMachineIndex ),
 
-	MaxDuration = 250 + class_RandomManager:get_positive_integer_gaussian_value(
-		_Mu=5, _Sigma=1.0 ),
+    MaxDuration = 250 + class_RandomManager:get_positive_integer_gaussian_value(
+        _Mu=5, _Sigma=1.0 ),
 
-	RepletionDuration = { uniform, MaxDuration },
+    RepletionDuration = { uniform, MaxDuration },
 
-	InitialBudget = 10.0 + class_RandomManager:get_uniform_value( 200 ),
+    InitialBudget = 10.0 + class_RandomManager:get_uniform_value( 200 ),
 
-	class_Actor:create_initial_actor( class_StochasticThirstyCustomer,
-		[ CustomerName, ElectedMachine, RepletionDuration, InitialBudget ] ).
+    class_Actor:create_initial_actor( class_StochasticThirstyCustomer,
+        [ CustomerName, ElectedMachine, RepletionDuration, InitialBudget ] ).
 
 
 
@@ -219,117 +224,120 @@ create_stochastic_customer( VendingMachines, CustomerCount ) ->
 -doc "Runs the test.".
 -spec run() -> no_return().
 run() ->
-	run( minimal ).
-	%run( normal ).
+    run( minimal ).
+    %run( normal ).
+
 
 
 -spec run( 'minimal' | 'normal' ) -> no_return().
 run( Scale ) ->
 
-	?case_start,
+    ?case_start,
 
-	% Use default simulation settings (50Hz, batch reproducible):
-	SimulationSettings = #simulation_settings{
-		simulation_name="Soda Resilience Test",
-		result_specification=no_output },
+    % Use default simulation settings (50Hz, batch reproducible):
+    SimulationSettings = #simulation_settings{
+        simulation_name="Soda Resilience Test",
+        result_specification=no_output },
 
-	HostCandidatesFile = "sim-diasca-host-candidates.txt",
+    HostCandidatesFile = "sim-diasca-host-candidates.txt",
 
-	file_utils:is_existing_file( HostCandidatesFile ) orelse
-		begin
+    file_utils:is_existing_file( HostCandidatesFile ) orelse
+        begin
 
-			?notify_warning( "No host specification file found, "
-				"hence this resilience test would not be "
-				"able to run, stopping it." ),
+            WaitForTraceSupervisor = traces:manage_supervision(),
 
-			sim_diasca:shutdown(),
+            ?notify_warning( "No host specification file found, "
+                "hence this resilience test would not be "
+                "able to run, stopping it." ),
 
-			?case_stop,
+            % Needed as, at this point, the engine has not yet reorganised the
+            % trace files:
+            %
+            traces_for_tests:test_stop( ?MODULE, TraceAggregatorPid,
+                                        WaitForTraceSupervisor )
 
-			exit( 0 )
+        end,
 
-		end,
+    DeploymentSettings = #deployment_settings{
 
-	DeploymentSettings = #deployment_settings{
+        computing_hosts={ use_host_file_otherwise_local, HostCandidatesFile },
 
-		computing_hosts={ use_host_file_otherwise_local, HostCandidatesFile },
+        %node_availability_tolerance = fail_on_unavailable_node,
 
-		%node_availability_tolerance = fail_on_unavailable_node,
+        % Note that the configuration file below has not to be declared above as
+        % well:
+        %
+        enable_data_exchanger={ true, [ "soda_parameters.cfg" ] },
 
-		% Note that the configuration file below has not to be declared above as
-		% well:
-		%
-		enable_data_exchanger={ true, [ "soda_parameters.cfg" ] },
+        enable_performance_tracker=true,
 
-		enable_performance_tracker=true,
+        %crash_resilience = none,
 
-		%crash_resilience = none,
+        % At least three nodes are needed here, as key simulation services are
+        % dispatched:
+        %
+        crash_resilience=1,
 
-		% At least three nodes are needed here, as key simulation services are
-		% dispatched:
-		%
-		crash_resilience=1,
-
-		% Integer seconds:
-		serialisation_period=5 },
-
-
-	% A deployment manager is created directly on the user node:
-	DeploymentManagerPid =
-		sim_diasca:init( SimulationSettings, DeploymentSettings ),
-
-	{ MachineCount, CustomerCount, StopTick } = get_benchmark_settings( Scale ),
-
-	% Accounts for next actors as well:
-	?test_info_fmt( "This benchmark case will involve "
-		"~B soda vending machines, ~B customers "
-		"and will stop no later than tick offset #~B.",
-		[ MachineCount + 2, CustomerCount + 3, StopTick ] ),
+        % Integer seconds:
+        serialisation_period=5 },
 
 
-	% First machine starts with 10 cans, 2 euros each:
-	SVM1 = class_Actor:create_initial_actor( class_SodaVendingMachine,
-		[ _FirstMachineName="First soda machine", _FirstInitialCanCount=1500,
-		  _FirstCanCost=2.0 ] ),
+    % A deployment manager is created directly on the user node:
+    DeploymentManagerPid =
+        sim_diasca:init( SimulationSettings, DeploymentSettings ),
 
-	% Second machine starts with 8 cans, 1.5 euro each:
-	SVM2 = class_Actor:create_initial_placed_actor( class_SodaVendingMachine,
-		[ _SecondMachineName="Second soda machine", _SecondInitialCanCount=8,
-		  _SecondCanCost=1.5 ], _PlacementHint=gimme_some_shelter ),
+    { MachineCount, CustomerCount, StopTick } = get_benchmark_settings( Scale ),
 
-
-	% First customer uses SVM1, is thirsty 1 minute after having drunk, and has
-	% 6 euros in his pockets:
-	%
-	_TC1 = class_Actor:create_initial_actor( class_DeterministicThirstyCustomer,
-		[ _FirstCustomerName="John", _FirstKnownMachine=SVM1,
-		  _FirstRepletionDuration=1, _FirstInitialBudget=6.0 ] ),
+    % Accounts for next actors as well:
+    ?test_info_fmt( "This benchmark case will involve "
+        "~B soda vending machines, ~B customers "
+        "and will stop no later than tick offset #~B.",
+        [ MachineCount + 2, CustomerCount + 3, StopTick ] ),
 
 
-	% Second customer uses SVM1 too, is thirsty 3 minutes after having drunk,
-	% and has 8 euros in his pockets:
-	%
-	_TC2 = class_Actor:create_initial_actor( class_DeterministicThirstyCustomer,
-		[ _SecondCustomerName="Terry", _SecondKnownMachine=SVM1,
-		  _SecondRepletionDuration=3, _SecondInitialBudget=800.0 ] ),
+    % First machine starts with 10 cans, 2 euros each:
+    SVM1 = class_Actor:create_initial_actor( class_SodaVendingMachine,
+        [ _FirstMachineName="First soda machine", _FirstInitialCanCount=1500,
+          _FirstCanCost=2.0 ] ),
+
+    % Second machine starts with 8 cans, 1.5 euro each:
+    SVM2 = class_Actor:create_initial_placed_actor( class_SodaVendingMachine,
+        [ _SecondMachineName="Second soda machine", _SecondInitialCanCount=8,
+          _SecondCanCost=1.5 ], _PlacementHint=gimme_some_shelter ),
 
 
-	% Third customer uses SVM2, is thirsty 2 minutes after having drunk, and has
-	% 15 euros in his pockets:
-	%
-	_TC3 = class_Actor:create_initial_actor( class_DeterministicThirstyCustomer,
-		[ _ThirdCustomerName="Michael", _ThirdKnownMachine=SVM2,
-		  _ThirdRepletionDuration=2, _ThirdInitialBudget=15.0 ] ),
+    % First customer uses SVM1, is thirsty 1 minute after having drunk, and has
+    % 6 euros in his pockets:
+    %
+    _TC1 = class_Actor:create_initial_actor( class_DeterministicThirstyCustomer,
+        [ _FirstCustomerName="John", _FirstKnownMachine=SVM1,
+          _FirstRepletionDuration=1, _FirstInitialBudget=6.0 ] ),
 
-	% Now some batch creations for this test:
 
-	VendingMachines = create_vending_machines( MachineCount ),
+    % Second customer uses SVM1 too, is thirsty 3 minutes after having drunk,
+    % and has 8 euros in his pockets:
+    %
+    _TC2 = class_Actor:create_initial_actor( class_DeterministicThirstyCustomer,
+        [ _SecondCustomerName="Terry", _SecondKnownMachine=SVM1,
+          _SecondRepletionDuration=3, _SecondInitialBudget=800.0 ] ),
 
-	_Customers = create_thirsty_customers( CustomerCount, VendingMachines ),
 
-	sim_diasca:run_simulation_and_browse_results( StopTick,
-												  DeploymentManagerPid ),
+    % Third customer uses SVM2, is thirsty 2 minutes after having drunk, and has
+    % 15 euros in his pockets:
+    %
+    _TC3 = class_Actor:create_initial_actor( class_DeterministicThirstyCustomer,
+        [ _ThirdCustomerName="Michael", _ThirdKnownMachine=SVM2,
+          _ThirdRepletionDuration=2, _ThirdInitialBudget=15.0 ] ),
 
-	sim_diasca:shutdown(),
+    % Now some batch creations for this test:
 
-	?case_stop.
+    VendingMachines = create_vending_machines( MachineCount ),
+
+    _Customers = create_thirsty_customers( CustomerCount, VendingMachines ),
+
+    sim_diasca:run_simulation_and_browse_results( StopTick,
+                                                  DeploymentManagerPid ),
+
+    sim_diasca:shutdown(),
+
+    ?case_stop.

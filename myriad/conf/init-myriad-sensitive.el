@@ -6,7 +6,7 @@
 ;; Derives from init-myriad-base.el.
 
 
-;;(message "Entering myriad-security settings.")
+(message "Entering myriad-security settings.")
 
 
 ;; Not wanting to dismiss the startup screen at each Emacs launch:
@@ -113,8 +113,8 @@
 ;;(if auto-save-default
 ;;  (auto-save-mode 1))))
 
-(auto-save-mode -1)
-
+;;(auto-save-mode -1)
+(setq auto-save-default nil)
 
 ;; No more annoying, unmutable bell (e.g. when reaching buffer bounds):
 (setq ring-bell-function 'ignore)
@@ -154,7 +154,8 @@
 ;; Highlights the line containing point:
 (global-hl-line-mode 1)
 
-(set-face-background hl-line-face "orange")
+;; "orange", now red:
+(set-face-background hl-line-face "#0000ff")
 
 ;; Display how and whether parentheses (or other delimiters) match up:
 (show-paren-mode t)

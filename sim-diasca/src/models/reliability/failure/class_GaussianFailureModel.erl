@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -28,10 +28,10 @@ Gaussian (normal) law (probability density).
 
 
 -define( class_description,
-		 "Class modelling the failure behaviour of equipments according to a "
-		 "Gaussian (normal) law (probability density). "
-		 "It is a less common failure model than the exponential one. "
-		 "See: class_ExponentialFailureModel." ).
+         "Class modelling the failure behaviour of equipments according to a "
+         "Gaussian (normal) law (probability density). "
+         "It is a less common failure model than the exponential one. "
+         "See: class_ExponentialFailureModel." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -40,7 +40,7 @@ Gaussian (normal) law (probability density).
 
 % Must be included before class_TraceEmitter header:
 -define( trace_emitter_categorization,
-		 "Actor.StochasticActor.FailureModel.GaussianFailureModel" ).
+         "Actor.StochasticActor.FailureModel.GaussianFailureModel" ).
 
 
 % Allows to use macros for trace sending:
@@ -62,27 +62,27 @@ according to the gaussian distribution.
 Note: a random manager must be running beforehand.
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 class_FailureModel:mttf(), math_utils:standard_deviation() ) ->
-						wooper:state().
+                 class_FailureModel:mttf(), math_utils:standard_deviation() ) ->
+                        wooper:state().
 construct( State, ActorSettings,
-		   _MTTF={ MTTFday, MTTFhour, MTTFminute, MTTFsecond },
-		   MTTFStdDeviation ) ->
+           _MTTF={ MTTFday, MTTFhour, MTTFminute, MTTFsecond },
+           MTTFStdDeviation ) ->
 
-	% First the direct mother classes:
+    % First the direct mother classes:
 
-	% Computing MTTF (expressed in seconds):
-	MTTF = MTTFsecond + 60 * ( MTTFminute + 60 * ( MTTFhour + 24*MTTFday ) ),
+    % Computing MTTF (expressed in seconds):
+    MTTF = MTTFsecond + 60 * ( MTTFminute + 60 * ( MTTFhour + 24*MTTFday ) ),
 
-	% Defines an exponential failure profile, for stochastic class to manage it:
-	FailureState = class_FailureModel:construct( State, ActorSettings,
-		?trace_categorize("Gaussian failure model"),
-		{ positive_integer_gaussian, MTTF, MTTFStdDeviation } ),
+    % Defines an exponential failure profile, for stochastic class to manage it:
+    FailureState = class_FailureModel:construct( State, ActorSettings,
+        ?trace_categorize("Gaussian failure model"),
+        { positive_integer_gaussian, MTTF, MTTFStdDeviation } ),
 
-	?send_info_fmt( FailureState,
-		"Creating a Gaussian failure model whose MTTF is ~p seconds "
-		"and whose standard deviation is ~p.", [ MTTF, MTTFStdDeviation ] ),
+    ?send_info_fmt( FailureState,
+        "Creating a Gaussian failure model whose MTTF is ~p seconds "
+        "and whose standard deviation is ~p.", [ MTTF, MTTFStdDeviation ] ),
 
-	FailureState.
+    FailureState.
 
 
 

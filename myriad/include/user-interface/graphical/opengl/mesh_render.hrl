@@ -1,4 +1,4 @@
-% Copyright (C) 2024-2025 Olivier Boudeville
+% Copyright (C) 2024-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -35,25 +35,25 @@
 % Rendering (OpenGL-related) state of a mesh.
 -record( rendering_state, {
 
-	% The identifier of the corresponding GLSL program (typically needed to
-	% locate uniform variables):
-	%
-	program_id :: gui_shader:program_id(),
+    % The identifier of the corresponding GLSL program (typically needed to
+    % locate uniform variables):
+    %
+    program_id :: gui_shader:program_id(),
 
 
-	% The overall VAO used for that mesh:
-	vao_id :: gui_shader:vao_id(),
+    % The overall VAO used for that mesh:
+    vao_id :: gui_shader:vao_id(),
 
 
-	% The VBO holding the vertex-related data of that mesh:
-	vbo_id :: gui_shader:vbo_id(),
+    % The VBO holding the vertex-related data of that mesh:
+    vbo_id :: gui_shader:vbo_id(),
 
-	% The layout respected by the VBO and the corresponding shaders:
-	vbo_layout :: gui_shader:vbo_layout(),
+    % The layout respected by the VBO and the corresponding shaders:
+    vbo_layout :: gui_shader:vbo_layout(),
 
-	% The number of compounds of vertex attributes (VBO entries) for this mesh:
-	compound_count :: gui_shader:compound_count(),
+    % The number of compounds of vertex attributes (VBO entries) for this mesh:
+    compound_count :: gui_shader:compound_count(),
 
 
-	% The EBO holding the face indices of that mesh:
-	ebo_id :: gui_shader:ebo_id() } ).
+    % The EBO holding the face indices of that mesh:
+    ebo_id :: gui_shader:ebo_id() } ).

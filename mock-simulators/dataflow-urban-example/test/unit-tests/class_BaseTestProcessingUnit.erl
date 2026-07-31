@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 EDF R&D
+% Copyright (C) 2016-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -25,11 +25,11 @@
 
 
 -define( class_description,
-		 "Basic test processing unit:~n"
-		 " - ruled by the 'activate_on_new_set' policy~n"
-		 " - having one input port (named 'my_input_port') and one output "
-		 "port ('my_output_port'), both conveying integers~n"
-		 " - having no specific state of its own nor additional method" ).
+         "Basic test processing unit:~n"
+         " - ruled by the 'activate_on_new_set' policy~n"
+         " - having one input port (named 'my_input_port') and one output "
+         "port ('my_output_port'), both conveying integers~n"
+         " - having no specific state of its own nor additional method" ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -38,7 +38,7 @@
 
 % Must be included before class_TraceEmitter header:
 -define( trace_emitter_categorization,
-		 "Core.Dataflow.Unit-testing.BasicTestProcessingUnit" ).
+         "Core.Dataflow.Unit-testing.BasicTestProcessingUnit" ).
 
 
 % For types and shorthands:
@@ -66,21 +66,21 @@ non-empty string)
 - DataflowPid is the PID of the dataflow instance
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 class_DataflowProcessingUnit:unit_name(), dataflow_pid() ) ->
-						wooper:state().
+                 class_DataflowProcessingUnit:unit_name(), dataflow_pid() ) ->
+                        wooper:state().
 construct( State, ActorSettings, UnitName, DataflowPid ) ->
 
-	% We start with two input iterations and two outputs:
-	{ InputPortSpecs, OutputPortSpecs } = get_port_specifications(),
+    % We start with two input iterations and two outputs:
+    { InputPortSpecs, OutputPortSpecs } = get_port_specifications(),
 
-	% First the direct mother class:
-	UnitState = class_DataflowProcessingUnit:construct(
-		State, ActorSettings, ?trace_categorize(UnitName),
-		_ActivationPolicy=activate_on_new_set, InputPortSpecs,
-		OutputPortSpecs, DataflowPid ),
+    % First the direct mother class:
+    UnitState = class_DataflowProcessingUnit:construct(
+        State, ActorSettings, ?trace_categorize(UnitName),
+        _ActivationPolicy=activate_on_new_set, InputPortSpecs,
+        OutputPortSpecs, DataflowPid ),
 
-	% No class-specific actions:
-	UnitState.
+    % No class-specific actions:
+    UnitState.
 
 
 
@@ -97,24 +97,24 @@ Meant to be overridden.
 -spec activate( wooper:state() ) -> oneway_return().
 activate( State ) ->
 
-	% Expected by design to be set:
-	InputRawValue = class_DataflowBlock:get_input_port_value( "my_input_port",
-															  State ),
+    % Expected by design to be set:
+    InputRawValue = class_DataflowBlock:get_input_port_value( "my_input_port",
+                                                              State ),
 
-	NewRawValue = InputRawValue + 1,
+    NewRawValue = InputRawValue + 1,
 
-	OutputChannelValue = class_Dataflow:create_channel_value( NewRawValue,
-		[ ?base_test_semantics ], "W", "integer" ),
+    OutputChannelValue = class_Dataflow:create_channel_value( NewRawValue,
+        [ ?base_test_semantics ], "W", "integer()" ),
 
-	SetState = class_DataflowBlock:set_output_port_value( "my_output_port",
-		OutputChannelValue, State ),
+    SetState = class_DataflowBlock:set_output_port_value( "my_output_port",
+        OutputChannelValue, State ),
 
-	?notice_fmt( "Activated! Current state: ~ts; read from input: ~p; "
-		"written to output: ~ts.",
-		[ to_string( State ), InputRawValue,
-		  class_DataflowBlock:value_to_string( OutputChannelValue ) ] ),
+    ?notice_fmt( "Activated! Current state: ~ts; read from input: ~p; "
+        "written to output: ~ts.",
+        [ to_string( State ), InputRawValue,
+          class_DataflowBlock:value_to_string( OutputChannelValue ) ] ),
 
-	wooper:return_state( SetState ).
+    wooper:return_state( SetState ).
 
 
 
@@ -127,9 +127,9 @@ Returns the specifications for the input and output ports of that dataflow
 processing unit.
 """.
 -spec get_port_specifications() ->
-			static_return( { [ input_port_spec() ], [ output_port_spec() ] } ).
+            static_return( { [ input_port_spec() ], [ output_port_spec() ] } ).
 get_port_specifications() ->
-	wooper:return_static( { get_input_port_specs(), get_output_port_specs() } ).
+    wooper:return_static( { get_input_port_specs(), get_output_port_specs() } ).
 
 
 
@@ -140,12 +140,12 @@ dataflow block.
 -spec get_input_port_specs() -> static_return( [ input_port_spec() ] ).
 get_input_port_specs() ->
 
-	MyInputPort = #input_port_spec{ name="my_input_port",
-									value_semantics=[ ?base_test_semantics ],
-									value_unit="W",
-									value_type_description="integer" },
+    MyInputPort = #input_port_spec{ name="my_input_port",
+                                    value_semantics=[ ?base_test_semantics ],
+                                    value_unit="W",
+                                    value_text_type="integer()" },
 
-	wooper:return_static( [ MyInputPort ] ).
+    wooper:return_static( [ MyInputPort ] ).
 
 
 
@@ -156,12 +156,12 @@ unit.
 -spec get_output_port_specs() -> static_return( [ output_port_spec() ] ).
 get_output_port_specs() ->
 
-	MyOutputPort = #output_port_spec{ name="my_output_port",
-									  value_semantics=[ ?base_test_semantics ],
-									  value_unit="W",
-									  value_type_description="integer" },
+    MyOutputPort = #output_port_spec{ name="my_output_port",
+                                      value_semantics=[ ?base_test_semantics ],
+                                      value_unit="W",
+                                      value_text_type="integer()" },
 
-	wooper:return_static( [ MyOutputPort ] ).
+    wooper:return_static( [ MyOutputPort ] ).
 
 
 
@@ -171,5 +171,5 @@ get_output_port_specs() ->
 -doc "Returns a textual description of this unit.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
-	text_utils:format( "Basic test unit; this is a ~ts",
-					   [ class_DataflowProcessingUnit:to_string( State ) ] ).
+    text_utils:format( "Basic test unit; this is a ~ts",
+                       [ class_DataflowProcessingUnit:to_string( State ) ] ).

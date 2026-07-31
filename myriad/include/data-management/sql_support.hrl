@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -35,30 +35,30 @@
 % The settings needed to designate a database instance.
 -record( database_connection_settings, {
 
-	% Designates the hostname on which a target database instance is running:
-	host_name :: sql_support:database_host_name(),
+    % Designates the hostname on which a target database instance is running:
+    host_name :: sql_support:database_host_name(),
 
-	% The (TCP) port at which the target database instance is running:
-	port = ?default_database_port :: option( sql_support:database_port() ),
+    % The (TCP) port at which the target database instance is running:
+    port = ?default_database_port :: option( sql_support:database_port() ),
 
-	% The name of the target database instance, e.g. "acme_stock_db".
-	name :: sql_support:database_name() } ).
+    % The name of the target database instance, e.g. "acme_stock_db".
+    name :: sql_support:database_name() } ).
 
 
 
 % The settings corresponding to a given database user:
 -record( database_user_settings, {
 
-	% The name of a database user, e.g. "john_smith".
-	user_name :: sql_support:database_user_name(),
+    % The name of a database user, e.g. "john_smith".
+    user_name :: sql_support:database_user_name(),
 
-	% The password of a database user:
-	user_password :: sql_support:database_user_password() } ).
+    % The password of a database user:
+    user_password :: sql_support:database_user_password() } ).
 
 
 % The description of a field (a column).
 -record( field_description, {
 
-	% Integrate a variation of epgsql:column().
+    % Integrate a variation of epgsql:column().
 
 } ).

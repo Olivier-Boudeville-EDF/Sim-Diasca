@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -146,7 +146,7 @@ A user-defined vertex attribute variable, meant to be associated to a generic
 vertex attribute index in a GLSL program.
 """.
 -type user_vertex_attribute() ::
-		{ vertex_attribute_name(), vertex_attribute_index() }.
+        { vertex_attribute_name(), vertex_attribute_index() }.
 %
 
 -doc """
@@ -192,7 +192,7 @@ name".
 Designates a type of buffer object, typically used as a binding target.
 """.
 -type array_bind_target() ::
-	?GL_ARRAY_BUFFER              % Vertex attributes
+    ?GL_ARRAY_BUFFER              % Vertex attributes
   | ?GL_ATOMIC_COUNTER_BUFFER     % Atomic counter storage
   | ?GL_COPY_READ_BUFFER          % Buffer copy source
   | ?GL_COPY_WRITE_BUFFER         % Buffer copy destination
@@ -290,7 +290,7 @@ corresponding VBO will be a concatenation of a given number of such compounds.
 Type defined mostly for clarity.
 """.
 -type vertex_attribute_compound() ::
-		type_utils:tuple( vertex_attribute_value() ).
+        type_utils:tuple( vertex_attribute_value() ).
 
 
 -doc "A number of compounds of vertex attributes, in a VBO.".
@@ -345,9 +345,9 @@ defined for a given vertex (if tightly packed).
 
 -doc "A type of OpenGL primitive for rendering.".
 -type gl_primitive_type() :: ?GL_POINTS | ?GL_LINE_STRIP | ?GL_LINE_LOOP
-	| ?GL_LINES | ?GL_LINE_STRIP_ADJACENCY | ?GL_LINES_ADJACENCY
-	| ?GL_TRIANGLE_STRIP | ?GL_TRIANGLE_FAN | ?GL_TRIANGLES
-	| ?GL_TRIANGLE_STRIP_ADJACENCY | ?GL_TRIANGLES_ADJACENCY | ?GL_PATCHES.
+    | ?GL_LINES | ?GL_LINE_STRIP_ADJACENCY | ?GL_LINES_ADJACENCY
+    | ?GL_TRIANGLE_STRIP | ?GL_TRIANGLE_FAN | ?GL_TRIANGLES
+    | ?GL_TRIANGLE_STRIP_ADJACENCY | ?GL_TRIANGLES_ADJACENCY | ?GL_PATCHES.
 
 
 -doc """
@@ -426,7 +426,7 @@ header, which must be kept consistent with these values and their order
 (e.g. see the MyriadGUI builtin gui_opengl_base_shader.vertex.glsl).
 """.
 -type vbo_layout() ::
-	'vtx3'         % A series of vertex3()
+    'vtx3'         % A series of vertex3()
   | 'vtx3_nrm'     % A series of (vertex3(), unit_normal3())
   | 'vtx3_rgb'     % A series of (vertex3(), render_rgb_color())
   | 'vtx3_uv'      % A series of (vertex3(), uv_point())
@@ -551,29 +551,29 @@ headers like "gui_shader.glsl.h") can be found in all cases.
 
 
 -export_type([ shader_id/0, vertex_shader_id/0,
-			   tessellation_control_shader_id/0,
-			   tessellation_evaluation_shader_id/0, geometry_shader_id/0,
-			   fragment_shader_id/0, compute_shader_id/0,
+               tessellation_control_shader_id/0,
+               tessellation_evaluation_shader_id/0, geometry_shader_id/0,
+               fragment_shader_id/0, compute_shader_id/0,
 
-			   user_vertex_attribute/0,
-			   vertex_attribute_index/0, vertex_attribute_name/0,
+               user_vertex_attribute/0,
+               vertex_attribute_index/0, vertex_attribute_name/0,
 
-			   program_id/0,
-			   vao_id/0,
-			   vbo/0, vbo_id/0,
-			   ebo/0, ebo_id/0,
+               program_id/0,
+               vao_id/0,
+               vbo/0, vbo_id/0,
+               ebo/0, ebo_id/0,
 
-			   component_count/0, component_type/0, component_value/0,
-			   vertex_attribute_value/0, vertex_attribute_float_value/0,
-			   vertex_attribute_compound/0, compound_count/0,
-			   vertex_attribute_series/0, vertex_attribute_float_series/0,
+               component_count/0, component_type/0, component_value/0,
+               vertex_attribute_value/0, vertex_attribute_float_value/0,
+               vertex_attribute_compound/0, compound_count/0,
+               vertex_attribute_series/0, vertex_attribute_float_series/0,
 
-			   stride/0, offset/0,
-			   gl_primitive_type/0, index/0,
+               stride/0, offset/0,
+               gl_primitive_type/0, index/0,
 
-			   uniform_id/0, uniform_name/0, uniform_value/0,
+               uniform_id/0, uniform_name/0, uniform_value/0,
 
-			   gl_vec2/0, gl_vec3/0, gl_vec4/0, gl_vector/0 ]).
+               gl_vec2/0, gl_vec3/0, gl_vec4/0, gl_vector/0 ]).
 
 
 
@@ -582,99 +582,99 @@ headers like "gui_shader.glsl.h") can be found in all cases.
 % For the build of shader-based programs:
 -export([ get_shading_language_version/0,
 
-		  compile_vertex_shader/1, compile_tessellation_control_shader/1,
-		  compile_tessellation_evaluation_shader/1, compile_geometry_shader/1,
-		  compile_fragment_shader/1, compile_compute_shader/1,
+          compile_vertex_shader/1, compile_tessellation_control_shader/1,
+          compile_tessellation_evaluation_shader/1, compile_geometry_shader/1,
+          compile_fragment_shader/1, compile_compute_shader/1,
 
-		  generate_program_from/2, generate_program_from/3,
-		  generate_program_from/4,
+          generate_program_from/2, generate_program_from/3,
+          generate_program_from/4,
 
-		  generate_program/1, generate_program/2,
+          generate_program/1, generate_program/2,
 
-		  install_program/1, delete_program/1,
+          install_program/1, delete_program/1,
 
-		  % MyriadGUI builtins:
-		  get_base_glsl_include_paths/0, get_base_shader_filenames/0,
-		  get_base_user_attributes/0, deploy_base_program/0,
-		  set_vbo_layout/2
+          % MyriadGUI builtins:
+          get_base_glsl_include_paths/0, get_base_shader_filenames/0,
+          get_base_user_attributes/0, deploy_base_program/0,
+          set_vbo_layout/2
 
-		]).
+        ]).
 
 
 
 % For buffers:
 -export([ generate_buffer_id/0, generate_buffer_ids/1,
-		  assign_array/3,
-		  delete_buffer/1, delete_buffers/1 ]).
+          assign_array/3,
+          delete_buffer/1, delete_buffers/1 ]).
 
 
 % For vertex attributes:
 -export([ declare_vertex_attribute/1, declare_vertex_attribute/2,
-		  declare_vertex_attribute/7,
-		  enable_vertex_attribute/1, disable_vertex_attribute/1 ]).
+          declare_vertex_attribute/7,
+          enable_vertex_attribute/1, disable_vertex_attribute/1 ]).
 
 % For series of vertex attributes:
 -export([ declare_vertex_attribute_for/2, declare_vertex_attribute_for/3,
-		  declare_vertex_attributes_from/4, declare_vertex_attributes_from/5 ]).
+          declare_vertex_attributes_from/4, declare_vertex_attributes_from/5 ]).
 
 
 % For VAO:
 -export([ generate_vao_id/0, generate_vao_ids/1, set_new_vao/0,
-		  set_current_vao_from_id/1, unset_current_vao/0,
-		  delete_vao/1, delete_vaos/1 ]).
+          set_current_vao_from_id/1, unset_current_vao/0,
+          delete_vao/1, delete_vaos/1 ]).
 
 
 % For VBO:
 -export([ generate_vbo_id/0, generate_vbo_ids/1,
-		  set_new_vbo/0, set_current_vbo_from_id/1,
-		  assign_current_vbo/1, assign_current_vbo/2,
-		  assign_new_vbo/1, assign_new_vbo/2,
+          set_new_vbo/0, set_current_vbo_from_id/1,
+          assign_current_vbo/1, assign_current_vbo/2,
+          assign_new_vbo/1, assign_new_vbo/2,
 
-		  assign_new_vbo_from_attribute_series/1,
-		  assign_new_vbo_from_attribute_series_from/2,
-		  assign_new_vbo_from_attribute_series_with/2,
+          assign_new_vbo_from_attribute_series/1,
+          assign_new_vbo_from_attribute_series_from/2,
+          assign_new_vbo_from_attribute_series_with/2,
 
-		  assign_vertices_to_new_vbo/1, assign_vertices_to_new_vbo/2,
-		  assign_vertex_attribute_as/2, assign_vertex_attribute_as/3,
+          assign_vertices_to_new_vbo/1, assign_vertices_to_new_vbo/2,
+          assign_vertex_attribute_as/2, assign_vertex_attribute_as/3,
 
-		  assign_texcoords_to_new_vbo/1, assign_texcoords_to_new_vbo/2,
+          assign_texcoords_to_new_vbo/1, assign_texcoords_to_new_vbo/2,
 
-		  get_vbo_layouts/0, get_vbo_layout_id/1, get_vbo_layout/1,
+          get_vbo_layouts/0, get_vbo_layout_id/1, get_vbo_layout/1,
 
-		  render_from_enabled_vbos/2, render_from_enabled_vbos/3,
+          render_from_enabled_vbos/2, render_from_enabled_vbos/3,
 
-		  delete_vbo/1, delete_vbos/1 ]).
+          delete_vbo/1, delete_vbos/1 ]).
 
 
 % For EBO:
 -export([ generate_ebo_id/0, generate_ebo_ids/1,
-		  set_new_ebo/0, set_current_ebo_from_id/1,
-		  assign_current_ebo/1, assign_current_ebo/2,
+          set_new_ebo/0, set_current_ebo_from_id/1,
+          assign_current_ebo/1, assign_current_ebo/2,
 
-		  assign_indices_to_new_ebo/1, assign_indices_to_new_ebo/2,
+          assign_indices_to_new_ebo/1, assign_indices_to_new_ebo/2,
 
-		  render_from_enabled_ebo/2,
+          render_from_enabled_ebo/2,
 
-		  delete_ebo/1, delete_ebos/1 ]).
+          delete_ebo/1, delete_ebos/1 ]).
 
 
 % For uniform variables:
 -export([ get_uniform_id/2, get_maybe_uniform_id/2,
 
-		  set_uniform_ui/2, set_uniform_i/2,
-		  set_uniform_f/2, set_uniform_2f/3, set_uniform_3f/4, set_uniform_4f/5,
-		  set_uniform_fs/2,
+          set_uniform_ui/2, set_uniform_i/2,
+          set_uniform_f/2, set_uniform_2f/3, set_uniform_3f/4, set_uniform_4f/5,
+          set_uniform_fs/2,
 
-		  set_uniform_point2/2, set_uniform_point3/2, set_uniform_point4/2,
-		  set_uniform_point2s/2, set_uniform_point3s/2, set_uniform_point4s/2,
+          set_uniform_point2/2, set_uniform_point3/2, set_uniform_point4/2,
+          set_uniform_point2s/2, set_uniform_point3s/2, set_uniform_point4s/2,
 
-		  set_uniform_vector2/2, set_uniform_vector3/2, set_uniform_vector4/2,
-		  set_uniform_vector2s/2, set_uniform_vector3s/2,
-		  set_uniform_vector4s/2,
+          set_uniform_vector2/2, set_uniform_vector3/2, set_uniform_vector4/2,
+          set_uniform_vector2s/2, set_uniform_vector3s/2,
+          set_uniform_vector4s/2,
 
-		  set_uniform_matrix2/2, set_uniform_matrix2/3,
-		  set_uniform_matrix3/2, set_uniform_matrix3/3,
-		  set_uniform_matrix4/2, set_uniform_matrix4/3 ]).
+          set_uniform_matrix2/2, set_uniform_matrix2/3,
+          set_uniform_matrix3/2, set_uniform_matrix3/3,
+          set_uniform_matrix4/2, set_uniform_matrix4/3 ]).
 
 
 % General-purpose:
@@ -788,9 +788,9 @@ version 420 corresponds to OpenGL version 4.2 for example).
 """.
 -spec get_shading_language_version() -> ustring().
 get_shading_language_version() ->
-	Res = gl:getString( ?GL_SHADING_LANGUAGE_VERSION ),
-	cond_utils:if_defined( myriad_check_opengl, gui_opengl:check_error() ),
-	Res.
+    Res = gl:getString( ?GL_SHADING_LANGUAGE_VERSION ),
+    cond_utils:if_defined( myriad_check_opengl, gui_opengl:check_error() ),
+    Res.
 
 
 
@@ -812,7 +812,7 @@ anymore.
 """.
 -spec compile_vertex_shader( any_file_path() ) -> vertex_shader_id().
 compile_vertex_shader( VertexShaderPath ) ->
-	compile_vertex_shader( VertexShaderPath, _ExtraGLSLSearchPaths=[] ).
+    compile_vertex_shader( VertexShaderPath, _ExtraGLSLSearchPaths=[] ).
 
 
 
@@ -826,81 +826,81 @@ Will have to be explicitly deleted (with gl:DeleteShader/1) once not useful
 anymore.
 """.
 -spec compile_vertex_shader( any_file_path(), glsl_search_paths() ) ->
-											vertex_shader_id().
+                                            vertex_shader_id().
 compile_vertex_shader( VertexShaderPath, ExtraGLSLSearchPaths ) ->
 
-	{ BinVertexShaderSrc, FullShaderPath, TotalInclLineCount,
-	  MaybeFirstIncludeLine } =
-		get_shader_source( VertexShaderPath, ExtraGLSLSearchPaths ),
+    { BinVertexShaderSrc, FullShaderPath, TotalInclLineCount,
+      MaybeFirstIncludeLine } =
+        get_shader_source( VertexShaderPath, ExtraGLSLSearchPaths ),
 
-	% A file output is generally preferred, see get_shader_source/2 above:
-	%cond_utils:if_defined( myriad_debug_shaders,
-	%   trace_utils:debug_fmt( "Resulting sources of the vertex shader '~ts':"
-	%      "~n~ts.", [ FullShaderPath, BinVertexShaderSrc ] ) ),
+    % A file output is generally preferred, see get_shader_source/2 above:
+    %cond_utils:if_defined( myriad_debug_shaders,
+    %   trace_utils:debug_fmt( "Resulting sources of the vertex shader '~ts':"
+    %      "~n~ts.", [ FullShaderPath, BinVertexShaderSrc ] ) ),
 
-	%trace_utils:debug_fmt( "Total include line count: ~B, "
-	%   "first include line: ~w.",
-	%   [ TotalInclLineCount, MaybeFirstIncludeLine ] ),
+    %trace_utils:debug_fmt( "Total include line count: ~B, "
+    %   "first include line: ~w.",
+    %   [ TotalInclLineCount, MaybeFirstIncludeLine ] ),
 
-	% Creates an empty shader object, and returns a non-zero value by which it
-	% can be referenced:
-	%
-	VertexShaderId = gl:createShader( ?GL_VERTEX_SHADER ),
+    % Creates an empty shader object, and returns a non-zero value by which it
+    % can be referenced:
+    %
+    VertexShaderId = gl:createShader( ?GL_VERTEX_SHADER ),
 
-	cond_utils:if_defined( myriad_debug_shaders,
-		trace_utils:debug_fmt( "Compiling vertex shader '~ts'.",
-							   [ FullShaderPath ] ) ),
+    cond_utils:if_defined( myriad_debug_shaders,
+        trace_utils:debug_fmt( "Compiling vertex shader '~ts'.",
+                               [ FullShaderPath ] ) ),
 
-	% Associates source to empty shader:
-	ok = gl:shaderSource( VertexShaderId, [ BinVertexShaderSrc ] ),
+    % Associates source to empty shader:
+    ok = gl:shaderSource( VertexShaderId, [ BinVertexShaderSrc ] ),
 
-	ok = gl:compileShader( VertexShaderId ),
+    ok = gl:compileShader( VertexShaderId ),
 
-	MaybeLogStr = case gl:getShaderiv( VertexShaderId, ?GL_INFO_LOG_LENGTH ) of
+    MaybeLogStr = case gl:getShaderiv( VertexShaderId, ?GL_INFO_LOG_LENGTH ) of
 
-		0 ->
-			undefined;
+        0 ->
+            undefined;
 
-		InfoLen ->
-			gl:getShaderInfoLog( VertexShaderId, InfoLen )
+        InfoLen ->
+            gl:getShaderInfoLog( VertexShaderId, InfoLen )
 
-	end,
+    end,
 
-	% Now checks compilation outcome:
-	case gl:getShaderiv( VertexShaderId, ?GL_COMPILE_STATUS ) of
+    % Now checks compilation outcome:
+    case gl:getShaderiv( VertexShaderId, ?GL_COMPILE_STATUS ) of
 
-		?GL_TRUE ->
-			MaybeLogStr =:= undefined orelse
-				trace_utils:warning_fmt( "Compilation of the vertex shader "
-					"defined in '~ts' succeeded, yet reported that '~ts'.",
-					[ FullShaderPath, MaybeLogStr ] );
+        ?GL_TRUE ->
+            MaybeLogStr =:= undefined orelse
+                trace_utils:warning_fmt( "Compilation of the vertex shader "
+                    "defined in '~ts' succeeded, yet reported that '~ts'.",
+                    [ FullShaderPath, MaybeLogStr ] );
 
-		_ ->
-			MsgStr = case MaybeLogStr of
+        _ ->
+            MsgStr = case MaybeLogStr of
 
-				undefined ->
-					"(no report).";
+                undefined ->
+                    "(no report).";
 
-				% Already with a trailing dot:
-				LogStr ->
-					fix_line_numbers( LogStr, TotalInclLineCount,
-									  MaybeFirstIncludeLine )
+                % Already with a trailing dot:
+                LogStr ->
+                    fix_line_numbers( LogStr, TotalInclLineCount,
+                                      MaybeFirstIncludeLine )
 
-			end,
+            end,
 
-			trace_utils:error_fmt( "Compilation of the vertex shader in "
-				"'~ts' failed:~n~ts", [ FullShaderPath, MsgStr ] ),
+            trace_utils:error_fmt( "Compilation of the vertex shader in "
+                "'~ts' failed:~n~ts", [ FullShaderPath, MsgStr ] ),
 
-			gl:deleteShader( VertexShaderId ),
+            gl:deleteShader( VertexShaderId ),
 
-			throw( { shader_compilation_failed, vertex_shader,
-					 FullShaderPath, MsgStr } )
+            throw( { shader_compilation_failed, vertex_shader,
+                     FullShaderPath, MsgStr } )
 
-	end,
+    end,
 
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
 
-	VertexShaderId.
+    VertexShaderId.
 
 
 
@@ -914,10 +914,10 @@ Will have to be explicitly deleted (with gl:DeleteShader/1) once not useful
 anymore.
 """.
 -spec compile_tessellation_control_shader( any_file_path() ) ->
-											tessellation_control_shader_id().
+                                            tessellation_control_shader_id().
 compile_tessellation_control_shader( TessCtrlShaderPath ) ->
-	compile_tessellation_control_shader( TessCtrlShaderPath,
-										 _ExtraGLSLSearchPaths=[] ).
+    compile_tessellation_control_shader( TessCtrlShaderPath,
+                                         _ExtraGLSLSearchPaths=[] ).
 
 
 
@@ -931,81 +931,81 @@ Will have to be explicitly deleted (with gl:DeleteShader/1) once not useful
 anymore.
 """.
 -spec compile_tessellation_control_shader( any_file_path(),
-			glsl_search_paths() ) -> tessellation_control_shader_id().
+            glsl_search_paths() ) -> tessellation_control_shader_id().
 compile_tessellation_control_shader( TessCtrlShaderPath,
-									 ExtraGLSLSearchPaths ) ->
+                                     ExtraGLSLSearchPaths ) ->
 
-	{ BinTessCtrlShaderSrc, FullShaderPath, TotalInclLineCount,
-	  MaybeFirstIncludeLine } =
-		get_shader_source( TessCtrlShaderPath, ExtraGLSLSearchPaths ),
+    { BinTessCtrlShaderSrc, FullShaderPath, TotalInclLineCount,
+      MaybeFirstIncludeLine } =
+        get_shader_source( TessCtrlShaderPath, ExtraGLSLSearchPaths ),
 
-	% A file output is generally preferred, see get_shader_source/2 above:
-	%cond_utils:if_defined( myriad_debug_shaders,
-	%   trace_utils:debug_fmt( "Resulting sources of the tessellation control "
-	%       "shader '~ts':~n~ts.",
-	%       [ FullShaderPath, BinTessCtrlShaderSrc ] ) ),
+    % A file output is generally preferred, see get_shader_source/2 above:
+    %cond_utils:if_defined( myriad_debug_shaders,
+    %   trace_utils:debug_fmt( "Resulting sources of the tessellation control "
+    %       "shader '~ts':~n~ts.",
+    %       [ FullShaderPath, BinTessCtrlShaderSrc ] ) ),
 
-	% Creates an empty shader object, and returns a non-zero value by which it
-	% can be referenced:
-	%
-	TessCtrlShaderId = gl:createShader( ?GL_TESS_CONTROL_SHADER ),
+    % Creates an empty shader object, and returns a non-zero value by which it
+    % can be referenced:
+    %
+    TessCtrlShaderId = gl:createShader( ?GL_TESS_CONTROL_SHADER ),
 
-	cond_utils:if_defined( myriad_debug_shaders,
-		trace_utils:debug_fmt( "Compiling tessellation control shader '~ts'.",
-							   [ FullShaderPath ] ) ),
+    cond_utils:if_defined( myriad_debug_shaders,
+        trace_utils:debug_fmt( "Compiling tessellation control shader '~ts'.",
+                               [ FullShaderPath ] ) ),
 
-	% Associates source to empty shader:
-	ok = gl:shaderSource( TessCtrlShaderId, [ BinTessCtrlShaderSrc ] ),
+    % Associates source to empty shader:
+    ok = gl:shaderSource( TessCtrlShaderId, [ BinTessCtrlShaderSrc ] ),
 
-	ok = gl:compileShader( TessCtrlShaderId ),
+    ok = gl:compileShader( TessCtrlShaderId ),
 
-	MaybeLogStr = case gl:getShaderiv( TessCtrlShaderId,
-									   ?GL_INFO_LOG_LENGTH ) of
+    MaybeLogStr = case gl:getShaderiv( TessCtrlShaderId,
+                                       ?GL_INFO_LOG_LENGTH ) of
 
-		0 ->
-			undefined;
+        0 ->
+            undefined;
 
-		InfoLen ->
-			gl:getShaderInfoLog( TessCtrlShaderId, InfoLen )
+        InfoLen ->
+            gl:getShaderInfoLog( TessCtrlShaderId, InfoLen )
 
-	end,
+    end,
 
-	% Now checks compilation outcome:
-	case gl:getShaderiv( TessCtrlShaderId, ?GL_COMPILE_STATUS ) of
+    % Now checks compilation outcome:
+    case gl:getShaderiv( TessCtrlShaderId, ?GL_COMPILE_STATUS ) of
 
-		?GL_TRUE ->
-			MaybeLogStr =:= undefined orelse
-				trace_utils:warning_fmt( "Compilation of the tessellation "
-					"control shader defined in '~ts' succeeded, "
-					"yet reported that '~ts'.",
-					[ FullShaderPath, MaybeLogStr ] );
+        ?GL_TRUE ->
+            MaybeLogStr =:= undefined orelse
+                trace_utils:warning_fmt( "Compilation of the tessellation "
+                    "control shader defined in '~ts' succeeded, "
+                    "yet reported that '~ts'.",
+                    [ FullShaderPath, MaybeLogStr ] );
 
-		_ ->
-			MsgStr = case MaybeLogStr of
+        _ ->
+            MsgStr = case MaybeLogStr of
 
-				undefined ->
-					"(no report)";
+                undefined ->
+                    "(no report)";
 
-				LogStr ->
-					fix_line_numbers( LogStr, TotalInclLineCount,
-									  MaybeFirstIncludeLine )
+                LogStr ->
+                    fix_line_numbers( LogStr, TotalInclLineCount,
+                                      MaybeFirstIncludeLine )
 
-			end,
+            end,
 
-			trace_utils:error_fmt( "Compilation of the tessellation control "
-				"shader in '~ts' failed: ~ts.",
-				[ FullShaderPath, MsgStr ] ),
+            trace_utils:error_fmt( "Compilation of the tessellation control "
+                "shader in '~ts' failed: ~ts.",
+                [ FullShaderPath, MsgStr ] ),
 
-			gl:deleteShader( TessCtrlShaderId ),
+            gl:deleteShader( TessCtrlShaderId ),
 
-			throw( { shader_compilation_failed,
-					 tessellation_control_shader, FullShaderPath, MsgStr } )
+            throw( { shader_compilation_failed,
+                     tessellation_control_shader, FullShaderPath, MsgStr } )
 
-	end,
+    end,
 
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
 
-	TessCtrlShaderId.
+    TessCtrlShaderId.
 
 
 
@@ -1019,10 +1019,10 @@ Will have to be explicitly deleted (with gl:DeleteShader/1) once not useful
 anymore.
 """.
 -spec compile_tessellation_evaluation_shader( any_file_path() ) ->
-											tessellation_evaluation_shader_id().
+                                            tessellation_evaluation_shader_id().
 compile_tessellation_evaluation_shader( TessEvalShaderPath ) ->
-	compile_tessellation_evaluation_shader( TessEvalShaderPath,
-											_ExtraGLSLSearchPaths=[] ).
+    compile_tessellation_evaluation_shader( TessEvalShaderPath,
+                                            _ExtraGLSLSearchPaths=[] ).
 
 
 
@@ -1038,82 +1038,82 @@ anymore.
 
 %
 -spec compile_tessellation_evaluation_shader( any_file_path(),
-			glsl_search_paths() ) -> tessellation_evaluation_shader_id().
+            glsl_search_paths() ) -> tessellation_evaluation_shader_id().
 compile_tessellation_evaluation_shader( TessEvalShaderPath,
-										ExtraGLSLSearchPaths ) ->
+                                        ExtraGLSLSearchPaths ) ->
 
-	{ BinTessEvalShaderSrc, FullShaderPath, TotalInclLineCount,
-	  MaybeFirstIncludeLine } =
-		get_shader_source( TessEvalShaderPath, ExtraGLSLSearchPaths ),
+    { BinTessEvalShaderSrc, FullShaderPath, TotalInclLineCount,
+      MaybeFirstIncludeLine } =
+        get_shader_source( TessEvalShaderPath, ExtraGLSLSearchPaths ),
 
-	% A file output is generally preferred, see get_shader_source/2 above:
-	%cond_utils:if_defined( myriad_debug_shaders,
-	%   trace_utils:debug_fmt( "Resulting sources of the tessellation "
-	%       "evaluation shader '~ts':~n~ts.",
-	%       [ FullShaderPath, BinTessEvalShaderSrc ] ) ),
+    % A file output is generally preferred, see get_shader_source/2 above:
+    %cond_utils:if_defined( myriad_debug_shaders,
+    %   trace_utils:debug_fmt( "Resulting sources of the tessellation "
+    %       "evaluation shader '~ts':~n~ts.",
+    %       [ FullShaderPath, BinTessEvalShaderSrc ] ) ),
 
 
-	% Creates an empty shader object, and returns a non-zero value by which it
-	% can be referenced:
-	%
-	TessEvalShaderId = gl:createShader( ?GL_TESS_EVALUATION_SHADER ),
+    % Creates an empty shader object, and returns a non-zero value by which it
+    % can be referenced:
+    %
+    TessEvalShaderId = gl:createShader( ?GL_TESS_EVALUATION_SHADER ),
 
-	cond_utils:if_defined( myriad_debug_shaders,
-		trace_utils:debug_fmt( "Compiling tessellation evaluation shader "
-							   "'~ts'.", [ FullShaderPath ] ) ),
+    cond_utils:if_defined( myriad_debug_shaders,
+        trace_utils:debug_fmt( "Compiling tessellation evaluation shader "
+                               "'~ts'.", [ FullShaderPath ] ) ),
 
-	% Associates source to empty shader:
-	ok = gl:shaderSource( TessEvalShaderId, [ BinTessEvalShaderSrc ] ),
+    % Associates source to empty shader:
+    ok = gl:shaderSource( TessEvalShaderId, [ BinTessEvalShaderSrc ] ),
 
-	ok = gl:compileShader( TessEvalShaderId ),
+    ok = gl:compileShader( TessEvalShaderId ),
 
-	MaybeLogStr = case gl:getShaderiv( TessEvalShaderId,
-									   ?GL_INFO_LOG_LENGTH ) of
+    MaybeLogStr = case gl:getShaderiv( TessEvalShaderId,
+                                       ?GL_INFO_LOG_LENGTH ) of
 
-		0 ->
-			undefined;
+        0 ->
+            undefined;
 
-		InfoLen ->
-			gl:getShaderInfoLog( TessEvalShaderId, InfoLen )
+        InfoLen ->
+            gl:getShaderInfoLog( TessEvalShaderId, InfoLen )
 
-	end,
+    end,
 
-	% Now checks compilation outcome:
-	case gl:getShaderiv( TessEvalShaderId, ?GL_COMPILE_STATUS ) of
+    % Now checks compilation outcome:
+    case gl:getShaderiv( TessEvalShaderId, ?GL_COMPILE_STATUS ) of
 
-		?GL_TRUE ->
-			MaybeLogStr =:= undefined orelse
-				trace_utils:warning_fmt( "Compilation of the tessellation "
-					"evaluation shader defined in '~ts' succeeded, "
-					"yet reported that '~ts'.",
-					[ FullShaderPath, MaybeLogStr ] );
+        ?GL_TRUE ->
+            MaybeLogStr =:= undefined orelse
+                trace_utils:warning_fmt( "Compilation of the tessellation "
+                    "evaluation shader defined in '~ts' succeeded, "
+                    "yet reported that '~ts'.",
+                    [ FullShaderPath, MaybeLogStr ] );
 
-		_ ->
-			MsgStr = case MaybeLogStr of
+        _ ->
+            MsgStr = case MaybeLogStr of
 
-				undefined ->
-					"(no report)";
+                undefined ->
+                    "(no report)";
 
-				LogStr ->
-					fix_line_numbers( LogStr, TotalInclLineCount,
-									  MaybeFirstIncludeLine )
+                LogStr ->
+                    fix_line_numbers( LogStr, TotalInclLineCount,
+                                      MaybeFirstIncludeLine )
 
-			end,
+            end,
 
-			trace_utils:error_fmt( "Compilation of the tessellation evaluation "
-				"shader in '~ts' failed: ~ts.",
-				[ FullShaderPath, MsgStr ] ),
+            trace_utils:error_fmt( "Compilation of the tessellation evaluation "
+                "shader in '~ts' failed: ~ts.",
+                [ FullShaderPath, MsgStr ] ),
 
-			gl:deleteShader( TessEvalShaderId ),
+            gl:deleteShader( TessEvalShaderId ),
 
-			throw( { shader_compilation_failed,
-					 tessellation_evaluation_shader, FullShaderPath, MsgStr } )
+            throw( { shader_compilation_failed,
+                     tessellation_evaluation_shader, FullShaderPath, MsgStr } )
 
-	end,
+    end,
 
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
 
-	TessEvalShaderId.
+    TessEvalShaderId.
 
 
 
@@ -1127,7 +1127,7 @@ anymore.
 """.
 -spec compile_geometry_shader( any_file_path() ) -> geometry_shader_id().
 compile_geometry_shader( GeometryShaderPath ) ->
-	compile_geometry_shader( GeometryShaderPath, _ExtraGLSLSearchPaths=[] ).
+    compile_geometry_shader( GeometryShaderPath, _ExtraGLSLSearchPaths=[] ).
 
 
 
@@ -1141,77 +1141,77 @@ Will have to be explicitly deleted (with gl:DeleteShader/1) once not useful
 anymore.
 """.
 -spec compile_geometry_shader( any_file_path(), glsl_search_paths() ) ->
-											geometry_shader_id().
+                                            geometry_shader_id().
 compile_geometry_shader( GeometryShaderPath, ExtraGLSLSearchPaths ) ->
 
-	{ BinGeometryShaderSrc, FullShaderPath, TotalInclLineCount,
-	  MaybeFirstIncludeLine } =
-		get_shader_source( GeometryShaderPath, ExtraGLSLSearchPaths ),
+    { BinGeometryShaderSrc, FullShaderPath, TotalInclLineCount,
+      MaybeFirstIncludeLine } =
+        get_shader_source( GeometryShaderPath, ExtraGLSLSearchPaths ),
 
-	% A file output is generally preferred, see get_shader_source/2 above:
-	%cond_utils:if_defined( myriad_debug_shaders,
-	%   trace_utils:debug_fmt( "Resulting sources of the geometry shader '~ts':"
-	%       "~n~ts.", [ GeometryShaderPath, BinGeometryShaderSrc ] ) ),
+    % A file output is generally preferred, see get_shader_source/2 above:
+    %cond_utils:if_defined( myriad_debug_shaders,
+    %   trace_utils:debug_fmt( "Resulting sources of the geometry shader '~ts':"
+    %       "~n~ts.", [ GeometryShaderPath, BinGeometryShaderSrc ] ) ),
 
-	% Creates an empty shader object, and returns a non-zero value by which it
-	% can be referenced:
-	%
-	GeometryShaderId = gl:createShader( ?GL_GEOMETRY_SHADER ),
+    % Creates an empty shader object, and returns a non-zero value by which it
+    % can be referenced:
+    %
+    GeometryShaderId = gl:createShader( ?GL_GEOMETRY_SHADER ),
 
-	cond_utils:if_defined( myriad_debug_shaders,
-		trace_utils:debug_fmt( "Compiling geometry shader '~ts'.",
-							   [ FullShaderPath ] ) ),
+    cond_utils:if_defined( myriad_debug_shaders,
+        trace_utils:debug_fmt( "Compiling geometry shader '~ts'.",
+                               [ FullShaderPath ] ) ),
 
-	% Associates source to empty shader:
-	ok = gl:shaderSource( GeometryShaderId, [ BinGeometryShaderSrc ] ),
+    % Associates source to empty shader:
+    ok = gl:shaderSource( GeometryShaderId, [ BinGeometryShaderSrc ] ),
 
-	ok = gl:compileShader( GeometryShaderId ),
+    ok = gl:compileShader( GeometryShaderId ),
 
-	MaybeLogStr = case gl:getShaderiv( GeometryShaderId,
-									   ?GL_INFO_LOG_LENGTH ) of
+    MaybeLogStr = case gl:getShaderiv( GeometryShaderId,
+                                       ?GL_INFO_LOG_LENGTH ) of
 
-		0 ->
-			undefined;
+        0 ->
+            undefined;
 
-		InfoLen ->
-			gl:getShaderInfoLog( GeometryShaderId, InfoLen )
+        InfoLen ->
+            gl:getShaderInfoLog( GeometryShaderId, InfoLen )
 
-	end,
+    end,
 
-	% Now checks compilation outcome:
-	case gl:getShaderiv( GeometryShaderId, ?GL_COMPILE_STATUS ) of
+    % Now checks compilation outcome:
+    case gl:getShaderiv( GeometryShaderId, ?GL_COMPILE_STATUS ) of
 
-		?GL_TRUE ->
-			MaybeLogStr =:= undefined orelse
-				trace_utils:warning_fmt( "Compilation of the geometry "
-					"shader defined in '~ts' succeeded, yet reported "
-					"that '~ts'.", [ FullShaderPath, MaybeLogStr ] );
+        ?GL_TRUE ->
+            MaybeLogStr =:= undefined orelse
+                trace_utils:warning_fmt( "Compilation of the geometry "
+                    "shader defined in '~ts' succeeded, yet reported "
+                    "that '~ts'.", [ FullShaderPath, MaybeLogStr ] );
 
-		_ ->
-			MsgStr = case MaybeLogStr of
+        _ ->
+            MsgStr = case MaybeLogStr of
 
-				undefined ->
-					"(no report)";
+                undefined ->
+                    "(no report)";
 
-				LogStr ->
-					fix_line_numbers( LogStr, TotalInclLineCount,
-									  MaybeFirstIncludeLine )
+                LogStr ->
+                    fix_line_numbers( LogStr, TotalInclLineCount,
+                                      MaybeFirstIncludeLine )
 
-			end,
+            end,
 
-			gl:deleteShader( GeometryShaderId ),
+            gl:deleteShader( GeometryShaderId ),
 
-			trace_utils:error_fmt( "Compilation of the geometry shader in "
-				"'~ts' failed: ~ts.", [ FullShaderPath, MsgStr ] ),
+            trace_utils:error_fmt( "Compilation of the geometry shader in "
+                "'~ts' failed: ~ts.", [ FullShaderPath, MsgStr ] ),
 
-			throw( { shader_compilation_failed, geometry_shader,
-					 FullShaderPath, MsgStr } )
+            throw( { shader_compilation_failed, geometry_shader,
+                     FullShaderPath, MsgStr } )
 
-	end,
+    end,
 
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
 
-	GeometryShaderId.
+    GeometryShaderId.
 
 
 
@@ -1225,7 +1225,7 @@ anymore.
 """.
 -spec compile_fragment_shader( any_file_path() ) -> fragment_shader_id().
 compile_fragment_shader( FragmentShaderPath ) ->
-	compile_fragment_shader( FragmentShaderPath, _ExtraGLSLSearchPaths=[] ).
+    compile_fragment_shader( FragmentShaderPath, _ExtraGLSLSearchPaths=[] ).
 
 
 
@@ -1239,77 +1239,77 @@ Will have to be explicitly deleted (with gl:DeleteShader/1) once not useful
 anymore.
 """.
 -spec compile_fragment_shader( any_file_path(), glsl_search_paths() ) ->
-											fragment_shader_id().
+                                            fragment_shader_id().
 compile_fragment_shader( FragmentShaderPath, ExtraGLSLSearchPaths ) ->
 
-	{ BinFragmentShaderSrc, FullShaderPath, TotalInclLineCount,
-	  MaybeFirstIncludeLine } =
-		get_shader_source( FragmentShaderPath, ExtraGLSLSearchPaths ),
+    { BinFragmentShaderSrc, FullShaderPath, TotalInclLineCount,
+      MaybeFirstIncludeLine } =
+        get_shader_source( FragmentShaderPath, ExtraGLSLSearchPaths ),
 
-	% A file output is generally preferred, see get_shader_source/2 above:
-	%cond_utils:if_defined( myriad_debug_shaders,
-	%   trace_utils:debug_fmt( "Resulting sources of the fragment shader '~ts':"
-	%     "~n~ts.", [ FullShaderPath, BinFragmentShaderSrc ] ) ),
+    % A file output is generally preferred, see get_shader_source/2 above:
+    %cond_utils:if_defined( myriad_debug_shaders,
+    %   trace_utils:debug_fmt( "Resulting sources of the fragment shader '~ts':"
+    %     "~n~ts.", [ FullShaderPath, BinFragmentShaderSrc ] ) ),
 
-	% Creates an empty shader object, and returns a non-zero value by which it
-	% can be referenced:
-	%
-	FragmentShaderId = gl:createShader( ?GL_FRAGMENT_SHADER ),
+    % Creates an empty shader object, and returns a non-zero value by which it
+    % can be referenced:
+    %
+    FragmentShaderId = gl:createShader( ?GL_FRAGMENT_SHADER ),
 
-	cond_utils:if_defined( myriad_debug_shaders,
-		trace_utils:debug_fmt( "Compiling fragment shader '~ts'.",
-							   [ FullShaderPath ] ) ),
+    cond_utils:if_defined( myriad_debug_shaders,
+        trace_utils:debug_fmt( "Compiling fragment shader '~ts'.",
+                               [ FullShaderPath ] ) ),
 
-	% Associates source to empty shader:
-	ok = gl:shaderSource( FragmentShaderId, [ BinFragmentShaderSrc ] ),
+    % Associates source to empty shader:
+    ok = gl:shaderSource( FragmentShaderId, [ BinFragmentShaderSrc ] ),
 
-	ok = gl:compileShader( FragmentShaderId ),
+    ok = gl:compileShader( FragmentShaderId ),
 
-	MaybeLogStr =
-			case gl:getShaderiv( FragmentShaderId, ?GL_INFO_LOG_LENGTH ) of
+    MaybeLogStr =
+            case gl:getShaderiv( FragmentShaderId, ?GL_INFO_LOG_LENGTH ) of
 
-		0 ->
-			undefined;
+        0 ->
+            undefined;
 
-		InfoLen ->
-			gl:getShaderInfoLog( FragmentShaderId, InfoLen )
+        InfoLen ->
+            gl:getShaderInfoLog( FragmentShaderId, InfoLen )
 
-	end,
+    end,
 
-	% Now checks compilation outcome:
-	case gl:getShaderiv( FragmentShaderId, ?GL_COMPILE_STATUS ) of
+    % Now checks compilation outcome:
+    case gl:getShaderiv( FragmentShaderId, ?GL_COMPILE_STATUS ) of
 
-		?GL_TRUE ->
-			MaybeLogStr =:= undefined orelse
-				trace_utils:warning_fmt( "Compilation of the fragment "
-					"shader defined in '~ts' succeeded, yet reported "
-					"that '~ts'.", [ FullShaderPath, MaybeLogStr ] );
+        ?GL_TRUE ->
+            MaybeLogStr =:= undefined orelse
+                trace_utils:warning_fmt( "Compilation of the fragment "
+                    "shader defined in '~ts' succeeded, yet reported "
+                    "that '~ts'.", [ FullShaderPath, MaybeLogStr ] );
 
-		_ ->
-			MsgStr = case MaybeLogStr of
+        _ ->
+            MsgStr = case MaybeLogStr of
 
-				undefined ->
-					"(no report)";
+                undefined ->
+                    "(no report)";
 
-				LogStr ->
-					fix_line_numbers( LogStr, TotalInclLineCount,
-									  MaybeFirstIncludeLine )
+                LogStr ->
+                    fix_line_numbers( LogStr, TotalInclLineCount,
+                                      MaybeFirstIncludeLine )
 
-			end,
+            end,
 
-			trace_utils:error_fmt( "Compilation of the fragment shader in "
-				"'~ts' failed: ~ts.", [ FullShaderPath, MsgStr ] ),
+            trace_utils:error_fmt( "Compilation of the fragment shader in "
+                "'~ts' failed: ~ts.", [ FullShaderPath, MsgStr ] ),
 
-			gl:deleteShader( FragmentShaderId ),
+            gl:deleteShader( FragmentShaderId ),
 
-			throw( { shader_compilation_failed, fragment_shader,
-					 FullShaderPath, MsgStr } )
+            throw( { shader_compilation_failed, fragment_shader,
+                     FullShaderPath, MsgStr } )
 
-	end,
+    end,
 
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
 
-	FragmentShaderId.
+    FragmentShaderId.
 
 
 
@@ -1323,7 +1323,7 @@ anymore.
 """.
 -spec compile_compute_shader( any_file_path() ) -> compute_shader_id().
 compile_compute_shader( ComputeShaderPath ) ->
-	compile_compute_shader( ComputeShaderPath, _ExtraGLSLSearchPaths=[] ).
+    compile_compute_shader( ComputeShaderPath, _ExtraGLSLSearchPaths=[] ).
 
 
 
@@ -1337,77 +1337,77 @@ Will have to be explicitly deleted (with gl:DeleteShader/1) once not useful
 anymore.
 """.
 -spec compile_compute_shader( any_file_path(), glsl_search_paths() ) ->
-											compute_shader_id().
+                                            compute_shader_id().
 compile_compute_shader( ComputeShaderPath, ExtraGLSLSearchPaths ) ->
 
-	{ BinComputeShaderSrc, FullShaderPath, TotalInclLineCount,
-	  MaybeFirstIncludeLine } =
-		get_shader_source( ComputeShaderPath, ExtraGLSLSearchPaths ),
+    { BinComputeShaderSrc, FullShaderPath, TotalInclLineCount,
+      MaybeFirstIncludeLine } =
+        get_shader_source( ComputeShaderPath, ExtraGLSLSearchPaths ),
 
-	% A file output is generally preferred, see get_shader_source/2 above:
-	%cond_utils:if_defined( myriad_debug_shaders,
-	%   trace_utils:debug_fmt( "Resulting sources of the compute shader '~ts':"
-	%       "~n~ts.", [ FullShaderPath, BinComputeShaderSrc ] ) ),
+    % A file output is generally preferred, see get_shader_source/2 above:
+    %cond_utils:if_defined( myriad_debug_shaders,
+    %   trace_utils:debug_fmt( "Resulting sources of the compute shader '~ts':"
+    %       "~n~ts.", [ FullShaderPath, BinComputeShaderSrc ] ) ),
 
-	% Creates an empty shader object, and returns a non-zero value by which it
-	% can be referenced:
-	%
-	ComputeShaderId = gl:createShader( ?GL_COMPUTE_SHADER ),
+    % Creates an empty shader object, and returns a non-zero value by which it
+    % can be referenced:
+    %
+    ComputeShaderId = gl:createShader( ?GL_COMPUTE_SHADER ),
 
-	cond_utils:if_defined( myriad_debug_shaders,
-		trace_utils:debug_fmt( "Compiling compute shader '~ts'.",
-							   [ FullShaderPath ] ) ),
+    cond_utils:if_defined( myriad_debug_shaders,
+        trace_utils:debug_fmt( "Compiling compute shader '~ts'.",
+                               [ FullShaderPath ] ) ),
 
-	% Associates source to empty shader:
-	ok = gl:shaderSource( ComputeShaderId, [ BinComputeShaderSrc ] ),
+    % Associates source to empty shader:
+    ok = gl:shaderSource( ComputeShaderId, [ BinComputeShaderSrc ] ),
 
-	ok = gl:compileShader( ComputeShaderId ),
+    ok = gl:compileShader( ComputeShaderId ),
 
-	MaybeLogStr = case gl:getShaderiv( ComputeShaderId,
-									   ?GL_INFO_LOG_LENGTH ) of
+    MaybeLogStr = case gl:getShaderiv( ComputeShaderId,
+                                       ?GL_INFO_LOG_LENGTH ) of
 
-		0 ->
-			undefined;
+        0 ->
+            undefined;
 
-		InfoLen ->
-			gl:getShaderInfoLog( ComputeShaderId, InfoLen )
+        InfoLen ->
+            gl:getShaderInfoLog( ComputeShaderId, InfoLen )
 
-	end,
+    end,
 
-	% Now checks compilation outcome:
-	case gl:getShaderiv( ComputeShaderId, ?GL_COMPILE_STATUS ) of
+    % Now checks compilation outcome:
+    case gl:getShaderiv( ComputeShaderId, ?GL_COMPILE_STATUS ) of
 
-		?GL_TRUE ->
-			MaybeLogStr =:= undefined orelse
-				trace_utils:warning_fmt( "Compilation of the compute "
-					"shader defined in '~ts' succeeded, yet reported "
-					"that '~ts'.", [ FullShaderPath, MaybeLogStr ] );
+        ?GL_TRUE ->
+            MaybeLogStr =:= undefined orelse
+                trace_utils:warning_fmt( "Compilation of the compute "
+                    "shader defined in '~ts' succeeded, yet reported "
+                    "that '~ts'.", [ FullShaderPath, MaybeLogStr ] );
 
-		_ ->
-			MsgStr = case MaybeLogStr of
+        _ ->
+            MsgStr = case MaybeLogStr of
 
-				undefined ->
-					"(no report)";
+                undefined ->
+                    "(no report)";
 
-				LogStr ->
-					fix_line_numbers( LogStr, TotalInclLineCount,
-									  MaybeFirstIncludeLine )
+                LogStr ->
+                    fix_line_numbers( LogStr, TotalInclLineCount,
+                                      MaybeFirstIncludeLine )
 
-			end,
+            end,
 
-			trace_utils:error_fmt( "Compilation of the compute shader in "
-				"'~ts' failed: ~ts.", [ FullShaderPath, MsgStr ] ),
+            trace_utils:error_fmt( "Compilation of the compute shader in "
+                "'~ts' failed: ~ts.", [ FullShaderPath, MsgStr ] ),
 
-			gl:deleteShader( ComputeShaderId ),
+            gl:deleteShader( ComputeShaderId ),
 
-			throw( { shader_compilation_failed, compute_shader,
-					 FullShaderPath, MsgStr } )
+            throw( { shader_compilation_failed, compute_shader,
+                     FullShaderPath, MsgStr } )
 
-	end,
+    end,
 
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
 
-	ComputeShaderId.
+    ComputeShaderId.
 
 
 
@@ -1418,62 +1418,62 @@ total number of lines inlined due to headers, and the line of the first include
 found (if any).
 """.
 -spec get_shader_source( any_file_path(), glsl_search_paths() ) ->
-							{ bin_string(), count(), option( line_number() ) }.
+                            { bin_string(), count(), option( line_number() ) }.
 get_shader_source( ShaderPath, ExtraGLSLSearchPaths ) ->
 
-	FullGLSLSearchPaths =
-		ExtraGLSLSearchPaths ++ get_base_glsl_include_paths(),
+    FullGLSLSearchPaths =
+        ExtraGLSLSearchPaths ++ get_base_glsl_include_paths(),
 
-	cond_utils:if_defined( myriad_debug_shaders,
-		trace_utils:debug_fmt( "Getting sources of the shader '~ts', "
-			"using the following include search paths: ~ts",
-			[ ShaderPath, text_utils:strings_to_enumerated_string(
-							FullGLSLSearchPaths ) ] ) ),
+    cond_utils:if_defined( myriad_debug_shaders,
+        trace_utils:debug_fmt( "Getting sources of the shader '~ts', "
+            "using the following include search paths: ~ts",
+            [ ShaderPath, text_utils:strings_to_enumerated_string(
+                            FullGLSLSearchPaths ) ] ) ),
 
-	FullShaderPath = case resolve_glsl_file( ShaderPath,
-											 FullGLSLSearchPaths ) of
+    FullShaderPath = case resolve_glsl_file( ShaderPath,
+                                             FullGLSLSearchPaths ) of
 
-		undefined ->
-			trace_utils:error_fmt( "Shader source file '~ts' not found through "
-				"the following GLSL search paths: ~ts.",
-				[ ShaderPath, text_utils:strings_to_enumerated_string(
-					FullGLSLSearchPaths ) ] ),
-			throw( { shader_source_file_not_found, ShaderPath,
-					 FullGLSLSearchPaths } );
+        undefined ->
+            trace_utils:error_fmt( "Shader source file '~ts' not found through "
+                "the following GLSL search paths: ~ts.",
+                [ ShaderPath, text_utils:strings_to_enumerated_string(
+                    FullGLSLSearchPaths ) ] ),
+            throw( { shader_source_file_not_found, ShaderPath,
+                     FullGLSLSearchPaths } );
 
-		AbsSPath ->
-			trace_utils:debug_fmt( "Shader found as '~ts'.", [ AbsSPath ] ),
-			AbsSPath
+        AbsSPath ->
+            trace_utils:debug_fmt( "Shader found as '~ts'.", [ AbsSPath ] ),
+            AbsSPath
 
-	end,
+    end,
 
 
-	{ Lines, TotalInclLineCount, MaybeFirstIncludeLine } =
-		preprocess_shader_file( FullShaderPath, FullGLSLSearchPaths ),
+    { Lines, TotalInclLineCount, MaybeFirstIncludeLine } =
+        preprocess_shader_file( FullShaderPath, FullGLSLSearchPaths ),
 
-	% Now line numbers are automatically fixed (for most cases):
+    % Now line numbers are automatically fixed (for most cases):
 
-	% Generally activated, as there are at least the MyriadGUI headers:
-	%TotalInclLineCount =:= 0 orelse
-	%   % Provided that the message is emitted after these (rather initial)
-	%   % includes:
-	%   %
-	%   trace_utils:debug_fmt( "For shader '~ts', due to header includes, "
-	%       "~B lines should be subtracted from any line number reported "
-	%       "by the GLSL compiler (first include found at line #~B).",
-	%       [ ShaderPath, TotalInclLineCount, MaybeFirstIncludeLine ] ),
+    % Generally activated, as there are at least the MyriadGUI headers:
+    %TotalInclLineCount =:= 0 orelse
+    %   % Provided that the message is emitted after these (rather initial)
+    %   % includes:
+    %   %
+    %   trace_utils:debug_fmt( "For shader '~ts', due to header includes, "
+    %       "~B lines should be subtracted from any line number reported "
+    %       "by the GLSL compiler (first include found at line #~B).",
+    %       [ ShaderPath, TotalInclLineCount, MaybeFirstIncludeLine ] ),
 
-	BinFinalSource = text_utils:bin_unsplit_lines( Lines ),
+    BinFinalSource = text_utils:bin_unsplit_lines( Lines ),
 
-	?write_preprocessed_shader_sources andalso
-		begin
-			CheckFilePath =
-				text_utils:format( "~ts.preprocessed", [ ShaderPath ] ),
-			file_utils:write_whole( CheckFilePath, BinFinalSource )
-		end,
+    ?write_preprocessed_shader_sources andalso
+        begin
+            CheckFilePath =
+                text_utils:format( "~ts.preprocessed", [ ShaderPath ] ),
+            file_utils:write_whole( CheckFilePath, BinFinalSource )
+        end,
 
-	{ BinFinalSource, FullShaderPath, TotalInclLineCount,
-	  MaybeFirstIncludeLine }.
+    { BinFinalSource, FullShaderPath, TotalInclLineCount,
+      MaybeFirstIncludeLine }.
 
 
 
@@ -1483,34 +1483,34 @@ Resolves the specified GLSL-related file (e.g. shader or include) based on the
 specified search paths.
 """.
 -spec resolve_glsl_file( any_file_path(), glsl_search_paths() ) ->
-											option( any_abs_file_path() ).
+                                            option( any_abs_file_path() ).
 resolve_glsl_file( FilePath, ExtraGLSLSearchPaths ) ->
 
-	case file_utils:is_absolute_path( FilePath ) of
+    case file_utils:is_absolute_path( FilePath ) of
 
-		true ->
-			case file_utils:is_existing_file_or_link( FilePath ) of
+        true ->
+            case file_utils:is_existing_file_or_link( FilePath ) of
 
-				true ->
-					FilePath;
+                true ->
+                    FilePath;
 
-				false ->
-					%trace_utils:error_fmt(
-					%   "Absolute GLSL path '~ts' not found.", FilePath ),
+                false ->
+                    %trace_utils:error_fmt(
+                    %   "Absolute GLSL path '~ts' not found.", FilePath ),
 
-					undefined
+                    undefined
 
-			end;
+            end;
 
-		% Then is a relative path:
-		false ->
+        % Then is a relative path:
+        false ->
 
-			MoreCompleteFilePath = file_utils:get_first_file_or_link_for(
-				FilePath, _CandidateDirs=ExtraGLSLSearchPaths ),
+            MoreCompleteFilePath = file_utils:get_first_file_or_link_for(
+                FilePath, _CandidateDirs=ExtraGLSLSearchPaths ),
 
-			file_utils:ensure_path_is_absolute( MoreCompleteFilePath )
+            file_utils:ensure_path_is_absolute( MoreCompleteFilePath )
 
-	end.
+    end.
 
 
 
@@ -1520,20 +1520,20 @@ list of bin_string(), the total number of the included lines, and the line (if
 any) at which the first include was found.
 """.
 -spec preprocess_shader_file( file_path(), glsl_search_paths() ) ->
-				{ [ bin_string() ], count(), option( line_number() ) }.
+                { [ bin_string() ], count(), option( line_number() ) }.
 preprocess_shader_file( SrcPath, ExtraGLSLSearchPaths ) ->
-	% Like preprocess_file/3 yet with initialisation and no length added:
-	RawSrcBin = file_utils:read_whole( SrcPath ),
-	BinLines = text_utils:split_lines( RawSrcBin ),
+    % Like preprocess_file/3 yet with initialisation and no length added:
+    RawSrcBin = file_utils:read_whole( SrcPath ),
+    BinLines = text_utils:split_lines( RawSrcBin ),
 
-	% CurrentLN for line number in the original sources:
-	{ RevLines, _CurrentLN, TotalInclLineCount, MaybeFirstIncludeLine } =
-		preprocess_lines( BinLines, ExtraGLSLSearchPaths, _AccLines=[],
-			_InitCurrentLN=1, _InitTotalInclLineCount=0,
-			_MaybeFirstIncludeLine=undefined ),
+    % CurrentLN for line number in the original sources:
+    { RevLines, _CurrentLN, TotalInclLineCount, MaybeFirstIncludeLine } =
+        preprocess_lines( BinLines, ExtraGLSLSearchPaths, _AccLines=[],
+            _InitCurrentLN=1, _InitTotalInclLineCount=0,
+            _MaybeFirstIncludeLine=undefined ),
 
-	% Restore the original order:
-	{ lists:reverse( RevLines ), TotalInclLineCount, MaybeFirstIncludeLine }.
+    % Restore the original order:
+    { lists:reverse( RevLines ), TotalInclLineCount, MaybeFirstIncludeLine }.
 
 
 
@@ -1543,97 +1543,97 @@ preprocess_shader_file( SrcPath, ExtraGLSLSearchPaths ) ->
 % (helper)
 %
 -spec preprocess_lines( [ bin_string() ], glsl_search_paths(),
-		[ bin_string() ], line_number(), count(), option( line_number() ) ) ->
-			{ [ bin_string() ], count(), option( line_number() ) }.
+        [ bin_string() ], line_number(), count(), option( line_number() ) ) ->
+            { [ bin_string() ], count(), option( line_number() ) }.
 preprocess_lines( _BinLines=[], _GLSLSearchPaths, AccLines, CurrentLN,
-				  TotalInclLineCount, MaybeFirstIncludeLine ) ->
-	% No reversing here:
-	{ AccLines, CurrentLN, TotalInclLineCount, MaybeFirstIncludeLine };
+                  TotalInclLineCount, MaybeFirstIncludeLine ) ->
+    % No reversing here:
+    { AccLines, CurrentLN, TotalInclLineCount, MaybeFirstIncludeLine };
 
 preprocess_lines( _BinLines=[ BinLine | T ], ExtraGLSLSearchPaths, AccLines,
-				  CurrentLN, TotalInclLineCount, MaybeFirstIncludeLine ) ->
-	case text_utils:trim_whitespaces( BinLine ) of
+                  CurrentLN, TotalInclLineCount, MaybeFirstIncludeLine ) ->
+    case text_utils:trim_whitespaces( BinLine ) of
 
-		% Example: '#include "foobar.glsl.h"'
-		"#include \"" ++ Rest ->
-			% Wanting just 'foobar.glsl.h', looking for second double quote:
-			{ RevNextLines, NewCurrentLN, NewTotalInclLineCount,
-			  NewMaybeFirstIncludeLine } =
-					case text_utils:split_at_first( $", Rest ) of
+        % Example: '#include "foobar.glsl.h"'
+        "#include \"" ++ Rest ->
+            % Wanting just 'foobar.glsl.h', looking for second double quote:
+            { RevNextLines, NewCurrentLN, NewTotalInclLineCount,
+              NewMaybeFirstIncludeLine } =
+                    case text_utils:split_at_first( $", Rest ) of
 
-				none_found ->
-					trace_utils:warning_fmt( "Not considered as an "
-						"include line: '~ts'.", [ BinLine ] ),
-					{ [ BinLine ], CurrentLN+1, TotalInclLineCount,
-					  MaybeFirstIncludeLine };
+                none_found ->
+                    trace_utils:warning_fmt( "Not considered as an "
+                        "include line: '~ts'.", [ BinLine ] ),
+                    { [ BinLine ], CurrentLN+1, TotalInclLineCount,
+                      MaybeFirstIncludeLine };
 
-				{ HeaderFilePath, _TrailingStr="" } ->
+                { HeaderFilePath, _TrailingStr="" } ->
 
-					%trace_utils:debug_fmt( "Detected the inclusion of '~ts'.",
-					%                       [ HeaderFilename ] ),
+                    %trace_utils:debug_fmt( "Detected the inclusion of '~ts'.",
+                    %                       [ HeaderFilename ] ),
 
-					HeaderPath =
-						find_header( HeaderFilePath, ExtraGLSLSearchPaths ),
+                    HeaderPath =
+                        find_header( HeaderFilePath, ExtraGLSLSearchPaths ),
 
-					NewFirstIncludeLine = basic_utils:set_option(
-						MaybeFirstIncludeLine, _Def=CurrentLN ),
+                    NewFirstIncludeLine = basic_utils:set_option(
+                        MaybeFirstIncludeLine, _Def=CurrentLN ),
 
-					% Exactly TotalInclLineCount: minus 1 as content replaces
-					% the #include line, plus 1 as a comment line was added:
-					%
-					preprocess_file( HeaderPath, ExtraGLSLSearchPaths,
-						CurrentLN, TotalInclLineCount, NewFirstIncludeLine )
+                    % Exactly TotalInclLineCount: minus 1 as content replaces
+                    % the #include line, plus 1 as a comment line was added:
+                    %
+                    preprocess_file( HeaderPath, ExtraGLSLSearchPaths,
+                        CurrentLN, TotalInclLineCount, NewFirstIncludeLine )
 
 
-			end,
-			preprocess_lines( T, ExtraGLSLSearchPaths, RevNextLines ++ AccLines,
-				NewCurrentLN, NewTotalInclLineCount, NewMaybeFirstIncludeLine );
+            end,
+            preprocess_lines( T, ExtraGLSLSearchPaths, RevNextLines ++ AccLines,
+                NewCurrentLN, NewTotalInclLineCount, NewMaybeFirstIncludeLine );
 
-		_OtherLine ->
-			preprocess_lines( T, ExtraGLSLSearchPaths, [ BinLine | AccLines ],
-				CurrentLN+1, TotalInclLineCount, MaybeFirstIncludeLine )
+        _OtherLine ->
+            preprocess_lines( T, ExtraGLSLSearchPaths, [ BinLine | AccLines ],
+                CurrentLN+1, TotalInclLineCount, MaybeFirstIncludeLine )
 
-	end.
+    end.
 
 
 % (recursive helper)
 -spec preprocess_file( file_path(), glsl_search_paths(), line_number(),
-					   count(), option( line_number() ) ) ->
-			{ [ bin_string() ], count(), option( line_number() ) }.
+                       count(), option( line_number() ) ) ->
+            { [ bin_string() ], count(), option( line_number() ) }.
 preprocess_file( HeaderPath, ExtraGLSLSearchPaths, CurrentLN,
-				 TotalInclLineCount, MaybeFirstIncludeLine ) ->
-	RawIncBin = file_utils:read_whole( HeaderPath ),
+                 TotalInclLineCount, MaybeFirstIncludeLine ) ->
+    RawIncBin = file_utils:read_whole( HeaderPath ),
 
-	% Replacing the '#include "..."' line:
-	ReplacingHeaderBin = text_utils:bin_format( "// Header include for '~ts':",
-												[ HeaderPath ] ),
+    % Replacing the '#include "..."' line:
+    ReplacingHeaderBin = text_utils:bin_format( "// Header include for '~ts':",
+                                                [ HeaderPath ] ),
 
-	BinLines = [ ReplacingHeaderBin | text_utils:split_lines( RawIncBin ) ],
-	AddCount = length( BinLines ),
+    BinLines = [ ReplacingHeaderBin | text_utils:split_lines( RawIncBin ) ],
+    AddCount = length( BinLines ),
 
-	preprocess_lines( BinLines, ExtraGLSLSearchPaths, _AccLines=[], CurrentLN,
-		TotalInclLineCount + AddCount, MaybeFirstIncludeLine ).
+    preprocess_lines( BinLines, ExtraGLSLSearchPaths, _AccLines=[], CurrentLN,
+        TotalInclLineCount + AddCount, MaybeFirstIncludeLine ).
 
 
 
 % Finds the specified header file within the specified include search paths.
 find_header( HeaderFilePath, ExtraGLSLSearchPaths ) ->
 
-	case resolve_glsl_file( _TargetFilename=HeaderFilePath,
-							_CandidateDirs=ExtraGLSLSearchPaths ) of
+    case resolve_glsl_file( _TargetFilename=HeaderFilePath,
+                            _CandidateDirs=ExtraGLSLSearchPaths ) of
 
-		undefined ->
-			trace_utils:error_fmt( "Header shader file '~ts' not found through "
-				"the following GLSL search paths: ~ts.",
-				[ HeaderFilePath, text_utils:strings_to_enumerated_string(
-									ExtraGLSLSearchPaths ) ] ),
-			throw( { glsl_header_not_found, HeaderFilePath,
-					 ExtraGLSLSearchPaths } );
+        undefined ->
+            trace_utils:error_fmt( "Header shader file '~ts' not found through "
+                "the following GLSL search paths: ~ts.",
+                [ HeaderFilePath, text_utils:strings_to_enumerated_string(
+                                    ExtraGLSLSearchPaths ) ] ),
+            throw( { glsl_header_not_found, HeaderFilePath,
+                     ExtraGLSLSearchPaths } );
 
-		HdFilePath ->
-			HdFilePath
+        HdFilePath ->
+            HdFilePath
 
-	end.
+    end.
 
 
 
@@ -1643,66 +1643,66 @@ find_header( HeaderFilePath, ExtraGLSLSearchPaths ) ->
 % initial 0 is the vertex index.
 %
 fix_line_numbers( LogStr, TotalInclLineCount, MaybeFirstIncludeLine ) ->
-	%trace_utils:debug_fmt( "Fixing GLSL message '~ts'.", [ LogStr ] ),
-	text_utils:unsplit_lines( [
-		begin
-			NoNewlineLogStr = text_utils:remove_ending_carriage_return( L ),
-			fix_line_numbers_in( NoNewlineLogStr, TotalInclLineCount,
-								 MaybeFirstIncludeLine )
-		end || L <- text_utils:split_lines( LogStr ), L =/= "" ] ).
+    %trace_utils:debug_fmt( "Fixing GLSL message '~ts'.", [ LogStr ] ),
+    text_utils:unsplit_lines( [
+        begin
+            NoNewlineLogStr = text_utils:remove_ending_carriage_return( L ),
+            fix_line_numbers_in( NoNewlineLogStr, TotalInclLineCount,
+                                 MaybeFirstIncludeLine )
+        end || L <- text_utils:split_lines( LogStr ), L =/= "" ] ).
 
 
 % (helper)
 fix_line_numbers_in( LogStr, _TotalInclLineCount,
-					 _MaybeFirstIncludeLine=undefined ) ->
-	LogStr;
+                     _MaybeFirstIncludeLine=undefined ) ->
+    LogStr;
 
 fix_line_numbers_in( LogStr, TotalInclLineCount,
-					 FirstIncludeLine ) ->
+                     FirstIncludeLine ) ->
 
-	%trace_utils:debug_fmt( "Fixing log message '~ts', based on a total "
-	%   "include line count of ~B, and a first include at #~B.",
-	%   [ LogStr, TotalInclLineCount, FirstIncludeLine ] ),
+    %trace_utils:debug_fmt( "Fixing log message '~ts', based on a total "
+    %   "include line count of ~B, and a first include at #~B.",
+    %   [ LogStr, TotalInclLineCount, FirstIncludeLine ] ),
 
-	case text_utils:split_at_first( _Marker=$(, LogStr ) of
+    case text_utils:split_at_first( _Marker=$(, LogStr ) of
 
-		none_found ->
-			trace_utils:warning_fmt( "Unable to find opening parenthesis "
-				"for line number from '~ts'.", [ LogStr ] ),
-			LogStr;
+        none_found ->
+            trace_utils:warning_fmt( "Unable to find opening parenthesis "
+                "for line number from '~ts'.", [ LogStr ] ),
+            LogStr;
 
-		{ ShaderIdAsStr, Rest } ->
-			%trace_utils:debug_fmt( "(shader #~ts)", [ ShaderIdAsStr ] ),
-			case text_utils:split_at_first( _Mrkr=$), Rest ) of
+        { ShaderIdAsStr, Rest } ->
+            %trace_utils:debug_fmt( "(shader #~ts)", [ ShaderIdAsStr ] ),
+            case text_utils:split_at_first( _Mrkr=$), Rest ) of
 
-				none_found ->
-					trace_utils:warning_fmt( "Unable to find closing "
-						"parenthesis for line number from '~ts'.", [ LogStr ] ),
-					LogStr;
+                none_found ->
+                    trace_utils:warning_fmt( "Unable to find closing "
+                        "parenthesis for line number from '~ts'.", [ LogStr ] ),
+                    LogStr;
 
-				{ LineAsStr, PostParen } ->
-					case text_utils:try_string_to_integer( LineAsStr ) of
+                { LineAsStr, PostParen } ->
+                    case text_utils:try_string_to_integer( LineAsStr ) of
 
-						undefined ->
-							trace_utils:warning_fmt( "Unable to establish "
-								"a line number from '~ts'.", [ LogStr ] ),
-							LogStr;
+                        undefined ->
+                            trace_utils:warning_fmt( "Unable to establish "
+                                "a line number from '~ts'.", [ LogStr ] ),
+                            LogStr;
 
-						Line when Line < FirstIncludeLine ->
-							LogStr;
+                        Line when Line < FirstIncludeLine ->
+                            LogStr;
 
-						Line ->
-							RealLine = Line - TotalInclLineCount,
+                        Line ->
+                            RealLine = Line - TotalInclLineCount,
 
-							text_utils:format( "~ts(~B)~ts (line in "
-								"preprocessed source: #~B)",
-								[ ShaderIdAsStr, RealLine, PostParen, Line ] )
+                            text_utils:format( "~ts(~B)~ts (line in "
+                                "preprocessed source: #~B)",
+                                [ ShaderIdAsStr, RealLine, PostParen, Line ] )
 
-					end
+                    end
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -1715,10 +1715,10 @@ them in a corresponding program, and returns its identifier.
 -spec generate_program_from( any_file_path(), any_file_path() ) -> program_id().
 generate_program_from( VertexShaderPath, FragmentShaderPath ) ->
 
-	VertexShaderId = compile_vertex_shader( VertexShaderPath ),
-	FragmentShaderId = compile_fragment_shader( FragmentShaderPath ),
+    VertexShaderId = compile_vertex_shader( VertexShaderPath ),
+    FragmentShaderId = compile_fragment_shader( FragmentShaderPath ),
 
-	generate_program( _ShaderIds=[ VertexShaderId, FragmentShaderId ] ).
+    generate_program( _ShaderIds=[ VertexShaderId, FragmentShaderId ] ).
 
 
 
@@ -1729,10 +1729,10 @@ vertex and fragment shaders, with user-specified attributes, links them in a
 corresponding program, and returns its identifier.
 """.
 -spec generate_program_from( any_file_path(), any_file_path(),
-							 [ user_vertex_attribute() ] ) -> program_id().
+                             [ user_vertex_attribute() ] ) -> program_id().
 generate_program_from( VertexShaderPath, FragmentShaderPath, UserAttributes ) ->
-	generate_program_from( VertexShaderPath, FragmentShaderPath, UserAttributes,
-						   _ExtraGLSLSearchPaths=[] ).
+    generate_program_from( VertexShaderPath, FragmentShaderPath, UserAttributes,
+                           _ExtraGLSLSearchPaths=[] ).
 
 
 
@@ -1743,18 +1743,18 @@ vertex and fragment shaders, with user-specified attributes, links them in a
 corresponding program, and returns its identifier.
 """.
 -spec generate_program_from( any_file_path(), any_file_path(),
-		[ user_vertex_attribute() ], glsl_search_paths() ) -> program_id().
+        [ user_vertex_attribute() ], glsl_search_paths() ) -> program_id().
 generate_program_from( VertexShaderPath, FragmentShaderPath, UserAttributes,
-					   ExtraGLSLSearchPaths ) ->
+                       ExtraGLSLSearchPaths ) ->
 
-	VertexShaderId =
-		compile_vertex_shader( VertexShaderPath, ExtraGLSLSearchPaths ),
+    VertexShaderId =
+        compile_vertex_shader( VertexShaderPath, ExtraGLSLSearchPaths ),
 
-	FragmentShaderId =
-		compile_fragment_shader( FragmentShaderPath, ExtraGLSLSearchPaths ),
+    FragmentShaderId =
+        compile_fragment_shader( FragmentShaderPath, ExtraGLSLSearchPaths ),
 
-	generate_program( _ShaderIds=[ VertexShaderId, FragmentShaderId ],
-					  UserAttributes ).
+    generate_program( _ShaderIds=[ VertexShaderId, FragmentShaderId ],
+                      UserAttributes ).
 
 
 
@@ -1767,7 +1767,7 @@ Deletes the specified shaders once the program is generated.
 """.
 -spec generate_program( [ shader_id() ] ) -> program_id().
 generate_program( ShaderIds ) ->
-	generate_program( ShaderIds, _UserAttributes=[] ).
+    generate_program( ShaderIds, _UserAttributes=[] ).
 
 
 
@@ -1780,87 +1780,87 @@ in a corresponding program, and returns its identifier.
 Deletes the specified shaders once the program is generated.
 """.
 -spec generate_program( [ shader_id() ], [ user_vertex_attribute() ] ) ->
-								program_id().
+                                program_id().
 generate_program( ShaderIds, UserAttributes ) ->
 
-	% Note: we do not open the possibility of auto-numbering the user
-	% attributes, as they must be specified by the application when generating
-	% the program and when declaring them.
+    % Note: we do not open the possibility of auto-numbering the user
+    % attributes, as they must be specified by the application when generating
+    % the program and when declaring them.
 
-	% Creates an empty program object and returns a non-zero value by which it
-	% can be referenced:
-	%
-	ProgramId = gl:createProgram(),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
+    % Creates an empty program object and returns a non-zero value by which it
+    % can be referenced:
+    %
+    ProgramId = gl:createProgram(),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
 
-	[ gl:attachShader( ProgramId, ShdId ) || ShdId <- ShaderIds ],
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
+    [ gl:attachShader( ProgramId, ShdId ) || ShdId <- ShaderIds ],
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
 
-	% Extra test of user data (not of our code):
-	cond_utils:assert( not list_utils:has_duplicates(
-		[ Idx || { _AttrName, Idx } <- UserAttributes ] ) ),
+    % Extra test of user data (not of our code):
+    cond_utils:assert( not list_utils:has_duplicates(
+        [ Idx || { _AttrName, Idx } <- UserAttributes ] ) ),
 
 
-	% Any attribute must be bound before linking:
+    % Any attribute must be bound before linking:
 
-	cond_utils:if_defined( myriad_debug_shaders,
-		trace_utils:debug_fmt( "Binding following user vertex attribute "
-			"locations:~n ~p.", [ UserAttributes ] ) ),
+    cond_utils:if_defined( myriad_debug_shaders,
+        trace_utils:debug_fmt( "Binding following user vertex attribute "
+            "locations:~n ~p.", [ UserAttributes ] ) ),
 
-	[ gl:bindAttribLocation( ProgramId, Idx, AttrName )
-									|| { AttrName, Idx } <- UserAttributes ],
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
+    [ gl:bindAttribLocation( ProgramId, Idx, AttrName )
+                                    || { AttrName, Idx } <- UserAttributes ],
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
 
-	gl:linkProgram( ProgramId ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
+    gl:linkProgram( ProgramId ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
 
-	MaybeLogStr = case gl:getProgramiv( ProgramId, ?GL_INFO_LOG_LENGTH ) of
+    MaybeLogStr = case gl:getProgramiv( ProgramId, ?GL_INFO_LOG_LENGTH ) of
 
-		0 ->
-			undefined;
+        0 ->
+            undefined;
 
-		InfoLen ->
-			gl:getProgramInfoLog( ProgramId, InfoLen )
+        InfoLen ->
+            gl:getProgramInfoLog( ProgramId, InfoLen )
 
-	end,
+    end,
 
-	% Now checks linking outcome:
-	case gl:getProgramiv( ProgramId, ?GL_LINK_STATUS ) of
+    % Now checks linking outcome:
+    case gl:getProgramiv( ProgramId, ?GL_LINK_STATUS ) of
 
-		?GL_TRUE ->
-			MaybeLogStr =:= undefined orelse
-				trace_utils:warning_fmt( "Linking of the program from "
-					"specified shaders succeeded, yet reported that '~ts'.",
-					[ MaybeLogStr ] );
+        ?GL_TRUE ->
+            MaybeLogStr =:= undefined orelse
+                trace_utils:warning_fmt( "Linking of the program from "
+                    "specified shaders succeeded, yet reported that '~ts'.",
+                    [ MaybeLogStr ] );
 
-		?GL_FALSE ->
-			MsgStr = case MaybeLogStr of
+        ?GL_FALSE ->
+            MsgStr = case MaybeLogStr of
 
-				undefined ->
-					"(no report)";
+                undefined ->
+                    "(no report)";
 
-				LogStr ->
-					LogStr
+                LogStr ->
+                    LogStr
 
-			end,
+            end,
 
-			trace_utils:error_fmt( "Linking of the program from the specified "
-				"shaders failed: ~ts.", [ MsgStr ] ),
+            trace_utils:error_fmt( "Linking of the program from the specified "
+                "shaders failed: ~ts.", [ MsgStr ] ),
 
-			delete_program( ProgramId ),
+            delete_program( ProgramId ),
 
-			throw( { program_linking_failed, MsgStr } )
+            throw( { program_linking_failed, MsgStr } )
 
-	end,
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
+    end,
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
 
-	[ begin
-		gl:detachShader( ProgramId, ShdId ),
-		gl:deleteShader( ShdId )
-	  end || ShdId <- ShaderIds ],
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
+    [ begin
+        gl:detachShader( ProgramId, ShdId ),
+        gl:deleteShader( ShdId )
+      end || ShdId <- ShaderIds ],
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
 
-	ProgramId.
+    ProgramId.
 
 
 
@@ -1870,16 +1870,16 @@ be used from then on.
 """.
 -spec install_program( program_id() ) -> void().
 install_program( ProgramId ) ->
-	gl:useProgram( ProgramId ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:useProgram( ProgramId ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
 -doc "Deletes the specified GLSL program".
 -spec delete_program( program_id() ) -> void().
 delete_program( ProgramId ) ->
-	gl:deleteProgram( ProgramId ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:deleteProgram( ProgramId ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -1891,8 +1891,8 @@ delete_program( ProgramId ) ->
 Returns the paths of the MyriadGUI base GLSL header includes.
 """.
 get_base_glsl_include_paths() ->
-	% Typically for gui_shader.glsl.h:
-	[ _BaseShaderPath= gui_opengl:get_base_path() ].
+    % Typically for gui_shader.glsl.h:
+    [ _BaseShaderPath= gui_opengl:get_base_path() ].
 
 
 
@@ -1901,8 +1901,8 @@ Returns the filenames of the MyriadGUI base, built-in shaders.
 """.
 -spec get_base_shader_filenames() -> { file_path(), file_path() }.
 get_base_shader_filenames() ->
-	{ _VertexShader=  "gui_opengl_base_shader.vertex.glsl",
-	  _FragmentShader="gui_opengl_base_shader.fragment.glsl" }.
+    { _VertexShader=  "gui_opengl_base_shader.vertex.glsl",
+      _FragmentShader="gui_opengl_base_shader.fragment.glsl" }.
 
 
 
@@ -1917,16 +1917,16 @@ Done for all VBO layouts.
 """.
 -spec get_base_user_attributes() -> void().
 get_base_user_attributes() ->
-	% Just having to declare the corresponding vais:
+    % Just having to declare the corresponding vais:
 
-	% Specifies the location of the vertex attributes, so that the vertex shader
-	% will be able to match its input variables with the vertex attributes of
-	% the application:
-	%
-	[ { "myriad_gui_input_vertex",   ?myriad_gui_input_vertex_vai },
-	  { "myriad_gui_input_normal",   ?myriad_gui_input_normal_vai },
-	  { "myriad_gui_input_color",    ?myriad_gui_input_color_vai },
-	  { "myriad_gui_input_texcoord", ?myriad_gui_input_texcoord_vai } ].
+    % Specifies the location of the vertex attributes, so that the vertex shader
+    % will be able to match its input variables with the vertex attributes of
+    % the application:
+    %
+    [ { "myriad_gui_input_vertex",   ?myriad_gui_input_vertex_vai },
+      { "myriad_gui_input_normal",   ?myriad_gui_input_normal_vai },
+      { "myriad_gui_input_color",    ?myriad_gui_input_color_vai },
+      { "myriad_gui_input_texcoord", ?myriad_gui_input_texcoord_vai } ].
 
 
 
@@ -1939,57 +1939,57 @@ identifier.
 -spec deploy_base_program() -> program_id().
 deploy_base_program() ->
 
-	% Assigned shaders do not depend on VBO layout (at least yet):
-	{ VertexShaderPath, FragmentShaderPath } = get_base_shader_filenames(),
+    % Assigned shaders do not depend on VBO layout (at least yet):
+    { VertexShaderPath, FragmentShaderPath } = get_base_shader_filenames(),
 
-	ProgramId = generate_program_from( VertexShaderPath, FragmentShaderPath,
-		_UserAttributes=get_base_user_attributes(),
-		_ExtraGLSLSearchPaths=[ gui_opengl:get_base_path() ] ),
+    ProgramId = generate_program_from( VertexShaderPath, FragmentShaderPath,
+        _UserAttributes=get_base_user_attributes(),
+        _ExtraGLSLSearchPaths=[ gui_opengl:get_base_path() ] ),
 
-	% Rely on these shaders:
-	install_program( ProgramId ),
+    % Rely on these shaders:
+    install_program( ProgramId ),
 
-	% Uniforms can be set as soon as the GLSL program is installed; we manage
-	% them in the context of our MyriadGUI base shaders:
+    % Uniforms can be set as soon as the GLSL program is installed; we manage
+    % them in the context of our MyriadGUI base shaders:
 
-	% The color to be used by VBO layouts not specifying any color (e.g. vtx3);
-	% better be set through a uniform than set as a constant at the shader
-	% level:
+    % The color to be used by VBO layouts not specifying any color (e.g. vtx3);
+    % better be set through a uniform than set as a constant at the shader
+    % level:
 
-	GlobalColorUnifId = get_uniform_id(
-		_UnifName=?myriad_gui_global_color_unif_name, ProgramId ),
+    GlobalColorUnifId = get_uniform_id(
+        _UnifName=?myriad_gui_global_color_unif_name, ProgramId ),
 
-	GlobalRenderRGBColor =
-		gui_color:decimal_to_render( gui_color:get_color( pink ) ),
+    GlobalRenderRGBColor =
+        gui_color:decimal_to_render( gui_color:get_color( pink ) ),
 
-	GlobalRGBAColor = gui_color:add_alpha_opaque( GlobalRenderRGBColor ),
+    GlobalRGBAColor = gui_color:add_alpha_opaque( GlobalRenderRGBColor ),
 
-	set_uniform_point4( GlobalColorUnifId, GlobalRGBAColor ),
+    set_uniform_point4( GlobalColorUnifId, GlobalRGBAColor ),
 
-	% With our base shaders, we use only one texture unit, the #1
-	% (?GL_TEXTURE1), instead of the #0 (?GL_TEXTURE0) default one, in order to
-	% better detect discrepancies.
-	%
-	% As we do not change the texture unit in the course of the program, we can
-	% thus set it once for all here (rather than when each time a rendering is
-	% done):
-	%
-	TexSamplerUnifId = get_uniform_id( ?myriad_gui_texture_sampler_unif_name,
-									   ProgramId ),
+    % With our base shaders, we use only one texture unit, the #1
+    % (?GL_TEXTURE1), instead of the #0 (?GL_TEXTURE0) default one, in order to
+    % better detect discrepancies.
+    %
+    % As we do not change the texture unit in the course of the program, we can
+    % thus set it once for all here (rather than when each time a rendering is
+    % done):
+    %
+    TexSamplerUnifId = get_uniform_id( ?myriad_gui_texture_sampler_unif_name,
+                                       ProgramId ),
 
-	% We set a conventional texture unit (for example not a given texture
-	% directly):
-	%
-	set_uniform_i( TexSamplerUnifId, ?myriad_gui_base_texture_unit ),
+    % We set a conventional texture unit (for example not a given texture
+    % directly):
+    %
+    set_uniform_i( TexSamplerUnifId, ?myriad_gui_base_texture_unit ),
 
-	% So that the next textures that will be set are bound through this texture
-	% unit accordingly:
-	%
-	gui_texture:set_current_texture_unit( ?myriad_gui_base_texture_unit ),
+    % So that the next textures that will be set are bound through this texture
+    % unit accordingly:
+    %
+    gui_texture:set_current_texture_unit( ?myriad_gui_base_texture_unit ),
 
-	% VBO layout not set here, but during rendering, on a per-mesh basis.
+    % VBO layout not set here, but during rendering, on a per-mesh basis.
 
-	ProgramId.
+    ProgramId.
 
 
 
@@ -2002,15 +2002,15 @@ Typically to be used when rendering a mesh.
 -spec set_vbo_layout( vbo_layout(), program_id() ) -> void().
 set_vbo_layout( VBOLayout, ProgramId ) ->
 
-	VBOLayoutUnifId = get_uniform_id( ?myriad_gui_vbo_layout_unif_name,
-									  ProgramId ),
+    VBOLayoutUnifId = get_uniform_id( ?myriad_gui_vbo_layout_unif_name,
+                                      ProgramId ),
 
-	VBOLayoutId = get_vbo_layout_id( VBOLayout ),
+    VBOLayoutId = get_vbo_layout_id( VBOLayout ),
 
-	%trace_utils:debug_fmt( "Setting VBO layout '~ts' (i.e. ~B)",
-	%                       [ VBOLayout, VBOLayoutId ] ),
+    %trace_utils:debug_fmt( "Setting VBO layout '~ts' (i.e. ~B)",
+    %                       [ VBOLayout, VBOLayoutId ] ),
 
-	set_uniform_ui( VBOLayoutUnifId, VBOLayoutId ).
+    set_uniform_ui( VBOLayoutUnifId, VBOLayoutId ).
 
 
 
@@ -2025,9 +2025,9 @@ Operates for all kinds of arrays.
 """.
 -spec generate_buffer_id() -> gl_buffer_id().
 generate_buffer_id() ->
-	[ BufferId ] = gl:genBuffers( _Count=1 ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
-	BufferId.
+    [ BufferId ] = gl:genBuffers( _Count=1 ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
+    BufferId.
 
 
 
@@ -2038,9 +2038,9 @@ Operates for all kinds of arrays.
 """.
 -spec generate_buffer_ids( count() ) -> [ gl_buffer_id() ].
 generate_buffer_ids( Count ) ->
-	BufferIds = gl:genBuffers( Count ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
-	BufferIds.
+    BufferIds = gl:genBuffers( Count ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
+    BufferIds.
 
 
 
@@ -2049,40 +2049,40 @@ Assigns the specified buffer to the specified array in the OpenGL context, based
 on the specified usage hint.
 """.
 -spec assign_array( array_buffer(), array_bind_target(),
-					buffer_usage_hint() ) -> void().
+                    buffer_usage_hint() ) -> void().
 assign_array( ArrayBuffer, BindTarget, BufferUsageHint ) ->
 
-	ArraySize = byte_size( ArrayBuffer ),
+    ArraySize = byte_size( ArrayBuffer ),
 
-	% Checking user code, an empty binary (for instance because of a
-	% never-matching list comprehension) is a sure cause of SEGV:
-	%
-	cond_utils:assert( ArraySize =/= 0 ),
+    % Checking user code, an empty binary (for instance because of a
+    % never-matching list comprehension) is a sure cause of SEGV:
+    %
+    cond_utils:assert( ArraySize =/= 0 ),
 
-	%trace_utils:debug_fmt( "Array of ~B bytes assigned to bind target ~B "
-	%   "(hint: ~w): ~n ~p",
-	%   [ ArraySize, BindTarget, BufferUsageHint, ArrayBuffer ] ),
+    %trace_utils:debug_fmt( "Array of ~B bytes assigned to bind target ~B "
+    %   "(hint: ~w): ~n ~p",
+    %   [ ArraySize, BindTarget, BufferUsageHint, ArrayBuffer ] ),
 
-	% (this is typically a call that may result in a SEGV)
-	gl:bufferData( BindTarget, ArraySize, ArrayBuffer,
-		gui_opengl:buffer_usage_hint_to_gl( BufferUsageHint ) ),
+    % (this is typically a call that may result in a SEGV)
+    gl:bufferData( BindTarget, ArraySize, ArrayBuffer,
+        gui_opengl:buffer_usage_hint_to_gl( BufferUsageHint ) ),
 
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
 -doc "Deletes the specified buffer.".
 -spec delete_buffer( array_buffer_id() ) -> void().
 delete_buffer( BufferId ) ->
-	delete_buffers( [ BufferId ] ).
+    delete_buffers( [ BufferId ] ).
 
 
 
 -doc "Deletes the specified buffers.".
 -spec delete_buffers( [ array_buffer_id() ] ) -> void().
 delete_buffers( BufferIds ) ->
-	gl:deleteBuffers( BufferIds ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:deleteBuffers( BufferIds ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -2097,9 +2097,9 @@ tightly-packed buffer, and enables this attribute.
 """.
 -spec declare_vertex_attribute( vertex_attribute_index() ) -> void().
 declare_vertex_attribute( TargetVAttrIndex ) ->
-	declare_vertex_attribute( TargetVAttrIndex, _ComponentCount=3,
-		_ComponentType=?GL_FLOAT, _DoNormalise=false, _AttrStride=0,
-		_Offset=0, _DoEnable=true ).
+    declare_vertex_attribute( TargetVAttrIndex, _ComponentCount=3,
+        _ComponentType=?GL_FLOAT, _DoNormalise=false, _AttrStride=0,
+        _Offset=0, _DoEnable=true ).
 
 
 
@@ -2109,11 +2109,11 @@ currently active VBO, supposing the specified number of floats per vertex
 attribute directly in a tightly-packed buffer, and enables this attribute.
 """.
 -spec declare_vertex_attribute( vertex_attribute_index(),
-								component_count() ) -> void().
+                                component_count() ) -> void().
 declare_vertex_attribute( TargetVAttrIndex, ComponentCount ) ->
-	declare_vertex_attribute( TargetVAttrIndex, ComponentCount,
-		_ComponentType=?GL_FLOAT, _DoNormalise=false, _AttrStride=0,
-		_Offset=0, _DoEnable=true ).
+    declare_vertex_attribute( TargetVAttrIndex, ComponentCount,
+        _ComponentType=?GL_FLOAT, _DoNormalise=false, _AttrStride=0,
+        _Offset=0, _DoEnable=true ).
 
 
 
@@ -2131,24 +2131,24 @@ Normalisation applies only to (fixed-point) integer components.
 Will be stored in any already-bound VAO.
 """.
 -spec declare_vertex_attribute( vertex_attribute_index(), component_count(),
-	gl_base_type(), boolean(), stride(), offset(), boolean() ) -> void().
+    gl_base_type(), boolean(), stride(), offset(), boolean() ) -> void().
 declare_vertex_attribute( TargetVAttrIndex, ComponentCount, ComponentType,
-						  DoNormalise, AttrStride, Offset, DoEnable ) ->
+                          DoNormalise, AttrStride, Offset, DoEnable ) ->
 
-	cond_utils:if_defined( myriad_debug_shaders,
-		trace_utils:debug_fmt( "Declaring vertex attribute index #~B: "
-			"~B components of type ~ts, for a stride of ~B bytes and "
-			"an offset of ~B bytes.",
-			[ TargetVAttrIndex, ComponentCount,
-			  gui_opengl:gl_type_to_string( ComponentType ), AttrStride,
-			  Offset ] ) ),
+    cond_utils:if_defined( myriad_debug_shaders,
+        trace_utils:debug_fmt( "Declaring vertex attribute index #~B: "
+            "~B components of type ~ts, for a stride of ~B bytes and "
+            "an offset of ~B bytes.",
+            [ TargetVAttrIndex, ComponentCount,
+              gui_opengl:gl_type_to_string( ComponentType ), AttrStride,
+              Offset ] ) ),
 
-	gl:vertexAttribPointer( TargetVAttrIndex, ComponentCount, ComponentType,
-		gui_opengl:boolean_to_gl( DoNormalise ), AttrStride, Offset ),
+    gl:vertexAttribPointer( TargetVAttrIndex, ComponentCount, ComponentType,
+        gui_opengl:boolean_to_gl( DoNormalise ), AttrStride, Offset ),
 
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
 
-	DoEnable andalso enable_vertex_attribute( TargetVAttrIndex ).
+    DoEnable andalso enable_vertex_attribute( TargetVAttrIndex ).
 
 
 
@@ -2160,10 +2160,10 @@ to which it is to correspond (typically an homogeneous, tightly-packed VBO).
 Will be stored in any already-bound VAO.
 """.
 -spec declare_vertex_attribute_for( vertex_attribute_index(),
-									vertex_attribute_series() ) -> void().
+                                    vertex_attribute_series() ) -> void().
 declare_vertex_attribute_for( TargetVAttrIndex, VAttrSeries ) ->
-	declare_vertex_attribute_for( TargetVAttrIndex, VAttrSeries,
-								  _DoEnable=true ).
+    declare_vertex_attribute_for( TargetVAttrIndex, VAttrSeries,
+                                  _DoEnable=true ).
 
 
 
@@ -2176,22 +2176,22 @@ tightly-packed VBO).
 Will be stored in any already-bound VAO.
 """.
 -spec declare_vertex_attribute_for( vertex_attribute_index(),
-		vertex_attribute_series(), boolean() ) -> void().
+        vertex_attribute_series(), boolean() ) -> void().
 declare_vertex_attribute_for( VAttrIndex,
-							  _VAttrSeries=[ FirstTuple | _T ], DoEnable ) ->
+                              _VAttrSeries=[ FirstTuple | _T ], DoEnable ) ->
 
-	% All tuples of this series supposed to be of the same type:
+    % All tuples of this series supposed to be of the same type:
 
-	ComponentCount = size( FirstTuple ),
+    ComponentCount = size( FirstTuple ),
 
-	% From the first element of the first tuple of the first series:
-	ComponentType = infer_gl_component_type( element( _Index=1, FirstTuple ) ),
+    % From the first element of the first tuple of the first series:
+    ComponentType = infer_gl_component_type( element( _Index=1, FirstTuple ) ),
 
-	% At least currently, never normalising (fixed-point) integer components;
-	% null stride and offset as array supposed to be tightly-packed:
-	%
-	declare_vertex_attribute( VAttrIndex, ComponentCount, ComponentType,
-		_DoNormalise=false, _AttrStride=0, _Offset=0, DoEnable ).
+    % At least currently, never normalising (fixed-point) integer components;
+    % null stride and offset as array supposed to be tightly-packed:
+    %
+    declare_vertex_attribute( VAttrIndex, ComponentCount, ComponentType,
+        _DoNormalise=false, _AttrStride=0, _Offset=0, DoEnable ).
 
 
 
@@ -2204,9 +2204,9 @@ and used for rendering when calls are made to vertex array commands.
 -spec enable_vertex_attribute( vertex_attribute_index() ) -> void().
 enable_vertex_attribute( VAttrIndex ) ->
 
-	gl:enableVertexAttribArray( VAttrIndex ),
+    gl:enableVertexAttribArray( VAttrIndex ),
 
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -2214,9 +2214,9 @@ enable_vertex_attribute( VAttrIndex ) ->
 -spec disable_vertex_attribute( vertex_attribute_index() ) -> void().
 disable_vertex_attribute( VAttrIndex ) ->
 
-	gl:disableVertexAttribArray( VAttrIndex ),
+    gl:disableVertexAttribArray( VAttrIndex ),
 
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -2226,18 +2226,18 @@ disable_vertex_attribute( VAttrIndex ) ->
 -doc "Returns a new, unique, VAO identifier.".
 -spec generate_vao_id() -> vao_id().
 generate_vao_id() ->
-	[ VAOId ] = gl:genVertexArrays( _Count=1 ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
-	VAOId.
+    [ VAOId ] = gl:genVertexArrays( _Count=1 ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
+    VAOId.
 
 
 
 -doc "Returns the specified number of new, unique, VAO identifiers.".
 -spec generate_vao_ids( count() ) -> [ vao_id() ].
 generate_vao_ids( Count ) ->
-	VAOIds = gl:genVertexArrays( Count ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
-	VAOIds.
+    VAOIds = gl:genVertexArrays( Count ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
+    VAOIds.
 
 
 
@@ -2248,7 +2248,7 @@ From now on, all operations done regarding VAOs will be applied to this one.
 """.
 -spec set_new_vao() -> vao_id().
 set_new_vao() ->
-	set_current_vao_from_id( generate_vao_id() ).
+    set_current_vao_from_id( generate_vao_id() ).
 
 
 
@@ -2260,13 +2260,13 @@ Returns, if useful, the specified identifier, for chaining.
 -spec set_current_vao_from_id( vao_id() ) -> vao_id().
 set_current_vao_from_id( VAOId ) ->
 
-	% To attach the buffer specified from its ID to the currently active
-	% (i.e. bound) array buffer object (VAO) in the GL context:
-	%
-	gl:bindVertexArray( VAOId ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
+    % To attach the buffer specified from its ID to the currently active
+    % (i.e. bound) array buffer object (VAO) in the GL context:
+    %
+    gl:bindVertexArray( VAOId ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
 
-	VAOId.
+    VAOId.
 
 
 
@@ -2279,8 +2279,8 @@ next binding.
 """.
 -spec unset_current_vao() -> void().
 unset_current_vao() ->
-	gl:bindVertexArray( _Unbind=0 ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:bindVertexArray( _Unbind=0 ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -2292,7 +2292,7 @@ and the default VAO becomes current.
 """.
 -spec delete_vao( vao_id() ) -> void().
 delete_vao( VAOId ) ->
-	delete_vaos( [ VAOId ] ).
+    delete_vaos( [ VAOId ] ).
 
 
 
@@ -2304,8 +2304,8 @@ and the default VAO becomes current.
 """.
 -spec delete_vaos( [ vao_id() ] ) -> void().
 delete_vaos( VAOIds ) ->
-	gl:deleteVertexArrays( VAOIds ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:deleteVertexArrays( VAOIds ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -2316,14 +2316,14 @@ delete_vaos( VAOIds ) ->
 -doc "Returns a new, unique, VBO identifier.".
 -spec generate_vbo_id() -> vbo_id().
 generate_vbo_id() ->
-	generate_buffer_id().
+    generate_buffer_id().
 
 
 
 -doc "Returns the specified number of new, unique, VBO identifiers.".
 -spec generate_vbo_ids( count() ) -> [ vbo_id() ].
 generate_vbo_ids( Count ) ->
-	generate_buffer_ids( Count ).
+    generate_buffer_ids( Count ).
 
 
 
@@ -2335,7 +2335,7 @@ applied to this VBO.
 """.
 -spec set_new_vbo() -> vbo_id().
 set_new_vbo() ->
-	set_current_vbo_from_id( generate_vbo_id() ).
+    set_current_vbo_from_id( generate_vbo_id() ).
 
 
 
@@ -2352,13 +2352,13 @@ Returns, if useful, the specified identifier, for chaining.
 -spec set_current_vbo_from_id( vbo_id() ) -> vbo_id().
 set_current_vbo_from_id( VBOId ) ->
 
-	% To attach the buffer specified from its ID to the currently active
-	% (i.e. bound) array buffer object (VBO) in the GL context:
-	%
-	gl:bindBuffer( ?GL_ARRAY_BUFFER, VBOId ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
+    % To attach the buffer specified from its ID to the currently active
+    % (i.e. bound) array buffer object (VBO) in the GL context:
+    %
+    gl:bindBuffer( ?GL_ARRAY_BUFFER, VBOId ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
 
-	VBOId.
+    VBOId.
 
 
 
@@ -2370,7 +2370,7 @@ The specified data will thus typically be transferred to the graphic card.
 """.
 -spec assign_current_vbo( array_buffer() ) -> void().
 assign_current_vbo( ArrayBuffer ) ->
-	assign_current_vbo( ArrayBuffer, ?default_vbo_usage_hint ).
+    assign_current_vbo( ArrayBuffer, ?default_vbo_usage_hint ).
 
 
 
@@ -2382,7 +2382,7 @@ The specified data will thus typically be transferred to the graphic card.
 """.
 -spec assign_current_vbo( array_buffer(), buffer_usage_hint() ) -> void().
 assign_current_vbo( ArrayBuffer, BufferUsageHint ) ->
-	assign_array( ArrayBuffer, _BindTarget=?GL_ARRAY_BUFFER, BufferUsageHint ).
+    assign_array( ArrayBuffer, _BindTarget=?GL_ARRAY_BUFFER, BufferUsageHint ).
 
 
 
@@ -2394,7 +2394,7 @@ The specified data will thus typically be transferred to the graphic card.
 """.
 -spec assign_new_vbo( array_buffer() ) -> vbo_id().
 assign_new_vbo( ArrayBuffer ) ->
-	assign_new_vbo( ArrayBuffer, ?default_vbo_usage_hint ).
+    assign_new_vbo( ArrayBuffer, ?default_vbo_usage_hint ).
 
 
 
@@ -2406,9 +2406,9 @@ The specified data will thus typically be transferred to the graphic card.
 """.
 -spec assign_new_vbo( array_buffer(), buffer_usage_hint() ) -> vbo_id().
 assign_new_vbo( ArrayBuffer, BufferUsageHint ) ->
-	NewVBOId = set_new_vbo(),
-	assign_current_vbo( ArrayBuffer, BufferUsageHint ),
-	NewVBOId.
+    NewVBOId = set_new_vbo(),
+    assign_current_vbo( ArrayBuffer, BufferUsageHint ),
+    NewVBOId.
 
 
 
@@ -2419,7 +2419,7 @@ returned.
 """.
 -spec assign_vertices_to_new_vbo( [ any_vertex3() ] ) -> vbo_id().
 assign_vertices_to_new_vbo( Vertices ) ->
-	assign_vertices_to_new_vbo( Vertices, ?default_vbo_usage_hint ).
+    assign_vertices_to_new_vbo( Vertices, ?default_vbo_usage_hint ).
 
 
 
@@ -2429,16 +2429,16 @@ active one, associates the specified usage profile, and returns the identifier
 of this VBO.
 """.
 -spec assign_vertices_to_new_vbo( [ any_vertex3() ], buffer_usage_hint()  ) ->
-											vbo_id().
+                                            vbo_id().
 assign_vertices_to_new_vbo( Vertices, BufferUsageHint ) ->
 
-	VBOId = set_new_vbo(),
+    VBOId = set_new_vbo(),
 
-	VBOBuffer = point3:to_buffer( Vertices ),
+    VBOBuffer = point3:to_buffer( Vertices ),
 
-	assign_current_vbo( VBOBuffer, BufferUsageHint ),
+    assign_current_vbo( VBOBuffer, BufferUsageHint ),
 
-	VBOId.
+    VBOId.
 
 
 
@@ -2449,7 +2449,7 @@ identifier is returned.
 """.
 -spec assign_texcoords_to_new_vbo( [ uv_point() ] ) -> vbo_id().
 assign_texcoords_to_new_vbo( TexCoords ) ->
-	assign_texcoords_to_new_vbo( TexCoords, ?default_vbo_usage_hint ).
+    assign_texcoords_to_new_vbo( TexCoords, ?default_vbo_usage_hint ).
 
 
 
@@ -2459,23 +2459,23 @@ currently active one, associates the specified usage profile, and returns the
 identifier of this VBO.
 """.
 -spec assign_texcoords_to_new_vbo( [ uv_point() ], buffer_usage_hint()  ) ->
-											vbo_id().
+                                            vbo_id().
 assign_texcoords_to_new_vbo( TexCoords, BufferUsageHint ) ->
 
-	VBOId = set_new_vbo(),
+    VBOId = set_new_vbo(),
 
-	VBOBuffer = point2:to_buffer( TexCoords ),
+    VBOBuffer = point2:to_buffer( TexCoords ),
 
-	assign_current_vbo( VBOBuffer, BufferUsageHint ),
+    assign_current_vbo( VBOBuffer, BufferUsageHint ),
 
-	VBOId.
+    VBOId.
 
 
 
 -doc "Returns an (ordered) list of all our conventional layouts of VBOs.".
 -spec get_vbo_layouts() -> [ vbo_layout() ].
 get_vbo_layouts() ->
-	[ vtx3, vtx3_nrm, vtx3_rgb, vtx3_uv, vtx3_nrm_rgb, vtx3_nrm_uv ].
+    [ vtx3, vtx3_nrm, vtx3_rgb, vtx3_uv, vtx3_nrm_rgb, vtx3_nrm_uv ].
 
 
 
@@ -2488,24 +2488,24 @@ this list.
 -spec get_vbo_layout_id( vbo_layout() ) -> vbo_layout_id().
 get_vbo_layout_id( Layout ) ->
 
-	AllLayouts = get_vbo_layouts(),
+    AllLayouts = get_vbo_layouts(),
 
-	case list_utils:get_maybe_index_of( _Elem=Layout, AllLayouts ) of
+    case list_utils:get_maybe_index_of( _Elem=Layout, AllLayouts ) of
 
-		undefined ->
-			throw( { unknown_vbo_layout, Layout, AllLayouts } );
+        undefined ->
+            throw( { unknown_vbo_layout, Layout, AllLayouts } );
 
-		LayoutIndex ->
-			LayoutIndex
+        LayoutIndex ->
+            LayoutIndex
 
-	end.
+    end.
 
 
 
 -doc "Returns the VBO layout that corresponds to the specified identifier.".
 -spec get_vbo_layout( vbo_layout_id() ) -> vbo_layout().
 get_vbo_layout( LayoutId ) ->
-	lists:nth( _Index=LayoutId, _List=get_vbo_layouts() ).
+    lists:nth( _Index=LayoutId, _List=get_vbo_layouts() ).
 
 
 
@@ -2518,10 +2518,10 @@ declares and enables a corresponding vertex attribute for the specified index.
 The specified data will thus typically be transferred to the graphic card.
 """.
 -spec assign_vertex_attribute_as( vertex_attribute_index(),
-								  vertex_attribute_series() ) -> vbo_id().
+                                  vertex_attribute_series() ) -> vbo_id().
 assign_vertex_attribute_as( VAttrIndex, VAttrSeries ) ->
-	assign_vertex_attribute_as( VAttrIndex, VAttrSeries,
-								?default_vbo_usage_hint ).
+    assign_vertex_attribute_as( VAttrIndex, VAttrSeries,
+                                ?default_vbo_usage_hint ).
 
 
 
@@ -2534,22 +2534,22 @@ index.
 The specified data will thus typically be transferred to the graphic card.
 """.
 -spec assign_vertex_attribute_as( vertex_attribute_index(),
-		vertex_attribute_series(), buffer_usage_hint() ) -> vbo_id().
+        vertex_attribute_series(), buffer_usage_hint() ) -> vbo_id().
 assign_vertex_attribute_as( VAttrIndex, VAttrSeries, BufferUsageHint ) ->
 
-	{ ComponentType, ComponentCount } = characterise_series( VAttrSeries ),
+    { ComponentType, ComponentCount } = characterise_series( VAttrSeries ),
 
-	VBOBuffer = to_buffer( VAttrSeries, ComponentType ),
+    VBOBuffer = to_buffer( VAttrSeries, ComponentType ),
 
-	VBOId = assign_new_vbo( VBOBuffer, BufferUsageHint ),
+    VBOId = assign_new_vbo( VBOBuffer, BufferUsageHint ),
 
-	% At least currently, never normalising (fixed-point) integer components;
-	% null stride and offset as the array is tightly-packed by design:
-	%
-	declare_vertex_attribute( VAttrIndex, ComponentCount, ComponentType,
-		_DoNormalise=false, _AttrStride=0, _Offset=0, _DoEnable=true ),
+    % At least currently, never normalising (fixed-point) integer components;
+    % null stride and offset as the array is tightly-packed by design:
+    %
+    declare_vertex_attribute( VAttrIndex, ComponentCount, ComponentType,
+        _DoNormalise=false, _AttrStride=0, _Offset=0, _DoEnable=true ),
 
-	VBOId.
+    VBOId.
 
 
 
@@ -2563,10 +2563,10 @@ The parameters of the vertex attributes are automatically determined, declared
 and enabled. This is typically useful when devising a shader based on a VBO.
 """.
 -spec assign_new_vbo_from_attribute_series( [ vertex_attribute_series() ] ) ->
-						vbo_id().
+                        vbo_id().
 assign_new_vbo_from_attribute_series( ListOfVAttrSeries ) ->
-	assign_new_vbo_from_attribute_series_from( ListOfVAttrSeries,
-											   _StartVAttrIndex=0 ).
+    assign_new_vbo_from_attribute_series_from( ListOfVAttrSeries,
+                                               _StartVAttrIndex=0 ).
 
 
 
@@ -2581,14 +2581,14 @@ The parameters of the vertex attributes are automatically determined, declared
 and enabled.
 """.
 -spec assign_new_vbo_from_attribute_series_from( [ vertex_attribute_series() ],
-		StartVAttrStartIndex :: vertex_attribute_index() ) -> vbo_id().
+        StartVAttrStartIndex :: vertex_attribute_index() ) -> vbo_id().
 assign_new_vbo_from_attribute_series_from( ListOfVAttrSeries,
-										   StartVAttrIndex ) ->
+                                           StartVAttrIndex ) ->
 
-	ListOfVAIs = lists:seq( StartVAttrIndex,
-		length( ListOfVAttrSeries ) + StartVAttrIndex - 1 ),
+    ListOfVAIs = lists:seq( StartVAttrIndex,
+        length( ListOfVAttrSeries ) + StartVAttrIndex - 1 ),
 
-	assign_new_vbo_from_attribute_series_with( ListOfVAttrSeries, ListOfVAIs ).
+    assign_new_vbo_from_attribute_series_with( ListOfVAttrSeries, ListOfVAIs ).
 
 
 
@@ -2602,36 +2602,36 @@ The parameters of the vertex attributes are automatically determined, declared
 and enabled.
 """.
 -spec assign_new_vbo_from_attribute_series_with( [ vertex_attribute_series() ],
-			[ vertex_attribute_index() ] ) -> vbo_id().
+            [ vertex_attribute_index() ] ) -> vbo_id().
 assign_new_vbo_from_attribute_series_with( ListOfVAttrSeries, ListOfVAIs ) ->
 
-	% Later zipn in characterise_series/1 will check it, but only if the
-	% myriad_check_lists token is set, whereas we want to control the check here
-	% and perform it earlier:
-	%
-	cond_utils:if_defined( myriad_check_mesh,
-		begin
-			list_utils:check_same_length( ListOfVAttrSeries ),
-			basic_utils:assert_equal( length( ListOfVAttrSeries ),
-									  length( ListOfVAIs ) )
-		end ),
+    % Later zipn in characterise_series/1 will check it, but only if the
+    % myriad_check_lists token is set, whereas we want to control the check here
+    % and perform it earlier:
+    %
+    cond_utils:if_defined( myriad_check_mesh,
+        begin
+            list_utils:check_same_length( ListOfVAttrSeries ),
+            basic_utils:assert_equal( length( ListOfVAttrSeries ),
+                                      length( ListOfVAIs ) )
+        end ),
 
-	% A list of {ComponentType, ComponentCount} pairs:
-	CompPairs = [ characterise_series( VAS ) || VAS <- ListOfVAttrSeries ],
-	{ Stride, Offsets } = get_stride_and_offsets( CompPairs ),
+    % A list of {ComponentType, ComponentCount} pairs:
+    CompPairs = [ characterise_series( VAS ) || VAS <- ListOfVAttrSeries ],
+    { Stride, Offsets } = get_stride_and_offsets( CompPairs ),
 
-	cond_utils:if_defined( myriad_debug_gl_encoding,
-		trace_utils:debug_fmt( "Stride is ~B and offsets are ~p for:~n ~p",
-							   [ Stride, Offsets, ListOfVAttrSeries ] ) ),
+    cond_utils:if_defined( myriad_debug_gl_encoding,
+        trace_utils:debug_fmt( "Stride is ~B and offsets are ~p for:~n ~p",
+                               [ Stride, Offsets, ListOfVAttrSeries ] ) ),
 
-	% Tightly-packed buffer of vertex attribute compounds:
-	Buffer = merge_attribute_series( ListOfVAttrSeries, CompPairs ),
-	VBOId = assign_new_vbo( Buffer ),
+    % Tightly-packed buffer of vertex attribute compounds:
+    Buffer = merge_attribute_series( ListOfVAttrSeries, CompPairs ),
+    VBOId = assign_new_vbo( Buffer ),
 
-	declare_vertex_attributes_with( CompPairs, Stride, Offsets, ListOfVAIs,
-									_DoEnable=true ),
+    declare_vertex_attributes_with( CompPairs, Stride, Offsets, ListOfVAIs,
+                                    _DoEnable=true ),
 
-	VBOId.
+    VBOId.
 
 
 
@@ -2659,101 +2659,101 @@ have the same length (equal to the number of vertex attributes to consider) and
 contain only tuples of components.
 """.
 -spec merge_attribute_series( [ vertex_attribute_series() ], comp_pairs() ) ->
-											array_buffer().
+                                            array_buffer().
 merge_attribute_series( VAttrSeries, CompPairs ) ->
-	% First we merge element per element all specified series; we obtain thus a
-	% list of sublists, each sublist comprising one element (e.g. a float
-	% triplet) taken from each of the input series:
-	%
-	MergedElems = list_utils:zipn( VAttrSeries ),
+    % First we merge element per element all specified series; we obtain thus a
+    % list of sublists, each sublist comprising one element (e.g. a float
+    % triplet) taken from each of the input series:
+    %
+    MergedElems = list_utils:zipn( VAttrSeries ),
 
-	cond_utils:if_defined( myriad_debug_gl_encoding,
-		trace_utils:debug_fmt( "Serialising following merged elements "
-			"described by ~w:~n ~p", [ CompPairs, MergedElems ] ) ),
+    cond_utils:if_defined( myriad_debug_gl_encoding,
+        trace_utils:debug_fmt( "Serialising following merged elements "
+            "described by ~w:~n ~p", [ CompPairs, MergedElems ] ) ),
 
-	serialise_attrs( MergedElems, CompPairs, _AccBin= <<>> ).
+    serialise_attrs( MergedElems, CompPairs, _AccBin= <<>> ).
 
 
 
 % (helper)
 serialise_attrs( _MergedElems=[], _CompPairs, AccBin ) ->
-	cond_utils:if_defined( myriad_debug_gl_encoding,
-		trace_utils:debug_fmt( "Elements merged in a buffer of ~B bytes:~n~w.",
-							   [ size( AccBin ), AccBin ] ) ),
-	AccBin;
+    cond_utils:if_defined( myriad_debug_gl_encoding,
+        trace_utils:debug_fmt( "Elements merged in a buffer of ~B bytes:~n~w.",
+                               [ size( AccBin ), AccBin ] ) ),
+    AccBin;
 
 serialise_attrs( _MergedElems=[ Elems | T ], CompPairs, AccBin ) ->
-	NewAccBin = serialise_elements( Elems, CompPairs, AccBin ),
-	serialise_attrs( T, CompPairs, NewAccBin ).
+    NewAccBin = serialise_elements( Elems, CompPairs, AccBin ),
+    serialise_attrs( T, CompPairs, NewAccBin ).
 
 
 % (helper)
 serialise_elements( _Elems=[], _CompPairs=[], AccBin ) ->
-	AccBin;
+    AccBin;
 
 % From most frequent to least; force selection on component count (presumably
 % cheaper):
 %
 % For floats:
 serialise_elements( _Elems=[ FloatTriplet | Te ],
-					_CompPairs=[ { ?GL_FLOAT, _Count=3 } | Tp ], AccBin ) ->
-	{ F1, F2, F3 } = FloatTriplet,
-	NewAccBin = <<AccBin/binary, F1:32/float-native, F2:32/float-native,
-				  F3:32/float-native >>,
-	serialise_elements( Te, Tp, NewAccBin );
+                    _CompPairs=[ { ?GL_FLOAT, _Count=3 } | Tp ], AccBin ) ->
+    { F1, F2, F3 } = FloatTriplet,
+    NewAccBin = <<AccBin/binary, F1:32/float-native, F2:32/float-native,
+                  F3:32/float-native >>,
+    serialise_elements( Te, Tp, NewAccBin );
 
 serialise_elements( _Elems=[ FloatPair | Te ],
-					_CompPairs=[ { ?GL_FLOAT, _Count=2 } | Tp ], AccBin ) ->
-	{ F1, F2 } = FloatPair,
-	NewAccBin = <<AccBin/binary, F1:32/float-native, F2:32/float-native >>,
-	serialise_elements( Te, Tp, NewAccBin );
+                    _CompPairs=[ { ?GL_FLOAT, _Count=2 } | Tp ], AccBin ) ->
+    { F1, F2 } = FloatPair,
+    NewAccBin = <<AccBin/binary, F1:32/float-native, F2:32/float-native >>,
+    serialise_elements( Te, Tp, NewAccBin );
 
 serialise_elements( _Elems=[ F1 | Te ],
-					_CompPairs=[ { ?GL_FLOAT, _Count=1 } | Tp ], AccBin ) ->
-	NewAccBin = <<AccBin/binary, F1:32/float-native>>,
-	serialise_elements( Te, Tp, NewAccBin );
+                    _CompPairs=[ { ?GL_FLOAT, _Count=1 } | Tp ], AccBin ) ->
+    NewAccBin = <<AccBin/binary, F1:32/float-native>>,
+    serialise_elements( Te, Tp, NewAccBin );
 
 
 % For unsigned integers:
 serialise_elements( _Elems=[ UIntTriplet | Te ],
-		_CompPairs=[ { ?GL_UNSIGNED_INT, _Count=3 } | Tp ], AccBin ) ->
-	{ UI1, UI2, UI3 } = UIntTriplet,
-	NewAccBin = <<AccBin/binary, UI1:32/integer-unsigned-native,
-		UI2:32/integer-unsigned-native, UI3:32/integer-unsigned-native >>,
-	serialise_elements( Te, Tp, NewAccBin );
+        _CompPairs=[ { ?GL_UNSIGNED_INT, _Count=3 } | Tp ], AccBin ) ->
+    { UI1, UI2, UI3 } = UIntTriplet,
+    NewAccBin = <<AccBin/binary, UI1:32/integer-unsigned-native,
+        UI2:32/integer-unsigned-native, UI3:32/integer-unsigned-native >>,
+    serialise_elements( Te, Tp, NewAccBin );
 
 serialise_elements( _Elems=[ UIntPair | Te ],
-		_CompPairs=[ { ?GL_UNSIGNED_INT, _Count=2 } | Tp ], AccBin ) ->
-	{ UI1, UI2 } = UIntPair,
-	NewAccBin = <<AccBin/binary, UI1:32/integer-unsigned-native,
-				  UI2:32/integer-unsigned-native >>,
-	serialise_elements( Te, Tp, NewAccBin );
+        _CompPairs=[ { ?GL_UNSIGNED_INT, _Count=2 } | Tp ], AccBin ) ->
+    { UI1, UI2 } = UIntPair,
+    NewAccBin = <<AccBin/binary, UI1:32/integer-unsigned-native,
+                  UI2:32/integer-unsigned-native >>,
+    serialise_elements( Te, Tp, NewAccBin );
 
 serialise_elements( _Elems=[ UI | Te ],
-		_CompPairs=[ { ?GL_UNSIGNED_INT, _Count=1 } | Tp ], AccBin ) ->
-	NewAccBin = <<AccBin/binary, UI:32/integer-unsigned-native>>,
-	serialise_elements( Te, Tp, NewAccBin );
+        _CompPairs=[ { ?GL_UNSIGNED_INT, _Count=1 } | Tp ], AccBin ) ->
+    NewAccBin = <<AccBin/binary, UI:32/integer-unsigned-native>>,
+    serialise_elements( Te, Tp, NewAccBin );
 
 
 % For (signed) integers:
 serialise_elements( _Elems=[ IntTriplet | Te ],
-		_CompPairs=[ { ?GL_INT, _Count=3 } | Tp ], AccBin ) ->
-	{ I1, I2, I3 } = IntTriplet,
-	NewAccBin = <<AccBin/binary, I1:32/integer-unsigned-native,
-		I2:32/integer-unsigned-native, I3:32/integer-unsigned-native >>,
-	serialise_elements( Te, Tp, NewAccBin );
+        _CompPairs=[ { ?GL_INT, _Count=3 } | Tp ], AccBin ) ->
+    { I1, I2, I3 } = IntTriplet,
+    NewAccBin = <<AccBin/binary, I1:32/integer-unsigned-native,
+        I2:32/integer-unsigned-native, I3:32/integer-unsigned-native >>,
+    serialise_elements( Te, Tp, NewAccBin );
 
 serialise_elements( _Elems=[ IntPair | Te ],
-		_CompPairs=[ { ?GL_INT, _Count=2 } | Tp ], AccBin ) ->
-	{ I1, I2 } = IntPair,
-	NewAccBin = <<AccBin/binary, I1:32/integer-unsigned-native,
-				  I2:32/integer-unsigned-native >>,
-	serialise_elements( Te, Tp, NewAccBin );
+        _CompPairs=[ { ?GL_INT, _Count=2 } | Tp ], AccBin ) ->
+    { I1, I2 } = IntPair,
+    NewAccBin = <<AccBin/binary, I1:32/integer-unsigned-native,
+                  I2:32/integer-unsigned-native >>,
+    serialise_elements( Te, Tp, NewAccBin );
 
 serialise_elements( _Elems=[ I | Te ],
-		_CompPairs=[ { ?GL_INT, _Count=1 } | Tp ], AccBin ) ->
-	NewAccBin = <<AccBin/binary, I:32/integer-unsigned-native>>,
-	serialise_elements( Te, Tp, NewAccBin ).
+        _CompPairs=[ { ?GL_INT, _Count=1 } | Tp ], AccBin ) ->
+    NewAccBin = <<AccBin/binary, I:32/integer-unsigned-native>>,
+    serialise_elements( Te, Tp, NewAccBin ).
 
 
 
@@ -2765,11 +2765,11 @@ corresponding to the specified component in an array (like a VBO).
 % So never returns ?GL_BYTE, ?GL_UNSIGNED_SHORT, ?GL_SHORT, ?GL_INT or
 % ?GL_DOUBLE:
 infer_gl_component_type( F ) when is_float( F ) ->
-	?GL_FLOAT;
+    ?GL_FLOAT;
 
 infer_gl_component_type( I ) when is_integer( I ) ->
-	% Preferred to ?GL_INT and others:
-	?GL_UNSIGNED_INT.
+    % Preferred to ?GL_INT and others:
+    ?GL_UNSIGNED_INT.
 
 
 
@@ -2781,10 +2781,10 @@ vertex attribute index, supposing a tightly-packed buffer, and enables these
 attributes.
 """.
 -spec declare_vertex_attributes_from( comp_pairs(), stride(), [ offset() ],
-		StartVAttrStartIndex :: vertex_attribute_index() ) -> void().
+        StartVAttrStartIndex :: vertex_attribute_index() ) -> void().
 declare_vertex_attributes_from( CompPairs, Stride, Offsets, StartVAttrIndex ) ->
-	declare_vertex_attributes_from( CompPairs, Stride, Offsets, StartVAttrIndex,
-									_DoEnable=true ).
+    declare_vertex_attributes_from( CompPairs, Stride, Offsets, StartVAttrIndex,
+                                    _DoEnable=true ).
 
 
 
@@ -2795,19 +2795,19 @@ vertex attribute index, supposing a tightly-packed buffer, and enabling these
 attributes if requested.
 """.
 -spec declare_vertex_attributes_from( comp_pairs(), stride(), [ offset() ],
-		StartVAttrStartIndex :: vertex_attribute_index(), boolean() ) -> void().
+        StartVAttrStartIndex :: vertex_attribute_index(), boolean() ) -> void().
 declare_vertex_attributes_from( _CompPairs=[], _Stride, _Offsets=[],
-								_VAttrIndex, _DoEnable ) ->
-	ok;
+                                _VAttrIndex, _DoEnable ) ->
+    ok;
 
 declare_vertex_attributes_from( _CompPairs=[ { CT, CC } | Tc ], Stride,
-		_Offsets=[ Offset | To ], VAttrIndex, DoEnable ) ->
+        _Offsets=[ Offset | To ], VAttrIndex, DoEnable ) ->
 
-	% At least currently, never normalising (fixed-point) integer components:
-	declare_vertex_attribute( VAttrIndex, CC, CT, _DoNormalise=false,
-							  Stride, Offset, DoEnable ),
+    % At least currently, never normalising (fixed-point) integer components:
+    declare_vertex_attribute( VAttrIndex, CC, CT, _DoNormalise=false,
+                              Stride, Offset, DoEnable ),
 
-	declare_vertex_attributes_from( Tc, Stride, To, VAttrIndex+1, DoEnable ).
+    declare_vertex_attributes_from( Tc, Stride, To, VAttrIndex+1, DoEnable ).
 
 
 
@@ -2818,19 +2818,19 @@ attribute indices, supposing a tightly-packed buffer, and enabling these
 attributes if requested.
 """.
 -spec declare_vertex_attributes_with( comp_pairs(), stride(), [ offset() ],
-		[ vertex_attribute_index() ], boolean() ) -> void().
+        [ vertex_attribute_index() ], boolean() ) -> void().
 declare_vertex_attributes_with( _CompPairs=[], _Stride, _Offsets=[],
-								_VAIs=[], _DoEnable ) ->
-	ok;
+                                _VAIs=[], _DoEnable ) ->
+    ok;
 
 declare_vertex_attributes_with( _CompPairs=[ { CT, CC } | Tc ], Stride,
-		_Offsets=[ Offset | To ], _VAIs=[ VAI | Tv ] , DoEnable ) ->
+        _Offsets=[ Offset | To ], _VAIs=[ VAI | Tv ] , DoEnable ) ->
 
-	% At least currently, never normalising (fixed-point) integer components:
-	declare_vertex_attribute( VAI, CC, CT, _DoNormalise=false,
-							  Stride, Offset, DoEnable ),
+    % At least currently, never normalising (fixed-point) integer components:
+    declare_vertex_attribute( VAI, CC, CT, _DoNormalise=false,
+                              Stride, Offset, DoEnable ),
 
-	declare_vertex_attributes_with( Tc, Stride, To, Tv, DoEnable ).
+    declare_vertex_attributes_with( Tc, Stride, To, Tv, DoEnable ).
 
 
 
@@ -2846,7 +2846,7 @@ triangles will lead to specify here a count of 6 vertex indices).
 """.
 -spec render_from_enabled_vbos( gl_primitive_type(), count() ) -> void().
 render_from_enabled_vbos( PrimType, VertexCount ) ->
-	render_from_enabled_vbos( PrimType, _StartIndex=0, VertexCount ).
+    render_from_enabled_vbos( PrimType, _StartIndex=0, VertexCount ).
 
 
 
@@ -2856,32 +2856,32 @@ Renders the specified primitives based on the enabled VBOs.
 See render_from_enabled_vbos/3 for the vertex count.
 """.
 -spec render_from_enabled_vbos( gl_primitive_type(), index(), count() ) ->
-												void().
+                                                void().
 render_from_enabled_vbos( PrimType, StartIndex, VertexCount ) ->
 
-	% Another place where SEGV may happen, for example because of a malformed
-	% buffer.
+    % Another place where SEGV may happen, for example because of a malformed
+    % buffer.
 
-	%trace_utils:debug_fmt( "Rendering from enabled VBO: start index is ~B, "
-	%   "vertex count is ~B.", [ StartIndex, VertexCount ] ),
+    %trace_utils:debug_fmt( "Rendering from enabled VBO: start index is ~B, "
+    %   "vertex count is ~B.", [ StartIndex, VertexCount ] ),
 
-	gl:drawArrays( PrimType, StartIndex, VertexCount ),
+    gl:drawArrays( PrimType, StartIndex, VertexCount ),
 
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
 -doc "Deletes the specified VBO.".
 -spec delete_vbo( vbo_id() ) -> void().
 delete_vbo( VBOId ) ->
-	delete_buffer( VBOId ).
+    delete_buffer( VBOId ).
 
 
 
 -doc "Deletes the specified VBOs.".
 -spec delete_vbos( [ vbo_id() ] ) -> void().
 delete_vbos( VBOIds ) ->
-	delete_buffers( VBOIds ).
+    delete_buffers( VBOIds ).
 
 
 
@@ -2892,14 +2892,14 @@ delete_vbos( VBOIds ) ->
 -doc "Returns a new, unique, EBO identifier.".
 -spec generate_ebo_id() -> ebo_id().
 generate_ebo_id() ->
-	generate_buffer_id().
+    generate_buffer_id().
 
 
 
 -doc "Returns the specified number of new, unique, EBO identifiers.".
 -spec generate_ebo_ids( count() ) -> [ ebo_id() ].
 generate_ebo_ids( Count ) ->
-	generate_buffer_ids( Count ).
+    generate_buffer_ids( Count ).
 
 
 
@@ -2912,7 +2912,7 @@ will be applied to this EBO.
 """.
 -spec set_new_ebo() -> ebo_id().
 set_new_ebo() ->
-	set_current_ebo_from_id( generate_ebo_id() ).
+    set_current_ebo_from_id( generate_ebo_id() ).
 
 
 
@@ -2929,13 +2929,13 @@ Returns, if useful, the specified identifier, for chaining.
 -spec set_current_ebo_from_id( ebo_id() ) -> ebo_id().
 set_current_ebo_from_id( EBOId ) ->
 
-	% To attach the buffer specified from its ID to the currently active
-	% (i.e. bound) element buffer object (EBO) in the GL context:
-	%
-	gl:bindBuffer( ?GL_ELEMENT_ARRAY_BUFFER, EBOId ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
+    % To attach the buffer specified from its ID to the currently active
+    % (i.e. bound) element buffer object (EBO) in the GL context:
+    %
+    gl:bindBuffer( ?GL_ELEMENT_ARRAY_BUFFER, EBOId ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
 
-	EBOId.
+    EBOId.
 
 
 
@@ -2948,7 +2948,7 @@ The specified data will thus typically be transferred to the graphic card.
 """.
 -spec assign_current_ebo( array_buffer() ) -> void().
 assign_current_ebo( ArrayBuffer ) ->
-	assign_current_ebo( ArrayBuffer, ?default_ebo_usage_hint ).
+    assign_current_ebo( ArrayBuffer, ?default_ebo_usage_hint ).
 
 
 
@@ -2960,8 +2960,8 @@ The specified data will thus typically be transferred to the graphic card.
 """.
 -spec assign_current_ebo( array_buffer(), buffer_usage_hint() ) -> void().
 assign_current_ebo( ArrayBuffer, BufferUsageHint ) ->
-	assign_array( ArrayBuffer, _BindTarget=?GL_ELEMENT_ARRAY_BUFFER,
-				  BufferUsageHint ).
+    assign_array( ArrayBuffer, _BindTarget=?GL_ELEMENT_ARRAY_BUFFER,
+                  BufferUsageHint ).
 
 
 
@@ -2971,7 +2971,7 @@ profile), whose identifier is returned.
 """.
 -spec assign_indices_to_new_ebo( [ index() ] ) -> ebo_id().
 assign_indices_to_new_ebo( Indices ) ->
-	assign_indices_to_new_ebo( Indices, ?default_ebo_usage_hint ).
+    assign_indices_to_new_ebo( Indices, ?default_ebo_usage_hint ).
 
 
 
@@ -2980,21 +2980,21 @@ Assigns the specified vertices to a new EBO, associates the specified usage
 profile, and returns the identifier of this EBO.
 """.
 -spec assign_indices_to_new_ebo( [ index() ], buffer_usage_hint()  ) ->
-											ebo_id().
+                                            ebo_id().
 assign_indices_to_new_ebo( Indices, BufferUsageHint ) ->
 
-	EBOId = set_new_ebo(),
+    EBOId = set_new_ebo(),
 
-	EBOBuffer = bin_utils:concatenate_as_uint32s( Indices ),
+    EBOBuffer = bin_utils:concatenate_as_uint32s( Indices ),
 
-	cond_utils:if_defined( myriad_debug_gl_encoding,
-		trace_utils:debug_fmt( "Concatenating EBO indices ~w "
-			"in a buffer of ~B bytes: ~w",
-			[ Indices, size( EBOBuffer ), EBOBuffer ] ) ),
+    cond_utils:if_defined( myriad_debug_gl_encoding,
+        trace_utils:debug_fmt( "Concatenating EBO indices ~w "
+            "in a buffer of ~B bytes: ~w",
+            [ Indices, size( EBOBuffer ), EBOBuffer ] ) ),
 
-	assign_current_ebo( EBOBuffer, BufferUsageHint ),
+    assign_current_ebo( EBOBuffer, BufferUsageHint ),
 
-	EBOId.
+    EBOId.
 
 
 
@@ -3005,16 +3005,16 @@ specific offset.
 -spec render_from_enabled_ebo( gl_primitive_type(), count() ) -> void().
 render_from_enabled_ebo( PrimType, VertexCount ) ->
 
-	% Another place where SEGV may happen, for example because of a malformed
-	% buffer.
+    % Another place where SEGV may happen, for example because of a malformed
+    % buffer.
 
-	%trace_utils:debug_fmt( "Rendering from enabled EBO: primitive type is ~B, "
-	%   "vertex count is ~B.", [ PrimType, VertexCount ] ),
+    %trace_utils:debug_fmt( "Rendering from enabled EBO: primitive type is ~B, "
+    %   "vertex count is ~B.", [ PrimType, VertexCount ] ),
 
-	gl:drawElements( PrimType, VertexCount, _IndexType=?GL_UNSIGNED_INT,
-					 _OffsetOrIdArray=0 ),
+    gl:drawElements( PrimType, VertexCount, _IndexType=?GL_UNSIGNED_INT,
+                     _OffsetOrIdArray=0 ),
 
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -3022,14 +3022,14 @@ render_from_enabled_ebo( PrimType, VertexCount ) ->
 -doc "Deletes the specified EBO.".
 -spec delete_ebo( ebo_id() ) -> void().
 delete_ebo( EBOId ) ->
-	delete_buffer( EBOId ).
+    delete_buffer( EBOId ).
 
 
 
 -doc "Deletes the specified EBOs.".
 -spec delete_ebos( [ ebo_id() ] ) -> void().
 delete_ebos( EBOIds ) ->
-	delete_buffers( EBOIds ).
+    delete_buffers( EBOIds ).
 
 
 
@@ -3046,22 +3046,22 @@ Calling (directly or not, see get_uniform_id/2 as well) this function is the
 only way to set the value of a uniform variable.
 """.
 -spec get_maybe_uniform_id( uniform_name(), program_id() ) ->
-											option( uniform_id() ).
+                                            option( uniform_id() ).
 get_maybe_uniform_id( UniformName, ProgId ) ->
 
-	MaybeUniformId = case gl:getUniformLocation( ProgId, UniformName ) of
+    MaybeUniformId = case gl:getUniformLocation( ProgId, UniformName ) of
 
-		-1 ->
-			undefined;
+        -1 ->
+            undefined;
 
-		Id ->
-			Id
+        Id ->
+            Id
 
-	end,
+    end,
 
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ),
 
-	MaybeUniformId.
+    MaybeUniformId.
 
 
 
@@ -3082,19 +3082,19 @@ variable.
 """.
 -spec get_uniform_id( uniform_name(), program_id() ) -> uniform_id().
 get_uniform_id( UniformName, ProgId ) ->
-	case get_maybe_uniform_id( UniformName, ProgId ) of
+    case get_maybe_uniform_id( UniformName, ProgId ) of
 
-		undefined ->
-			throw( { unknown_uniform_variable, UniformName, ProgId } );
+        undefined ->
+            throw( { unknown_uniform_variable, UniformName, ProgId } );
 
-		Id ->
-			%trace_utils:debug_fmt(
-			%   "The identifier of the uniform variable '~ts' is ~w.",
-			%   [ UniformName, Id ] ),
+        Id ->
+            %trace_utils:debug_fmt(
+            %   "The identifier of the uniform variable '~ts' is ~w.",
+            %   [ UniformName, Id ] ),
 
-			Id
+            Id
 
-	end.
+    end.
 
 
 
@@ -3122,8 +3122,8 @@ integer, in the context of the currently installed shader program.
 """.
 -spec set_uniform_ui( uniform_id(), non_neg_integer() ) -> void().
 set_uniform_ui( UniformId, NonNegInt ) ->
-	gl:uniform1ui( UniformId, NonNegInt ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:uniform1ui( UniformId, NonNegInt ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -3133,8 +3133,8 @@ integer, in the context of the currently installed shader program.
 """.
 -spec set_uniform_i( uniform_id(), integer() ) -> void().
 set_uniform_i( UniformId, Int ) ->
-	gl:uniform1i( UniformId, Int ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:uniform1i( UniformId, Int ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -3144,8 +3144,8 @@ the context of the currently installed shader program.
 """.
 -spec set_uniform_f( uniform_id(), float() ) -> void().
 set_uniform_f( UniformId, Float ) ->
-	gl:uniform1f( UniformId, Float ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:uniform1f( UniformId, Float ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -3155,8 +3155,8 @@ in the context of the currently installed shader program.
 """.
 -spec set_uniform_2f( uniform_id(), float(), float() ) -> void().
 set_uniform_2f( UniformId, F1, F2 ) ->
-	gl:uniform2f( UniformId, F1, F2 ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:uniform2f( UniformId, F1, F2 ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -3166,8 +3166,8 @@ floats, in the context of the currently installed shader program.
 """.
 -spec set_uniform_3f( uniform_id(), float(), float(), float() ) -> void().
 set_uniform_3f( UniformId, F1, F2, F3 ) ->
-	gl:uniform3f( UniformId, F1, F2, F3 ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:uniform3f( UniformId, F1, F2, F3 ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -3176,10 +3176,10 @@ Sets the specified uniform variable to the four specified floats, as GLSL
 floats, in the context of the currently installed shader program.
 """.
 -spec set_uniform_4f( uniform_id(), float(), float(), float(), float() ) ->
-												void().
+                                                void().
 set_uniform_4f( UniformId, F1, F2, F3, F4 ) ->
-	gl:uniform4f( UniformId, F1, F2, F3, F4 ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:uniform4f( UniformId, F1, F2, F3, F4 ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -3189,8 +3189,8 @@ floats, in the context of the currently installed shader program.
 """.
 -spec set_uniform_fs( uniform_id(), [ float() ] ) -> void().
 set_uniform_fs( UniformId, Floats ) ->
-	gl:uniform1fv( UniformId, Floats ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:uniform1fv( UniformId, Floats ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -3206,8 +3206,8 @@ the currently installed shader program.
 """.
 -spec set_uniform_point2( uniform_id(), point2() ) -> void().
 set_uniform_point2( UniformId, _P2={ X, Y } ) ->
-	gl:uniform2f( UniformId, X, Y ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:uniform2f( UniformId, X, Y ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -3218,13 +3218,13 @@ the currently installed shader program.
 -spec set_uniform_point3( uniform_id(), point3() ) -> void().
 set_uniform_point3( UniformId, _P3={ X, Y, Z } ) ->
 
-	%trace_utils:debug_fmt( "Setting uniform variable of identifier '~p' "
-	%                       "to ~w.", [ UniformId, P3 ] ),
+    %trace_utils:debug_fmt( "Setting uniform variable of identifier '~p' "
+    %                       "to ~w.", [ UniformId, P3 ] ),
 
-	gl:uniform3f( UniformId, X, Y, Z ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:uniform3f( UniformId, X, Y, Z ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
-	%trace_utils:debug_fmt( "(uniform variable '~p' set)", [ UniformId ] ).
+    %trace_utils:debug_fmt( "(uniform variable '~p' set)", [ UniformId ] ).
 
 
 
@@ -3234,8 +3234,8 @@ the currently installed shader program.
 """.
 -spec set_uniform_point4( uniform_id(), point4() ) -> void().
 set_uniform_point4( UniformId, _P4={ X, Y, Z, W } ) ->
-	gl:uniform4f( UniformId, X, Y, Z, W ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:uniform4f( UniformId, X, Y, Z, W ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -3245,8 +3245,8 @@ the context of the currently installed shader program.
 """.
 -spec set_uniform_point2s( uniform_id(), [ point2() ] ) -> void().
 set_uniform_point2s( UniformId, Point2s ) ->
-	gl:uniform2fv( UniformId, Point2s ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:uniform2fv( UniformId, Point2s ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -3256,8 +3256,8 @@ the context of the currently installed shader program.
 """.
 -spec set_uniform_point3s( uniform_id(), [ point3() ] ) -> void().
 set_uniform_point3s( UniformId, Point3s ) ->
-	gl:uniform3fv( UniformId, Point3s ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:uniform3fv( UniformId, Point3s ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -3267,8 +3267,8 @@ the context of the currently installed shader program.
 """.
 -spec set_uniform_point4s( uniform_id(), [ point4() ] ) -> void().
 set_uniform_point4s( UniformId, Point4s ) ->
-	gl:uniform4fv( UniformId, Point4s ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:uniform4fv( UniformId, Point4s ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -3281,8 +3281,8 @@ the currently installed shader program.
 """.
 -spec set_uniform_vector2( uniform_id(), vector2() ) -> void().
 set_uniform_vector2( UniformId, _Vec2=[ X, Y ] ) ->
-	gl:uniform2f( UniformId, X, Y ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:uniform2f( UniformId, X, Y ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -3292,8 +3292,8 @@ the currently installed shader program.
 """.
 -spec set_uniform_vector3( uniform_id(), vector3() ) -> void().
 set_uniform_vector3( UniformId, _Vec3=[ X, Y, Z ] ) ->
-	gl:uniform3f( UniformId, X, Y, Z ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:uniform3f( UniformId, X, Y, Z ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -3303,8 +3303,8 @@ the currently installed shader program.
 """.
 -spec set_uniform_vector4( uniform_id(), vector4() ) -> void().
 set_uniform_vector4( UniformId, _Vec4=[ X, Y, Z, W ] ) ->
-	gl:uniform4f( UniformId, X, Y, Z, W ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:uniform4f( UniformId, X, Y, Z, W ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -3314,8 +3314,8 @@ context of the currently installed shader program.
 """.
 -spec set_uniform_vector2s( uniform_id(), [ vector2() ] ) -> void().
 set_uniform_vector2s( UniformId, Vec2s ) ->
-	set_uniform_point2s( UniformId, to_gl_vectors( Vec2s ) ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    set_uniform_point2s( UniformId, to_gl_vectors( Vec2s ) ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -3325,8 +3325,8 @@ context of the currently installed shader program.
 """.
 -spec set_uniform_vector3s( uniform_id(), [ vector3() ] ) -> void().
 set_uniform_vector3s( UniformId, Vec3s ) ->
-	set_uniform_point3s( UniformId, to_gl_vectors( Vec3s ) ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    set_uniform_point3s( UniformId, to_gl_vectors( Vec3s ) ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -3336,8 +3336,8 @@ context of the currently installed shader program.
 """.
 -spec set_uniform_vector4s( uniform_id(), [ vector4() ] ) -> void().
 set_uniform_vector4s( UniformId, Vec4s ) ->
-	set_uniform_point4s( UniformId, to_gl_vectors( Vec4s ) ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    set_uniform_point4s( UniformId, to_gl_vectors( Vec4s ) ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -3363,7 +3363,7 @@ the currently installed shader program.
 """.
 -spec set_uniform_matrix2( uniform_id(), matrix2() ) -> void().
 set_uniform_matrix2( UniformId, M2 ) ->
-	set_uniform_matrix2( UniformId, M2, _DoTranspose=true ).
+    set_uniform_matrix2( UniformId, M2, _DoTranspose=true ).
 
 
 
@@ -3374,14 +3374,14 @@ the currently installed shader program.
 -spec set_uniform_matrix2( uniform_id(), matrix2(), boolean() ) -> void().
 set_uniform_matrix2( UniformId, M2, DoTranspose ) ->
 
-	% Necessarily a matrix2 record, so the corresponding tag can be chopped
-	% with:
-	%
-	CoordTuple = erlang:delete_element( _TagIndex=1, M2 ),
+    % Necessarily a matrix2 record, so the corresponding tag can be chopped
+    % with:
+    %
+    CoordTuple = erlang:delete_element( _TagIndex=1, M2 ),
 
-	gl:uniformMatrix2fv( UniformId, gui_opengl:boolean_to_gl( DoTranspose ),
-						 _SingleMatrix=[ CoordTuple ] ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:uniformMatrix2fv( UniformId, gui_opengl:boolean_to_gl( DoTranspose ),
+                         _SingleMatrix=[ CoordTuple ] ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -3391,7 +3391,7 @@ the currently installed shader program.
 """.
 -spec set_uniform_matrix3( uniform_id(), matrix3() ) -> void().
 set_uniform_matrix3( UniformId, M3 ) ->
-	set_uniform_matrix3( UniformId, M3, _DoTranspose=true ).
+    set_uniform_matrix3( UniformId, M3, _DoTranspose=true ).
 
 
 
@@ -3402,15 +3402,15 @@ if requested, in the context of the currently installed shader program.
 -spec set_uniform_matrix3( uniform_id(), matrix3(), boolean() ) -> void().
 set_uniform_matrix3( UniformId, M3, DoTranspose ) ->
 
-	% A to_tuple/1 function could merge the next two operations more
-	% efficiently:
-	%
-	CanonM3 = matrix3:to_canonical( M3 ),
-	CoordTuple = erlang:delete_element( _TagIndex=1, CanonM3 ),
+    % A to_tuple/1 function could merge the next two operations more
+    % efficiently:
+    %
+    CanonM3 = matrix3:to_canonical( M3 ),
+    CoordTuple = erlang:delete_element( _TagIndex=1, CanonM3 ),
 
-	gl:uniformMatrix3fv( UniformId, gui_opengl:boolean_to_gl( DoTranspose ),
-						 _SingleMatrix=[ CoordTuple ] ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:uniformMatrix3fv( UniformId, gui_opengl:boolean_to_gl( DoTranspose ),
+                         _SingleMatrix=[ CoordTuple ] ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -3420,7 +3420,7 @@ the currently installed shader program.
 """.
 -spec set_uniform_matrix4( uniform_id(), matrix4() ) -> void().
 set_uniform_matrix4( UniformId, M4 ) ->
-	set_uniform_matrix4( UniformId, M4, _DoTranspose=true ).
+    set_uniform_matrix4( UniformId, M4, _DoTranspose=true ).
 
 
 
@@ -3431,15 +3431,15 @@ if requested, in the context of the currently installed shader program.
 -spec set_uniform_matrix4( uniform_id(), matrix4(), boolean() ) -> void().
 set_uniform_matrix4( UniformId, M4, DoTranspose ) ->
 
-	% A to_tuple/1 function could merge the next two operations more
-	% efficiently:
-	%
-	CanonM4 = matrix4:to_canonical( M4 ),
-	CoordTuple = erlang:delete_element( _TagIndex=1, CanonM4 ),
+    % A to_tuple/1 function could merge the next two operations more
+    % efficiently:
+    %
+    CanonM4 = matrix4:to_canonical( M4 ),
+    CoordTuple = erlang:delete_element( _TagIndex=1, CanonM4 ),
 
-	gl:uniformMatrix4fv( UniformId, gui_opengl:boolean_to_gl( DoTranspose ),
-						 _SingleMatrix=[ CoordTuple ] ),
-	cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
+    gl:uniformMatrix4fv( UniformId, gui_opengl:boolean_to_gl( DoTranspose ),
+                         _SingleMatrix=[ CoordTuple ] ),
+    cond_utils:if_defined( myriad_check_shaders, gui_opengl:check_error() ).
 
 
 
@@ -3451,11 +3451,11 @@ tuples).
 Note: points (vertices), hence tuples, shall be preferred wherever relevant.
 """.
 -spec to_gl_vectors( [ vector2() ] ) -> [ gl_vec2()   ];
-				   ( [ vector3() ] ) -> [ gl_vec3()   ];
-				   ( [ vector4() ] ) -> [ gl_vec4()   ];
-				   ( [ vector()  ] ) -> [ gl_vector() ].
+                   ( [ vector3() ] ) -> [ gl_vec3()   ];
+                   ( [ vector4() ] ) -> [ gl_vec4()   ];
+                   ( [ vector()  ] ) -> [ gl_vector() ].
 to_gl_vectors( Vecs ) ->
-	[ list_to_tuple( V ) || V <- Vecs ].
+    [ list_to_tuple( V ) || V <- Vecs ].
 
 
 % Inlined versions (e.g. to_gl_vec2/1 could make sense).
@@ -3469,17 +3469,17 @@ conventions regarding types.
 May return for example {?GL_FLOAT,3}.
 """.
 -spec characterise_series( vertex_attribute_series() ) ->
-										{ component_type(), component_count() }.
+                                        { component_type(), component_count() }.
 characterise_series( _VAttrSeries=[ FirstTuple | _T ] ) ->
-	% All tuples of this series supposed to be of the same type, so examining
-	% the first tuple is sufficient:
+    % All tuples of this series supposed to be of the same type, so examining
+    % the first tuple is sufficient:
 
-	% Based on the first element of this first tuple:
-	ComponentType = infer_gl_component_type( element( _Index=1, FirstTuple ) ),
+    % Based on the first element of this first tuple:
+    ComponentType = infer_gl_component_type( element( _Index=1, FirstTuple ) ),
 
-	ComponentCount = size( FirstTuple ),
+    ComponentCount = size( FirstTuple ),
 
-	{ ComponentType, ComponentCount }.
+    { ComponentType, ComponentCount }.
 
 
 
@@ -3489,36 +3489,36 @@ attribute series.
 """.
 -spec get_stride_and_offsets( comp_pairs() ) -> { stride(), [ offset() ] }.
 get_stride_and_offsets( CompPairs ) ->
-	get_stride_and_offsets( CompPairs, _Stride=0, _CurrentOffset=0,
-							_AccOffsets=[] ).
+    get_stride_and_offsets( CompPairs, _Stride=0, _CurrentOffset=0,
+                            _AccOffsets=[] ).
 
 
 % (helper)
 get_stride_and_offsets( _CompPairs=[], Stride, _CurrentOffset, AccOffsets ) ->
-	{ Stride, lists:reverse( AccOffsets ) };
+    { Stride, lists:reverse( AccOffsets ) };
 
 get_stride_and_offsets( _CompPairs=[ { CType, CCount } | T ], Stride,
-						CurrentOffset, AccOffsets ) ->
-	ElemSize = CCount * gui_opengl:get_component_size( CType ),
-	NewStride = Stride + ElemSize,
-	NewAccOffsets = [ CurrentOffset | AccOffsets ],
-	get_stride_and_offsets( T, NewStride, CurrentOffset+ElemSize,
-							NewAccOffsets ).
+                        CurrentOffset, AccOffsets ) ->
+    ElemSize = CCount * gui_opengl:get_component_size( CType ),
+    NewStride = Stride + ElemSize,
+    NewAccOffsets = [ CurrentOffset | AccOffsets ],
+    get_stride_and_offsets( T, NewStride, CurrentOffset+ElemSize,
+                            NewAccOffsets ).
 
 
 
 -doc "Serialises in a binary the specified series of vertex attribute values.".
 -spec to_buffer( vertex_attribute_series(), component_type() ) ->
-													array_buffer().
+                                                    array_buffer().
 % From most frequent type to least:
 to_buffer( VAttrSeries, _ComponentType=?GL_FLOAT ) ->
-	bin_utils:tuples_to_float32s_binary( VAttrSeries );
+    bin_utils:tuples_to_float32s_binary( VAttrSeries );
 
 to_buffer( VAttrSeries, _ComponentType=?GL_UNSIGNED_INT ) ->
-	bin_utils:tuples_to_uint32s_binary( VAttrSeries );
+    bin_utils:tuples_to_uint32s_binary( VAttrSeries );
 
 to_buffer( VAttrSeries, _ComponentType=?GL_INT ) ->
-	bin_utils:tuples_to_int32s_binary( VAttrSeries ).
+    bin_utils:tuples_to_int32s_binary( VAttrSeries ).
 
 
 % Other GL types to be considered in the future.

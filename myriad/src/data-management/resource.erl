@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -44,25 +44,25 @@ environments.
 
 
 -export([ % Local repository:
-		  create_repository/0, create_repository/1,
-		  get/2, get_multiple/2,
-		  get_bitmap/2, get_bitmaps/2,
+          create_repository/0, create_repository/1,
+          get/2, get_multiple/2,
+          get_bitmap/2, get_bitmaps/2,
 
-		  has/2, register/2, register/3,
-		  remove/2, remove_multiple/2, flush/1,
+          has/2, register/2, register/3,
+          remove/2, remove_multiple/2, flush/1,
 
-		  locate_data/2, locate_multiple_data/2, get_path/2,
-		  repository_to_string/1, resource_type_to_string/1,
+          locate_data/2, locate_multiple_data/2, get_path/2,
+          repository_to_string/1, resource_type_to_string/1,
 
-		  % Server-side:
+          % Server-side:
 
-		  create_server/0, create_server/1, create_server/2,
+          create_server/0, create_server/1, create_server/2,
 
-		  create_linked_server/0, create_linked_server/1,
-		  create_linked_server/2,
+          create_linked_server/0, create_linked_server/1,
+          create_linked_server/2,
 
-		  % Myriad built-in:
-		  get_builtin_directory/0 ]).
+          % Myriad built-in:
+          get_builtin_directory/0 ]).
 
 
 
@@ -199,13 +199,13 @@ repository.
 
 
 -export_type([ resource/0, bitmap_resource/0,
-			   resource_file_id/0, resource_file_id_string/0,
-			   any_resource_file_id/0,
-			   resource_logical_id/0,
-			   resource_id/0, bitmap_resource_id/0,
-			   resource_table/0, resource_table/1,
-			   resource_repository/0,
-			   resource_holder/0 ]).
+               resource_file_id/0, resource_file_id_string/0,
+               any_resource_file_id/0,
+               resource_logical_id/0,
+               resource_id/0, bitmap_resource_id/0,
+               resource_table/0, resource_table/1,
+               resource_repository/0,
+               resource_holder/0 ]).
 
 
 
@@ -247,8 +247,8 @@ repository.
 -doc "Returns an empty repository, not anchored to a specific root directory.".
 -spec create_repository() -> resource_repository().
 create_repository() ->
-	#resource_repository{ root_directory=undefined,
-						  table=table:new() }.
+    #resource_repository{ root_directory=undefined,
+                          table=table:new() }.
 
 
 
@@ -260,14 +260,14 @@ this directory.
 -spec create_repository( any_directory_path() ) -> resource_repository().
 create_repository( AnyRootDir ) ->
 
-	AbsRootDir = file_utils:ensure_path_is_absolute( AnyRootDir ),
+    AbsRootDir = file_utils:ensure_path_is_absolute( AnyRootDir ),
 
-	file_utils:is_existing_directory_or_link( AbsRootDir )
-		orelse throw( { non_existing_resource_directory, AbsRootDir } ),
+    file_utils:is_existing_directory_or_link( AbsRootDir )
+        orelse throw( { non_existing_resource_directory, AbsRootDir } ),
 
-	#resource_repository{
-		root_directory=text_utils:ensure_binary( AbsRootDir ),
-		table=table:new() }.
+    #resource_repository{
+        root_directory=text_utils:ensure_binary( AbsRootDir ),
+        table=table:new() }.
 
 
 
@@ -284,7 +284,7 @@ environment set (see gui:{g,s}et_backend_environment/1).
 """.
 -spec create_server() -> resource_server_pid().
 create_server() ->
-	spawn( fun() -> server_init() end ).
+    spawn( fun() -> server_init() end ).
 
 
 
@@ -298,7 +298,7 @@ environment set (see gui:{g,s}et_backend_environment/1).
 """.
 -spec create_server( any_directory_path() ) -> resource_server_pid().
 create_server( AnyRootDir ) ->
-	spawn( fun() -> server_init( text_utils:ensure_binary( AnyRootDir ) ) end ).
+    spawn( fun() -> server_init( text_utils:ensure_binary( AnyRootDir ) ) end ).
 
 
 
@@ -312,11 +312,11 @@ get_bitmaps/2), the calling process shall already have its GUI backend
 environment set (see gui:{g,s}et_backend_environment/1).
 """.
 -spec create_server( any_directory_path(), gui:backend_environment() ) ->
-											resource_server_pid().
+                                            resource_server_pid().
 create_server( AnyRootDir, GUIBackendEnv ) ->
-	spawn( fun() ->
-			server_init( text_utils:ensure_binary( AnyRootDir ), GUIBackendEnv )
-		   end ).
+    spawn( fun() ->
+            server_init( text_utils:ensure_binary( AnyRootDir ), GUIBackendEnv )
+           end ).
 
 
 
@@ -329,7 +329,7 @@ environment set (see gui:{g,s}et_backend_environment/1).
 """.
 -spec create_linked_server() -> resource_server_pid().
 create_linked_server() ->
-	spawn_link( fun() -> server_init() end ).
+    spawn_link( fun() -> server_init() end ).
 
 
 
@@ -343,9 +343,9 @@ environment set (see gui:{g,s}et_backend_environment/1).
 """.
 -spec create_linked_server( any_directory_path() ) -> resource_server_pid().
 create_linked_server( AnyRootDir ) ->
-	spawn_link( fun() ->
-					server_init( text_utils:ensure_binary( AnyRootDir ) )
-				end ).
+    spawn_link( fun() ->
+                    server_init( text_utils:ensure_binary( AnyRootDir ) )
+                end ).
 
 
 
@@ -359,12 +359,12 @@ get_bitmaps/2), the calling process shall already have its GUI backend
 environment set (see gui:{g,s}et_backend_environment/1).
 """.
 -spec create_linked_server( any_directory_path(), gui:backend_environment() ) ->
-											resource_server_pid().
+                                            resource_server_pid().
 create_linked_server( AnyRootDir, GUIBackendEnv ) ->
-	spawn_link( fun() ->
-					server_init( text_utils:ensure_binary( AnyRootDir ),
-								 GUIBackendEnv )
-				end ).
+    spawn_link( fun() ->
+                    server_init( text_utils:ensure_binary( AnyRootDir ),
+                                 GUIBackendEnv )
+                end ).
 
 
 
@@ -374,8 +374,8 @@ create_linked_server( AnyRootDir, GUIBackendEnv ) ->
 -doc "Returns the Myriad base built-in resource directory.".
 -spec get_builtin_directory() -> directory_path().
 get_builtin_directory() ->
-	file_utils:join(
-		[ basic_utils:get_myriad_root_path(), "priv", "resources" ] ).
+    file_utils:join(
+        [ basic_utils:get_myriad_root_path(), "priv", "resources" ] ).
 
 
 
@@ -387,10 +387,10 @@ Returns the resource (unspecialised) content corresponding to the specified
 (file or logical) identifier, based on the specified resource holder.
 """.
 -spec get( resource_id(), resource_repository() ) ->
-				{ resource(), resource_repository() };
-		 ( resource_id(), resource_server_pid() ) -> resource().
+                { resource(), resource_repository() };
+         ( resource_id(), resource_server_pid() ) -> resource().
 get( RscIdStr, RscHolder ) when is_list( RscIdStr ) ->
-	get( text_utils:string_to_binary( RscIdStr ), RscHolder );
+    get( text_utils:string_to_binary( RscIdStr ), RscHolder );
 
 % First, clauses for repository (local) side:
 %
@@ -401,77 +401,77 @@ get( RscIdStr, RscHolder ) when is_list( RscIdStr ) ->
 %
 get( RscId, RscRef=#resource_repository{ table=RscTable } ) ->
 
-	case table:lookup_entry( RscId, RscTable ) of
+    case table:lookup_entry( RscId, RscTable ) of
 
-		{ value, Rsc } ->
-			% Resource logical or not:
-			cond_utils:if_defined( myriad_debug_resources,
-				trace_utils:debug_fmt( "[~w] Returning already-available "
-									   "resource '~p'.", [ self(), RscId ] ) ),
-			{ Rsc, RscRef };
+        { value, Rsc } ->
+            % Resource logical or not:
+            cond_utils:if_defined( myriad_debug_resources,
+                trace_utils:debug_fmt( "[~w] Returning already-available "
+                                       "resource '~p'.", [ self(), RscId ] ) ),
+            { Rsc, RscRef };
 
-		key_not_found ->
-			% Then hopefully it is a binary string to allow for a loading from
-			% file:
-			%
-			case is_binary( RscId ) of
+        key_not_found ->
+            % Then hopefully it is a binary string to allow for a loading from
+            % file:
+            %
+            case is_binary( RscId ) of
 
-				true ->
-					BinRscPath =
-						case RscRef#resource_repository.root_directory of
+                true ->
+                    BinRscPath =
+                        case RscRef#resource_repository.root_directory of
 
-							undefined ->
-								RscId;
+                            undefined ->
+                                RscId;
 
-							BinRootDir ->
-								file_utils:bin_join( BinRootDir, RscId )
+                            BinRootDir ->
+                                file_utils:bin_join( BinRootDir, RscId )
 
-						end,
+                        end,
 
-					file_utils:is_existing_file_or_link( BinRscPath ) orelse
-						throw( { resource_not_found,
-								 text_utils:binary_to_string( BinRscPath ) } ),
+                    file_utils:is_existing_file_or_link( BinRscPath ) orelse
+                        throw( { resource_not_found,
+                                 text_utils:binary_to_string( BinRscPath ) } ),
 
-					BinRsc = file_utils:read_whole( BinRscPath ),
+                    BinRsc = file_utils:read_whole( BinRscPath ),
 
-					NewRscTable =
-						table:add_entry( RscId, BinRsc, RscTable ),
+                    NewRscTable =
+                        table:add_entry( RscId, BinRsc, RscTable ),
 
-					NewRscRef =
-						RscRef#resource_repository{ table=NewRscTable },
+                    NewRscRef =
+                        RscRef#resource_repository{ table=NewRscTable },
 
-					cond_utils:if_defined( myriad_debug_resources,
-						trace_utils:debug_fmt(
-							"[~w] Returning just-loaded resource '~p'.",
-							[ self(), RscId ] ) ),
+                    cond_utils:if_defined( myriad_debug_resources,
+                        trace_utils:debug_fmt(
+                            "[~w] Returning just-loaded resource '~p'.",
+                            [ self(), RscId ] ) ),
 
-					{ BinRsc, NewRscRef };
+                    { BinRsc, NewRscRef };
 
-				_False ->
-					trace_bridge:error_fmt( "No (logical) resource of "
-						"identifier '~p', in the repository, "
-						"and it is not loadable.", [ RscId ] ),
-					throw( { cannot_load_resource_from, RscId } )
+                _False ->
+                    trace_bridge:error_fmt( "No (logical) resource of "
+                        "identifier '~p', in the repository, "
+                        "and it is not loadable.", [ RscId ] ),
+                    throw( { cannot_load_resource_from, RscId } )
 
-			end
+            end
 
-	end;
+    end;
 
 % Second, server-side.
 %
 % RscId is by design not a list/string (hence is a logical identifier):
 get( RscId, RscSrvPid ) when is_pid( RscSrvPid ) ->
-	RscSrvPid ! { get, RscId, self() },
-	receive
+    RscSrvPid ! { get, RscId, self() },
+    receive
 
-		{ notifyResource, Rsc } ->
-			cond_utils:if_defined( myriad_debug_resources,
-				trace_utils:debug_fmt( "[~w] Returning received "
-					"resource for '~p'.", [ self(), RscId ] ) ),
+        { notifyResource, Rsc } ->
+            cond_utils:if_defined( myriad_debug_resources,
+                trace_utils:debug_fmt( "[~w] Returning received "
+                    "resource for '~p'.", [ self(), RscId ] ) ),
 
-			Rsc
+            Rsc
 
-	end.
+    end.
 
 
 
@@ -480,37 +480,37 @@ Returns the resource (unspecialised) contents corresponding to the specified
 (file or logical) identifiers, based on the specified resource holder.
 """.
 -spec get_multiple( [ resource_id() ], resource_repository() ) ->
-				{ [ resource() ], resource_repository() };
-				  ( [ resource_id() ], resource_server_pid() ) ->
-											[ resource() ].
+                { [ resource() ], resource_repository() };
+                  ( [ resource_id() ], resource_server_pid() ) ->
+                                            [ resource() ].
 % Server-side:
 get_multiple( RscIds, RscSrvPid ) when is_pid( RscSrvPid ) ->
-	BestRscIds = get_best_identifiers( RscIds ),
+    BestRscIds = get_best_identifiers( RscIds ),
 
-	% Wrapping list useless:
-	RscSrvPid ! { getMultiple, BestRscIds, self() },
-	receive
+    % Wrapping list useless:
+    RscSrvPid ! { getMultiple, BestRscIds, self() },
+    receive
 
-		{ notifyResources, Rscs } ->
-			cond_utils:if_defined( myriad_debug_resources,
-				trace_utils:debug_fmt( "[~w] Returning received "
-					"resources for '~p'.", [ self(), RscIds ] ) ),
+        { notifyResources, Rscs } ->
+            cond_utils:if_defined( myriad_debug_resources,
+                trace_utils:debug_fmt( "[~w] Returning received "
+                    "resources for '~p'.", [ self(), RscIds ] ) ),
 
-			Rscs
+            Rscs
 
-	end;
+    end;
 
 % Local side:
 get_multiple( RscIds, RscRef ) -> % Implicit: RscRef=#resource_repository{}
-	% (resource identifiers being processed in reverse order, resources are
-	% returned in the correct order):
-	%
-	lists:foldr( fun( RscId, _Acc={ AccRscs, AccRscRef } ) ->
-					{ Rsc, NewRscRef } = get( RscId, AccRscRef ),
-					{ [ Rsc | AccRscs ], NewRscRef }
-				 end,
-				 _Acc0={ _AccRscs=[], RscRef },
-				 _List=RscIds ).
+    % (resource identifiers being processed in reverse order, resources are
+    % returned in the correct order):
+    %
+    lists:foldr( fun( RscId, _Acc={ AccRscs, AccRscRef } ) ->
+                    { Rsc, NewRscRef } = get( RscId, AccRscRef ),
+                    { [ Rsc | AccRscs ], NewRscRef }
+                 end,
+                 _Acc0={ _AccRscs=[], RscRef },
+                 _List=RscIds ).
 
 
 
@@ -519,10 +519,10 @@ Returns the bitmap resource content corresponding to the specified (file or
 logical) identifier, based on the specified resource holder.
 """.
 -spec get_bitmap( bitmap_resource_id(), resource_repository() ) ->
-				{ bitmap(), resource_repository() };
-				( bitmap_resource_id(), resource_server_pid() ) -> bitmap().
+                { bitmap(), resource_repository() };
+                ( bitmap_resource_id(), resource_server_pid() ) -> bitmap().
 get_bitmap( BmpIdStr, RscHolder ) when is_list( BmpIdStr ) ->
-	get_bitmap( text_utils:string_to_binary( BmpIdStr ), RscHolder );
+    get_bitmap( text_utils:string_to_binary( BmpIdStr ), RscHolder );
 
 % First, clauses for repository (local) side:
 %
@@ -533,125 +533,125 @@ get_bitmap( BmpIdStr, RscHolder ) when is_list( BmpIdStr ) ->
 %
 get_bitmap( BmpId, BmpRef=#resource_repository{ table=RscTable } ) ->
 
-	case table:lookup_entry( BmpId, RscTable ) of
+    case table:lookup_entry( BmpId, RscTable ) of
 
-		{ value, Bmp } ->
+        { value, Bmp } ->
 
-			cond_utils:if_defined( myriad_check_resources,
-				begin
+            cond_utils:if_defined( myriad_check_resources,
+                begin
 
-					% Not expected to happen:
-					wx:is_null( Bmp ) andalso
-						throw( { null_resource_bitmap, Bmp, BmpId } ),
+                    % Not expected to happen:
+                    wx:is_null( Bmp ) andalso
+                        throw( { null_resource_bitmap, Bmp, BmpId } ),
 
-					try
+                    try
 
-						% wxBitmap:isOk/1 likely to crash with EXIT:
-						% {badarg,"This"} rather than returning false:
-						%
-						true = wxBitmap:isOk( Bmp )
+                        % wxBitmap:isOk/1 likely to crash with EXIT:
+                        % {badarg,"This"} rather than returning false:
+                        %
+                        true = wxBitmap:isOk( Bmp )
 
-					catch _:E ->
-						% Already deallocated (gui_bitmap_destruct/1), probably
-						% by mistake:
-						%
-						throw( { stale_resource_bitmap, Bmp, BmpId, E } )
+                    catch _:E ->
+                        % Already deallocated (gui_bitmap_destruct/1), probably
+                        % by mistake:
+                        %
+                        throw( { stale_resource_bitmap, Bmp, BmpId, E } )
 
-					end
+                    end
 
-				end ),
+                end ),
 
-			% Resource logical or not:
-			cond_utils:if_defined( myriad_debug_resources,
-				trace_utils:debug_fmt( "[~w] Returning already-available "
-					"bitmap resource ~w for '~p'.",
-				   [ self(), Bmp, BmpId ] ) ),
+            % Resource logical or not:
+            cond_utils:if_defined( myriad_debug_resources,
+                trace_utils:debug_fmt( "[~w] Returning already-available "
+                    "bitmap resource ~w for '~p'.",
+                   [ self(), Bmp, BmpId ] ) ),
 
-			{ Bmp, BmpRef };
+            { Bmp, BmpRef };
 
 
-		key_not_found ->
-			% Then hopefully it is a binary string to allow for a loading from
-			% file:
-			%
-			case is_binary( BmpId ) of
+        key_not_found ->
+            % Then hopefully it is a binary string to allow for a loading from
+            % file:
+            %
+            case is_binary( BmpId ) of
 
-				true ->
-					BmpPath = get_path_from_repository( BmpId, BmpRef ),
+                true ->
+                    BmpPath = get_path_from_repository( BmpId, BmpRef ),
 
-					file_utils:is_existing_file_or_link( BmpPath ) orelse
-						throw( { bitmap_resource_not_found,
-								 text_utils:ensure_string( BmpPath ) } ),
+                    file_utils:is_existing_file_or_link( BmpPath ) orelse
+                        throw( { bitmap_resource_not_found,
+                                 text_utils:ensure_string( BmpPath ) } ),
 
-					Bitmap = gui_bitmap:create_from( BmpPath ),
+                    Bitmap = gui_bitmap:create_from( BmpPath ),
 
-					NewRscTable = table:add_entry( BmpId, Bitmap, RscTable ),
+                    NewRscTable = table:add_entry( BmpId, Bitmap, RscTable ),
 
-					% The following workaround, implemented to circumvent an
-					% early deallocation, was actually useless (see
-					% https://erlangforums.com/t/reference-counting-wx-object-instances/3226/):;
-					% when using such a resource holder, the caller shall not
-					% destruct its instances by itself (for example with
-					% gui_bitmap:destruct/1):
+                    % The following workaround, implemented to circumvent an
+                    % early deallocation, was actually useless (see
+                    % https://erlangforums.com/t/reference-counting-wx-object-instances/3226/):;
+                    % when using such a resource holder, the caller shall not
+                    % destruct its instances by itself (for example with
+                    % gui_bitmap:destruct/1):
 
-					% Ensures that a dummy frame is available:
-					% DummyFrame =
-					%		case BmpRef#resource_repository.dummy_frame of
+                    % Ensures that a dummy frame is available:
+                    % DummyFrame =
+                    %       case BmpRef#resource_repository.dummy_frame of
 
-					%	undefined ->
-					%		% Parentless gui_window is not a legit one, so:
-					%		gui_frame:create( "MyriadGUI dummy frame" );
+                    %   undefined ->
+                    %       % Parentless gui_window is not a legit one, so:
+                    %       gui_frame:create( "MyriadGUI dummy frame" );
 
-					%	DFrame ->
-					%		DFrame
+                    %   DFrame ->
+                    %       DFrame
 
-					% end,
+                    % end,
 
-					% We created a dummy static bitmap whose parent is / which
-					% is owned by the dummy frame, to prevent that its bitmap is
-					% deallocated whereas that bitmap is still held by the
-					% cache:
-					%
-					%_StaticBmp = gui_bitmap:create_static_display( Bitmap,
-					%   _Parent=DummyFrame ),
+                    % We created a dummy static bitmap whose parent is / which
+                    % is owned by the dummy frame, to prevent that its bitmap is
+                    % deallocated whereas that bitmap is still held by the
+                    % cache:
+                    %
+                    %_StaticBmp = gui_bitmap:create_static_display( Bitmap,
+                    %   _Parent=DummyFrame ),
 
-					NewBmpRef = BmpRef#resource_repository{
-						table=NewRscTable },
-						%dummy_frame=DummyFrame },
+                    NewBmpRef = BmpRef#resource_repository{
+                        table=NewRscTable },
+                        %dummy_frame=DummyFrame },
 
-					cond_utils:if_defined( myriad_debug_resources,
-						trace_utils:debug_fmt(
-							"[~w] Returning just-loaded bitmap resource ~w "
-							"for '~p'.", [ self(), Bitmap, BmpId ] ) ),
+                    cond_utils:if_defined( myriad_debug_resources,
+                        trace_utils:debug_fmt(
+                            "[~w] Returning just-loaded bitmap resource ~w "
+                            "for '~p'.", [ self(), Bitmap, BmpId ] ) ),
 
-					{ Bitmap, NewBmpRef };
+                    { Bitmap, NewBmpRef };
 
-				_False ->
-					trace_bridge:error_fmt( "No (logical) bitmap resource of "
-						"identifier '~p', in the repository, "
-						"and it is not loadable.", [ BmpId ] ),
-					throw( { cannot_load_bitmap_resource_from, BmpId } )
+                _False ->
+                    trace_bridge:error_fmt( "No (logical) bitmap resource of "
+                        "identifier '~p', in the repository, "
+                        "and it is not loadable.", [ BmpId ] ),
+                    throw( { cannot_load_bitmap_resource_from, BmpId } )
 
-			end
+            end
 
-	end;
+    end;
 
 % Second, server-side.
 %
 % BmpId is by design not a list/string (hence is a logical identifier):
 get_bitmap( BmpId, BmpSrvPid ) when is_pid( BmpSrvPid ) ->
-	BmpSrvPid ! { getBitmap, BmpId, self() },
-	receive
+    BmpSrvPid ! { getBitmap, BmpId, self() },
+    receive
 
-		{ notifyBitmapResource, Bitmap } ->
-			cond_utils:if_defined( myriad_debug_resources,
-				trace_utils:debug_fmt( "[~w] Returning received "
-					"bitmap resource ~w for '~p'.",
-					[ self(), Bitmap, BmpId ] ) ),
+        { notifyBitmapResource, Bitmap } ->
+            cond_utils:if_defined( myriad_debug_resources,
+                trace_utils:debug_fmt( "[~w] Returning received "
+                    "bitmap resource ~w for '~p'.",
+                    [ self(), Bitmap, BmpId ] ) ),
 
-			Bitmap
+            Bitmap
 
-	end.
+    end.
 
 
 
@@ -662,41 +662,41 @@ logical) identifiers, based on the specified resource holder.
 Like get_multiple/2, but for bitmaps.
 """.
 -spec get_bitmaps( [ bitmap_resource_id() ], resource_repository() ) ->
-							{ [ bitmap() ], resource_repository() };
-				 ( [ bitmap_resource_id() ], resource_server_pid() ) ->
-							[ bitmap() ].
+                            { [ bitmap() ], resource_repository() };
+                 ( [ bitmap_resource_id() ], resource_server_pid() ) ->
+                            [ bitmap() ].
 % Server-side:
 get_bitmaps( BitmapRscIds, RscSrvPid ) when is_pid( RscSrvPid ) ->
-	BestBmpRscIds = get_best_identifiers( BitmapRscIds ),
+    BestBmpRscIds = get_best_identifiers( BitmapRscIds ),
 
-	% Wrapping list useless:
-	RscSrvPid ! { getBitmaps, BestBmpRscIds, self() },
-	receive
+    % Wrapping list useless:
+    RscSrvPid ! { getBitmaps, BestBmpRscIds, self() },
+    receive
 
-		{ notifyBitmapResources, BmpRscs } ->
-			cond_utils:if_defined( myriad_debug_resources,
-				trace_utils:debug_fmt( "[~w] Returning received "
-					"bitmap resources ~w for ~p.",
-					[ self(), BmpRscs, BestBmpRscIds ] ) ),
+        { notifyBitmapResources, BmpRscs } ->
+            cond_utils:if_defined( myriad_debug_resources,
+                trace_utils:debug_fmt( "[~w] Returning received "
+                    "bitmap resources ~w for ~p.",
+                    [ self(), BmpRscs, BestBmpRscIds ] ) ),
 
-			BmpRscs
+            BmpRscs
 
-	end;
+    end;
 
 % Local side; implicit: RscRef=#resource_repository{}:
 get_bitmaps( BitmapRscIds, RscRef ) ->
 
-	%trace_utils:debug_fmt( "Resource repository: ~p.", [ RscRef ] ),
+    %trace_utils:debug_fmt( "Resource repository: ~p.", [ RscRef ] ),
 
-	% (bitmap identifiers being processed in reverse order, bitmaps are returned
-	% in the correct order):
-	%
-	lists:foldr( fun( BRId, _Acc={ AccBitmaps, AccRscRef } ) ->
-					{ Bitmap, NewRscRef } = get_bitmap( BRId, AccRscRef ),
-					{ [ Bitmap | AccBitmaps ], NewRscRef }
-				 end,
-				 _Acc0={ _AccBitmaps=[], RscRef },
-				 _List=BitmapRscIds ).
+    % (bitmap identifiers being processed in reverse order, bitmaps are returned
+    % in the correct order):
+    %
+    lists:foldr( fun( BRId, _Acc={ AccBitmaps, AccRscRef } ) ->
+                    { Bitmap, NewRscRef } = get_bitmap( BRId, AccRscRef ),
+                    { [ Bitmap | AccBitmaps ], NewRscRef }
+                 end,
+                 _Acc0={ _AccBitmaps=[], RscRef },
+                 _List=BitmapRscIds ).
 
 
 
@@ -707,20 +707,20 @@ is registered in the specified resource holder.
 -spec has( resource_id(), resource_holder() ) -> boolean().
 % As plain strings are tolerated:
 has( RscIdStr, RscHolder ) when is_list( RscIdStr )->
-	has( text_utils:string_to_binary( RscIdStr ), RscHolder );
+    has( text_utils:string_to_binary( RscIdStr ), RscHolder );
 
 % Non-plain string from here:
 has( RscId, #resource_repository{ table=RscTable } ) ->
-	table:has_entry( RscId, RscTable );
+    table:has_entry( RscId, RscTable );
 
 has( RscId, RscSrvPid ) ->
-	RscSrvPid ! { has, RscId, self() },
-	receive
+    RscSrvPid ! { has, RscId, self() },
+    receive
 
-		{ notifyResourceAvailability, Bool } ->
-			Bool
+        { notifyResourceAvailability, Bool } ->
+            Bool
 
-	end.
+    end.
 
 
 
@@ -736,31 +736,31 @@ means - for example through a network or if being generated as a whole).
 Any resource previously registered under the same identifier will be replaced.
 """.
 -spec register( maybe_list( { resource_logical_id(), resource() } ),
-				resource_repository() ) -> resource_repository();
-			  ( maybe_list( { resource_logical_id(), resource() } ),
-				resource_server_pid() ) -> void().
+                resource_repository() ) -> resource_repository();
+              ( maybe_list( { resource_logical_id(), resource() } ),
+                resource_server_pid() ) -> void().
 % As maybe_list:
 register( RscPair={ _Id, _RSc }, RscRef ) ->
-	register( [ RscPair ], RscRef );
+    register( [ RscPair ], RscRef );
 
 % Repository (local) side:
 register( RscPairs, RscRef=#resource_repository{ table=RscTable } )
-											when is_list( RscPairs ) ->
+                                            when is_list( RscPairs ) ->
 
-	cond_utils:if_defined( myriad_debug_resources,
-		trace_utils:debug_fmt( "[~w] Registering logical resources ~ts.",
-			[ self(), text_utils:terms_to_string(
-				[ I || { I, _R } <- RscPairs ] ) ] ) ),
+    cond_utils:if_defined( myriad_debug_resources,
+        trace_utils:debug_fmt( "[~w] Registering logical resources ~ts.",
+            [ self(), text_utils:terms_to_string(
+                [ I || { I, _R } <- RscPairs ] ) ] ) ),
 
-	check_logical_ids( RscPairs ),
+    check_logical_ids( RscPairs ),
 
-	NewRscTable = table:add_entries( RscPairs, RscTable ),
-	RscRef#resource_repository{ table=NewRscTable };
+    NewRscTable = table:add_entries( RscPairs, RscTable ),
+    RscRef#resource_repository{ table=NewRscTable };
 
 % Server-side:
 register( RscPairs, RscSrvPid ) ->
-	check_logical_ids( RscPairs ),
-	RscSrvPid ! { register, [ RscPairs ] }.
+    check_logical_ids( RscPairs ),
+    RscSrvPid ! { register, [ RscPairs ] }.
 
 
 
@@ -769,8 +769,8 @@ Checks that the resource identifiers in the specified pairs are legit logical
 ones.
 """.
 check_logical_ids( RscPairs ) ->
-	[ is_list( I ) andalso throw( { invalid_logical_resource_identifier, I } )
-		|| { I, _R } <- RscPairs ].
+    [ is_list( I ) andalso throw( { invalid_logical_resource_identifier, I } )
+        || { I, _R } <- RscPairs ].
 
 
 
@@ -785,26 +785,26 @@ means - for example through a network or if being generated as a whole).
 Any resource previously registered under the same identifier will be replaced.
 """.
 -spec register( resource_logical_id(), resource(), resource_repository() ) ->
-											resource_repository();
-			  ( resource_logical_id(), resource(), resource_server_pid() ) ->
-											void().
+                                            resource_repository();
+              ( resource_logical_id(), resource(), resource_server_pid() ) ->
+                                            void().
 % Repository (local) side; RscLogId must not be a plain list:
 register( RscLogId, _Rsc, _RscRef ) when is_list( RscLogId ) ->
-	throw( { invalid_logical_resource_identifier, RscLogId } );
+    throw( { invalid_logical_resource_identifier, RscLogId } );
 
 % Local side:
 register( RscLogId, Rsc, RscRef=#resource_repository{ table=RscTable } ) ->
 
-	cond_utils:if_defined( myriad_debug_resources,
-		trace_utils:debug_fmt( "[~w] Registering logical resource '~p', "
-			"whose content is ~w.", [ self(), RscLogId, Rsc ] ) ),
+    cond_utils:if_defined( myriad_debug_resources,
+        trace_utils:debug_fmt( "[~w] Registering logical resource '~p', "
+            "whose content is ~w.", [ self(), RscLogId, Rsc ] ) ),
 
-	NewRscTable = table:add_entry( RscLogId, Rsc, RscTable ),
-	RscRef#resource_repository{ table=NewRscTable };
+    NewRscTable = table:add_entry( RscLogId, Rsc, RscTable ),
+    RscRef#resource_repository{ table=NewRscTable };
 
 % Server-side:
 register( RscLogId, Rsc, RscSrvPid ) ->
-	RscSrvPid ! { register, [ RscLogId, Rsc ] }.
+    RscSrvPid ! { register, [ RscLogId, Rsc ] }.
 
 
 
@@ -815,28 +815,28 @@ This resource is just unregistered; for example file-based ones are not deleted
 from the filesystem.
 """.
 -spec remove( any_resource_file_id(), resource_repository() ) ->
-										resource_repository();
-			( any_resource_file_id(), resource_server_pid() ) -> void().
+                                        resource_repository();
+            ( any_resource_file_id(), resource_server_pid() ) -> void().
 % As strings are tolerated:
 remove( RscIdStr, RscHolder ) when is_list( RscIdStr ) ->
-	remove( text_utils:string_to_binary( RscIdStr ), RscHolder );
+    remove( text_utils:string_to_binary( RscIdStr ), RscHolder );
 
 % Non-plain list from here; local side:
 remove( RscId, Ref=#resource_repository{ table=RscTable } ) ->
-	case table:has_entry( RscId, RscTable ) of
+    case table:has_entry( RscId, RscTable ) of
 
-		true ->
-			NewRscTable = table:remove_entry( RscId, RscTable ),
-			Ref#resource_repository{ table=NewRscTable };
+        true ->
+            NewRscTable = table:remove_entry( RscId, RscTable ),
+            Ref#resource_repository{ table=NewRscTable };
 
-		false ->
-			throw( { non_existing_resource, RscId } )
+        false ->
+            throw( { non_existing_resource, RscId } )
 
-	end;
+    end;
 
 % Server-side:
 remove( RscId, RscSrvPid ) ->
-	RscSrvPid ! { remove, RscId }.
+    RscSrvPid ! { remove, RscId }.
 
 
 
@@ -847,38 +847,38 @@ These resource are just unregistered; for example file-based ones are not
 deleted from the filesystem.
 """.
 -spec remove_multiple( [ any_resource_file_id() ], resource_repository() ) ->
-										resource_repository();
-					 ( [ any_resource_file_id() ], resource_server_pid() ) ->
-										void().
+                                        resource_repository();
+                     ( [ any_resource_file_id() ], resource_server_pid() ) ->
+                                        void().
 % Server-side (mostly like get_multiple/2):
 remove_multiple( RscIds, RscSrvPid ) when is_pid( RscSrvPid ) ->
-	BestRscIds = get_best_identifiers( RscIds ),
+    BestRscIds = get_best_identifiers( RscIds ),
 
-	% Wrapping list useless:
-	RscSrvPid ! { removeMultiple, BestRscIds };
+    % Wrapping list useless:
+    RscSrvPid ! { removeMultiple, BestRscIds };
 
 % Local side:
 remove_multiple( RscIds, RscRef=#resource_repository{ table=RscTable } ) ->
 
-	BestRscIds = get_best_identifiers( RscIds ),
+    BestRscIds = get_best_identifiers( RscIds ),
 
-	% No order matters; existence checked for reliability:
-	ShrunkRscTable = table:remove_existing_entries( BestRscIds, RscTable ),
+    % No order matters; existence checked for reliability:
+    ShrunkRscTable = table:remove_existing_entries( BestRscIds, RscTable ),
 
-	%trace_utils:debug_fmt( "Before: ~ts~nAfter: ~ts",
-	%  [ table:to_string( RscTable ),
-	%    table:to_string( ShrunkRscTable ) ] ),
+    %trace_utils:debug_fmt( "Before: ~ts~nAfter: ~ts",
+    %  [ table:to_string( RscTable ),
+    %    table:to_string( ShrunkRscTable ) ] ),
 
-	RscRef#resource_repository{ table=ShrunkRscTable }.
+    RscRef#resource_repository{ table=ShrunkRscTable }.
 
 
 
 -doc "Fully flushes the specified resource holder.".
 flush( RscSrvPid ) when is_pid( RscSrvPid ) ->
-	RscSrvPid ! flush;
+    RscSrvPid ! flush;
 
 flush( RscRef=#resource_repository{ table=_RscTable } ) ->
-	RscRef#resource_repository{ table=table:new() }.
+    RscRef#resource_repository{ table=table:new() }.
 
 
 
@@ -895,21 +895,21 @@ and then registered as such.
 -spec locate_data( any_file_path(), resource_holder() ) -> bin_file_path().
 % As strings are tolerated:
 locate_data( DataRelPathStr, AnyRscHolder ) when is_list( DataRelPathStr ) ->
-	locate_data( text_utils:string_to_binary( DataRelPathStr ), AnyRscHolder );
+    locate_data( text_utils:string_to_binary( DataRelPathStr ), AnyRscHolder );
 
 % Binary string expected from here; server-side:
 locate_data( BinDataRelPath, RscSrvPid ) when is_pid( RscSrvPid ) ->
-	RscSrvPid ! { locateData, BinDataRelPath, self() },
-	receive
+    RscSrvPid ! { locateData, BinDataRelPath, self() },
+    receive
 
-		{ notifyDataLocation, BinDataAbsPath } ->
-			BinDataAbsPath
+        { notifyDataLocation, BinDataAbsPath } ->
+            BinDataAbsPath
 
-	end;
+    end;
 
 % Local side:
 locate_data( BinDataPath, RscRef ) ->
-	locate_data_from_ref( BinDataPath, RscRef ).
+    locate_data_from_ref( BinDataPath, RscRef ).
 
 
 
@@ -917,37 +917,37 @@ locate_data( BinDataPath, RscRef ) ->
 %
 % Whereas no root directory set:
 locate_data_from_ref( BinDataPath,
-					  #resource_repository{ root_directory=undefined } ) ->
-	case file_utils:is_existing_file_or_link( BinDataPath ) of
+                      #resource_repository{ root_directory=undefined } ) ->
+    case file_utils:is_existing_file_or_link( BinDataPath ) of
 
-		true ->
-			% Involves the current directory:
-			file_utils:ensure_path_is_absolute( BinDataPath );
+        true ->
+            % Involves the current directory:
+            file_utils:ensure_path_is_absolute( BinDataPath );
 
-		_False ->
-			throw( { data_file_not_found, BinDataPath,
-					 file_utils:get_current_directory() } )
+        _False ->
+            throw( { data_file_not_found, BinDataPath,
+                     file_utils:get_current_directory() } )
 
-	end;
+    end;
 
 % Whereas a root directory was set:
 locate_data_from_ref( BinDataPath,
-					  #resource_repository{ root_directory=BinRootDir } ) ->
+                      #resource_repository{ root_directory=BinRootDir } ) ->
 
-	AbsBinDataPath =
-		file_utils:ensure_path_is_absolute( BinDataPath, _BasePath=BinRootDir ),
+    AbsBinDataPath =
+        file_utils:ensure_path_is_absolute( BinDataPath, _BasePath=BinRootDir ),
 
-	case file_utils:is_existing_file_or_link( AbsBinDataPath ) of
+    case file_utils:is_existing_file_or_link( AbsBinDataPath ) of
 
-		true ->
-			AbsBinDataPath;
+        true ->
+            AbsBinDataPath;
 
-		_False ->
-			throw( { data_file_not_found, BinDataPath,
-					 text_utils:binary_to_string( BinRootDir ),
-					 file_utils:get_current_directory() } )
+        _False ->
+            throw( { data_file_not_found, BinDataPath,
+                     text_utils:binary_to_string( BinRootDir ),
+                     file_utils:get_current_directory() } )
 
-	end.
+    end.
 
 
 
@@ -962,60 +962,60 @@ resource root directory, so that a logical resource is first obtained from them,
 and then registered as such.
 """.
 -spec locate_multiple_data( [ any_file_path() ], resource_holder() ) ->
-										[ bin_file_path() ].
+                                        [ bin_file_path() ].
 locate_multiple_data( DataRelPaths, RscSrvPid ) when is_pid( RscSrvPid ) ->
 
-	BinDataRelPaths = text_utils:ensure_binaries( DataRelPaths ),
+    BinDataRelPaths = text_utils:ensure_binaries( DataRelPaths ),
 
-	RscSrvPid ! { locateMultipleData, BinDataRelPaths, self() },
-	receive
+    RscSrvPid ! { locateMultipleData, BinDataRelPaths, self() },
+    receive
 
-		{ notifyMultipleDataLocation, BinDataAbsPaths } ->
-			BinDataAbsPaths
+        { notifyMultipleDataLocation, BinDataAbsPaths } ->
+            BinDataAbsPaths
 
-	end;
+    end;
 
 locate_multiple_data( BinDataPaths, RscRef ) ->
-	locate_multiple_data_from_ref( BinDataPaths, RscRef ).
+    locate_multiple_data_from_ref( BinDataPaths, RscRef ).
 
 
 
 % (shared; like locate_data_from_ref/2 but context-optimised)
 locate_multiple_data_from_ref( BinDataPaths, #resource_repository{
-										root_directory=undefined } ) ->
-	[ case file_utils:is_existing_file_or_link( P ) of
+                                        root_directory=undefined } ) ->
+    [ case file_utils:is_existing_file_or_link( P ) of
 
-		true ->
-			% Involves the current directory:
-			file_utils:ensure_path_is_absolute( P );
+        true ->
+            % Involves the current directory:
+            file_utils:ensure_path_is_absolute( P );
 
-		_False ->
-			throw( { data_file_not_found, P,
-					 file_utils:get_current_directory() } )
+        _False ->
+            throw( { data_file_not_found, P,
+                     file_utils:get_current_directory() } )
 
-	end || P <- BinDataPaths ];
+    end || P <- BinDataPaths ];
 
 
 locate_multiple_data_from_ref( BinDataPaths, #resource_repository{
-										root_directory=BinRootDir } ) ->
+                                        root_directory=BinRootDir } ) ->
 
-	[ begin
+    [ begin
 
-		AbsBinDataPath =
-			  file_utils:ensure_path_is_absolute( P, _BasePath=BinRootDir ),
+        AbsBinDataPath =
+              file_utils:ensure_path_is_absolute( P, _BasePath=BinRootDir ),
 
-		case file_utils:is_existing_file_or_link( AbsBinDataPath ) of
+        case file_utils:is_existing_file_or_link( AbsBinDataPath ) of
 
-			true ->
-				AbsBinDataPath;
+            true ->
+                AbsBinDataPath;
 
-			_False ->
-				throw( { data_file_not_found, P,
-						 text_utils:binary_to_string( BinRootDir ),
-						 file_utils:get_current_directory() } )
-		end
+            _False ->
+                throw( { data_file_not_found, P,
+                         text_utils:binary_to_string( BinRootDir ),
+                         file_utils:get_current_directory() } )
+        end
 
-	end || P <- BinDataPaths ].
+    end || P <- BinDataPaths ].
 
 
 
@@ -1026,45 +1026,45 @@ specified through its identifier in the specified resource holder.
 -spec get_path( any_resource_file_id(), resource_holder() ) -> bin_file_path().
 % As strings are tolerated:
 get_path( RscFileIdStr, RscRef ) when is_list( RscFileIdStr ) ->
-	get_path( text_utils:string_to_binary( RscFileIdStr ), RscRef );
+    get_path( text_utils:string_to_binary( RscFileIdStr ), RscRef );
 
 % Binary string expected:
 get_path( RscFileId, #resource_repository{ root_directory=MaybeBinRootDir,
-										   table=RscTable } )
-								when is_binary( RscFileId ) ->
+                                           table=RscTable } )
+                                when is_binary( RscFileId ) ->
 
-	case table:has_entry( RscFileId, RscTable ) of
+    case table:has_entry( RscFileId, RscTable ) of
 
-		true ->
-			case MaybeBinRootDir of
+        true ->
+            case MaybeBinRootDir of
 
-				undefined ->
-					RscFileId;
+                undefined ->
+                    RscFileId;
 
-				BinRootDir ->
-					file_utils:bin_join( BinRootDir, RscFileId )
+                BinRootDir ->
+                    file_utils:bin_join( BinRootDir, RscFileId )
 
-			end;
+            end;
 
-		false ->
-			cond_utils:if_defined( myriad_debug_resources,
-				trace_utils:error_fmt( "[~w] Resource '~ts' not known; "
-					"referenced ones are: ~ts", [ self(), RscFileId,
-						text_utils:terms_to_string(
-							[ I || I <- table:keys( RscTable ) ] ) ] ) ),
+        false ->
+            cond_utils:if_defined( myriad_debug_resources,
+                trace_utils:error_fmt( "[~w] Resource '~ts' not known; "
+                    "referenced ones are: ~ts", [ self(), RscFileId,
+                        text_utils:terms_to_string(
+                            [ I || I <- table:keys( RscTable ) ] ) ] ) ),
 
-			throw( { resource_not_known, RscFileId } )
+            throw( { resource_not_known, RscFileId } )
 
-	end;
+    end;
 
 get_path( RscFileId, RscSrvPid ) when is_binary( RscFileId ) ->
-	RscSrvPid ! { getPath, RscFileId, self() },
-	receive
+    RscSrvPid ! { getPath, RscFileId, self() },
+    receive
 
-		{ notifyResourcePath, BinPath } ->
-			BinPath
+        { notifyResourcePath, BinPath } ->
+            BinPath
 
-	end.
+    end.
 
 
 
@@ -1075,15 +1075,15 @@ the context of the specified repository.
 (helper)
 """.
 -spec get_path_from_repository( any_resource_file_id(),
-				resource_repository() ) -> any_resource_file_id().
+                resource_repository() ) -> any_resource_file_id().
 get_path_from_repository( RscFileId, #resource_repository{
-										root_directory=undefined } ) ->
-	% Relative to current directory:
-	RscFileId;
+                                        root_directory=undefined } ) ->
+    % Relative to current directory:
+    RscFileId;
 
 get_path_from_repository( RscFileId, #resource_repository{
-										root_directory=BinRootDir } ) ->
-	file_utils:bin_join( BinRootDir, RscFileId ).
+                                        root_directory=BinRootDir } ) ->
+    file_utils:bin_join( BinRootDir, RscFileId ).
 
 
 
@@ -1095,63 +1095,63 @@ transforms the plain string ones into binary ones (others left unchanged).
 """.
 -spec get_best_identifiers( [ resource_id() ] ) -> [ resource_id() ].
 get_best_identifiers( RscIds ) ->
-	[ case is_list( RI ) of
-		true ->
-			text_utils:string_to_binary( RI );
+    [ case is_list( RI ) of
+        true ->
+            text_utils:string_to_binary( RI );
 
-		_False ->
-			RI
+        _False ->
+            RI
 
-	  end || RI <- RscIds ].
+      end || RI <- RscIds ].
 
 
 
 -doc "Returns a textual description of the specified repository.".
 -spec repository_to_string( resource_repository() ) -> ustring().
 repository_to_string( #resource_repository{ root_directory=undefined,
-											table=Rsctable } ) ->
-	text_utils:format( "resource repository, not anchored to a specific "
-		"root directory, storing ~ts",
-		[ resource_table_to_string( Rsctable ) ] );
+                                            table=Rsctable } ) ->
+    text_utils:format( "resource repository, not anchored to a specific "
+        "root directory, storing ~ts",
+        [ resource_table_to_string( Rsctable ) ] );
 
 repository_to_string( #resource_repository{ root_directory=BinRootDir,
-											table=Rsctable } ) ->
-	text_utils:format( "resource repository whose root directory is '~ts', "
-		"storing ~ts", [ BinRootDir, resource_table_to_string( Rsctable ) ] ).
+                                            table=Rsctable } ) ->
+    text_utils:format( "resource repository whose root directory is '~ts', "
+        "storing ~ts", [ BinRootDir, resource_table_to_string( Rsctable ) ] ).
 
 
 
 -doc "Returns a textual description of the specified resource table.".
 -spec resource_table_to_string( resource_table() ) -> ustring().
 resource_table_to_string( Rsctable ) ->
-	case table:keys( Rsctable ) of
+    case table:keys( Rsctable ) of
 
-		[] ->
-			"no resource";
+        [] ->
+            "no resource";
 
-		[ RscId ] ->
-			text_utils:format( "a single ~ts resource, '~p'",
-							   [ resource_type_to_string( RscId ), RscId ] );
+        [ RscId ] ->
+            text_utils:format( "a single ~ts resource, '~p'",
+                               [ resource_type_to_string( RscId ), RscId ] );
 
-		RscIds ->
-			text_utils:format( "~B resources: ~ts", [ length( RscIds ),
-				text_utils:strings_to_string( [ text_utils:format(
-					"~ts resource '~p'",
-					[ resource_type_to_string( RI ), RI ] )
-						|| RI <- RscIds ] ) ] )
+        RscIds ->
+            text_utils:format( "~B resources: ~ts", [ length( RscIds ),
+                text_utils:strings_to_string( [ text_utils:format(
+                    "~ts resource '~p'",
+                    [ resource_type_to_string( RI ), RI ] )
+                        || RI <- RscIds ] ) ] )
 
-	end.
+    end.
 
 
 
 -doc "Returns a textual description of the type of the specified resource.".
 -spec resource_type_to_string( resource_id() ) -> ustring().
 resource_type_to_string( RscId )
-							when is_list( RscId ) orelse is_binary( RscId ) ->
-	"file";
+                            when is_list( RscId ) orelse is_binary( RscId ) ->
+    "file";
 
 resource_type_to_string( _RscId ) ->
-	"logical".
+    "logical".
 
 
 
@@ -1164,15 +1164,15 @@ resource_type_to_string( _RscId ) ->
 -doc "Initialises the resource server.".
 -spec server_init() -> no_return().
 server_init() ->
-	InitialRef = create_repository(),
-	server_main_loop( InitialRef ).
+    InitialRef = create_repository(),
+    server_main_loop( InitialRef ).
 
 
 
 -doc "Initialises the resource server with specified root directory.".
 -spec server_init( bin_directory_path() ) -> no_return().
 server_init( BinRootDir ) ->
-	server_init( BinRootDir, _MaybeGUIBackendEnv=undefined ).
+    server_init( BinRootDir, _MaybeGUIBackendEnv=undefined ).
 
 
 
@@ -1181,14 +1181,14 @@ Initialises the resource server with specified root directory and maybe-GUI
 environment.
 """.
 -spec server_init( bin_directory_path(),
-				   option( gui:backend_environment() ) ) ->	no_return().
+                   option( gui:backend_environment() ) ) -> no_return().
 server_init( BinRootDir, _MaybeGUIBackendEnv=undefined ) ->
-	InitialRef = create_repository( BinRootDir ),
-	server_main_loop( InitialRef );
+    InitialRef = create_repository( BinRootDir ),
+    server_main_loop( InitialRef );
 
 server_init( BinRootDir, GUIBackendEnv ) ->
-	gui:set_backend_environment( GUIBackendEnv ),
-	server_init( BinRootDir, _MaybeGUIBackendEnv=undefined ).
+    gui:set_backend_environment( GUIBackendEnv ),
+    server_init( BinRootDir, _MaybeGUIBackendEnv=undefined ).
 
 
 
@@ -1204,87 +1204,87 @@ server fails. As a result, it is better to create linked instances thereof.
 -spec server_main_loop( resource_repository() ) -> no_return().
 server_main_loop( RscRef ) ->
 
-	receive
+    receive
 
-		% Requests:
-		{ get, RscId, SenderPid } ->
-			{ Rsc, NewRscRef } = get( RscId, RscRef ),
-			SenderPid ! { notifyResource, Rsc },
-			server_main_loop( NewRscRef );
+        % Requests:
+        { get, RscId, SenderPid } ->
+            { Rsc, NewRscRef } = get( RscId, RscRef ),
+            SenderPid ! { notifyResource, Rsc },
+            server_main_loop( NewRscRef );
 
-		{ getMultiple, RscIds, SenderPid } ->
-			{ Rscs, NewRscRef } = get_multiple( RscIds, RscRef ),
-			SenderPid ! { notifyResources, Rscs },
-			server_main_loop( NewRscRef );
-
-
-		% Requests:
-		{ getBitmap, BitmapRscId, SenderPid } ->
-			{ Bitmap, NewRscRef } = get_bitmap( BitmapRscId, RscRef ),
-			SenderPid ! { notifyBitmapResource, Bitmap },
-			server_main_loop( NewRscRef );
-
-		{ getBitmaps, BitmapRscIds, SenderPid } ->
-			{ Bitmaps, NewRscRef } = get_bitmaps( BitmapRscIds, RscRef ),
-			SenderPid ! { notifyBitmapResources, Bitmaps },
-			server_main_loop( NewRscRef );
+        { getMultiple, RscIds, SenderPid } ->
+            { Rscs, NewRscRef } = get_multiple( RscIds, RscRef ),
+            SenderPid ! { notifyResources, Rscs },
+            server_main_loop( NewRscRef );
 
 
-		% Requests:
-		{ has, RscId, SenderPid } ->
-			Bool = has( RscId, RscRef ),
-			SenderPid ! { notifyResourceAvailability, Bool },
-			server_main_loop( RscRef );
+        % Requests:
+        { getBitmap, BitmapRscId, SenderPid } ->
+            { Bitmap, NewRscRef } = get_bitmap( BitmapRscId, RscRef ),
+            SenderPid ! { notifyBitmapResource, Bitmap },
+            server_main_loop( NewRscRef );
 
-		% Oneways:
-		{ register, [ RscPairs ] } ->
-			NewRscRef = register( RscPairs, RscRef ),
-			server_main_loop( NewRscRef );
-
-		{ register, [ RscLogId, Rsc ] } ->
-			NewRscRef = register( RscLogId, Rsc, RscRef ),
-			server_main_loop( NewRscRef );
+        { getBitmaps, BitmapRscIds, SenderPid } ->
+            { Bitmaps, NewRscRef } = get_bitmaps( BitmapRscIds, RscRef ),
+            SenderPid ! { notifyBitmapResources, Bitmaps },
+            server_main_loop( NewRscRef );
 
 
-		% Oneways:
-		{ remove, RscId } ->
-			ShrunkRscRef = remove( RscId, RscRef ),
-			server_main_loop( ShrunkRscRef );
+        % Requests:
+        { has, RscId, SenderPid } ->
+            Bool = has( RscId, RscRef ),
+            SenderPid ! { notifyResourceAvailability, Bool },
+            server_main_loop( RscRef );
 
-		{ removeMultiple, RscIds } ->
-			ShrunkRscRef = remove_multiple( RscIds, RscRef ),
-			server_main_loop( ShrunkRscRef );
+        % Oneways:
+        { register, [ RscPairs ] } ->
+            NewRscRef = register( RscPairs, RscRef ),
+            server_main_loop( NewRscRef );
+
+        { register, [ RscLogId, Rsc ] } ->
+            NewRscRef = register( RscLogId, Rsc, RscRef ),
+            server_main_loop( NewRscRef );
 
 
-		% Request:
-		{ locateData, RelFilePathBin, SenderPid } ->
-			BinDataAbsPath = locate_data_from_ref( RelFilePathBin, RscRef ),
-			SenderPid ! { notifyDataLocation, BinDataAbsPath },
-			server_main_loop( RscRef );
+        % Oneways:
+        { remove, RscId } ->
+            ShrunkRscRef = remove( RscId, RscRef ),
+            server_main_loop( ShrunkRscRef );
 
-		% Request:
-		{ locateMultipleData, RelFilePathBins, SenderPid } ->
-			BinDataAbsPaths =
-				locate_multiple_data_from_ref( RelFilePathBins, RscRef ),
-			SenderPid ! { notifyMultipleDataLocation, BinDataAbsPaths },
-			server_main_loop( RscRef );
+        { removeMultiple, RscIds } ->
+            ShrunkRscRef = remove_multiple( RscIds, RscRef ),
+            server_main_loop( ShrunkRscRef );
 
-		% Request:
-		{ getPath, RscFileId, SenderPid } ->
-			BinRscPath = get_path( RscFileId, RscRef ),
-			SenderPid ! { notifyResourcePath, BinRscPath },
-			server_main_loop( RscRef );
 
-		flush ->
-			FlushedRscRef = flush( RscRef ),
-			server_main_loop( FlushedRscRef );
+        % Request:
+        { locateData, RelFilePathBin, SenderPid } ->
+            BinDataAbsPath = locate_data_from_ref( RelFilePathBin, RscRef ),
+            SenderPid ! { notifyDataLocation, BinDataAbsPath },
+            server_main_loop( RscRef );
 
-		terminate ->
-			ok;
+        % Request:
+        { locateMultipleData, RelFilePathBins, SenderPid } ->
+            BinDataAbsPaths =
+                locate_multiple_data_from_ref( RelFilePathBins, RscRef ),
+            SenderPid ! { notifyMultipleDataLocation, BinDataAbsPaths },
+            server_main_loop( RscRef );
 
-	Other ->
-		trace_utils:warning_fmt( "Resource server ~w ignoring the following "
-			"message:~n  ~p.", [ self(), Other ] ),
-		server_main_loop( RscRef )
+        % Request:
+        { getPath, RscFileId, SenderPid } ->
+            BinRscPath = get_path( RscFileId, RscRef ),
+            SenderPid ! { notifyResourcePath, BinRscPath },
+            server_main_loop( RscRef );
 
-	end.
+        flush ->
+            FlushedRscRef = flush( RscRef ),
+            server_main_loop( FlushedRscRef );
+
+        terminate ->
+            ok;
+
+    Other ->
+        trace_utils:warning_fmt( "Resource server ~w ignoring the following "
+            "message:~n  ~p.", [ self(), Other ] ),
+        server_main_loop( RscRef )
+
+    end.

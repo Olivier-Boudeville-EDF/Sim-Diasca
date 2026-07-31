@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -37,121 +37,121 @@ The test will start a simulation at a user-specified start and stop date.
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+    ?case_start,
 
-	% Default simulation settings (50Hz, batch reproducible) are used, except
-	% for the name:
-	SimulationSettings = #simulation_settings{
-		simulation_name="Setting initial and final date test" },
-
-
-	% Default deployment settings (unavailable nodes allowed, on-the-fly
-	% generation of the deployment package requested), but computing
-	% hosts are specified (to be updated depending on your environment):
-	% (note that localhost is implied)
-	%
-	DeploymentSettings = #deployment_settings{
-
-		computing_hosts=
-			{ use_host_file_otherwise_local, "sim-diasca-host-candidates.etf" },
-
-		perform_initial_node_cleanup=true },
+    % Default simulation settings (50Hz, batch reproducible) are used, except
+    % for the name:
+    SimulationSettings = #simulation_settings{
+        simulation_name="Setting initial and final date test" },
 
 
-	% Default load balancing settings (round-robin placement heuristic):
-	LoadBalancingSettings = #load_balancing_settings{},
+    % Default deployment settings (unavailable nodes allowed, on-the-fly
+    % generation of the deployment package requested), but computing
+    % hosts are specified (to be updated depending on your environment):
+    % (note that localhost is implied)
+    %
+    DeploymentSettings = #deployment_settings{
+
+        computing_hosts=
+            { use_host_file_otherwise_local, "sim-diasca-host-candidates.etf" },
+
+        perform_initial_node_cleanup=true },
 
 
-	?test_notice_fmt( "This test will deploy a distributed simulation "
-		"based on computing hosts specified as ~p.",
-		[ DeploymentSettings#deployment_settings.computing_hosts ] ),
-
-	% Directly created on the user node:
-	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-		DeploymentSettings, LoadBalancingSettings ),
+    % Default load balancing settings (round-robin placement heuristic):
+    LoadBalancingSettings = #load_balancing_settings{},
 
 
-	?test_info( "Deployment manager created, retrieving the load balancer." ),
+    ?test_notice_fmt( "This test will deploy a distributed simulation "
+        "based on computing hosts specified as ~p.",
+        [ DeploymentSettings#deployment_settings.computing_hosts ] ),
 
-	DeploymentManagerPid ! { getLoadBalancer, [], self() },
-	LoadBalancerPid = test_receive(),
-
-	?test_info( "Requesting to the load balancer the creation of "
-				"a first initial test actor." ),
-
-	ActorPid = class_Actor:create_initial_actor( class_TestActor,
-		[ "First periodic test actor",
-		  _SchedulingSettings={ periodic, _Period=3 },
-		  _CreationSettings=no_creation, _TerminationTickOffset=80 ],
-		LoadBalancerPid ),
-
-	ActorPid ! { getAAI, [], self() },
-	Id = test_receive(),
-
-	?test_notice_fmt( "The actor identifier for that actor is ~w.", [ Id ] ),
-
-	DeploymentManagerPid ! { getRootTimeManager, [], self() },
-
-	% This is the PID of the root time manager:
-	RootTimeManagerPid = test_receive(),
+    % Directly created on the user node:
+    DeploymentManagerPid = sim_diasca:init( SimulationSettings,
+        DeploymentSettings, LoadBalancingSettings ),
 
 
-	InitialDate = { 2014, 12, 31 },
-	InitialTime = { 23, 59, 59 },
+    ?test_info( "Deployment manager created, retrieving the load balancer." ),
 
-	RootTimeManagerPid !
-		{ setInitialSimulationTimestamp, [ InitialDate, InitialTime ] },
+    DeploymentManagerPid ! { getLoadBalancer, [], self() },
+    LoadBalancerPid = test_receive(),
 
+    ?test_info( "Requesting to the load balancer the creation of "
+                "a first initial test actor." ),
 
-	FinalDate = { 2015, 1, 1 },
-	FinalTime = { 0, 0 ,1 },
+    ActorPid = class_Actor:create_initial_actor( class_TestActor,
+        [ "First periodic test actor",
+          _SchedulingSettings={ periodic, _Period=3 },
+          _CreationSettings=no_creation, _TerminationTickOffset=80 ],
+        LoadBalancerPid ),
 
-	RootTimeManagerPid !
-		{ setFinalSimulationTimestamp, [ FinalDate, FinalTime ] },
+    ActorPid ! { getAAI, [], self() },
+    Id = test_receive(),
 
-	RootTimeManagerPid ! { addSimulationListener, self() },
+    ?test_notice_fmt( "The actor identifier for that actor is ~w.", [ Id ] ),
 
-	RootTimeManagerPid ! { getInitialTick, [], self() },
-	ReadInitial = test_receive(),
+    DeploymentManagerPid ! { getRootTimeManager, [], self() },
 
-	RootTimeManagerPid ! { getFinalTick, [], self() },
-	ReadFinal = test_receive(),
-
-	% Checkings, 2 virtual seconds (100 ticks) must elapse between start and
-	% stop:
-	%
-	3179364479950 = ReadInitial,
-	100 = ReadFinal - ReadInitial,
-
-	?test_info( "Starting simulation." ),
-	RootTimeManagerPid ! start,
+    % This is the PID of the root time manager:
+    RootTimeManagerPid = test_receive(),
 
 
-	?test_info( "Requesting textual timings (first)." ),
+    InitialDate = { 2014, 12, 31 },
+    InitialTime = { 23, 59, 59 },
 
-	RootTimeManagerPid ! { getTextualTimings, [], self() },
-	FirstTimingString = test_receive(),
-
-	?test_notice_fmt( "Received first time: ~ts.", [ FirstTimingString ] ),
-
-	% Waits until simulation is finished:
-	receive
-
-		simulation_stopped ->
-			?test_info( "Simulation stopped spontaneously." )
-
-	end,
+    RootTimeManagerPid !
+        { setInitialSimulationTimestamp, [ InitialDate, InitialTime ] },
 
 
-	?test_info( "Requesting textual timings (second)." ),
+    FinalDate = { 2015, 1, 1 },
+    FinalTime = { 0, 0 ,1 },
 
-	RootTimeManagerPid ! { getTextualTimings, [], self() },
-	SecondTimingString = test_receive(),
+    RootTimeManagerPid !
+        { setFinalSimulationTimestamp, [ FinalDate, FinalTime ] },
 
-	?test_notice_fmt( "Received second time: ~ts.", [ SecondTimingString ] ),
+    RootTimeManagerPid ! { addSimulationListener, self() },
 
-	RootTimeManagerPid ! { removeSimulationListener, self() },
+    RootTimeManagerPid ! { getInitialTick, [], self() },
+    ReadInitial = test_receive(),
 
-	sim_diasca:shutdown(),
+    RootTimeManagerPid ! { getFinalTick, [], self() },
+    ReadFinal = test_receive(),
 
-	?case_stop.
+    % Checkings, 2 virtual seconds (100 ticks) must elapse between start and
+    % stop:
+    %
+    3179364479950 = ReadInitial,
+    100 = ReadFinal - ReadInitial,
+
+    ?test_info( "Starting simulation." ),
+    RootTimeManagerPid ! start,
+
+
+    ?test_info( "Requesting textual timings (first)." ),
+
+    RootTimeManagerPid ! { getTextualTimings, [], self() },
+    FirstTimingString = test_receive(),
+
+    ?test_notice_fmt( "Received first time: ~ts.", [ FirstTimingString ] ),
+
+    % Waits until simulation is finished:
+    receive
+
+        simulation_stopped ->
+            ?test_info( "Simulation stopped spontaneously." )
+
+    end,
+
+
+    ?test_info( "Requesting textual timings (second)." ),
+
+    RootTimeManagerPid ! { getTextualTimings, [], self() },
+    SecondTimingString = test_receive(),
+
+    ?test_notice_fmt( "Received second time: ~ts.", [ SecondTimingString ] ),
+
+    RootTimeManagerPid ! { removeSimulationListener, self() },
+
+    sim_diasca:shutdown(),
+
+    ?case_stop.

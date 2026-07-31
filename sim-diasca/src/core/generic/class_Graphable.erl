@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -28,8 +28,8 @@ See also: core/mesh/src/class_Mesh.erl
 """.
 
 -define( class_description,
-		 "Graphable class, base of all instances able to output a textual "
-		 "description of their state in the context of graph rendering." ).
+         "Graphable class, base of all instances able to output a textual "
+         "description of their state in the context of graph rendering." ).
 
 
 
@@ -52,8 +52,8 @@ See also: core/mesh/src/class_Mesh.erl
 % The class-specific attributes:
 -define( class_attributes, [
 
-	{ node_name, net_utils:string_node_name(),
-	  "the node name of interest" } ] ).
+    { node_name, net_utils:string_node_name(),
+      "the node name of interest" } ] ).
 
 
 % Helper functions.
@@ -65,11 +65,11 @@ See also: core/mesh/src/class_Mesh.erl
 
 
 -type dot_option_name() :: 'label' | 'style' | 'height' | 'width' | 'fixedsize'
-	| 'shape' | 'fillcolor' | 'color' | 'bgcolor' | 'penwidth' | 'pencolor'.
+    | 'shape' | 'fillcolor' | 'color' | 'bgcolor' | 'penwidth' | 'pencolor'.
 
 
 -define( dot_option_list, [ label, style, height, width, fixedsize, shape,
-							fillcolor, color, bgcolor, penwidth, pencolor ] ).
+                            fillcolor, color, bgcolor, penwidth, pencolor ] ).
 
 
 -type dot_option_value() :: any().
@@ -93,7 +93,7 @@ Note that options must be valid dot options.
 See the dot_option_list define.
 """.
 -type options() :: text_utils:ustring()
-				 | [ { dot_option_name(), dot_option_value() } ].
+                 | [ { dot_option_name(), dot_option_value() } ].
 
 
 -doc "Name of a Graphable, adequate to be a node identifier.".
@@ -113,11 +113,11 @@ See the dot_option_list define.
 -spec construct( wooper:state(), options() ) -> wooper:state().
 construct( State, OptionParameters ) ->
 
-	% No mother class here.
+    % No mother class here.
 
-	NamedState = setAttribute( State, node_name, forge_node_name() ),
+    NamedState = setAttribute( State, node_name, forge_node_name() ),
 
-	interpret_option_list( OptionParameters, NamedState ).
+    interpret_option_list( OptionParameters, NamedState ).
 
 
 
@@ -127,23 +127,23 @@ construct( State, OptionParameters ) ->
 
 -doc "Returns the name of this Graphable.".
 -spec getNodeName( wooper:state() ) ->
-							const_request_return( graphable_name() ).
+                            const_request_return( graphable_name() ).
 getNodeName( State ) ->
-	wooper:const_return_result( ?getAttr(node_name) ).
+    wooper:const_return_result( ?getAttr(node_name) ).
 
 
 
 -doc "Returns the description of this Graphable.".
 -spec getLabel( wooper:state() ) -> const_request_return( graphable_label() ).
 getLabel( State ) ->
-	wooper:const_return_result( ?getAttr(label) ).
+    wooper:const_return_result( ?getAttr(label) ).
 
 
 
 -doc "Sets the label of this Graphable.".
 -spec setLabel( wooper:state(), graphable_label() ) -> oneway_return().
 setLabel( State, NewLabel ) ->
-	wooper:return_state( setAttribute( State, label, NewLabel ) ).
+    wooper:return_state( setAttribute( State, label, NewLabel ) ).
 
 
 -doc """
@@ -152,10 +152,10 @@ generated name for this Graphable, and OptionList is the list of all attribute
 name/value pairs corresponding to dot options for that Graphable.
 """.
 -spec getGraphInformation( wooper:state() ) ->
-			const_request_return( { graphable_name(), options() } ).
+            const_request_return( { graphable_name(), options() } ).
 getGraphInformation( State ) ->
-	wooper:const_return_result( { ?getAttr(node_name),
-								  select_attributes_from( State ) } ).
+    wooper:const_return_result( { ?getAttr(node_name),
+                                  select_attributes_from( State ) } ).
 
 
 -doc """
@@ -164,7 +164,7 @@ for that Graphable.
 """.
 -spec getGraphOptions( wooper:state() ) -> const_request_return( options() ).
 getGraphOptions( State ) ->
-	wooper:const_return_result( select_attributes_from( State ) ).
+    wooper:const_return_result( select_attributes_from( State ) ).
 
 
 -doc """
@@ -176,22 +176,22 @@ Triggers back a setGraphOptions actor call.
 Note: supposed to be called, through inheritance, on an Actor instance.
 """.
 -spec getGraphOptions( wooper:state(), sending_actor_pid() ) ->
-								actor_oneway_return().
+                                actor_oneway_return().
 getGraphOptions( State, CallerPid ) ->
 
-	Options = select_attributes_from( State ),
+    Options = select_attributes_from( State ),
 
-	% Note the double list for options:
-	SentState = class_Actor:send_actor_message( CallerPid,
-		{ setGraphOptions, [ Options ] }, State ),
+    % Note the double list for options:
+    SentState = class_Actor:send_actor_message( CallerPid,
+        { setGraphOptions, [ Options ] }, State ),
 
-	actor:return_state( SentState ).
+    actor:return_state( SentState ).
 
 
 -doc "Sets the specified option list, regarding Graphable parameters.".
 -spec setGraphOptions( wooper:state(), options() ) -> oneway_return().
 setGraphOptions( State, OptionParameters ) ->
-	wooper:return_state( interpret_option_list( OptionParameters, State ) ).
+    wooper:return_state( interpret_option_list( OptionParameters, State ) ).
 
 
 
@@ -202,28 +202,28 @@ setGraphOptions( State, OptionParameters ) ->
 -doc "Interprets the option list specified for a Graphable.".
 -spec interpret_option_list( wooper:state(), options() ) -> wooper:state().
 interpret_option_list( _Options=[], State ) ->
-	State;
+    State;
 
 interpret_option_list( _Options=[ { label, Label } | T ], State ) ->
-	interpret_option_list( T,
-		setAttribute( State, label, transform_label( Label ) ) );
+    interpret_option_list( T,
+        setAttribute( State, label, transform_label( Label ) ) );
 
 interpret_option_list( [ { OptionName, OptionValue } | T ], State ) ->
 
-	case lists:member( OptionName, ?dot_option_list ) of
+    case lists:member( OptionName, ?dot_option_list ) of
 
-		true ->
-			interpret_option_list( T,
-				setAttribute( State, OptionName, OptionValue ) );
+        true ->
+            interpret_option_list( T,
+                setAttribute( State, OptionName, OptionValue ) );
 
-		false ->
-			throw( { unknown_dot_option, OptionName } )
+        false ->
+            throw( { unknown_dot_option, OptionName } )
 
-	end;
+    end;
 
 interpret_option_list( Label, State ) ->
-	interpret_option_list( _Options=[],
-		setAttribute( State, label, transform_label( Label ) )  ).
+    interpret_option_list( _Options=[],
+        setAttribute( State, label, transform_label( Label ) )  ).
 
 
 
@@ -232,20 +232,20 @@ Forges a suitable graphable name for the current instance, based on its PID.
 """.
 -spec forge_node_name() -> graphable_name().
 forge_node_name() ->
-	forge_node_name( self() ).
+    forge_node_name( self() ).
 
 
 
 -doc "Forges a suitable Graphable name, based on the specified PID.".
 -spec forge_node_name( pid() ) -> graphable_name().
 forge_node_name( Pid ) when is_pid( Pid ) ->
-	% E.g. <0.59.0> becoming "|59|":
-	text_utils:pid_to_short_string( Pid ).
+    % E.g. <0.59.0> becoming "|59|":
+    text_utils:pid_to_short_string( Pid ).
 
 
 -doc "Splits the specified label, one word per line.".
 transform_label( Label ) ->
-	separate_in_lines( string:tokens( Label, " " ) ).
+    separate_in_lines( string:tokens( Label, " " ) ).
 
 
 -doc """
@@ -254,38 +254,38 @@ its own.
 """.
 -spec separate_in_lines( [ ustring() ] ) -> ustring().
 separate_in_lines( WordList ) ->
-	separate_in_lines( WordList, "" ).
+    separate_in_lines( WordList, "" ).
 
 
 % (helper)
 separate_in_lines( _WordList=[], ResultingString ) ->
-	ResultingString;
+    ResultingString;
 
 separate_in_lines( _WordList=[ W | T ], ResultingString ) ->
-	separate_in_lines( T, ResultingString ++ W ++ "\\n" ).
+    separate_in_lines( T, ResultingString ++ W ++ "\\n" ).
 
 
 -doc "Selects only the known dot attributes.".
 -spec select_attributes_from( wooper:state() ) -> [ dot_pair() ].
 select_attributes_from( State ) ->
-	AttributeList = wooper:get_all_attributes( State ),
-	select_attributes_from( AttributeList, _Acc=[] ).
+    AttributeList = wooper:get_all_attributes( State ),
+    select_attributes_from( AttributeList, _Acc=[] ).
 
 
 % (helper)
 select_attributes_from( _AttributeList=[], Acc ) ->
-	Acc;
+    Acc;
 
 select_attributes_from( _AttributeList=[ P={ Name, _Value } | T ], Acc ) ->
-	case lists:member( Name, ?dot_option_list ) of
+    case lists:member( Name, ?dot_option_list ) of
 
-		true ->
-			select_attributes_from( T, [ P | Acc ] );
+        true ->
+            select_attributes_from( T, [ P | Acc ] );
 
-		false ->
-			select_attributes_from( T, Acc )
+        false ->
+            select_attributes_from( T, Acc )
 
-	end.
+    end.
 
 
 
@@ -295,17 +295,17 @@ options.
 """.
 -spec graph_options_to_string( options() ) -> ustring().
 graph_options_to_string( OptionsList ) ->
-	graph_options_to_string( OptionsList, _Acc=[] ).
+    graph_options_to_string( OptionsList, _Acc=[] ).
 
 
 graph_options_to_string( _OptionsList=[], Acc ) ->
-	Acc;
+    Acc;
 
 graph_options_to_string( _OptionsList=[ { label, Label } | T ], Acc ) ->
-	graph_options_to_string( T,
-		Acc ++ text_utils:format( " label='~ts'", [ Label ] ) );
+    graph_options_to_string( T,
+        Acc ++ text_utils:format( " label='~ts'", [ Label ] ) );
 
 graph_options_to_string( _OptionsList=[ { OptionName, OptionValue } | T ],
-						 Acc ) ->
-	graph_options_to_string( T,
-		Acc ++ text_utils:format( " ~ts=~p", [ OptionName, OptionValue ] ) ).
+                         Acc ) ->
+    graph_options_to_string( T,
+        Acc ++ text_utils:format( " ~ts=~p", [ OptionName, OptionValue ] ) ).

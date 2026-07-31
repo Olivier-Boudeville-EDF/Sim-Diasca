@@ -6,8 +6,8 @@
 
 
 .. contents::
-	:depth: 2
-	:local:
+    :depth: 2
+    :local:
 
 
 .. _fiabilité:

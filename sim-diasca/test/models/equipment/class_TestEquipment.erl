@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -25,7 +25,7 @@
 
 
 -define( class_description, "Test Equipment class. Used by the integration "
-		 "test defined in equipment_integration_test.erl" ).
+         "test defined in equipment_integration_test.erl" ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -43,30 +43,30 @@
 
 -doc "Constructs a piece of equipment.".
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 class_Actor:name(), class_TimeManager:tick_offset(),
-				 class_FailureModel:model_pid(),
-				 class_RepairModel:model_pid() ) -> wooper:state().
+                 class_Actor:name(), class_TimeManager:tick_offset(),
+                 class_FailureModel:model_pid(),
+                 class_RepairModel:model_pid() ) -> wooper:state().
 construct( State, ActorSettings, EquipmentName, TerminationTickOffset,
-		   FailureModelPid, RepairModelPid ) ->
+           FailureModelPid, RepairModelPid ) ->
 
-	% First the direct mother classes:
-	EquipmentState = class_Equipment:construct( State, ActorSettings,
-		?trace_categorize(EquipmentName), FailureModelPid, RepairModelPid ),
+    % First the direct mother classes:
+    EquipmentState = class_Equipment:construct( State, ActorSettings,
+        ?trace_categorize(EquipmentName), FailureModelPid, RepairModelPid ),
 
-	% Then the class-specific actions:
-	% Failure state can be 'nominal' or 'dysfunction'.
-	%
-	% Equipments are supposed tested before being installed, thus start in
-	% nominal condition:
-	%
-	% (cannot set next_*_tick, as no knowledge of current scheduling here)
-	%
-	StartingState = setAttribute( EquipmentState, termination_tick_offset,
-								  TerminationTickOffset ),
+    % Then the class-specific actions:
+    % Failure state can be 'nominal' or 'dysfunction'.
+    %
+    % Equipments are supposed tested before being installed, thus start in
+    % nominal condition:
+    %
+    % (cannot set next_*_tick, as no knowledge of current scheduling here)
+    %
+    StartingState = setAttribute( EquipmentState, termination_tick_offset,
+                                  TerminationTickOffset ),
 
-	?send_info( StartingState, "Creating a test equipment." ),
+    ?send_info( StartingState, "Creating a test equipment." ),
 
-	StartingState.
+    StartingState.
 
 
 
@@ -83,9 +83,9 @@ Note: tick termination will be handled by act_common/1.
 -spec actNominal( wooper:state() ) -> oneway_return().
 actNominal( State ) ->
 
-	?notice( "Acting normally (test-overridden actNominal/1 called)." ),
+    ?notice( "Acting normally (test-overridden actNominal/1 called)." ),
 
-	wooper:return_state( act_common( State ) ).
+    wooper:return_state( act_common( State ) ).
 
 
 
@@ -97,9 +97,9 @@ Note: tick termination will be handled by act_common/1.
 -spec actInDysfunction( wooper:state() ) -> oneway_return().
 actInDysfunction( State ) ->
 
-	?notice( "Test-overridden actInDysfunction/1 called." ),
+    ?notice( "Test-overridden actInDysfunction/1 called." ),
 
-	wooper:return_state( act_common( State ) ).
+    wooper:return_state( act_common( State ) ).
 
 
 
@@ -117,65 +117,65 @@ Returns an updated state.
 -spec act_common( wooper:state() ) -> wooper:state().
 act_common( State ) ->
 
-	TerminationOffset = ?getAttr(termination_tick_offset),
+    TerminationOffset = ?getAttr(termination_tick_offset),
 
-	% We must prevent this equipment to further interact with other actors when
-	% its end is near:
-	%
-	FreezeOffset = ?getAttr(termination_tick_offset) - 2,
+    % We must prevent this equipment to further interact with other actors when
+    % its end is near:
+    %
+    FreezeOffset = ?getAttr(termination_tick_offset) - 2,
 
-	% Terminates if the termination offset is reached:
-	case ?getAttr(current_tick_offset) of
+    % Terminates if the termination offset is reached:
+    case ?getAttr(current_tick_offset) of
 
-		Offset when Offset >= FreezeOffset  ->
+        Offset when Offset >= FreezeOffset  ->
 
-			% No more interactions wanted:
-			TermState = executeOneway( State, scheduleNextSpontaneousTick ),
+            % No more interactions wanted:
+            TermState = executeOneway( State, scheduleNextSpontaneousTick ),
 
-			setAttributes( TermState, [
-				{ next_failure_tick, termination_triggered },
-				{ next_repair_tick, termination_triggered },
-				{ current_failure_state, terminating } ] );
+            setAttributes( TermState, [
+                { next_failure_tick, termination_triggered },
+                { next_repair_tick, termination_triggered },
+                { current_failure_state, terminating } ] );
 
-		Offset when Offset >= TerminationOffset ->
+        Offset when Offset >= TerminationOffset ->
 
-			?notice( "Test Equipment preparing termination." ),
+            ?notice( "Test Equipment preparing termination." ),
 
-			% Returns an updated state:
-			executeOneway( State, declareTermination );
+            % Returns an updated state:
+            executeOneway( State, declareTermination );
 
-		_ ->
-			State
+        _ ->
+            State
 
-	end.
+    end.
 
 
 
 -doc "Simply schedules this just created actor at the next tick (diasca 0).".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-							actor_oneway_return().
+                            actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
-	ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),
+    ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),
 
-	actor:return_state( ScheduledState ).
+    actor:return_state( ScheduledState ).
 
 
 
 -spec onFailure( wooper:state() ) -> const_oneway_return().
 onFailure( State ) ->
 
-	?notice( "Failure occurred! "
-			 "(test-overridden onFailure oneway method called)." ),
+    ?notice( "Failure occurred! "
+             "(test-overridden onFailure oneway method called)." ),
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 
 -spec onReparation( wooper:state() ) -> const_oneway_return().
 onReparation( State ) ->
 
-	?notice( "Reparation occurred! "
-			 "(test-overridden onReparation oneway method called)." ),
+    ?notice( "Reparation occurred! "
+             "(test-overridden onReparation oneway method called)." ),
 
-	wooper:const_return().
+    wooper:const_return().

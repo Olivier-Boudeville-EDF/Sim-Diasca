@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2025 Olivier Boudeville
+% Copyright (C) 2018-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -43,79 +43,79 @@ See the term_ui.erl tested module.
 % The actual test:
 run_test_ui() ->
 
-	% All calls use an implicit state.
+    % All calls use an implicit state.
 
-	test_facilities:display( "Testing the term_ui services." ),
+    test_facilities:display( "Testing the term_ui services." ),
 
-	term_ui:start(),
+    term_ui:start(),
 
-	term_ui:set( [ { backtitle, "Test of term_ui" }, { title, "A title" } ] ),
+    term_ui:set( [ { backtitle, "Test of term_ui" }, { title, "A title" } ] ),
 
-	term_ui:display( "My text to display! (featuring 'single quotes' and "
-					 "also \"double quotes\"!)" ),
+    term_ui:display( "My text to display! (featuring 'single quotes' and "
+                     "also \"double quotes\"!)" ),
 
-	term_ui:display( "My second text to display!" ),
+    term_ui:display( "My second text to display!" ),
 
-	term_ui:display_instant( "A non-modal (auto-disappearing) display!" ),
-	timer:sleep( 1500 ),
+    term_ui:display_instant( "A non-modal (auto-disappearing) display!" ),
+    timer:sleep( 1500 ),
 
-	case term_ui:choose_designated_item_with_default(
-		   "Please choose a color among:",
-		   [ { red, "Reddish" }, { blue, "Blueish" }, { green, "Greenish" } ],
-		   blue ) of
+    case term_ui:choose_designated_item_with_default(
+           "Please choose a color among:",
+           [ { red, "Reddish" }, { blue, "Blueish" }, { green, "Greenish" } ],
+           blue ) of
 
-		red ->
-			term_ui:display( "Red was chosen!" );
+        red ->
+            term_ui:display( "Red was chosen!" );
 
-		blue ->
-			term_ui:display( "Blue was chosen!" );
+        blue ->
+            term_ui:display( "Blue was chosen!" );
 
-		green ->
-			term_ui:display( "Green was chosen!" );
+        green ->
+            term_ui:display( "Green was chosen!" );
 
-		ui_cancel ->
-			term_ui:display( "Choice cancelled by the user!" )
+        ui_cancel ->
+            term_ui:display( "Choice cancelled by the user!" )
 
-	end,
+    end,
 
-	case term_ui:choose_numbered_item_with_default(
-		   "Please choose a race among:",
-		   [ "Elves", "Orcs", "Humans" ], "Humans" ) of
+    case term_ui:choose_numbered_item_with_default(
+           "Please choose a race among:",
+           [ "Elves", "Orcs", "Humans" ], "Humans" ) of
 
-		1 ->
-			term_ui:display( "Elves were chosen!" );
+        1 ->
+            term_ui:display( "Elves were chosen!" );
 
-		2 ->
-			term_ui:display( "Orcs were chosen!" );
+        2 ->
+            term_ui:display( "Orcs were chosen!" );
 
-		3 ->
-			term_ui:display( "Humans were chosen!" );
+        3 ->
+            term_ui:display( "Humans were chosen!" );
 
-		ui_cancel ->
-			term_ui:display( "Choice cancelled by the user!" )
+        ui_cancel ->
+            term_ui:display( "Choice cancelled by the user!" )
 
-	end,
+    end,
 
-	trace_utils:debug_fmt( "UI state: ~ts", [ term_ui:to_string() ] ),
+    trace_utils:debug_fmt( "UI state: ~ts", [ term_ui:to_string() ] ),
 
-	term_ui:stop().
+    term_ui:stop().
 
 
 
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	case executable_utils:is_batch() of
+    case executable_utils:is_batch() of
 
-		true ->
-			test_facilities:display(
-				"(not running the term_ui test, being in batch mode)" );
+        true ->
+            test_facilities:display(
+                "(not running the term_ui test, being in batch mode)" );
 
-		false ->
-			run_test_ui()
+        false ->
+            run_test_ui()
 
-	end,
+    end,
 
-	test_facilities:stop().
+    test_facilities:stop().

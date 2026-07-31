@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 Olivier Boudeville
+% Copyright (C) 2016-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -43,51 +43,51 @@ See the csv_utils.erl tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	CSVFilename = "example.csv",
+    CSVFilename = "example.csv",
 
-	test_facilities:display( "Testing CSV management, using the '~ts' "
-							 "file for that.", [ CSVFilename ] ),
+    test_facilities:display( "Testing CSV management, using the '~ts' "
+                             "file for that.", [ CSVFilename ] ),
 
-	% Thus non-standard:
-	Separator = $;,
+    % Thus non-standard:
+    Separator = $;,
 
-	FieldCount = 5,
+    FieldCount = 5,
 
-	% Let's suppose first that we want to interpret the content of that file and
-	% we do not know a priori the field count:
-	%
-	case csv_utils:interpret_file( CSVFilename, Separator ) of
+    % Let's suppose first that we want to interpret the content of that file and
+    % we do not know a priori the field count:
+    %
+    case csv_utils:interpret_file( CSVFilename, Separator ) of
 
-		{ FieldCount, MixedContent, MatchCount=5, _UnmatchCount=0,
-		  _DropCount=8 } ->
-			MatchCount = length( MixedContent ),
-			test_facilities:display( "Interpreted mixed content: ~p",
-									 [ MixedContent ] );
+        { FieldCount, MixedContent, MatchCount=5, _UnmatchCount=0,
+          _DropCount=8 } ->
+            MatchCount = length( MixedContent ),
+            test_facilities:display( "Interpreted mixed content: ~p",
+                                     [ MixedContent ] );
 
-		Other ->
-			throw( { incorrect_interpretation, Other } )
+        Other ->
+            throw( { incorrect_interpretation, Other } )
 
-	end,
+    end,
 
-	{ Content, RowCount, FieldCount } =
-		csv_utils:read_file( CSVFilename, Separator ),
+    { Content, RowCount, FieldCount } =
+        csv_utils:read_file( CSVFilename, Separator ),
 
-	test_facilities:display( "Read ~B rows, each with ~B fields, "
-		"corresponding to a ~ts",
-		[ RowCount, FieldCount, csv_utils:content_to_string( Content ) ] ),
+    test_facilities:display( "Read ~B rows, each with ~B fields, "
+        "corresponding to a ~ts",
+        [ RowCount, FieldCount, csv_utils:content_to_string( Content ) ] ),
 
-	NewCSVFilename = "example-written.csv",
+    NewCSVFilename = "example-written.csv",
 
-	% Should a prior test have failed:
-	file_utils:remove_file_if_existing( NewCSVFilename ),
+    % Should a prior test have failed:
+    file_utils:remove_file_if_existing( NewCSVFilename ),
 
-	% The internal data (i.e. comments aside) shall match exactly the one of
-	% CSVFilename:
-	%
-	csv_utils:write_file( Content, NewCSVFilename, Separator ),
+    % The internal data (i.e. comments aside) shall match exactly the one of
+    % CSVFilename:
+    %
+    csv_utils:write_file( Content, NewCSVFilename, Separator ),
 
-	file_utils:remove_file( NewCSVFilename ),
+    file_utils:remove_file( NewCSVFilename ),
 
-	test_facilities:stop().
+    test_facilities:stop().

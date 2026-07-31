@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -30,7 +30,7 @@
 -moduledoc """
 Unit tests for the **specialised 2x2 matrix** facilities.
 
-See the matrix2 tested module.
+See the `matrix2` tested module.
 """.
 
 
@@ -43,140 +43,145 @@ See the matrix2 tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	test_facilities:display( "Testing 2x2 matrices." ),
+    test_facilities:display( "Testing 2x2 matrices." ),
 
-	NullMatrix = matrix2:null(),
+    NullMatrix = matrix2:null(),
 
-	test_facilities:display( "Null matrix is: ~ts",
-							 [ matrix2:to_string( NullMatrix ) ] ),
+    test_facilities:display( "Null matrix is: ~ts",
+                             [ matrix2:to_string( NullMatrix ) ] ),
 
-	Dim = 2,
+    Dim = 2,
 
-	Id = matrix2:identity(),
-	true = matrix:are_equal( matrix:unspecialise( Id ),
-							 matrix:identity( Dim ) ),
+    Id = matrix2:identity(),
+    true = matrix:are_equal( matrix:unspecialise( Id ),
+                             matrix:identity( Dim ) ),
 
-	test_facilities:display( "Identity matrix is: ~ts",
-							 [ matrix2:to_string( Id ) ] ),
-
-
-
-	RotAngle = math:pi() / 2,
-	Deg90Rot = matrix2:rotation( RotAngle ),
-
-	test_facilities:display( "Rotation matrix of angle ~f radians is: ~ts",
-							 [ RotAngle, matrix2:to_string( Id ) ] ),
-
-	% Transforms the abscissa axis into the ordinate one:
-	X = [ 1.0, 0.0 ],
-	Y = [ 0.0, 1.0 ],
-
-	% Check:
-	true = vector2:are_equal( Y, matrix2:apply( Deg90Rot, X ) ),
+    test_facilities:display( "Identity matrix is: ~ts",
+                             [ matrix2:to_string( Id ) ] ),
 
 
 
-	V1 = [ 10.0, 25.0 ],
-	V2 = [ 1.0, 2.0 ],
+    RotAngle = math:pi() / 2,
+    Deg90Rot = matrix2:rotation( RotAngle ),
 
-	ColMatrix = matrix2:from_columns( V1, V2 ),
-	V2 = matrix2:column( 2, ColMatrix ),
+    test_facilities:display( "Rotation matrix of angle ~f radians is: ~ts",
+                             [ RotAngle, matrix2:to_string( Id ) ] ),
 
-	test_facilities:display( "Matrix whose columns are V1 and V2 "
-							 "is: ~ts", [ matrix2:to_string( ColMatrix ) ] ),
+    % Transforms the abscissa axis into the ordinate one:
+    X = [ 1.0, 0.0 ],
+    Y = [ 0.0, 1.0 ],
 
-	% Octave: RowMatrix = [ 10, 25; 1, 2 ]
-	RowMatrix = matrix2:from_rows( V1, V2 ),
-
-	V2 = matrix2:row( 2, RowMatrix ),
-
-	test_facilities:display( "Matrix whose rows are V1 and V2 "
-							 "is: ~ts", [ matrix2:to_string( RowMatrix ) ] ),
+    % Check:
+    true = vector2:are_equal( Y, matrix2:apply( Deg90Rot, X ) ),
 
 
-	% Octave: CoordMatrix = [ 10, 20; 30, 40 ]
-	CoordMatrix = matrix2:from_coordinates( 10.0, 20.0,
-											30.0, 40.0 ),
 
-	test_facilities:display( "Matrix explicitly set from coordinates is: ~ts",
-							 [ matrix2:to_string( CoordMatrix ) ] ),
+    V1 = [ 10.0, 25.0 ],
+    V2 = [ 1.0, 2.0 ],
 
-	% Octave: Matrix2 = [ 1, 2; 5, 6 ]
-	Matrix2 = matrix2:new( [ [ 1.0,  2.0 ],
-							 [ 5.0,  6.0 ] ] ),
+    ColMatrix = matrix2:from_columns( V1, V2 ),
+    V2 = matrix2:column( 2, ColMatrix ),
 
-	ScaleFactor = 2.0,
+    test_facilities:display( "Matrix whose columns are V1 and V2 "
+                             "is: ~ts", [ matrix2:to_string( ColMatrix ) ] ),
 
-	ScaledMatrix = matrix2:scale( CoordMatrix, ScaleFactor ),
+    % Octave: RowMatrix = [ 10, 25; 1, 2 ]
+    RowMatrix = matrix2:from_rows( V1, V2 ),
 
-	test_facilities:display( "The previous matrix scaled by ~p is: ~ts",
-						[ ScaleFactor, matrix2:to_string( ScaledMatrix ) ] ),
+    V2 = matrix2:row( 2, RowMatrix ),
 
-	ScaledMatrix = matrix2:to_canonical( ScaledMatrix ),
+    test_facilities:display( "Matrix whose rows are V1 and V2 "
+                             "is: ~ts", [ matrix2:to_string( RowMatrix ) ] ),
 
 
-	SubMatrix = matrix2:new( [ [  9.0, 18.0 ],
-							   [ 25.0, 34.0 ] ] ),
+    % Octave: CoordMatrix = [ 10, 20; 30, 40 ]
+    CoordMatrix = matrix2:from_coordinates( 10.0, 20.0,
+                                            30.0, 40.0 ),
 
-	% Tests scale/2 and add/2 as well:
-	true = matrix2:are_equal( matrix2:sub( CoordMatrix, Matrix2 ),
-							  SubMatrix ),
+    test_facilities:display( "Matrix explicitly set from coordinates is: ~ts",
+                             [ matrix2:to_string( CoordMatrix ) ] ),
+
+    % Octave: Matrix2 = [ 1, 2; 5, 6 ]
+    Matrix2 = matrix2:new( [ [ 1.0,  2.0 ],
+                             [ 5.0,  6.0 ] ] ),
+
+    ScaleFactor = 2.0,
+
+    ScaledMatrix = matrix2:scale( CoordMatrix, ScaleFactor ),
+
+    test_facilities:display( "The previous matrix scaled by ~p is: ~ts",
+                        [ ScaleFactor, matrix2:to_string( ScaledMatrix ) ] ),
+
+    ScaledMatrix = matrix2:to_canonical( ScaledMatrix ),
 
 
-	18.0 = matrix2:get_element( _RowC=1, _ColC=2, SubMatrix ),
-	SubSetMatrix = matrix2:set_element( RwC=2, ClC=1, 21.0, SubMatrix ),
-	21.0 = matrix2:get_element( RwC, ClC, SubSetMatrix ),
+    SubMatrix = matrix2:new( [ [  9.0, 18.0 ],
+                               [ 25.0, 34.0 ] ] ),
 
-	TransposedCoordMatrix = matrix2:from_coordinates( 10.0, 30.0,
-													  20.0, 40.0 ),
-
-	TransposedCoordMatrix = matrix2:transpose( CoordMatrix ),
-	true = matrix2:are_equal( TransposedCoordMatrix, TransposedCoordMatrix ),
+    % Tests scale/2 and add/2 as well:
+    true = matrix2:are_equal( matrix2:sub( CoordMatrix, Matrix2 ),
+                              SubMatrix ),
 
 
-	% Checked with octave, for example:
-	%
-	% CoordMatrix = [ 1, 2 ; 5, 6 ]
-	% ScaledMatrix = 2.0 * CoordMatrix
-	% RowMatrix = [ 10, 25, -7; 1, 2 4; 0, 0, 5 ]
+    18.0 = matrix2:get_element( _RowC=1, _ColC=2, SubMatrix ),
 
-	MultCanMatrix = matrix2:from_coordinates( 240.0,  580.0,
-											  680.0, 1660.0 ),
 
-	MultCanMatrix = matrix2:mult( ScaledMatrix, RowMatrix ),
+    RwC = 2,
+    ClC = 1,
 
-	test_facilities:display( "The multiplication of matrix ~ts "
-		"by matrix ~ts yields: ~ts",
-		[ matrix2:to_string( ScaledMatrix ),
-		  matrix2:to_string( RowMatrix ),
-		  matrix2:to_string( MultCanMatrix ) ] ),
+    SubSetMatrix = matrix2:set_element( RwC, ClC, 21.0, SubMatrix ),
+    21.0 = matrix2:get_element( RwC, ClC, SubSetMatrix ),
 
-	[ ArbitraryScaledMatrix, ArbitraryRowMatrix, ArbitraryMultCanMatrix ] =
-		[ matrix:unspecialise( M )
-			|| M <- [ ScaledMatrix, RowMatrix, MultCanMatrix ] ],
+    TransposedCoordMatrix = matrix2:from_coordinates( 10.0, 30.0,
+                                                      20.0, 40.0 ),
 
-	ArbitraryMultCanMatrix =
-		matrix:mult( ArbitraryScaledMatrix, ArbitraryRowMatrix ),
+    TransposedCoordMatrix = matrix2:transpose( CoordMatrix ),
+    true = matrix2:are_equal( TransposedCoordMatrix, TransposedCoordMatrix ),
 
-	-200.0 = matrix2:determinant( CoordMatrix ),
 
-	InvCoordMatrix = matrix2:inverse( CoordMatrix ),
+    % Checked with octave, for example:
+    %
+    % CoordMatrix = [ 1, 2 ; 5, 6 ]
+    % ScaledMatrix = 2.0 * CoordMatrix
+    % RowMatrix = [ 10, 25, -7; 1, 2 4; 0, 0, 5 ]
 
-	test_facilities:display( "The inverse of matrix ~ts is: ~ts",
-		[ matrix2:to_string( CoordMatrix ),
-		  matrix2:to_string( InvCoordMatrix ) ] ),
+    MultCanMatrix = matrix2:from_coordinates( 240.0,  580.0,
+                                              680.0, 1660.0 ),
 
-	true = matrix2:are_equal( Id,
-		matrix2:mult( CoordMatrix, InvCoordMatrix ) ),
+    MultCanMatrix = matrix2:mult( ScaledMatrix, RowMatrix ),
 
-	true = matrix2:are_equal( Id,
-		matrix2:mult( InvCoordMatrix, CoordMatrix ) ),
+    test_facilities:display( "The multiplication of matrix ~ts "
+        "by matrix ~ts yields: ~ts",
+        [ matrix2:to_string( ScaledMatrix ),
+          matrix2:to_string( RowMatrix ),
+          matrix2:to_string( MultCanMatrix ) ] ),
 
-	% Octave: inv(CoordMatrix) = [ 1, 2 ; 5, 6 ]
-	InvCoordMatrixOctave = matrix2:from_coordinates( -0.2, 0.1, 0.15, -0.05 ),
+    [ ArbitraryScaledMatrix, ArbitraryRowMatrix, ArbitraryMultCanMatrix ] =
+        [ matrix:unspecialise( M )
+            || M <- [ ScaledMatrix, RowMatrix, MultCanMatrix ] ],
 
-	true = matrix2:are_equal( InvCoordMatrix, InvCoordMatrixOctave ),
+    ArbitraryMultCanMatrix =
+        matrix:mult( ArbitraryScaledMatrix, ArbitraryRowMatrix ),
 
-	test_facilities:stop().
+    -200.0 = matrix2:determinant( CoordMatrix ),
+
+    InvCoordMatrix = matrix2:inverse( CoordMatrix ),
+
+    test_facilities:display( "The inverse of matrix ~ts is: ~ts",
+        [ matrix2:to_string( CoordMatrix ),
+          matrix2:to_string( InvCoordMatrix ) ] ),
+
+    true = matrix2:are_equal( Id,
+        matrix2:mult( CoordMatrix, InvCoordMatrix ) ),
+
+    true = matrix2:are_equal( Id,
+        matrix2:mult( InvCoordMatrix, CoordMatrix ) ),
+
+    % Octave: inv(CoordMatrix) = [ 1, 2 ; 5, 6 ]
+    InvCoordMatrixOctave = matrix2:from_coordinates( -0.2, 0.1, 0.15, -0.05 ),
+
+    true = matrix2:are_equal( InvCoordMatrix, InvCoordMatrixOctave ),
+
+    test_facilities:stop().

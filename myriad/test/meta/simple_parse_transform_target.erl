@@ -1,4 +1,4 @@
-% Copyright (C) 2015-2025 Olivier Boudeville
+% Copyright (C) 2015-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -36,4 +36,4 @@ A simple target module in order to test how parse transforms can operate.
 
 
 f( A ) ->
-	io:format( "Hello ~p", [ A ] ).
+    io:format( "Hello ~p", [ A ] ).

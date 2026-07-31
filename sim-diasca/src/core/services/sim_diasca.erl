@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2025 EDF R&D
+% Copyright (C) 2012-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -33,9 +33,9 @@ cases.
 
 
 -export([ init/1, init/2, init/3, get_simulation_name/1, is_running/0,
-		  create_initial_instances/1, notify_hint/1,
-		  run_simulation/2, run_simulation_and_browse_results/2, shutdown/0,
-		  start_for_test/0 ]).
+          create_initial_instances/1, notify_hint/1,
+          run_simulation/2, run_simulation_and_browse_results/2, shutdown/0,
+          start_for_test/0 ]).
 
 
 
@@ -56,7 +56,7 @@ cases.
 
 
 -export_type([ simulation_uuid/0, sii/0, simulation_identifiers/0,
-			   agent_pid/0 ]).
+               agent_pid/0 ]).
 
 
 
@@ -110,14 +110,14 @@ cases.
 -doc "Returns the version of the Sim-Diasca library being used.".
 -spec get_sim_diasca_version() -> three_digit_version().
 get_sim_diasca_version() ->
-	basic_utils:parse_version( get_sim_diasca_version_string() ).
+    basic_utils:parse_version( get_sim_diasca_version_string() ).
 
 
 -doc "Returns the version of the Sim-Diasca library being used, as a string.".
 -spec get_sim_diasca_version_string() -> ustring().
 get_sim_diasca_version_string() ->
-	% As defined (uniquely) in GNUmakevars.inc, as a preprocessor define:
-	?sim_diasca_version.
+    % As defined (uniquely) in GNUmakevars.inc, as a preprocessor define:
+    ?sim_diasca_version.
 
 
 
@@ -129,7 +129,7 @@ Returns the PID of the corresponding deployment manager.
 """.
 -spec init( simulation_settings() ) -> deployment_manager_pid().
 init( SimulationSettings ) ->
-	init( SimulationSettings, #deployment_settings{} ).
+    init( SimulationSettings, #deployment_settings{} ).
 
 
 
@@ -140,9 +140,9 @@ load-balancing settings.
 Returns the PID of the deployment manager.
 """.
 -spec init( simulation_settings(), deployment_settings() ) ->
-											deployment_manager_pid().
+                                            deployment_manager_pid().
 init( SimulationSettings, DeploymentSettings ) ->
-	init( SimulationSettings, DeploymentSettings, #load_balancing_settings{} ).
+    init( SimulationSettings, DeploymentSettings, #load_balancing_settings{} ).
 
 
 
@@ -152,180 +152,180 @@ Initialises the engine according to the specified settings.
 Returns the PID of the deployment manager.
 """.
 -spec init( simulation_settings(), deployment_settings(),
-			load_balancing_settings() ) -> deployment_manager_pid().
+            load_balancing_settings() ) -> deployment_manager_pid().
 init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
-	when is_record( SimulationSettings, simulation_settings )
-		 andalso is_record( DeploymentSettings, deployment_settings )
-		 andalso is_record( LoadBalancingSettings, load_balancing_settings ) ->
+    when is_record( SimulationSettings, simulation_settings )
+         andalso is_record( DeploymentSettings, deployment_settings )
+         andalso is_record( LoadBalancingSettings, load_balancing_settings ) ->
 
-	% We explicitly force the use of the Unicode encoding, as apparently a
-	% side-effect of running the VM with the -noinput option (which is usually
-	% the case here) is to switch the current encoding to latin1 (then for
-	% example terminal outputs become scrambled):
-	%
-	system_utils:force_unicode_support(),
+    % We explicitly force the use of the Unicode encoding, as apparently a
+    % side-effect of running the VM with the -noinput option (which is usually
+    % the case here) is to switch the current encoding to latin1 (then for
+    % example terminal outputs become scrambled):
+    %
+    system_utils:force_unicode_support(),
 
-	% Takes care of the simulation UUID and SII:
-	{ SimUUID, SII } = SimIdentifiers = get_simulation_identifiers(),
+    % Takes care of the simulation UUID and SII:
+    { SimUUID, SII } = SimIdentifiers = get_simulation_identifiers(),
 
-	trace_utils:notice_fmt( "Simulation instance identifier is '~ts'.",
-							[ SII ] ),
+    trace_utils:notice_fmt( "Simulation instance identifier is '~ts'.",
+                            [ SII ] ),
 
-	% We need to rename this user node so that it bears a conventional name
-	% (deriving from the simulation case, and including the SII) - yet this can
-	% only be done by starting from a non-distributed node (done by the
-	% Sim-Diasca make rules, relying on the --nn option):
-	%
-	SimulationName = get_simulation_name( SimulationSettings ),
+    % We need to rename this user node so that it bears a conventional name
+    % (deriving from the simulation case, and including the SII) - yet this can
+    % only be done by starting from a non-distributed node (done by the
+    % Sim-Diasca make rules, relying on the --nn option):
+    %
+    SimulationName = get_simulation_name( SimulationSettings ),
 
-	% We wanted the trace system to be autonomous (e.g. so that it can be used
-	% before the initialisation of the engine and after its shutdown); as a
-	% result, from ?case_start a default trace filename was created and used
-	% (e.g. 'my_foobar_case.traces').
-	%
-	% Now that the engine is being initialised, we request the trace file to be
-	% renamed, so that it also includes the user and the SII (e.g.
-	% 'my_foobar_case-by-boudevil-94.traces'):
-	%
-	BaseTraceFilename = text_utils:format( "~ts-by-~ts-~ts~ts",
-		[ SimulationName, system_utils:get_user_name(), SII,
-		  ?TraceExtension ] ),
+    % We wanted the trace system to be autonomous (e.g. so that it can be used
+    % before the initialisation of the engine and after its shutdown); as a
+    % result, from ?case_start a default trace filename was created and used
+    % (e.g. 'my_foobar_case.traces').
+    %
+    % Now that the engine is being initialised, we request the trace file to be
+    % renamed, so that it also includes the user and the SII (e.g.
+    % 'my_foobar_case-by-boudevil-94.traces'):
+    %
+    BaseTraceFilename = text_utils:format( "~ts-by-~ts-~ts",
+        [ SimulationName, system_utils:get_user_name(), SII ] ),
 
-	NewTraceFilename = file_utils:convert_to_filename( BaseTraceFilename ),
+    NewTraceFilename = file_utils:convert_to_filename_with_extension(
+        BaseTraceFilename, _Ext=?TraceExtension ),
 
-	TraceAggregatorPid = naming_utils:get_registered_pid_for(
-		?trace_aggregator_name, global ),
+    TraceAggregatorPid = naming_utils:get_registered_pid_for(
+        ?trace_aggregator_name, global ),
 
-	% We have to rename the trace file (e.g. to include the SII):
-	TraceAggregatorPid ! { renameTraceFile,
-		text_utils:string_to_binary( NewTraceFilename ) },
+    % We have to rename the trace file (e.g. to include the SII):
+    TraceAggregatorPid ! { renameTraceFile,
+        text_utils:string_to_binary( NewTraceFilename ) },
 
-	TraceAggregatorPid ! { getTraceType, [], self() },
+    TraceAggregatorPid ! { getTraceType, [], self() },
 
-	TraceType = receive
+    TraceType = receive
 
-		{ wooper_result, { notify_trace_type, Type } } ->
-			Type
+        { wooper_result, { notify_trace_type, Type } } ->
+            Type
 
-	end,
+    end,
 
-	%trace_utils:debug( "Initialising the trace supervisor." ),
+    %trace_utils:debug( "Initialising the trace supervisor." ),
 
-	% Now is the first time at which we can run the trace supervisor, as the
-	% trace filename is not expected to change anymore:
-	%
-	% (there used to be a possible, slight race condition here, if ever the
-	% renameTraceFile message arrived too late, yet a side-effect of the - now
-	% used - call to the getTraceType/1 request is to make the renaming
-	% synchronous as well)
-	%
-	class_TraceSupervisor:init( NewTraceFilename, TraceType,
-								TraceAggregatorPid, self() ),
+    % Now is the first time at which we can run the trace supervisor, as the
+    % trace filename is not expected to change anymore:
+    %
+    % (there used to be a possible, slight race condition here, if ever the
+    % renameTraceFile message arrived too late, yet a side-effect of the - now
+    % used - call to the getTraceType/1 request is to make the renaming
+    % synchronous as well)
+    %
+    class_TraceSupervisor:init( NewTraceFilename, TraceType,
+                                TraceAggregatorPid, self() ),
 
-	notify_conditional_settings(),
+    notify_conditional_settings(),
 
 
-	% EPMD must be running prior to having a node go distributed:
-	%
-	% We select here at which port this launched EPMD will run, yet the current
-	% VM apparently got the EPMD port that it will contact at start-up, and it
-	% does not seem possible to change it.
-	%
-	% As a result, the EPMD ports in the launch command (see the EPMD_PORT
-	% variable in myriad/GNUmakevars.inc) and in the deployment settings (see
-	% its firewall_restrictions field) must match.
-	%
-	case class_DeploymentManager:interpret_firewall_options(
-			DeploymentSettings ) of
+    % EPMD must be running prior to having a node go distributed:
+    %
+    % We select here at which port this launched EPMD will run, yet the current
+    % VM apparently got the EPMD port that it will contact at start-up, and it
+    % does not seem possible to change it.
+    %
+    % As a result, the EPMD ports in the launch command (see the EPMD_PORT
+    % variable in myriad/GNUmakevars.inc) and in the deployment settings (see
+    % its firewall_restrictions field) must match.
+    %
+    case class_DeploymentManager:interpret_firewall_options(
+            DeploymentSettings ) of
 
-		{ _EPMDPort=undefined, _TcpRangeOption } ->
-			% We use here the default Sim-Diasca EPMD port:
-			net_utils:launch_epmd();
+        { _EPMDPort=undefined, _TcpRangeOption } ->
+            % We use here the default Sim-Diasca EPMD port:
+            net_utils:launch_epmd();
 
-		{ EPMDPort, _TcpRangeOption } when is_integer( EPMDPort ) ->
-			system_utils:set_environment_variable( "ERL_EPMD_PORT",
-				text_utils:integer_to_string( EPMDPort ) ),
-			net_utils:launch_epmd( EPMDPort );
+        { EPMDPort, _TcpRangeOption } when is_integer( EPMDPort ) ->
+            system_utils:set_environment_variable( "ERL_EPMD_PORT",
+                text_utils:integer_to_string( EPMDPort ) ),
+            net_utils:launch_epmd( EPMDPort );
 
-		{ Invalid, _TcpRangeOption } ->
-			throw( { invalid_epmd_port, not_integer, Invalid } )
+        { Invalid, _TcpRangeOption } ->
+            throw( { invalid_epmd_port, not_integer, Invalid } )
 
-	end,
+    end,
 
-	initialise_node_naming( SimulationName, SII ),
+    initialise_node_naming( SimulationName, SII ),
 
-	% Simulations will never step over others (over previous ones):
-	Cookie = text_utils:string_to_atom( SimUUID ),
+    % Simulations will never step over others (over previous ones):
+    Cookie = text_utils:string_to_atom( SimUUID ),
 
-	% All spawned nodes will be given later the next new cookie of this node:
-	erlang:set_cookie( Cookie ),
+    % All spawned nodes will be given later the next new cookie of this node:
+    erlang:set_cookie( Cookie ),
 
-	% Detailed checking of this field done later, by the deployment manager:
-	case DeploymentSettings#deployment_settings.crash_resilience of
+    % Detailed checking of this field done later, by the deployment manager:
+    case DeploymentSettings#deployment_settings.crash_resilience of
 
-		K when is_integer( K ) andalso K > 0 ->
+        K when is_integer( K ) andalso K > 0 ->
 
-			% Here, an actual resilience is wanted. As a result, this current
-			% process (i.e. the one of the simulation case) shall resist to any
-			% node loss, thus must trap exits (e.g. for initial - linked -
-			% actors that were running on a crashed node). However, process
-			% crashes should not remain silent, thus EXIT messages will be
-			% searched for later.
-			%
-			process_flag( trap_exit, _ResistExitMsg=true );
+            % Here, an actual resilience is wanted. As a result, this current
+            % process (i.e. the one of the simulation case) shall resist to any
+            % node loss, thus must trap exits (e.g. for initial - linked -
+            % actors that were running on a crashed node). However, process
+            % crashes should not remain silent, thus EXIT messages will be
+            % searched for later.
+            %
+            process_flag( trap_exit, _ResistExitMsg=true );
 
-		_ ->
-			ok
+        _ ->
+            ok
 
-	end,
+    end,
 
-	% Simply returns this PID, for later use:
-	%
-	% (we kept the link with the user process corresponding to the simulation
-	% case, as if no resilience had been requested we want to stop whenever a
-	% node crashed, and with resilience enabled we trap exits, and are thus able
-	% to detect crashes nevertheless)
-	%
-	DeployManPid = class_DeploymentManager:new_link( SimulationSettings,
-		DeploymentSettings, LoadBalancingSettings, SimIdentifiers,
-		deploy_from_scratch, _CasePid=self() ),
+    % Simply returns this PID, for later use:
+    %
+    % (we kept the link with the user process corresponding to the simulation
+    % case, as if no resilience had been requested we want to stop whenever a
+    % node crashed, and with resilience enabled we trap exits, and are thus able
+    % to detect crashes nevertheless)
+    %
+    DeployManPid = class_DeploymentManager:new_link( SimulationSettings,
+        DeploymentSettings, LoadBalancingSettings, SimIdentifiers,
+        deploy_from_scratch, _CasePid=self() ),
 
-	% We register this process (the one of the simulation case), so that it can
-	% be found by others, like the resilience manager:
-	%
-	naming_utils:register_as( ?case_main_process_name, ?registration_scope ),
+    % We register this process (the one of the simulation case), so that it can
+    % be found by others, like the resilience manager:
+    %
+    naming_utils:register_as( ?case_main_process_name, ?registration_scope ),
 
-	% Nothing more to do, thus blocks until the deployment manager reports it is
-	% ready (see its onInitialInstancesCreatedFromFiles/1 oneway):
-	%
-	receive
+    % Nothing more to do, thus blocks until the deployment manager reports it is
+    % ready (see its onInitialInstancesCreatedFromFiles/1 oneway):
+    %
+    receive
 
-		deployment_done ->
-			DeployManPid
+        deployment_done ->
+            DeployManPid
 
-	end;
+    end;
 
 
 % One set of settings is invalid here:
 init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
-		when is_record( DeploymentSettings, deployment_settings ) andalso
-			 is_record( LoadBalancingSettings, load_balancing_settings ) ->
-	throw( { invalid_simulation_settings, SimulationSettings } );
+        when is_record( DeploymentSettings, deployment_settings ) andalso
+             is_record( LoadBalancingSettings, load_balancing_settings ) ->
+    throw( { invalid_simulation_settings, SimulationSettings } );
 
 init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
-		when is_record( SimulationSettings, simulation_settings ) andalso
-			 is_record( LoadBalancingSettings, load_balancing_settings ) ->
-	throw( { invalid_deployment_settings, DeploymentSettings } );
+        when is_record( SimulationSettings, simulation_settings ) andalso
+             is_record( LoadBalancingSettings, load_balancing_settings ) ->
+    throw( { invalid_deployment_settings, DeploymentSettings } );
 
 init( SimulationSettings, DeploymentSettings, LoadBalancingSettings )
-		when is_record( SimulationSettings, simulation_settings ) andalso
-			 is_record( DeploymentSettings, deployment_settings ) ->
-	throw( { invalid_load_balancing_settings, LoadBalancingSettings } );
+        when is_record( SimulationSettings, simulation_settings ) andalso
+             is_record( DeploymentSettings, deployment_settings ) ->
+    throw( { invalid_load_balancing_settings, LoadBalancingSettings } );
 
 % Even worse, at least two are invalid:
 init( SimulationSettings, DeploymentSettings, LoadBalancingSettings ) ->
-	throw( { invalid_settings, SimulationSettings, DeploymentSettings,
-			 LoadBalancingSettings } ).
+    throw( { invalid_settings, SimulationSettings, DeploymentSettings,
+             LoadBalancingSettings } ).
 
 
 
@@ -335,43 +335,43 @@ Initialises a proper node naming mode, and a proper name for this user node.
 -spec initialise_node_naming( simulation_name(), sii() ) -> void().
 initialise_node_naming( SimulationName, SII ) ->
 
-	NodePrefix = class_DeploymentManager:get_node_name_prefix_from(
-		SimulationName, SII ),
+    NodePrefix = class_DeploymentManager:get_node_name_prefix_from(
+        SimulationName, SII ),
 
-	% We rename this user node accordingly:
-	UserNodeName = NodePrefix ++ "-user-node",
+    % We rename this user node accordingly:
+    UserNodeName = NodePrefix ++ "-user-node",
 
-	InitialNodeNamingMode = net_utils:get_node_naming_mode(),
+    InitialNodeNamingMode = net_utils:get_node_naming_mode(),
 
-	% Securing the naming mode might be difficult in a continuous integration
-	% context and/or from within a container facility such as Docker or
-	% Singularity and/or a cluster.
-	%
-	% The default order in terms of node naming modes of Myriad is first long
-	% names, then short ones. However the opposite order has been finally
-	% preferred for Sim-Diasca, being more in-line with HPC clusters whose job
-	% manager (typically Slurm) is to return only mere hostnames instead of
-	% FQDN:
-	%
-	OrderedNamingModes = [ short_name, long_name ],
+    % Securing the naming mode might be difficult in a continuous integration
+    % context and/or from within a container facility such as Docker or
+    % Singularity and/or a cluster.
+    %
+    % The default order in terms of node naming modes of Myriad is first long
+    % names, then short ones. However the opposite order has been finally
+    % preferred for Sim-Diasca, being more in-line with HPC clusters whose job
+    % manager (typically Slurm) is to return only mere hostnames instead of
+    % FQDN:
+    %
+    OrderedNamingModes = [ short_name, long_name ],
 
-	SetNodeNamingMode = case net_utils:enable_preferred_distribution_mode(
-			UserNodeName, OrderedNamingModes ) of
+    SetNodeNamingMode = case net_utils:enable_preferred_distribution_mode(
+            UserNodeName, OrderedNamingModes ) of
 
-		{ ok, NamingMode } ->
-			NamingMode;
+        { ok, NamingMode } ->
+            NamingMode;
 
-		{ error, ErrorReason } ->
-			throw( { cannot_secure_distribution, UserNodeName, ErrorReason } )
+        { error, ErrorReason } ->
+            throw( { cannot_secure_distribution, UserNodeName, ErrorReason } )
 
-	end,
+    end,
 
-	class_TraceEmitter:send_standalone( info, text_utils:format(
-		"In terms of node naming mode, "
-		"the initial one was ~ts, the secured one was reported as ~ts, and "
-		"determined as ~ts, corresponding to a user node name of '~ts'.",
-		[ InitialNodeNamingMode, SetNodeNamingMode,
-		  net_utils:get_node_naming_mode(), node() ] ), _EmitterCateg="Core" ).
+    class_TraceEmitter:send_standalone( info, text_utils:format(
+        "In terms of node naming mode, "
+        "the initial one was ~ts, the secured one was reported as ~ts, and "
+        "determined as ~ts, corresponding to a user node name of '~ts'.",
+        [ InitialNodeNamingMode, SetNodeNamingMode,
+          net_utils:get_node_naming_mode(), node() ] ), _EmitterCateg="Core" ).
 
 
 
@@ -384,75 +384,75 @@ uniform across modules of the same layer).
 -spec notify_conditional_settings() -> void().
 notify_conditional_settings() ->
 
-	% There is no more reliable monitoring of these settings:
+    % There is no more reliable monitoring of these settings:
 
-	ExecStr = "Running in following execution target: "
-		++ cond_utils:if_defined( exec_target_is_production, "production",
-								  "development" ) ++ " mode.",
+    ExecStr = "Running in following execution target: "
+        ++ cond_utils:if_defined( exec_target_is_production, "production",
+                                  "development" ) ++ " mode.",
 
-	% These are compile-time constructs so one shall not try here to factorise
-	% these calls:
-	%
-	% (refer to sim-diasca/GNUmakevars.inc for all debug/check flags)
-	%
-	DebugTopicStrs = [
+    % These are compile-time constructs so one shall not try here to factorise
+    % these calls:
+    %
+    % (refer to sim-diasca/GNUmakevars.inc for all debug/check flags)
+    %
+    DebugTopicStrs = [
 
-		"model behaviours " ++ cond_utils:if_defined(
-			sim_diasca_debug_model_behaviours, "enabled", "disabled" ),
+        "model behaviours " ++ cond_utils:if_defined(
+            sim_diasca_debug_model_behaviours, "enabled", "disabled" ),
 
-		"user calls to engine API " ++ cond_utils:if_defined(
-			sim_diasca_debug_user_api_calls, "enabled", "disabled" ),
+        "user calls to engine API " ++ cond_utils:if_defined(
+            sim_diasca_debug_user_api_calls, "enabled", "disabled" ),
 
-		"time-management " ++ cond_utils:if_defined(
-			sim_diasca_debug_time_management, "enabled", "disabled" ),
+        "time-management " ++ cond_utils:if_defined(
+            sim_diasca_debug_time_management, "enabled", "disabled" ),
 
-		"initial actor creations " ++ cond_utils:if_defined(
-			sim_diasca_debug_initial_creations, "enabled", "disabled" ),
+        "initial actor creations " ++ cond_utils:if_defined(
+            sim_diasca_debug_initial_creations, "enabled", "disabled" ),
 
-		"instance loading " ++ cond_utils:if_defined(
-			sim_diasca_debug_instance_loading, "enabled", "disabled" ),
+        "instance loading " ++ cond_utils:if_defined(
+            sim_diasca_debug_instance_loading, "enabled", "disabled" ),
 
-		"runtime actor creations " ++ cond_utils:if_defined(
-			sim_diasca_debug_runtime_creations, "enabled", "disabled" ),
+        "runtime actor creations " ++ cond_utils:if_defined(
+            sim_diasca_debug_runtime_creations, "enabled", "disabled" ),
 
-		"actor life cycles " ++ cond_utils:if_defined(
-			sim_diasca_debug_life_cycles, "enabled", "disabled" ),
+        "actor life cycles " ++ cond_utils:if_defined(
+            sim_diasca_debug_life_cycles, "enabled", "disabled" ),
 
-		"management of graph streaming " ++ cond_utils:if_defined(
-			sim_diasca_debug_graph_streaming, "enabled", "disabled" ) ],
+        "management of graph streaming " ++ cond_utils:if_defined(
+            sim_diasca_debug_graph_streaming, "enabled", "disabled" ) ],
 
-	CheckTopicStrs = [
+    CheckTopicStrs = [
 
-		"model behaviours " ++ cond_utils:if_defined(
-			sim_diasca_check_model_behaviours, "enabled", "disabled" ),
+        "model behaviours " ++ cond_utils:if_defined(
+            sim_diasca_check_model_behaviours, "enabled", "disabled" ),
 
-		"user calls to engine API " ++ cond_utils:if_defined(
-			sim_diasca_check_user_api_calls, "enabled", "disabled" ),
+        "user calls to engine API " ++ cond_utils:if_defined(
+            sim_diasca_check_user_api_calls, "enabled", "disabled" ),
 
-		"time-management " ++ cond_utils:if_defined(
-			sim_diasca_check_time_management, "enabled", "disabled" ),
+        "time-management " ++ cond_utils:if_defined(
+            sim_diasca_check_time_management, "enabled", "disabled" ),
 
-		"initial actor creations " ++ cond_utils:if_defined(
-			sim_diasca_check_initial_creations, "enabled", "disabled" ),
+        "initial actor creations " ++ cond_utils:if_defined(
+            sim_diasca_check_initial_creations, "enabled", "disabled" ),
 
-		"instance loading " ++ cond_utils:if_defined(
-			sim_diasca_check_instance_loading, "enabled", "disabled" ),
+        "instance loading " ++ cond_utils:if_defined(
+            sim_diasca_check_instance_loading, "enabled", "disabled" ),
 
-		"runtime actor creations " ++ cond_utils:if_defined(
-			sim_diasca_check_runtime_creations, "enabled", "disabled" ),
+        "runtime actor creations " ++ cond_utils:if_defined(
+            sim_diasca_check_runtime_creations, "enabled", "disabled" ),
 
-		"actor life cycles " ++ cond_utils:if_defined(
-			sim_diasca_check_life_cycles, "enabled", "disabled" ),
+        "actor life cycles " ++ cond_utils:if_defined(
+            sim_diasca_check_life_cycles, "enabled", "disabled" ),
 
-		"management of graph streaming " ++ cond_utils:if_defined(
-			sim_diasca_check_graph_streaming, "enabled", "disabled" ) ],
+        "management of graph streaming " ++ cond_utils:if_defined(
+            sim_diasca_check_graph_streaming, "enabled", "disabled" ) ],
 
-	class_TraceEmitter:send_standalone( info, ExecStr ++ text_utils:format(
-		"~nRegarding the activation of engine-level conditional debug "
-		"topics: ~ts~nRegarding the conditional check topics: ~ts",
-		[ text_utils:strings_to_string( DebugTopicStrs ),
-		  text_utils:strings_to_string( CheckTopicStrs ) ] ),
-		  _EmitterCateg="Core" ).
+    class_TraceEmitter:send_standalone( info, ExecStr ++ text_utils:format(
+        "~nRegarding the activation of engine-level conditional debug "
+        "topics: ~ts~nRegarding the conditional check topics: ~ts",
+        [ text_utils:strings_to_string( DebugTopicStrs ),
+          text_utils:strings_to_string( CheckTopicStrs ) ] ),
+          _EmitterCateg="Core" ).
 
 
 
@@ -462,9 +462,9 @@ not been stopped yet).
 """.
 -spec is_running() -> boolean().
 is_running() ->
-	% We rely on the registration of the case process for that:
-	naming_utils:is_registered( ?case_main_process_name,
-								?registration_scope ) =/= not_registered.
+    % We rely on the registration of the case process for that:
+    naming_utils:is_registered( ?case_main_process_name,
+                                ?registration_scope ) =/= not_registered.
 
 
 
@@ -472,10 +472,10 @@ is_running() ->
 -spec create_initial_instances( file_utils:file_path() ) -> void().
 create_initial_instances( _FilePath ) ->
 
-	% At least currently one shall use the initialisation_files field of the
-	% simulation_settings instead:
-	%
-	throw( not_implemented_yet ).
+    % At least currently one shall use the initialisation_files field of the
+    % simulation_settings instead:
+    %
+    throw( not_implemented_yet ).
 
 
 
@@ -487,7 +487,7 @@ culprit for a detected error.
 """.
 -spec notify_hint( ustring() ) -> void().
 notify_hint( Message ) ->
-	io:format( "[hint] ~ts.~n", [ Message ] ).
+    io:format( "[hint] ~ts.~n", [ Message ] ).
 
 
 
@@ -498,31 +498,31 @@ termination criterion.
 -spec run_simulation( tick(), pid() ) -> void().
 run_simulation( StopTick, DeploymentManagerPid ) ->
 
-	% As some processes (e.g. the time manager) have the PID of this simulation
-	% case process in their state, it must be declared too to the corresponding
-	% instance tracker (now that it has been deployed):
-	%
-	class_InstanceTracker:register_agent( ?case_main_process_name ),
+    % As some processes (e.g. the time manager) have the PID of this simulation
+    % case process in their state, it must be declared too to the corresponding
+    % instance tracker (now that it has been deployed):
+    %
+    class_InstanceTracker:register_agent( ?case_main_process_name ),
 
-	DeploymentManagerPid ! { getRootTimeManager, [], self() },
+    DeploymentManagerPid ! { getRootTimeManager, [], self() },
 
-	RootTimeManagerPid = traces:receive_applicative_message(),
+    RootTimeManagerPid = traces:receive_applicative_message(),
 
-	?notify_notice_fmt( "Starting simulation, for a stop no later than "
-						"tick offset #~B.", [ StopTick ] ),
+    ?notify_notice_fmt( "Starting simulation, for a stop no later than "
+                        "tick offset #~B.", [ StopTick ] ),
 
-	RootTimeManagerPid ! { start, [ StopTick, self() ] },
+    RootTimeManagerPid ! { start, [ StopTick, self() ] },
 
-	?notify_info( "Waiting for the simulation to end, "
-				  "since having been declared as a simulation listener." ),
+    ?notify_info( "Waiting for the simulation to end, "
+                  "since having been declared as a simulation listener." ),
 
-	receive
+    receive
 
-		simulation_stopped ->
-			?notify_info( "Simulation stopped spontaneously, "
-						  "specified stop tick must have been reached." )
+        simulation_stopped ->
+            ?notify_info( "Simulation stopped spontaneously, "
+                          "specified stop tick must have been reached." )
 
-	end.
+    end.
 
 
 
@@ -531,14 +531,14 @@ Runs the actual simulation, until reaching the stop tick, and allows the user to
 browse the corresponding results, if it succeeded.
 """.
 -spec run_simulation_and_browse_results( tick(), deployment_manager_pid() ) ->
-											void().
+                                            void().
 run_simulation_and_browse_results( StopTick, DeploymentManagerPid ) ->
 
-	run_simulation( StopTick, DeploymentManagerPid ),
+    run_simulation( StopTick, DeploymentManagerPid ),
 
-	?notify_info( "Browsing the report results, if in batch mode." ),
+    ?notify_info( "Browsing the report results, if in batch mode." ),
 
-	class_ResultManager:browse_reports().
+    class_ResultManager:browse_reports().
 
 
 
@@ -546,35 +546,35 @@ run_simulation_and_browse_results( StopTick, DeploymentManagerPid ) ->
 -spec shutdown() -> void().
 shutdown() ->
 
-	% Stateless, hence resilience-friendly.
+    % Stateless, hence resilience-friendly.
 
-	% Removes any simulation package archive lingering with the default name, as
-	% it is not expected to be of interest:
-	%
-	file_utils:remove_file_if_existing(
-		class_DeploymentManager:get_default_deployment_package_name() ),
+    % Removes any simulation package archive lingering with the default name, as
+    % it is not expected to be of interest:
+    %
+    file_utils:remove_file_if_existing(
+        class_DeploymentManager:get_default_deployment_package_name() ),
 
-	case naming_utils:is_registered( ?deployment_manager_name, global ) of
+    case naming_utils:is_registered( ?deployment_manager_name, global ) of
 
-		not_registered ->
-			ok;
+        not_registered ->
+            ok;
 
-		DeployPid ->
-			class_DeploymentManager:shutdown( DeployPid )
+        DeployPid ->
+            class_DeploymentManager:shutdown( DeployPid )
 
-	end,
+    end,
 
-	naming_utils:unregister( ?case_main_process_name, global_only ),
+    naming_utils:unregister( ?case_main_process_name, global_only ),
 
-	check_exit_messages().
+    check_exit_messages().
 
 
 
 -doc "Allows to support both OTP conventions and ad hoc, automatic ones.".
 -spec start_for_test() -> void().
 start_for_test() ->
-	trace_utils:info( "Starting Sim-Diasca test environment." ),
-	wooper_utils:start_for_test().
+    trace_utils:info( "Starting Sim-Diasca test environment." ),
+    wooper_utils:start_for_test().
 
 
 
@@ -582,22 +582,22 @@ start_for_test() ->
 -spec check_exit_messages() -> void().
 check_exit_messages() ->
 
-	receive
+    receive
 
-		{ 'EXIT', _From, _Reason=normal } ->
-			% Ignored:
-			check_exit_messages();
+        { 'EXIT', _From, _Reason=normal } ->
+            % Ignored:
+            check_exit_messages();
 
-		{ 'EXIT', From, Reason } ->
-			?notify_warning_fmt( "process whose PID was ~w had exited "
-								 "with reason '~p'.~n", [ From, Reason ] ),
-			check_exit_messages()
+        { 'EXIT', From, Reason } ->
+            ?notify_warning_fmt( "process whose PID was ~w had exited "
+                                 "with reason '~p'.~n", [ From, Reason ] ),
+            check_exit_messages()
 
-	after 0 ->
-		% Stop recursing:
-		ok
+    after 0 ->
+        % Stop recursing:
+        ok
 
-	end.
+    end.
 
 
 
@@ -608,53 +608,53 @@ SII (potentially derived from it, if not specified by the user).
 -spec get_simulation_identifiers() -> simulation_identifiers().
 get_simulation_identifiers() ->
 
-	% In all cases an UUID will be needed:
-	UUID = id_utils:generate_uuid(),
+    % In all cases an UUID will be needed:
+    UUID = id_utils:generate_uuid(),
 
-	EmitterName = "Case" ,
+    EmitterName = "Case" ,
 
-	EmitterCategorization = "Core.Deployment",
+    EmitterCategorization = "Core.Deployment",
 
-	MessageCategorization = uncategorized,
+    MessageCategorization = uncategorized,
 
-	SII = case cmd_line_utils:get_command_arguments_for_option(
-			'-simulation-instance-id' ) of
+    SII = case cmd_line_utils:get_command_arguments_for_option(
+            '-simulation-instance-id' ) of
 
-		undefined ->
-			% No SII defined by the user, hence determining it from UUID.
+        undefined ->
+            % No SII defined by the user, hence determining it from UUID.
 
-			% Will lead to a shorter, more human-tractable string (up to 9
-			% numerical characters, instead of 36 alphanumerical ones for the
-			% UUID):
-			%
-			DeducedSII = text_utils:integer_to_string( erlang:phash2( UUID ) ),
+            % Will lead to a shorter, more human-tractable string (up to 9
+            % numerical characters, instead of 36 alphanumerical ones for the
+            % UUID):
+            %
+            DeducedSII = text_utils:integer_to_string( erlang:phash2( UUID ) ),
 
-			?notify_fmt_em( "Using simulation UUID '~ts', and, no SII having "
-				"been specified by the user, a UUID-derived one, SII '~ts'.",
-				[ UUID, DeducedSII ], EmitterName, EmitterCategorization,
-				MessageCategorization ),
+            ?notify_fmt_em( "Using simulation UUID '~ts', and, no SII having "
+                "been specified by the user, a UUID-derived one, SII '~ts'.",
+                [ UUID, DeducedSII ], EmitterName, EmitterCategorization,
+                MessageCategorization ),
 
-			DeducedSII;
+            DeducedSII;
 
 
-		[ [ UserSpecifiedSII ] ] when is_list( UserSpecifiedSII )
-									  andalso UserSpecifiedSII =/= "" ->
-			?notify_fmt_em( "Using simulation UUID '~ts', and "
-				"user-specified SII '~ts'.", [ UUID, UserSpecifiedSII ],
-				EmitterName, EmitterCategorization, MessageCategorization ),
-			UserSpecifiedSII;
+        [ [ UserSpecifiedSII ] ] when is_list( UserSpecifiedSII )
+                                      andalso UserSpecifiedSII =/= "" ->
+            ?notify_fmt_em( "Using simulation UUID '~ts', and "
+                "user-specified SII '~ts'.", [ UUID, UserSpecifiedSII ],
+                EmitterName, EmitterCategorization, MessageCategorization ),
+            UserSpecifiedSII;
 
-		[ [ UserSpecifiedSII ] ] ->
-			throw( { invalid_user_specified_simulation_instance_id,
-					 UserSpecifiedSII } );
+        [ [ UserSpecifiedSII ] ] ->
+            throw( { invalid_user_specified_simulation_instance_id,
+                     UserSpecifiedSII } );
 
-		OtherSIIArg ->
-			throw( { multiple_user_specified_simulation_instance_identifiers,
-					 OtherSIIArg } )
+        OtherSIIArg ->
+            throw( { multiple_user_specified_simulation_instance_identifiers,
+                     OtherSIIArg } )
 
-	end,
+    end,
 
-	{ UUID, SII }.
+    { UUID, SII }.
 
 
 
@@ -665,21 +665,21 @@ settings.
 """.
 -spec get_simulation_name( simulation_settings() ) -> ustring().
 get_simulation_name( #simulation_settings{ simulation_name=AtomName } )
-								when is_atom( AtomName ) ->
-	text_utils:atom_to_string( AtomName );
+                                when is_atom( AtomName ) ->
+    text_utils:atom_to_string( AtomName );
 
 get_simulation_name( #simulation_settings{ simulation_name=StringName } )
-								when is_list( StringName ) ->
-	case text_utils:is_string( StringName ) of
+                                when is_list( StringName ) ->
+    case text_utils:is_string( StringName ) of
 
-		true ->
-			StringName;
+        true ->
+            StringName;
 
-		false ->
-			throw( { invalid_simulation_name, invalid_string,
-					 StringName } )
+        false ->
+            throw( { invalid_simulation_name, invalid_string,
+                     StringName } )
 
-	end;
+    end;
 
 get_simulation_name( #simulation_settings{ simulation_name=UnexpectedName } ) ->
-	throw( { invalid_simulation_name, not_string, UnexpectedName } ).
+    throw( { invalid_simulation_name, not_string, UnexpectedName } ).

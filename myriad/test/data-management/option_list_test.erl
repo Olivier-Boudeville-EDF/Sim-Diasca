@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2025 Olivier Boudeville
+% Copyright (C) 2010-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -42,46 +42,46 @@ See the option_list.erl tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	SingleOptionList = option_list:new( [ {blue,2 } ] ),
-	2 = option_list:get( blue, SingleOptionList ),
+    SingleOptionList = option_list:new( [ {blue,2 } ] ),
+    2 = option_list:get( blue, SingleOptionList ),
 
-	% Pattern-match:
-	SingleOptionList = option_list:set( {blue,2}, option_list:new() ),
+    % Pattern-match:
+    SingleOptionList = option_list:set( {blue,2}, option_list:new() ),
 
-	InitialOptionList = [ {yellow,1}, {blue,1}, {red,1}, {green,1},
-						  {purple,1} ],
+    InitialOptionList = [ {yellow,1}, {blue,1}, {red,1}, {green,1},
+                          {purple,1} ],
 
-	test_facilities:display( "Initial option list: ~w.",
-		[ InitialOptionList ] ),
+    test_facilities:display( "Initial option list: ~w.",
+        [ InitialOptionList ] ),
 
-	BlackOptionList = option_list:set( {black,1}, InitialOptionList ),
-	test_facilities:display( "Option list with black entry added: ~w.",
-		[ BlackOptionList ] ),
+    BlackOptionList = option_list:set( {black,1}, InitialOptionList ),
+    test_facilities:display( "Option list with black entry added: ~w.",
+        [ BlackOptionList ] ),
 
-	RedOptionList = option_list:set( {red,2}, BlackOptionList ),
-	test_facilities:display( "Option list with red entry incremented: ~w.",
-		[ RedOptionList ] ),
+    RedOptionList = option_list:set( {red,2}, BlackOptionList ),
+    test_facilities:display( "Option list with red entry incremented: ~w.",
+        [ RedOptionList ] ),
 
-	EndpointOptionList = option_list:set( {black,2},
-		option_list:set( {purple,2}, RedOptionList ) ),
+    EndpointOptionList = option_list:set( {black,2},
+        option_list:set( {purple,2}, RedOptionList ) ),
 
-	test_facilities:display( "Option list with endpoints updated: ~w.",
-		[ EndpointOptionList ] ),
+    test_facilities:display( "Option list with endpoints updated: ~w.",
+        [ EndpointOptionList ] ),
 
-	SecondOptionList = option_list:set( {magenta,1}, SingleOptionList ),
-	UpdatingOptionList = option_list:set( {black,3}, SecondOptionList ),
+    SecondOptionList = option_list:set( {magenta,1}, SingleOptionList ),
+    UpdatingOptionList = option_list:set( {black,3}, SecondOptionList ),
 
-	UpdatedOptionList = option_list:update_with(
-		EndpointOptionList, UpdatingOptionList ),
+    UpdatedOptionList = option_list:update_with(
+        EndpointOptionList, UpdatingOptionList ),
 
-	test_facilities:display( "Update of previous option list "
-		"with option_list ~w is: ~w.",
-		[ UpdatingOptionList, UpdatedOptionList ] ),
+    test_facilities:display( "Update of previous option list "
+        "with option_list ~w is: ~w.",
+        [ UpdatingOptionList, UpdatedOptionList ] ),
 
-	3 = option_list:get( black ,UpdatedOptionList ),
+    3 = option_list:get( black ,UpdatedOptionList ),
 
-	InitialOptionList = option_list:enumerate( InitialOptionList ),
+    InitialOptionList = option_list:enumerate( InitialOptionList ),
 
-	test_facilities:stop().
+    test_facilities:stop().

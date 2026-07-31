@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -36,7 +36,8 @@ See the `list_utils_test` module for the corresponding test.
 For the support of (possibly strict) tagged lists (i.e. lists of pairs, with
 atoms as keys), refer to the `tagged_list` module.
 
-See also the `set_utils` and `list_table` modules.
+See also the `set_utils` and `list_table` modules, and the built-in `lists`
+module, notably for its `key{find,take,...}` functions.
 """.
 
 
@@ -51,57 +52,60 @@ See also the `set_utils` and `list_table` modules.
 % (see also basic_utils:{check,are}_all_{,un}defined/1).
 %
 -export([ ensure_list/1, ensure_atoms/1, ensure_tuples/1, ensure_pids/1,
-		  are_integers/1, check_integers/1, are_pids/1, are_atoms/1,
-		  check_strictly_ascending/1,
-		  are_equal/1, check_equal/1 ]).
+          are_integers/1, check_integers/1, are_pids/1, are_atoms/1,
+          check_strictly_ascending/1,
+          are_equal/1, check_equal/1,
+          is_proper_list/1 ]).
 
 
 % Basic list operations:
 -export([ get_element_at/2, set_element_at/3, insert_element_at/3,
-		  extract_element_at/2, extract_element_if_existing/2,
-		  extract_first_elements/2, extract_last_elements/2,
-		  remove_first_elements/2, remove_element_at/2, remove_last_element/1,
-		  heads/2,
-		  get_last_element/1, extract_last_element/1,
-		  get_min_max/1,
-		  get_index_of/2, get_maybe_index_of/2, split_at/2, group_by/2,
-		  uniquify/1, uniquify_ordered/1,
-		  ensure_is_once_in/2,
-		  duplicate/2,
-		  has_duplicates/1, count_occurrences/1, get_duplicates/1,
-		  duplicate_info_to_string/1,
-		  union/2, intersection/2,
-		  difference/2, differences/2,
-		  cartesian_product/1,
-		  subtract_all_duplicates/2,
-		  get_all_permutations/1,
-		  delete_existing/2, delete_existing_elements/2,
-		  delete_if_existing/2,
-		  remove_element_from/2, remove_elements_from/2,
-		  remove_first_occurrence/2, remove_first_occurrences/2,
-		  delete_all_in/2,
-		  intercalate/2, append_at_end/2,
-		  unordered_compare/2, flatten_once/1, filter_out_undefined/1 ]).
+          extract_element_at/2, extract_element_if_existing/2,
+          extract_first_elements/2, extract_last_elements/2,
+          remove_first_elements/2, remove_element_at/2, remove_last_element/1,
+          heads/2,
+          get_last_element/1, extract_last_element/1,
+          get_min_max/1,
+          get_index_of/2, get_maybe_index_of/2, split_at/2, group_by/2,
+          uniquify/1, uniquify_ordered/1,
+          ensure_is_once_in/2,
+          duplicate/2,
+          has_duplicates/1, count_occurrences/1, get_duplicates/1,
+          duplicate_info_to_string/1,
+          union/2, intersection/2,
+          difference/2, differences/2,
+          cartesian_product/1,
+          subtract_all_duplicates/2,
+          get_all_permutations/1,
+          delete_existing/2, delete_existing_elements/2,
+          delete_if_existing/2,
+          remove_element_from/2, remove_elements_from/2,
+          remove_first_occurrence/2, remove_first_occurrences/2,
+          delete_all_in/2,
+          intercalate/2, append_at_end/2,
+          unordered_compare/2, check_unordered_match/2,
+          flatten_once/1, filter_out_undefined/1 ]).
 
 
 % Less common list operations:
 -export([ dispatch_in/2,
-		  split_heads_tails/1, add_as_heads/2,
-		  split_multi_heads_tails/2, concatenate_per_rank/2,
-		  insert_at_all_places/2, repeat_elements/2 ]).
+          split_heads_tails/1, add_as_heads/2,
+          split_multi_heads_tails/2, concatenate_per_rank/2,
+          insert_at_all_places/2, repeat_elements/2 ]).
 
 
 % For lists of tuples (e.g. typically used by the HDF5 binding) or lists,
 % extended flatten and al:
 %
 -export([ determine_tuple_info/1, flatten_tuples/1, reconstruct_tuples/2,
-		  zipn/1, check_same_length/1 ]).
+          zipn/1, check_same_length/1 ]).
 
 
 % Random operations on lists:
--export([ random_permute/1, random_permute_reciprocal/1,
-		  draw_element/1, draw_element/2, draw_element_weighted/1,
-		  draw_elements_from/2, extract_elements_from/2 ]).
+-export([ random_permute/1,
+          random_invertible_permute/2, random_invertible_permute_reciprocal/2,
+          draw_element/1, draw_element/2, draw_element_weighted/1,
+          draw_elements_from/2, extract_elements_from/2 ]).
 
 
 
@@ -150,6 +154,7 @@ element is an atom.
 
 -type ustring() :: text_utils:ustring().
 
+-type random_state() :: random_utils:random_state().
 
 
 
@@ -165,10 +170,10 @@ Note: not to be applied on strings for example.
 """.
 -spec ensure_list( maybe_list( T ) ) -> [ T ].
 ensure_list( List ) when is_list( List ) ->
-	List;
+    List;
 
 ensure_list( Term ) ->
-	[ Term ].
+    [ Term ].
 
 
 
@@ -179,21 +184,21 @@ populated of atoms; respects any original order.
 """.
 -spec ensure_atoms( term() ) -> [ atom() ].
 ensure_atoms( Atom ) when is_atom( Atom ) ->
-	[ Atom ];
+    [ Atom ];
 
 ensure_atoms( List ) when is_list( List ) ->
-	case type_utils:is_homogeneous( List, _CommonType=atom ) of
+    case type_utils:is_homogeneous( List, _CommonType=atom ) of
 
-		true ->
-			List;
+        true ->
+            List;
 
-		false ->
-			throw( { not_list_of_atoms, List } )
+        false ->
+            throw( { not_list_of_atoms, List } )
 
-	end;
+    end;
 
 ensure_atoms( Other ) ->
-	throw( { neither_list_nor_atom, Other } ).
+    throw( { neither_list_nor_atom, Other } ).
 
 
 
@@ -204,21 +209,21 @@ populated of tuples; respects any original order.
 """.
 -spec ensure_tuples( term() ) -> [ tuple() ].
 ensure_tuples( Tuple ) when is_tuple( Tuple ) ->
-	[ Tuple ];
+    [ Tuple ];
 
 ensure_tuples( List ) when is_list( List ) ->
-	case type_utils:is_homogeneous( List, _CommonType=tuple ) of
+    case type_utils:is_homogeneous( List, _CommonType=tuple ) of
 
-		true ->
-			List;
+        true ->
+            List;
 
-		false ->
-			throw( { not_list_of_tuples, List } )
+        false ->
+            throw( { not_list_of_tuples, List } )
 
-	end;
+    end;
 
 ensure_tuples( Other ) ->
-	throw( { neither_list_nor_tuple, Other } ).
+    throw( { neither_list_nor_tuple, Other } ).
 
 
 
@@ -229,21 +234,21 @@ populated of PIDs; respects any original order.
 """.
 -spec ensure_pids( term() ) -> [ pid() ].
 ensure_pids( Pid ) when is_pid( Pid ) ->
-	[ Pid ];
+    [ Pid ];
 
 ensure_pids( List ) when is_list( List ) ->
-	case type_utils:is_homogeneous( List, _CommonType=pid ) of
+    case type_utils:is_homogeneous( List, _CommonType=pid ) of
 
-		true ->
-			List;
+        true ->
+            List;
 
-		false ->
-			throw( { not_list_of_pids, List } )
+        false ->
+            throw( { not_list_of_pids, List } )
 
-	end;
+    end;
 
 ensure_pids( Other ) ->
-	throw( { neither_list_nor_pid, Other } ).
+    throw( { neither_list_nor_pid, Other } ).
 
 
 
@@ -258,10 +263,10 @@ ensure_pids( Other ) ->
 -doc """
 Returns the element in the list at the specified index, in `[1..length(List)]`.
 
-If the index is out of bounds, a function_clause is raised.
+If the index is out of bounds, a `function_clause` is raised.
 
-Note: usually these kinds of functions should not be used, recursive algorithms
-are a lot more effective, when applicable.
+Note: usually these kinds of functions should not be used, when applicable
+recursive algorithms are a lot more effective.
 """.
 %
 % Not tail recursive version:
@@ -274,8 +279,8 @@ are a lot more effective, when applicable.
 %
 -spec get_element_at( list(), positive_index() ) -> element().
 get_element_at( List, Index ) ->
-	%trace_utils:debug_fmt( " - getting element #~B of ~w", [ Index, List ] ),
-	lists:nth( Index, List ).
+    %trace_utils:debug_fmt( " - getting element #~B of ~w", [ Index, List ] ),
+    lists:nth( Index, List ).
 
 
 
@@ -285,15 +290,15 @@ the specified element.
 """.
 -spec set_element_at( element(), list(), positive_index() ) -> list().
 set_element_at( Element, List, Index ) ->
-	set_element_at( Element, List, Index, _Acc=[] ).
+    set_element_at( Element, List, Index, _Acc=[] ).
 
 
 % (helper)
 set_element_at( Element, _List=[ _H | T ], _Index=1, Acc ) ->
-	lists:reverse( Acc ) ++ [ Element | T ];
+    lists:reverse( Acc ) ++ [ Element | T ];
 
 set_element_at( Element, _List=[ H | T ], Index, Acc ) ->
-	set_element_at( Element, T, Index-1, [ H | Acc ] ).
+    set_element_at( Element, T, Index-1, [ H | Acc ] ).
 
 
 
@@ -306,42 +311,42 @@ c, d]`.
 -spec insert_element_at( element(), list(), positive_index() ) -> list().
 insert_element_at( Element, List, Index ) ->
 
-	%io:format( " - inserting element ~p at #~B in ~w~n",
-	%           [ Element, Index, List ] ),
+    %io:format( " - inserting element ~p at #~B in ~w~n",
+    %           [ Element, Index, List ] ),
 
-	insert_element_at( Element, List, Index, _Acc=[] ).
+    insert_element_at( Element, List, Index, _Acc=[] ).
 
 
 insert_element_at( Element, _List=[], _Index=1, Acc ) ->
-	lists:reverse( [ Element | Acc ] );
+    lists:reverse( [ Element | Acc ] );
 
 insert_element_at( _Element, _List=[], Index, Acc ) ->
-	% Rebuilds input parameters:
-	throw( { invalid_index, Index + length( Acc ), lists:reverse( Acc ) } );
+    % Rebuilds input parameters:
+    throw( { invalid_index, Index + length( Acc ), lists:reverse( Acc ) } );
 
 insert_element_at( Element, List, _Index=1, Acc ) ->
-	lists:reverse( [ Element | Acc ] ) ++ List;
+    lists:reverse( [ Element | Acc ] ) ++ List;
 
 insert_element_at( Element, _List=[ H | T ], Index, Acc ) ->
-	insert_element_at( Element, T, Index-1, [ H | Acc ] ).
+    insert_element_at( Element, T, Index-1, [ H | Acc ] ).
 
 
 
 -doc """
-Extracts the element of the specified list at the specified index.
+Extracts the element at the specified index in the specified list.
 
 Returns that element and the resulting, shrunk list.
 
-For example: `{b, [a, c]} = extract_element_at([ a, b, c], 2)`.
+For example: `{b, [a, c]} = extract_element_at([a, b, c], 2)`.
 """.
 -spec extract_element_at( list(), positive_index() ) -> { element(), list() }.
 extract_element_at( List, Index ) ->
-	% Relying now on lists:split/2:
-	{ Left, [ Elem | Right ] } = lists:split( Index-1, List ),
-	{ Elem, Left ++ Right }.
+    % Relying now on lists:split/2:
+    { Left, [ Elem | Right ] } = lists:split( Index-1, List ),
+    { Elem, Left ++ Right }.
 
-	% Before: nothing relevant found in the lists module, so:
-	%extract_element_at( List, Index, _Acc=[] ).
+    % Before: nothing relevant found in the lists module, so:
+    %extract_element_at( List, Index, _Acc=[] ).
 
 
 % (helper)
@@ -364,18 +369,18 @@ removed, and in its original order), otherwise returning false.
 """.
 -spec extract_element_if_existing( element(), list() ) -> 'false' | list().
 extract_element_if_existing( Elem, List ) ->
-	extract_element_if_existing( Elem, List, _Acc=[] ).
+    extract_element_if_existing( Elem, List, _Acc=[] ).
 
 
 % (helper)
 extract_element_if_existing( _Elem, _List=[], _Acc ) ->
-	false;
+    false;
 
 extract_element_if_existing( Elem, _List=[ Elem | T ], Acc ) ->
-	lists:reverse( Acc ) ++ T;
+    lists:reverse( Acc ) ++ T;
 
 extract_element_if_existing( Elem, _List=[ H | T ], Acc ) ->
-	extract_element_if_existing( Elem, T, [ H | Acc ] ).
+    extract_element_if_existing( Elem, T, [ H | Acc ] ).
 
 
 
@@ -387,20 +392,21 @@ For example `{[a,b,c], [d,e]} = extract_first_elements([a,b,c,d,e], 3)`.
 
 Throws an exception if there are not enough elements to do so.
 """.
--spec extract_first_elements( list(), count() ) -> { list(), list() }.
+-spec extract_first_elements( list(), count() ) ->
+                                        { Extracted :: list(), Rest :: list() }.
 extract_first_elements( List, Count ) ->
-	extract_first_elements( List, Count, _Acc=[] ).
+    extract_first_elements( List, Count, _Acc=[] ).
 
 
 % (helper)
 extract_first_elements( RemainderList, _Count=0, Acc ) ->
-	{ lists:reverse( Acc ), RemainderList };
+    { lists:reverse( Acc ), RemainderList };
 
 extract_first_elements( _RemainderList=[], LackingCount, _Acc ) ->
-	throw( { list_too_short, LackingCount } );
+    throw( { list_too_short, LackingCount } );
 
 extract_first_elements( _RemainderList=[ H | T ], Count, Acc ) ->
-	extract_first_elements( T, Count-1, [ H | Acc ] ).
+    extract_first_elements( T, Count-1, [ H | Acc ] ).
 
 
 
@@ -414,10 +420,10 @@ Throws an exception if there are not enough elements to do so.
 """.
 -spec extract_last_elements( list(), count() ) -> { list(), list() }.
 extract_last_elements( List, Count ) ->
-	{ RevLastElems, RevRemainder } =
-		extract_first_elements( lists:reverse( List ), Count ),
+    { RevLastElems, RevRemainder } =
+        extract_first_elements( lists:reverse( List ), Count ),
 
-	{ lists:reverse( RevLastElems ), lists:reverse( RevRemainder ) }.
+    { lists:reverse( RevLastElems ), lists:reverse( RevRemainder ) }.
 
 
 
@@ -431,10 +437,10 @@ For example: `[c, d, e] = list_utils:remove_first_elements([a, b, c, d, e], 2)`.
 """.
 -spec remove_first_elements( list(), count() ) -> list().
 remove_first_elements( List, _Count=0 ) ->
-	List;
+    List;
 
 remove_first_elements( List, Count ) ->
-	remove_first_elements( tl( List ), Count-1 ).
+    remove_first_elements( tl( List ), Count-1 ).
 
 
 
@@ -462,13 +468,13 @@ by its index seems to be available in the `lists` module.
 %
 -spec remove_element_at( list(), positive_index() ) -> list().
 remove_element_at( List, Index ) ->
-	remove_element_at( List, Index, _Result=[] ).
+    remove_element_at( List, Index, _Result=[] ).
 
 remove_element_at( [ _H | RemainingList ], 1, Result ) ->
-	lists:reverse( Result ) ++ RemainingList;
+    lists:reverse( Result ) ++ RemainingList;
 
 remove_element_at( [ H | RemainingList ], Index, Result ) ->
-	remove_element_at( RemainingList, Index-1, [ H | Result ] ).
+    remove_element_at( RemainingList, Index-1, [ H | Result ] ).
 
 
 
@@ -482,7 +488,7 @@ a bad code design.
 """.
 -spec remove_last_element( list() ) -> list().
 remove_last_element( List ) ->
-	lists:droplast( List ).
+    lists:droplast( List ).
 
 % remove_last_element( List, _Acc=[] ).
 
@@ -509,15 +515,15 @@ See `split_heads_tails/1` to extract a single element from multiple lists.
 """.
 -spec heads( list(), count() ) -> { list(), list() }.
 heads( List, N ) ->
-	heads( List, N, _Acc=[] ).
+    heads( List, N, _Acc=[] ).
 
 
 % (helper)
 heads( List, _N=0, Acc ) ->
-	{ lists:reverse( Acc ), List };
+    { lists:reverse( Acc ), List };
 
 heads( _List=[ H | T ], N, Acc ) ->
-	heads( T, N-1, [ H | Acc ] ).
+    heads( T, N-1, [ H | Acc ] ).
 
 
 
@@ -532,10 +538,10 @@ Crashes (with `no function clause`) if the input list is empty.
 """.
 -spec get_last_element( list() ) -> element().
 get_last_element( _List=[ SingleElement ] ) ->
-	SingleElement;
+    SingleElement;
 
 get_last_element( _List=[ _H | T ] ) ->
-	get_last_element( T ).
+    get_last_element( T ).
 
 
 
@@ -548,15 +554,15 @@ element suggests a bad code design.
 """.
 -spec extract_last_element( list() ) -> { element(), list() }.
 extract_last_element( _List=[] ) ->
-	throw( cannot_extract_from_empty_list );
+    throw( cannot_extract_from_empty_list );
 
 
 extract_last_element( List ) ->
 
-	% Probably the most efficient variant:
-	[ LastElement | RevRest ] = lists:reverse( List ),
+    % Probably the most efficient variant:
+    [ LastElement | RevRest ] = lists:reverse( List ),
 
-	{ LastElement, lists:reverse( RevRest ) }.
+    { LastElement, lists:reverse( RevRest ) }.
 
 
 % Variant:
@@ -579,59 +585,59 @@ native term order.
 """.
 -spec get_min_max( list() ) -> { element(), element() }.
 get_min_max( _L=[] ) ->
-	throw( empty_list );
+    throw( empty_list );
 
 % At least an element, hence there will be extremas:
 get_min_max( L ) ->
-	get_min_max( L, _MaybeMin=undefined, _MaybeMax=undefined ).
+    get_min_max( L, _MaybeMin=undefined, _MaybeMax=undefined ).
 
 
 % (helper)
 get_min_max( _L=[], Min, Max ) ->
-	{ Min, Max };
+    { Min, Max };
 
 get_min_max( _L=[ E | T ], _MaybeMin=undefined, _MaybeMax=undefined ) ->
-	get_min_max( T, E, E );
+    get_min_max( T, E, E );
 
 % Here MaybeMax is not undefined:
 get_min_max( _L=[ E | T ], _MaybeMin=undefined, Max ) when E > Max ->
-	get_min_max( T, E, E );
+    get_min_max( T, E, E );
 
 % Here E =< Max:
 get_min_max( _L=[ E | T ], _MaybeMin=undefined, Max )  ->
-	get_min_max( T, E, Max );
+    get_min_max( T, E, Max );
 
 % Here MaybeMin is not undefined:
 get_min_max( _L=[ E | T ], Min, _MaybeMax=undefined ) when E < Min ->
-	get_min_max( T, E, E );
+    get_min_max( T, E, E );
 
 % Here E >= Min:
 get_min_max( _L=[ E | T ], Min, _MaybeMax=undefined )  ->
-	get_min_max( T, Min, E );
+    get_min_max( T, Min, E );
 
 % Here Min and Max are defined:
 get_min_max( _L=[ E | T ], Min, Max ) ->
-	NewMin = case E < Min of
+    NewMin = case E < Min of
 
-		true ->
-			E;
+        true ->
+            E;
 
-		false ->
-			Min
+        false ->
+            Min
 
-	end,
+    end,
 
-	NewMax = case E > Max of
+    NewMax = case E > Max of
 
-		true ->
-			E;
+        true ->
+            E;
 
-		false ->
-			Max
+        false ->
+            Max
 
-	end,
+    end,
 
-	get_min_max( T, NewMin, NewMax ).
+    get_min_max( T, NewMin, NewMax ).
 
 
 
@@ -642,18 +648,20 @@ specified element in the specified list.
 Throws an exception if the element is not found.
 
 For example: `3 = get_index_of(bar, [foo, ugh, bar, baz])`.
+
+See also `get_maybe_index_of/2`.
 """.
 -spec get_index_of( element(), list() ) -> count().
 get_index_of( Element, List ) ->
-	case get_maybe_index_of( Element, List ) of
+    case get_maybe_index_of( Element, List ) of
 
-		undefined ->
-			throw( { non_existing_element, Element } );
+        undefined ->
+            throw( { non_existing_element, Element } );
 
-		I ->
-			I
+        I ->
+            I
 
-	end.
+    end.
 
 
 
@@ -667,20 +675,22 @@ For example:
 3 = get_maybe_index_of(bar, [foo, ugh, bar, baz])
 undefined = get_maybe_index_of(xxx, [foo, ugh, bar, baz])
 ```
+
+See also `get_index_of/2`.
 """.
 -spec get_maybe_index_of( element(), list() ) -> option( count() ).
 get_maybe_index_of( Element, List ) ->
-	get_maybe_index_of( Element, List, _Count=1 ).
+    get_maybe_index_of( Element, List, _Count=1 ).
 
 
 get_maybe_index_of( _Element, _List=[], _Count ) ->
-	undefined;
+    undefined;
 
 get_maybe_index_of( Element, _List=[ Element | _T ], Count  ) ->
-	Count;
+    Count;
 
 get_maybe_index_of( Element, _List=[ _H | T ], Count ) ->
-	get_maybe_index_of( Element, T, Count+1 ).
+    get_maybe_index_of( Element, T, Count+1 ).
 
 
 
@@ -696,21 +706,21 @@ For example: `split_at(3, [a, b, c, d, e]) = {[c, b, a], [d, e]}`.
 """.
 -spec split_at( count(), list() ) -> { list(), list() }.
 split_at( MaxLen, List ) ->
-	%trace_utils:debug_fmt( "Splitting ~p at position #~B.", [ List, MaxLen ] ),
-	split_at( List, _Count=0, MaxLen, _Acc=[] ).
+    %trace_utils:debug_fmt( "Splitting ~p at position #~B.", [ List, MaxLen ] ),
+    split_at( List, _Count=0, MaxLen, _Acc=[] ).
 
 
 % (helper)
 split_at( InputList, _Count=MaxLen, MaxLen, AccList ) ->
-	% Max len reached, stopping here:
-	{ AccList, InputList };
+    % Max len reached, stopping here:
+    { AccList, InputList };
 
 split_at( InputList=[], _Count, _MaxLen, AccList ) ->
-	% Input list exhausted:
-	{ AccList, InputList };
+    % Input list exhausted:
+    { AccList, InputList };
 
 split_at( _List=[ E | T ], Count, MaxLen, Acc ) ->
-	split_at( T, Count+1, MaxLen, [ E | Acc ] ).
+    split_at( T, Count+1, MaxLen, [ E | Acc ] ).
 
 
 
@@ -723,17 +733,17 @@ For example: `[[a,b], [c,d], [e]] = group_by(_Count=2, [a,b,c,d,e])`.
 """.
 -spec group_by( count(), list() ) -> [ list() ].
 group_by( Count, List ) ->
-	group_by( Count, List, _Acc=[] ).
+    group_by( Count, List, _Acc=[] ).
 
 
 % (helper)
 group_by( _Count, _List=[], Acc ) ->
-	lists:reverse( Acc );
+    lists:reverse( Acc );
 
 group_by( Count, List, Acc ) ->
-	{ RevFirst, RemainingList } = split_at( Count, List ),
-	NewAcc = [ lists:reverse( RevFirst ) | Acc ],
-	group_by( Count, RemainingList, NewAcc ).
+    { RevFirst, RemainingList } = split_at( Count, List ),
+    NewAcc = [ lists:reverse( RevFirst ) | Acc ],
+    group_by( Count, RemainingList, NewAcc ).
 
 
 
@@ -748,12 +758,12 @@ For example: if `L = [1,2,3,2,2,4,5,5,4,6,6,5]`, then `uniquify(L)` is:
 """.
 -spec uniquify( list() ) -> list().
 uniquify( List ) ->
-	% There is probably a more efficient way of doing the same:
-	% (previously order was not respected in the returned list)
-	%sets:to_list( sets:from_list( List ) ).
+    % There is probably a more efficient way of doing the same:
+    % (previously order was not respected in the returned list)
+    %sets:to_list( sets:from_list( List ) ).
 
-	% Now the following is readily available, and preserves order:
-	lists:uniq( List ).
+    % Now the following is readily available, and preserves order:
+    lists:uniq( List ).
 
 
 
@@ -769,23 +779,23 @@ is: `[1,3,2,4,5,6]`.
 """.
 -spec uniquify_ordered( list() ) -> list().
 uniquify_ordered( List ) ->
-	uniquify_ordered( List, _Acc=[], _KnownSet=set_utils:new() ).
+    uniquify_ordered( List, _Acc=[], _KnownSet=set_utils:new() ).
 
 
 % (helper)
 uniquify_ordered( [], Acc, _KnownSet ) ->
-	lists:reverse( Acc );
+    lists:reverse( Acc );
 
 uniquify_ordered( [ H | T ], Acc, KnownSet ) ->
-	case set_utils:member( H, KnownSet ) of
+    case set_utils:member( H, KnownSet ) of
 
-		true ->
-			uniquify_ordered( T, Acc, KnownSet );
+        true ->
+            uniquify_ordered( T, Acc, KnownSet );
 
-		false ->
-			uniquify_ordered( T, [ H | Acc ], set_utils:add( H, KnownSet ) )
+        false ->
+            uniquify_ordered( T, [ H | Acc ], set_utils:add( H, KnownSet ) )
 
-	end.
+    end.
 
 
 
@@ -798,15 +808,15 @@ Note: refer to set_utils for a more proper implementation of sets.
 -spec ensure_is_once_in( term(), list() ) -> list().
 ensure_is_once_in( Elem, List ) ->
 
-	case lists:member( Elem, List ) of
+    case lists:member( Elem, List ) of
 
-		true ->
-			List;
+        true ->
+            List;
 
-		false ->
-			[ Elem | List ]
+        false ->
+            [ Elem | List ]
 
-	end.
+    end.
 
 
 
@@ -818,8 +828,8 @@ See also `repeat_elements/2`.
 """.
 -spec duplicate( element(), count() ) -> [ element() ].
 duplicate( Elem, Count ) ->
-	%[ Elem || _ <- lists:seq( 1, Count ) ].
-	lists:duplicate( Count, Elem ).
+    %[ Elem || _ <- lists:seq( 1, Count ) ].
+    lists:duplicate( Count, Elem ).
 
 
 
@@ -828,7 +838,7 @@ Tells whether there are, in the specified list, elements that are present more
 than once.
 """.
 has_duplicates( List ) ->
-	length( uniquify( List ) ) =/= length( List ).
+    length( uniquify( List ) ) =/= length( List ).
 
 
 
@@ -839,32 +849,32 @@ the total number of its occurrences (1 or above) in the specified list.
 """.
 -spec count_occurrences( list() ) -> [ { element(), count() } ].
 count_occurrences( List ) ->
-	%trace_utils:debug_fmt( "Counting occurrences in a list of size ~B.",
-	%                       [ length( List ) ] ),
-	R = count_occurrences( List, _Acc=[] ),
-	%trace_utils:debug_fmt( "~B different values listed.", [ length( R ) ] ),
-	R.
+    %trace_utils:debug_fmt( "Counting occurrences in a list of size ~B.",
+    %                       [ length( List ) ] ),
+    R = count_occurrences( List, _Acc=[] ),
+    %trace_utils:debug_fmt( "~B different values listed.", [ length( R ) ] ),
+    R.
 
 
 
 count_occurrences( _List=[], Acc ) ->
-	Acc;
+    Acc;
 
 count_occurrences( _List=[ Term | T ], Acc ) ->
 
-	%trace_utils:debug_fmt( "Inquiring about term '~p' into ~p.",
-	%                       [ Term, T ] ),
+    %trace_utils:debug_fmt( "Inquiring about term '~p' into ~p.",
+    %                       [ Term, T ] ),
 
-	case count_and_filter_term( Term, _InitialList=T, _FilteredList=[],
-								_InitialCount=0 ) of
+    case count_and_filter_term( Term, _InitialList=T, _FilteredList=[],
+                                _InitialCount=0 ) of
 
-		not_found ->
-			% No a duplicated element, just iterating on the next term:
-			count_occurrences( T, [ { Term, 1 } | Acc ] );
+        not_found ->
+            % No a duplicated element, just iterating on the next term:
+            count_occurrences( T, [ { Term, 1 } | Acc ] );
 
-		{ TermCount, FilteredList } ->
-			% We already extracted the first Term:
-			count_occurrences( FilteredList, [ { Term, TermCount+1 } | Acc ] )
+        { TermCount, FilteredList } ->
+            % We already extracted the first Term:
+            count_occurrences( FilteredList, [ { Term, TermCount+1 } | Acc ] )
 
    end.
 
@@ -884,7 +894,7 @@ each.
 For example:
 ```
  L = [a,a,b,b,b,c,d,d],
-			[{b,3},{d,2},{a,2}] = list_utils:get_duplicates(L)
+ [{b,3},{d,2},{a,2}] = list_utils:get_duplicates(L)
 ```
 
 Use `lists:keysort(2, list_utils:get_duplicates(L))` to sort duplicates by
@@ -892,59 +902,59 @@ increasing number of occurrences (e.g. `[{d,2},{a,2},{b,3}]` here).
 """.
 -spec get_duplicates( list() ) -> duplicate_info().
 get_duplicates( List ) ->
-	get_duplicates( List, _Acc=[] ).
+    get_duplicates( List, _Acc=[] ).
 
 get_duplicates( _List=[], Acc ) ->
-	Acc;
+    Acc;
 
 get_duplicates( _List=[ Term | T ], Acc ) ->
 
-	% trace_utils:debug_fmt( "Inquiring about term '~p' into ~p.",
-	%                        [ Term, T ] ),
+    % trace_utils:debug_fmt( "Inquiring about term '~p' into ~p.",
+    %                        [ Term, T ] ),
 
-	case count_and_filter_term( Term, _InitialList=T, _FilteredList=[],
-								_InitialCount=0 ) of
+    case count_and_filter_term( Term, _InitialList=T, _FilteredList=[],
+                                _InitialCount=0 ) of
 
-		not_found ->
-			% No a duplicated element, just iterating on the next term:
-			get_duplicates( T, Acc );
+        not_found ->
+            % No a duplicated element, just iterating on the next term:
+            get_duplicates( T, Acc );
 
-		{ TermCount, FilteredList } ->
-			% We already extracted the first Term:
-			get_duplicates( FilteredList, [ { Term, TermCount+1 } | Acc ] )
+        { TermCount, FilteredList } ->
+            % We already extracted the first Term:
+            get_duplicates( FilteredList, [ { Term, TermCount+1 } | Acc ] )
 
    end.
 
 
 % (helper)
 count_and_filter_term( _Term, _List=[], _FilteredList, _CurrentCount=0 ) ->
-	not_found;
+    not_found;
 
 count_and_filter_term( _Term, _List=[], FilteredList, CurrentCount ) ->
-	{ CurrentCount, FilteredList };
+    { CurrentCount, FilteredList };
 
 % Term found:
 count_and_filter_term( Term, _List=[ Term | H ], FilteredList, CurrentCount ) ->
-	count_and_filter_term( Term, H, FilteredList, CurrentCount+1 );
+    count_and_filter_term( Term, H, FilteredList, CurrentCount+1 );
 
 % Other term:
 count_and_filter_term( Term, _List=[ OtherTerm | H ], FilteredList,
-					   CurrentCount ) ->
-	count_and_filter_term( Term, H, [ OtherTerm | FilteredList ],
-						   CurrentCount ).
+                       CurrentCount ) ->
+    count_and_filter_term( Term, H, [ OtherTerm | FilteredList ],
+                           CurrentCount ).
 
 
 
 -doc "Returns a textual description of the specified duplicate information.".
 -spec duplicate_info_to_string( duplicate_info() ) -> ustring().
 duplicate_info_to_string( _DupPairs=[] ) ->
-	"no duplication";
+    "no duplication";
 
 duplicate_info_to_string( DupPairs ) ->
-	text_utils:strings_to_listed_string(
-		[ text_utils:format( "the element '~p' is present ~ts",
-				[ Elem, text_utils:repetition_to_string( Count ) ] )
-			|| { Elem, Count } <- DupPairs ] ).
+    text_utils:strings_to_listed_string(
+        [ text_utils:format( "the element '~p' is present ~ts",
+                [ Elem, text_utils:repetition_to_string( Count ) ] )
+            || { Elem, Count } <- DupPairs ] ).
 
 
 
@@ -954,9 +964,9 @@ that are in either list.
 """.
 -spec union( list(), list() ) -> list().
 union( L1, L2 ) ->
-	%uniquify( L1 ++ L2 ).
-	set_utils:to_list( set_utils:union( set_utils:from_list( L1 ),
-										set_utils:from_list( L2 ) ) ).
+    %uniquify( L1 ++ L2 ).
+    set_utils:to_list( set_utils:union( set_utils:from_list( L1 ),
+                                        set_utils:from_list( L2 ) ) ).
 
 
 
@@ -968,9 +978,9 @@ See also: `subtract_all_duplicates/2`.
 """.
 -spec intersection( list(), list() ) -> list().
 intersection( L1, L2 ) ->
-	%set_utils:to_list( set_utils:intersection( set_utils:from_list( L1 ),
-	%											set_utils:from_list( L2 ) ) ).
-	lists:filter( fun( E ) -> lists:member( E, L2 ) end, L1 ).
+    %set_utils:to_list( set_utils:intersection( set_utils:from_list( L1 ),
+    %                                           set_utils:from_list( L2 ) ) ).
+    lists:filter( fun( E ) -> lists:member( E, L2 ) end, L1 ).
 
 
 
@@ -980,8 +990,8 @@ the elements of the first list that are not in the second one.
 """.
 -spec difference( list(), list() ) -> list().
 difference( L1, L2 ) ->
-	set_utils:to_list( set_utils:difference( set_utils:from_list( L1 ),
-											 set_utils:from_list( L2 ) ) ).
+    set_utils:to_list( set_utils:difference( set_utils:from_list( L1 ),
+                                             set_utils:from_list( L2 ) ) ).
 
 
 
@@ -994,9 +1004,9 @@ the second list that are not in the first one.
 
 -spec differences( list(), list() ) -> { list(), list() }.
 differences( L1, L2 ) ->
-	{ S1, S2 } = set_utils:differences( set_utils:from_list( L1 ),
-										set_utils:from_list( L2 ) ),
-	{ set_utils:to_list( S1 ), set_utils:to_list( S2 ) }.
+    { S1, S2 } = set_utils:differences( set_utils:from_list( L1 ),
+                                        set_utils:from_list( L2 ) ),
+    { set_utils:to_list( S1 ), set_utils:to_list( S2 ) }.
 
 
 
@@ -1007,16 +1017,16 @@ list).
 For example:
 ```
 cartesian_product([[a,b,c], [d,e], [f]]) =
-	 [a,d,f], [a,e,f], [b,d,f], [b,e,f], [c,d,f], [c,e,f]]
+     [a,d,f], [a,e,f], [b,d,f], [b,e,f], [c,d,f], [c,e,f]]
 ```
 """.
 -spec cartesian_product( [ [ T ] ] ) -> [ [ T ] ].
 cartesian_product( [ SingleList ] ) ->
-	[ [ E ] || E <- SingleList ];
+    [ [ E ] || E <- SingleList ];
 
 cartesian_product( [ List | OtherLists ] ) ->
-	[ [ E | SubList ]
-		|| E <- List, SubList <- cartesian_product( OtherLists ) ].
+    [ [ E | SubList ]
+        || E <- List, SubList <- cartesian_product( OtherLists ) ].
 
 
 
@@ -1034,7 +1044,7 @@ Taken from
 """.
 -spec subtract_all_duplicates( list(), list() ) -> list().
 subtract_all_duplicates( L1, L2 ) ->
-	lists:filter( fun( E ) -> not lists:member( E, L2 ) end, L1 ).
+    lists:filter( fun( E ) -> not lists:member( E, L2 ) end, L1 ).
 
 
 
@@ -1044,17 +1054,17 @@ Returns a list of all the permutations of the specified list.
 For example:
 ```
 get_all_permutations([a,b,c]) =
-	[ [c,b,a], [c,a,b], [a,c,b], [b,c,a], [b,a,c], [a,b,c] ]
+    [ [c,b,a], [c,a,b], [a,c,b], [b,c,a], [b,a,c], [a,b,c] ]
 ```
 """.
 -spec get_all_permutations( list() ) -> [ list() ].
 get_all_permutations( L=[ _E ] ) ->
-	[ L ];
+    [ L ];
 
 get_all_permutations( _L=[ H | T ] ) ->
-	% Recurse from length N to N-1:
-	TPerms = get_all_permutations( T ),
-	flatten_once( [ insert_at_all_places( H, APermL ) || APermL <- TPerms ] ).
+    % Recurse from length N to N-1:
+    TPerms = get_all_permutations( T ),
+    flatten_once( [ insert_at_all_places( H, APermL ) || APermL <- TPerms ] ).
 
 
 
@@ -1065,22 +1075,22 @@ specified element at each possible place in L (including before and after).
 For example:
 ```
 insert_at_all_places(a, [b,c,d]) =
-				[ [b,c,d,a], [b,c,a,d], [b,a,c,d], [a,b,c,d] ]
+                [ [b,c,d,a], [b,c,a,d], [b,a,c,d], [a,b,c,d] ]
 ```
 """.
 -spec insert_at_all_places( element(), list() ) -> [ list() ].
 insert_at_all_places( E, L ) ->
-	insert_at_all_places( E, L, _RevL=[], _Acc=[] ).
+    insert_at_all_places( E, L, _RevL=[], _Acc=[] ).
 
 
 insert_at_all_places( E, _L=[], RevL, Acc ) ->
-	% Last possibility is when ending with E:
-	[ lists:reverse( [ E | RevL ] ) | Acc ];
+    % Last possibility is when ending with E:
+    [ lists:reverse( [ E | RevL ] ) | Acc ];
 
 insert_at_all_places( E, _L=[ H | T ], RevL, Acc ) ->
-	NewList = lists:reverse( [ H, E | RevL ] ) ++ T,
-	NewAcc = [ NewList | Acc ],
-	insert_at_all_places( E, T, [ H | RevL ], NewAcc ).
+    NewList = lists:reverse( [ H, E | RevL ] ) ++ T,
+    NewAcc = [ NewList | Acc ],
+    insert_at_all_places( E, T, [ H | RevL ], NewAcc ).
 
 
 
@@ -1094,18 +1104,18 @@ See also `duplicate/2`.
 """.
 -spec repeat_elements( list(), count() ) -> list().
 repeat_elements( List, RepeatCount ) ->
-	% Better reverse the shorted input list:
-	repeat_elements( lists:reverse( List ), RepeatCount, _Acc=[] ).
+    % Better reverse the shorted input list:
+    repeat_elements( lists:reverse( List ), RepeatCount, _Acc=[] ).
 
 
 % (helper)
 repeat_elements( _Elements=[], _RepeatCount, Acc ) ->
-	% Reversing already done:
-	Acc;
+    % Reversing already done:
+    Acc;
 
 repeat_elements( _Elements=[ E | T ], RepeatCount, Acc ) ->
-	Dups = duplicate( E, RepeatCount ),
-	repeat_elements( T, RepeatCount, Dups ++ Acc ).
+    Dups = duplicate( E, RepeatCount ),
+    repeat_elements( T, RepeatCount, Dups ++ Acc ).
 
 
 
@@ -1117,22 +1127,22 @@ deleted, ensuring that at least one of these elements exists (as opposed to
 -spec delete_existing( element(), list() ) -> list().
 delete_existing( Elem, List ) ->
 
-	% We keep a copy of the original list to be able to generate better error
-	% messages:
-	%
-	delete_existing( Elem, List, _OriginalList=List, _Acc=[] ).
+    % We keep a copy of the original list to be able to generate better error
+    % messages:
+    %
+    delete_existing( Elem, List, _OriginalList=List, _Acc=[] ).
 
 
 % (helper)
 delete_existing( Elem, _List=[], OriginalList, _Acc ) ->
-	throw( { element_to_delete_not_found, Elem, OriginalList } );
+    throw( { element_to_delete_not_found, Elem, OriginalList } );
 
 delete_existing( Elem, _List=[ Elem | T ], _OriginalList, Acc ) ->
-	% The first element found stops the iteration:
-	lists:reverse( Acc ) ++ T;
+    % The first element found stops the iteration:
+    lists:reverse( Acc ) ++ T;
 
 delete_existing( Elem, _List=[ H | T ], OriginalList, Acc ) ->
-	delete_existing( Elem, T, OriginalList, [ H | Acc ] ).
+    delete_existing( Elem, T, OriginalList, [ H | Acc ] ).
 
 
 
@@ -1144,11 +1154,11 @@ preserved.
 """.
 -spec delete_existing_elements( [ element() ], list() ) -> list().
 delete_existing_elements( _Elems=[ E | T ], List ) ->
-	NewList = delete_existing( E, List ),
-	delete_existing_elements( T, NewList );
+    NewList = delete_existing( E, List ),
+    delete_existing_elements( T, NewList );
 
 delete_existing_elements( _Elems=[], List ) ->
-	List.
+    List.
 
 
 
@@ -1158,7 +1168,7 @@ specified list, whose order is preserved.
 """.
 -spec remove_first_occurrence( element(), list() ) -> list().
 remove_first_occurrence( Element, List ) ->
-	lists:delete( Element, List ).
+    lists:delete( Element, List ).
 
 
 
@@ -1168,11 +1178,11 @@ elements, from the specified list, whose order is preserved.
 """.
 -spec remove_first_occurrences( [ element() ], list() ) -> list().
 remove_first_occurrences( _ElementsToRemove=[], List ) ->
-	List;
+    List;
 
 remove_first_occurrences( _ElementsToRemove=[ E | T ], List ) ->
-	NewList = lists:delete( E, List ),
-	remove_first_occurrences( T, NewList ).
+    NewList = lists:delete( E, List ),
+    remove_first_occurrences( T, NewList ).
 
 
 
@@ -1188,17 +1198,17 @@ a `lists:member/2` then a `lists:delete/2`).
 """.
 -spec delete_if_existing( element(), list() ) -> 'not_found' | list().
 delete_if_existing( Elem, List ) ->
-	delete_if_existing( Elem, List, _Acc=[] ).
+    delete_if_existing( Elem, List, _Acc=[] ).
 
 
 delete_if_existing( _Elem, _List=[], _Acc ) ->
-	not_found;
+    not_found;
 
 delete_if_existing( Elem, _List=[ Elem | T ], Acc ) ->
-	lists:reverse( Acc ) ++ T;
+    lists:reverse( Acc ) ++ T;
 
 delete_if_existing( Elem, _List=[ H | T ], Acc ) ->
-	delete_if_existing( Elem, T, [ H | Acc ] ).
+    delete_if_existing( Elem, T, [ H | Acc ] ).
 
 
 
@@ -1209,19 +1219,19 @@ result (in the original order).
 """.
 -spec remove_element_from( element(), list() ) -> list().
 remove_element_from( Elem, List ) ->
-	remove_element_from( Elem, List, _Acc=[] ).
+    remove_element_from( Elem, List, _Acc=[] ).
 
 
 % (helper)
 remove_element_from( _Elem, _List=[], Acc ) ->
-	lists:reverse( Acc );
+    lists:reverse( Acc );
 
 remove_element_from( Elem, _List=[ Elem | T ], Acc ) ->
-	% Dropped:
-	remove_element_from( Elem, T, Acc );
+    % Dropped:
+    remove_element_from( Elem, T, Acc );
 
 remove_element_from( Elem, _List=[ H | T ], Acc ) ->
-	remove_element_from( Elem, T, [ H | Acc ] ).
+    remove_element_from( Elem, T, [ H | Acc ] ).
 
 
 
@@ -1232,24 +1242,24 @@ result (in the original order).
 """.
 -spec remove_elements_from( [ element() ], list() ) -> list().
 remove_elements_from( Elems, List ) ->
-	remove_elements_from( Elems, List, _Acc=[] ).
+    remove_elements_from( Elems, List, _Acc=[] ).
 
 
 % (helper)
 remove_elements_from( _Elems, _List=[], Acc ) ->
-	lists:reverse( Acc );
+    lists:reverse( Acc );
 
 remove_elements_from( Elems, _List=[ E | T ], Acc ) ->
-	case lists:member( E, Elems ) of
+    case lists:member( E, Elems ) of
 
-		true ->
-			% Dropped:
-			remove_elements_from( Elems, T, Acc );
+        true ->
+            % Dropped:
+            remove_elements_from( Elems, T, Acc );
 
-		_False ->
-			remove_elements_from( Elems, T, [ E | Acc ] )
+        _False ->
+            remove_elements_from( Elems, T, [ E | Acc ] )
 
-	end.
+    end.
 
 
 
@@ -1263,7 +1273,7 @@ Note: kept only for backward compatibility; prefer `remove_element_from/2`.
 """.
 -spec delete_all_in( element(), list() ) -> list().
 delete_all_in( Elem, List ) ->
-	remove_element_from( Elem, List ).
+    remove_element_from( Elem, List ).
 
 
 
@@ -1280,18 +1290,18 @@ For example:
 """.
 -spec intercalate( element(), list() ) -> list().
 intercalate( _Elem, _TargetList=[] ) ->
-	[];
+    [];
 
 intercalate( Elem, TargetList ) ->
-	intercalate( Elem, TargetList, _Acc=[] ).
+    intercalate( Elem, TargetList, _Acc=[] ).
 
 
 % (helper)
 intercalate( _Elem, _TargetList=[ H | [] ], Acc ) ->
-	lists:reverse( [ H | Acc ] );
+    lists:reverse( [ H | Acc ] );
 
 intercalate( Elem, _TargetList=[ H | T ], Acc ) ->
-	intercalate( Elem, T, [ Elem, H | Acc ] ).
+    intercalate( Elem, T, [ Elem, H | Acc ] ).
 
 
 
@@ -1313,9 +1323,9 @@ costlier than adding them at head.
 %   L ++ ElemList;
 %
 append_at_end( Elem, L ) when is_list( L ) ->
-	% Should be more efficient than:
-	%lists:reverse( [ Elem | lists:reverse( L ) ] ):
-	L ++ [ Elem ].
+    % Should be more efficient than:
+    %lists:reverse( [ Elem | lists:reverse( L ) ] ):
+    L ++ [ Elem ].
 
 
 
@@ -1326,13 +1336,13 @@ Considers that an empty list complies.
 """.
 -spec are_integers( term() ) -> boolean().
 are_integers( [] ) ->
-	true;
+    true;
 
 are_integers( [ H | T ] ) when is_integer( H ) ->
-	are_integers( T );
+    are_integers( T );
 
 are_integers( _ ) ->
-	false.
+    false.
 
 
 
@@ -1343,7 +1353,7 @@ See also type_utils:check_integers/1.
 """.
 -spec check_integers( term() ) -> void().
 check_integers( Any ) ->
-	true = are_integers( Any ).
+    true = are_integers( Any ).
 
 
 
@@ -1354,13 +1364,13 @@ Considers that an empty list complies.
 """.
 -spec are_pids( term() ) -> boolean().
 are_pids( [] ) ->
-	true;
+    true;
 
 are_pids( [ H | T ] ) when is_pid( H ) ->
-	are_pids( T );
+    are_pids( T );
 
 are_pids( _ ) ->
-	false.
+    false.
 
 
 
@@ -1371,13 +1381,13 @@ Considers that an empty list complies.
 """.
 -spec are_atoms( term() ) -> boolean().
 are_atoms( [] ) ->
-	true;
+    true;
 
 are_atoms( [ H | T ] ) when is_atom( H ) ->
-	are_atoms( T );
+    are_atoms( T );
 
 are_atoms( _ ) ->
-	false.
+    false.
 
 
 
@@ -1391,43 +1401,43 @@ make sense (e.g. float versus atom).
 """.
 -spec check_strictly_ascending( list() ) -> boolean().
 check_strictly_ascending( _List=[] ) ->
-	true;
+    true;
 
 check_strictly_ascending( _List=[ H | T ] ) ->
-	check_strictly_ascending( T, _LastSeen=H ).
+    check_strictly_ascending( T, _LastSeen=H ).
 
 
 % (helper)
 check_strictly_ascending( _List=[], _LastSeen ) ->
-	true;
+    true;
 
 check_strictly_ascending( _List=[ H | T ], LastSeen ) when H > LastSeen ->
-	check_strictly_ascending( T, H );
+    check_strictly_ascending( T, H );
 
 check_strictly_ascending( _List, _LastSeen ) ->
-	false.
+    false.
 
 
 
 -doc "Returns whether all the elements of the specified list are equal.".
 -spec are_equal( list() ) -> boolean().
 are_equal( [] ) ->
-	true;
+    true;
 
 are_equal( [ H | T ] ) ->
-	are_equal( _Ref=H, T ).
+    are_equal( _Ref=H, T ).
 
 
 % (helper)
 are_equal( _Ref, [] ) ->
-	true;
+    true;
 
 are_equal( Ref, [ Ref | T ] ) ->
-	are_equal( Ref, T );
+    are_equal( Ref, T );
 
 % Not matched:
 are_equal( _Ref, _ ) ->
-	false.
+    false.
 
 
 
@@ -1438,15 +1448,44 @@ Returns this list if true, otherwise throws an exception.
 """.
 -spec check_equal( list() ) -> list().
 check_equal( L ) ->
-	case are_equal( L ) of
+    case are_equal( L ) of
 
-		true ->
-			L;
+        true ->
+            L;
 
-		false ->
-			throw( { not_all_equal, L } )
+        false ->
+            throw( { not_all_equal, L } )
 
-	end.
+    end.
+
+
+
+-doc """
+Tells whether the specified list is a proper one.
+
+Useful for example to display properly any term, or to determine whether
+computing the length of a list is safe (as `length/1` fails with `bad_arg` on
+improper lists).
+""".
+-spec is_proper_list( list() ) -> boolean().
+% Needing two functions, otherwise [a|b] would end up with is_proper_list(b) and
+% throws, instead of concluding it was an improper list:
+is_proper_list( L ) when is_list( L ) ->
+    is_proper_list_helper( L );
+
+is_proper_list( Other ) ->
+    throw( { not_a_list, Other } ).
+
+
+% (helper)
+is_proper_list_helper( _L=[] ) ->
+    true;
+
+is_proper_list_helper( _L=[ _ | T ] ) ->
+    is_proper_list_helper( T );
+
+is_proper_list_helper( _Other ) ->
+    false.
 
 
 
@@ -1457,7 +1496,27 @@ and 1.0 for example), possibly in a different order.
 """.
 -spec unordered_compare( list(), list() ) -> boolean().
 unordered_compare( L1, L2 ) ->
-	lists:sort( L1 ) =:= lists:sort( L2 ).
+    lists:sort( L1 ) =:= lists:sort( L2 ).
+
+
+-doc """
+Checks whether the two specified lists have the same elements, possibly in a
+different order; throws if not, otherwise returns a sorted version of these two
+lists.
+""".
+-spec check_unordered_match( list(), list() ) -> list().
+check_unordered_match( L1, L2 ) ->
+    SortedL1 = lists:sort( L1 ),
+    SortedL2 = lists:sort( L2 ),
+    case SortedL1 =:= SortedL2 of
+
+        true ->
+            SortedL1;
+
+        false ->
+            throw( { unordered_match_failed, SortedL1, SortedL2 } )
+
+    end.
 
 
 
@@ -1476,7 +1535,7 @@ See `text_utils:concatenate/1` for string-related operations.
 
 -spec flatten_once( [ list() ] ) -> list().
 flatten_once( List ) ->
-	flatten_once( List, _Acc=[] ).
+    flatten_once( List, _Acc=[] ).
 
 
 % (helper)
@@ -1485,13 +1544,13 @@ flatten_once( List ) ->
 % Acc', as we would end up with [1,[3,4],2] - whereas we want to preserve order.
 %
 flatten_once( [], Acc ) ->
-	Acc;
+    Acc;
 
 flatten_once( [ L | T ], Acc ) when is_list( L ) ->
-	flatten_once( T, Acc ++ L );
+    flatten_once( T, Acc ++ L );
 
 flatten_once( [ Unexpected | _T ], _Acc ) ->
-	throw( { not_a_list, Unexpected } ).
+    throw( { not_a_list, Unexpected } ).
 
 
 
@@ -1500,8 +1559,8 @@ Removes (filters out) all elements equal to `undefined`; preserves order.
 """.
 -spec filter_out_undefined( list() ) -> list().
 filter_out_undefined( L ) ->
-	% Or: delete_all_in( undefined, L ).
-	[ E || E <- L, E =/= undefined ].
+    % Or: delete_all_in( undefined, L ).
+    [ E || E <- L, E =/= undefined ].
 
 
 
@@ -1519,19 +1578,19 @@ For example: `dispatch_in(3, [a, b, c, d, e, f]) = [[a,d], [b,e], [c,f]]`.
 """.
 -spec dispatch_in( count(), list() ) -> [ list() ].
 dispatch_in( SublistCount, List ) ->
-	AccSubLists = lists:duplicate( SublistCount, _InitSublist=[] ),
-	Res = dispatch_in( SublistCount, lists:reverse( List ), AccSubLists ),
-	lists:reverse( Res ).
+    AccSubLists = lists:duplicate( SublistCount, _InitSublist=[] ),
+    Res = dispatch_in( SublistCount, lists:reverse( List ), AccSubLists ),
+    lists:reverse( Res ).
 
 
 % (helper)
 dispatch_in( _SublistCount, _List=[], AccSubLists ) ->
-	AccSubLists;
+    AccSubLists;
 
 dispatch_in( SublistCount, List, AccSubLists ) ->
-	{ Heads, TailList } = heads( List, SublistCount ),
-	NewAccSubLists = add_as_heads( Heads, AccSubLists ),
-	dispatch_in( SublistCount, TailList, NewAccSubLists ).
+    { Heads, TailList } = heads( List, SublistCount ),
+    NewAccSubLists = add_as_heads( Heads, AccSubLists ),
+    dispatch_in( SublistCount, TailList, NewAccSubLists ).
 
 
 
@@ -1552,16 +1611,16 @@ See `heads/2` instead to operate on a single list yet extract multiple elements.
 
 -spec split_heads_tails( [ list() ] ) -> { list(), [ list() ] }.
 split_heads_tails( Lists ) ->
-	% Pre-reverse is cheaper:
-	split_heads_tails( lists:reverse( Lists ), _AccHeads=[], _AccTails=[] ).
+    % Pre-reverse is cheaper:
+    split_heads_tails( lists:reverse( Lists ), _AccHeads=[], _AccTails=[] ).
 
 
 % (helper)
 split_heads_tails( _Lists=[], AccHeads, AccTails ) ->
-	{ AccHeads, AccTails };
+    { AccHeads, AccTails };
 
 split_heads_tails( _Lists=[ _L=[HL|TL] | T ], AccHeads, AccTails ) ->
-	split_heads_tails( T, [HL|AccHeads], [TL|AccTails] ).
+    split_heads_tails( T, [HL|AccHeads], [TL|AccTails] ).
 
 
 
@@ -1578,17 +1637,17 @@ See `concatenate_per_rank/2` to add whole lists, instead of head elements.
 """.
 -spec add_as_heads( list(), [ list() ] ) -> [ list() ].
 add_as_heads( Heads, Lists ) ->
-	add_as_heads( Heads, Lists, _Acc=[] ).
+    add_as_heads( Heads, Lists, _Acc=[] ).
 
 
 % (helper)
 add_as_heads( _Heads=[], _Lists=[], Acc ) ->
-	% Restores the order of augmented lists:
-	lists:reverse( Acc );
+    % Restores the order of augmented lists:
+    lists:reverse( Acc );
 
 add_as_heads( _Heads=[ H | TH ], _Lists=[ L | TL ], Acc ) ->
-	NewL = [ H | L ],
-	add_as_heads( TH, TL, [ NewL | Acc ] ).
+    NewL = [ H | L ],
+    add_as_heads( TH, TL, [ NewL | Acc ] ).
 
 
 
@@ -1605,20 +1664,20 @@ _HeadsLen=2) = {[[a,b], [1,2], [true,false]], [[c,d], [3,4,5], []]}
 May be paired with `concatenate_per_rank/2`.
 """.
 -spec split_multi_heads_tails( [ list() ], count() ) ->
-										{ [ list() ], [ list() ] }.
+                                        { [ list() ], [ list() ] }.
 split_multi_heads_tails( Lists, HeadsLen ) ->
-	% Pre-reverse is cheaper:
-	split_multi_heads_tails( lists:reverse( Lists ), _AccHeads=[],
-							 _AccTails=[], HeadsLen ).
+    % Pre-reverse is cheaper:
+    split_multi_heads_tails( lists:reverse( Lists ), _AccHeads=[],
+                             _AccTails=[], HeadsLen ).
 
 
 % (helper)
 split_multi_heads_tails( _Lists=[], AccHeads, AccTails, _HeadsLen ) ->
-	{ AccHeads, AccTails };
+    { AccHeads, AccTails };
 
 split_multi_heads_tails( _Lists=[ L | TL ], AccHeads, AccTails, HeadsLen ) ->
-	{ Heads, Tail } = heads( L, _Count=HeadsLen ),
-	split_multi_heads_tails( TL, [Heads|AccHeads], [Tail|AccTails], HeadsLen ).
+    { Heads, Tail } = heads( L, _Count=HeadsLen ),
+    split_multi_heads_tails( TL, [Heads|AccHeads], [Tail|AccTails], HeadsLen ).
 
 
 
@@ -1636,7 +1695,7 @@ concatenate_per_rank([L1,L2,L3], [La,Lb,Lc]) = [L1++La, L2++Lb, L3++Lb].
 or:
 ```
 concatenate_per_rank([[a,b], [], [1,2,3]], [[c], [], [4,5,6,7]]) =
-		  [[a,b,c], [], [1,2,3,4,5,6,7]]
+          [[a,b,c], [], [1,2,3,4,5,6,7]]
 ```
 May be paired with `split_multi_heads_tails/2`; could have been named
 `add_as_multi_heads/2`.
@@ -1646,15 +1705,15 @@ Of course the two lists shall be of the same length.
 
 -spec concatenate_per_rank( [ list() ], [ list() ] ) -> [ list() ].
 concatenate_per_rank( HeadLists, Lists ) ->
-	concatenate_per_rank( HeadLists, Lists, _Acc=[] ).
+    concatenate_per_rank( HeadLists, Lists, _Acc=[] ).
 
 % (helper)
 concatenate_per_rank( _HeadLists=[], _Lists=[], Acc ) ->
-	% Restores the order of augmented lists:
-	lists:reverse( Acc );
+    % Restores the order of augmented lists:
+    lists:reverse( Acc );
 
 concatenate_per_rank( _HeadLists=[ HL | THL ], _Lists=[ L | TL ], Acc ) ->
-	concatenate_per_rank( THL, TL, [ HL ++ L | Acc ] ).
+    concatenate_per_rank( THL, TL, [ HL ++ L | Acc ] ).
 
 
 % Alternate form:
@@ -1679,31 +1738,31 @@ sizes.
 """.
 -spec determine_tuple_info( [ tuple() ] ) -> { count(), count() }.
 determine_tuple_info( _TupleList=[] ) ->
-	throw( empty_list );
+    throw( empty_list );
 
 determine_tuple_info( _TupleList=[ FirstTuple | T ] )
-								when is_tuple( FirstTuple ) ->
-	TupleSize = size( FirstTuple ),
-	Count = check_tuple_length( T, TupleSize, _AccCount=1 ),
-	{ Count, TupleSize }.
+                                when is_tuple( FirstTuple ) ->
+    TupleSize = size( FirstTuple ),
+    Count = check_tuple_length( T, TupleSize, _AccCount=1 ),
+    { Count, TupleSize }.
 
 
 % (helper)
 check_tuple_length( _TupleList=[], _TupleSize, AccCount ) ->
-	AccCount;
+    AccCount;
 
 check_tuple_length( _TupleList=[ Tuple | T ], TupleSize, AccCount ) ->
 
-	case size( Tuple ) of
+    case size( Tuple ) of
 
-		TupleSize ->
-			check_tuple_length( T, TupleSize, AccCount+1 );
+        TupleSize ->
+            check_tuple_length( T, TupleSize, AccCount+1 );
 
-		OtherSize ->
-			throw( { heterogeneous_tuple_size, { Tuple, OtherSize },
-						{ expected, TupleSize } } )
+        OtherSize ->
+            throw( { heterogeneous_tuple_size, { Tuple, OtherSize },
+                        { expected, TupleSize } } )
 
-	end.
+    end.
 
 
 
@@ -1715,16 +1774,16 @@ For example: `flatten_tuples([{1, 2, 3}, {4, 5, 6}]) = [1, 2, 3, 4, 5, 6])`.
 """.
 -spec flatten_tuples( [ tuple() ] ) -> list().
 flatten_tuples( List ) ->
-	flatten_tuples( List, _Acc=[] ).
+    flatten_tuples( List, _Acc=[] ).
 
 
 % (helper)
 flatten_tuples( _List=[], Acc ) ->
-	lists:reverse( Acc );
+    lists:reverse( Acc );
 
 flatten_tuples( [ H | T ], Acc ) ->
-	NewAcc = lists:reverse( tuple_to_list( H ) ) ++ Acc,
-	flatten_tuples( T, NewAcc ).
+    NewAcc = lists:reverse( tuple_to_list( H ) ) ++ Acc,
+    flatten_tuples( T, NewAcc ).
 
 
 
@@ -1734,24 +1793,24 @@ Reconstructs a list of tuples of specified size from the specified flat list.
 For example:
 ```
 reconstruct_tuples([1, 2, 3, 4, 5, 6], 3) =
-	[{1, 2, 3}, {4, 5, 6}]
+    [{1, 2, 3}, {4, 5, 6}]
 ```
 """.
 -spec reconstruct_tuples( list(), count() ) -> [ tuple() ].
 reconstruct_tuples( List, _TupleSize=1 ) ->
-	% Atomic elements do not need to be wrapped in a single-element tuple:
-	List;
+    % Atomic elements do not need to be wrapped in a single-element tuple:
+    List;
 
 reconstruct_tuples( List, TupleSize ) ->
-	reconstruct_tuples( List, TupleSize, _Acc=[] ).
+    reconstruct_tuples( List, TupleSize, _Acc=[] ).
 
 
 reconstruct_tuples( _List=[], _TupleSize, Acc ) ->
-	lists:reverse( Acc );
+    lists:reverse( Acc );
 
 reconstruct_tuples( List, TupleSize, Acc ) ->
-	{ TupleAsList, T } = lists:split( _Count=TupleSize, List ),
-	reconstruct_tuples( T, TupleSize, [ list_to_tuple( TupleAsList ) | Acc ] ).
+    { TupleAsList, T } = lists:split( _Count=TupleSize, List ),
+    reconstruct_tuples( T, TupleSize, [ list_to_tuple( TupleAsList ) | Acc ] ).
 
 
 
@@ -1772,45 +1831,45 @@ input lists are not all of the same length (see `check_same_length/1`).
 -spec zipn( [ list() ] ) -> list( tuple() ).
 zipn( ListOfLists ) ->
 
-	cond_utils:if_defined( myriad_check_lists,
-		begin
-			Lens = [ length( L ) || L <- ListOfLists ],
-			are_equal( Lens ) orelse
-				% A tuple to avoid that lengths are interpreted as a string:
-				throw( { lists_of_different_lengths, list_to_tuple( Lens ),
-						 ListOfLists } )
-		end ),
+    cond_utils:if_defined( myriad_check_lists,
+        begin
+            Lens = [ length( L ) || L <- ListOfLists ],
+            are_equal( Lens ) orelse
+                % A tuple to avoid that lengths are interpreted as a string:
+                throw( { lists_of_different_lengths, list_to_tuple( Lens ),
+                         ListOfLists } )
+        end ),
 
-	zipn_helper( ListOfLists, _Acc=[] ).
+    zipn_helper( ListOfLists, _Acc=[] ).
 
 
 zipn_helper( ListOfLists, Acc ) ->
-	case extract_first_elements( ListOfLists ) of
+    case extract_first_elements( ListOfLists ) of
 
-		{ FirstElems, RemLists } ->
-			zipn_helper( RemLists, [ FirstElems | Acc ] );
+        { FirstElems, RemLists } ->
+            zipn_helper( RemLists, [ FirstElems | Acc ] );
 
-		all_exhausted ->
-			lists:reverse( Acc )
+        all_exhausted ->
+            lists:reverse( Acc )
 
-	end.
+    end.
 
 
 % (helper)
 % If the first list is found exhausted, we suppose that all of them are:
 extract_first_elements( _ListOfLists=[ _First=[] | _T ] ) ->
-	all_exhausted;
+    all_exhausted;
 
 extract_first_elements( ListOfLists ) ->
-	extract_elems( ListOfLists, _AccFirstElems=[], _AccRemLists=[] ).
+    extract_elems( ListOfLists, _AccFirstElems=[], _AccRemLists=[] ).
 
 
 % (helper)
 extract_elems( _ListOfLists=[], AccFirstElems, AccRemLists ) ->
-	{ lists:reverse( AccFirstElems ), lists:reverse( AccRemLists ) };
+    { lists:reverse( AccFirstElems ), lists:reverse( AccRemLists ) };
 
 extract_elems( _ListOfLists=[ _L=[F|TL] | T ], AccFirstElems, AccRemLists ) ->
-	extract_elems( T, [ F | AccFirstElems ], [ TL | AccRemLists ] ).
+    extract_elems( T, [ F | AccFirstElems ], [ TL | AccRemLists ] ).
 
 
 
@@ -1823,97 +1882,189 @@ At least one list must be listed.
 -spec check_same_length( [ list() ] ) -> count().
 check_same_length( Lists ) ->
 
-	Lens = [ Len | _T ] = [ length( L ) || L <- Lists ],
+    Lens = [ Len | _T ] = [ length( L ) || L <- Lists ],
 
-	case are_equal( Lens ) of
+    case are_equal( Lens ) of
 
-		true ->
-			Len;
+        true ->
+            Len;
 
-		false ->
-				% A tuple to avoid that lengths are interpreted as a string:
-			throw( { lists_of_different_lengths, list_to_tuple( Lens ),
-					 Lists } )
+        false ->
+                % A tuple to avoid that lengths are interpreted as a string:
+            throw( { lists_of_different_lengths, list_to_tuple( Lens ),
+                     Lists } )
 
-	end.
+    end.
 
 
 
 % Section to perform random operations on lists.
 
 
+
 -doc """
-Returns a random uniform permutation of the specified list.
+Shuffles the specified list: returns a random uniform permutation thereof.
 
-Inspired from [http://paste.lisp.org/display/74804].
+Relies on any existing random state, otherwise will create a default one.
 
-All these algorithms would need random access to a list, which is not readily
-possible here, hence must be emulated.
-
-See also the `Speedy unsort:shuffle/1,2` thread in the erlang-questions mailing
-list for counterparts.
+This is the fastest version; if needing to rely on its reciprocal operation, use
+`random_invertible_permute/2` instead.
 """.
 -spec random_permute( list() ) -> list().
 random_permute( List ) ->
-	random_permute( List, length( List ) ).
+    rand:shuffle( List ).
 
-
-random_permute( _List, _RemainingLen=0 ) ->
-	[];
-
-random_permute( List, RemainingLen ) ->
-
-	% Checking is commented-out:
-	%RemainingLen = length( List ),
-
-	% (using remove_element_at/2 should be quicker than using
-	% proplists:delete/2, as we stop at the first matching element found)
-	%
-	Index = random_utils:get_uniform_value( RemainingLen ),
-
-	%io:format( "Index=~p, ", [ Index ] ),
-
-	% We put the drawn element at head, and recurse in the remaining list:
-	[ get_element_at( List, Index )
-		| random_permute( remove_element_at( List, Index ),
-						  RemainingLen-1 ) ].
 
 
 
 -doc """
-Returns a reciprocal random uniform permutation of the specified list, compared
-to random_permute/1.
+Shuffles the specified list: returns a random uniform permutation thereof, based
+on the specified random state.
 
-Consists on the reciprocal operation, so that, if starting from a random state S
-(see `set_random_state/1`) and if `L2 = random_permute(L1)`, then, if starting
-again from S, `L1 = random_permute_reciprocal( L2 )`.
+This version has a reciprocal one, see
+`random_invertible_permute_reciprocal/2`. Useful for example when ciphering.
 """.
--spec random_permute_reciprocal( list() ) -> list().
-random_permute_reciprocal( List ) ->
+-spec random_invertible_permute( list(), random_state() ) ->
+                                            { list(), random_state() }.
+random_invertible_permute( _List=[], RandomState ) ->
+    { [], RandomState };
 
-	% This is a little trickier than random_permute/1; we have to reverse
-	% operations from latest to first, hence we must start with the latest drawn
-	% value. So we draw them all first, and start by the end of that list,
-	% taking into account that the range is decremented at each draw:
-	%
-	ReciprocalIndex = lists:reverse( [ random_utils:get_uniform_value( L )
-		|| L <- lists:reverse( lists:seq( 1, length( List ) ) ) ] ),
+% Hence non-empty from here.
+% No need to go further:
+random_invertible_permute( List=[ _S ], RandomState ) ->
+    { List, RandomState };
 
-	%io:format( "Reciprocal index = ~p~n", [ ReciprocalIndex ] ),
+random_invertible_permute( List, RandomState ) ->
 
-	random_permute_reciprocal( lists:reverse( List ), ReciprocalIndex,
-							   _Acc=[] ).
+    % Seeding used to be determined by rand:seed/2.
+
+    Len = length( List ),
+
+    cond_utils:if_defined( myriad_debug_random,
+        trace_utils:debug_fmt( "~w invertible-shuffling a list of ~B elements, "
+            "based on random state:~n ~p", [ self(), Len, RandomState ] ) ),
+
+    % Available since R29.0, yet not implemented for invertibility:
+    %
+    % (we must select the right algorithm, the one seeded by
+    % random_utils:start_random_source/*)
+    %
+    %rand:shuffle_s( List, RandomState ).
+
+    % Alternative, possibly flawed version (breaks cipher_utils_test, possibly
+    % due to different seeding):
+    %
+    %Pairs = lists:keysort( _Idx=1, [ { rand:uniform(), E } || E <- List ] ),
+    %{ _Rands, Elems } = lists:unzip( Pairs ),
+    %Elems.
+
+    random_permute_helper( List, Len, RandomState ).
 
 
-random_permute_reciprocal( _List=[], _ReciprocalIndex=[], Acc ) ->
-	Acc;
 
-random_permute_reciprocal( _List=[ H | T ], _ReciprocalIndex=[ I | Is ],
-						   Acc ) ->
+% Inspired from [http://paste.lisp.org/display/74804].
+%
+% All these algorithms would need random access to a list, which is not readily
+% possible here, hence must be emulated.
+%
+% See also the `Speedy unsort:shuffle/1,2` thread in the erlang-questions
+% mailing list for counterparts.
+%
+% Operating only on initially non-empty lists:
+random_permute_helper( _List, _RemainingLen=0, RandomState ) ->
+    { [], RandomState };
 
-	NewAcc = insert_element_at( _Elem=H, Acc, _Index=I ),
+% This optimisation would be silly, as the reciprocal operation could not easily
+% do the same, and thus their random state would differ:
+%
+%random_permute_helper( List, _RemainingLen=1, RandomState ) ->
+%    { List, RandomState };
 
-	random_permute_reciprocal( T, Is, NewAcc ).
+random_permute_helper( List, RemainingLen, RandomState ) ->
+
+    % Checking is commented-out:
+    %RemainingLen = length( List ),
+
+    % Determining which element (can be any) will be permuted next:
+    %
+    % (using remove_element_at/2 could be quicker than using proplists:delete/2,
+    % as we stop at the first matching element found)
+    %
+    { Index, IdxRandState } =
+        random_utils:get_uniform_value_with( RemainingLen, RandomState ),
+
+
+    { ExtractedElem, ShrunkList } = extract_element_at( List, Index ),
+
+    trace_utils:debug_fmt( "Index: ~p/~p, extracted: ~p, remaining: ~p.",
+                           [ Index, RemainingLen, ExtractedElem, ShrunkList ] ),
+
+    % We recurse in the remaining list, and will put the drawn element at head:
+    { PermList, PermRandState } =
+        random_permute_helper( ShrunkList, RemainingLen-1, IdxRandState ),
+
+    { [ ExtractedElem | PermList ], PermRandState }.
+
+
+
+-doc """
+Shuffles reciprocally the specified list: returns a reciprocal random uniform
+permutation thereof, based on the specified random state.
+
+Consists on the reciprocal operation to `random_invertible_permute/2`: if
+starting from a random state S (see `set_random_state/1`) and if `L2 =
+random_invertible_permute(L1)`, then, if starting again from S, `L1 =
+random_invertible_permute_reciprocal(L2)`.
+""".
+-spec random_invertible_permute_reciprocal( list(), random_state() ) ->
+                                            { list(), random_state() }.
+random_invertible_permute_reciprocal( List, RandomState ) ->
+
+    cond_utils:if_defined( myriad_debug_random,
+        trace_utils:debug_fmt( "~w reciprocal invertible-shuffling a list "
+            "of ~B elements, based on random state:~n ~p",
+            [ self(), length( List ), RandomState ] ) ),
+
+    % This is a little trickier than random_invertible_permute/2; we have to
+    % reverse operations from latest to first, hence we must start with the
+    % latest drawn value. So we draw them all first, and start by the end of
+    % that list, taking into account that the range is decremented at each draw:
+    %
+    % (index is plural)
+    %ReciprocalIndex = lists:reverse(
+    %    [ random_utils:get_uniform_value( L, RandomState )
+    %        || L <- lists:reverse( lists:seq( 1, length( List ) ) ) ] ),
+
+    % The consing implies the reversal:
+    { RevReciprocalIndex, FinalRandState } = lists:foldl(
+        fun( Indice, { AccIndex, AccRandState } ) ->
+            { NewIndice, NewAccRandState } =
+                    random_utils:get_uniform_value_with( Indice, AccRandState ),
+            { [ NewIndice | AccIndex ], NewAccRandState }
+        end,
+        _Acc0={ [], RandomState },
+        _List=lists:reverse( lists:seq( 1, length( List ) ) ) ),
+
+    %trace_utils:debug_fmt( "Reversed reciprocal index = ~p.",
+    %                       [ RevReciprocalIndex ] ),
+
+    cond_utils:if_defined( myriad_debug_random, basic_utils:assert_equal(
+        length( List ), length( RevReciprocalIndex ) ) ),
+
+    { random_reciprocal_permute_helper( lists:reverse( List ),
+            RevReciprocalIndex, _Acc=[] ), FinalRandState }.
+
+
+% (helper)
+random_reciprocal_permute_helper( _List=[], _ReciprocalIndex=[], Acc ) ->
+    Acc;
+
+random_reciprocal_permute_helper( _List=[ H | T ], _ReciprocalIndex=[ I | Is ],
+                                  Acc ) ->
+
+    NewAcc = insert_element_at( _Elem=H, Acc, _Index=I ),
+
+    random_reciprocal_permute_helper( T, Is, NewAcc ).
 
 
 
@@ -1923,11 +2074,11 @@ the same probability of being drawn (uniform probability).
 """.
 -spec draw_element( list() ) -> element().
 draw_element( _ElementList=[] ) ->
-	throw( cannot_draw_from_empty_list );
+    throw( cannot_draw_from_empty_list );
 
 draw_element( ElementList ) ->
-	Len = length( ElementList ),
-	draw_element( ElementList, Len ).
+    Len = length( ElementList ),
+    draw_element( ElementList, Len ).
 
 
 
@@ -1939,15 +2090,15 @@ elements have the same probability of being drawn (uniform probability).
 -spec draw_element( list(), count() ) -> element().
 draw_element( ElementList, ListLength ) ->
 
-	DrawnIndex = random_utils:get_uniform_value( ListLength ),
+    DrawnIndex = random_utils:get_uniform_value( ListLength ),
 
-	get_element_at( ElementList, DrawnIndex ).
+    get_element_at( ElementList, DrawnIndex ).
 
-	% Alternate, less efficient, implementation:
+    % Alternate, less efficient, implementation:
 
-	% Same probability:
-	%UniformList = [ { Elem, 1 } || Elem <- ElementList ],
-	%draw_element_weighted( UniformList ).
+    % Same probability:
+    %UniformList = [ { Elem, 1 } || Elem <- ElementList ],
+    %draw_element_weighted( UniformList ).
 
 
 
@@ -1971,41 +2122,41 @@ See also `random_utils:generate_random_state_from/1` and
 """.
 -spec draw_element_weighted( [ { element(), number() } ] ) -> element().
 draw_element_weighted( ElementList ) ->
-	draw_element_weighted( ElementList, sum_probabilities( ElementList ) ).
+    draw_element_weighted( ElementList, sum_probabilities( ElementList ) ).
 
 
 -spec sum_probabilities( [ { element(), number() } ] ) -> number().
 sum_probabilities( ElementList ) ->
-	sum_probabilities( ElementList, _Acc=0 ).
+    sum_probabilities( ElementList, _Acc=0 ).
 
 
 sum_probabilities( _ElementList=[], Acc ) ->
-	Acc;
+    Acc;
 
 sum_probabilities( _ElementList=[ { _Element, Probability } | T ], Acc ) ->
-	sum_probabilities( T, Acc + Probability ).
+    sum_probabilities( T, Acc + Probability ).
 
 
 
 % Sum must be equal to the sum of all probabilities in ElementList.
 draw_element_weighted( _ElementList, 0 ) ->
-	throw( null_total_probability );
+    throw( null_total_probability );
 
 draw_element_weighted( ElementList, Sum ) ->
-	DrawnValue = random_utils:get_uniform_value( Sum ),
-	%io:format( "draw_element: drawn ~B.~n", [ DrawnValue ] ),
-	select_element( ElementList, DrawnValue, _CurrentSum=0 ).
+    DrawnValue = random_utils:get_uniform_value( Sum ),
+    %io:format( "draw_element: drawn ~B.~n", [ DrawnValue ] ),
+    select_element( ElementList, DrawnValue, _CurrentSum=0 ).
 
 
 % (helper)
 select_element( [ { Element, Probability } | _T ], DrawnValue, CurrentSum )
-		when Probability + CurrentSum >= DrawnValue ->
-	% Just gone past the probability range:
-	Element;
+        when Probability + CurrentSum >= DrawnValue ->
+    % Just gone past the probability range:
+    Element;
 
 select_element( [ { _Element, Probability } | T ], DrawnValue, CurrentSum ) ->
-	% Drawn value still not reached, continuing:
-	select_element( T, DrawnValue, CurrentSum + Probability ).
+    % Drawn value still not reached, continuing:
+    select_element( T, DrawnValue, CurrentSum + Probability ).
 
 
 
@@ -2022,10 +2173,10 @@ elements.
 -spec draw_elements_from( list(), count() ) -> list().
 draw_elements_from( ElementList, Count ) ->
 
-	{ DrawnElems, _RemainingElems } =
-		extract_elements_from( ElementList, Count ),
+    { DrawnElems, _RemainingElems } =
+        extract_elements_from( ElementList, Count ),
 
-	DrawnElems.
+    DrawnElems.
 
 
 
@@ -2042,20 +2193,20 @@ Note that the specified list must contain at least the specified count of
 elements.
 """.
 -spec extract_elements_from( list(), count() ) ->
-				{ ExtractedElems :: list(), RemainingElems :: list() }.
+                { ExtractedElems :: list(), RemainingElems :: list() }.
 extract_elements_from( ElementList, Count ) ->
-	extract_elements_from( ElementList, Count, _AccExtract=[] ).
+    extract_elements_from( ElementList, Count, _AccExtract=[] ).
 
 
 % (helper)
 extract_elements_from( RemainingElems, _Count=0, AccExtract ) ->
-	{ AccExtract, RemainingElems };
+    { AccExtract, RemainingElems };
 
 extract_elements_from( RemainingElems, Count, AccExtract ) ->
 
-	DrawnElem = draw_element( RemainingElems ),
+    DrawnElem = draw_element( RemainingElems ),
 
-	ShrunkRemainingElems = lists:delete( DrawnElem, RemainingElems ),
+    ShrunkRemainingElems = lists:delete( DrawnElem, RemainingElems ),
 
-	extract_elements_from( ShrunkRemainingElems, Count-1,
-						   [ DrawnElem | AccExtract ] ).
+    extract_elements_from( ShrunkRemainingElems, Count-1,
+                           [ DrawnElem | AccExtract ] ).

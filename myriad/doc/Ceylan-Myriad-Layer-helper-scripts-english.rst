@@ -27,9 +27,9 @@ Searching for Erlang elements
 
   | Options:
   | -v or --verbose: be specifically verbose
-  |	-q or --quiet: be specifically quiet, just listing matches
-  |	-f or --filenames-only: display only filenames, not also the matched patterns, and if there are multiple matches in the same file, its filename will be output only once (implies quiet); useful for scripts
-  |	-i or --insensitive: perform case-insensitive searches in the content of files, and also in the searched Erlang filenames
+  | -q or --quiet: be specifically quiet, just listing matches
+  | -f or --filenames-only: display only filenames, not also the matched patterns, and if there are multiple matches in the same file, its filename will be output only once (implies quiet); useful for scripts
+  | -i or --insensitive: perform case-insensitive searches in the content of files, and also in the searched Erlang filenames
   |  Example: ergrep -i 'list_to_form(' /tmp
 
 
@@ -115,26 +115,26 @@ Miscellaneous
   | Usage: launch-erl.sh [-v] [-c a_cookie] [--sn a_short_node_name | --ln a_long_node_name | --nn an_ignored_node_name ] [--tcp-range min_port max_port] [--epmd-port new_port] [--fqdn a_fqdn] [--max-process-count max_count] [--busy-limit kb_size] [--async-thread-count thread_count] [--background] [--non-interactive] [--eval an_expression] [--no-auto-start] [-h|--help] [--beam-dir a_path] [--beam-paths path_1 path_2] [-start-verbatim-options [...]]: launches the Erlang interpreter with specified settings.
 
   | Detailed options:
-  |		-v: be verbose
-  |		-c a_cookie: specify a cookie, otherwise no cookie will be specifically set
-  |		--sn a_short_node_name: distributed node using specified short name (e.g. 'my_short_name')
-  |		--ln a_long_node_name: distributed node using specified long name (e.g. 'my_long_name')
-  |		--nn an_ignored_node_name: non-distributed node, specified name ignored (useful to just switch the naming options)
-  |		--tcp-range min_port max_port: specify a TCP port range for inter-node communication (useful for firewalling issues)
-  |		--epmd-port new_port: specify a specific EPMD port (default: 4369); only relevant if the VM is to be distributed (using short or long names), initially or at runtime
-  |		--fqdn a_fqdn: specify the FQDN to be used
-  |		--max-process-count max_count: specify the maximum number of processes per VM (default: 400000)
-  |		--busy-limit size: specify the distribution buffer busy limit, in kB (default: 1024)
-  |		--async-thread-count thread_count: specify the number of asynchronous threads for driver calls (default: 128)
-  |		--background: run the launched interpreter in the background (ideal to run as a daemon, e.g. on a server)
-  |		--daemon: run the node as a daemon (relies on run_erl and implies --background)
-  |		--non-interactive: run the launched interpreter with no shell nor input reading (ideal to run through a job manager, e.g. on a cluster)
-  |		--eval 'an Erlang expression': start by evaluating this expression
-  |		--no-auto-start: disable the automatic execution at VM start-up
-  |		-h or --help: display this help
-  |		--beam-dir a_path: adds specified directory to the path searched for beam files (multiple --beam-dir options can be specified)
-  |		--beam-paths first_path second_path ...: adds specified directories to the path searched for beam files (multiple paths can be specified; must be the last option)
-  |		--log-dir: specify the directory in which the VM logs (if using run_erl) shall be written
+  |     -v: be verbose
+  |     -c a_cookie: specify a cookie, otherwise no cookie will be specifically set
+  |     --sn a_short_node_name: distributed node using specified short name (e.g. 'my_short_name')
+  |     --ln a_long_node_name: distributed node using specified long name (e.g. 'my_long_name')
+  |     --nn an_ignored_node_name: non-distributed node, specified name ignored (useful to just switch the naming options)
+  |     --tcp-range min_port max_port: specify a TCP port range for inter-node communication (useful for firewalling issues)
+  |     --epmd-port new_port: specify a specific EPMD port (default: 4369); only relevant if the VM is to be distributed (using short or long names), initially or at runtime
+  |     --fqdn a_fqdn: specify the FQDN to be used
+  |     --max-process-count max_count: specify the maximum number of processes per VM (default: 400000)
+  |     --busy-limit size: specify the distribution buffer busy limit, in kB (default: 1024)
+  |     --async-thread-count thread_count: specify the number of asynchronous threads for driver calls (default: 128)
+  |     --background: run the launched interpreter in the background (ideal to run as a daemon, e.g. on a server)
+  |     --daemon: run the node as a daemon (relies on run_erl and implies --background)
+  |     --non-interactive: run the launched interpreter with no shell nor input reading (ideal to run through a job manager, e.g. on a cluster)
+  |     --eval 'an Erlang expression': start by evaluating this expression
+  |     --no-auto-start: disable the automatic execution at VM start-up
+  |     -h or --help: display this help
+  |     --beam-dir a_path: adds specified directory to the path searched for beam files (multiple --beam-dir options can be specified)
+  |     --beam-paths first_path second_path ...: adds specified directories to the path searched for beam files (multiple paths can be specified; must be the last option)
+  |     --log-dir: specify the directory in which the VM logs (if using run_erl) shall be written
 
   | Other options will be passed 'as are' to the interpreter with a warning, except if they are listed after a '-start-verbatim-options' option, in which case they will passed with no warning.
 
@@ -199,9 +199,9 @@ These shell scripts are actually user-facing shell interfaces that plug directly
 
   | Generates a suitable password, where:
   | - ALPHABET designates the set of characters to draw from (default one being 'extended'), among:
-  |	   * 'base': alphanumeric letters, all cases [A-Za-z0-9]
-  |	   * 'extended': 'base' + basic punctuation (i.e. '[](){}:,;-_.!?')
-  |	   * 'full': 'base' + all punctuation (i.e. basic + '"'@ /&$*\^%=+|')
+  |    * 'base': alphanumeric letters, all cases [A-Za-z0-9]
+  |    * 'extended': 'base' + basic punctuation (i.e. '[](){}:,;-_.!?')
+  |    * 'full': 'base' + all punctuation (i.e. basic + '"'@ /&$*\^%=+|')
   | - MIN_LEN and MAX_LEN are the respective minimum and maximum numbers of characters
   | (bounds included) used to generate this password [default: between 15 and 20]
 
@@ -253,6 +253,3 @@ These shell scripts are actually user-facing shell interfaces that plug directly
   | after a weak check, where only file existence, sizes and timestamps are then verified (not checksums).
 
   See also: the ``test-all`` target of the merge-related `makefile <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/apps/merge-tool/GNUmakefile>`_, to give it a try before applying such procedure to your data of interest.
-
-
-

@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 EDF R&D
+% Copyright (C) 2022-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -29,7 +29,7 @@ change over (simulation) time.
 
 A graph comprises nodes, edges and properties.
 
-Relies on the gephi_support Myriad module.
+Relies on the `gephi_support` Myriad module.
 """.
 
 
@@ -43,7 +43,7 @@ Relies on the gephi_support Myriad module.
 
 
 -define( class_description,
-		 "Probe able to process and display streams of graphs.").
+         "Probe able to process and display streams of graphs.").
 
 
 -define( superclasses, [ class_ResultProducer ] ).
@@ -56,19 +56,18 @@ Relies on the gephi_support Myriad module.
 
 -define( class_attributes, [
 
-	{ graph_info, graph_info(),
-	  "all information necessary to interact with a graph server of interest" },
+    { graph_info, gephi_support:graph_info(),
+      "all information necessary to interact with a graph server of interest" },
 
-	{ timestamp_table,
-	  table( element_pid(),
-             { element_id(), [ { timestamp(), timestamp() } ] } ),
-	  "a table associating to the PID of each element its identifier and
-	  time-related information, in reverse chronological order" } ] ).
+    { timestamp_table, table( element_pid(),
+          { element_id(), [ { timestamp(), timestamp() } ] } ),
+      "a table associating to the PID of each element its identifier and
+      time-related information, in reverse chronological order" } ] ).
 
 
 % Must be included before class_TraceEmitter header:
 -define( trace_emitter_categorization,
-		 "Core.Result management.GraphStreamProbe" ).
+         "Core.Result management.GraphStreamProbe" ).
 
 
 
@@ -92,9 +91,9 @@ Relies on the gephi_support Myriad module.
 
 
 -export_type([ project_path/0, workspace_name/0, graph_info/0,
-			   graph_stream_probe_pid/0, graph_stream_probe_ref/0,
+               graph_stream_probe_pid/0, graph_stream_probe_ref/0,
 
-			   node_id/0, edge_id/0 ]).
+               node_id/0, edge_id/0 ]).
 
 
 % For getAttr/1, etc.:
@@ -169,7 +168,6 @@ Relies on the gephi_support Myriad module.
 -type producer_result() :: class_ResultProducer:producer_result().
 
 -type timestamp() :: gephi_support:timestamp().
-%-type gephi_server_info() :: gephi_support:gephi_server_info().
 
 -type graph_value() :: gephi_support:graph_value().
 -type graph_color() :: gephi_support:graph_color().
@@ -183,49 +181,49 @@ Relies on the gephi_support Myriad module.
 Constructs a graph stream probe of the specified name, using the specified
 information about the graph stream server to act upon.
 
-Refer to declare_result_probe/1 for the actual creation API for actors and
+Refer to `declare_result_probe/1` for the actual creation API for actors and
 cases.
 """.
 -spec construct( wooper:state(), probe_name_init(), graph_info() ) ->
-									wooper:state().
+                                            wooper:state().
 construct( State, NameInit, GraphInfo ) ->
 
-	ProbeName = class_Probe:get_actual_probe_name( NameInit ),
+    ProbeName = class_Probe:get_actual_probe_name( NameInit ),
 
-	% Does *not* declare to the result manager:
-	ProducerState = class_ResultProducer:construct( State, ProbeName ),
+    % Does *not* declare to the result manager:
+    ProducerState = class_ResultProducer:construct( State, ProbeName ),
 
-	% For an increased interleaving:
-	getAttribute( ProducerState, result_manager_pid ) !
-		{ declareGraphStreamProbe,
-		  [ text_utils:string_to_binary( ProbeName ),
-			_IsTrackedProducer=true ], self() },
+    % For an increased interleaving:
+    getAttribute( ProducerState, result_manager_pid ) !
+        { declareGraphStreamProbe,
+          [ text_utils:string_to_binary( ProbeName ),
+            _IsTrackedProducer=true ], self() },
 
-	?send_info_fmt( ProducerState, "Creating a Graph Stream probe, "
-		"based on ~ts.", [ gephi_support:server_info_to_string( GraphInfo ) ] ),
+    ?send_info_fmt( ProducerState, "Creating a Graph Stream probe, "
+        "based on ~ts.", [ gephi_support:server_info_to_string( GraphInfo ) ] ),
 
-	% We declare a trace bridge, so that we can collect the traces directly sent
-	% by Myriad's modules, notably gephi_support.
-	%
-	class_TraceEmitter:register_bridge( ProducerState ),
+    % We declare a trace bridge, so that we can collect the traces directly sent
+    % by Myriad's modules, notably gephi_support.
+    %
+    class_TraceEmitter:register_bridge( ProducerState ),
 
-	ReadyState = setAttributes( ProducerState, [
-		{ graph_info, GraphInfo },
+    ReadyState = setAttributes( ProducerState, [
+        { graph_info, GraphInfo },
 
-		% At least currently, as a result producer, no specific element will be
-		% to report:
-		%
-		{ result_produced, true } ] ),
+        % At least currently, as a result producer, no specific element will be
+        % to report:
+        %
+        { result_produced, true } ] ),
 
-	% Needed even already done by the deployment manager (hence done by each
-	% instance of such probes), as most are likely to be created on the same
-	% node as the actors, hence on computing nodes (so starting this support on
-	% the user node would not be enough):
-	%
-	gephi_support:start(),
+    % Needed even already done by the deployment manager (hence done by each
+    % instance of such probes), as most are likely to be created on the same
+    % node as the actors, hence on computing nodes (so starting this support on
+    % the user node would not be enough):
+    %
+    gephi_support:start(),
 
-	% After the call to the declareGraphStreamProbe/4 request:
-	wait_result_declaration_outcome( ProbeName, ReadyState ).
+    % After the call to the declareGraphStreamProbe/4 request:
+    wait_result_declaration_outcome( ProbeName, ReadyState ).
 
 
 
@@ -233,16 +231,16 @@ construct( State, NameInit, GraphInfo ) ->
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
-	?info( "Deleting graph Stream probe." ),
+    ?info( "Deleting graph Stream probe." ),
 
-	% Not desirable, as multiple instances of such probes may exist, and all the
-	% others would still rely on the services that would be shut down:
-	%
-	%gephi_support:stop(),
+    % Not desirable, as multiple instances of such probes may exist, and all the
+    % others would still rely on the services that would be shut down:
+    %
+    %gephi_support:stop(),
 
-	% No unregistering from the Gephi server needed.
+    % No unregistering from the Gephi server needed.
 
-	State.
+    State.
 
 
 
@@ -256,23 +254,23 @@ destruct( State ) ->
 -spec addNode( wooper:state(), node_id() ) -> const_oneway_return().
 addNode( State, NodeId ) ->
 
-	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-		?debug_fmt( "Adding asynchronously node '~ts'.", [ NodeId ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+        ?debug_fmt( "Adding asynchronously node '~ts'.", [ NodeId ] ) ),
 
-	gephi_support:add_node( NodeId, ?getAttr(graph_info) ),
-	wooper:const_return().
+    gephi_support:add_node( NodeId, ?getAttr(graph_info) ),
+    wooper:const_return().
 
 
 -doc "Adds synchronously the specified node to the graph.".
 -spec addNodeSync( wooper:state(), node_id() ) ->
-								const_request_return( 'node_added' ).
+                                const_request_return( 'node_added' ).
 addNodeSync( State, NodeId ) ->
 
-	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-		?debug_fmt( "Adding synchronously node '~ts'.", [ NodeId ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+        ?debug_fmt( "Adding synchronously node '~ts'.", [ NodeId ] ) ),
 
-	gephi_support:add_node( NodeId, ?getAttr(graph_info) ),
-	wooper:const_return_result( node_added ).
+    gephi_support:add_node( NodeId, ?getAttr(graph_info) ),
+    wooper:const_return_result( node_added ).
 
 
 
@@ -281,31 +279,31 @@ Adds (asynchronously) the specified node, with the specified label, to the
 graph.
 """.
 -spec addNode( wooper:state(), node_id(), element_label() ) ->
-								const_oneway_return().
+                                const_oneway_return().
 addNode( State, NodeId, NodeLabel ) ->
 
-	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-		?debug_fmt( "Adding asynchronously node '~ts', labelled '~ts'.",
-					[ NodeId, NodeLabel ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+        ?debug_fmt( "Adding asynchronously node '~ts', labelled '~ts'.",
+                    [ NodeId, NodeLabel ] ) ),
 
-	gephi_support:add_node( NodeId, NodeLabel, ?getAttr(graph_info) ),
-	wooper:const_return().
+    gephi_support:add_node( NodeId, NodeLabel, ?getAttr(graph_info) ),
+    wooper:const_return().
 
 
 -doc """
 Adds synchronously the specified node, with the specified label, to the graph.
 """.
 -spec addNodeSync( wooper:state(), node_id(), element_label() ) ->
-								const_request_return( 'node_added' ).
+                                const_request_return( 'node_added' ).
 addNodeSync( State, NodeId, NodeLabel ) ->
 
-	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-		?debug_fmt( "Adding synchronously node '~ts', labelled '~ts'.",
-					[ NodeId, NodeLabel ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+        ?debug_fmt( "Adding synchronously node '~ts', labelled '~ts'.",
+                    [ NodeId, NodeLabel ] ) ),
 
-	gephi_support:add_node( NodeId, NodeLabel, ?getAttr(graph_info) ),
+    gephi_support:add_node( NodeId, NodeLabel, ?getAttr(graph_info) ),
 
-	wooper:const_return_result( node_added ).
+    wooper:const_return_result( node_added ).
 
 
 
@@ -314,17 +312,17 @@ Adds (asynchronously) the specified node, with the specified label and color, to
 the graph.
 """.
 -spec addNode( wooper:state(), node_id(), element_label(), graph_color() ) ->
-								const_oneway_return().
+                                const_oneway_return().
 addNode( State, NodeId, NodeLabel, NodeColor ) ->
 
-	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-		?debug_fmt( "Adding asynchronously node '~ts', labelled '~ts', "
-			"with color '~ts'.", [ NodeId, NodeLabel, NodeColor ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+        ?debug_fmt( "Adding asynchronously node '~ts', labelled '~ts', "
+            "with color '~ts'.", [ NodeId, NodeLabel, NodeColor ] ) ),
 
-	gephi_support:add_node( NodeId, NodeLabel, NodeColor,
-							?getAttr(graph_info) ),
+    gephi_support:add_node( NodeId, NodeLabel, NodeColor,
+                            ?getAttr(graph_info) ),
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 
@@ -333,17 +331,17 @@ Adds synchronously the specified node, with the specified label and color, to
 the graph.
 """.
 -spec addNodeSync( wooper:state(), node_id(), element_label(),
-				   graph_color() ) -> const_request_return( 'node_added' ).
+                   graph_color() ) -> const_request_return( 'node_added' ).
 addNodeSync( State, NodeId, NodeLabel, NodeColor ) ->
 
-	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-		?debug_fmt( "Adding synchronously node '~ts', labelled '~ts', "
-			"with color '~ts'.", [ NodeId, NodeLabel, NodeColor ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+        ?debug_fmt( "Adding synchronously node '~ts', labelled '~ts', "
+            "with color '~ts'.", [ NodeId, NodeLabel, NodeColor ] ) ),
 
-	gephi_support:add_node( NodeId, NodeLabel, NodeColor,
-							?getAttr(graph_info) ),
+    gephi_support:add_node( NodeId, NodeLabel, NodeColor,
+                            ?getAttr(graph_info) ),
 
-	wooper:const_return_result( node_added ).
+    wooper:const_return_result( node_added ).
 
 
 
@@ -352,18 +350,18 @@ Updates (asynchronously) the specified property of the specified node to the
 specified constant (timestamp-less) value.
 """.
 -spec updateNodeProperty( wooper:state(), node_id(), property_id(),
-						  graph_value() ) -> const_oneway_return().
+                          graph_value() ) -> const_oneway_return().
 updateNodeProperty( State, NodeId, PropertyId, PropertyValue ) ->
 
-	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-		?debug_fmt( "Updating asynchronously for node '~ts' "
-			"property '~ts' to '~p'.",
-			[ NodeId, PropertyId, PropertyValue ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+        ?debug_fmt( "Updating asynchronously for node '~ts' "
+            "property '~ts' to '~p'.",
+            [ NodeId, PropertyId, PropertyValue ] ) ),
 
-	gephi_support:update_node_property( NodeId, PropertyId, PropertyValue,
-										?getAttr(graph_info) ),
+    gephi_support:update_node_property( NodeId, PropertyId, PropertyValue,
+                                        ?getAttr(graph_info) ),
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 -doc """
@@ -371,18 +369,18 @@ Updates synchronously the specified property of the specified node to the
 specified constant (timestamp-less) value.
 """.
 -spec updateNodePropertySync( wooper:state(), node_id(), property_id(),
-		graph_value() ) -> const_request_return( 'node_updated' ).
+        graph_value() ) -> const_request_return( 'node_updated' ).
 updateNodePropertySync( State, NodeId, PropertyId, PropertyValue ) ->
 
-	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-		?debug_fmt( "Updating synchronously for node '~ts' "
-			"property '~ts' to '~p'.",
-			[ NodeId, PropertyId, PropertyValue ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+        ?debug_fmt( "Updating synchronously for node '~ts' "
+            "property '~ts' to '~p'.",
+            [ NodeId, PropertyId, PropertyValue ] ) ),
 
-	gephi_support:update_node_property( NodeId, PropertyId, PropertyValue,
-										?getAttr(graph_info) ),
+    gephi_support:update_node_property( NodeId, PropertyId, PropertyValue,
+                                        ?getAttr(graph_info) ),
 
-	wooper:const_return_result( node_updated ).
+    wooper:const_return_result( node_updated ).
 
 
 
@@ -391,18 +389,18 @@ Updates (asynchronously) the specified properties of the specified node to the
 specified constant (timestamp-less) values.
 """.
 -spec updateNodeProperties( wooper:state(), node_id(), property_table() ) ->
-											const_oneway_return().
+                                            const_oneway_return().
 updateNodeProperties( State, NodeId, PropertyTable ) ->
 
-	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-		?debug_fmt( "Updating asynchronously for node '~ts' "
-			"the following property ~ts.",
-			[ NodeId, table:to_string( PropertyTable ) ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+        ?debug_fmt( "Updating asynchronously for node '~ts' "
+            "the following property ~ts.",
+            [ NodeId, table:to_string( PropertyTable ) ] ) ),
 
-	gephi_support:update_node_properties( NodeId, PropertyTable,
-										  ?getAttr(graph_info) ),
+    gephi_support:update_node_properties( NodeId, PropertyTable,
+                                          ?getAttr(graph_info) ),
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 -doc """
@@ -410,18 +408,18 @@ Updates synchronously the specified properties of the specified node to the
 specified constant (timestamp-less) values.
 """.
 -spec updateNodePropertiesSync( wooper:state(), node_id(), property_table() ) ->
-									const_request_return( 'node_updated' ).
+                                    const_request_return( 'node_updated' ).
 updateNodePropertiesSync( State, NodeId, PropertyTable ) ->
 
-	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-		?debug_fmt( "Updating asynchronously for node '~ts' "
-			"the following property ~ts.",
-			[ NodeId, table:to_string( PropertyTable ) ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+        ?debug_fmt( "Updating asynchronously for node '~ts' "
+            "the following property ~ts.",
+            [ NodeId, table:to_string( PropertyTable ) ] ) ),
 
-	gephi_support:update_node_properties( NodeId, PropertyTable,
-										  ?getAttr(graph_info) ),
+    gephi_support:update_node_properties( NodeId, PropertyTable,
+                                          ?getAttr(graph_info) ),
 
-	wooper:const_return_result( node_updated ).
+    wooper:const_return_result( node_updated ).
 
 
 -doc """
@@ -429,18 +427,18 @@ Updates (asynchronously) the specified property of the specified node to the
 specified value for the specified timestamp.
 """.
 -spec updateNodeProperty( wooper:state(), node_id(), property_id(),
-						  graph_value(), timestamp() ) -> const_oneway_return().
+                          graph_value(), timestamp() ) -> const_oneway_return().
 updateNodeProperty( State, NodeId, PropertyId, PropertyValue, Timestamp ) ->
 
-	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-		?debug_fmt( "Updating asynchronously for node '~ts' at ~w "
-			"property '~ts' to '~p'.",
-			[ NodeId, Timestamp, PropertyId, PropertyValue ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+        ?debug_fmt( "Updating asynchronously for node '~ts' at ~w "
+            "property '~ts' to '~p'.",
+            [ NodeId, Timestamp, PropertyId, PropertyValue ] ) ),
 
-	gephi_support:update_node_property( NodeId, PropertyId, PropertyValue,
-										Timestamp, ?getAttr(graph_info) ),
+    gephi_support:update_node_property( NodeId, PropertyId, PropertyValue,
+                                        Timestamp, ?getAttr(graph_info) ),
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 -doc """
@@ -448,18 +446,18 @@ Updates synchronously the specified property of the specified node to the
 specified value for the specified timestamp.
 """.
 -spec updateNodePropertySync( wooper:state(), node_id(), property_id(),
-		graph_value(), timestamp() ) -> const_request_return( 'node_updated' ).
+        graph_value(), timestamp() ) -> const_request_return( 'node_updated' ).
 updateNodePropertySync( State, NodeId, PropertyId, PropertyValue, Timestamp ) ->
 
-	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-		?debug_fmt( "Updating synchronously for node '~ts' at ~w "
-			"property '~ts' to '~p'.",
-			[ NodeId, Timestamp, PropertyId, PropertyValue ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+        ?debug_fmt( "Updating synchronously for node '~ts' at ~w "
+            "property '~ts' to '~p'.",
+            [ NodeId, Timestamp, PropertyId, PropertyValue ] ) ),
 
-	gephi_support:update_node_property( NodeId, PropertyId, PropertyValue,
-										Timestamp, ?getAttr(graph_info) ),
+    gephi_support:update_node_property( NodeId, PropertyId, PropertyValue,
+                                        Timestamp, ?getAttr(graph_info) ),
 
-	wooper:const_return_result( node_updated ).
+    wooper:const_return_result( node_updated ).
 
 
 
@@ -468,18 +466,18 @@ Updates (asynchronously) the specified properties of the specified node to the
 specified values for the specified timestamp.
 """.
 -spec updateNodeProperties( wooper:state(), node_id(), property_table(),
-							timestamp() ) -> const_oneway_return().
+                            timestamp() ) -> const_oneway_return().
 updateNodeProperties( State, NodeId, PropertyTable, Timestamp ) ->
 
-	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-		?debug_fmt( "Updating asynchronously for node '~ts' at ~w "
-			"the following property ~ts.",
-			[ NodeId, Timestamp, table:to_string( PropertyTable ) ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+        ?debug_fmt( "Updating asynchronously for node '~ts' at ~w "
+            "the following property ~ts.",
+            [ NodeId, Timestamp, table:to_string( PropertyTable ) ] ) ),
 
-	gephi_support:update_node_properties( NodeId, PropertyTable, Timestamp,
-										  ?getAttr(graph_info) ),
+    gephi_support:update_node_properties( NodeId, PropertyTable, Timestamp,
+                                          ?getAttr(graph_info) ),
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 -doc """
@@ -487,18 +485,18 @@ Updates synchronously the specified properties of the specified node to the
 specified values for the specified timestamp.
 """.
 -spec updateNodePropertiesSync( wooper:state(), node_id(), property_table(),
-		timestamp() ) -> const_request_return( 'node_updated' ).
+        timestamp() ) -> const_request_return( 'node_updated' ).
 updateNodePropertiesSync( State, NodeId, PropertyTable, Timestamp ) ->
 
-	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-		?debug_fmt( "Updating asynchronously for node '~ts' at ~w "
-			"the following property ~ts.",
-			[ NodeId, Timestamp, table:to_string( PropertyTable ) ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+        ?debug_fmt( "Updating asynchronously for node '~ts' at ~w "
+            "the following property ~ts.",
+            [ NodeId, Timestamp, table:to_string( PropertyTable ) ] ) ),
 
-	gephi_support:update_node_properties( NodeId, PropertyTable, Timestamp,
-										  ?getAttr(graph_info) ),
+    gephi_support:update_node_properties( NodeId, PropertyTable, Timestamp,
+                                          ?getAttr(graph_info) ),
 
-	wooper:const_return_result( node_updated ).
+    wooper:const_return_result( node_updated ).
 
 
 
@@ -508,17 +506,17 @@ identifiers of the first node and the second one, telling whether it is a
 directed edge (from first node to second one).
 """.
 -spec addEdge( wooper:state(), edge_id(), node_id(), node_id(), boolean() ) ->
-											const_oneway_return().
+                                            const_oneway_return().
 addEdge( State, EdgeId, FirstNodeId, SecondNodeId, IsDirected ) ->
 
-	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-		?debug_fmt( "Adding asynchronously edge '~ts' from node '~ts' "
-			"to '~ts'.", [ EdgeId, FirstNodeId, SecondNodeId ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+        ?debug_fmt( "Adding asynchronously edge '~ts' from node '~ts' "
+            "to '~ts'.", [ EdgeId, FirstNodeId, SecondNodeId ] ) ),
 
-	gephi_support:add_edge( EdgeId, FirstNodeId, SecondNodeId,
-							IsDirected, ?getAttr(graph_info) ),
+    gephi_support:add_edge( EdgeId, FirstNodeId, SecondNodeId,
+                            IsDirected, ?getAttr(graph_info) ),
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 -doc """
@@ -527,18 +525,18 @@ identifiers of the first node and the second one, telling whether it is a
 directed edge (from first node to second one).
 """.
 -spec addEdgeSync( wooper:state(), edge_id(), node_id(), node_id(),
-				   boolean() ) -> const_request_return( 'edge_added' ).
+                   boolean() ) -> const_request_return( 'edge_added' ).
 addEdgeSync( State, EdgeId, FirstNodeId, SecondNodeId, IsDirected ) ->
 
-	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-		?debug_fmt( "Adding synchronously edge '~ts' from node '~ts' "
-			"to '~ts'.", [ EdgeId, FirstNodeId, SecondNodeId ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+        ?debug_fmt( "Adding synchronously edge '~ts' from node '~ts' "
+            "to '~ts'.", [ EdgeId, FirstNodeId, SecondNodeId ] ) ),
 
 
-	gephi_support:add_edge( EdgeId, FirstNodeId, SecondNodeId, IsDirected,
-							?getAttr(graph_info) ),
+    gephi_support:add_edge( EdgeId, FirstNodeId, SecondNodeId, IsDirected,
+                            ?getAttr(graph_info) ),
 
-	wooper:const_return_result( edge_added ).
+    wooper:const_return_result( edge_added ).
 
 
 
@@ -548,40 +546,40 @@ identifiers of the first node and the second one, telling whether it is a
 directed edge (from first node to second one) and what its color is.
 """.
 -spec addEdge( wooper:state(), edge_id(), graph_color(), node_id(), node_id(),
-			   boolean() ) -> const_oneway_return().
+               boolean() ) -> const_oneway_return().
 addEdge( State, EdgeId, EdgeColor, FirstNodeId, SecondNodeId, IsDirected ) ->
 
-	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-		?debug_fmt( "Adding asynchronously edge '~ts' from node '~ts' "
-			"to '~ts' (color: '~ts').",
-			[ EdgeId, FirstNodeId, SecondNodeId, EdgeColor ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+        ?debug_fmt( "Adding asynchronously edge '~ts' from node '~ts' "
+            "to '~ts' (color: '~ts').",
+            [ EdgeId, FirstNodeId, SecondNodeId, EdgeColor ] ) ),
 
-	gephi_support:add_edge( EdgeId, EdgeColor, FirstNodeId, SecondNodeId,
-							IsDirected, ?getAttr(graph_info) ),
+    gephi_support:add_edge( EdgeId, EdgeColor, FirstNodeId, SecondNodeId,
+                            IsDirected, ?getAttr(graph_info) ),
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 -doc """
 Adds synchronously an edge whose identifier is specified, together with the
 identifiers of the first node and the second one, telling whether it is a
-directed edge (from first node to second one) and what its color is..
+directed edge (from first node to second one) and what its color is.
 """.
 -spec addEdgeSync( wooper:state(), edge_id(), graph_color(),
-				   node_id(), node_id(), boolean() ) ->
-										const_request_return( 'edge_added' ).
+                   node_id(), node_id(), boolean() ) ->
+                                        const_request_return( 'edge_added' ).
 addEdgeSync( State, EdgeId, EdgeColor, FirstNodeId, SecondNodeId,
-			 IsDirected ) ->
+             IsDirected ) ->
 
-	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-		?debug_fmt( "Adding synchronously edge '~ts' from node '~ts' "
-			"to '~ts' (color: '~ts').",
-			[ EdgeId, FirstNodeId, SecondNodeId, EdgeColor ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+        ?debug_fmt( "Adding synchronously edge '~ts' from node '~ts' "
+            "to '~ts' (color: '~ts').",
+            [ EdgeId, FirstNodeId, SecondNodeId, EdgeColor ] ) ),
 
-	gephi_support:add_edge( EdgeId, EdgeColor, FirstNodeId, SecondNodeId,
-							IsDirected, ?getAttr(graph_info) ),
+    gephi_support:add_edge( EdgeId, EdgeColor, FirstNodeId, SecondNodeId,
+                            IsDirected, ?getAttr(graph_info) ),
 
-	wooper:const_return_result( edge_added ).
+    wooper:const_return_result( edge_added ).
 
 
 
@@ -591,19 +589,19 @@ identifiers of the first node and the second one, telling whether it is a
 directed edge (from first node to second one) and what its label and color are.
 """.
 -spec addEdge( wooper:state(), edge_id(), element_label(), graph_color(),
-			   node_id(), node_id(), boolean() ) -> const_oneway_return().
+               node_id(), node_id(), boolean() ) -> const_oneway_return().
 addEdge( State, EdgeId, EdgeLabel, EdgeColor, FirstNodeId, SecondNodeId,
-		 IsDirected ) ->
+         IsDirected ) ->
 
-	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-		?debug_fmt( "Adding asynchronously edge '~ts' from node '~ts' "
-			"to '~ts' (label '~ts'; color: '~ts').",
-			[ EdgeId, FirstNodeId, SecondNodeId, EdgeLabel, EdgeColor ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+        ?debug_fmt( "Adding asynchronously edge '~ts' from node '~ts' "
+            "to '~ts' (label '~ts'; color: '~ts').",
+            [ EdgeId, FirstNodeId, SecondNodeId, EdgeLabel, EdgeColor ] ) ),
 
-	gephi_support:add_edge( EdgeId, EdgeLabel, EdgeColor,
-		FirstNodeId, SecondNodeId, IsDirected, ?getAttr(graph_info) ),
+    gephi_support:add_edge( EdgeId, EdgeLabel, EdgeColor,
+        FirstNodeId, SecondNodeId, IsDirected, ?getAttr(graph_info) ),
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 
@@ -613,20 +611,20 @@ identifiers of the first node and the second one, telling whether it is a
 directed edge (from first node to second one) and what its color is.
 """.
 -spec addEdgeSync( wooper:state(), edge_id(), element_label(), graph_color(),
-				   node_id(), node_id(), boolean() ) ->
-										const_request_return( 'edge_added' ).
+                   node_id(), node_id(), boolean() ) ->
+                                        const_request_return( 'edge_added' ).
 addEdgeSync( State, EdgeId, EdgeLabel, EdgeColor, FirstNodeId, SecondNodeId,
-			 IsDirected ) ->
+             IsDirected ) ->
 
-	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-		?debug_fmt( "Adding synchronously edge '~ts' from node '~ts' "
-			"to '~ts' (label '~ts'; color: '~ts').",
-			[ EdgeId, FirstNodeId, SecondNodeId, EdgeLabel, EdgeColor ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+        ?debug_fmt( "Adding synchronously edge '~ts' from node '~ts' "
+            "to '~ts' (label '~ts'; color: '~ts').",
+            [ EdgeId, FirstNodeId, SecondNodeId, EdgeLabel, EdgeColor ] ) ),
 
-	gephi_support:add_edge( EdgeId, EdgeLabel, EdgeColor,
-		FirstNodeId, SecondNodeId, IsDirected, ?getAttr(graph_info) ),
+    gephi_support:add_edge( EdgeId, EdgeLabel, EdgeColor,
+        FirstNodeId, SecondNodeId, IsDirected, ?getAttr(graph_info) ),
 
-	wooper:const_return_result( edge_added ).
+    wooper:const_return_result( edge_added ).
 
 
 
@@ -635,13 +633,13 @@ Updates (asynchronously) the specified property of the specified edge to the
 specified constant (timestamp-less) value.
 """.
 -spec updateEdgeProperty( wooper:state(), edge_id(), property_id(),
-						  graph_value() ) -> const_oneway_return().
+                          graph_value() ) -> const_oneway_return().
 updateEdgeProperty( State, EdgeId, PropertyId, PropertyValue ) ->
 
-	gephi_support:update_edge_property( EdgeId, PropertyId, PropertyValue,
-										?getAttr(graph_info) ),
+    gephi_support:update_edge_property( EdgeId, PropertyId, PropertyValue,
+                                        ?getAttr(graph_info) ),
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 
@@ -650,13 +648,13 @@ Updates synchronously the specified property of the specified edge to the
 specified constant (timestamp-less) value.
 """.
 -spec updateEdgePropertySync( wooper:state(), edge_id(), property_id(),
-		graph_value() ) -> const_request_return( 'edge_updated' ).
+        graph_value() ) -> const_request_return( 'edge_updated' ).
 updateEdgePropertySync( State, EdgeId, PropertyId, PropertyValue ) ->
 
-	gephi_support:update_edge_property( EdgeId, PropertyId, PropertyValue,
-										?getAttr(graph_info) ),
+    gephi_support:update_edge_property( EdgeId, PropertyId, PropertyValue,
+                                        ?getAttr(graph_info) ),
 
-	wooper:const_return_result( edge_updated ).
+    wooper:const_return_result( edge_updated ).
 
 
 
@@ -665,13 +663,13 @@ Updates (asynchronously) the specified properties of the specified edge to the
 specified constant (timestamp-less) values.
 """.
 -spec updateEdgeProperties( wooper:state(), edge_id(), property_table() ) ->
-											const_oneway_return().
+                                            const_oneway_return().
 updateEdgeProperties( State, EdgeId, PropertyTable ) ->
 
-	gephi_support:update_edge_properties( EdgeId, PropertyTable,
-										  ?getAttr(graph_info) ),
+    gephi_support:update_edge_properties( EdgeId, PropertyTable,
+                                          ?getAttr(graph_info) ),
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 -doc """
@@ -679,13 +677,13 @@ Updates synchronously the specified properties of the specified edge to the
 specified constant (timestamp-less) values.
 """.
 -spec updateEdgePropertiesSync( wooper:state(), edge_id(), property_table() ) ->
-									const_request_return( 'edge_updated' ).
+                                    const_request_return( 'edge_updated' ).
 updateEdgePropertiesSync( State, EdgeId, PropertyTable ) ->
 
-	gephi_support:update_edge_properties( EdgeId, PropertyTable,
-										  ?getAttr(graph_info) ),
+    gephi_support:update_edge_properties( EdgeId, PropertyTable,
+                                          ?getAttr(graph_info) ),
 
-	wooper:const_return_result( edge_updated ).
+    wooper:const_return_result( edge_updated ).
 
 
 
@@ -694,13 +692,13 @@ Updates (asynchronously) the specified property of the specified edge to the
 specified value for the specified timestamp.
 """.
 -spec updateEdgeProperty( wooper:state(), edge_id(), property_id(),
-						  graph_value(), timestamp() ) -> const_oneway_return().
+                          graph_value(), timestamp() ) -> const_oneway_return().
 updateEdgeProperty( State, EdgeId, PropertyId, PropertyValue, Timestamp ) ->
 
-	gephi_support:update_edge_property( EdgeId, PropertyId, PropertyValue,
-										Timestamp, ?getAttr(graph_info) ),
+    gephi_support:update_edge_property( EdgeId, PropertyId, PropertyValue,
+                                        Timestamp, ?getAttr(graph_info) ),
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 
@@ -709,13 +707,13 @@ Updates synchronously the specified property of the specified edge to the
 specified value for the specified timestamp.
 """.
 -spec updateEdgePropertySync( wooper:state(), edge_id(), property_id(),
-		graph_value(), timestamp() ) -> const_request_return( 'edge_updated' ).
+        graph_value(), timestamp() ) -> const_request_return( 'edge_updated' ).
 updateEdgePropertySync( State, EdgeId, PropertyId, PropertyValue, Timestamp ) ->
 
-	gephi_support:update_edge_property( EdgeId, PropertyId, PropertyValue,
-										Timestamp, ?getAttr(graph_info) ),
+    gephi_support:update_edge_property( EdgeId, PropertyId, PropertyValue,
+                                        Timestamp, ?getAttr(graph_info) ),
 
-	wooper:const_return_result( edge_updated ).
+    wooper:const_return_result( edge_updated ).
 
 
 
@@ -729,14 +727,14 @@ any race condition.
 -spec sync( wooper:state() ) -> const_request_return( 'graph_synchronised' ).
 sync( State ) ->
 
-	% No need to interact with the Gephi server, to which this probe is already
-	% synchronised. We just synchronise this probe with the caller, thanks to
-	% the use of a request (this one).
+    % No need to interact with the Gephi server, to which this probe is already
+    % synchronised. We just synchronise this probe with the caller, thanks to
+    % the use of a request (this one).
 
-	cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-		?debug_fmt( "Syncronised with caller ~w.", [ ?getSender() ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+        ?debug_fmt( "Syncronised with caller ~w.", [ ?getSender() ] ) ),
 
-	wooper:const_return_result( graph_synchronised ).
+    wooper:const_return_result( graph_synchronised ).
 
 
 
@@ -751,10 +749,10 @@ At least currently, such a probe has no specific result to report.
 (const request, for synchronous yet concurrent operations)
 """.
 -spec sendResults( wooper:state(), producer_options() ) ->
-						request_return( producer_result() ).
+                        request_return( producer_result() ).
 sendResults( State, _Options ) ->
-	ResState = setAttribute( State, result_collected, true ),
-	wooper:return_state_result( ResState, { self(), no_result } ).
+    ResState = setAttribute( State, result_collected, true ),
+    wooper:return_state_result( ResState, { self(), no_result } ).
 
 
 
@@ -768,11 +766,11 @@ producer, and to be created either from an actor or from a test case.
 Returns:
 
 - either the PID of this newly created result probe, if graph streaming was
-enabled in the deployment settings (refer to its 'enable_graph_streaming' field)
+enabled in the deployment settings (refer to its `enable_graph_streaming` field)
 and also if the name of that probe is acknowledged as a wanted result by the
 result manager
 
-- or the 'non_wanted_probe' atom
+- or the `non_wanted_probe` atom
 
 Note that the graph stream tool itself is to be launched by the deployment
 manager, only based on whether the graph stream service is enabled and whether
@@ -780,73 +778,73 @@ the simulation is in batch mode (hence regardless of whether actual graph stream
 probes are created).
 """.
 -spec declare_result_probe( probe_name_init() ) ->
-								static_return( graph_stream_probe_ref() ).
+                                static_return( graph_stream_probe_ref() ).
 declare_result_probe( NameInit ) ->
 
-	ProbeName = class_Probe:get_actual_probe_name( NameInit ),
+    ProbeName = class_Probe:get_actual_probe_name( NameInit ),
 
-	ActualBinName = text_utils:string_to_binary( ProbeName ),
+    ActualBinName = text_utils:string_to_binary( ProbeName ),
 
-	ResultManagerPid = class_ResultManager:get_result_manager(),
+    ResultManagerPid = class_ResultManager:get_result_manager(),
 
-	ResultManagerPid ! { isResultProducerWanted,
-		[ ActualBinName, _Nature=graph_stream_probe ], self() },
+    ResultManagerPid ! { isResultProducerWanted,
+        [ ActualBinName, _Nature=graph_stream_probe ], self() },
 
-	Res = receive
+    Res = receive
 
-		{ wooper_result, { true, _Metadata } } ->
+        { wooper_result, { true, _Metadata } } ->
 
-			DeployManPid = class_DeploymentManager:get_deployment_manager(),
+            DeployManPid = class_DeploymentManager:get_deployment_manager(),
 
-			% In the future we could imagine using multiple, possibly per-probe,
-			% workspaces, on a same Gephi instance (still controlled by the
-			% deployment manager).
-			%
-			DeployManPid ! { getGraphStreamInformation, [], self() },
+            % In the future we could imagine using multiple, possibly per-probe,
+            % workspaces, on a same Gephi instance (still controlled by the
+            % deployment manager).
+            %
+            DeployManPid ! { getGraphStreamInformation, [], self() },
 
-			% Disabled, as they are always metadata (e.g. layer versions, tick
-			% duration, etc.):
-			%
-			%Metadata =:= [] orelse
-			%   trace_utils:warning_fmt( "Ignoring, for graph stream probe "
-			%       "'~ts', the following metadata: ~n ~p.",
-			%       [ ProbeName, Metadata ] ),
+            % Disabled, as they are always metadata (e.g. layer versions, tick
+            % duration, etc.):
+            %
+            %Metadata =:= [] orelse
+            %   trace_utils:warning_fmt( "Ignoring, for graph stream probe "
+            %       "'~ts', the following metadata: ~n ~p.",
+            %       [ ProbeName, Metadata ] ),
 
-			receive
+            receive
 
-				{ wooper_result, _MaybeGraphInfos=undefined } ->
+                { wooper_result, _MaybeGraphInfos=undefined } ->
 
-					cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-						trace_utils:debug_fmt(
-							"Graph stream probe '~ts' wanted.",
-							[ ProbeName ] ) ),
+                    cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+                        trace_utils:debug_fmt(
+                            "Graph stream probe '~ts' wanted.",
+                            [ ProbeName ] ) ),
 
-					non_wanted_probe;
+                    non_wanted_probe;
 
-				{ wooper_result, GraphInfo } ->
+                { wooper_result, GraphInfo } ->
 
-					cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-						trace_utils:debug_fmt(
-							"The graph stream probe '~ts' is wanted, "
-							"and is to use a ~ts.", [ ProbeName,
-								gephi_support:server_info_to_string( GraphInfo )
-													] ) ),
+                    cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+                        trace_utils:debug_fmt(
+                            "The graph stream probe '~ts' is wanted, "
+                            "and is to use a ~ts.", [ ProbeName,
+                                gephi_support:server_info_to_string( GraphInfo )
+                                                    ] ) ),
 
-					synchronous_new_link( NameInit, GraphInfo )
+                    synchronous_new_link( NameInit, GraphInfo )
 
-			end;
+            end;
 
 
-		{ wooper_result, false } ->
-			cond_utils:if_defined( sim_diasca_debug_graph_streaming,
-				trace_utils:debug_fmt(
-					"Graph stream probe '~ts' not wanted.",
-					[ ProbeName ] ) ),
-			non_wanted_probe
+        { wooper_result, false } ->
+            cond_utils:if_defined( sim_diasca_debug_graph_streaming,
+                trace_utils:debug_fmt(
+                    "Graph stream probe '~ts' not wanted.",
+                    [ ProbeName ] ) ),
+            non_wanted_probe
 
-	end,
+    end,
 
-	wooper:return_static( Res ).
+    wooper:return_static( Res ).
 
 
 
@@ -857,13 +855,13 @@ Prevents the overflowing of it by callers.
 """.
 -spec wait_for( graph_stream_probe_pid() ) -> static_void_return().
 wait_for( GSPPid ) ->
-	GSPPid ! { sync, [], self() },
-	receive
+    GSPPid ! { sync, [], self() },
+    receive
 
-		{ wooper_result, graph_synchronised } ->
-			wooper:return_static_void()
+        { wooper_result, graph_synchronised } ->
+            wooper:return_static_void()
 
-	end.
+    end.
 
 
 
@@ -871,14 +869,14 @@ wait_for( GSPPid ) ->
 -spec encode_terms_to_json( [ term() ] ) -> static_return( bin_json() ).
 encode_terms_to_json( Terms ) ->
 
-	% Typically each term is [Timestamp :: iso8601_bin_string(), graph_term()]
-	% 2-element list.
+    % Typically each term is [Timestamp :: iso8601_bin_string(), graph_term()]
+    % 2-element list.
 
-	TermsAsJson = [ json_utils:to_json( T ) || T <- Terms ],
+    TermsAsJson = [ json_utils:to_json( T ) || T <- Terms ],
 
-	Bin = text_utils:bin_join( _Sep=$;, TermsAsJson ),
+    Bin = text_utils:bin_join( _Sep=$;, TermsAsJson ),
 
-	wooper:return_static( Bin ).
+    wooper:return_static( Bin ).
 
 
 
@@ -888,9 +886,9 @@ specified term.
 """.
 -spec append_term_to_json( bin_json(), term() ) -> static_return( bin_json() ).
 append_term_to_json( BaseBinJson, Term ) ->
-	TermAsBinJson = json_utils:to_json( Term ),
-	Bin = text_utils:bin_concatenate( BaseBinJson, TermAsBinJson ),
-	wooper:return_static( Bin ).
+    TermAsBinJson = json_utils:to_json( Term ),
+    Bin = text_utils:bin_concatenate( BaseBinJson, TermAsBinJson ),
+    wooper:return_static( Bin ).
 
 
 
@@ -902,33 +900,33 @@ Waits for the feedback of the result manager, after this probe declared itself
 to it (after a call to its `declareGraphStreamProbe/3` request).
 """.
 -spec wait_result_declaration_outcome( probe_name(), wooper:state() ) ->
-												wooper:state().
+                                                wooper:state().
 wait_result_declaration_outcome( ProbeName, State ) ->
 
-	%trace_utils:info_fmt( "Waiting for the result declaration outcome for "
-	%                      "graph probe '~ts'.", [ ProbeName ] ),
+    %trace_utils:info_fmt( "Waiting for the result declaration outcome for "
+    %                      "graph probe '~ts'.", [ ProbeName ] ),
 
-	% Finally waits the answer from the result manager to a prior
-	% declareGraphStreamProbe/3 call or similar:
-	%
-	% (in terms of result selection, what is true now may not be true anymore
-	% later, if the state of the result manager changes)
-	%
-	receive
+    % Finally waits the answer from the result manager to a prior
+    % declareGraphStreamProbe/3 call or similar:
+    %
+    % (in terms of result selection, what is true now may not be true anymore
+    % later, if the state of the result manager changes)
+    %
+    receive
 
-		{ wooper_result, output_not_requested } ->
-			?info_fmt( "The graph stream probe '~ts' would not produce "
-					   "an expected result.", [ ProbeName ] ),
+        { wooper_result, output_not_requested } ->
+            ?info_fmt( "The graph stream probe '~ts' would not produce "
+                       "an expected result.", [ ProbeName ] ),
 
-			setAttribute( State, enabled_producer, false );
+            setAttribute( State, enabled_producer, false );
 
 
-		{ wooper_result, output_requested } ->
+        { wooper_result, output_requested } ->
 
-			% Default is enabled_producer set to true:
-			?info_fmt( "The graph stream probe '~ts' will produce an expected "
-					   "result.", [ ProbeName ] ),
+            % Default is enabled_producer set to true:
+            ?info_fmt( "The graph stream probe '~ts' will produce an expected "
+                       "result.", [ ProbeName ] ),
 
-			State
+            State
 
-	end.
+    end.

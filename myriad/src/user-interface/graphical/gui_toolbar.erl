@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -50,7 +50,7 @@ A toolbar emits menu commands in the same way that a frame menubar does.
 
 -doc "A style element of a toolbar.".
 -type toolbar_style() ::
-	'top'
+    'top'
   | 'bottom'
   | 'left'
   | 'right'
@@ -74,19 +74,19 @@ A toolbar emits menu commands in the same way that a frame menubar does.
 % Corresponds to menu items:
 -doc "The kind of a tool in a toolbar.".
 -type tool_kind() :: gui_menu:menu_item_kind().
- 
+
 
 -doc "A separator for spacing groups of tools.".
 -type separator() :: wx_object().
 
 
 -export_type([ toolbar/0, toolbar_style/0, tool/0, tool_kind/0,
-			   separator/0 ]).
+               separator/0 ]).
 
 
 -export([ create/1, create/3, set/2,
-		  add_control/2, add_tool/5, add_tool/7, add_separator/1,
-		  update_tools/1 ]).
+          add_control/2, add_tool/5, add_tool/7, add_separator/1,
+          update_tools/1 ]).
 
 
 % Exported helpers:
@@ -116,7 +116,7 @@ A toolbar emits menu commands in the same way that a frame menubar does.
 -doc "Creates a toolbar in the specified frame.".
 -spec create( frame() ) -> toolbar().
 create( Frame ) ->
-	wxFrame:createToolBar( Frame ).
+    wxFrame:createToolBar( Frame ).
 
 
 
@@ -129,22 +129,22 @@ toolbars allowed simultaneously).
 """.
 -spec create( frame(), id(), [ toolbar_style() ] ) -> toolbar().
 create( Frame, Id, ToolbarStyles ) ->
-	wxFrame:createToolBar( Frame, [ { id, gui_id:declare_any_id( Id ) },
-		{ style, toolbar_styles_to_bitmask( ToolbarStyles ) } ] ).
+    wxFrame:createToolBar( Frame, [ { id, gui_id:declare_any_id( Id ) },
+        { style, toolbar_styles_to_bitmask( ToolbarStyles ) } ] ).
 
 
 
 -doc "Sets the specified toolbar in the specified frame.".
 -spec set( frame(), toolbar() ) -> void().
 set( Frame, Toolbar ) ->
-	wxFrame:setToolBar( Frame, Toolbar ).
+    wxFrame:setToolBar( Frame, Toolbar ).
 
 
 
 -doc "Adds the specified control to the specified toolbar.".
 -spec add_control( toolbar(), control() ) -> void().
 add_control( Toolbar, Control ) ->
-	wxToolBar:addControl( Toolbar, Control ).
+    wxToolBar:addControl( Toolbar, Control ).
 
 
 
@@ -156,21 +156,21 @@ update_tools/1 should be called once additions have been done, so that they are
 taken into account.
 """.
 -spec add_tool( toolbar(), id(), label(), bitmap(), option( help_info() ) ) ->
-											void().
+                                            void().
 add_tool( Toolbar, Id, Label, Bitmap, MaybeShortHelp ) ->
 
-	WxOpts = case MaybeShortHelp of
+    WxOpts = case MaybeShortHelp of
 
-		undefined ->
-			[];
+        undefined ->
+            [];
 
-		ShortHelp ->
-			[ { shortHelp, ShortHelp } ]
+        ShortHelp ->
+            [ { shortHelp, ShortHelp } ]
 
-	end,
+    end,
 
-	wxToolBar:addTool( Toolbar, gui_id:declare_any_id( Id ), Label, Bitmap,
-					   WxOpts ).
+    wxToolBar:addTool( Toolbar, gui_id:declare_any_id( Id ), Label, Bitmap,
+                       WxOpts ).
 
 
 
@@ -183,20 +183,20 @@ update_tools/1 should be called once additions have been done, so that they are
 taken into account.
 """.
 -spec add_tool( toolbar(), id(), label(), bitmap(), bitmap(),
-				option( help_info() ), option( help_info() ) ) -> void().
+                option( help_info() ), option( help_info() ) ) -> void().
 add_tool( Toolbar, Id, Label, BitmapIfEnabled, BitmapIfDisabled,
-		  MaybeShortHelp, MaybeLongHelp ) ->
+          MaybeShortHelp, MaybeLongHelp ) ->
 
-	WxOpts = case MaybeShortHelp of
-		undefined -> [];
-		ShortHelp -> [ { shortHelp, ShortHelp } ]
-	end ++ case MaybeLongHelp of
-		undefined -> [];
-		LongHelp -> [ { longHelp, LongHelp } ]
-	end,
+    WxOpts = case MaybeShortHelp of
+        undefined -> [];
+        ShortHelp -> [ { shortHelp, ShortHelp } ]
+    end ++ case MaybeLongHelp of
+        undefined -> [];
+        LongHelp -> [ { longHelp, LongHelp } ]
+    end,
 
-	wxToolBar:addTool( Toolbar, gui_id:declare_any_id( Id ), Label,
-					   BitmapIfEnabled, BitmapIfDisabled, WxOpts ).
+    wxToolBar:addTool( Toolbar, gui_id:declare_any_id( Id ), Label,
+                       BitmapIfEnabled, BitmapIfDisabled, WxOpts ).
 
 
 
@@ -208,7 +208,7 @@ taken into account.
 """.
 -spec add_separator( toolbar() ) -> separator().
 add_separator( Toolbar ) ->
-	wxToolBar:addSeparator( Toolbar ).
+    wxToolBar:addSeparator( Toolbar ).
 
 
 
@@ -218,7 +218,7 @@ returns whether an update had to be done.
 """.
 -spec update_tools( toolbar() ) -> boolean().
 update_tools( Toolbar ) ->
-	wxToolBar:realize( Toolbar ).
+    wxToolBar:realize( Toolbar ).
 
 
 
@@ -233,15 +233,15 @@ wx-specific bit mask.
 """.
 -spec toolbar_styles_to_bitmask( [ toolbar_style() ] ) -> wx_enum().
 toolbar_styles_to_bitmask( Styles ) ->
-	lists:foldl( fun( S, Acc ) ->
-					gui_generated:get_second_for_toolbar_style( S ) bor Acc end,
-				 _InitialAcc=0,
-				 _List=Styles ).
+    lists:foldl( fun( S, Acc ) ->
+                    gui_generated:get_second_for_toolbar_style( S ) bor Acc end,
+                 _InitialAcc=0,
+                 _List=Styles ).
 
 
 
 -doc "Converts the specified kind of tool into a wx-specific one.".
 -spec to_wx_tool_kind( tool_kind() ) -> wx_enum().
 to_wx_tool_kind( ToolKind ) ->
-	% Same:
-	gui_generated:get_second_for_menu_item_kind( ToolKind ).
+    % Same:
+    gui_generated:get_second_for_menu_item_kind( ToolKind ).

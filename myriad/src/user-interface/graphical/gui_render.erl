@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -102,9 +102,9 @@ paint_device_context() instance instead.
 
 -doc "Any window-related device context.".
 -type any_window_device_context() :: window_device_context()
-								   | window()
-								   | memory_device_context()
-								   | image().
+                                   | window()
+                                   | memory_device_context()
+                                   | image().
 
 
 
@@ -114,11 +114,11 @@ paint_device_context() instance instead.
 
 
 -export_type([ brush/0, graphic_context/0,
-			   device_context/0, paint_device_context/0,
-			   memory_device_context/0, back_buffer/0,
-			   window_device_context/0,
-			   any_window_device_context/0,
-			   buffer/0 ]).
+               device_context/0, paint_device_context/0,
+               memory_device_context/0, back_buffer/0,
+               window_device_context/0,
+               any_window_device_context/0,
+               buffer/0 ]).
 
 
 
@@ -128,12 +128,12 @@ paint_device_context() instance instead.
 
 % For graphic contexts:
 -export([ create_graphic_context/1,
-		  set_brush/2,
-		  set_font/3, set_font/4,
-		  get_text_extent/2, get_text_width/2, get_text_height/2,
-		  get_text_dimensions/2,
-		  draw_text/4,
-		  draw_bitmap/4, draw_bitmap/5, draw_bitmap/6 ]).
+          set_brush/2,
+          set_font/3, set_font/4,
+          get_text_extent/2, get_text_width/2, get_text_height/2,
+          get_text_dimensions/2,
+          draw_text/4,
+          draw_bitmap/4, draw_bitmap/5, draw_bitmap/6 ]).
 
 
 % For device contexts in general:
@@ -142,8 +142,8 @@ paint_device_context() instance instead.
 
 % For paint device contexts:
 -export([ get_flickerfree_paint_device_context/1,
-		  get_flickerfree_paint_device_context/2,
-		  destruct_paint_device_context/1 ]).
+          get_flickerfree_paint_device_context/2,
+          destruct_paint_device_context/1 ]).
 
 
 % For memory device contexts:
@@ -192,7 +192,7 @@ paint_device_context() instance instead.
 -doc "Returns a brush of the specified color.".
 -spec create_brush( color_by_decimal() ) -> brush().
 create_brush( RGBColor ) ->
-	wxBrush:new( RGBColor ).
+    wxBrush:new( RGBColor ).
 
 
 
@@ -201,14 +201,14 @@ Returns a brush of the specified color, and whose background is transparent.
 """.
 -spec create_transparent_brush( color_by_decimal() ) -> brush().
 create_transparent_brush( RGBColor ) ->
-	wxBrush:new( RGBColor, [ { style, ?wxTRANSPARENT } ] ).
+    wxBrush:new( RGBColor, [ { style, ?wxTRANSPARENT } ] ).
 
 
 
 -doc "Tells that the specified (reference-counted) brush may be deleted.".
 -spec destruct_brush( brush() ) -> void().
 destruct_brush( Brush ) ->
-	wxBrush:destroy( Brush ).
+    wxBrush:destroy( Brush ).
 
 
 
@@ -221,14 +221,14 @@ Returns a graphic context created from the specified window device context.
 """.
 -spec create_graphic_context( window_device_context() ) -> graphic_context().
 create_graphic_context( DC ) ->
-	wxGraphicsContext:create( DC ).
+    wxGraphicsContext:create( DC ).
 
 
 
 -doc "Sets the specified brush for the specified graphic context.".
 -spec set_brush( graphic_context(), brush() ) -> void().
 set_brush( GraphicContext, Brush ) ->
-	wxGraphicsContext:setBrush( GraphicContext, Brush ).
+    wxGraphicsContext:setBrush( GraphicContext, Brush ).
 
 
 
@@ -238,7 +238,7 @@ color.
 """.
 -spec set_font( graphic_context(), font(), color() ) -> void().
 set_font( GraphicContext, Font, Color ) ->
-	set_font( GraphicContext, Font, Color, _DoDestructFont=false ).
+    set_font( GraphicContext, Font, Color, _DoDestructFont=false ).
 
 
 
@@ -248,12 +248,12 @@ Sets the font and color to be used by the specified graphic context, then, if
 """.
 -spec set_font( graphic_context(), font(), color(), boolean() ) -> void().
 set_font( GraphicContext, Font, Color, _DestructFont=true ) ->
-	set_font( GraphicContext, Font, Color, _DoDestructFont=false ),
-	gui_font:destruct( Font );
+    set_font( GraphicContext, Font, Color, _DoDestructFont=false ),
+    gui_font:destruct( Font );
 
 set_font( GraphicContext, Font, Color, _DestructFont=false ) ->
-	wxGraphicsContext:setFont( GraphicContext, Font,
-							   gui_color:get_color( Color ) ).
+    wxGraphicsContext:setFont( GraphicContext, Font,
+                               gui_color:get_color( Color ) ).
 
 
 
@@ -264,10 +264,10 @@ the currently selected font.
 Note that the returned dimensions may be integer or floating-point numbers.
 """.
 -spec get_text_extent( graphic_context(), ustring() ) ->
-		{ any_width(), any_height(),
-		  Descent :: any_length(), ExternalLeading :: any_length() }.
+        { any_width(), any_height(),
+          Descent :: any_length(), ExternalLeading :: any_length() }.
 get_text_extent( GraphicContext, Text ) ->
-	wxGraphicsContext:getTextExtent( GraphicContext, Text ).
+    wxGraphicsContext:getTextExtent( GraphicContext, Text ).
 
 
 
@@ -278,11 +278,11 @@ string, using the currently selected font.
 -spec get_text_width( graphic_context(), ustring() ) -> width().
 get_text_width( GraphicContext, Text ) ->
 
-	{ W, _H, _D, _EL } =
-		wxGraphicsContext:getTextExtent( GraphicContext, Text ),
+    { W, _H, _D, _EL } =
+        wxGraphicsContext:getTextExtent( GraphicContext, Text ),
 
-	% Ceil could be used:
-	type_utils:ensure_ceiled_integer( W ).
+    % Ceil could be used:
+    type_utils:ensure_ceiled_integer( W ).
 
 
 
@@ -293,10 +293,10 @@ string, using the currently selected font.
 -spec get_text_height( graphic_context(), ustring() ) -> height().
 get_text_height( GraphicContext, Text ) ->
 
-	{ _W, H, _D, _EL } =
-		wxGraphicsContext:getTextExtent( GraphicContext, Text ),
+    { _W, H, _D, _EL } =
+        wxGraphicsContext:getTextExtent( GraphicContext, Text ),
 
-	type_utils:ensure_ceiled_integer( H ).
+    type_utils:ensure_ceiled_integer( H ).
 
 
 
@@ -307,11 +307,11 @@ string, using the currently selected font.
 -spec get_text_dimensions( graphic_context(), ustring() ) -> dimensions().
 get_text_dimensions( GraphicContext, Text ) ->
 
-	{ W, H, _D, _EL } =
-		wxGraphicsContext:getTextExtent( GraphicContext, Text ),
+    { W, H, _D, _EL } =
+        wxGraphicsContext:getTextExtent( GraphicContext, Text ),
 
-	{ type_utils:ensure_ceiled_integer( W ),
-	  type_utils:ensure_ceiled_integer( H ) }.
+    { type_utils:ensure_ceiled_integer( W ),
+      type_utils:ensure_ceiled_integer( H ) }.
 
 
 
@@ -320,9 +320,9 @@ Renders the specified text on the specified graphic context at the specified
 position.
 """.
 -spec draw_text( graphic_context(), ustring(), coordinate(), coordinate() ) ->
-										void().
+                                        void().
 draw_text( GraphicContext, Text, X, Y ) ->
-	wxGraphicsContext:drawText( GraphicContext, Text, X, Y ).
+    wxGraphicsContext:drawText( GraphicContext, Text, X, Y ).
 
 
 
@@ -331,10 +331,10 @@ Draws the specified bitmap onto the specified graphic context, at the specified
 location.
 """.
 -spec draw_bitmap( graphic_context(), bitmap(), coordinate(), coordinate() ) ->
-																void().
+                                                                void().
 draw_bitmap( GraphicContext, Bitmap, X, Y ) ->
-	{ W, H } = gui_bitmap:get_size( Bitmap ),
-	wxGraphicsContext:drawBitmap( GraphicContext, Bitmap, X, Y, W, H ).
+    { W, H } = gui_bitmap:get_size( Bitmap ),
+    wxGraphicsContext:drawBitmap( GraphicContext, Bitmap, X, Y, W, H ).
 
 
 
@@ -343,9 +343,9 @@ Draws the specified bitmap onto the specified graphic context, at the specified
 location with the specified dimensions.
 """.
 -spec draw_bitmap( graphic_context(), bitmap(), coordinate(), coordinate(),
-				   dimensions() ) -> void().
+                   dimensions() ) -> void().
 draw_bitmap( GraphicContext, Bitmap, X, Y, _Dims={ Width, Height } ) ->
-	wxGraphicsContext:drawBitmap( GraphicContext, Bitmap, X, Y, Width, Height ).
+    wxGraphicsContext:drawBitmap( GraphicContext, Bitmap, X, Y, Width, Height ).
 
 
 
@@ -354,9 +354,9 @@ Draws the specified bitmap onto the specified graphic context, at the specified
 location with the specified dimensions.
 """.
 -spec draw_bitmap( graphic_context(), bitmap(), coordinate(), coordinate(),
-				   width(), height() ) -> void().
+                   width(), height() ) -> void().
 draw_bitmap( GraphicContext, Bitmap, X, Y, Width, Height ) ->
-	wxGraphicsContext:drawBitmap( GraphicContext, Bitmap, X, Y, Width, Height ).
+    wxGraphicsContext:drawBitmap( GraphicContext, Bitmap, X, Y, Width, Height ).
 
 
 
@@ -371,7 +371,7 @@ If none was set, a solid white brush is used.
 """.
 -spec clear_device_context( device_context() ) -> void().
 clear_device_context( DC ) ->
-	wxDC:clear( DC ).
+    wxDC:clear( DC ).
 
 
 
@@ -382,9 +382,9 @@ position in the target device context.
 Returns a boolean of unspecified meaning.
 """.
 -spec blit( device_context(), point(), dimensions() , device_context(),
-			point() ) -> boolean().
+            point() ) -> boolean().
 blit( SourceDC, SrcTopLeft, Size, TargetDC, TgtTopLeft ) ->
-	wxDC:blit( TargetDC, TgtTopLeft, Size, SourceDC, SrcTopLeft ).
+    wxDC:blit( TargetDC, TgtTopLeft, Size, SourceDC, SrcTopLeft ).
 
 
 
@@ -395,9 +395,9 @@ position in the target device context.
 Returns a boolean of unspecified meaning.
 """.
 -spec blit( device_context(), point(), width(), height(), device_context(),
-			point() ) -> boolean().
+            point() ) -> boolean().
 blit( SourceDC, SrcTopLeft, Width, Height, TargetDC, TgtTopLeft ) ->
-	blit( SourceDC, SrcTopLeft, _Size={ Width, Height }, TargetDC, TgtTopLeft ).
+    blit( SourceDC, SrcTopLeft, _Size={ Width, Height }, TargetDC, TgtTopLeft ).
 
 
 
@@ -412,10 +412,10 @@ widget, so that its client area can be modified (from an onRepaintNeeded event
 handler).
 """.
 -spec get_flickerfree_paint_device_context( widget() ) ->
-												paint_device_context().
+                                                paint_device_context().
 get_flickerfree_paint_device_context( Widget ) ->
-	get_flickerfree_paint_device_context( Widget,
-		system_utils:get_operating_system_family() ).
+    get_flickerfree_paint_device_context( Widget,
+        system_utils:get_operating_system_family() ).
 
 
 
@@ -425,21 +425,21 @@ specified OS family), so that its client area can be modified (from an
 onRepaintNeeded event handler).
 """.
 -spec get_flickerfree_paint_device_context( window(), os_family() ) ->
-												paint_device_context().
+                                                paint_device_context().
 get_flickerfree_paint_device_context( Widget, _OSFamily=win32 ) ->
-	% Otherwise flickers on Windows:
-	wx:typeCast( wxBufferedPaintDC:new( Widget ), _NewType=wxPaintDC );
+    % Otherwise flickers on Windows:
+    wx:typeCast( wxBufferedPaintDC:new( Widget ), _NewType=wxPaintDC );
 
 get_flickerfree_paint_device_context( Widget, _OSFamily ) ->
-	%trace_utils:debug_fmt( "Return flicker-free PDC for ~w.", [ Widget ] ),
-	wxPaintDC:new( Widget ).
+    %trace_utils:debug_fmt( "Return flicker-free PDC for ~w.", [ Widget ] ),
+    wxPaintDC:new( Widget ).
 
 
 
 -doc "Destructs the specified paint device context.".
 -spec destruct_paint_device_context( paint_device_context() ) -> void().
 destruct_paint_device_context( PaintDeviceContext ) ->
-	wxPaintDC:destroy( PaintDeviceContext ).
+    wxPaintDC:destroy( PaintDeviceContext ).
 
 
 
@@ -449,4 +449,4 @@ destruct_paint_device_context( PaintDeviceContext ) ->
 -doc "Destructs the specified memory device context.".
 -spec destruct_memory_device_context( memory_device_context() ) -> void().
 destruct_memory_device_context( MemDeviceContext ) ->
-	wxMemoryDC:destroy( MemDeviceContext ).
+    wxMemoryDC:destroy( MemDeviceContext ).

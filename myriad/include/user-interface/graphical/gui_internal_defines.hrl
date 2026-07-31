@@ -1,4 +1,4 @@
-% Copyright (C) 2017-2025 Olivier Boudeville
+% Copyright (C) 2017-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -55,10 +55,10 @@
 %
 -record( myriad_object_ref, {
 
-	% The type of GUI object referred to (e.g. 'myr_canvas'):
-	object_type :: gui:myriad_object_type(),
+    % The type of GUI object referred to (e.g. 'myr_canvas'):
+    object_type :: gui:myriad_object_type(),
 
-	% The identifier of this referenced instance:
-	myriad_instance_id :: gui_id:myriad_instance_id() } ).
+    % The identifier of this referenced instance:
+    myriad_instance_id :: gui_id:myriad_instance_id() } ).
 
 -type myriad_object_ref() :: #myriad_object_ref{}.

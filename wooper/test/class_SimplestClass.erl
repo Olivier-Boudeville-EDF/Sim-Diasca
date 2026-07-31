@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -65,8 +65,8 @@ Test of a **most basic class**.
 -doc "Constructs an instance of this class.".
 -spec construct( wooper:state(), age(), gender() ) -> wooper:state().
 construct( State, Age, Gender ) ->
-	% No mother class.
-	setAttributes( State, [ { age, Age }, { gender, Gender } ] ).
+    % No mother class.
+    setAttributes( State, [ { age, Age }, { gender, Gender } ] ).
 
 
 
@@ -79,7 +79,7 @@ Allows to test also the automatic destructor generation:
 """.
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
-	State.
+    State.
 
 
 
@@ -89,37 +89,37 @@ destruct( State ) ->
 -doc "Returns the age of this creature.".
 -spec getAge( wooper:state() ) -> const_request_return( age() ).
 getAge( State ) ->
-	wooper:const_return_result( ?getAttr(age) ).
+    wooper:const_return_result( ?getAttr(age) ).
 
 
 
 -doc "Sets the age of this creature.".
 -spec setAge( wooper:state(), age() ) -> oneway_return().
 setAge( State, _NewAge ) ->
-	% Mother implementation chosen faulty to check override:
-	wooper:return_state( setAttribute( State, age, 36 ) ).
+    % Mother implementation chosen faulty to check override:
+    wooper:return_state( setAttribute( State, age, 36 ) ).
 
 
 
 -doc "Increments the age of this creature.".
 -spec declareBirthday( wooper:state() ) -> oneway_return().
 declareBirthday( State ) ->
-	wooper:return_state(
-		setAttribute( State, age, ?getAttr(age)+1 ) ).
+    wooper:return_state(
+        setAttribute( State, age, ?getAttr(age)+1 ) ).
 
 
 
 -doc "Returns the gender of this creature.".
 -spec getGender( wooper:state() ) -> const_request_return( gender() ).
 getGender( State ) ->
-	wooper:const_return_result( ?getAttr(gender) ).
+    wooper:const_return_result( ?getAttr(gender) ).
 
 
 
 -doc "Returns a class-specific arbitrary number.".
 -spec getArbitraryNumber( wooper:state() ) -> const_request_return( number() ).
 getArbitraryNumber( State ) ->
-	wooper:const_return_result( 10 ).
+    wooper:const_return_result( 10 ).
 
 
 
@@ -134,34 +134,34 @@ Must not be called from the Creature test, otherwise will fail.
 -spec testDirectMethodExecution( wooper:state(), age() ) -> oneway_return().
 testDirectMethodExecution( State, NewAge ) ->
 
-	io:format( "Testing executeOneway.~n" ),
+    io:format( "Testing executeOneway.~n" ),
 
-	% Note: the version of setAge called in the context of a Creature sets in on
-	% purpose to a fixed value (36), regardless of the specified age, whereas
-	% the Mammal version of setAge behaves as expected:
-	%
-	NewState = executeOneway( State, setAge, NewAge ),
+    % Note: the version of setAge called in the context of a Creature sets in on
+    % purpose to a fixed value (36), regardless of the specified age, whereas
+    % the Mammal version of setAge behaves as expected:
+    %
+    NewState = executeOneway( State, setAge, NewAge ),
 
-	% Use this instead to test error management:
-	%NewState = executeOneway(test_not_a_state,setAge,NewAge),
-	%NewState = executeOneway(State,42,NewAge),
+    % Use this instead to test error management:
+    %NewState = executeOneway(test_not_a_state,setAge,NewAge),
+    %NewState = executeOneway(State,42,NewAge),
 
-	% NewAge is expected to be 347:
-	NewAge = getAttribute( NewState, age ),
+    % NewAge is expected to be 347:
+    NewAge = getAttribute( NewState, age ),
 
-	io:format( "Testing executeRequest.~n" ),
-	% 15 from Mammal child classes, not 10 from here:
+    io:format( "Testing executeRequest.~n" ),
+    % 15 from Mammal child classes, not 10 from here:
 
-	{ OtherState, 15 } = executeRequest( NewState, getArbitraryNumber ,[] ),
+    { OtherState, 15 } = executeRequest( NewState, getArbitraryNumber ,[] ),
 
-	%{ OtherState, 15 } = executeRequest( test_not_a_state, getArbitraryNumber,
-	% [] ),
+    %{ OtherState, 15 } = executeRequest( test_not_a_state, getArbitraryNumber,
+    % [] ),
 
-	%{ OtherState, 15 } = executeRequest( NewState, 43, [] ),
+    %{ OtherState, 15 } = executeRequest( NewState, 43, [] ),
 
-	io:format( "Direct self-invocation success.~n" ),
+    io:format( "Direct self-invocation success.~n" ),
 
-	wooper:return_state( OtherState ).
+    wooper:return_state( OtherState ).
 
 
 
@@ -177,15 +177,15 @@ triggered by f (sending a message, writing a trace, etc.) happened twice.
 """.
 -spec testSingleExecution( wooper:state() ) -> oneway_return().
 testSingleExecution( State ) ->
-	wooper:return_state(
-	  setAttribute( side_effect_function( State ), age, 10 ) ).
+    wooper:return_state(
+      setAttribute( side_effect_function( State ), age, 10 ) ).
 
 
 
 -spec side_effect_function( wooper:state() ) -> wooper:state().
 side_effect_function( State ) ->
-	io:format( "~n### This message must not be displayed more than once.~n" ),
-	State.
+    io:format( "~n### This message must not be displayed more than once.~n" ),
+    State.
 
 
 
@@ -196,10 +196,10 @@ side_effect_function( State ) ->
 -doc "Just to show it can exist.".
 -spec example_fun() -> 'ok'.
 example_fun() ->
-	ok.
+    ok.
 
 
 -doc "This looks like a method, but it is not (returning only a string).".
 -spec toString( wooper:state() ) -> ustring().
 toString( State ) ->
-	table:to_string( State#state_holder.attribute_table ).
+    table:to_string( State#state_holder.attribute_table ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 EDF R&D
+% Copyright (C) 2014-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %

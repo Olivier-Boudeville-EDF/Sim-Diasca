@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2025 Olivier Boudeville
+% Copyright (C) 2011-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -51,125 +51,125 @@ See the hashtable.erl tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	MyH1 = hashtable:new( 10 ),
+    MyH1 = hashtable:new( 10 ),
 
-	true = hashtable:is_empty( MyH1 ),
+    true = hashtable:is_empty( MyH1 ),
 
-	hashtable:display( "Vanilla table", MyH1 ),
-	MyH1Optimised = hashtable:optimise( MyH1 ),
-	hashtable:display( "Optimised table", MyH1Optimised ),
+    hashtable:display( "Vanilla table", MyH1 ),
+    MyH1Optimised = hashtable:optimise( MyH1 ),
+    hashtable:display( "Optimised table", MyH1Optimised ),
 
-	hashtable:display( MyH1 ),
-	MyH2 = hashtable:new( 4 ),
+    hashtable:display( MyH1 ),
+    MyH2 = hashtable:new( 4 ),
 
-	MyFirstValue = "MyFirstValue",
-	MyH3 = hashtable:add_entry( ?MyFirstKey, MyFirstValue, MyH2 ),
-	false = hashtable:is_empty( MyH3 ),
+    MyFirstValue = "MyFirstValue",
+    MyH3 = hashtable:add_entry( ?MyFirstKey, MyFirstValue, MyH2 ),
+    false = hashtable:is_empty( MyH3 ),
 
-	MySecondValue = [ 1, 2, 3 ],
-	MyH4 = hashtable:add_entry( ?MySecondKey, MySecondValue, MyH3 ),
-	false = hashtable:is_empty( MyH4 ),
+    MySecondValue = [ 1, 2, 3 ],
+    MyH4 = hashtable:add_entry( ?MySecondKey, MySecondValue, MyH3 ),
+    false = hashtable:is_empty( MyH4 ),
 
-	hashtable:display( MyH4 ),
+    hashtable:display( MyH4 ),
 
-	MyH4Size = hashtable:size( MyH4 ),
-	test_facilities:display( "Size of table '~ts': ~B entries",
-							 [ hashtable:to_string( MyH4 ), MyH4Size ] ),
+    MyH4Size = hashtable:size( MyH4 ),
+    test_facilities:display( "Size of table '~ts': ~B entries",
+                             [ hashtable:to_string( MyH4 ), MyH4Size ] ),
 
-	test_facilities:display( "Looking up for ~ts: ~p", [ ?MyFirstKey,
-		hashtable:lookup_entry( ?MyFirstKey, MyH4 ) ] ),
-	{ value, MyFirstValue } = hashtable:lookup_entry( ?MyFirstKey, MyH4 ),
+    test_facilities:display( "Looking up for ~ts: ~p", [ ?MyFirstKey,
+        hashtable:lookup_entry( ?MyFirstKey, MyH4 ) ] ),
+    { value, MyFirstValue } = hashtable:lookup_entry( ?MyFirstKey, MyH4 ),
 
-	test_facilities:display( "Removing that entry." ),
-	MyH5 = hashtable:remove_entry( ?MyFirstKey, MyH4 ),
-	false = hashtable:is_empty( MyH5 ),
+    test_facilities:display( "Removing that entry." ),
+    MyH5 = hashtable:remove_entry( ?MyFirstKey, MyH4 ),
+    false = hashtable:is_empty( MyH5 ),
 
-	test_facilities:display( "Extracting the same entry from "
-							 "the same initial table." ),
+    test_facilities:display( "Extracting the same entry from "
+                             "the same initial table." ),
 
-	{ MyFirstValue, MyH5 } = hashtable:extract_entry( ?MyFirstKey, MyH4 ),
+    { MyFirstValue, MyH5 } = hashtable:extract_entry( ?MyFirstKey, MyH4 ),
 
-	test_facilities:display( "Looking up for ~ts: ~p", [ ?MyFirstKey,
-		hashtable:lookup_entry( ?MyFirstKey, MyH5 ) ] ),
+    test_facilities:display( "Looking up for ~ts: ~p", [ ?MyFirstKey,
+        hashtable:lookup_entry( ?MyFirstKey, MyH5 ) ] ),
 
-	key_not_found  = hashtable:lookup_entry( ?MyFirstKey, MyH5 ),
+    key_not_found  = hashtable:lookup_entry( ?MyFirstKey, MyH5 ),
 
-	[ MySecondValue, MyFirstValue ] =
-		hashtable:get_all_values( [ ?MySecondKey, ?MyFirstKey ], MyH4 ),
+    [ MySecondValue, MyFirstValue ] =
+        hashtable:get_all_values( [ ?MySecondKey, ?MyFirstKey ], MyH4 ),
 
-	% remove_entry can also be used if the specified key is not here, will
-	% return an identical table.
+    % remove_entry can also be used if the specified key is not here, will
+    % return an identical table.
 
-	hashtable:display( MyH5 ),
-	test_facilities:display( "Testing double key registering." ),
-	MyH6 = hashtable:add_entry( ?MySecondKey, anything, MyH5 ),
-	hashtable:display( MyH6 ),
+    hashtable:display( MyH5 ),
+    test_facilities:display( "Testing double key registering." ),
+    MyH6 = hashtable:add_entry( ?MySecondKey, anything, MyH5 ),
+    hashtable:display( MyH6 ),
 
-	test_facilities:display( "Enumerating the hashtable: ~p",
-		[ hashtable:enumerate( MyH4 ) ] ),
+    test_facilities:display( "Enumerating the hashtable: ~p",
+        [ hashtable:enumerate( MyH4 ) ] ),
 
-	test_facilities:display( "Listing the hashtable keys: ~p",
-		[ hashtable:keys( MyH4 ) ] ),
+    test_facilities:display( "Listing the hashtable keys: ~p",
+        [ hashtable:keys( MyH4 ) ] ),
 
-	test_facilities:display( "Listing the hashtable values: ~p",
-		[ hashtable:values( MyH4 ) ] ),
-
-
-	test_facilities:display( "Applying a fun to all values of "
-							 "previous hashtable:" ),
-
-	FunValue = fun( V ) ->
-				io:format( " - hello value '~p'!~n", [ V ] ),
-				% Unchanged here:
-				V
-	end,
-
-	hashtable:map_on_values( FunValue, MyH4 ),
+    test_facilities:display( "Listing the hashtable values: ~p",
+        [ hashtable:values( MyH4 ) ] ),
 
 
-	test_facilities:display( "Applying a fun to all entries of "
-							 "previous hashtable:" ),
+    test_facilities:display( "Applying a fun to all values of "
+                             "previous hashtable:" ),
 
-	FunEntry = fun( E={ K, V } ) ->
-				io:format( " - hello, key '~p' associated to value '~p'!~n",
-						   [ K, V ] ),
-				% Unchanged here:
-				E
-	end,
+    FunValue = fun( V ) ->
+                io:format( " - hello value '~p'!~n", [ V ] ),
+                % Unchanged here:
+                V
+    end,
 
-	hashtable:map_on_entries( FunEntry, MyH4 ),
+    hashtable:map_on_values( FunValue, MyH4 ),
 
-	test_facilities:display( "Folding on the same initial hashtable to "
-							 "count the number of entries." ),
 
-	FunCount = fun( _Entry, AccCount ) ->
-					   AccCount + 1
-			   end,
+    test_facilities:display( "Applying a fun to all entries of "
+                             "previous hashtable:" ),
 
-	InitialCount = 0,
+    FunEntry = fun( E={ K, V } ) ->
+                io:format( " - hello, key '~p' associated to value '~p'!~n",
+                           [ K, V ] ),
+                % Unchanged here:
+                E
+    end,
 
-	2 = hashtable:fold_on_entries( FunCount, InitialCount, MyH4 ),
+    hashtable:map_on_entries( FunEntry, MyH4 ),
 
-	0 = hashtable:fold_on_entries( FunCount, InitialCount, MyH1 ),
+    test_facilities:display( "Folding on the same initial hashtable to "
+                             "count the number of entries." ),
 
-	true = list_utils:unordered_compare( [ ?MyFirstKey, ?MySecondKey ],
-										 hashtable:keys( MyH4 ) ),
+    FunCount = fun( _Entry, AccCount ) ->
+                       AccCount + 1
+               end,
 
-	MyH7 = hashtable:add_entry( ?MyThirdKey, 3, MyH6 ),
+    InitialCount = 0,
 
-	% MyH8 should have { MySecondKey, [1,2,3] } and { ?MyThirdKey, 3 }:
-	MyH8 = hashtable:merge( MyH4, MyH7 ),
-	test_facilities:display( "Merged table: ~ts",
-							[ hashtable:to_string( MyH8 ) ] ),
+    2 = hashtable:fold_on_entries( FunCount, InitialCount, MyH4 ),
 
-	MyH9 = hashtable:optimise( MyH8 ),
-	hashtable:display( "Optimised merged table", MyH9 ),
+    0 = hashtable:fold_on_entries( FunCount, InitialCount, MyH1 ),
 
-	Keys = [ ?MyFirstKey, ?MyThirdKey ],
+    true = list_utils:unordered_compare( [ ?MyFirstKey, ?MySecondKey ],
+                                         hashtable:keys( MyH4 ) ),
 
-	test_facilities:display( "Listing the entries for keys ~p:~n ~p",
-							[ Keys, hashtable:select_entries( Keys, MyH9 ) ] ),
+    MyH7 = hashtable:add_entry( ?MyThirdKey, 3, MyH6 ),
 
-	test_facilities:stop().
+    % MyH8 should have { MySecondKey, [1,2,3] } and { ?MyThirdKey, 3 }:
+    MyH8 = hashtable:merge( MyH4, MyH7 ),
+    test_facilities:display( "Merged table: ~ts",
+                            [ hashtable:to_string( MyH8 ) ] ),
+
+    MyH9 = hashtable:optimise( MyH8 ),
+    hashtable:display( "Optimised merged table", MyH9 ),
+
+    Keys = [ ?MyFirstKey, ?MyThirdKey ],
+
+    test_facilities:display( "Listing the entries for keys ~p:~n ~p",
+                            [ Keys, hashtable:select_entries( Keys, MyH9 ) ] ),
+
+    test_facilities:stop().

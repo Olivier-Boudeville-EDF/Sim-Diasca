@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -36,9 +36,9 @@ See process_utils_test.erl for the corresponding test.
 
 
 -export([ spawn_message_queue_monitor/1, spawn_message_queue_monitor/2,
-		  spawn_message_queue_monitor/4,
+          spawn_message_queue_monitor/4,
 
-		  set_label/1, get_label/1 ]).
+          set_label/1, get_label/1 ]).
 
 
 
@@ -99,8 +99,8 @@ corresponding monitoring process.
 """.
 -spec spawn_message_queue_monitor( pid() ) -> monitor_pid().
 spawn_message_queue_monitor( MonitoredPid ) ->
-	spawn_message_queue_monitor( MonitoredPid,
-		_MaybeMonitoredProcessDescStr=undefined ).
+    spawn_message_queue_monitor( MonitoredPid,
+        _MaybeMonitoredProcessDescStr=undefined ).
 
 
 
@@ -114,10 +114,10 @@ The 'terminate' atom shall be sent to the returned PID in order to terminate the
 corresponding monitoring process.
 """.
 -spec spawn_message_queue_monitor( pid(), option( any_string() ) ) ->
-											monitor_pid().
+                                            monitor_pid().
 spawn_message_queue_monitor( MonitoredPid, MaybeMonitoredProcessDesc ) ->
-	spawn_message_queue_monitor( MonitoredPid, MaybeMonitoredProcessDesc,
-		_MsgThreshold=1000, _SamplingPeriod=2000 ).
+    spawn_message_queue_monitor( MonitoredPid, MaybeMonitoredProcessDesc,
+        _MsgThreshold=1000, _SamplingPeriod=2000 ).
 
 
 
@@ -131,82 +131,82 @@ The 'terminate' atom shall be sent to the returned PID in order to terminate the
 corresponding monitoring process.
 """.
 -spec spawn_message_queue_monitor( pid(), option( any_string() ),
-			count(), milliseconds() ) -> monitor_pid().
+            count(), milliseconds() ) -> monitor_pid().
 spawn_message_queue_monitor( MonitoredPid, MaybeMonitoredProcessDesc,
-		MsgThreshold, SamplingPeriod ) ->
+        MsgThreshold, SamplingPeriod ) ->
 
-	BinProcDesc = case MaybeMonitoredProcessDesc of
+    BinProcDesc = case MaybeMonitoredProcessDesc of
 
-		undefined ->
-			text_utils:bin_format( "process ~w", [ MonitoredPid ] );
+        undefined ->
+            text_utils:bin_format( "process ~w", [ MonitoredPid ] );
 
-		AnyDesc ->
-			text_utils:bin_format( "the '~ts' process (~w)",
-								   [ AnyDesc, MonitoredPid ] )
+        AnyDesc ->
+            text_utils:bin_format( "the '~ts' process (~w)",
+                                   [ AnyDesc, MonitoredPid ] )
 
-	end,
+    end,
 
-	MonitorPid = ?myriad_spawn_link(
-		fun() ->
-			message_queue_monitor_main_loop( MonitoredPid, BinProcDesc,
-											 MsgThreshold, SamplingPeriod )
-		end ),
+    MonitorPid = ?myriad_spawn_link(
+        fun() ->
+            message_queue_monitor_main_loop( MonitoredPid, BinProcDesc,
+                                             MsgThreshold, SamplingPeriod )
+        end ),
 
-	trace_utils:debug_fmt( "Spawned ~w as message-queue monitor of "
-		"~ts; threshold for message-queue length: ~B; sampling period: ~ts.",
-		[ MonitorPid, BinProcDesc, MsgThreshold,
-		  time_utils:duration_to_string( SamplingPeriod ) ] ),
+    trace_utils:debug_fmt( "Spawned ~w as message-queue monitor of "
+        "~ts; threshold for message-queue length: ~B; sampling period: ~ts.",
+        [ MonitorPid, BinProcDesc, MsgThreshold,
+          time_utils:duration_to_string( SamplingPeriod ) ] ),
 
-	MonitorPid.
+    MonitorPid.
 
 
 
 -spec message_queue_monitor_main_loop ( pid(), bin_string(), count(),
-										milliseconds() ) -> no_return().
+                                        milliseconds() ) -> no_return().
 message_queue_monitor_main_loop( MonitoredPid, BinProcDesc, MsgThreshold,
-								 SamplingPeriod ) ->
+                                 SamplingPeriod ) ->
 
-	receive
+    receive
 
-		terminate ->
-			trace_utils:debug_fmt( "(message-queue monitor for ~ts (~w) "
-				"terminated)", [ BinProcDesc, MonitoredPid ] ),
+        terminate ->
+            trace_utils:debug_fmt( "(message-queue monitor for ~ts (~w) "
+                "terminated)", [ BinProcDesc, MonitoredPid ] ),
 
-			terminated;
+            terminated;
 
 
-		UnexpectedMsg ->
-			trace_utils:warning_fmt( "Unexpected message received by message "
-				"queue monitor, thus ignored: ~p", [ UnexpectedMsg ] ),
+        UnexpectedMsg ->
+            trace_utils:warning_fmt( "Unexpected message received by message "
+                "queue monitor, thus ignored: ~p", [ UnexpectedMsg ] ),
 
-			message_queue_monitor_main_loop( MonitoredPid, BinProcDesc,
-											 MsgThreshold, SamplingPeriod )
+            message_queue_monitor_main_loop( MonitoredPid, BinProcDesc,
+                                             MsgThreshold, SamplingPeriod )
 
-	after SamplingPeriod ->
+    after SamplingPeriod ->
 
-			{ message_queue_len, QueueLen } =
-				erlang:process_info( MonitoredPid, message_queue_len ),
+            { message_queue_len, QueueLen } =
+                erlang:process_info( MonitoredPid, message_queue_len ),
 
-			QueueLen > MsgThreshold andalso
-				trace_utils:warning_fmt( "The length of the message queue "
-					"of ~ts is ~B (thus exceeds the ~w threshold).",
-					[ BinProcDesc, QueueLen, MsgThreshold ] ),
+            QueueLen > MsgThreshold andalso
+                trace_utils:warning_fmt( "The length of the message queue "
+                    "of ~ts is ~B (thus exceeds the ~w threshold).",
+                    [ BinProcDesc, QueueLen, MsgThreshold ] ),
 
-			message_queue_monitor_main_loop( MonitoredPid, BinProcDesc,
-											 MsgThreshold, SamplingPeriod )
+            message_queue_monitor_main_loop( MonitoredPid, BinProcDesc,
+                                             MsgThreshold, SamplingPeriod )
 
-	end.
+    end.
 
 
 
 -doc "Sets the label of the current process.".
 -spec set_label( process_label() ) -> void().
 set_label( ProcessLabel ) ->
-	proc_lib:set_label( ProcessLabel ).
+    proc_lib:set_label( ProcessLabel ).
 
 
 
 -doc "Gets the label (if any) of the specified process.".
 -spec get_label( pid() ) -> option( process_label() ).
 get_label( Pid ) ->
-	proc_lib:set_label( Pid ).
+    proc_lib:set_label( Pid ).

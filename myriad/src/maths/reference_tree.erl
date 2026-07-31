@@ -1,4 +1,4 @@
-% Copyright (C) 2024-2025 Olivier Boudeville
+% Copyright (C) 2024-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -238,18 +238,18 @@ Note that the root, absolute reference frame is to be designated by the null
 
 
 -export_type([ ref_id/0, ref3_id/0, child_ids/0, ref_table/0,
-			   id_path/0, path_endpoints/0, path_table/0,
-			   reference_tree/0 ]).
+               id_path/0, path_endpoints/0, path_table/0,
+               reference_tree/0 ]).
 
 
 -export([ new/0,
-		  register/2, resolve_path/3, get_transform/3,
-		  get_reference_table/1, set_reference_table/2,
+          register/2, resolve_path/3, get_transform/3,
+          get_reference_table/1, set_reference_table/2,
 
-		  check/1,
+          check/1,
 
-		  ref3_to_string/2, ref3_to_short_string/2, id_path_to_string/2,
-		  to_string/1, to_string/2, to_full_string/1 ] ).
+          ref3_to_string/2, ref3_to_short_string/2, id_path_to_string/2,
+          to_string/1, to_string/2, to_full_string/1 ] ).
 
 % Silencing:
 -export([ get_children_direct/2, get_path_from_root/2 ]).
@@ -277,13 +277,13 @@ Note that the root, absolute reference frame is to be designated by the null
 -doc "Creates an (empty) reference tree.".
 -spec new() -> reference_tree().
 new() ->
-	% Identity:
-	RootRef3 = reference_frame3:new(),
+    % Identity:
+    RootRef3 = reference_frame3:new(),
 
-	InitRefTable = table:singleton( _RefIdK=?root_ref_id, _V=RootRef3 ),
+    InitRefTable = table:singleton( _RefIdK=?root_ref_id, _V=RootRef3 ),
 
-	#reference_tree{ ref_table=InitRefTable,
-					 path_table=table:new() }.
+    #reference_tree{ ref_table=InitRefTable,
+                     path_table=table:new() }.
 
 
 
@@ -294,50 +294,50 @@ order as specified) in the tree, and the corresponding updated version of that
 tree.
 """.
 -spec register( reference_frame(), reference_tree() ) ->
-								{ ref_id(), reference_tree() };
-			  ( [ reference_frame() ], reference_tree() ) ->
-								{ [ ref_id() ], reference_tree() }.
+                                { ref_id(), reference_tree() };
+              ( [ reference_frame() ], reference_tree() ) ->
+                                { [ ref_id() ], reference_tree() }.
 register( Ref3=#reference_frame3{ parent=MaybeParentId },
-		  RefTree=#reference_tree{ ref_table=RefTable,
-								   next_ref_id=NewId } ) ->
+          RefTree=#reference_tree{ ref_table=RefTable,
+                                   next_ref_id=NewId } ) ->
 
-	% Recording in our parent that we are one of its children with {NewParentId,
-	% NewParent}:
-	%
-	ParentPair = case MaybeParentId of
+    % Recording in our parent that we are one of its children with {NewParentId,
+    % NewParent}:
+    %
+    ParentPair = case MaybeParentId of
 
-		undefined ->
-			% Implicitly the root node then, which cannot be registered that
-			% way (only registered once, at RefTable creation):
-			%
-			throw( { not_registering_root_reference_frame, Ref3 } );
+        undefined ->
+            % Implicitly the root node then, which cannot be registered that
+            % way (only registered once, at RefTable creation):
+            %
+            throw( { not_registering_root_reference_frame, Ref3 } );
 
-		ParentId ->
-			ParentRef3 = table:get_value( ParentId, RefTable ),
-			NewChildren = [ NewId | ParentRef3#reference_frame3.children ],
-			{ ParentId, ParentRef3#reference_frame3{ children=NewChildren } }
+        ParentId ->
+            ParentRef3 = table:get_value( ParentId, RefTable ),
+            NewChildren = [ NewId | ParentRef3#reference_frame3.children ],
+            { ParentId, ParentRef3#reference_frame3{ children=NewChildren } }
 
-	end,
+    end,
 
-	AugmRefTable = table:add_entries( [ { _K=NewId, _V=Ref3 }, ParentPair ],
-									  RefTable ),
+    AugmRefTable = table:add_entries( [ { _K=NewId, _V=Ref3 }, ParentPair ],
+                                      RefTable ),
 
-	NewRefTree = RefTree#reference_tree{ ref_table=AugmRefTable,
-										 next_ref_id=NewId+1 },
+    NewRefTree = RefTree#reference_tree{ ref_table=AugmRefTable,
+                                         next_ref_id=NewId+1 },
 
-	{ NewId, NewRefTree };
+    { NewId, NewRefTree };
 
 register( Ref3s, RefTree ) ->
-	register( Ref3s, _AccIds=[], RefTree ).
+    register( Ref3s, _AccIds=[], RefTree ).
 
 
 % (helper)
 register( _Ref3s=[], AccIds, AccRefTree ) ->
-	{ lists:reverse( AccIds ), AccRefTree };
+    { lists:reverse( AccIds ), AccRefTree };
 
 register( _Ref3s=[ Ref3 | T ], AccIds, AccRefTree ) ->
-	{ ThisId, ThisRefTree } = register( Ref3, AccRefTree ),
-	register( T, [ ThisId | AccIds ], ThisRefTree ).
+    { ThisId, ThisRefTree } = register( Ref3, AccRefTree ),
+    register( T, [ ThisId | AccIds ], ThisRefTree ).
 
 
 
@@ -348,22 +348,22 @@ frame whose identifier is specified to the second one.
 As the reference tree may be updated in the process, returns one.
 """.
 -spec resolve_path( ref_id(), ref_id(), reference_tree() ) ->
-										{ id_path(), reference_tree() }.
+                                        { id_path(), reference_tree() }.
 resolve_path( FromRefId, ToRefId,
-			  RefTree=#reference_tree{ path_table=PathTable } ) ->
+              RefTree=#reference_tree{ path_table=PathTable } ) ->
 
-	PathEndpoints = { FromRefId, ToRefId },
+    PathEndpoints = { FromRefId, ToRefId },
 
-	case table:get_value_with_default( _K=PathEndpoints, _DefValue=undefined,
-									   PathTable ) of
+    case table:get_value_with_default( _K=PathEndpoints, _DefValue=undefined,
+                                       PathTable ) of
 
-		undefined ->
-			compute_path( PathEndpoints, PathTable, RefTree );
+        undefined ->
+            compute_path( PathEndpoints, PathTable, RefTree );
 
-		Path ->
-			{ Path, RefTree }
+        Path ->
+            { Path, RefTree }
 
-	end.
+    end.
 
 
 
@@ -372,54 +372,54 @@ Returns the computed path from the first reference frame whose identifier is
 specified to the second one, and an updated tree.
 """.
 -spec compute_path( path_endpoints(), path_table(), reference_tree() ) ->
-										{ id_path(), reference_tree() }.
+                                        { id_path(), reference_tree() }.
 compute_path( PathEndpoints={ FromRefId, ToRefId }, PathTable,
-			  RefTree=#reference_tree{ ref_table=RefTable } ) ->
+              RefTree=#reference_tree{ ref_table=RefTable } ) ->
 
-	% As paths are quite cheap to compute, it is probably not interesting to
-	% derive this path from any of its possibly cached subpaths.
+    % As paths are quite cheap to compute, it is probably not interesting to
+    % derive this path from any of its possibly cached subpaths.
 
-	% To determine such path, we combine two root-to-node paths; we refer here
-	% to the example at the top of this file, for example resolving path from
-	% (source, S) R3 to (target, T) C2, based on a root pivot (R1).
+    % To determine such path, we combine two root-to-node paths; we refer here
+    % to the example at the top of this file, for example resolving path from
+    % (source, S) R3 to (target, T) C2, based on a root pivot (R1).
 
-	% Either cached or computed; for example: [R1] (Root and C2 implicit).
-	{ RootToTargetPath, FirstRefTable } =
-		get_path_from_root( ToRefId, RefTable ),
+    % Either cached or computed; for example: [R1] (Root and C2 implicit).
+    { RootToTargetPath, FirstRefTable } =
+        get_path_from_root( ToRefId, RefTable ),
 
-	% For example: [R1, R2].
-	{ RootToSourcePath, SecondRefTable } =
-		get_path_from_root( FromRefId, FirstRefTable ),
+    % For example: [R1, R2].
+    { RootToSourcePath, SecondRefTable } =
+        get_path_from_root( FromRefId, FirstRefTable ),
 
-	% The actual shortest path is going up with R3, R2, and R1, then going down
-	% with C2, thus an id_path() of {[R2],[C]} (endpoints not listed, and parent
-	% R1 neither as deals with the upward part of the tree). To obtain it, we
-	% skip the common prefix to both root-to-node paths and branch them based on
-	% their last common node (if any), the root-to-source part being reversed:
+    % The actual shortest path is going up with R3, R2, and R1, then going down
+    % with C2, thus an id_path() of {[R2],[C]} (endpoints not listed, and parent
+    % R1 neither as deals with the upward part of the tree). To obtain it, we
+    % skip the common prefix to both root-to-node paths and branch them based on
+    % their last common node (if any), the root-to-source part being reversed:
 
-	IdPath = skip_and_branch( RootToSourcePath, RootToTargetPath ),
+    IdPath = skip_and_branch( RootToSourcePath, RootToTargetPath ),
 
-	% As paths are quite cheap to compute, it is probably not interesting to
-	% derive and store the subpaths of this path.
+    % As paths are quite cheap to compute, it is probably not interesting to
+    % derive and store the subpaths of this path.
 
-	% (add_new_entry suitable as well):
-	AugmentedPathTable = table:add_entry( _K=PathEndpoints, _V=IdPath,
-										  PathTable ),
+    % (add_new_entry suitable as well):
+    AugmentedPathTable = table:add_entry( _K=PathEndpoints, _V=IdPath,
+                                          PathTable ),
 
-	NewRefTree = RefTree#reference_tree{ ref_table=SecondRefTable,
-										 path_table=AugmentedPathTable },
+    NewRefTree = RefTree#reference_tree{ ref_table=SecondRefTable,
+                                         path_table=AugmentedPathTable },
 
-	{ IdPath, NewRefTree }.
+    { IdPath, NewRefTree }.
 
 
 % (helper)
 % Skip common prefixes (including the closest common parent, not kept):
 skip_and_branch( _FirstPath=[ H | FirstT ], _SecondPath=[ H | SecondT ] ) ->
-	skip_and_branch( FirstT, SecondT );
+    skip_and_branch( FirstT, SecondT );
 
 % From here their heads do not match anymore:
 skip_and_branch( FirstPath, SecondPath ) ->
-	_IdPath={ lists:reverse( FirstPath ), SecondPath }.
+    _IdPath={ lists:reverse( FirstPath ), SecondPath }.
 
 
 
@@ -436,80 +436,80 @@ inverse corresponds to: from Rb to Ra).
 Does not cache this resulting reference frame (at least for the moment).
 """.
 -spec get_transform( designated_ref(), designated_ref(), reference_tree() ) ->
-										{ transform4(), reference_tree() }.
+                                        { transform4(), reference_tree() }.
 get_transform( FromRefId, ToRefId, RefTree ) ->
 
-	{ IdPath={ Up, Down }, PathedRefTree } =
-		resolve_path( FromRefId, ToRefId, RefTree ),
+    { IdPath={ Up, Down }, PathedRefTree } =
+        resolve_path( FromRefId, ToRefId, RefTree ),
 
-	trace_utils:debug_fmt( "Getting transform from frame #~B to #~B: up is ~w, "
-						   "down is ~w.", [ FromRefId, ToRefId, Up, Down ] ),
+    trace_utils:debug_fmt( "Getting transform from frame #~B to #~B: up is ~w, "
+                           "down is ~w.", [ FromRefId, ToRefId, Up, Down ] ),
 
-	% Preferring any latest version of tree, just in case:
-	RefTable = PathedRefTree#reference_tree.ref_table,
+    % Preferring any latest version of tree, just in case:
+    RefTable = PathedRefTree#reference_tree.ref_table,
 
-	trace_utils:debug_fmt(
-		"Path from ~ts to ~ts: ~ts",
-		[ ref3_to_short_string( FromRefId, RefTable ),
-		  ref3_to_short_string( ToRefId, RefTable ),
-		  id_path_to_string( IdPath, RefTable ) ] ),
+    trace_utils:debug_fmt(
+        "Path from ~ts to ~ts: ~ts",
+        [ ref3_to_short_string( FromRefId, RefTable ),
+          ref3_to_short_string( ToRefId, RefTable ),
+          id_path_to_string( IdPath, RefTable ) ] ),
 
 
-	[ FromRef, ToRef ] = table:get_values( [ FromRefId, ToRefId ], RefTable ),
+    [ FromRef, ToRef ] = table:get_values( [ FromRefId, ToRefId ], RefTable ),
 
-	% To understand the proper multiplication of the matrices of the reference
-	% frames, let's suppose we have the reference tree presented in the
-	% Ceylan-Howtos
-	% (http://howtos.esperide.org/ThreeDimensional.html#a-tree-of-coordinate-systems)
-	% with an additional Ri, child of Re, and that we want to determine Tgi.
-	%
-	% For a vector V, Vi = Tgi.Vg, and
-	% Tgi = (Tie^-1.Teb^-1.Tbs^-1).(Tas.Tfa.Tgf) = Tdown.Tup.
+    % To understand the proper multiplication of the matrices of the reference
+    % frames, let's suppose we have the reference tree presented in the
+    % Ceylan-Howtos
+    % (http://howtos.esperide.org/ThreeDimensional.html#a-tree-of-coordinate-systems)
+    % with an additional Ri, child of Re, and that we want to determine Tgi.
+    %
+    % For a vector V, Vi = Tgi.Vg, and
+    % Tgi = (Tie^-1.Teb^-1.Tbs^-1).(Tas.Tfa.Tgf) = Tdown.Tup.
 
-	% Tdown is the left-multiplication of the inverse matrices along the down
-	% path (Tbs^-1, then Teb^-1.Tbs^-1, etc.), while Tup is the
-	% right-multiplication of the reference matrices along the up path (Tas,
-	% then Tas.Tfa, etc.); so we can start for example from:
+    % Tdown is the left-multiplication of the inverse matrices along the down
+    % path (Tbs^-1, then Teb^-1.Tbs^-1, etc.), while Tup is the
+    % right-multiplication of the reference matrices along the up path (Tas,
+    % then Tas.Tfa, etc.); so we can start for example from:
 
-	DownTransf4 = mult_down_transforms( Down, transform4:identity(), RefTable ),
+    DownTransf4 = mult_down_transforms( Down, transform4:identity(), RefTable ),
 
-	% As the final endpoint is not in Down:
-	FullDownTransf4 = transform4:mult(
-		reference_frame3:get_inverse_transform( ToRef ), DownTransf4 ),
+    % As the final endpoint is not in Down:
+    FullDownTransf4 = transform4:mult(
+        reference_frame3:get_inverse_transform( ToRef ), DownTransf4 ),
 
-	% Now the up:
-	UpTransf4 = mult_up_transforms( Up, FullDownTransf4, RefTable ),
+    % Now the up:
+    UpTransf4 = mult_up_transforms( Up, FullDownTransf4, RefTable ),
 
-	% As the initial endpoint is not in Up:
-	FinalTransf4 = transform4:mult( UpTransf4,
-									FromRef#reference_frame3.transform ),
+    % As the initial endpoint is not in Up:
+    FinalTransf4 = transform4:mult( UpTransf4,
+                                    FromRef#reference_frame3.transform ),
 
-	{ FinalTransf4, PathedRefTree }.
+    { FinalTransf4, PathedRefTree }.
 
 
 % Version for transformations from leaves to parent.
 %
 % (helper)
 mult_up_transforms( _Up=[], Transf4, _RefTable ) ->
-	Transf4;
+    Transf4;
 
 mult_up_transforms( _Up=[ RefId | T ], Transf4, RefTable ) ->
-	Ref = table:get_value( _K=RefId, RefTable ),
-	NewTransf4 = transform4:mult( Transf4, Ref#reference_frame3.transform ),
-	mult_down_transforms( T, NewTransf4, RefTable ).
+    Ref = table:get_value( _K=RefId, RefTable ),
+    NewTransf4 = transform4:mult( Transf4, Ref#reference_frame3.transform ),
+    mult_down_transforms( T, NewTransf4, RefTable ).
 
 
 % Version for transformations from parent to leaves.
 %
 % (helper)
 mult_down_transforms( _Down=[], Transf4, _RefTable ) ->
-	Transf4;
+    Transf4;
 
 mult_down_transforms( _Down=[ RefId | T ], Transf4, RefTable ) ->
-	Ref = table:get_value( _K=RefId, RefTable ),
-	InvRefTransf4 = reference_frame3:get_inverse_transform( Ref ),
-	NewTransf4 = transform4:mult( InvRefTransf4, Transf4 ),
-	mult_down_transforms( T, NewTransf4, RefTable ).
+    Ref = table:get_value( _K=RefId, RefTable ),
+    InvRefTransf4 = reference_frame3:get_inverse_transform( Ref ),
+    NewTransf4 = transform4:mult( InvRefTransf4, Transf4 ),
+    mult_down_transforms( T, NewTransf4, RefTable ).
 
 
 
@@ -521,7 +521,7 @@ typically for tests.
 """.
 -spec get_reference_table( reference_tree() ) -> ref_table().
 get_reference_table( #reference_tree{ ref_table=RefTable } ) ->
-	RefTable.
+    RefTable.
 
 
 
@@ -533,7 +533,7 @@ typically for tests.
 """.
 -spec set_reference_table( ref_table(), reference_tree() ) -> reference_tree().
 set_reference_table( RefTable, RefTree ) ->
-	RefTree#reference_tree{ ref_table=RefTable }.
+    RefTree#reference_tree{ ref_table=RefTable }.
 
 
 
@@ -544,25 +544,25 @@ returned).
 """.
 -spec get_children_direct( ref_id(), ref_table() ) -> child_ids().
 get_children_direct( RefId, RefTable ) ->
-	% Brute-force, as speed is irrelevant for this implementation:
-	RefPairs = table:enumerate( RefTable ),
+    % Brute-force, as speed is irrelevant for this implementation:
+    RefPairs = table:enumerate( RefTable ),
 
-	% Deemes clearer than a filtering list comprehension:
-	get_children_direct( RefId, RefPairs, _ChildAcc=[] ).
+    % Deemes clearer than a filtering list comprehension:
+    get_children_direct( RefId, RefPairs, _ChildAcc=[] ).
 
 
 % (helper)
 get_children_direct( _RefId, _RefPairs=[], ChildAcc ) ->
-	ChildAcc;
+    ChildAcc;
 
 % Target parent matching:
 get_children_direct( RefId,
-		_RefPairs=[ { RId, _Ref3=#reference_frame3{ parent=RefId } } | T ],
-					 ChildAcc ) ->
-	get_children_direct( RefId, T, [ RId | ChildAcc ] );
+        _RefPairs=[ { RId, _Ref3=#reference_frame3{ parent=RefId } } | T ],
+                     ChildAcc ) ->
+    get_children_direct( RefId, T, [ RId | ChildAcc ] );
 
 get_children_direct( RefId, _RefPairs=[ _OtherPair | T ], ChildAcc ) ->
-	get_children_direct( RefId, T, ChildAcc ).
+    get_children_direct( RefId, T, ChildAcc ).
 
 
 
@@ -573,40 +573,40 @@ updated reference table.
 """.
 -spec get_path_from_root( ref_id(), ref_table() ) -> { id_path(), ref_table() }.
 get_path_from_root( _TargetRefId=?root_ref_id, RefTable ) ->
-	{ _IdPath=[], RefTable };
+    { _IdPath=[], RefTable };
 
 get_path_from_root( TargetRefId, RefTable ) ->
-	TargetRef3 = table:get_value( TargetRefId, RefTable ),
-	case TargetRef3#reference_frame3.path_from_root of
+    TargetRef3 = table:get_value( TargetRefId, RefTable ),
+    case TargetRef3#reference_frame3.path_from_root of
 
-		undefined ->
-			% Not wanting to include the specified node in the path:
-			StartRefId = TargetRef3#reference_frame3.parent,
-			ComputedPath = get_path_from_root_direct( StartRefId, RefTable ),
+        undefined ->
+            % Not wanting to include the specified node in the path:
+            StartRefId = TargetRef3#reference_frame3.parent,
+            ComputedPath = get_path_from_root_direct( StartRefId, RefTable ),
 
-			% Storing this path:
-			PathedRef3 =
-				TargetRef3#reference_frame3{ path_from_root=ComputedPath },
+            % Storing this path:
+            PathedRef3 =
+                TargetRef3#reference_frame3{ path_from_root=ComputedPath },
 
-			ThisNodeRefTable =
-				table:add_entry( _K=TargetRefId, PathedRef3, RefTable ),
+            ThisNodeRefTable =
+                table:add_entry( _K=TargetRefId, PathedRef3, RefTable ),
 
-			% Reversed to chop the unit/head more efficiently afterwards, hence
-			% from leaf to node:
-			%
-			RevComputedPath = lists:reverse( ComputedPath ),
+            % Reversed to chop the unit/head more efficiently afterwards, hence
+            % from leaf to node:
+            %
+            RevComputedPath = lists:reverse( ComputedPath ),
 
-			% Applies the sub-path to all intermediate nodes:
-			PathedRefTable = apply_path( StartRefId, ThisNodeRefTable,
-										 RevComputedPath ),
+            % Applies the sub-path to all intermediate nodes:
+            PathedRefTable = apply_path( StartRefId, ThisNodeRefTable,
+                                         RevComputedPath ),
 
-			{ ComputedPath, PathedRefTable };
+            { ComputedPath, PathedRefTable };
 
-		IdPath ->
-			% Trust the cached paths:
-			{ IdPath, RefTable }
+        IdPath ->
+            % Trust the cached paths:
+            { IdPath, RefTable }
 
-	end.
+    end.
 
 
 
@@ -620,19 +620,19 @@ get_path_from_root( TargetRefId, RefTable ) ->
 %   RefTable;
 %
 apply_path( _RefId, RefTable, _RevIdPath=[] ) ->
-	RefTable;
+    RefTable;
 
 apply_path( RefId, RefTable, _RevIdPath=[ _PrevRefId | ThisRevIdPath ] ) ->
-	ThisIdPath = lists:reverse( ThisRevIdPath ),
+    ThisIdPath = lists:reverse( ThisRevIdPath ),
 
-	%trace_utils:debug_fmt( "At frame #~B, path is ~w.",
-	%    [ RefId, ThisIdPath ] ),
+    %trace_utils:debug_fmt( "At frame #~B, path is ~w.",
+    %    [ RefId, ThisIdPath ] ),
 
-	Ref3 = table:get_value( RefId, RefTable ),
-	PathedRef3 = Ref3#reference_frame3{ path_from_root=ThisIdPath },
-	ThisNodeRefTable = table:add_entry( _K=RefId, PathedRef3, RefTable ),
+    Ref3 = table:get_value( RefId, RefTable ),
+    PathedRef3 = Ref3#reference_frame3{ path_from_root=ThisIdPath },
+    ThisNodeRefTable = table:add_entry( _K=RefId, PathedRef3, RefTable ),
 
-	apply_path( Ref3#reference_frame3.parent, ThisNodeRefTable, ThisRevIdPath ).
+    apply_path( Ref3#reference_frame3.parent, ThisNodeRefTable, ThisRevIdPath ).
 
 
 
@@ -644,21 +644,21 @@ reference table is not modified and thus not returned).
 """.
 -spec get_path_from_root_direct( ref_id(), ref_table() ) -> id_path().
 get_path_from_root_direct( RefId, RefTable ) ->
-	get_path_from_root_direct( RefId, RefTable, _AccIds=[] ).
+    get_path_from_root_direct( RefId, RefTable, _AccIds=[] ).
 
 
 % (helper)
 %
 % Root reached:
 get_path_from_root_direct( _RefId=?root_ref_id, _RefTable, AccIds ) ->
-	% Already in the expected order:
-	AccIds;
+    % Already in the expected order:
+    AccIds;
 
 get_path_from_root_direct( NonRootRefId, RefTable, AccIds ) ->
-	NonRootRef = table:get_value( NonRootRefId, RefTable ),
-	ParentRefId = NonRootRef#reference_frame3.parent,
-	get_path_from_root_direct( ParentRefId, RefTable,
-							   [ NonRootRefId | AccIds ] ).
+    NonRootRef = table:get_value( NonRootRefId, RefTable ),
+    ParentRefId = NonRootRef#reference_frame3.parent,
+    get_path_from_root_direct( ParentRefId, RefTable,
+                               [ NonRootRefId | AccIds ] ).
 
 
 
@@ -671,30 +671,30 @@ Designed for safety, not for speed.
 """.
 -spec check( reference_tree() ) -> void().
 check( #reference_tree{ ref_table=RefTable, next_ref_id=NextId } ) ->
-	% No duplicate identifier possible:
-	AllRefPairs = table:enumerate( RefTable ),
+    % No duplicate identifier possible:
+    AllRefPairs = table:enumerate( RefTable ),
 
-	AllRefIds = pair:firsts( AllRefPairs ),
+    AllRefIds = pair:firsts( AllRefPairs ),
 
-	MaxId = lists:max( AllRefIds ),
-	MaxId >= NextId andalso throw( { invalid_ref_id, NextId, MaxId } ),
+    MaxId = lists:max( AllRefIds ),
+    MaxId >= NextId andalso throw( { invalid_ref_id, NextId, MaxId } ),
 
-	% No more range check, as reference frames may have been removed.
+    % No more range check, as reference frames may have been removed.
 
-	[ check_node( RefId, RefDes, AllRefIds, RefTable )
-		|| { RefId, RefDes } <- AllRefPairs ],
+    [ check_node( RefId, RefDes, AllRefIds, RefTable )
+        || { RefId, RefDes } <- AllRefPairs ],
 
-	% Now that children are checked, crawl the whole tree, checking that all
-	% nodes are connected; will not terminate if a cycle exists:
-	%
-	FinalRefTable = check_all_connected( _CurrentNodeId=?root_ref_id,
-										 RefTable ),
+    % Now that children are checked, crawl the whole tree, checking that all
+    % nodes are connected; will not terminate if a cycle exists:
+    %
+    FinalRefTable = check_all_connected( _CurrentNodeId=?root_ref_id,
+                                         RefTable ),
 
-	table:is_empty( FinalRefTable ) orelse
-		throw( { unconnected_nodes, table:enumerate( FinalRefTable ) } ),
+    table:is_empty( FinalRefTable ) orelse
+        throw( { unconnected_nodes, table:enumerate( FinalRefTable ) } ),
 
-	[ check_path( RefId, RefDes, RefTable )
-		|| { RefId, RefDes } <- AllRefPairs ].
+    [ check_path( RefId, RefDes, RefTable )
+        || { RefId, RefDes } <- AllRefPairs ].
 
 
 
@@ -707,32 +707,32 @@ Throws an exception if found inconsistent.
 Designed for safety, not for speed.
 """.
 -spec check_node( ref_id(), designated_ref(), [ ref_id() ],
-				  ref_table() ) -> void().
+                  ref_table() ) -> void().
 check_node( RefId, #reference_frame3{ parent=MaybeParent,
-									  children=StoredChildren,
-									  path_from_root=_FromRootPath,
-									  transform=Transform4 },
-			AllRefIds, RefTable ) ->
-	% Any parent must be known:
-	case MaybeParent of
+                                      children=StoredChildren,
+                                      path_from_root=_FromRootPath,
+                                      transform=Transform4 },
+            AllRefIds, RefTable ) ->
+    % Any parent must be known:
+    case MaybeParent of
 
-		undefined ->
-			ok;
+        undefined ->
+            ok;
 
-		ParentId ->
-			lists:member( ParentId, AllRefIds ) orelse
-				throw( { non_registered_parent, MaybeParent, RefId } )
+        ParentId ->
+            lists:member( ParentId, AllRefIds ) orelse
+                throw( { non_registered_parent, MaybeParent, RefId } )
 
-	end,
+    end,
 
-	DeducedChildren = get_children_direct( RefId, RefTable ),
+    DeducedChildren = get_children_direct( RefId, RefTable ),
 
-	list_utils:unordered_compare( StoredChildren, DeducedChildren ) orelse
-		throw( { inconsistent_children, RefId, StoredChildren,
-				 DeducedChildren } ),
+    list_utils:unordered_compare( StoredChildren, DeducedChildren ) orelse
+        throw( { inconsistent_children, RefId, StoredChildren,
+                 DeducedChildren } ),
 
-	transform4:is_transform4( Transform4 ) orelse
-		throw( { invalid_transform4, Transform4 } ).
+    transform4:is_transform4( Transform4 ) orelse
+        throw( { invalid_transform4, Transform4 } ).
 
 
 % Checks by removing all nodes traversed from the root.
@@ -740,31 +740,31 @@ check_node( RefId, #reference_frame3{ parent=MaybeParent,
 % (helper)
 -spec check_all_connected( ref_id(), ref_table() ) -> ref_table().
 check_all_connected( CurrentNodeId, RefTable ) ->
-	{ Ref3, ShrunkRefTable } =
-		table:extract_entry( _K=CurrentNodeId, RefTable ),
+    { Ref3, ShrunkRefTable } =
+        table:extract_entry( _K=CurrentNodeId, RefTable ),
 
-	Children = Ref3#reference_frame3.children,
+    Children = Ref3#reference_frame3.children,
 
-	lists:foldl( fun( NId, AccRefTable ) ->
-					_ShrkAccRefTable=check_all_connected( NId, AccRefTable )
-				 end,
-				 _Acc0=ShrunkRefTable,
-				 Children ).
+    lists:foldl( fun( NId, AccRefTable ) ->
+                    _ShrkAccRefTable=check_all_connected( NId, AccRefTable )
+                 end,
+                 _Acc0=ShrunkRefTable,
+                 Children ).
 
 
 
 % Checks that any cached path in this reference frame is correct.
 check_path( _RefId, #reference_frame3{ path_from_root=undefined },
-			_RefTable ) ->
-	ok;
+            _RefTable ) ->
+    ok;
 
 check_path( RefId, #reference_frame3{ path_from_root=IdPath }, RefTable ) ->
 
-	%trace_utils:debug_fmt( "Checking for frame #~B path ~w.",
-	%                       [ RefId, IdPath ] ),
+    %trace_utils:debug_fmt( "Checking for frame #~B path ~w.",
+    %                       [ RefId, IdPath ] ),
 
-	follow_path( _CurrentNodeId=?root_ref_id, _ToNodeId=RefId, RefTable,
-				 list_utils:append_at_end( RefId, IdPath ) ).
+    follow_path( _CurrentNodeId=?root_ref_id, _ToNodeId=RefId, RefTable,
+                 list_utils:append_at_end( RefId, IdPath ) ).
 
 
 
@@ -773,37 +773,37 @@ check_path( RefId, #reference_frame3{ path_from_root=IdPath }, RefTable ) ->
 % (helper)
 %
 follow_path( CurrentNodeId, _ToNodeId=CurrentNodeId, _RefTable, _IdPath=[]) ->
-	ok;
+    ok;
 
 follow_path( CurrentNodeId, ToNodeId, RefTable,
-			 _IdPath=[ NextNodeId | NextPath ] ) ->
-	CurrentNode = table:get_value( CurrentNodeId, RefTable ),
-	CurrentChildren = CurrentNode#reference_frame3.children,
-	case lists:member( NextNodeId, CurrentChildren ) of
+             _IdPath=[ NextNodeId | NextPath ] ) ->
+    CurrentNode = table:get_value( CurrentNodeId, RefTable ),
+    CurrentChildren = CurrentNode#reference_frame3.children,
+    case lists:member( NextNodeId, CurrentChildren ) of
 
-		true ->
-			follow_path( NextNodeId, ToNodeId, RefTable, NextPath );
+        true ->
+            follow_path( NextNodeId, ToNodeId, RefTable, NextPath );
 
-		false ->
-			throw( { invalid_path, CurrentNode, NextNodeId, CurrentChildren } )
+        false ->
+            throw( { invalid_path, CurrentNode, NextNodeId, CurrentChildren } )
 
-	end.
+    end.
 
 
 
 -doc "Returns a textual representation of the specified 3D frame of reference.".
 -spec ref3_to_string( ref_id(), ref_table() ) -> ustring().
 ref3_to_string( RefId, RefTable ) ->
-	Ref = table:get_value( RefId, RefTable ),
-	case Ref#reference_frame3.name of
+    Ref = table:get_value( RefId, RefTable ),
+    case Ref#reference_frame3.name of
 
-		undefined ->
-			text_utils:format( "frame #~B", [ RefId ] );
+        undefined ->
+            text_utils:format( "frame #~B", [ RefId ] );
 
-		BinRefName ->
-			text_utils:format( "frame '~ts' (#~B)", [ BinRefName, RefId ] )
+        BinRefName ->
+            text_utils:format( "frame '~ts' (#~B)", [ BinRefName, RefId ] )
 
-	end.
+    end.
 
 
 
@@ -812,16 +812,16 @@ Returns a compact textual representation of the specified 3D frame of reference.
 """.
 -spec ref3_to_short_string( ref_id(), ref_table() ) -> ustring().
 ref3_to_short_string( RefId, RefTable ) ->
-	Ref = table:get_value( RefId, RefTable ),
-	case Ref#reference_frame3.name of
+    Ref = table:get_value( RefId, RefTable ),
+    case Ref#reference_frame3.name of
 
-		undefined ->
-			text_utils:format( "#~B", [ RefId ] );
+        undefined ->
+            text_utils:format( "#~B", [ RefId ] );
 
-		BinRefName ->
-			text_utils:format( "'~ts'", [ BinRefName ] )
+        BinRefName ->
+            text_utils:format( "'~ts'", [ BinRefName ] )
 
-	end.
+    end.
 
 
 
@@ -834,13 +834,13 @@ a path is not listed in the path.
 """.
 -spec id_path_to_string( id_path(), ref_table() ) -> ustring().
 id_path_to_string( _IdPath={ _Up=[], _Down=[] }, _RefTable ) ->
-	"empty path";
+    "empty path";
 
 id_path_to_string( _IdPath={ Up, Down }, RefTable ) ->
-	% No reversing needed:
-	Path = Up ++ Down,
-	IdStrs = [ ref3_to_short_string( RefId, RefTable ) || RefId <- Path ],
-	text_utils:join( _Sep=" -> ", IdStrs ).
+    % No reversing needed:
+    Path = Up ++ Down,
+    IdStrs = [ ref3_to_short_string( RefId, RefTable ) || RefId <- Path ],
+    text_utils:join( _Sep=" -> ", IdStrs ).
 
 
 
@@ -849,7 +849,7 @@ Returns a (short) textual representation of the specified reference tree.
 """.
 -spec to_string( reference_tree() ) -> ustring().
 to_string( RefTree ) ->
-	to_string( RefTree, _VerbLevel=low ).
+    to_string( RefTree, _VerbLevel=low ).
 
 
 
@@ -859,21 +859,21 @@ the specified verbosity level.
 """.
 -spec to_string( reference_tree(), verbosity_level() ) -> ustring().
 to_string( #reference_tree{ ref_table=RefTable,
-							path_table=PathTable }, _VerbLevel=low ) ->
-	text_utils:format( "reference tree tracking ~ts, and caching ~ts",
-		[ text_utils:table_to_string( RefTable, _EntryDesc="reference frame" ),
-		  text_utils:table_to_string( PathTable, _EntDesc="path" ) ] );
+                            path_table=PathTable }, _VerbLevel=low ) ->
+    text_utils:format( "reference tree tracking ~ts, and caching ~ts",
+        [ text_utils:table_to_string( RefTable, _EntryDesc="reference frame" ),
+          text_utils:table_to_string( PathTable, _EntDesc="path" ) ] );
 
 to_string( _RT=#reference_tree{ ref_table=RefTable,
-								path_table=PathTable }, _VerbLevel=high ) ->
-	%trace_utils:debug_fmt( "Ref tree: ~p", [ RT ] ),
-	NodeToStringDefFun = fun ref3_to_string/2,
-	NodeToChildrenFun = fun get_children_direct/2,
+                                path_table=PathTable }, _VerbLevel=high ) ->
+    %trace_utils:debug_fmt( "Ref tree: ~p", [ RT ] ),
+    NodeToStringDefFun = fun ref3_to_string/2,
+    NodeToChildrenFun = fun get_children_direct/2,
 
-	text_utils:format( "reference tree caching ~ts: ~ts", [
-		text_utils:table_to_string( PathTable, _EntryDesc="path" ),
-		tree:forest_to_string( RefTable, _FromNodeId=?root_ref_id,
-							   NodeToStringDefFun, NodeToChildrenFun ) ] ).
+    text_utils:format( "reference tree caching ~ts: ~ts", [
+        text_utils:table_to_string( PathTable, _EntryDesc="path" ),
+        tree:forest_to_string( RefTable, _FromNodeId=?root_ref_id,
+                               NodeToStringDefFun, NodeToChildrenFun ) ] ).
 
 
 
@@ -883,12 +883,12 @@ typically for debugging purposes.
 """.
 -spec to_full_string( reference_tree() ) -> ustring().
 to_full_string( _RT=#reference_tree{ ref_table=RefTable,
-									 path_table=PathTable } ) ->
+                                     path_table=PathTable } ) ->
 
-	FrameStrs = [ reference_frame3:node_to_string( Ref3Id, Ref3 )
-					|| { Ref3Id, Ref3 } <- table:enumerate( RefTable ) ],
+    FrameStrs = [ reference_frame3:node_to_string( Ref3Id, Ref3 )
+                    || { Ref3Id, Ref3 } <- table:enumerate( RefTable ) ],
 
-	text_utils:format( "reference tree registering ~B frames of reference: ~ts"
-		"~nand caching paths based on: ~ts",
-		[ table:size( RefTable ), text_utils:strings_to_string( FrameStrs ),
-		  table:to_string( PathTable ) ] ).
+    text_utils:format( "reference tree registering ~B frames of reference: ~ts"
+        "~nand caching paths based on: ~ts",
+        [ table:size( RefTable ), text_utils:strings_to_string( FrameStrs ),
+          table:to_string( PathTable ) ] ).

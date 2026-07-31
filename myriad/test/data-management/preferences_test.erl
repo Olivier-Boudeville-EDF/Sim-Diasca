@@ -1,4 +1,4 @@
-% Copyright (C) 2013-2025 Olivier Boudeville
+% Copyright (C) 2013-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -42,43 +42,43 @@ See the preferences.erl tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	test_facilities:display( "Preferences while the service is not running: "
-							 "~ts", [ preferences:to_bin_string() ] ),
+    test_facilities:display( "Preferences while the service is not running: "
+                             "~ts", [ preferences:to_bin_string() ] ),
 
-	% May not be called explicitly (automatic launching of the service whenever
-	% needed):
-	%
-	preferences:start_link(),
+    % May not be called explicitly (automatic launching of the service whenever
+    % needed):
+    %
+    preferences:start_link(),
 
-	test_facilities:display( "Preferences after the service is just started: "
-							 "~ts", [ preferences:to_bin_string() ] ),
+    test_facilities:display( "Preferences after the service is just started: "
+                             "~ts", [ preferences:to_bin_string() ] ),
 
-	FirstTargetKey = first_test_key,
+    FirstTargetKey = first_test_key,
 
-	test_facilities:display( "Value associated to ~ts before it is set "
-		"from test: ~p",
-		[ FirstTargetKey, preferences:get( FirstTargetKey ) ] ),
+    test_facilities:display( "Value associated to ~ts before it is set "
+        "from test: ~p",
+        [ FirstTargetKey, preferences:get( FirstTargetKey ) ] ),
 
-	FirstTargetValue = "This is the first test value!",
+    FirstTargetValue = "This is the first test value!",
 
-	preferences:set( FirstTargetKey, FirstTargetValue ),
+    preferences:set( FirstTargetKey, FirstTargetValue ),
 
-	test_facilities:display( "Value associated to ~ts after it is set "
-		"from test: ~p",
-		[ FirstTargetKey, preferences:get( FirstTargetKey ) ] ),
+    test_facilities:display( "Value associated to ~ts after it is set "
+        "from test: ~p",
+        [ FirstTargetKey, preferences:get( FirstTargetKey ) ] ),
 
-	SecondTargetKey = second_test_key,
-	SecondTargetValue = "This is the second test value!",
-	preferences:set( SecondTargetKey, SecondTargetValue ),
+    SecondTargetKey = second_test_key,
+    SecondTargetValue = "This is the second test value!",
+    preferences:set( SecondTargetKey, SecondTargetValue ),
 
-	[ FirstTargetValue, SecondTargetValue ] =
-		preferences:get( [ FirstTargetKey, SecondTargetKey ] ),
+    [ FirstTargetValue, SecondTargetValue ] =
+        preferences:get( [ FirstTargetKey, SecondTargetKey ] ),
 
-	test_facilities:display( preferences:to_string() ),
+    test_facilities:display( preferences:to_string() ),
 
-	% Useless in the general case (permanent service):
-	preferences:stop(),
+    % Useless in the general case (permanent service):
+    preferences:stop(),
 
-	test_facilities:stop().
+    test_facilities:stop().

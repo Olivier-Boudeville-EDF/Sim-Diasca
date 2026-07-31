@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -29,29 +29,29 @@ services (simulation agents).
 
 
 -define( class_description,
-		 "Its role is mainly to track some information about all kinds of "
-		 "simulation-related instances, typically of models (actors) and of "
-		 "services (simulation agents). It provides as well some minor other "
-		 "distributed services. "
-		 "It is a service distributed across all computing nodes, with a root "
-		 "instance tracker, and one local instance tracker per other node, for "
-		 "scalability purposes. "
-		 "This is the first simulation service to be deployed; as a "
-		 "consequence, all other simulation services can assume the instance "
-		 "tracking is readily available whenever needed. "
-		 "The purpose of the instance tracking service is twofold:"
-		 " - to help managing the instances, by maintaing a two-way table "
-		 "allowing to convert PIDs into more abstract references; for model "
-		 "instances, this involves being able to convert actor PIDs to and "
-		 "from AAIs, for simulation services the conversion is between PIDs "
-		 "and references of a service agent; this is notably useful for "
-		 "serialization and debugging purposes"
-		 " - if the troubleshooting mode is enabled, then additional "
-		 "(redundant) information are gathered, in tracker-specific instance "
-		 "records; the purpose of that is to help the fixing of faulty "
-		 "models, which might have become unresponsive while we still need "
-		 "to access information about them (e.g. AAI, class and instance name, "
-		 "etc.)" ).
+         "Its role is mainly to track some information about all kinds of "
+         "simulation-related instances, typically of models (actors) and of "
+         "services (simulation agents). It provides as well some minor other "
+         "distributed services. "
+         "It is a service distributed across all computing nodes, with a root "
+         "instance tracker, and one local instance tracker per other node, for "
+         "scalability purposes. "
+         "This is the first simulation service to be deployed; as a "
+         "consequence, all other simulation services can assume the instance "
+         "tracking is readily available whenever needed. "
+         "The purpose of the instance tracking service is twofold:"
+         " - to help managing the instances, by maintaing a two-way table "
+         "allowing to convert PIDs into more abstract references; for model "
+         "instances, this involves being able to convert actor PIDs to and "
+         "from AAIs, for simulation services the conversion is between PIDs "
+         "and references of a service agent; this is notably useful for "
+         "serialization and debugging purposes"
+         " - if the troubleshooting mode is enabled, then additional "
+         "(redundant) information are gathered, in tracker-specific instance "
+         "records; the purpose of that is to help the fixing of faulty "
+         "models, which might have become unresponsive while we still need "
+         "to access information about them (e.g. AAI, class and instance name, "
+         "etc.)" ).
 
 
 
@@ -63,63 +63,63 @@ services (simulation agents).
 % The attributes that are specific to an instance tracker instance are:
 -define( class_attributes, [
 
-	{ parent_tracker_pid, option( instance_tracker_pid() ),
-	  "the PID of the parent instance tracker (if any) of this tracker" },
+    { parent_tracker_pid, option( instance_tracker_pid() ),
+      "the PID of the parent instance tracker (if any) of this tracker" },
 
-	{ child_trackers, [ instance_tracker_pid() ],
-	  "a list of the PIDs of all the (direct) child trackers (if any) of "
-	  "this tracker" },
+    { child_trackers, [ instance_tracker_pid() ],
+      "a list of the PIDs of all the (direct) child trackers (if any) of "
+      "this tracker" },
 
-	{ trackers, table( atom_node_name(), instance_tracker_pid() ),
-	  "tells for a given node what is the PID of its local instance tracker" },
+    { trackers, table( atom_node_name(), instance_tracker_pid() ),
+      "tells for a given node what is the PID of its local instance tracker" },
 
-	{ troubleshooting_mode, boolean(),
-	  "tells whether the troubleshooting mode is activated" },
+    { troubleshooting_mode, boolean(),
+      "tells whether the troubleshooting mode is activated" },
 
-	{ actor_table, table( actor_pid(), actor_info() ),
-	  "a table that allows to obtain from a PID the information kept about "
-	  "the corresponding (supposedly still living) local actor" },
+    { actor_table, table( actor_pid(), actor_info() ),
+      "a table that allows to obtain from a PID the information kept about "
+      "the corresponding (supposedly still living) local actor" },
 
-	{ zombi_table, table( actor_pid(), actor_info() ),
-	  "a table, only filled in troubleshooting mode, that allows to keep the "
-	  "information of actors that were deleted, to better diagnose issues "
-	  "with life-cycle management (on deletion, the instance information goes "
-	  "from actor_table to this zombi_table)" },
+    { zombi_table, table( actor_pid(), actor_info() ),
+      "a table, only filled in troubleshooting mode, that allows to keep the "
+      "information of actors that were deleted, to better diagnose issues "
+      "with life-cycle management (on deletion, the instance information goes "
+      "from actor_table to this zombi_table)" },
 
-	{ agent_table, table( agent_pid(), agent_ref() ),
-	  "a table that allows to obtain from a PID the corresponding reference "
-	  "of the simulation service agent" },
+    { agent_table, table( agent_pid(), agent_ref() ),
+      "a table that allows to obtain from a PID the corresponding reference "
+      "of the simulation service agent" },
 
-	{ producer_table, table( producer_pid(), producer_ref() ),
-	  "a table that allows to convert a PID into the reference of a result "
-	  "producer" },
+    { producer_table, table( producer_pid(), producer_ref() ),
+      "a table that allows to convert a PID into the reference of a result "
+      "producer" },
 
-	{ pid_resolution_enabled, boolean(), "tells whether this tracker should "
-	  "prepare in order to be able to resolve PIDs, into AAIs or agent "
-	  "references efficiently (uses in that case more RAM)" },
+    { pid_resolution_enabled, boolean(), "tells whether this tracker should "
+      "prepare in order to be able to resolve PIDs, into AAIs or agent "
+      "references efficiently (uses in that case more RAM)" },
 
-	{ aai_to_pid, table( aai(), actor_pid() ),
-	  "an (optional) reverse table, which allows to translate any AAI into "
-	  "an actor PID" },
+    { aai_to_pid, table( aai(), actor_pid() ),
+      "an (optional) reverse table, which allows to translate any AAI into "
+      "an actor PID" },
 
-	{ agent_ref_to_pid, table( agent_ref(), agent_pid() ),
-	  "an (optional) reverse table, which allows to translate any AAI into "
-	  "an agent PID" },
+    { agent_ref_to_pid, table( agent_ref(), agent_pid() ),
+      "an (optional) reverse table, which allows to translate any AAI into "
+      "an agent PID" },
 
-	{ producer_ref_to_pid, table( producer_ref(), producer_pid() ),
-	  "an (optional) reverse table, which allows to translate any reference "
-	  "of a result producer into a producer PID" },
+    { producer_ref_to_pid, table( producer_ref(), producer_pid() ),
+      "an (optional) reverse table, which allows to translate any reference "
+      "of a result producer into a producer PID" },
 
-	{ crashed_node_table, table( atom_node_name(), atom_node_name() ),
-	  "allows to convert the name of a crashed node into the name of the "
-	  "node that is taking it in charge after a rollback" },
+    { crashed_node_table, table( atom_node_name(), atom_node_name() ),
+      "allows to convert the name of a crashed node into the name of the "
+      "node that is taking it in charge after a rollback" },
 
-	{ last_cpu_counters, system_utils:cpu_usage_info(), "records the last "
-	  "counters that were measured (is never undefined)" },
+    { last_cpu_counters, system_utils:cpu_usage_info(), "records the last "
+      "counters that were measured (is never undefined)" },
 
-	{ load_balancer_pid, load_balancer_pid(), "the PID of the load balancer, "
-	  "kept so that it can be notified of all instance deletions and hence "
-	  "record their full life cycle" } ] ).
+    { load_balancer_pid, load_balancer_pid(), "the PID of the load balancer, "
+      "kept so that it can be notified of all instance deletions and hence "
+      "record their full life cycle" } ] ).
 
 
 
@@ -161,7 +161,7 @@ associated to a key, which will be the PID of that actor.
 
 -doc "Static information about a (user or computing) node.".
 -type node_static_info() :: { net_utils:node_name(),
-	system_utils:host_static_info(), instance_tracker_pid() }.
+    system_utils:host_static_info(), instance_tracker_pid() }.
 
 
 -export_type([ instance_tracker_pid/0,
@@ -233,88 +233,88 @@ this tracker (if any, otherwise set to 'none')
 - TroubleshootingMode tells whether the troubleshooting mode is enabled
 """.
 -spec construct( wooper:state(), instance_tracker_pid() | 'none',
-				 boolean() ) -> wooper:state().
+                 boolean() ) -> wooper:state().
 construct( State, ParentTrackerPid, TroubleshootingMode ) ->
 
-	% We raise here the priority of all instance trackers, otherwise, when a
-	% system is overloaded enough, instance trackers will not be able to cope
-	% with the demand and delay the stall diagnosis that may happen after the
-	% various watchdog-related time-outs:
-	%
-	erlang:process_flag( priority, _Level=high ),
+    % We raise here the priority of all instance trackers, otherwise, when a
+    % system is overloaded enough, instance trackers will not be able to cope
+    % with the demand and delay the stall diagnosis that may happen after the
+    % various watchdog-related time-outs:
+    %
+    erlang:process_flag( priority, _Level=high ),
 
-	% As an instance tracker may receive a larger number of messages:
-	erlang:process_flag( message_queue_data, off_heap ),
+    % As an instance tracker may receive a larger number of messages:
+    erlang:process_flag( message_queue_data, off_heap ),
 
-	% First the direct mother classes:
-	TraceState = class_EngineBaseObject:construct( State,
-		?trace_categorize("Instance tracker") ),
+    % First the direct mother classes:
+    TraceState = class_EngineBaseObject:construct( State,
+        ?trace_categorize("Instance tracker") ),
 
-	{ ParentString, ParentPid } = case ParentTrackerPid of
+    { ParentString, ParentPid } = case ParentTrackerPid of
 
-		none ->
-			% So that the root tracker can be easily found:
-			naming_utils:register_as( get_registration_name(),
-									  _Scope=global_only ),
-			{ "root", undefined };
+        none ->
+            % So that the root tracker can be easily found:
+            naming_utils:register_as( get_registration_name(),
+                                      _Scope=global_only ),
+            { "root", undefined };
 
-		_Pid ->
-			% Here we are a child tracker; by design the parent one should
-			% already be deployed, we have to declare to it:
-			%
-			ParentTrackerPid ! { registerChildTracker, [], self() },
+        _Pid ->
+            % Here we are a child tracker; by design the parent one should
+            % already be deployed, we have to declare to it:
+            %
+            ParentTrackerPid ! { registerChildTracker, [], self() },
 
-			receive
+            receive
 
-				{ wooper_result, child_registered } ->
-					ok
+                { wooper_result, child_registered } ->
+                    ok
 
-			end,
-			{ "child", ParentTrackerPid }
+            end,
+            { "child", ParentTrackerPid }
 
-	end,
+    end,
 
-	EmptyTable = table:new(),
+    EmptyTable = table:new(),
 
-	StartingState = setAttributes( TraceState, [
-		{ parent_tracker_pid, ParentPid },
-		{ child_trackers, [] },
-		{ trackers, EmptyTable },
-		{ troubleshooting_mode, TroubleshootingMode },
-		{ actor_table, EmptyTable },
-		{ zombi_table, EmptyTable },
-		{ agent_table, EmptyTable },
-		{ producer_table, EmptyTable },
-		{ pid_resolution_enabled, true },
-		{ aai_to_pid, EmptyTable },
-		{ agent_ref_to_pid, EmptyTable },
-		{ producer_ref_to_pid, EmptyTable },
-		{ crashed_node_table, undefined },
-		{ last_cpu_counters, system_utils:get_cpu_usage_counters() },
+    StartingState = setAttributes( TraceState, [
+        { parent_tracker_pid, ParentPid },
+        { child_trackers, [] },
+        { trackers, EmptyTable },
+        { troubleshooting_mode, TroubleshootingMode },
+        { actor_table, EmptyTable },
+        { zombi_table, EmptyTable },
+        { agent_table, EmptyTable },
+        { producer_table, EmptyTable },
+        { pid_resolution_enabled, true },
+        { aai_to_pid, EmptyTable },
+        { agent_ref_to_pid, EmptyTable },
+        { producer_ref_to_pid, EmptyTable },
+        { crashed_node_table, undefined },
+        { last_cpu_counters, system_utils:get_cpu_usage_counters() },
 
-		% Cannot be known at construction-time:
-		{ load_balancer_pid, undefined } ] ),
+        % Cannot be known at construction-time:
+        { load_balancer_pid, undefined } ] ),
 
-	TroubleString = case TroubleshootingMode of
+    TroubleString = case TroubleshootingMode of
 
-		true ->
-			"enabled";
+        true ->
+            "enabled";
 
-		false ->
-			"disabled"
+        false ->
+            "disabled"
 
-	end,
+    end,
 
-	?send_info_fmt( StartingState, "Creating a ~ts instance tracker "
-		"whose troubleshooting mode is ~ts.", [ ParentString, TroubleString ] ),
+    ?send_info_fmt( StartingState, "Creating a ~ts instance tracker "
+        "whose troubleshooting mode is ~ts.", [ ParentString, TroubleString ] ),
 
-	% Ensures also it is a singleton indeed:
-	naming_utils:register_as( get_registration_name(), local_only ),
+    % Ensures also it is a singleton indeed:
+    naming_utils:register_as( get_registration_name(), local_only ),
 
-	% Let's now register ourselves in our own tables:
-	ThisAgentClassname = ?MODULE,
+    % Let's now register ourselves in our own tables:
+    ThisAgentClassname = ?MODULE,
 
-	register_agent_helper( ThisAgentClassname, self(), StartingState ).
+    register_agent_helper( ThisAgentClassname, self(), StartingState ).
 
 
 
@@ -322,38 +322,38 @@ construct( State, ParentTrackerPid, TroubleshootingMode ) ->
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
-	% Class-specific actions:
-	case table:keys( ?getAttr(actor_table) ) of
+    % Class-specific actions:
+    case table:keys( ?getAttr(actor_table) ) of
 
-		[] ->
-			?info( "Deleting instance tracker, whereas it is not tracking "
-					"any actor." );
+        [] ->
+            ?info( "Deleting instance tracker, whereas it is not tracking "
+                    "any actor." );
 
-		[ ActorPid ] ->
-			?warning_fmt( "Deleting instance tracker, whereas still tracking "
-						  "a single actor, ~w.", [ ActorPid ] );
+        [ ActorPid ] ->
+            ?warning_fmt( "Deleting instance tracker, whereas still tracking "
+                          "a single actor, ~w.", [ ActorPid ] );
 
-		ActorPids ->
-			?warning_fmt( "Deleting instance tracker, whereas still tracking "
-						  "~w actors: ~w.", [ length( ActorPids ), ActorPids ] )
+        ActorPids ->
+            ?warning_fmt( "Deleting instance tracker, whereas still tracking "
+                          "~w actors: ~w.", [ length( ActorPids ), ActorPids ] )
 
-	end,
+    end,
 
-	% Recurses down the tracker tree:
-	wooper:delete_synchronously_instances( ?getAttr(child_trackers) ),
+    % Recurses down the tracker tree:
+    wooper:delete_synchronously_instances( ?getAttr(child_trackers) ),
 
-	?debug( "Instance tracker deleted." ),
+    ?debug( "Instance tracker deleted." ),
 
-	% No need to unregister from our own table.
+    % No need to unregister from our own table.
 
-	naming_utils:unregister( get_registration_name(), local_only ),
+    naming_utils:unregister( get_registration_name(), local_only ),
 
-	?getAttr(parent_tracker_pid) =:= undefined andalso
-			% Root tracker was also globally registered:
-			naming_utils:unregister( get_registration_name(), global_only ),
+    ?getAttr(parent_tracker_pid) =:= undefined andalso
+            % Root tracker was also globally registered:
+            naming_utils:unregister( get_registration_name(), global_only ),
 
-	% Then allow chaining:
-	State.
+    % Then allow chaining:
+    State.
 
 
 
@@ -373,30 +373,30 @@ Expected to be called by the deployment manager.
 (request, for synchronisation purposes)
 """.
 -spec declareTrackers( wooper:state(), [ instance_tracker_pid() ] ) ->
-								request_return( 'trackers_declared' ).
+                                request_return( 'trackers_declared' ).
 declareTrackers( State, Trackers ) ->
 
-	% First, as the caller may have included (at most once) the PID of this
-	% tracker into the sent list, we filter it out:
-	%
-	FilteredTrackers = lists:delete( self(), Trackers ),
+    % First, as the caller may have included (at most once) the PID of this
+    % tracker into the sent list, we filter it out:
+    %
+    FilteredTrackers = lists:delete( self(), Trackers ),
 
-	% Then we create an associative table, to be able later to convert a node
-	% name into the PID of its local instance tracker:
+    % Then we create an associative table, to be able later to convert a node
+    % name into the PID of its local instance tracker:
 
-	TrackerTable = lists:foldl(
+    TrackerTable = lists:foldl(
 
-		fun( TrackerPid, AccTable ) ->
-			TrackerNode = node( TrackerPid ),
-			table:add_entry( _K=TrackerNode, _V=TrackerPid, AccTable )
-		end,
+        fun( TrackerPid, AccTable ) ->
+            TrackerNode = node( TrackerPid ),
+            table:add_entry( _K=TrackerNode, _V=TrackerPid, AccTable )
+        end,
 
-		_Acc0=table:new(),
+        _Acc0=table:new(),
 
-		_List=FilteredTrackers ),
+        _List=FilteredTrackers ),
 
-	wooper:return_state_result( setAttribute( State, trackers, TrackerTable ),
-								trackers_declared ).
+    wooper:return_state_result( setAttribute( State, trackers, TrackerTable ),
+                                trackers_declared ).
 
 
 
@@ -406,14 +406,14 @@ Notifies this tracker about the PID of the load balancer.
 (request, for synchronisation reasons)
 """.
 -spec setLoadBalancerPid( wooper:state(), load_balancer_pid() ) ->
-								request_return( 'load_balancer_set' ).
+                                request_return( 'load_balancer_set' ).
 setLoadBalancerPid( State, LoadBalancerPid ) ->
 
-	wooper:check_undefined( load_balancer_pid, State ),
+    wooper:check_undefined( load_balancer_pid, State ),
 
-	wooper:return_state_result(
-		setAttribute( State, load_balancer_pid, LoadBalancerPid ),
-		load_balancer_set ).
+    wooper:return_state_result(
+        setAttribute( State, load_balancer_pid, LoadBalancerPid ),
+        load_balancer_set ).
 
 
 
@@ -423,14 +423,14 @@ Registers the specified child tracker.
 (request, for synchronisation reasons)
 """.
 -spec registerChildTracker( wooper:state() ) ->
-								request_return( 'child_registered' ).
+                                request_return( 'child_registered' ).
 registerChildTracker( State ) ->
 
-	ChildPid = ?getSender(),
+    ChildPid = ?getSender(),
 
-	NewState = appendToAttribute( State, child_trackers, ChildPid ),
+    NewState = appendToAttribute( State, child_trackers, ChildPid ),
 
-	wooper:return_state_result( NewState, child_registered ).
+    wooper:return_state_result( NewState, child_registered ).
 
 
 
@@ -442,16 +442,16 @@ Expected to be called notably by the time manager local to the node this tracker
 runs on, and by a reader process in the context of a deserialisation.
 """.
 -spec registerActor( wooper:state(), aai(), class_Actor:internal_name(),
-					 actor_pid(), classname() ) -> oneway_return().
+                     actor_pid(), classname() ) -> oneway_return().
 registerActor( State, ActorAai, ActorBinName, ActorPid, ActorClassname ) ->
 
-	ActorInfo = #actor_info{ classname=ActorClassname,
-							 name=ActorBinName,
-							 aai=ActorAai },
+    ActorInfo = #actor_info{ classname=ActorClassname,
+                             name=ActorBinName,
+                             aai=ActorAai },
 
-	RegState = registerActor( State, ActorPid, ActorInfo ),
+    RegState = registerActor( State, ActorPid, ActorInfo ),
 
-	wooper:return_state( RegState ).
+    wooper:return_state( RegState ).
 
 
 
@@ -463,43 +463,43 @@ Expected to be called notably by the time manager local to the node this tracker
 runs on and by a reader process in the context of a deserialisation.
 """.
 -spec registerActor( wooper:state(), actor_pid(), actor_info() ) ->
-														oneway_return().
+                                                        oneway_return().
 % Only untracked (pseudo) actor:
 registerActor( State, _ActorPid,
-			   #actor_info{ classname=class_LoadBalancer } ) ->
-	wooper:const_return();
+               #actor_info{ classname=class_LoadBalancer } ) ->
+    wooper:const_return();
 
 registerActor( State, ActorPid, ActorInfo ) ->
 
-	%trace_utils:debug_fmt( "Declaring creation of actor ~w on tracker ~w.",
-	%                       [ ActorPid, self() ] ),
+    %trace_utils:debug_fmt( "Declaring creation of actor ~w on tracker ~w.",
+    %                       [ ActorPid, self() ] ),
 
-	check_pid_and_get_node( ActorPid ),
+    check_pid_and_get_node( ActorPid ),
 
-	Table = ?getAttr(actor_table),
+    Table = ?getAttr(actor_table),
 
-	% Node is implicitly the one this tracker runs on.
+    % Node is implicitly the one this tracker runs on.
 
-	NewActorTable = table:add_entry( _K=ActorPid, _V=ActorInfo, Table ),
+    NewActorTable = table:add_entry( _K=ActorPid, _V=ActorInfo, Table ),
 
-	ReverseState = case ?getAttr(pid_resolution_enabled) of
+    ReverseState = case ?getAttr(pid_resolution_enabled) of
 
-		true ->
-			% addKeyValueToAttribute not to be used here (risk of mixing
-			% table types):
-			%
-			ReverseTable = table:add_entry( _Key=ActorInfo#actor_info.aai,
-				_Value=ActorPid, _Table=?getAttr(aai_to_pid) ),
+        true ->
+            % addKeyValueToAttribute not to be used here (risk of mixing
+            % table types):
+            %
+            ReverseTable = table:add_entry( _Key=ActorInfo#actor_info.aai,
+                _Value=ActorPid, _Table=?getAttr(aai_to_pid) ),
 
-			setAttribute( State, aai_to_pid, ReverseTable );
+            setAttribute( State, aai_to_pid, ReverseTable );
 
-		false ->
-			State
+        false ->
+            State
 
-	end,
+    end,
 
-	wooper:return_state(
-		setAttribute( ReverseState, actor_table, NewActorTable ) ).
+    wooper:return_state(
+        setAttribute( ReverseState, actor_table, NewActorTable ) ).
 
 
 
@@ -508,64 +508,64 @@ Called by a local actor to notify this tracker about the unregistration (this
 corresponds actually to a deletion) of this actor.
 """.
 -spec unregisterActor( wooper:state(), actor_pid(), classname() ) ->
-													oneway_return().
+                                                    oneway_return().
 % Only untracked (pseudo) actor:
 unregisterActor( State, _ActorPid, _ActorClassname=class_LoadBalancer ) ->
-	wooper:const_return();
+    wooper:const_return();
 
 unregisterActor( State, ActorPid, ActorClassname ) ->
 
-	%trace_utils:debug_fmt( "Declaring deletion of instance ~w on tracker ~w.",
-	%                       [ ActorPid, self() ] ),
+    %trace_utils:debug_fmt( "Declaring deletion of instance ~w on tracker ~w.",
+    %                       [ ActorPid, self() ] ),
 
-	ActorTable = ?getAttr(actor_table),
+    ActorTable = ?getAttr(actor_table),
 
-	case table:lookup_entry( ActorPid, ActorTable ) of
+    case table:lookup_entry( ActorPid, ActorTable ) of
 
-		key_not_found ->
-			throw( { unexpected_actor_unregistration, ActorPid } );
+        key_not_found ->
+            throw( { unexpected_actor_unregistration, ActorPid } );
 
-		{ value, ActorInfo } ->
+        { value, ActorInfo } ->
 
-			% Only one to maintain the instance count:
-			?getAttr(load_balancer_pid) !
-				{ notifyDeletion, [ ActorPid, ActorClassname, node() ] },
+            % Only one to maintain the instance count:
+            ?getAttr(load_balancer_pid) !
+                { notifyDeletion, [ ActorPid, ActorClassname, node() ] },
 
-			AAI = ActorInfo#actor_info.aai,
+            AAI = ActorInfo#actor_info.aai,
 
-			ReverseState = case ?getAttr(pid_resolution_enabled) of
+            ReverseState = case ?getAttr(pid_resolution_enabled) of
 
-				true ->
-					% Does nothing if the key (AAI) is not found:
-					ReverseTable =
-						table:remove_entry( AAI, ?getAttr(aai_to_pid) ),
+                true ->
+                    % Does nothing if the key (AAI) is not found:
+                    ReverseTable =
+                        table:remove_entry( AAI, ?getAttr(aai_to_pid) ),
 
-					setAttribute( State, aai_to_pid, ReverseTable );
+                    setAttribute( State, aai_to_pid, ReverseTable );
 
-				false ->
-					State
+                false ->
+                    State
 
-			end,
+            end,
 
-			NewActorTable = table:remove_entry( ActorPid, ActorTable ),
+            NewActorTable = table:remove_entry( ActorPid, ActorTable ),
 
-			ZombiTable = ?getAttr(zombi_table),
+            ZombiTable = ?getAttr(zombi_table),
 
-			NewZombiTable = case ?getAttr(troubleshooting_mode) of
+            NewZombiTable = case ?getAttr(troubleshooting_mode) of
 
-				true ->
-					table:add_entry( _K=ActorPid, _V=ActorInfo, ZombiTable );
+                true ->
+                    table:add_entry( _K=ActorPid, _V=ActorInfo, ZombiTable );
 
-				false ->
-					ZombiTable
+                false ->
+                    ZombiTable
 
-			end,
+            end,
 
-			wooper:return_state( setAttributes( ReverseState, [
-				{ actor_table, NewActorTable },
-				{ zombi_table, NewZombiTable } ] ) )
+            wooper:return_state( setAttributes( ReverseState, [
+                { actor_table, NewActorTable },
+                { zombi_table, NewZombiTable } ] ) )
 
-	end.
+    end.
 
 
 
@@ -575,14 +575,14 @@ Registers the specified agent (the caller) in this instance tracker.
 (request, for synchronisation purposes)
 """.
 -spec registerAgent( wooper:state(), classname() ) ->
-									request_return( 'agent_registered' ).
+                                    request_return( 'agent_registered' ).
 registerAgent( State, AgentClassname ) ->
 
-	AgentPid = ?getSender(),
+    AgentPid = ?getSender(),
 
-	NewState = register_agent_helper( AgentClassname, AgentPid, State ),
+    NewState = register_agent_helper( AgentClassname, AgentPid, State ),
 
-	wooper:return_state_result( NewState, agent_registered ).
+    wooper:return_state_result( NewState, agent_registered ).
 
 
 
@@ -593,12 +593,12 @@ tracker.
 (request, for synchronisation purposes)
 """.
 -spec registerThirdPartyAgent( wooper:state(), classname(), agent_pid() ) ->
-									request_return( 'agent_registered' ).
+                                    request_return( 'agent_registered' ).
 registerThirdPartyAgent( State, AgentClassname, AgentPid ) ->
 
-	NewState = register_agent_helper( AgentClassname, AgentPid, State ),
+    NewState = register_agent_helper( AgentClassname, AgentPid, State ),
 
-	wooper:return_state_result( NewState, agent_registered ).
+    wooper:return_state_result( NewState, agent_registered ).
 
 
 
@@ -608,29 +608,29 @@ Unregisters the specified agent (based on its PID) from this instance tracker.
 -spec unregisterAgent( wooper:state(), agent_pid() ) -> oneway_return().
 unregisterAgent( State, AgentPid ) ->
 
-	AgentTable = ?getAttr(agent_table),
+    AgentTable = ?getAttr(agent_table),
 
-	ReverseState = case ?getAttr(pid_resolution_enabled) of
+    ReverseState = case ?getAttr(pid_resolution_enabled) of
 
-		true ->
-			% Find first the reference to remove:
-			AgentRef = table:get_value( AgentPid, AgentTable ),
+        true ->
+            % Find first the reference to remove:
+            AgentRef = table:get_value( AgentPid, AgentTable ),
 
-			ReverseTable =
-				table:remove_entry( AgentRef, ?getAttr(agent_ref_to_pid) ),
+            ReverseTable =
+                table:remove_entry( AgentRef, ?getAttr(agent_ref_to_pid) ),
 
-			setAttribute( State, agent_ref_to_pid, ReverseTable );
+            setAttribute( State, agent_ref_to_pid, ReverseTable );
 
-		false ->
-			State
+        false ->
+            State
 
-	end,
+    end,
 
-	NewAgentTable = table:remove_entry( AgentPid, AgentTable ),
+    NewAgentTable = table:remove_entry( AgentPid, AgentTable ),
 
-	NewState = setAttribute( ReverseState, agent_table, NewAgentTable ),
+    NewState = setAttribute( ReverseState, agent_table, NewAgentTable ),
 
-	wooper:return_state( NewState ).
+    wooper:return_state( NewState ).
 
 
 
@@ -642,31 +642,31 @@ Registers the specified result producer (the caller) in this instance tracker.
 (request, for synchronisation purposes)
 """.
 -spec registerResultProducer( wooper:state(), producer_ref() ) ->
-						request_return( 'result_producer_registered' ).
+                        request_return( 'result_producer_registered' ).
 registerResultProducer( State, ProducerRef ) ->
 
-	ProducerPid = ?getSender(),
+    ProducerPid = ?getSender(),
 
-	ReverseState = case ?getAttr(pid_resolution_enabled) of
+    ReverseState = case ?getAttr(pid_resolution_enabled) of
 
-		true ->
+        true ->
 
-			NewReverseTable = table:add_entry( ProducerRef, ProducerPid,
-											   ?getAttr(producer_ref_to_pid) ),
+            NewReverseTable = table:add_entry( ProducerRef, ProducerPid,
+                                               ?getAttr(producer_ref_to_pid) ),
 
-			setAttribute( State, producer_ref_to_pid, NewReverseTable );
+            setAttribute( State, producer_ref_to_pid, NewReverseTable );
 
-		false ->
-			State
+        false ->
+            State
 
-	end,
+    end,
 
-	NewProducerTable = table:add_entry( _K=ProducerPid, _V=ProducerRef,
-										?getAttr(producer_table) ),
+    NewProducerTable = table:add_entry( _K=ProducerPid, _V=ProducerRef,
+                                        ?getAttr(producer_table) ),
 
-	NewState = setAttribute( ReverseState, producer_table, NewProducerTable ),
+    NewState = setAttribute( ReverseState, producer_table, NewProducerTable ),
 
-	wooper:return_state_result( NewState, result_producer_registered ).
+    wooper:return_state_result( NewState, result_producer_registered ).
 
 
 
@@ -675,41 +675,41 @@ Unregisters the specified result producer (based on its PID) from this instance
 tracker.
 """.
 -spec unregisterResultProducer( wooper:state(), producer_pid() ) ->
-													oneway_return().
+                                                    oneway_return().
 unregisterResultProducer( State, ProducerPid ) ->
 
-	ProducerTable = ?getAttr(producer_table),
+    ProducerTable = ?getAttr(producer_table),
 
-	ReverseState = case ?getAttr(pid_resolution_enabled) of
+    ReverseState = case ?getAttr(pid_resolution_enabled) of
 
-		true ->
-			% Find first the reference to remove:
-			ProducerRef = table:get_value( ProducerPid, ProducerTable ),
-			ReverseTable = table:remove_entry( ProducerRef,
-											   ?getAttr(producer_ref_to_pid) ),
-			setAttribute( State, producer_ref_to_pid, ReverseTable );
+        true ->
+            % Find first the reference to remove:
+            ProducerRef = table:get_value( ProducerPid, ProducerTable ),
+            ReverseTable = table:remove_entry( ProducerRef,
+                                               ?getAttr(producer_ref_to_pid) ),
+            setAttribute( State, producer_ref_to_pid, ReverseTable );
 
-		false ->
-			State
+        false ->
+            State
 
-	end,
+    end,
 
-	NewProducerTable = table:remove_entry( ProducerPid, ProducerTable ),
+    NewProducerTable = table:remove_entry( ProducerPid, ProducerTable ),
 
-	NewState = setAttribute( ReverseState, producer_table, NewProducerTable ),
+    NewState = setAttribute( ReverseState, producer_table, NewProducerTable ),
 
-	wooper:return_state( NewState ).
+    wooper:return_state( NewState ).
 
 
 
 -doc "Returns information about the specified actor.".
 -spec getActorInformationLocal( wooper:state(), actor_pid() ) ->
-			const_request_return( { actor_info(), atom_node_name() } ).
+            const_request_return( { actor_info(), atom_node_name() } ).
 getActorInformationLocal( State, ActorPid ) ->
 
-	ActorInfo = get_local_actor_info( ActorPid, State ),
+    ActorInfo = get_local_actor_info( ActorPid, State ),
 
-	wooper:const_return_result( { ActorInfo, node() } ).
+    wooper:const_return_result( { ActorInfo, node() } ).
 
 
 
@@ -720,45 +720,45 @@ Returns information about the specified actor, either found locally or
 Generally called on the root instance tracker.
 """.
 -spec getActorInformationGlobal( wooper:state(), actor_pid() ) ->
-				const_request_return( { actor_info(), atom_node_name() } ).
+                const_request_return( { actor_info(), atom_node_name() } ).
 getActorInformationGlobal( State, ActorPid ) ->
 
-	LocalNode = node(),
+    LocalNode = node(),
 
-	ActorNode = node( ActorPid ),
+    ActorNode = node( ActorPid ),
 
-	% Rather than performing recursive look-ups among child trackers, let's
-	% directly choose the right one:
-	%
-	ActorInfo = case LocalNode of
+    % Rather than performing recursive look-ups among child trackers, let's
+    % directly choose the right one:
+    %
+    ActorInfo = case LocalNode of
 
-		ActorNode ->
-			% This actor is managed locally:
-			get_local_actor_info( ActorPid, State );
-
-
-		_OtherNode ->
-
-			% Let's find the tracker that manages the actor node:
-			TrackerPid = select_tracker_for_node( ActorNode,
-												  ?getAttr(child_trackers) ),
+        ActorNode ->
+            % This actor is managed locally:
+            get_local_actor_info( ActorPid, State );
 
 
-			 % We could have this tracker respond automatically to the caller,
-			 % but this way is probably clearer:
-			 %
-			 TrackerPid ! { getActorInformationLocal, ActorPid, self() },
+        _OtherNode ->
 
-			 receive
+            % Let's find the tracker that manages the actor node:
+            TrackerPid = select_tracker_for_node( ActorNode,
+                                                  ?getAttr(child_trackers) ),
 
-				{ wooper_result, { ActInfo, _Node } } ->
-					ActInfo
 
-			 end
+             % We could have this tracker respond automatically to the caller,
+             % but this way is probably clearer:
+             %
+             TrackerPid ! { getActorInformationLocal, ActorPid, self() },
 
-	end,
+             receive
 
-	wooper:const_return_result( { ActorInfo, ActorNode } ).
+                { wooper_result, { ActInfo, _Node } } ->
+                    ActInfo
+
+             end
+
+    end,
+
+    wooper:const_return_result( { ActorInfo, ActorNode } ).
 
 
 
@@ -767,20 +767,20 @@ Returns the PID of the tracker, among the specified list of tracker PIDs, that
 corresponds to the specified node.
 """.
 select_tracker_for_node( Node, _Trackers=[] ) ->
-	throw( { tracker_not_found_for, Node } );
+    throw( { tracker_not_found_for, Node } );
 
 select_tracker_for_node( Node, _Trackers=[ TrackerPid | T ] ) ->
 
-	case node( TrackerPid ) of
+    case node( TrackerPid ) of
 
-		Node ->
-			% Found!
-			TrackerPid;
+        Node ->
+            % Found!
+            TrackerPid;
 
-		_ ->
-			select_tracker_for_node( Node, T )
+        _ ->
+            select_tracker_for_node( Node, T )
 
-	end.
+    end.
 
 
 
@@ -799,33 +799,33 @@ where Id :: instance_id(); this message can be interpreted as a oneway.
 -spec resolvePid( wooper:state(), pid(), pid() ) -> const_oneway_return().
 resolvePid( State, PidToResolve, CallerPid ) ->
 
-	LocalNode = node(),
+    LocalNode = node(),
 
-	% The requester is expected to be often (not always) local, hence the PID
-	% might be remote:
-	%
-	case node( PidToResolve ) of
+    % The requester is expected to be often (not always) local, hence the PID
+    % might be remote:
+    %
+    case node( PidToResolve ) of
 
-		LocalNode ->
-			Resolved = resolve_locally( PidToResolve, State ),
-			CallerPid ! { notifyResolvedPid, Resolved };
+        LocalNode ->
+            Resolved = resolve_locally( PidToResolve, State ),
+            CallerPid ! { notifyResolvedPid, Resolved };
 
-		RemoteNode ->
+        RemoteNode ->
 
-			% Only the instance tracker on this remote node should be able to
-			% answer. To avoid too many messages being sent, it will answer
-			% directly to the caller:
-			%
-			RemoteTrackerPid =
-				table:get_value( RemoteNode, ?getAttr(trackers) ),
+            % Only the instance tracker on this remote node should be able to
+            % answer. To avoid too many messages being sent, it will answer
+            % directly to the caller:
+            %
+            RemoteTrackerPid =
+                table:get_value( RemoteNode, ?getAttr(trackers) ),
 
-			% No fake request can be used, we must rely on separate oneways:
-			RemoteTrackerPid ! { resolveLocalPid, [ PidToResolve, CallerPid ] }
+            % No fake request can be used, we must rely on separate oneways:
+            RemoteTrackerPid ! { resolveLocalPid, [ PidToResolve, CallerPid ] }
 
-	end,
+    end,
 
-	% Const oneway:
-	wooper:const_return().
+    % Const oneway:
+    wooper:const_return().
 
 
 
@@ -836,12 +836,12 @@ a reproducible information, for example for resilience purposes.
 -spec resolveLocalPid( wooper:state(), pid(), pid() ) -> const_oneway_return().
 resolveLocalPid( State, PidToResolve, CallerPid ) ->
 
-	Resolved = resolve_locally( PidToResolve, State ),
+    Resolved = resolve_locally( PidToResolve, State ),
 
-	% To comply with the local case of resolvePid/2:
-	CallerPid ! { notifyResolvedPid, Resolved },
+    % To comply with the local case of resolvePid/2:
+    CallerPid ! { notifyResolvedPid, Resolved },
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 
@@ -852,21 +852,21 @@ into the name of the node that is taking it in charge.
 (request, for synchronicity)
 """.
 -spec setCrashedNodeMapping( wooper:state(), table() ) ->
-								request_return( 'crashed_node_mapping_set' ).
+                                request_return( 'crashed_node_mapping_set' ).
 setCrashedNodeMapping( State, NodeTable ) ->
 
-	TargetInstancePIDs = ?getAttr(child_trackers),
+    TargetInstancePIDs = ?getAttr(child_trackers),
 
-	% Go recursive first:
-	wooper:send_requests( _RequestName=setCrashedNodeMapping,
-		_RequestArgs=[ NodeTable ], TargetInstancePIDs ),
+    % Go recursive first:
+    wooper:send_requests( _RequestName=setCrashedNodeMapping,
+        _RequestArgs=[ NodeTable ], TargetInstancePIDs ),
 
-	NewState = setAttribute( State, crashed_node_table, NodeTable ),
+    NewState = setAttribute( State, crashed_node_table, NodeTable ),
 
-	wooper:wait_for_request_answers( TargetInstancePIDs,
-									 _AckAtom=crashed_node_mapping_set ),
+    wooper:wait_for_request_answers( TargetInstancePIDs,
+                                     _AckAtom=crashed_node_mapping_set ),
 
-	wooper:return_state_result( NewState, crashed_node_mapping_set ).
+    wooper:return_state_result( NewState, crashed_node_mapping_set ).
 
 
 
@@ -877,22 +877,22 @@ of this tracker (to help discriminating between simultaneous tracker answers,
 which might be requested in parallel).
 """.
 -spec getStaticResourceInformation( wooper:state() ) ->
-		const_request_return( { net_utils:node_name(),
-			system_utils:host_static_info(), instance_tracker_pid() } ).
+        const_request_return( { net_utils:node_name(),
+            system_utils:host_static_info(), instance_tracker_pid() } ).
 getStaticResourceInformation( State ) ->
 
-	{ _UsedRAM, TotalRAM } = system_utils:get_total_memory_used(),
+    { _UsedRAM, TotalRAM } = system_utils:get_total_memory_used(),
 
-	{ _UsedSwap, TotalSwap } = system_utils:get_swap_status(),
+    { _UsedSwap, TotalSwap } = system_utils:get_swap_status(),
 
-	Res = #host_static_info{
-		total_ram=TotalRAM,
-		total_swap=TotalSwap,
-		core_count=system_utils:get_core_count(),
-		erlang_version=system_utils:get_interpreter_version() },
+    Res = #host_static_info{
+        total_ram=TotalRAM,
+        total_swap=TotalSwap,
+        core_count=system_utils:get_core_count(),
+        erlang_version=system_utils:get_interpreter_version() },
 
-	% PID specified, so that requests can be done in parallel:
-	wooper:const_return_result( { node(), Res, self() } ).
+    % PID specified, so that requests can be done in parallel:
+    wooper:const_return_result( { node(), Res, self() } ).
 
 
 
@@ -904,45 +904,45 @@ of this tracker (to help discriminating between simultaneous tracker answers,
 which might be requested in parallel).
 """.
 -spec getDynamicResourceInformation( wooper:state() ) ->
-			request_return( { system_utils:host_dynamic_info(),
-							  instance_tracker_pid() } ).
+            request_return( { system_utils:host_dynamic_info(),
+                              instance_tracker_pid() } ).
 getDynamicResourceInformation( State ) ->
 
-	% In bytes:
-	{ UsedSwap, _TotalSwap } = system_utils:get_swap_status(),
+    % In bytes:
+    { UsedSwap, _TotalSwap } = system_utils:get_swap_status(),
 
-	% GiB:
-	UsedSwapInGiB = erlang:round( UsedSwap / 1024 / 1024 / 1024 ),
+    % GiB:
+    UsedSwapInGiB = erlang:round( UsedSwap / 1024 / 1024 / 1024 ),
 
-	{ UsedRAM, TotalRAM } = system_utils:get_total_memory_used(),
+    { UsedRAM, TotalRAM } = system_utils:get_total_memory_used(),
 
-	SimulationSize = system_utils:get_memory_used_by_vm(),
+    SimulationSize = system_utils:get_memory_used_by_vm(),
 
-	RoundDigitCount = 1,
+    RoundDigitCount = 1,
 
-	PercentRamUsedBySimulation = math_utils:round_after(
-		100 * SimulationSize / TotalRAM, RoundDigitCount ),
+    PercentRamUsedBySimulation = math_utils:round_after(
+        100 * SimulationSize / TotalRAM, RoundDigitCount ),
 
-	PercentRamUsedByOthers = math_utils:round_after(
-		100 * ( UsedRAM - SimulationSize ) / TotalRAM, RoundDigitCount ),
+    PercentRamUsedByOthers = math_utils:round_after(
+        100 * ( UsedRAM - SimulationSize ) / TotalRAM, RoundDigitCount ),
 
-	LastCounters = ?getAttr(last_cpu_counters),
+    LastCounters = ?getAttr(last_cpu_counters),
 
-	% As late as possible, to avoid getting unchanged counters:
-	NewCounters = system_utils:get_cpu_usage_counters(),
+    % As late as possible, to avoid getting unchanged counters:
+    NewCounters = system_utils:get_cpu_usage_counters(),
 
-	Res = #host_dynamic_info{
-		node_name = node(),
-		swap_used=UsedSwapInGiB,
-		ram_use={ PercentRamUsedBySimulation, PercentRamUsedByOthers },
-		cpu_usage=system_utils:compute_detailed_cpu_usage( LastCounters,
-														   NewCounters ),
-		process_count=system_utils:get_process_count() },
+    Res = #host_dynamic_info{
+        node_name = node(),
+        swap_used=UsedSwapInGiB,
+        ram_use={ PercentRamUsedBySimulation, PercentRamUsedByOthers },
+        cpu_usage=system_utils:compute_detailed_cpu_usage( LastCounters,
+                                                           NewCounters ),
+        process_count=system_utils:get_process_count() },
 
-	% PID specified, so that requests can be done in parallel:
-	wooper:return_state_result(
-		setAttribute( State, last_cpu_counters, NewCounters ),
-		{ Res, self() } ).
+    % PID specified, so that requests can be done in parallel:
+    wooper:return_state_result(
+        setAttribute( State, last_cpu_counters, NewCounters ),
+        { Res, self() } ).
 
 
 
@@ -950,44 +950,44 @@ getDynamicResourceInformation( State ) ->
 -spec toString( wooper:state() ) -> const_request_return( ustring() ).
 toString( State ) ->
 
-	Desc = case ?getAttr(parent_tracker_pid) of
+    Desc = case ?getAttr(parent_tracker_pid) of
 
-		undefined ->
-			"root instance tracker";
+        undefined ->
+            "root instance tracker";
 
-		ParentPid ->
-			text_utils:format( "instance tracker having for parent ~p",
-							   [ ParentPid ] )
+        ParentPid ->
+            text_utils:format( "instance tracker having for parent ~p",
+                               [ ParentPid ] )
 
-	end,
+    end,
 
-	Children = ?getAttr(child_trackers),
+    Children = ?getAttr(child_trackers),
 
-	FullDesc = Desc ++ text_utils:format(
-		", having ~B direct child trackers (~p)",
-		[ length( Children ), Children ] ),
+    FullDesc = Desc ++ text_utils:format(
+        ", having ~B direct child trackers (~p)",
+        [ length( Children ), Children ] ),
 
-	ResolutionString = "PID resolution "
+    ResolutionString = "PID resolution "
             ++ case ?getAttr(pid_resolution_enabled) of
 
-		true ->
-			"enabled";
+        true ->
+            "enabled";
 
-		false ->
-			"disabled"
+        false ->
+            "disabled"
 
-	end,
+    end,
 
-	Res = text_utils:format( "~ts on node '~ts', with ~ts:~n"
-		" - actor table: ~ts~n"
-		" - zombi table: ~ts~n"
-		" - agent table: ~ts~n"
-		" - result producer table: ~ts",
-		[ FullDesc, node(), ResolutionString,
-		  actor_table_to_string( ?getAttr(actor_table) ),
-		  actor_table_to_string( ?getAttr(zombi_table) ),
-		  agent_table_to_string( ?getAttr(agent_table) ),
-		  producer_table_to_string( ?getAttr(producer_table) ) ] ),
+    Res = text_utils:format( "~ts on node '~ts', with ~ts:~n"
+        " - actor table: ~ts~n"
+        " - zombi table: ~ts~n"
+        " - agent table: ~ts~n"
+        " - result producer table: ~ts",
+        [ FullDesc, node(), ResolutionString,
+          actor_table_to_string( ?getAttr(actor_table) ),
+          actor_table_to_string( ?getAttr(zombi_table) ),
+          agent_table_to_string( ?getAttr(agent_table) ),
+          producer_table_to_string( ?getAttr(producer_table) ) ] ),
 
    wooper:const_return_result( Res ).
 
@@ -995,12 +995,12 @@ toString( State ) ->
 
 -doc "Returns a list of the actors currently tracked by this instance.".
 -spec getTrackedActors( wooper:state() ) ->
-								const_request_return( [ actor_pid() ] ).
+                                const_request_return( [ actor_pid() ] ).
 getTrackedActors( State ) ->
 
-	AllActors = table:keys( ?getAttr(actor_table) ),
+    AllActors = table:keys( ?getAttr(actor_table) ),
 
-	wooper:const_return_result( AllActors ).
+    wooper:const_return_result( AllActors ).
 
 
 
@@ -1015,10 +1015,10 @@ registered as.
 Note: executed on the caller node.
 """.
 -spec get_registration_name() ->
-					static_return( naming_utils:registration_name() ).
+                    static_return( naming_utils:registration_name() ).
 get_registration_name() ->
-	% For example: sim_diasca_instance_tracker
-	wooper:return_static( ?instance_tracker_name ).
+    % For example: sim_diasca_instance_tracker
+    wooper:return_static( ?instance_tracker_name ).
 
 
 
@@ -1030,10 +1030,10 @@ Returns the PID of the (unique) root instance tracker.
 -spec get_root_tracker() -> static_return( instance_tracker_pid() ).
 get_root_tracker() ->
 
-	Pid = naming_utils:get_registered_pid_for( get_registration_name(),
-											   global ),
+    Pid = naming_utils:get_registered_pid_for( get_registration_name(),
+                                               global ),
 
-	wooper:return_static( Pid ).
+    wooper:return_static( Pid ).
 
 
 
@@ -1045,9 +1045,9 @@ Returns the PID of the (unique) local instance tracker.
 -spec get_local_tracker() -> static_return( instance_tracker_pid() ).
 get_local_tracker() ->
 
-	Pid = naming_utils:get_registered_pid_for( get_registration_name(), local ),
+    Pid = naming_utils:get_registered_pid_for( get_registration_name(), local ),
 
-	wooper:return_static( Pid ).
+    wooper:return_static( Pid ).
 
 
 
@@ -1058,12 +1058,12 @@ PID, otherwise the 'not_registered' atom.
 (static method, to be used by clients of the instance tracker)
 """.
 -spec is_local_tracker_registered() ->
-			static_return( instance_tracker_pid() | 'not_registered' ).
+            static_return( instance_tracker_pid() | 'not_registered' ).
 is_local_tracker_registered() ->
 
-	Pid = naming_utils:is_registered( get_registration_name(), local ),
+    Pid = naming_utils:is_registered( get_registration_name(), local ),
 
-	wooper:return_static( Pid ).
+    wooper:return_static( Pid ).
 
 
 
@@ -1076,22 +1076,22 @@ to its corresponding local instance tracker (and returns the PID of the latter).
 -spec register_agent( classname() | wooper:state() ) -> instance_tracker_pid().
 register_agent( AgentClassname ) when is_atom( AgentClassname ) ->
 
-	LocalTrackerPid = get_local_tracker(),
+    LocalTrackerPid = get_local_tracker(),
 
-	LocalTrackerPid ! { registerAgent, AgentClassname, self() },
+    LocalTrackerPid ! { registerAgent, AgentClassname, self() },
 
-	receive
+    receive
 
-		{ wooper_result, agent_registered } ->
-			LocalTrackerPid
+        { wooper_result, agent_registered } ->
+            LocalTrackerPid
 
-	end;
+    end;
 
 register_agent( State ) ->
 
-	{ _State, ActualClassname } = executeRequest( State, getClassname ),
+    { _State, ActualClassname } = executeRequest( State, getClassname ),
 
-	register_agent( ActualClassname ).
+    register_agent( ActualClassname ).
 
 
 
@@ -1102,21 +1102,21 @@ service to its corresponding local instance tracker.
 -spec register_agent( classname(), agent_pid() ) -> static_void_return().
 register_agent( AgentClassname, AgentPid ) ->
 
-	% The specified PID must be on the local node:
-	check_pid_and_get_node( AgentPid ),
+    % The specified PID must be on the local node:
+    check_pid_and_get_node( AgentPid ),
 
-	TrackerPid = get_local_tracker(),
+    TrackerPid = get_local_tracker(),
 
-	AgentRef = AgentClassname,
+    AgentRef = AgentClassname,
 
-	TrackerPid ! { registerThirdPartyAgent, [ AgentRef, AgentPid ], self() },
+    TrackerPid ! { registerThirdPartyAgent, [ AgentRef, AgentPid ], self() },
 
-	receive
+    receive
 
-		{ wooper_result, agent_registered } ->
-			wooper:return_static_void()
+        { wooper_result, agent_registered } ->
+            wooper:return_static_void()
 
-	end.
+    end.
 
 
 
@@ -1127,12 +1127,12 @@ local instance tracker.
 -spec unregister_agent() -> static_void_return().
 unregister_agent() ->
 
-	TrackerPid = get_local_tracker(),
+    TrackerPid = get_local_tracker(),
 
-	% Oneway:
-	TrackerPid ! { unregisterAgent, self() },
+    % Oneway:
+    TrackerPid ! { unregisterAgent, self() },
 
-	wooper:return_static_void().
+    wooper:return_static_void().
 
 
 
@@ -1143,12 +1143,12 @@ corresponding local instance tracker.
 -spec unregister_agent( agent_pid() ) -> static_void_return().
 unregister_agent( AgentPid ) ->
 
-	TrackerPid = get_local_tracker(),
+    TrackerPid = get_local_tracker(),
 
-	% Oneway:
-	TrackerPid ! { unregisterAgent, AgentPid },
+    % Oneway:
+    TrackerPid ! { unregisterAgent, AgentPid },
 
-	wooper:return_static_void().
+    wooper:return_static_void().
 
 
 
@@ -1157,18 +1157,18 @@ Returns the identifier (e.g. the AAI) of the instance corresponding to the
 specified PID, using the specified tracker.
 """.
 -spec get_identifier_for( pid_to_resolve(), instance_tracker_pid() ) ->
-								static_return( instance_id() ).
+                                static_return( instance_id() ).
 get_identifier_for( InstancePid, InstanceTrackerPid ) ->
 
-	% We call a oneway here:
-	InstanceTrackerPid ! { resolvePid, [ _PidToResolve=InstancePid, self() ] },
+    % We call a oneway here:
+    InstanceTrackerPid ! { resolvePid, [ _PidToResolve=InstancePid, self() ] },
 
-	receive
+    receive
 
-		{ notifyResolvedPid, Id } ->
-			wooper:return_static( Id )
+        { notifyResolvedPid, Id } ->
+            wooper:return_static( Id )
 
-	end.
+    end.
 
 
 
@@ -1181,39 +1181,39 @@ See also: `class_ResultManager:create_mockup_environment/0`.
 -spec create_mockup_environment() -> static_return( pid() ).
 create_mockup_environment() ->
 
-	% Mimics a local instance tracker:
-	%
-	MockFun = fun() ->
+    % Mimics a local instance tracker:
+    %
+    MockFun = fun() ->
 
-		% Does as the real one:
-		naming_utils:register_as( get_registration_name(), local_only ),
+        % Does as the real one:
+        naming_utils:register_as( get_registration_name(), local_only ),
 
-		% Fakes a local instance tracker:
-		receive
+        % Fakes a local instance tracker:
+        receive
 
-			{ registerResultProducer, _BinName, ProducerPid } ->
-				ProducerPid ! { wooper_result, result_producer_registered };
+            { registerResultProducer, _BinName, ProducerPid } ->
+                ProducerPid ! { wooper_result, result_producer_registered };
 
-			{ registerAgent, _AgentRef, AgentPid } ->
-				AgentPid ! { wooper_result, agent_registered }
+            { registerAgent, _AgentRef, AgentPid } ->
+                AgentPid ! { wooper_result, agent_registered }
 
-		end,
+        end,
 
-		% Forces this process to linger (will wait until end of time), as some
-		% destructors expect to find the instance tracker as a registered
-		% process:
-		%
-		receive
+        % Forces this process to linger (will wait until end of time), as some
+        % destructors expect to find the instance tracker as a registered
+        % process:
+        %
+        receive
 
-			% Such a message will by design never be received:
-			never_sent ->
-				ok
+            % Such a message will by design never be received:
+            never_sent ->
+                ok
 
-		end
+        end
 
-	end,
+    end,
 
-	wooper:return_static( ?myriad_spawn_link( MockFun ) ).
+    wooper:return_static( ?myriad_spawn_link( MockFun ) ).
 
 
 
@@ -1225,28 +1225,28 @@ create_mockup_environment() ->
 -spec actor_table_to_string( table() ) -> ustring().
 actor_table_to_string( Table ) ->
 
-	% {Pid, InstanceInfo} pairs:
-	InstancePairs = table:enumerate( Table ),
+    % {Pid, InstanceInfo} pairs:
+    InstancePairs = table:enumerate( Table ),
 
-	% We want to describe it according to an increasing AAI order:
-	%
-	AAIStringPairs = lists:foldl(
-		fun( { _K=Pid, _V=Info }, Acc ) ->
-			ActorString = actor_info_to_string( Info, Pid ),
-			[ { Info#actor_info.aai, ActorString } | Acc ]
-		end,
-		_InitialAcc=[],
-		InstancePairs ),
+    % We want to describe it according to an increasing AAI order:
+    %
+    AAIStringPairs = lists:foldl(
+        fun( { _K=Pid, _V=Info }, Acc ) ->
+            ActorString = actor_info_to_string( Info, Pid ),
+            [ { Info#actor_info.aai, ActorString } | Acc ]
+        end,
+        _InitialAcc=[],
+        InstancePairs ),
 
-	%trace_utils:debug_fmt( "AAIStringPairs = ~p", [ AAIStringPairs ] ),
+    %trace_utils:debug_fmt( "AAIStringPairs = ~p", [ AAIStringPairs ] ),
 
-	% Sort by AAI, then drop it:
-	Strings = [ S || { _AAI, S } <- lists:keysort( _Index=1, AAIStringPairs ) ],
+    % Sort by AAI, then drop it:
+    Strings = [ S || { _AAI, S } <- lists:keysort( _Index=1, AAIStringPairs ) ],
 
-	%trace_utils:debug_fmt( "Strings = ~p", [ Strings ] ),
+    %trace_utils:debug_fmt( "Strings = ~p", [ Strings ] ),
 
-	% No reverse needed:
-	text_utils:strings_to_string( Strings ).
+    % No reverse needed:
+    text_utils:strings_to_string( Strings ).
 
 
 
@@ -1254,36 +1254,36 @@ actor_table_to_string( Table ) ->
 -spec actor_info_to_string( actor_info(), actor_pid() ) -> ustring().
 actor_info_to_string( InstanceInfo, ActorPid ) ->
 
-	% By design the actor is on the same node as this tracker:
-	Node = node(),
+    % By design the actor is on the same node as this tracker:
+    Node = node(),
 
-	AAI = InstanceInfo#actor_info.aai,
+    AAI = InstanceInfo#actor_info.aai,
 
-	ActorName = case InstanceInfo#actor_info.name of
+    ActorName = case InstanceInfo#actor_info.name of
 
-		undefined ->
+        undefined ->
 
-			% Sends a oneway to this actor, which will update this tracker (for
-			% later use):
-			%
-			ActorPid ! { triggerNameNotification, self() },
+            % Sends a oneway to this actor, which will update this tracker (for
+            % later use):
+            %
+            ActorPid ! { triggerNameNotification, self() },
 
-			% For this time (we stay in an asynchronous way), we fall-back to
-			% only a basic information:
-			%
-			text_utils:format( "actor whose AAI is ~B (PID: ~w)",
-							   [ AAI, ActorPid ] );
+            % For this time (we stay in an asynchronous way), we fall-back to
+            % only a basic information:
+            %
+            text_utils:format( "actor whose AAI is ~B (PID: ~w)",
+                               [ AAI, ActorPid ] );
 
-		 Name ->
-			% Already available, ok:
-			text_utils:format( "actor named '~ts' whose AAI is ~B (PID: ~w)",
-							   [ Name, AAI, ActorPid ] )
+         Name ->
+            % Already available, ok:
+            text_utils:format( "actor named '~ts' whose AAI is ~B (PID: ~w)",
+                               [ Name, AAI, ActorPid ] )
 
-	end,
+    end,
 
-	% These information are known to exist:
-	ActorName ++ text_utils:format( " of class ~ts on node ~ts",
-		[ InstanceInfo#actor_info.classname, Node ] ).
+    % These information are known to exist:
+    ActorName ++ text_utils:format( " of class ~ts on node ~ts",
+        [ InstanceInfo#actor_info.classname, Node ] ).
 
 
 
@@ -1291,23 +1291,23 @@ actor_info_to_string( InstanceInfo, ActorPid ) ->
 -spec agent_table_to_string( table() ) -> ustring().
 agent_table_to_string( Table ) ->
 
-	% {Pid, AgentRef} pairs:
-	InstancePairs = table:enumerate( Table ),
+    % {Pid, AgentRef} pairs:
+    InstancePairs = table:enumerate( Table ),
 
-	% No specific sorting requested:
-	AgentStrings = lists:foldl(
-				fun( { _K=Pid, _V=AgentRef }, Acc ) ->
-					[ text_utils:format(
-						"agent reference ~p associated to PID ~p",
-						[ AgentRef, Pid ] ) | Acc ]
-				end,
-				_InitialAcc=[],
-				InstancePairs ),
+    % No specific sorting requested:
+    AgentStrings = lists:foldl(
+                fun( { _K=Pid, _V=AgentRef }, Acc ) ->
+                    [ text_utils:format(
+                        "agent reference ~p associated to PID ~p",
+                        [ AgentRef, Pid ] ) | Acc ]
+                end,
+                _InitialAcc=[],
+                InstancePairs ),
 
-	%trace_utils:debug_fmt( "AgentStrings = ~p", [ AgentStrings ] ),
+    %trace_utils:debug_fmt( "AgentStrings = ~p", [ AgentStrings ] ),
 
-	% No reverse needed:
-	text_utils:strings_to_string( AgentStrings ).
+    % No reverse needed:
+    text_utils:strings_to_string( AgentStrings ).
 
 
 
@@ -1315,22 +1315,22 @@ agent_table_to_string( Table ) ->
 -spec producer_table_to_string( table() ) -> ustring().
 producer_table_to_string( Table ) ->
 
-	% {Pid, ProducerRef} pairs:
-	ProducerPairs = table:enumerate( Table ),
+    % {Pid, ProducerRef} pairs:
+    ProducerPairs = table:enumerate( Table ),
 
-	% No specific sorting requested:
-	ProducerStrings = lists:foldl(
-		fun( { _K=Pid, _V=ProducerRef }, Acc ) ->
-			[ text_utils:format( "producer reference ~p associated "
-								 "to PID ~p", [ ProducerRef, Pid ] ) | Acc ]
-		end,
-		_InitialAcc=[],
-		ProducerPairs ),
+    % No specific sorting requested:
+    ProducerStrings = lists:foldl(
+        fun( { _K=Pid, _V=ProducerRef }, Acc ) ->
+            [ text_utils:format( "producer reference ~p associated "
+                                 "to PID ~p", [ ProducerRef, Pid ] ) | Acc ]
+        end,
+        _InitialAcc=[],
+        ProducerPairs ),
 
-	%trace_utils:debug_fmt( "ProducerStrings = ~p", [ ProducerStrings ] ),
+    %trace_utils:debug_fmt( "ProducerStrings = ~p", [ ProducerStrings ] ),
 
-	% No reverse needed:
-	text_utils:strings_to_string( ProducerStrings ).
+    % No reverse needed:
+    text_utils:strings_to_string( ProducerStrings ).
 
 
 
@@ -1342,52 +1342,52 @@ Returns information about the specified local actor.
 -spec get_local_actor_info( actor_pid(), wooper:state() ) -> actor_info().
 get_local_actor_info( ActorPid, State ) ->
 
-	ActorTable = ?getAttr(actor_table),
+    ActorTable = ?getAttr(actor_table),
 
-	case table:lookup_entry( _Key=ActorPid, ActorTable ) of
+    case table:lookup_entry( _Key=ActorPid, ActorTable ) of
 
-		{ value, ActorInfo } ->
-			ActorInfo;
+        { value, ActorInfo } ->
+            ActorInfo;
 
-		key_not_found ->
+        key_not_found ->
 
-			% This *can* happen, as the retrieval of actor information is not
-			% synchronous, and an actor may have left in-between the simulation,
-			% i.e. have been deleted; returning in this case a blank
-			% information:
-			%
-			case ?getAttr(troubleshooting_mode) of
+            % This *can* happen, as the retrieval of actor information is not
+            % synchronous, and an actor may have left in-between the simulation,
+            % i.e. have been deleted; returning in this case a blank
+            % information:
+            %
+            case ?getAttr(troubleshooting_mode) of
 
-				true ->
+                true ->
 
-					% We should have an up-to-date zombi table:
-					ActorEntry = table:get_value( _K=ActorPid,
-												  ?getAttr(zombi_table) ),
-					zombify( ActorEntry );
+                    % We should have an up-to-date zombi table:
+                    ActorEntry = table:get_value( _K=ActorPid,
+                                                  ?getAttr(zombi_table) ),
+                    zombify( ActorEntry );
 
-				false ->
+                false ->
 
-					#actor_info{
-						classname='(unknown class)',
-						name=text_utils:string_to_binary( "(deleted actor)" ),
+                    #actor_info{
+                        classname='(unknown class)',
+                        name=text_utils:string_to_binary( "(deleted actor)" ),
 
-						% "Zombi" actor:
-						aai=0 }
+                        % "Zombi" actor:
+                        aai=0 }
 
-			end
+            end
 
-	end.
+    end.
 
 
 
 -doc "Zombifies the specified (deleted) actor information.".
 zombify( Info=#actor_info{ name=Name } ) ->
 
-	NewName = text_utils:format( "(deleted actor whose name was '~ts')",
-								 [ text_utils:binary_to_string( Name ) ] ),
+    NewName = text_utils:format( "(deleted actor whose name was '~ts')",
+                                 [ text_utils:binary_to_string( Name ) ] ),
 
-	% We leave the class name and (past) AAI as are:
-	Info#actor_info{ name=text_utils:string_to_binary( NewName ) }.
+    % We leave the class name and (past) AAI as are:
+    Info#actor_info{ name=text_utils:string_to_binary( NewName ) }.
 
 
 
@@ -1399,50 +1399,50 @@ tracker.
 """.
 resolve_locally( Pid, State ) ->
 
-	% We must be able to discriminate between the various types that can be
-	% resolved: actor (AAI, hence integer), agent (class name, hence atom) and
-	% result producer (name, hence binary string).
+    % We must be able to discriminate between the various types that can be
+    % resolved: actor (AAI, hence integer), agent (class name, hence atom) and
+    % result producer (name, hence binary string).
 
-	% Let's suppose first this local PID corresponds to an actor:
-	%
-	ActorTable = ?getAttr(actor_table),
+    % Let's suppose first this local PID corresponds to an actor:
+    %
+    ActorTable = ?getAttr(actor_table),
 
-	Key = Pid,
+    Key = Pid,
 
-	case table:lookup_entry( Key, ActorTable ) of
+    case table:lookup_entry( Key, ActorTable ) of
 
-		{ value, ActorInfo } ->
-			ActorInfo#actor_info.aai;
+        { value, ActorInfo } ->
+            ActorInfo#actor_info.aai;
 
-		key_not_found ->
+        key_not_found ->
 
-			% Then maybe then this local PID corresponds to a simulation agent?
-			AgentTable = ?getAttr(agent_table),
+            % Then maybe then this local PID corresponds to a simulation agent?
+            AgentTable = ?getAttr(agent_table),
 
-			case table:lookup_entry( Key, AgentTable ) of
+            case table:lookup_entry( Key, AgentTable ) of
 
-				{ value, AgentRef } ->
-					AgentRef;
+                { value, AgentRef } ->
+                    AgentRef;
 
-				key_not_found ->
+                key_not_found ->
 
-					% Last chance: might then be result producer?
-					ProducerTable = ?getAttr(producer_table),
+                    % Last chance: might then be result producer?
+                    ProducerTable = ?getAttr(producer_table),
 
-					case table:lookup_entry( Key, ProducerTable ) of
+                    case table:lookup_entry( Key, ProducerTable ) of
 
-						{ value, ProducerRef } ->
-							ProducerRef;
+                        { value, ProducerRef } ->
+                            ProducerRef;
 
-						key_not_found ->
-							% Not found at all, abnormal:
-							throw( { pid_resolution_failed, Pid } )
+                        key_not_found ->
+                            % Not found at all, abnormal:
+                            throw( { pid_resolution_failed, Pid } )
 
-					end
+                    end
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -1455,30 +1455,30 @@ Returns an updated state.
 """.
 register_agent_helper( AgentClassname, AgentPid, State ) ->
 
-	% A priori we could even not store the node name and determine it from the
-	% PID when needed, however if both the corresponding node and process are
-	% dead, this might be safer to store that information when it is known
-	% available.
-	%
-	AgentRef = { AgentClassname, node( AgentPid ) },
+    % A priori we could even not store the node name and determine it from the
+    % PID when needed, however if both the corresponding node and process are
+    % dead, this might be safer to store that information when it is known
+    % available.
+    %
+    AgentRef = { AgentClassname, node( AgentPid ) },
 
-	ReverseState = case ?getAttr(pid_resolution_enabled) of
+    ReverseState = case ?getAttr(pid_resolution_enabled) of
 
-		true ->
-			NewReverseTable = table:add_entry( AgentRef, AgentPid,
-											   ?getAttr(agent_ref_to_pid) ),
+        true ->
+            NewReverseTable = table:add_entry( AgentRef, AgentPid,
+                                               ?getAttr(agent_ref_to_pid) ),
 
-			setAttribute( State, agent_ref_to_pid, NewReverseTable );
+            setAttribute( State, agent_ref_to_pid, NewReverseTable );
 
-		false ->
-			State
+        false ->
+            State
 
-	end,
+    end,
 
-	NewAgentTable =
-		table:add_entry( _K=AgentPid, _V=AgentRef, ?getAttr(agent_table) ),
+    NewAgentTable =
+        table:add_entry( _K=AgentPid, _V=AgentRef, ?getAttr(agent_table) ),
 
-	setAttribute( ReverseState, agent_table, NewAgentTable ).
+    setAttribute( ReverseState, agent_table, NewAgentTable ).
 
 
 
@@ -1488,15 +1488,15 @@ Ensures that specified PID is local, and returns the node it corresponds to.
 -spec check_pid_and_get_node( pid() ) -> atom_node_name().
 check_pid_and_get_node( Pid ) ->
 
-	% The specified PID must be on the local node:
-	Node = node( Pid ),
+    % The specified PID must be on the local node:
+    Node = node( Pid ),
 
-	case node() of
+    case node() of
 
-		Node ->
-			Node;
+        Node ->
+            Node;
 
-		OtherNode ->
-			throw( { non_local_pid_registration, { Node, Pid }, OtherNode } )
+        OtherNode ->
+            throw( { non_local_pid_registration, { Node, Pid }, OtherNode } )
 
-	end.
+    end.

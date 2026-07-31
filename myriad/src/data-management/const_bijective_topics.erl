@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -125,8 +125,8 @@ Refer to:
 
 % For re-used in other modules (e.g. const_bijective_table):
 -export([ generate_header_form/2, generate_footer_form/1, generate_forms/5,
-		  generate_strict_calling_clauses/4,
-		  generate_first_clauses/3, generate_second_clauses/3 ]).
+          generate_strict_calling_clauses/4,
+          generate_first_clauses/3, generate_second_clauses/3 ]).
 
 
 
@@ -181,7 +181,7 @@ the first and second sets contains the 'undefined' atom, as it leads to
 ambiguity.
 """.
 -type element_lookup() :: 'strict' % Throws an exception if element not found
-						| 'maybe'. % Returns 'undefined' if element not found
+                        | 'maybe'. % Returns 'undefined' if element not found
 
 
 
@@ -200,16 +200,16 @@ for a wx example, where ?wxBORDER_THEME and ?wxBORDER_DOUBLE resolve to the same
 value).
 """.
 -type conversion_direction() ::
-	'first_to_second'  % In this case two different first elements may resolve
-					   % in the same (hence duplicated) second element; then no
-					   % reverse conversion from second ones to first ones can
-					   % be expected.
+    'first_to_second'  % In this case two different first elements may resolve
+                       % in the same (hence duplicated) second element; then no
+                       % reverse conversion from second ones to first ones can
+                       % be expected.
   | 'second_to_first'  % In this case two different second elements may resolve
-					   % in the same (hence duplicated) first element; then no
-					   % reverse conversion from first ones to second ones can
-					   % be expected.
+                       % in the same (hence duplicated) first element; then no
+                       % reverse conversion from first ones to second ones can
+                       % be expected.
   | 'both'.            % No duplicate expected in either set, real bijection,
-					   % a two-way conversion is thus possible.
+                       % a two-way conversion is thus possible.
 
 
 
@@ -222,7 +222,7 @@ Defaults:
  - the 'both' conversion direction
 """.
 -type topic_spec() ::
-	{ topic_name(), entries() }
+    { topic_name(), entries() }
   | { topic_name(), entries(), element_lookup() }
   | { topic_name(), entries(), element_lookup(), conversion_direction() }.
 
@@ -240,8 +240,8 @@ The 'strict' element look-up is the default one.
 
 
 -export_type([ topic_name/0, first_type/0, second_type/0, entry/0, entries/0,
-			   element_lookup/0, conversion_direction/0,
-			   topic_spec/0, topic_spec/2 ]).
+               element_lookup/0, conversion_direction/0,
+               topic_spec/0, topic_spec/2 ]).
 
 
 
@@ -293,43 +293,43 @@ operation remains fully in-memory.
 -spec generate_in_memory( module_name(), [ topic_spec() ] ) -> void().
 generate_in_memory( ModuleName, TopicSpecs ) ->
 
-	cond_utils:if_defined( myriad_debug_code_generation,
-		% list_table cannot be used, as "keys" (first) are not necessarily
-		% atoms:
-		%
-		trace_utils:debug_fmt( "Generating pseudo-module '~ts' from following "
-			"topic specs:~n ~p", [ ModuleName, TopicSpecs ] ) ),
+    cond_utils:if_defined( myriad_debug_code_generation,
+        % list_table cannot be used, as "keys" (first) are not necessarily
+        % atoms:
+        %
+        trace_utils:debug_fmt( "Generating pseudo-module '~ts' from following "
+            "topic specs:~n ~p", [ ModuleName, TopicSpecs ] ) ),
 
-	% Just a name here, not designating any actual file:
-	ModulePseudoFilename = get_generated_beam_filename_for( ModuleName ),
+    % Just a name here, not designating any actual file:
+    ModulePseudoFilename = get_generated_beam_filename_for( ModuleName ),
 
-	Forms = generate_topic_forms( ModuleName, TopicSpecs ),
+    Forms = generate_topic_forms( ModuleName, TopicSpecs ),
 
-	%trace_utils:debug_fmt( "Generated forms:~n ~p", [ Forms ] ),
+    %trace_utils:debug_fmt( "Generated forms:~n ~p", [ Forms ] ),
 
-	% Not wanting an actual file:
-	CompileOpts = [ binary | meta_utils:get_compile_base_opts() ],
+    % Not wanting an actual file:
+    CompileOpts = [ binary | meta_utils:get_compile_base_opts() ],
 
-	BinaryObjectCode = case compile:forms( Forms, CompileOpts ) of
+    BinaryObjectCode = case compile:forms( Forms, CompileOpts ) of
 
-		% Matches the module name:
-		{ ok, ModuleName, Binary } ->
-			Binary;
+        % Matches the module name:
+        { ok, ModuleName, Binary } ->
+            Binary;
 
-		Error ->
-			throw( { module_generation_failed, ModuleName, Error } )
+        Error ->
+            throw( { module_generation_failed, ModuleName, Error } )
 
-	end,
+    end,
 
-	code:load_binary( ModuleName, ModulePseudoFilename, BinaryObjectCode ).
+    code:load_binary( ModuleName, ModulePseudoFilename, BinaryObjectCode ).
 
-	% Contains for example '{foobar,
-	% "const_bijective_table_generated_foobar.beam"}':
-	%
-	%trace_utils:debug_fmt( "Loaded modules:~n~p", [ code:all_loaded() ] ),
+    % Contains for example '{foobar,
+    % "const_bijective_table_generated_foobar.beam"}':
+    %
+    %trace_utils:debug_fmt( "Loaded modules:~n~p", [ code:all_loaded() ] ),
 
-	% We loaded this new module also, as otherwise any previous various version
-	% of it would still be used instead.
+    % We loaded this new module also, as otherwise any previous various version
+    % of it would still be used instead.
 
 
 
@@ -348,8 +348,8 @@ Returns the generated filename (not path), for any further reference.
 """.
 -spec generate_in_file( module_name(), entries() ) -> file_name().
 generate_in_file( ModuleName, Entries ) ->
-	generate_in_file( ModuleName, Entries,
-					  file_utils:get_current_directory() ).
+    generate_in_file( ModuleName, Entries,
+                      file_utils:get_current_directory() ).
 
 
 
@@ -367,54 +367,54 @@ The resulting module is not loaded by this function.
 Returns the generated filename (not path), for any further reference.
 """.
 -spec generate_in_file( module_name(), [ topic_spec() ],
-						any_directory_path() ) -> file_name().
+                        any_directory_path() ) -> file_name().
 generate_in_file( ModuleName, TopicSpecs, TargetDir ) ->
 
-	file_utils:is_existing_directory_or_link( TargetDir ) orelse
-		throw( { non_existing_output_directory, TargetDir } ),
+    file_utils:is_existing_directory_or_link( TargetDir ) orelse
+        throw( { non_existing_output_directory, TargetDir } ),
 
-	ModuleFilename = get_generated_beam_filename_for( ModuleName ),
+    ModuleFilename = get_generated_beam_filename_for( ModuleName ),
 
-	cond_utils:if_defined( myriad_debug_code_generation,
-		% list_table cannot be used, as "keys" (first) are not necessarily
-		% atoms:
-		%
-		trace_utils:debug_fmt( "Generating module '~ts' in file '~ts', in the "
-			"'~ts' directory, for following topics and entries:~n ~p.",
-			[ ModuleName, ModuleFilename, TargetDir, TopicSpecs ] ) ),
+    cond_utils:if_defined( myriad_debug_code_generation,
+        % list_table cannot be used, as "keys" (first) are not necessarily
+        % atoms:
+        %
+        trace_utils:debug_fmt( "Generating module '~ts' in file '~ts', in the "
+            "'~ts' directory, for following topics and entries:~n ~p.",
+            [ ModuleName, ModuleFilename, TargetDir, TopicSpecs ] ) ),
 
-	Forms = generate_topic_forms( ModuleName, TopicSpecs ),
+    Forms = generate_topic_forms( ModuleName, TopicSpecs ),
 
-	%trace_utils:debug_fmt( "Generated forms:~n ~p", [ Forms ] ),
+    %trace_utils:debug_fmt( "Generated forms:~n ~p", [ Forms ] ),
 
-	CompileOpts =
-		[ { outdir, TargetDir } | meta_utils:get_compile_base_opts() ],
+    CompileOpts =
+        [ { outdir, TargetDir } | meta_utils:get_compile_base_opts() ],
 
-	%trace_utils:debug_fmt( "Generation compile options for '~ts':~n ~p",
-	%                       [ ModuleName, CompileOpts ] ),
+    %trace_utils:debug_fmt( "Generation compile options for '~ts':~n ~p",
+    %                       [ ModuleName, CompileOpts ] ),
 
-	BinaryObjectCode = case compile:forms( Forms, CompileOpts ) of
+    BinaryObjectCode = case compile:forms( Forms, CompileOpts ) of
 
-		% Matches the module name; apparently 'binary' is implicit and thus no
-		% file is written:
-		%
-		{ ok, ModuleName, Binary } ->
-			Binary;
+        % Matches the module name; apparently 'binary' is implicit and thus no
+        % file is written:
+        %
+        { ok, ModuleName, Binary } ->
+            Binary;
 
-		Error ->
-			throw( { module_generation_failed, ModuleName, Error } )
+        Error ->
+            throw( { module_generation_failed, ModuleName, Error } )
 
-	end,
+    end,
 
-	% So we do it by ourselves:
-	TargetFilePath = file_utils:join( TargetDir, ModuleFilename ),
-	file_utils:write_whole( TargetFilePath, BinaryObjectCode ),
+    % So we do it by ourselves:
+    TargetFilePath = file_utils:join( TargetDir, ModuleFilename ),
+    file_utils:write_whole( TargetFilePath, BinaryObjectCode ),
 
-	cond_utils:if_defined( myriad_check_code_generation,
-		file_utils:is_existing_file( TargetFilePath ) orelse
-			throw( { no_module_file_generated, TargetFilePath } ) ),
+    cond_utils:if_defined( myriad_check_code_generation,
+        file_utils:is_existing_file( TargetFilePath ) orelse
+            throw( { no_module_file_generated, TargetFilePath } ) ),
 
-	ModuleFilename.
+    ModuleFilename.
 
 
 
@@ -428,13 +428,13 @@ Returns a filename corresponding to the specified BEAM module to be generated.
 -spec get_generated_beam_filename_for( module_name() ) -> file_name().
 get_generated_beam_filename_for( ModName ) ->
 
-	% Clearer, but longer, and anyway the runtime will expect ModName, not
-	% another atom:
-	%
-	%"const_bijective_table_generated_"
-	%    ++ code_utils:get_beam_filename( ModName ).
+    % Clearer, but longer, and anyway the runtime will expect ModName, not
+    % another atom:
+    %
+    %"const_bijective_table_generated_"
+    %    ++ code_utils:get_beam_filename( ModName ).
 
-	code_utils:get_beam_filename( ModName ).
+    code_utils:get_beam_filename( ModName ).
 
 
 
@@ -444,14 +444,14 @@ specified file location.
 """.
 -spec generate_header_form( module_name(), file_loc() ) -> form().
 generate_header_form( ModuleName, FileLoc ) ->
-	{ attribute, FileLoc, module, ModuleName }.
+    { attribute, FileLoc, module, ModuleName }.
 
 
 
 -doc "Returns suitable footer forms.".
 -spec generate_footer_form( file_loc() ) -> form().
 generate_footer_form( FileLoc ) ->
-	{ eof, FileLoc }.
+    { eof, FileLoc }.
 
 
 
@@ -459,154 +459,154 @@ generate_footer_form( FileLoc ) ->
 -spec generate_topic_forms( module_name(), [ topic_spec() ] ) -> [ form() ].
 generate_topic_forms( ModuleName, TopicSpecs ) ->
 
-	%trace_utils:debug_fmt( "Generating topic specs for: ~n ~p.",
-	%                       [ TopicSpecs ] ),
+    %trace_utils:debug_fmt( "Generating topic specs for: ~n ~p.",
+    %                       [ TopicSpecs ] ),
 
-	TopicNames = type_utils:check_atoms(
-		[ element( _Index=1, TS ) || TS <- TopicSpecs ] ),
+    TopicNames = type_utils:check_atoms(
+        [ element( _Index=1, TS ) || TS <- TopicSpecs ] ),
 
-	% Checking that no two topic specs bear the same name (not to attempt to
-	% define any resolving function more than once afterwards):
-	%
-	case list_utils:get_duplicates( TopicNames ) of
+    % Checking that no two topic specs bear the same name (not to attempt to
+    % define any resolving function more than once afterwards):
+    %
+    case list_utils:get_duplicates( TopicNames ) of
 
-		[] ->
-			ok;
+        [] ->
+            ok;
 
-		Dups ->
-			trace_utils:error_fmt( "There are duplicates in the topic names: "
-				"~ts. All topic names were:~n  ~p.",
-				[ list_utils:duplicate_info_to_string( Dups ), TopicNames ] ),
-			throw( { duplicated_bijective_topics, Dups } )
+        Dups ->
+            trace_utils:error_fmt( "There are duplicates in the topic names: "
+                "~ts. All topic names were:~n  ~p.",
+                [ list_utils:duplicate_info_to_string( Dups ), TopicNames ] ),
+            throw( { duplicated_bijective_topics, Dups } )
 
-	end,
+    end,
 
-	CanonicalTopicSpecs = [ canonicalise_topic_spec( TS ) || TS <- TopicSpecs ],
+    CanonicalTopicSpecs = [ canonicalise_topic_spec( TS ) || TS <- TopicSpecs ],
 
-	FileLoc = ast_utils:get_generated_code_location(),
+    FileLoc = ast_utils:get_generated_code_location(),
 
-	% Now we add an initial '_' before each topic (e.g. 'color' becomes
-	% '_color') so that const-bijective table can request generate_forms/4 to
-	% generate for example 'get_first_for', not 'get_first_for_':
-	%
-	[ generate_header_form( ModuleName, FileLoc ) | list_utils:flatten_once(
-		[ generate_forms( TP, ET, LU, CD, FileLoc )
-							|| { TP, ET, LU, CD } <- CanonicalTopicSpecs ] ) ]
-		++ [ generate_footer_form( FileLoc ) ].
+    % Now we add an initial '_' before each topic (e.g. 'color' becomes
+    % '_color') so that const-bijective table can request generate_forms/4 to
+    % generate for example 'get_first_for', not 'get_first_for_':
+    %
+    [ generate_header_form( ModuleName, FileLoc ) | list_utils:flatten_once(
+        [ generate_forms( TP, ET, LU, CD, FileLoc )
+                            || { TP, ET, LU, CD } <- CanonicalTopicSpecs ] ) ]
+        ++ [ generate_footer_form( FileLoc ) ].
 
 
 
 % Topic names already known to be (unique) atoms:
 canonicalise_topic_spec( _TS={ T, E } ) ->
-	canonicalise_topic_spec( { T, E, _DefaultLookup=strict } );
+    canonicalise_topic_spec( { T, E, _DefaultLookup=strict } );
 
 canonicalise_topic_spec( { T, E, LU } ) ->
-	canonicalise_topic_spec( { T, E, LU, _DefaultConvDir=both } );
+    canonicalise_topic_spec( { T, E, LU, _DefaultConvDir=both } );
 
 canonicalise_topic_spec( TS={ TopicName, Entries, Lookup, ConvDir } ) ->
 
-	is_list( Entries ) orelse
-		throw( { non_list_topic_entries, Entries, TopicName } ),
+    is_list( Entries ) orelse
+        throw( { non_list_topic_entries, Entries, TopicName } ),
 
-	( Lookup =:= strict orelse Lookup =:= 'maybe' ) orelse
-		throw( { invalid_topic_element_lookup, Lookup, TopicName } ),
+    ( Lookup =:= strict orelse Lookup =:= 'maybe' ) orelse
+        throw( { invalid_topic_element_lookup, Lookup, TopicName } ),
 
-	lists:member( ConvDir, [ first_to_second, second_to_first, both ] ) orelse
-		throw( { invalid_topic_conversion_direction, ConvDir, TopicName } ),
+    lists:member( ConvDir, [ first_to_second, second_to_first, both ] ) orelse
+        throw( { invalid_topic_conversion_direction, ConvDir, TopicName } ),
 
-	% Checking that, for each topic, its first and second entries have not
-	% duplicate:
+    % Checking that, for each topic, its first and second entries have not
+    % duplicate:
 
-	{ Firsts, Seconds } = lists:unzip( Entries ),
-	check_entries_uniqueness( Firsts, Seconds, ConvDir, TopicName ),
+    { Firsts, Seconds } = lists:unzip( Entries ),
+    check_entries_uniqueness( Firsts, Seconds, ConvDir, TopicName ),
 
-	TS;
+    TS;
 
 canonicalise_topic_spec( InvalidTS ) ->
-	throw( { invalid_topic_specification, InvalidTS } ).
+    throw( { invalid_topic_specification, InvalidTS } ).
 
 
 
 -doc "Detects any duplicate in either first/second element set.".
 -spec check_entries_uniqueness( [ first_type() ], [ second_type() ],
-		conversion_direction(), topic_name() ) -> void().
+        conversion_direction(), topic_name() ) -> void().
 check_entries_uniqueness( Firsts, _Seconds, _ConvDir=first_to_second,
-						  TopicName ) ->
-	% Here two different first elements may be associated to the same second
-	% one; so only the first elements have to be unique:
-	%
-	case list_utils:get_duplicates( Firsts ) of
+                          TopicName ) ->
+    % Here two different first elements may be associated to the same second
+    % one; so only the first elements have to be unique:
+    %
+    case list_utils:get_duplicates( Firsts ) of
 
-		[] ->
-			ok;
+        [] ->
+            ok;
 
-		FirstDupInfo ->
-			trace_utils:error_fmt( "For topic '~ts', there are duplicates "
-				"among the first elements, whereas the conversion direction "
-				"is first-to-second: ~ts.~n First elements were:~n ~p",
-				[ TopicName, list_utils:duplicate_info_to_string(
-					FirstDupInfo ), Firsts ] ),
+        FirstDupInfo ->
+            trace_utils:error_fmt( "For topic '~ts', there are duplicates "
+                "among the first elements, whereas the conversion direction "
+                "is first-to-second: ~ts.~n First elements were:~n ~p",
+                [ TopicName, list_utils:duplicate_info_to_string(
+                    FirstDupInfo ), Firsts ] ),
 
-			throw( { duplicated_first_entries, FirstDupInfo, TopicName } )
+            throw( { duplicated_first_entries, FirstDupInfo, TopicName } )
 
-	end;
+    end;
 
 check_entries_uniqueness( _Firsts, Seconds, _ConvDir=second_to_first,
-						  TopicName ) ->
-	% Here two different second elements may be associated to the same first
-	% one; so only the second elements have to be unique:
-	%
-	case list_utils:get_duplicates( Seconds ) of
+                          TopicName ) ->
+    % Here two different second elements may be associated to the same first
+    % one; so only the second elements have to be unique:
+    %
+    case list_utils:get_duplicates( Seconds ) of
 
-		[] ->
-			ok;
+        [] ->
+            ok;
 
-		SecondDupInfo ->
-			trace_utils:error_fmt( "For topic '~ts', there are duplicates "
-				"among the second elements, whereas the conversion direction "
-				"is second-to-first: ~ts.~n Seconds elements were:~n ~p",
-				[ TopicName, list_utils:duplicate_info_to_string(
-					SecondDupInfo ), Seconds ] ),
+        SecondDupInfo ->
+            trace_utils:error_fmt( "For topic '~ts', there are duplicates "
+                "among the second elements, whereas the conversion direction "
+                "is second-to-first: ~ts.~n Seconds elements were:~n ~p",
+                [ TopicName, list_utils:duplicate_info_to_string(
+                    SecondDupInfo ), Seconds ] ),
 
-			throw( { duplicated_second_entries, SecondDupInfo, TopicName } )
+            throw( { duplicated_second_entries, SecondDupInfo, TopicName } )
 
-	end;
+    end;
 
 check_entries_uniqueness( Firsts, Seconds, _ConvDir=both, TopicName ) ->
 
-	% We expect here a bijection:
+    % We expect here a bijection:
 
-	case list_utils:get_duplicates( Firsts ) of
+    case list_utils:get_duplicates( Firsts ) of
 
-		[] ->
-			ok;
+        [] ->
+            ok;
 
-		FirstDupInfo ->
-			trace_utils:error_fmt( "For topic '~ts', there are duplicates "
-				"among the first elements: ~ts.~n"
-				"First elements were:~n  ~p",
-				[ TopicName, list_utils:duplicate_info_to_string(
-					FirstDupInfo ), Firsts ] ),
+        FirstDupInfo ->
+            trace_utils:error_fmt( "For topic '~ts', there are duplicates "
+                "among the first elements: ~ts.~n"
+                "First elements were:~n  ~p",
+                [ TopicName, list_utils:duplicate_info_to_string(
+                    FirstDupInfo ), Firsts ] ),
 
-			throw( { duplicated_first_entries, FirstDupInfo, TopicName } )
+            throw( { duplicated_first_entries, FirstDupInfo, TopicName } )
 
-	end,
+    end,
 
-	case list_utils:get_duplicates( Seconds ) of
+    case list_utils:get_duplicates( Seconds ) of
 
-		[] ->
-			ok;
+        [] ->
+            ok;
 
-		SecondDupInfo ->
-			trace_utils:error_fmt( "For topic '~ts', there are duplicates "
-				"among the second elements: ~ts.~n"
-				"Second elements were:~n  ~p",
-				[ TopicName, list_utils:duplicate_info_to_string(
-					SecondDupInfo ), Seconds ] ),
+        SecondDupInfo ->
+            trace_utils:error_fmt( "For topic '~ts', there are duplicates "
+                "among the second elements: ~ts.~n"
+                "Second elements were:~n  ~p",
+                [ TopicName, list_utils:duplicate_info_to_string(
+                    SecondDupInfo ), Seconds ] ),
 
-			throw( { duplicated_second_entries, SecondDupInfo, TopicName } )
+            throw( { duplicated_second_entries, SecondDupInfo, TopicName } )
 
-	end.
+    end.
 
 
 
@@ -615,169 +615,169 @@ Generates the forms corresponding to the specified first/second function names,
 entries and module, depending on the specified look-up.
 """.
 -spec generate_forms( topic_name(), entries(), element_lookup(),
-					  conversion_direction(), file_loc() ) -> [ form() ].
+                      conversion_direction(), file_loc() ) -> [ form() ].
 generate_forms( TopicName, Entries, _ElementLookup=strict, ConversionDirection,
-				FileLoc ) ->
+                FileLoc ) ->
 
-	% We prefer defining get_first_for_TOPIC/1 then get_second_for_TOPIC/1, and
-	% respecting the order of the specified entries; preferably ends with end of
-	% file:
-	%
-	% (refer to https://www.erlang.org/doc/apps/erts/absform.html)
+    % We prefer defining get_first_for_TOPIC/1 then get_second_for_TOPIC/1, and
+    % respecting the order of the specified entries; preferably ends with end of
+    % file:
+    %
+    % (refer to https://www.erlang.org/doc/apps/erts/absform.html)
 
-	FirstFunName = text_utils:atom_format( "get_first_for_~ts", [ TopicName ] ),
+    FirstFunName = text_utils:atom_format( "get_first_for_~ts", [ TopicName ] ),
 
-	SecondFunName = text_utils:atom_format( "get_second_for_~ts",
-											[ TopicName ] ),
+    SecondFunName = text_utils:atom_format( "get_second_for_~ts",
+                                            [ TopicName ] ),
 
-	RevEntries = lists:reverse( Entries ),
+    RevEntries = lists:reverse( Entries ),
 
-	case ConversionDirection of
+    case ConversionDirection of
 
-		first_to_second ->
-			SecondFunForm = generate_strict_fun_form_for_second( RevEntries,
-				SecondFunName, TopicName, FileLoc ),
-			[ SecondFunForm ];
+        first_to_second ->
+            SecondFunForm = generate_strict_fun_form_for_second( RevEntries,
+                SecondFunName, TopicName, FileLoc ),
+            [ SecondFunForm ];
 
-		second_to_first ->
-			FirstFunForm = generate_strict_fun_form_for_first( RevEntries,
-				FirstFunName, TopicName, FileLoc ),
-			[ FirstFunForm ];
+        second_to_first ->
+            FirstFunForm = generate_strict_fun_form_for_first( RevEntries,
+                FirstFunName, TopicName, FileLoc ),
+            [ FirstFunForm ];
 
-		both ->
-			FirstFunForm = generate_strict_fun_form_for_first( RevEntries,
-				FirstFunName, TopicName, FileLoc ),
+        both ->
+            FirstFunForm = generate_strict_fun_form_for_first( RevEntries,
+                FirstFunName, TopicName, FileLoc ),
 
-			SecondFunForm = generate_strict_fun_form_for_second( RevEntries,
-				SecondFunName, TopicName, FileLoc ),
+            SecondFunForm = generate_strict_fun_form_for_second( RevEntries,
+                SecondFunName, TopicName, FileLoc ),
 
-			[ FirstFunForm, SecondFunForm ]
+            [ FirstFunForm, SecondFunForm ]
 
-	end;
+    end;
 
 generate_forms( TopicName, Entries, _ElementLookup='maybe', ConversionDirection,
-				FileLoc ) ->
+                FileLoc ) ->
 
-	RevEntries = lists:reverse( Entries ),
+    RevEntries = lists:reverse( Entries ),
 
-	case ConversionDirection of
+    case ConversionDirection of
 
-		first_to_second ->
-			generate_maybe_fun_forms_for_second( RevEntries, TopicName,
-												 FileLoc );
+        first_to_second ->
+            generate_maybe_fun_forms_for_second( RevEntries, TopicName,
+                                                 FileLoc );
 
-		second_to_first ->
-			generate_maybe_fun_forms_for_first( RevEntries, TopicName,
-												FileLoc );
+        second_to_first ->
+            generate_maybe_fun_forms_for_first( RevEntries, TopicName,
+                                                FileLoc );
 
-		both ->
-			FirstFunForms = generate_maybe_fun_forms_for_first( RevEntries,
-				TopicName, FileLoc ),
+        both ->
+            FirstFunForms = generate_maybe_fun_forms_for_first( RevEntries,
+                TopicName, FileLoc ),
 
-			%trace_utils:debug_fmt( "Generated first maybe-form for topic "
-			%   "'~ts':~n ~p", [ TopicName, FirstFunForms ] ),
+            %trace_utils:debug_fmt( "Generated first maybe-form for topic "
+            %   "'~ts':~n ~p", [ TopicName, FirstFunForms ] ),
 
-			SecondFunForms = generate_maybe_fun_forms_for_second( RevEntries,
-				TopicName, FileLoc ),
+            SecondFunForms = generate_maybe_fun_forms_for_second( RevEntries,
+                TopicName, FileLoc ),
 
-			FirstFunForms ++ SecondFunForms
+            FirstFunForms ++ SecondFunForms
 
-	end.
+    end.
 
 
 
 % Generates the strict form corresponding to foobar:FirstFunName/1.
 generate_strict_fun_form_for_first( Entries, FirstFunName, TopicName,
-									FileLoc ) ->
+                                    FileLoc ) ->
 
-	% We have here to generate first the 'foobar:get_first_for_TOPIC(Sn) -> Fn;'
-	% clauses:
-	%
-	Clauses = generate_first_clauses( Entries, FileLoc,
-		_Acc=[ catch_all_clause( second_not_found, TopicName, _Lookup=strict,
-								 FileLoc ) ] ),
+    % We have here to generate first the 'foobar:get_first_for_TOPIC(Sn) -> Fn;'
+    % clauses:
+    %
+    Clauses = generate_first_clauses( Entries, FileLoc,
+        _Acc=[ catch_all_clause( second_not_found, TopicName, _Lookup=strict,
+                                 FileLoc ) ] ),
 
-	{ function, FileLoc, FirstFunName, _Arity=1, Clauses }.
+    { function, FileLoc, FirstFunName, _Arity=1, Clauses }.
 
 
 % (helper)
 generate_first_clauses( _Entries=[], _FileLoc, Acc ) ->
-	% Already reversed:
-	Acc;
+    % Already reversed:
+    Acc;
 
 generate_first_clauses( _Entries=[ _E={ F, S } | T ], FileLoc, Acc ) ->
 
-	ASTForF = ast_utils:term_to_form( F ),
-	ASTForS = ast_utils:term_to_form( S ),
+    ASTForF = ast_utils:term_to_form( F ),
+    ASTForS = ast_utils:term_to_form( S ),
 
-	NewAcc = [ { clause, FileLoc, _PatternSeq=[ ASTForS ], _GuardSeq=[],
-				 _Body=[ ASTForF ] } | Acc ],
+    NewAcc = [ { clause, FileLoc, _PatternSeq=[ ASTForS ], _GuardSeq=[],
+                 _Body=[ ASTForF ] } | Acc ],
 
-	generate_first_clauses( T, FileLoc, NewAcc ).
+    generate_first_clauses( T, FileLoc, NewAcc ).
 
 
 % Generates the strict form corresponding to foobar:SecondFunName/1.
 generate_strict_fun_form_for_second( Entries, SecondFunName, TopicName,
-									 FileLoc ) ->
+                                     FileLoc ) ->
 
-	% We have here to generate second the
-	% 'foobar:get_second_for_TOPIC(Sn) -> Fn;' clauses:
-	%
-	Clauses = generate_second_clauses( Entries, FileLoc,
-		_Acc=[ catch_all_clause( first_not_found, TopicName, _Lookup=strict,
-								 FileLoc ) ] ),
+    % We have here to generate second the
+    % 'foobar:get_second_for_TOPIC(Sn) -> Fn;' clauses:
+    %
+    Clauses = generate_second_clauses( Entries, FileLoc,
+        _Acc=[ catch_all_clause( first_not_found, TopicName, _Lookup=strict,
+                                 FileLoc ) ] ),
 
-	{ function, FileLoc, SecondFunName, _Arity=1, Clauses }.
+    { function, FileLoc, SecondFunName, _Arity=1, Clauses }.
 
 
 
 % (helper)
 generate_second_clauses( _Entries=[], _FileLoc, Acc ) ->
-	% Already reversed:
-	Acc;
+    % Already reversed:
+    Acc;
 
 generate_second_clauses( _Entries=[ _E={ F, S } | T ], FileLoc, Acc ) ->
 
-	ASTForF = ast_utils:term_to_form( F ),
-	ASTForS = ast_utils:term_to_form( S ),
+    ASTForF = ast_utils:term_to_form( F ),
+    ASTForS = ast_utils:term_to_form( S ),
 
-	% Note the F/S swapping compared to generate_first_clauses/3:
-	NewAcc = [ { clause, FileLoc, _PatternSeq=[ ASTForF ], _GuardSeq=[],
-				 _Body=[ ASTForS ] } | Acc ],
+    % Note the F/S swapping compared to generate_first_clauses/3:
+    NewAcc = [ { clause, FileLoc, _PatternSeq=[ ASTForF ], _GuardSeq=[],
+                 _Body=[ ASTForS ] } | Acc ],
 
-	generate_second_clauses( T, FileLoc, NewAcc ).
+    generate_second_clauses( T, FileLoc, NewAcc ).
 
 
 
 % Generates the maybe forms corresponding to foobar:get_maybe_first_for_TOPIC/1.
 generate_maybe_fun_forms_for_first( Entries, TopicName, FileLoc ) ->
 
-	% We generate first a full maybe function, then derive its strict
-	% counterpart from it (the strict one calling the maybe one):
+    % We generate first a full maybe function, then derive its strict
+    % counterpart from it (the strict one calling the maybe one):
 
-	Arity = 1,
+    Arity = 1,
 
-	MaybeFunName =
-		text_utils:atom_format( "get_maybe_first_for_~ts", [ TopicName ] ),
+    MaybeFunName =
+        text_utils:atom_format( "get_maybe_first_for_~ts", [ TopicName ] ),
 
-	MaybeClauses = generate_first_clauses( Entries, FileLoc,
-		_MAcc=[ catch_all_clause( second_not_found, TopicName, _Lookup='maybe',
-								  FileLoc ) ] ),
+    MaybeClauses = generate_first_clauses( Entries, FileLoc,
+        _MAcc=[ catch_all_clause( second_not_found, TopicName, _Lookup='maybe',
+                                  FileLoc ) ] ),
 
-	MaybeFunForm = { function, FileLoc, MaybeFunName, Arity, MaybeClauses },
+    MaybeFunForm = { function, FileLoc, MaybeFunName, Arity, MaybeClauses },
 
 
-	StrictFunName =
-		text_utils:atom_format( "get_first_for_~ts", [ TopicName ] ),
+    StrictFunName =
+        text_utils:atom_format( "get_first_for_~ts", [ TopicName ] ),
 
-	StrictClauses = generate_strict_calling_clauses(
-		_ErrorAtom=second_not_found, MaybeFunName, TopicName, FileLoc ),
+    StrictClauses = generate_strict_calling_clauses(
+        _ErrorAtom=second_not_found, MaybeFunName, TopicName, FileLoc ),
 
-	%trace_utils:debug_fmt( "Strict clauses:~n ~p", [ StrictClauses ] ),
+    %trace_utils:debug_fmt( "Strict clauses:~n ~p", [ StrictClauses ] ),
 
-	StrictFunForm = { function, FileLoc, StrictFunName, Arity, StrictClauses },
+    StrictFunForm = { function, FileLoc, StrictFunName, Arity, StrictClauses },
 
-	[ MaybeFunForm, StrictFunForm ].
+    [ MaybeFunForm, StrictFunForm ].
 
 
 
@@ -786,62 +786,62 @@ generate_maybe_fun_forms_for_first( Entries, TopicName, FileLoc ) ->
 %
 generate_maybe_fun_forms_for_second( Entries, TopicName, FileLoc ) ->
 
-	Arity = 1,
+    Arity = 1,
 
-	MaybeFunName =
-		text_utils:atom_format( "get_maybe_second_for_~ts", [ TopicName ] ),
+    MaybeFunName =
+        text_utils:atom_format( "get_maybe_second_for_~ts", [ TopicName ] ),
 
-	MaybeClauses = generate_second_clauses( Entries, FileLoc,
-		_MAcc=[ catch_all_clause( first_not_found, TopicName, _Lookup='maybe',
-								  FileLoc ) ] ),
+    MaybeClauses = generate_second_clauses( Entries, FileLoc,
+        _MAcc=[ catch_all_clause( first_not_found, TopicName, _Lookup='maybe',
+                                  FileLoc ) ] ),
 
-	MaybeFunForm = { function, FileLoc, MaybeFunName, Arity, MaybeClauses },
+    MaybeFunForm = { function, FileLoc, MaybeFunName, Arity, MaybeClauses },
 
 
-	StrictFunName =
-		text_utils:atom_format( "get_second_for_~ts", [ TopicName ] ),
+    StrictFunName =
+        text_utils:atom_format( "get_second_for_~ts", [ TopicName ] ),
 
-	StrictClauses = generate_strict_calling_clauses(
-		_ErrorAtom=first_not_found, MaybeFunName, TopicName, FileLoc ),
+    StrictClauses = generate_strict_calling_clauses(
+        _ErrorAtom=first_not_found, MaybeFunName, TopicName, FileLoc ),
 
-	StrictFunForm = { function, FileLoc, StrictFunName, Arity, StrictClauses },
+    StrictFunForm = { function, FileLoc, StrictFunName, Arity, StrictClauses },
 
-	[ MaybeFunForm, StrictFunForm ].
+    [ MaybeFunForm, StrictFunForm ].
 
 
 
 % (helper)
 generate_strict_calling_clauses( ErrorAtom, MaybeFunName, TopicName,
-								 FileLoc ) ->
+                                 FileLoc ) ->
 
-	% Corresponds to a clause:
-	%  FUNC( X ) ->
-	%    case MaybeFunName( X ) of
-	%
-	%        undefined ->
-	%            throw( { ErrorAtom, TopicName, X } );
-	%
-	%        V ->
-	%            V
-	%
-	%    end
+    % Corresponds to a clause:
+    %  FUNC( X ) ->
+    %    case MaybeFunName( X ) of
+    %
+    %        undefined ->
+    %            throw( { ErrorAtom, TopicName, X } );
+    %
+    %        V ->
+    %            V
+    %
+    %    end
 
-	XVar = {var,FileLoc,'X'},
+    XVar = {var,FileLoc,'X'},
 
-	VVar = {var,FileLoc,'V'},
+    VVar = {var,FileLoc,'V'},
 
-	ThrowTuple = { tuple, FileLoc, [ {atom,FileLoc,ErrorAtom},
-									 {atom,FileLoc,TopicName}, XVar ] },
+    ThrowTuple = { tuple, FileLoc, [ {atom,FileLoc,ErrorAtom},
+                                     {atom,FileLoc,TopicName}, XVar ] },
 
-	% Single clause:
-	[ { clause, FileLoc, _PatternSeq=[ XVar ], _GuardSeq=[],
-		[ { 'case', FileLoc,
-			{ call, FileLoc, {atom,FileLoc,MaybeFunName}, [ XVar ] },
-			[ { clause, FileLoc, [{atom,FileLoc,undefined}], [],
-				[ { call, FileLoc, _Fun={atom,FileLoc,throw},
-				  _Args=[ ThrowTuple ] } ] },
-			  { clause, FileLoc, [VVar], [],
-				[ VVar ] } ] } ] } ].
+    % Single clause:
+    [ { clause, FileLoc, _PatternSeq=[ XVar ], _GuardSeq=[],
+        [ { 'case', FileLoc,
+            { call, FileLoc, {atom,FileLoc,MaybeFunName}, [ XVar ] },
+            [ { clause, FileLoc, [{atom,FileLoc,undefined}], [],
+                [ { call, FileLoc, _Fun={atom,FileLoc,throw},
+                  _Args=[ ThrowTuple ] } ] },
+              { clause, FileLoc, [VVar], [],
+                [ VVar ] } ] } ] } ].
 
 
 
@@ -855,30 +855,30 @@ Thus results in { {nocatch, {first_not_found, my_topic, MyUnexpectedValue} },
 [{my_generated_module, get_second_for_my_topic,1,[]}, ...
 """.
 -spec catch_all_clause( error_type(), topic_name(), element_lookup(),
-						file_loc() ) -> form().
+                        file_loc() ) -> form().
 catch_all_clause( ErrorAtom, TopicName, _Lookup=strict, FileLoc ) ->
 
-	% Corresponds to a clause:
-	%  FUNC( NotMatched ) ->
-	%    throw( { ErrorAtom, TopicName, NotMatched } )
+    % Corresponds to a clause:
+    %  FUNC( NotMatched ) ->
+    %    throw( { ErrorAtom, TopicName, NotMatched } )
 
-	NotMatchedVar = { var, FileLoc, 'NotMatched' },
+    NotMatchedVar = { var, FileLoc, 'NotMatched' },
 
-	% Not {remote, FileLoc, _Mod={atom,FileLoc,erlang}, _FunThrow...
-	ThrowCall = { call, FileLoc, _Fun={atom,FileLoc,throw},
-		_Args=[ { tuple, FileLoc, [ {atom,FileLoc,ErrorAtom},
-			{atom,FileLoc,TopicName}, NotMatchedVar ] } ] },
+    % Not {remote, FileLoc, _Mod={atom,FileLoc,erlang}, _FunThrow...
+    ThrowCall = { call, FileLoc, _Fun={atom,FileLoc,throw},
+        _Args=[ { tuple, FileLoc, [ {atom,FileLoc,ErrorAtom},
+            {atom,FileLoc,TopicName}, NotMatchedVar ] } ] },
 
-	{ clause, FileLoc, _PatternSeq=[ NotMatchedVar ], _GuardSeq=[],
-		_Body=[ ThrowCall ] };
+    { clause, FileLoc, _PatternSeq=[ NotMatchedVar ], _GuardSeq=[],
+        _Body=[ ThrowCall ] };
 
 catch_all_clause( _ErrorAtom, _TopicName, _Lookup='maybe', FileLoc ) ->
 
-	% Corresponds to a clause:
-	%  FUNC( _NotMatched ) ->
-	%    undefined.
+    % Corresponds to a clause:
+    %  FUNC( _NotMatched ) ->
+    %    undefined.
 
-	NotMatchedVar = { var, FileLoc, '_' },
+    NotMatchedVar = { var, FileLoc, '_' },
 
-	{ clause, FileLoc, _PatternSeq=[ NotMatchedVar ], _GuardSeq=[],
-		_Body=[ {atom,FileLoc,'undefined'} ] }.
+    { clause, FileLoc, _PatternSeq=[ NotMatchedVar ], _GuardSeq=[],
+        _Body=[ {atom,FileLoc,'undefined'} ] }.

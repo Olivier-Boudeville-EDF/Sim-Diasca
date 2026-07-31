@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -44,17 +44,17 @@ offsets starting from 100.
 Returns a list of the corresponding PIDs.
 """.
 create_equipments( _Count=0, _FailureModelPid, _RepairModelPid ) ->
-	[];
+    [];
 
 create_equipments( Count, FailureModelPid, RepairModelPid ) ->
 
-	ActorName = text_utils:format( "Test-Equipment-~B", [ Count ] ),
+    ActorName = text_utils:format( "Test-Equipment-~B", [ Count ] ),
 
-	NewActorPid = class_Actor:create_initial_actor( class_TestEquipment,
-		[ ActorName, _StopTick=100+Count, FailureModelPid, RepairModelPid ] ),
+    NewActorPid = class_Actor:create_initial_actor( class_TestEquipment,
+        [ ActorName, _StopTick=100+Count, FailureModelPid, RepairModelPid ] ),
 
-	[ NewActorPid
-		| create_equipments( Count-1, FailureModelPid, RepairModelPid ) ].
+    [ NewActorPid
+        | create_equipments( Count-1, FailureModelPid, RepairModelPid ) ].
 
 
 
@@ -67,155 +67,155 @@ want all (potentially numerous) equipments to carry each a probe.
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+    ?case_start,
 
-	% Use default simulation settings (50Hz, batch reproducible):
-	SimulationSettings = #simulation_settings{
+    % Use default simulation settings (50Hz, batch reproducible):
+    SimulationSettings = #simulation_settings{
 
-		simulation_name="Sim-Diasca Equipment Integration Test"
+        simulation_name="Sim-Diasca Equipment Integration Test"
 
-		% We leave it to the default specification (all_outputs):
-		% result_specification=
-		%   [ { targeted_patterns, [ {".*", [data_and_rendering]} ] },
-		%     { blacklisted_patterns, [ "^Second" ] } ]
+        % We leave it to the default specification (all_outputs):
+        % result_specification=
+        %   [ { targeted_patterns, [ {".*", [data_and_rendering]} ] },
+        %     { blacklisted_patterns, [ "^Second" ] } ]
 
-	},
+    },
 
-	% Specifies the list of computing hosts that can be used:
-	%
-	% (see the sim-diasca-host-candidates-sample.etf example in the
-	% sim-diasca/conf directory)
-	%
-	DeploymentSettings = #deployment_settings{},
+    % Specifies the list of computing hosts that can be used:
+    %
+    % (see the sim-diasca-host-candidates-sample.etf example in the
+    % sim-diasca/conf directory)
+    %
+    DeploymentSettings = #deployment_settings{},
 
-	% Default load balancing settings (round-robin placement heuristic):
-	LoadBalancingSettings = #load_balancing_settings{},
+    % Default load balancing settings (round-robin placement heuristic):
+    LoadBalancingSettings = #load_balancing_settings{},
 
-	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-		DeploymentSettings, LoadBalancingSettings ),
-
-
-	?test_info( "Creating an exponential failure model." ),
-
-	% Parameters are MTTFday, MTTFhour, MTTFminute, MTTFsecond:
-	MyExponentialFailureModel = class_Actor:create_initial_actor(
-		class_ExponentialFailureModel, [ {0,0,0,10} ] ),
-
-	?test_info( "Creating a gaussian failure model." ),
-
-	% Parameters are {MTTFday, MTTFhour, MTTFminute, MTTFsecond},
-	% MTTFStdDeviation:
-	%
-	MyGaussianFailureModel = class_Actor:create_initial_actor(
-		class_GaussianFailureModel, [ {0,0,0,3}, 3 ] ),
+    DeploymentManagerPid = sim_diasca:init( SimulationSettings,
+        DeploymentSettings, LoadBalancingSettings ),
 
 
-	?test_info( "Creating a uniform repair model." ),
+    ?test_info( "Creating an exponential failure model." ),
 
-	% Parameters are MaxTTRday, MaxTTRhour, MaxTTRminute, MaxTTRsecond:
-	MyUniformRepairModel = class_Actor:create_initial_actor(
-		class_UniformRepairModel, [ {0,0,0,5} ] ),
+    % Parameters are MTTFday, MTTFhour, MTTFminute, MTTFsecond:
+    MyExponentialFailureModel = class_Actor:create_initial_actor(
+        class_ExponentialFailureModel, [ {0,0,0,10} ] ),
 
-	?test_info( "Creating a gaussian repair model." ),
+    ?test_info( "Creating a gaussian failure model." ),
 
-	% Parameters are {MTTRday,MTTRhour,MTTRminute,MTTRsecond}, MTTFStdDeviation:
-	MyGaussianRepairModel = class_Actor:create_initial_actor(
-		class_GaussianRepairModel, [ {0,0,0,10}, 2 ] ),
-
-
-
-	?test_info( "Creating reliability probes." ),
-
-	% They could have been declared as results as well:
-	MyFirstReliabilityProbe = class_ReliabilityProbe:synchronous_new(
-		"Reliability probe 1", "Monitoring of the state of equipment #1" ),
-
-	MySecondReliabilityProbe = class_ReliabilityProbe:synchronous_new(
-		"Reliability probe 2", "Monitoring of the state of equipment #2" ),
-
-	MyThirdReliabilityProbe  = class_ReliabilityProbe:synchronous_new(
-		"Reliability probe 3", "Monitoring of the state of equipment #3" ),
+    % Parameters are {MTTFday, MTTFhour, MTTFminute, MTTFsecond},
+    % MTTFStdDeviation:
+    %
+    MyGaussianFailureModel = class_Actor:create_initial_actor(
+        class_GaussianFailureModel, [ {0,0,0,3}, 3 ] ),
 
 
-	StopTick = 2000,
+    ?test_info( "Creating a uniform repair model." ),
+
+    % Parameters are MaxTTRday, MaxTTRhour, MaxTTRminute, MaxTTRsecond:
+    MyUniformRepairModel = class_Actor:create_initial_actor(
+        class_UniformRepairModel, [ {0,0,0,5} ] ),
+
+    ?test_info( "Creating a gaussian repair model." ),
+
+    % Parameters are {MTTRday,MTTRhour,MTTRminute,MTTRsecond}, MTTFStdDeviation:
+    MyGaussianRepairModel = class_Actor:create_initial_actor(
+        class_GaussianRepairModel, [ {0,0,0,10}, 2 ] ),
 
 
-	% Creates actors that will automatically subscribe themselves to the manager
-	% and that will terminate on specified tick.
-	%
-	% No reference kept, as the actor life cycle is managed by the time manager.
 
-	?test_info( "Creating three test equipments." ),
+    ?test_info( "Creating reliability probes." ),
 
+    % They could have been declared as results as well:
+    MyFirstReliabilityProbe = class_ReliabilityProbe:synchronous_new(
+        "Reliability probe 1", "Monitoring of the state of equipment #1" ),
 
-	% Terrance and Phillip will use different models, whereas Phillip and Roger
-	% will be stricty identically defined (except the probe of course), to
-	% ensure that they nevertheless have a different history, as they are
-	% expected to share their failure and reparation models instead of having
-	% each their own.
-	%
-	Terrance = class_Actor:create_initial_actor( class_TestEquipment,
-		[ "Terrance", _Termination=StopTick div 2, MyGaussianFailureModel,
-		  MyUniformRepairModel ] ),
+    MySecondReliabilityProbe = class_ReliabilityProbe:synchronous_new(
+        "Reliability probe 2", "Monitoring of the state of equipment #2" ),
 
-	Terrance ! { setReliabilityProbe, MyFirstReliabilityProbe, self() },
-
-	% Ensures synchronicity:
-	probe_set = test_receive(),
+    MyThirdReliabilityProbe  = class_ReliabilityProbe:synchronous_new(
+        "Reliability probe 3", "Monitoring of the state of equipment #3" ),
 
 
-	Phillip = class_Actor:create_initial_actor( class_TestEquipment,
-		[ "Phillip", StopTick, MyExponentialFailureModel,
-		  MyGaussianRepairModel ] ),
-
-	Phillip ! { setReliabilityProbe, MySecondReliabilityProbe, self() },
-
-	% Ensures synchronicity:
-	probe_set = test_receive(),
+    StopTick = 2000,
 
 
-	Roger = class_Actor:create_initial_actor( class_TestEquipment,
-		[ "Roger", StopTick, MyExponentialFailureModel,
-		  MyGaussianRepairModel ] ),
+    % Creates actors that will automatically subscribe themselves to the manager
+    % and that will terminate on specified tick.
+    %
+    % No reference kept, as the actor life cycle is managed by the time manager.
 
-	Roger ! { setReliabilityProbe, MyThirdReliabilityProbe, self() },
-
-	% Ensures synchronicity:
-	probe_set = test_receive(),
+    ?test_info( "Creating three test equipments." ),
 
 
-	%EquimentCount = 0,
-	EquimentCount = 10,
-	%EquimentCount = 5000,
+    % Terrance and Phillip will use different models, whereas Phillip and Roger
+    % will be stricty identically defined (except the probe of course), to
+    % ensure that they nevertheless have a different history, as they are
+    % expected to share their failure and reparation models instead of having
+    % each their own.
+    %
+    Terrance = class_Actor:create_initial_actor( class_TestEquipment,
+        [ "Terrance", _Termination=StopTick div 2, MyGaussianFailureModel,
+          MyUniformRepairModel ] ),
 
-	Equipments = create_equipments( EquimentCount, MyGaussianFailureModel,
-									MyUniformRepairModel ),
+    Terrance ! { setReliabilityProbe, MyFirstReliabilityProbe, self() },
 
-	?test_notice_fmt( "Created equipments: ~p.", [ Equipments ] ),
-
-
-	?test_notice_fmt( "Starting time manager, "
-		"for a stop at tick offset #~B.", [ StopTick ] ),
-
-	DeploymentManagerPid ! { getRootTimeManager, [], self() },
-	RootTimeManagerPid = test_receive(),
-
-	RootTimeManagerPid ! { start, [ StopTick, self() ] },
+    % Ensures synchronicity:
+    probe_set = test_receive(),
 
 
-	?test_info( "Waiting for the simulation to end, "
-				"since having been declared as a simulation listener." ),
+    Phillip = class_Actor:create_initial_actor( class_TestEquipment,
+        [ "Phillip", StopTick, MyExponentialFailureModel,
+          MyGaussianRepairModel ] ),
 
-	receive
+    Phillip ! { setReliabilityProbe, MySecondReliabilityProbe, self() },
 
-		simulation_stopped ->
-			?test_info( "Simulation stopped spontaneously." )
+    % Ensures synchronicity:
+    probe_set = test_receive(),
 
-	end,
 
-	?test_info( "Browsing the report results, if in batch mode." ),
-	class_ResultManager:browse_reports(),
+    Roger = class_Actor:create_initial_actor( class_TestEquipment,
+        [ "Roger", StopTick, MyExponentialFailureModel,
+          MyGaussianRepairModel ] ),
 
-	sim_diasca:shutdown(),
+    Roger ! { setReliabilityProbe, MyThirdReliabilityProbe, self() },
 
-	?case_stop.
+    % Ensures synchronicity:
+    probe_set = test_receive(),
+
+
+    %EquimentCount = 0,
+    EquimentCount = 10,
+    %EquimentCount = 5000,
+
+    Equipments = create_equipments( EquimentCount, MyGaussianFailureModel,
+                                    MyUniformRepairModel ),
+
+    ?test_notice_fmt( "Created equipments: ~p.", [ Equipments ] ),
+
+
+    ?test_notice_fmt( "Starting time manager, "
+        "for a stop at tick offset #~B.", [ StopTick ] ),
+
+    DeploymentManagerPid ! { getRootTimeManager, [], self() },
+    RootTimeManagerPid = test_receive(),
+
+    RootTimeManagerPid ! { start, [ StopTick, self() ] },
+
+
+    ?test_info( "Waiting for the simulation to end, "
+                "since having been declared as a simulation listener." ),
+
+    receive
+
+        simulation_stopped ->
+            ?test_info( "Simulation stopped spontaneously." )
+
+    end,
+
+    ?test_info( "Browsing the report results, if in batch mode." ),
+    class_ResultManager:browse_reports(),
+
+    sim_diasca:shutdown(),
+
+    ?case_stop.

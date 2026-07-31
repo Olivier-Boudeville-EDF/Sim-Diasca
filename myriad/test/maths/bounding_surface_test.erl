@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2025 Olivier Boudeville
+% Copyright (C) 2010-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -47,33 +47,33 @@ See the bounding_surface tested module.
 
 test_mec() ->
 
-	PointCountMin = 3,
+    PointCountMin = 3,
 
-	%PointCountMax = 5,
-	PointCountMax = 15,
-	%PointCountMax = 50,
-	%PointCountMax = 500,
+    %PointCountMax = 5,
+    PointCountMax = 15,
+    %PointCountMax = 50,
+    %PointCountMax = 500,
 
-	test_facilities:display( "Testing the Minimal Enclosing Circles, "
-		"from ~B to ~B points (each with ~B random tests).",
-		[ PointCountMin, PointCountMax, ?test_count ] ),
+    test_facilities:display( "Testing the Minimal Enclosing Circles, "
+        "from ~B to ~B points (each with ~B random tests).",
+        [ PointCountMin, PointCountMax, ?test_count ] ),
 
-	test_mec( PointCountMin, PointCountMax, _TestCount=0 ),
+    test_mec( PointCountMin, PointCountMax, _TestCount=0 ),
 
 
-	test_facilities:display( "Testing the special case of flat triangles." ),
+    test_facilities:display( "Testing the special case of flat triangles." ),
 
-	AlignedPoints = [ {0,0}, {7,0}, {11,0} ],
+    AlignedPoints = [ {0,0}, {7,0}, {11,0} ],
 
-	% First check:
-	MECircle = bounding_surface:get_lazy_bounding_circle( AlignedPoints ),
-	[ true = bounding_surface:is_within( P, MECircle ) || P <- AlignedPoints ],
+    % First check:
+    MECircle = bounding_surface:get_lazy_bounding_circle( AlignedPoints ),
+    [ true = bounding_surface:is_within( P, MECircle ) || P <- AlignedPoints ],
 
-	AllPerms = list_utils:get_all_permutations( AlignedPoints ),
+    AllPerms = list_utils:get_all_permutations( AlignedPoints ),
 
-	[ % We recompute what is expected to be always the same MEC:
-	  MECircle = bounding_surface:get_lazy_bounding_circle( Perm )
-			|| Perm <- AllPerms ].
+    [ % We recompute what is expected to be always the same MEC:
+      MECircle = bounding_surface:get_lazy_bounding_circle( Perm )
+            || Perm <- AllPerms ].
 
 
 
@@ -87,42 +87,42 @@ test_mec() ->
 
 % Will progressively slow down as the number of points increases:
 test_mec( PointCountMax, PointCountMax, _TestCount=?test_count ) ->
-	ok;
+    ok;
 
 test_mec( PointCount, PointCountMax, _TestCount=?test_count ) ->
 
-	NewPointCount = PointCount+1,
+    NewPointCount = PointCount+1,
 
-	test_facilities:display( " - testing for ~B random points",
-							 [ NewPointCount ] ),
+    test_facilities:display( " - testing for ~B random points",
+                             [ NewPointCount ] ),
 
-	test_mec( NewPointCount, PointCountMax, _TCount=0 );
+    test_mec( NewPointCount, PointCountMax, _TCount=0 );
 
 
 test_mec( PointCount, PointCountMax, TestCount ) ->
 
-	%test_facilities:display( "   * test #~B for ~B random points",
-	%                         [ TestCount, PointCount ] ),
+    %test_facilities:display( "   * test #~B for ~B random points",
+    %                         [ TestCount, PointCount ] ),
 
-	Points = point2:draw_integer_random( ?min_coord, ?max_coord, PointCount ),
+    Points = point2:draw_integer_random( ?min_coord, ?max_coord, PointCount ),
 
-	MECircle = bounding_surface:get_lazy_bounding_circle( Points ),
+    MECircle = bounding_surface:get_lazy_bounding_circle( Points ),
 
-	% Was so quick that wanted to check:
-	%test_facilities:display( "For points ~p, got MEC=~p.",
-	%                         [ Points, MECircle ] ),
+    % Was so quick that wanted to check:
+    %test_facilities:display( "For points ~p, got MEC=~p.",
+    %                         [ Points, MECircle ] ),
 
-	[ true = bounding_surface:is_within( P, MECircle ) || P <- Points ],
+    [ true = bounding_surface:is_within( P, MECircle ) || P <- Points ],
 
-	test_mec( PointCount, PointCountMax, TestCount+1 ).
+    test_mec( PointCount, PointCountMax, TestCount+1 ).
 
 
 
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	test_mec(),
+    test_mec(),
 
-	test_facilities:stop().
+    test_facilities:stop().

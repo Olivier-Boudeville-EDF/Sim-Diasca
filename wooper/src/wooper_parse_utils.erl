@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 Olivier Boudeville
+% Copyright (C) 2014-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -49,8 +49,8 @@ Returns a form element corresponding to the wooper:state() type.
 """.
 -spec get_state_type() -> form_element().
 get_state_type() ->
-	Line = 0,
-	{ remote_type, Line, [ {atom,Line,wooper}, {atom,Line,state}, [] ] }.
+    Line = 0,
+    { remote_type, Line, [ {atom,Line,wooper}, {atom,Line,state}, [] ] }.
 
 
 
@@ -61,5 +61,5 @@ Returns a form element corresponding to the State variable.
 """.
 -spec get_state_var() -> form_element().
 get_state_var() ->
-	Line = 0,
-	{ var, Line, 'State' }.
+    Line = 0,
+    { var, Line, 'State' }.

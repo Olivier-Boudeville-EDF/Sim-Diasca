@@ -97,7 +97,9 @@ If applying our conventions, supposing that Erlang and Rebar3 are already instal
 About the ``table`` module
 ==========================
 
-This is a pseudo module, which is not meant to exist as such (no ``table.erl``, no ``table.beam``).
+This is a pseudo module, which is not meant to exist as such (no ``table.erl``, no ``table.beam`` [#]_).
+
+.. [#] We may nevertheless introduce them in the future, so that tools (IDEs, type checkers) can still be aware of the types and functions exposed by this pseudo-module.
 
 The ``Myriad`` parse transform replaces references to the ``table`` module by (generally) references to the ``map_hashtable`` module. See `table transformations`_ for more information.
 
@@ -109,6 +111,44 @@ Enabling the Interconnection of Erlang nodes
 This is not a Myriad gotcha per se, but rather an Erlang one, so we documented it in `this section <http://howtos.esperide.org/Erlang.html#general-information>`_ of our Erlang HOWTO.
 
 Regarding the **EPMD** (TCP) port, the default Erlang one is ``4369``, while Myriad default one is ``4506``. Check for example that all launched nodes of interest can be seen with: ``epmd -port 4506 -names``.
+
+
+
+.. Troubleshooting Facilities
+
+Settings in terms of Error Reports
+==================================
+
+
+Rationale
+---------
+
+In order to ease the **debugging of programs**, it is convenient to determine, when a crash happens, **what kind of error report should be output, and how**.
+
+At least in some cases, dumping a full state on the console is not desirable (way too much content, which cannot be realistically read, especially if it includes larger terms), so we tend to **ellipse** (i.e., here, truncate after a maximum length) such error content.
+
+.. (as, beyond some number of characters/lines, we consider that there is no more point in printing elements).
+
+This works well... until the parts of interest would have appeared after the ellipsing maximum length. This is especially common when having to list multiple items (elements of a stacktrace, arguments of a function call, etc.): a longer element should not result in the next ones to disappear; per-element ellipsing is certainly better in such cases.
+
+Also, reporting errors through the standard (console) output is surely the most convenient, but, as mentioned, it is limited in terms of space and, also, of time: such printouts are transient, whereas having them stored fully and durably may be a debugging life-saver (notably when errors are difficult to reproduce or happen after a long time).
+
+
+Myriad Error Report Support
+---------------------------
+
+To cover at least a bit the previous needs, Myriad provides a few facilities - for its own use and the one of all layers above it - which are configured as a whole based on the ``basic_utils:error_report_output/0`` type, which allows selecting:
+
+- whether the errors shall be reported **only on the standard (error) output**, in a full (non-ellipsed) form (then with ``standard_full``) or ellipsed (with ``standard_ellipsed``)
+- or if error reports should be ellipsed on the standard (error) output and **also stored in-file** (a file by default named ``myriad-error-report.txt`` and written in the current directory), either in full (with ``standard_ellipsed_file_full``) or ellipsed there as well - but with an higher maximum length than for the console (with ``standard_and_file_ellipsed``)
+
+By default the ``standard_ellipsed`` setting applies. It can be set (preferably as early as possible in the program execution) with ``basic_utils:set_error_report_output/1``, and read with ``basic_utils:get_error_report_output/0``.
+
+We recommend switching to ``standard_ellipsed_file_full`` to debug tricky issues, and to ``standard_and_file_ellipsed`` when building for the ``production`` execution target - calling ``basic_utils:setup_execution_target/{0,1}`` would take care of it.
+
+Various error-reporting facilities integrate these conventions; notably, in Myriad, the stacktraces automatically respect the current setting in terms of error report output (see for example ``code_utils:interpret_stacktrace_for_error_output/0``).
+
+
 
 
 

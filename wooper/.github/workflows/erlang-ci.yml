@@ -1,10 +1,11 @@
 name: Erlang CI
 
+# Do not restrict operations on the main branch anymore:
 on:
   push:
-    branches: [ master ]
+#    branches: [ master ]
   pull_request:
-    branches: [ master ]
+#    branches: [ master ]
 
 jobs:
 

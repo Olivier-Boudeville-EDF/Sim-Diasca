@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -117,7 +117,7 @@ element.
 See <https://docs.wxwidgets.org/stable/classwx_sizer.html>.
 """.
 -type sizer_flag_opt() ::
-	'default'
+    'default'
 
   | 'top_border'    % Border width applies to the top side of that element.
   | 'bottom_border' % Border width applies to the bottom side of that element.
@@ -127,12 +127,12 @@ See <https://docs.wxwidgets.org/stable/classwx_sizer.html>.
 
   | 'expand_fully'  % Element expanded to fill all space assigned by the sizer
   | 'expand_shaped' % Element expanded as much as possible while also
-					% maintaining its aspect ratio.
+                    % maintaining its aspect ratio.
   | 'fixed_size'    % Set minimal size of the window to its initial value
-					% and do not change afterwards
+                    % and do not change afterwards
 
   | 'counted_even_if_hidden' % Allocate sufficient space even if it the sizer
-							 % is not visible.
+                             % is not visible.
 
   | 'align_center' % Element centered in the sizer's allocated space.
   | 'align_left'   % Element left-aligned in the sizer's allocated space.
@@ -140,18 +140,18 @@ See <https://docs.wxwidgets.org/stable/classwx_sizer.html>.
   | 'align_top'    % Element top-aligned in the sizer's allocated space.
   | 'align_bottom' % Element bottom-aligned in the sizer's allocated space.
   | 'align_center_vertical' % Element centered vertically in the sizer's
-							% allocated space.
+                            % allocated space.
   | 'align_center_horizontal'. % Element centered horizontally in the sizer's
-							   % allocated space.
+                               % allocated space.
 
 
 
 % Simplification for the user: no specific flag needed.
 -doc "An option when configuring a sizer.".
 -type sizer_option() ::
-	{ 'proportion', weight_factor() }
+    { 'proportion', weight_factor() }
 
-	% Applies iff at least one border is requested:
+    % Applies iff at least one border is requested:
   | { 'border_width', width() }
 
   | { 'user_data', term() }
@@ -172,21 +172,21 @@ of that element relative to the other elements.
 
 
 -export_type([ sizer/0, grid_sizer/0, compact_grid_sizer/0,
-			   sizable/0, sizer_element/0,
-			   sizer_flag_opt/0,
-			   sizer_option/0, weight_factor/0 ]).
+               sizable/0, sizer_element/0,
+               sizer_flag_opt/0,
+               sizer_option/0, weight_factor/0 ]).
 
 
 -export([ create/1, create_with_box/2,
-		  create_with_labelled_box/3, create_with_labelled_box/4,
-		  create_grid/4, create_compact_grid/4,
+          create_with_labelled_box/3, create_with_labelled_box/4,
+          create_grid/4, create_compact_grid/4,
 
-		  add_element/2, add_element/3,
-		  add_elements/2, add_elements/3,
-		  add_spacer/2, add_spacer/4,
-		  add_stretchable_spacer/1,
+          add_element/2, add_element/3,
+          add_elements/2, add_elements/3,
+          add_spacer/2, add_spacer/4,
+          add_stretchable_spacer/1,
 
-		  clear/1, clear/2 ]).
+          clear/1, clear/2 ]).
 
 
 % To improve:
@@ -242,8 +242,8 @@ No parent is needed for sizers per se.
 """.
 -spec create( orientation() ) -> sizer().
 create( Orientation ) ->
-	ActualOrientation = gui_wx_backend:to_wx_orientation( Orientation ),
-	wxBoxSizer:new( ActualOrientation ).
+    ActualOrientation = gui_wx_backend:to_wx_orientation( Orientation ),
+    wxBoxSizer:new( ActualOrientation ).
 
 
 
@@ -255,8 +255,8 @@ parent, with a box drawn around.
 """.
 -spec create_with_box( orientation(), parent() ) -> sizer().
 create_with_box( Orientation, Parent ) ->
-	ActualOrientation = gui_wx_backend:to_wx_orientation( Orientation ),
-	wxStaticBoxSizer:new( ActualOrientation, Parent, _Opts=[] ).
+    ActualOrientation = gui_wx_backend:to_wx_orientation( Orientation ),
+    wxStaticBoxSizer:new( ActualOrientation, Parent, _Opts=[] ).
 
 
 
@@ -266,8 +266,8 @@ parent, with a box drawn around bearing the specified label.  %
 """.
 -spec create_with_labelled_box( orientation(), label(), parent() ) -> sizer().
 create_with_labelled_box( Orientation, Label, Parent ) ->
-	ActualOrientation = gui_wx_backend:to_wx_orientation( Orientation ),
-	wxStaticBoxSizer:new( ActualOrientation, Parent, [ { label, Label } ] ).
+    ActualOrientation = gui_wx_backend:to_wx_orientation( Orientation ),
+    wxStaticBoxSizer:new( ActualOrientation, Parent, [ { label, Label } ] ).
 
 
 
@@ -276,10 +276,10 @@ Creates a sizer operating along the specified orientation, within the specified
 parent, with a box drawn around bearing the specified formatted label.
 """.
 -spec create_with_labelled_box( orientation(), format_string(), format_values(),
-								parent() ) -> sizer().
+                                parent() ) -> sizer().
 create_with_labelled_box( Orientation, FormatString, FormatValues, Parent ) ->
-	Label = text_utils:format( FormatString, FormatValues ),
-	create_with_labelled_box( Orientation, Label, Parent ).
+    Label = text_utils:format( FormatString, FormatValues ),
+    create_with_labelled_box( Orientation, Label, Parent ).
 
 
 
@@ -293,10 +293,10 @@ widget children.
 No parent is needed for sizers per se.
 """.
 -spec create_grid( row_count(), column_count(), width(), height() ) ->
-											grid_sizer().
+                                            grid_sizer().
 create_grid( RowCount, ColumnCount, HorizGap, VertGap ) ->
-	% Note the gap swap:
-	wxGridSizer:new( RowCount, ColumnCount, VertGap, HorizGap ).
+    % Note the gap swap:
+    wxGridSizer:new( RowCount, ColumnCount, VertGap, HorizGap ).
 
 
 
@@ -310,10 +310,10 @@ widget children.
 No parent is needed for sizers per se.
 """.
 -spec create_compact_grid( row_count(), column_count(), width(), height() ) ->
-											compact_grid_sizer().
+                                            compact_grid_sizer().
 create_compact_grid( RowCount, ColumnCount, HorizGap, VertGap ) ->
-	% Note the gap swap:
-	wxFlexGridSizer:new( RowCount, ColumnCount, VertGap, HorizGap ).
+    % Note the gap swap:
+    wxFlexGridSizer:new( RowCount, ColumnCount, VertGap, HorizGap ).
 
 
 
@@ -323,17 +323,17 @@ element.
 """.
 -spec add_element( sizer(), sizable() ) -> sizer_element().
 add_element( Sizer, _Sizable={ myriad_object_ref, myr_canvas, CanvasId } ) ->
-	gui:get_main_loop_pid() ! { getPanelForCanvas, CanvasId, self() },
-	receive
+    gui:get_main_loop_pid() ! { getPanelForCanvas, CanvasId, self() },
+    receive
 
-		{ notifyCanvasPanel, AssociatedPanel } ->
-			add_element( Sizer, AssociatedPanel )
+        { notifyCanvasPanel, AssociatedPanel } ->
+            add_element( Sizer, AssociatedPanel )
 
-	end;
+    end;
 
 add_element( Sizer, Sizable ) ->
-	%trace_utils:debug_fmt( "Adding ~w to sizer ~w.", [ Sizable, Sizer ] ),
-	wxSizer:add( Sizer, Sizable ).
+    %trace_utils:debug_fmt( "Adding ~w to sizer ~w.", [ Sizable, Sizer ] ),
+    wxSizer:add( Sizer, Sizable ).
 
 
 
@@ -342,24 +342,24 @@ Adds the specified sizable to the specified sizer with the specified option(s),
 and returns the corresponding element.
 """.
 -spec add_element( sizer(), sizable(), maybe_list( sizer_option() ) ) ->
-											sizer_element().
+                                            sizer_element().
 add_element( Sizer, _Sizable={ myriad_object_ref, myr_canvas, CanvasId },
-			 Options ) ->
-	gui:get_main_loop_pid() ! { getPanelForCanvas, CanvasId, self() },
-	receive
+             Options ) ->
+    gui:get_main_loop_pid() ! { getPanelForCanvas, CanvasId, self() },
+    receive
 
-		{ notifyCanvasPanel, AssociatedPanel } ->
-			add_element( Sizer, AssociatedPanel, Options )
+        { notifyCanvasPanel, AssociatedPanel } ->
+            add_element( Sizer, AssociatedPanel, Options )
 
-	end;
+    end;
 
 add_element( Sizer, Sizable, Options ) ->
-	ActualOptions = to_wx_sizer_options( Options ),
+    ActualOptions = to_wx_sizer_options( Options ),
 
-	%trace_utils:debug_fmt( "Adding ~w to sizer ~w with options ~w "
-	%    "(i.e. ~w).", [ Sizable, Sizer, Options, ActualOptions ] ),
+    %trace_utils:debug_fmt( "Adding ~w to sizer ~w with options ~w "
+    %    "(i.e. ~w).", [ Sizable, Sizer, Options, ActualOptions ] ),
 
-	wxSizer:add( Sizer, Sizable, ActualOptions ).
+    wxSizer:add( Sizer, Sizable, ActualOptions ).
 
 
 
@@ -368,18 +368,18 @@ Adds the specified sizables, possibly specified with option(s) (then common to
 all sizables), to the specified sizer, and returns the corresponding elements.
 """.
 -spec add_elements( sizer(),
-		[ sizable() | { sizable(), maybe_list( sizer_option() ) } ] ) ->
-											[ sizer_element() ].
+        [ sizable() | { sizable(), maybe_list( sizer_option() ) } ] ) ->
+                                            [ sizer_element() ].
 add_elements( _Sizer, _Sizables=[] ) ->
-	[];
+    [];
 
 add_elements( Sizer, _Sizables=[ { Sizable, Opts } | T ] ) ->
-	Elem = add_element( Sizer, Sizable, Opts ),
-	[ Elem | add_elements( Sizer, T ) ];
+    Elem = add_element( Sizer, Sizable, Opts ),
+    [ Elem | add_elements( Sizer, T ) ];
 
 add_elements( Sizer, _Sizables=[ Sizable | T ] ) ->
-	Elem = add_element( Sizer, Sizable ),
-	[ Elem | add_elements( Sizer, T ) ].
+    Elem = add_element( Sizer, Sizable ),
+    [ Elem | add_elements( Sizer, T ) ].
 
 
 
@@ -388,13 +388,13 @@ Adds the specified sizables, with the specified common option(s), to the
 specified sizer.
 """.
 -spec add_elements( sizer(), [ sizable() ], maybe_list( sizer_option() ) ) ->
-									[ sizer_element() ].
+                                    [ sizer_element() ].
 add_elements( _Sizer, _Sizables=[], _Options ) ->
-	[];
+    [];
 
 add_elements( Sizer, _Sizables=[ Sizable | T ], Options ) ->
-	Elem = add_element( Sizer, Sizable, Options ),
-	[ Elem | add_elements( Sizer, T, Options ) ].
+    Elem = add_element( Sizer, Sizable, Options ),
+    [ Elem | add_elements( Sizer, T, Options ) ].
 
 
 
@@ -405,7 +405,7 @@ corresponding sizer element.
 """.
 -spec add_spacer( sizer(), length() ) -> sizer_element().
 add_spacer( Sizer, Length ) ->
-	wxSizer:addSpacer( Sizer, _Size=Length ).
+    wxSizer:addSpacer( Sizer, _Size=Length ).
 
 
 
@@ -414,11 +414,11 @@ Adds to the specified sizer a spacer child of the specified dimensions, and
 returns the corresponding element.
 """.
 -spec add_spacer( sizer(), width(), height(), maybe_list( sizer_option() ) ) ->
-											sizer_element().
+                                            sizer_element().
 add_spacer( Sizer, Width, Height, Options ) ->
-	ActualOptions = to_wx_sizer_options( Options ),
-	% Not addSpacer:
-	wxSizer:add( Sizer, Width, Height, ActualOptions ).
+    ActualOptions = to_wx_sizer_options( Options ),
+    % Not addSpacer:
+    wxSizer:add( Sizer, Width, Height, ActualOptions ).
 
 
 
@@ -428,7 +428,7 @@ corresponding sizer element.
 """.
 -spec add_stretchable_spacer( sizer() ) -> sizer_element().
 add_stretchable_spacer( Sizer ) ->
-	wxSizer:addStretchSpacer( Sizer ).
+    wxSizer:addStretchSpacer( Sizer ).
 
 
 
@@ -437,7 +437,7 @@ Clears the specified sizer, detaching and deleting all its child widgets.
 """.
 -spec clear( sizer() ) -> void().
 clear( Sizer ) ->
-	clear( Sizer, _DeleteChildWidgets=true ).
+    clear( Sizer, _DeleteChildWidgets=true ).
 
 
 
@@ -447,7 +447,7 @@ iff requested.
 """.
 -spec clear( sizer(), boolean() ) -> void().
 clear( Sizer, DeleteChildWidgets ) ->
-	wxSizer:clear( Sizer, [ { delete_windows, DeleteChildWidgets } ] ).
+    wxSizer:clear( Sizer, [ { delete_windows, DeleteChildWidgets } ] ).
 
 
 
@@ -458,34 +458,34 @@ Converts the specified sizer options into wx-specific ones.
 """.
 -spec to_wx_sizer_options( maybe_list( sizer_option() ) ) -> wx_sizer_options().
 to_wx_sizer_options( Options ) when is_list( Options ) ->
-	to_wx_sizer_options( Options, _AccOpts=[], _AccFlags=[] );
+    to_wx_sizer_options( Options, _AccOpts=[], _AccFlags=[] );
 
 to_wx_sizer_options( Option ) ->
-	to_wx_sizer_options( [ Option ] ).
+    to_wx_sizer_options( [ Option ] ).
 
 
 
 % (helper)
 to_wx_sizer_options( _Options=[], AccOpts, _AccFlags=[]  ) ->
-	AccOpts;
+    AccOpts;
 
 to_wx_sizer_options( _Options=[], AccOpts, AccFlags ) ->
-	[ { flag, sizer_flags_to_bitmask( AccFlags ) } | AccOpts ];
+    [ { flag, sizer_flags_to_bitmask( AccFlags ) } | AccOpts ];
 
 to_wx_sizer_options( _Options=[ { userData, Data } | T ], AccOpts, AccFlags ) ->
-	to_wx_sizer_options( T, [ { user_data, Data } | AccOpts ], AccFlags );
+    to_wx_sizer_options( T, [ { user_data, Data } | AccOpts ], AccFlags );
 
 to_wx_sizer_options( _Options=[ { border_width, W } | T ], AccOpts,
-					 AccFlags ) ->
-	to_wx_sizer_options( T, [ { border, W } | AccOpts ], AccFlags );
+                     AccFlags ) ->
+    to_wx_sizer_options( T, [ { border, W } | AccOpts ], AccFlags );
 
 % Letting {proportion, integer()} go through:
 to_wx_sizer_options( _Options=[ P | T ], AccOpts, AccFlags )
-											when is_tuple( P ) ->
-	to_wx_sizer_options( T, [ P | AccOpts ], AccFlags );
+                                            when is_tuple( P ) ->
+    to_wx_sizer_options( T, [ P | AccOpts ], AccFlags );
 
 to_wx_sizer_options( _Options=[ F | T ], AccOpts, AccFlags ) ->
-	to_wx_sizer_options( T, AccOpts, [ F | AccFlags ] ).
+    to_wx_sizer_options( T, AccOpts, [ F | AccFlags ] ).
 
 
 
@@ -498,10 +498,10 @@ wx-specific bit mask.
 
 -spec sizer_flags_to_bitmask( maybe_list( sizer_option() ) ) -> bit_mask().
 sizer_flags_to_bitmask( FlagOpts ) when is_list( FlagOpts ) ->
-	lists:foldl( fun( F, Acc ) ->
-					gui_generated:get_second_for_sizer_flag( F ) bor Acc end,
-				 _InitialAcc=0,
-				 _List=FlagOpts );
+    lists:foldl( fun( F, Acc ) ->
+                    gui_generated:get_second_for_sizer_flag( F ) bor Acc end,
+                 _InitialAcc=0,
+                 _List=FlagOpts );
 
 sizer_flags_to_bitmask( FlagOpt ) ->
-	gui_generated:get_second_for_sizer_flag( FlagOpt ).
+    gui_generated:get_second_for_sizer_flag( FlagOpt ).

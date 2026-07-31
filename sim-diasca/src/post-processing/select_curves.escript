@@ -40,51 +40,51 @@
 % Allows to select a subset of the curves in the specifed time-series.
 main( [ SourceDataFilename | T ] ) ->
 
-	file_utils:is_existing_file( SourceDataFilename ) orelse
-		throw( { non_existing_datafile, SourceDataFilename } ),
+    file_utils:is_existing_file( SourceDataFilename ) orelse
+        throw( { non_existing_datafile, SourceDataFilename } ),
 
-	basic_utils:is_list_of_integers( T ) orelse
+    basic_utils:is_list_of_integers( T ) orelse
         begin
-			io:format( "Error, ~p is not a list of integers.~n", [T] ),
-			display_syntax(),
-			halt( 5 )
+            io:format( "Error, ~p is not a list of integers.~n", [T] ),
+            display_syntax(),
+            halt( 5 )
         end,
 
-	run( SourceDataFilename, T );
+    run( SourceDataFilename, T );
 
 
 main( Other ) ->
 
-	io:format( "Error, invalid parameters were provided ('~s').~n", [ Other ] ),
+    io:format( "Error, invalid parameters were provided ('~s').~n", [ Other ] ),
 
-	display_syntax(),
+    display_syntax(),
 
-	halt( 10 ).
+    halt( 10 ).
 
 
 
 
 display_syntax() ->
 
-	ScriptName = escript:script_name(),
+    ScriptName = escript:script_name(),
 
-	io:format( "Usage: " ++ ScriptName
-			  ++ " DATA_FILENAME [list of the indexes of selected curves]~n"
-			  ++ "Example: " ++ ScriptName ++ " my-data.dat 1 3 4 6~n" ).
+    io:format( "Usage: " ++ ScriptName
+              ++ " DATA_FILENAME [list of the indexes of selected curves]~n"
+              ++ "Example: " ++ ScriptName ++ " my-data.dat 1 3 4 6~n" ).
 
 
 
 % Run the selection operation.
 run( SourceDataFilename, CurveIndexList ) ->
 
-	?app_start,
+    ?app_start,
 
-	AnalyzerPid = class_TimeSeriesAnalyzer:synchronous_new_link(
-		SourceDataFilename,
-		_SeriesFilters=[ { curve_selector_series_filter, CurveIndexList } ],
-		_CommonCurveFilters=[],
-		_CurveSpecificFilters=[] ),
+    AnalyzerPid = class_TimeSeriesAnalyzer:synchronous_new_link(
+        SourceDataFilename,
+        _SeriesFilters=[ { curve_selector_series_filter, CurveIndexList } ],
+        _CommonCurveFilters=[],
+        _CurveSpecificFilters=[] ),
 
-	AnalyzerPid ! delete,
+    AnalyzerPid ! delete,
 
-	?app_stop.
+    ?app_stop.

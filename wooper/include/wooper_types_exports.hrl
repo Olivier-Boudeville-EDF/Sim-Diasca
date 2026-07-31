@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -116,11 +116,11 @@
 % lighten the syntax (no prefixing module needed for actual references):
 %
 -export_type([ classname/0,
-			   method_name/0, request_name/0, oneway_name/0,
-			   method_argument/0, method_arguments/0, requests_outcome/0 ]).
+               method_name/0, request_name/0, oneway_name/0,
+               method_argument/0, method_arguments/0, requests_outcome/0 ]).
 
 -export_type([ request_result/1, request_result/0,
-			   request_return/1, oneway_return/0,
-			   attribute_name/0, attribute_value/0, attribute_entry/0 ]).
+               request_return/1, oneway_return/0,
+               attribute_name/0, attribute_value/0, attribute_entry/0 ]).
 
 -export_type([ instance_pid/0 ]).

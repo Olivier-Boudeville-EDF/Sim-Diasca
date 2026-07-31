@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2025 Olivier Boudeville
+% Copyright (C) 2019-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -41,66 +41,66 @@ for that).
 % Actual test:
 test_wooper_application( OrderedAppNames ) ->
 
-	test_facilities:display( "Starting the WOOPER OTP active application." ),
+    test_facilities:display( "Starting the WOOPER OTP active application." ),
 
-	% We did not trap EXIT messages, as we wanted this test to crash (thanks to
-	% the link below) in case of problem (and not to receive an EXIT message
-	% bound not to be read).
-	%
-	% However this test was crashing even when stopping (normally) applications,
-	% as apparently an OTP application has its child processes terminated with
-	% reason 'shutdown' (not 'normal').
-	%
-	% So now this test process traps EXIT messages, and ensures that none
-	% besides {'EXIT',P,shutdown}, P being the PID of the WOOPER class manager,
-	% is received.
-	%
-	false = erlang:process_flag( trap_exit, true ),
+    % We did not trap EXIT messages, as we wanted this test to crash (thanks to
+    % the link below) in case of problem (and not to receive an EXIT message
+    % bound not to be read).
+    %
+    % However this test was crashing even when stopping (normally) applications,
+    % as apparently an OTP application has its child processes terminated with
+    % reason 'shutdown' (not 'normal').
+    %
+    % So now this test process traps EXIT messages, and ensures that none
+    % besides {'EXIT',P,shutdown}, P being the PID of the WOOPER class manager,
+    % is received.
+    %
+    false = erlang:process_flag( trap_exit, true ),
 
-	otp_utils:start_applications( OrderedAppNames ),
+    otp_utils:start_applications( OrderedAppNames ),
 
-	test_facilities:display( "WOOPER version: ~p.",
-		[ system_utils:get_application_version( wooper ) ] ),
+    test_facilities:display( "WOOPER version: ~p.",
+        [ system_utils:get_application_version( wooper ) ] ),
 
-	% The top-level user process may not be aware that an OTP application fails
-	% (ex: because its main process crashed), which is a problem for a test. So
-	% here we link explicitly this test process to the WOOPER class manager, to
-	% increase the chances of detecting any issue:
+    % The top-level user process may not be aware that an OTP application fails
+    % (ex: because its main process crashed), which is a problem for a test. So
+    % here we link explicitly this test process to the WOOPER class manager, to
+    % increase the chances of detecting any issue:
 
-	WOOPERClassManagerPid = wooper_class_manager:get_existing_manager(),
+    WOOPERClassManagerPid = wooper_class_manager:get_existing_manager(),
 
-	erlang:link( WOOPERClassManagerPid ),
+    erlang:link( WOOPERClassManagerPid ),
 
-	test_facilities:display( "Linked to WOOPER class manager ~w.",
-							 [ WOOPERClassManagerPid ] ),
+    test_facilities:display( "Linked to WOOPER class manager ~w.",
+                             [ WOOPERClassManagerPid ] ),
 
-	% To test also a WOOPER module:
+    % To test also a WOOPER module:
 
-	TestClassname = 'class_Tiger',
+    TestClassname = 'class_Tiger',
 
-	test_facilities:display( "Class filename corresponding to '~ts': '~ts'.",
-		[ TestClassname, wooper:get_class_filename( TestClassname ) ] ),
-
-
-	% Including WOOPER:
-	test_facilities:display( "Stopping all user applications." ),
-	otp_utils:stop_user_applications( OrderedAppNames ),
+    test_facilities:display( "Class filename corresponding to '~ts': '~ts'.",
+        [ TestClassname, wooper:get_class_filename( TestClassname ) ] ),
 
 
-	test_facilities:display( "Checking pending messages." ),
+    % Including WOOPER:
+    test_facilities:display( "Stopping all user applications." ),
+    otp_utils:stop_user_applications( OrderedAppNames ),
 
-	receive
 
-		{ 'EXIT', WOOPERClassManagerPid, shutdown } ->
-			ok
+    test_facilities:display( "Checking pending messages." ),
 
-	end,
+    receive
 
-	% None expected to be left:
-	basic_utils:check_no_pending_message(),
+        { 'EXIT', WOOPERClassManagerPid, shutdown } ->
+            ok
 
-	test_facilities:display(
-		"Successful end of test of the WOOPER OTP application." ).
+    end,
+
+    % None expected to be left:
+    basic_utils:check_no_pending_message(),
+
+    test_facilities:display(
+        "Successful end of test of the WOOPER OTP application." ).
 
 
 
@@ -111,20 +111,20 @@ test_wooper_application( OrderedAppNames ) ->
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	% Build root directory from which sibling prerequisite applications may be
-	% found:
-	%
-	BuildRootDir = "..",
+    % Build root directory from which sibling prerequisite applications may be
+    % found:
+    %
+    BuildRootDir = "..",
 
-	% No dependency specified in this test, yet they are managed:
-	OrderedAppNames = otp_utils:prepare_for_execution( _ThisAppName=wooper,
-													   BuildRootDir ),
+    % No dependency specified in this test, yet they are managed:
+    OrderedAppNames = otp_utils:prepare_for_execution( _ThisAppName=wooper,
+                                                       BuildRootDir ),
 
-	trace_utils:notice_fmt( "Resulting applications to start, in order: ~w.",
-							[ OrderedAppNames ] ),
+    trace_utils:notice_fmt( "Resulting applications to start, in order: ~w.",
+                            [ OrderedAppNames ] ),
 
-	test_wooper_application( OrderedAppNames ),
+    test_wooper_application( OrderedAppNames ),
 
-	test_facilities:stop().
+    test_facilities:stop().

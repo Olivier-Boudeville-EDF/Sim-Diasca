@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -25,15 +25,15 @@
 
 
 -define( class_description,
-		 "Equipment class, models any equipment, mostly electronic ones. "
-		 "Equipments are affected by failures and can be repaired, thus make "
-		 "use of a failure model and a repair model. "
-		 "An equipment can define any specific behavior to happen in case of "
-		 "failure or reparation, either on state transitions "
-		 "(onFailure/onReparation) or on persistent state "
-		 "(actNominal/actInDysfunction). "
-		 "See class_TestEquipment.erl for an example of equipment and "
-		 "equipment_integration_test.erl for a global test." ).
+         "Equipment class, models any equipment, mostly electronic ones. "
+         "Equipments are affected by failures and can be repaired, thus make "
+         "use of a failure model and a repair model. "
+         "An equipment can define any specific behavior to happen in case of "
+         "failure or reparation, either on state transitions "
+         "(onFailure/onReparation) or on persistent state "
+         "(actNominal/actInDysfunction). "
+         "See class_TestEquipment.erl for an example of equipment and "
+         "equipment_integration_test.erl for a global test." ).
 
 
 
@@ -54,14 +54,14 @@
 
 
 -type random_profile() :: { 'uniform', pos_integer() }
-						| { 'exponential_1p', float() }
-						| { 'positive_integer_exponential_1p', pos_integer() }
-						| { 'gaussian', float(), float() }
-						| { 'positive_integer_gaussian', number(), number() }.
+                        | { 'exponential_1p', float() }
+                        | { 'positive_integer_exponential_1p', pos_integer() }
+                        | { 'gaussian', float(), float() }
+                        | { 'positive_integer_gaussian', number(), number() }.
 
 
 -type reliability_tick() :: class_TimeManager:tick_offset()
-						  | 'uninitialized' | 'waiting'.
+                          | 'uninitialized' | 'waiting'.
 
 -type probe_ref() :: class_Probe:probe_ref().
 
@@ -70,33 +70,33 @@
 
 % Silences as well unused warning:
 -export_type([ reliability_status/0, reliability_duration/0,
-			   random_profile/0,
-			   reliability_tick/0, reliability_listener_pid/0 ]).
+               random_profile/0,
+               reliability_tick/0, reliability_listener_pid/0 ]).
 
 
 % Tne class-specific attributes of an equipment are:
 -define( class_attributes, [
 
-	{ failure_model_pid, option( class_FailureModel:model_pid() ),
-	  "PID of the failure model in use (if any)" },
+    { failure_model_pid, option( class_FailureModel:model_pid() ),
+      "PID of the failure model in use (if any)" },
 
-	{ repair_model_pid, option( class_RepairModel:model_pid() ),
-	  "PID of the repair model in use (if any)" },
+    { repair_model_pid, option( class_RepairModel:model_pid() ),
+      "PID of the repair model in use (if any)" },
 
-	{ next_failure_tick, reliability_tick(),
-	  "records the time of next failure (if any is planned)" },
+    { next_failure_tick, reliability_tick(),
+      "records the time of next failure (if any is planned)" },
 
-	{ next_repair_tick, reliability_tick(),
-	  "records the time of next reparation (if any is planned)" },
+    { next_repair_tick, reliability_tick(),
+      "records the time of next reparation (if any is planned)" },
 
-	{ current_failure_state, union( 'nominal', 'dysfunction' ),
-	  "tells about the current reliability state of this equipment" },
+    { current_failure_state, union( 'nominal', 'dysfunction' ),
+      "tells about the current reliability state of this equipment" },
 
-	{ reliability_listener, option( reliability_listener_pid() ),
-	  "records the PID on the reliability listener (if any)" },
+    { reliability_listener, option( reliability_listener_pid() ),
+      "records the PID on the reliability listener (if any)" },
 
-	{ reliability_probe, option( class_Probe:probe_ref() ),
-	  "the probe monitoring reliability (if any)" } ] ).
+    { reliability_probe, option( class_Probe:probe_ref() ),
+      "the probe monitoring reliability (if any)" } ] ).
 
 
 
@@ -154,37 +154,37 @@ each transition, from nominal to dysfunction, and the other way round.
 
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 class_Actor:name(), class_FailureModel:model_pid(),
-				 class_RepairModel:model_pid() ) -> wooper:state().
+                 class_Actor:name(), class_FailureModel:model_pid(),
+                 class_RepairModel:model_pid() ) -> wooper:state().
 construct( State, ActorSettings, EquipmentName, FailureModelPid,
-		   RepairModelPid ) ->
+           RepairModelPid ) ->
 
-	% First the direct mother classes:
-	ActorState = class_Actor:construct( State, ActorSettings,
-										?trace_categorize(EquipmentName) ),
+    % First the direct mother classes:
+    ActorState = class_Actor:construct( State, ActorSettings,
+                                        ?trace_categorize(EquipmentName) ),
 
-	% Then the class-specific actions:
-	% Failure state can be 'nominal' or 'dysfunction'.
-	%
-	% Equipments are supposed tested before being installed, thus start in
-	% nominal condition:
-	%
-	% (cannot set next_*_tick, as no knowledge of current scheduling here)
-	%
-	StartingState = setAttributes( ActorState, [
-		{ failure_model_pid, FailureModelPid },
-		{ repair_model_pid, RepairModelPid },
-		{ next_failure_tick, uninitialized },
-		{ next_repair_tick, uninitialized },
-		{ current_failure_state, nominal },
-		{ reliability_listener, undefined },
-		{ reliability_probe, undefined } ] ),
+    % Then the class-specific actions:
+    % Failure state can be 'nominal' or 'dysfunction'.
+    %
+    % Equipments are supposed tested before being installed, thus start in
+    % nominal condition:
+    %
+    % (cannot set next_*_tick, as no knowledge of current scheduling here)
+    %
+    StartingState = setAttributes( ActorState, [
+        { failure_model_pid, FailureModelPid },
+        { repair_model_pid, RepairModelPid },
+        { next_failure_tick, uninitialized },
+        { next_repair_tick, uninitialized },
+        { current_failure_state, nominal },
+        { reliability_listener, undefined },
+        { reliability_probe, undefined } ] ),
 
-	?send_info_fmt( StartingState,
-		"Creating an equipment whose failure model is ~w and "
-		"whose repair model is ~w.", [ FailureModelPid, RepairModelPid ] ),
+    ?send_info_fmt( StartingState,
+        "Creating an equipment whose failure model is ~w and "
+        "whose repair model is ~w.", [ FailureModelPid, RepairModelPid ] ),
 
-	StartingState.
+    StartingState.
 
 
 
@@ -201,33 +201,33 @@ Called by the failure model, in answer to a getNextFailure call.
 Third parameter of the request (sender PID, the failure model) is ignored.
 """.
 -spec setNextFailure( wooper:state(), class_TimeManager:tick_offset(),
-					  sending_actor_pid() ) -> actor_oneway_return().
+                      sending_actor_pid() ) -> actor_oneway_return().
 setNextFailure( State, FailureTick, _SendingActorPid ) ->
 
-	%trace_utils:debug_fmt( "setNextFailure, for tick #~B.", [ FailureTick ] ),
+    %trace_utils:debug_fmt( "setNextFailure, for tick #~B.", [ FailureTick ] ),
 
-	% Consistency check:
-	NewState = case ?getAttr(next_failure_tick) of
+    % Consistency check:
+    NewState = case ?getAttr(next_failure_tick) of
 
-		waiting ->
+        waiting ->
 
-		   % FailureTick is already a time (a tick), not a duration:
-		   ?debug_fmt( "Equipment planned future failure at tick ~B.",
-					   [ FailureTick ] ),
+           % FailureTick is already a time (a tick), not a duration:
+           ?debug_fmt( "Equipment planned future failure at tick ~B.",
+                       [ FailureTick ] ),
 
-			PlannedState = executeOneway( State, addSpontaneousTick,
-										  FailureTick ),
+            PlannedState = executeOneway( State, addSpontaneousTick,
+                                          FailureTick ),
 
-			setAttributes( PlannedState, [
-				{ next_failure_tick, FailureTick },
-				{ next_repair_tick, uninitialized } ] );
+            setAttributes( PlannedState, [
+                { next_failure_tick, FailureTick },
+                { next_repair_tick, uninitialized } ] );
 
-		termination_triggered ->
-			State
+        termination_triggered ->
+            State
 
-	 end,
+     end,
 
-	actor:return_state( NewState ).
+    actor:return_state( NewState ).
 
 
 
@@ -237,33 +237,33 @@ Called by the repair model, in answer to a getNextRepair call.
 Third parameter (sender Pid, the repair model) is ignored.
 """.
 -spec setNextRepair( wooper:state(), class_TimeManager:tick_offset(),
-					 sending_actor_pid() ) -> actor_oneway_return().
+                     sending_actor_pid() ) -> actor_oneway_return().
 setNextRepair( State, RepairTick, _SendingActorPid ) ->
 
-	%trace_utils:debug_fmt( "setNextRepair, for tick #~B.", [ RepairTick ] ),
+    %trace_utils:debug_fmt( "setNextRepair, for tick #~B.", [ RepairTick ] ),
 
-	% Consistency check:
-	NewState = case ?getAttr(next_repair_tick) of
+    % Consistency check:
+    NewState = case ?getAttr(next_repair_tick) of
 
-		waiting ->
+        waiting ->
 
-		   % RepairTick is already a time (a tick), not a duration:
-		   ?debug_fmt( "Equipment planned future repair at tick ~B.",
-					   [ RepairTick ] ),
+           % RepairTick is already a time (a tick), not a duration:
+           ?debug_fmt( "Equipment planned future repair at tick ~B.",
+                       [ RepairTick ] ),
 
-			PlannedState = executeOneway( State, addSpontaneousTick,
-										  RepairTick ),
+            PlannedState = executeOneway( State, addSpontaneousTick,
+                                          RepairTick ),
 
-			setAttributes( PlannedState, [
-				{ next_failure_tick, uninitialized },
-				{ next_repair_tick, RepairTick } ] ) ;
+            setAttributes( PlannedState, [
+                { next_failure_tick, uninitialized },
+                { next_repair_tick, RepairTick } ] ) ;
 
-		termination_triggered ->
-			State
+        termination_triggered ->
+            State
 
-	 end,
+     end,
 
-	actor:return_state( NewState ).
+    actor:return_state( NewState ).
 
 
 
@@ -280,33 +280,33 @@ for both of these states.
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
-	%?debug( "Equipment acting." ),
+    %?debug( "Equipment acting." ),
 
-	%trace_utils:debug_fmt( "actSpontaneous at ~B: state is ~p.",
-	%   [ class_Actor:get_current_tick( State ),
-	%     ?getAttr(current_failure_state) ] ),
+    %trace_utils:debug_fmt( "actSpontaneous at ~B: state is ~p.",
+    %   [ class_Actor:get_current_tick( State ),
+    %     ?getAttr(current_failure_state) ] ),
 
-	% Reliability is probed at tick begin:
-	NewState = case ?getAttr(current_failure_state) of
+    % Reliability is probed at tick begin:
+    NewState = case ?getAttr(current_failure_state) of
 
-		nominal ->
-			handle_nominal( State );
+        nominal ->
+            handle_nominal( State );
 
-		dysfunction ->
-			handle_dysfunction( State );
+        dysfunction ->
+            handle_dysfunction( State );
 
-		terminating ->
-			executeOneway( State, scheduleNextSpontaneousTick )
+        terminating ->
+            executeOneway( State, scheduleNextSpontaneousTick )
 
-	end,
+    end,
 
-	%?debug( "Equipment acted." ),
+    %?debug( "Equipment acted." ),
 
-	% No need to schedule each tick, here we can jump to the next transition:
-	%PlannedState = executeOneway( NewState, scheduleNextSpontaneousTick ),
-	PlannedState = NewState,
+    % No need to schedule each tick, here we can jump to the next transition:
+    %PlannedState = executeOneway( NewState, scheduleNextSpontaneousTick ),
+    PlannedState = NewState,
 
-	wooper:return_state( PlannedState ).
+    wooper:return_state( PlannedState ).
 
 
 
@@ -319,9 +319,9 @@ Note: made to be overridden for actual equipments.
 -spec actNominal( wooper:state() ) -> const_oneway_return().
 actNominal( State ) ->
 
-	?warning( "Equipment actNominal/1 oneway method called." ),
+    ?warning( "Equipment actNominal/1 oneway method called." ),
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 
@@ -333,9 +333,9 @@ Note: made to be overridden for actual equipments.
 -spec actInDysfunction( wooper:state() ) -> const_oneway_return().
 actInDysfunction( State ) ->
 
-	?warning( "Non-overridden actInDysfunction/1 oneway method called." ),
+    ?warning( "Non-overridden actInDysfunction/1 oneway method called." ),
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 
@@ -343,12 +343,12 @@ actInDysfunction( State ) ->
 Simply schedules this just created actor at the next tick (diasca 0).
 """.
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-							actor_oneway_return().
+                            actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
-	ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),
+    ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),
 
-	actor:return_state( ScheduledState ).
+    actor:return_state( ScheduledState ).
 
 
 
@@ -360,9 +360,9 @@ Note: made to be overridden for actual equipments.
 -spec onFailure( wooper:state() ) -> oneway_return().
 onFailure( State ) ->
 
-	?warning( "Non-overridden onFailure/1 oneway method called." ),
+    ?warning( "Non-overridden onFailure/1 oneway method called." ),
 
-	wooper:return_state( notify_failure( State ) ).
+    wooper:return_state( notify_failure( State ) ).
 
 
 
@@ -374,9 +374,9 @@ Note: made to be overridden for actual equipments.
 -spec onReparation( wooper:state() ) -> oneway_return().
 onReparation( State ) ->
 
-	?warning( "Non-overridden onReparation/1 oneway method called." ),
+    ?warning( "Non-overridden onReparation/1 oneway method called." ),
 
-	wooper:return_state( notify_reparation( State ) ).
+    wooper:return_state( notify_reparation( State ) ).
 
 
 
@@ -385,9 +385,9 @@ Returns the current status of this equipment regarding reliability, that is
 either nominal or dysfunction.
 """.
 -spec getReliabilityStatus( wooper:state()) ->
-								const_request_return( reliability_status() ).
+                                const_request_return( reliability_status() ).
 getReliabilityStatus( State ) ->
-	wooper:const_return_result( ?getAttr(current_failure_state) ).
+    wooper:const_return_result( ?getAttr(current_failure_state) ).
 
 
 
@@ -397,16 +397,16 @@ Links the specified reliability probe to this equipment.
 (request, for synchronisation purpose)
 """.
 -spec setReliabilityProbe( wooper:state(), probe_ref() ) ->
-								request_return( 'probe_set' ).
+                                request_return( 'probe_set' ).
 setReliabilityProbe( State, ProbePid ) ->
 
-	%?info( "setReliabilityProbe called." ),
+    %?info( "setReliabilityProbe called." ),
 
-	% We do not want the probe to crash without having the simulation halt:
-	erlang:link( ProbePid ),
+    % We do not want the probe to crash without having the simulation halt:
+    erlang:link( ProbePid ),
 
-	wooper:return_state_result(
-		setAttribute( State, reliability_probe, ProbePid ), probe_set ).
+    wooper:return_state_result(
+        setAttribute( State, reliability_probe, ProbePid ), probe_set ).
 
 
 
@@ -418,16 +418,16 @@ setReliabilityProbe( State, ProbePid ) ->
 -spec trigger_failure( wooper:state() ) -> wooper:state().
 trigger_failure( State ) ->
 
-	% Consistency check:
-	nominal = ?getAttr(current_failure_state),
+    % Consistency check:
+    nominal = ?getAttr(current_failure_state),
 
-	FailureState = setAttribute( State, current_failure_state, dysfunction ),
+    FailureState = setAttribute( State, current_failure_state, dysfunction ),
 
-	% Next repair tick not set yet, let's request it:
-	RequestState = class_Actor:send_actor_message(
-		?getAttr(repair_model_pid), getNextRepair, FailureState ),
+    % Next repair tick not set yet, let's request it:
+    RequestState = class_Actor:send_actor_message(
+        ?getAttr(repair_model_pid), getNextRepair, FailureState ),
 
-	setAttribute( RequestState, next_repair_tick, waiting ).
+    setAttribute( RequestState, next_repair_tick, waiting ).
 
 
 
@@ -435,16 +435,16 @@ trigger_failure( State ) ->
 -spec trigger_repair( wooper:state() ) -> wooper:state().
 trigger_repair( State ) ->
 
-	% Consistency check:
-	dysfunction = ?getAttr(current_failure_state),
+    % Consistency check:
+    dysfunction = ?getAttr(current_failure_state),
 
-	NominalState = setAttribute( State, current_failure_state, nominal ),
+    NominalState = setAttribute( State, current_failure_state, nominal ),
 
-	% Next failure tick not set yet, let's request it:
-	RequestState = class_Actor:send_actor_message(
-		?getAttr(failure_model_pid), getNextFailure, NominalState ),
+    % Next failure tick not set yet, let's request it:
+    RequestState = class_Actor:send_actor_message(
+        ?getAttr(failure_model_pid), getNextFailure, NominalState ),
 
-	setAttribute( RequestState, next_failure_tick, waiting ).
+    setAttribute( RequestState, next_failure_tick, waiting ).
 
 
 
@@ -453,70 +453,70 @@ trigger_repair( State ) ->
 -spec handle_nominal( wooper:state() ) -> wooper:state().
 handle_nominal( State ) ->
 
-	CurrentTickOffset = class_Actor:get_current_tick_offset( State ),
+    CurrentTickOffset = class_Actor:get_current_tick_offset( State ),
 
-	% Working correctly, thus watching for next failure:
-	case ?getAttr(next_failure_tick) of
+    % Working correctly, thus watching for next failure:
+    case ?getAttr(next_failure_tick) of
 
-		 uninitialized->
+         uninitialized->
 
-			%trace_utils:debug_fmt(
-			%   "handle_nominal at #~B: no next failure set.",
-			%   [ CurrentTickOffset ] ),
+            %trace_utils:debug_fmt(
+            %   "handle_nominal at #~B: no next failure set.",
+            %   [ CurrentTickOffset ] ),
 
-			send_probe( CurrentTickOffset, nominal, State ),
+            send_probe( CurrentTickOffset, nominal, State ),
 
-			% Failure tick not set yet, let's request it:
-			RequestState = class_Actor:send_actor_message(
-				?getAttr(failure_model_pid), getNextFailure, State ),
+            % Failure tick not set yet, let's request it:
+            RequestState = class_Actor:send_actor_message(
+                ?getAttr(failure_model_pid), getNextFailure, State ),
 
-			WaitingState = setAttribute( RequestState, next_failure_tick,
-										 waiting ),
+            WaitingState = setAttribute( RequestState, next_failure_tick,
+                                         waiting ),
 
-			% Acts nevertheless, in a nominal way here.
+            % Acts nevertheless, in a nominal way here.
 
-			?debug( "Equipment acting normally, until knowing "
-					"when the next failure will occur." ),
+            ?debug( "Equipment acting normally, until knowing "
+                    "when the next failure will occur." ),
 
-			% Calls directly the overridden actNominal/1 oneway:
-			executeOneway( WaitingState, actNominal );
-
-
-		CurrentTickOffset ->
-
-			%trace_utils:debug_fmt( "handle_nominal at #~B: failing!~n",
-			%   [ CurrentTickOffset ] ),
-
-			send_probe( CurrentTickOffset-1, nominal, State ),
-			send_probe( CurrentTickOffset, dysfunction, State ),
-
-			?notice( "Equipment failure." ),
-
-			% Failure happened!
-			FailedState = trigger_failure( State ),
-
-			% Calls directly overridden onFailure oneway:
-
-			% Notifies the transition:
-			FirstFailedState = executeOneway( FailedState, onFailure ),
-
-			% And acts accordingly to this newly failed state:
-			executeOneway( FirstFailedState, actInDysfunction );
+            % Calls directly the overridden actNominal/1 oneway:
+            executeOneway( WaitingState, actNominal );
 
 
-		_ ->
+        CurrentTickOffset ->
 
-			% Includes any other failure tick and the 'waiting' atom:
+            %trace_utils:debug_fmt( "handle_nominal at #~B: failing!~n",
+            %   [ CurrentTickOffset ] ),
 
-			%trace_utils:debug_fmt( "handle_nominal at #~B: acting normally.~n",
-			%   [ CurrentTickOffset ] ),
+            send_probe( CurrentTickOffset-1, nominal, State ),
+            send_probe( CurrentTickOffset, dysfunction, State ),
 
-			send_probe( CurrentTickOffset, nominal, State ),
+            ?notice( "Equipment failure." ),
 
-			?debug( "Equipment acting normally." ),
-			executeOneway( State, actNominal )
+            % Failure happened!
+            FailedState = trigger_failure( State ),
 
-	end.
+            % Calls directly overridden onFailure oneway:
+
+            % Notifies the transition:
+            FirstFailedState = executeOneway( FailedState, onFailure ),
+
+            % And acts accordingly to this newly failed state:
+            executeOneway( FirstFailedState, actInDysfunction );
+
+
+        _ ->
+
+            % Includes any other failure tick and the 'waiting' atom:
+
+            %trace_utils:debug_fmt( "handle_nominal at #~B: acting normally.~n",
+            %   [ CurrentTickOffset ] ),
+
+            send_probe( CurrentTickOffset, nominal, State ),
+
+            ?debug( "Equipment acting normally." ),
+            executeOneway( State, actNominal )
+
+    end.
 
 
 
@@ -524,80 +524,80 @@ handle_nominal( State ) ->
 -spec handle_dysfunction( wooper:state() ) -> wooper:state().
 handle_dysfunction( State ) ->
 
-	CurrentTickOffset = class_Actor:get_current_tick_offset( State ),
+    CurrentTickOffset = class_Actor:get_current_tick_offset( State ),
 
-	send_probe( CurrentTickOffset, dysfunction, State ),
+    send_probe( CurrentTickOffset, dysfunction, State ),
 
-	% If out of order, watch for repair.
-	% Repair tick was already set when last failure was triggered.
-	%
-	case ?getAttr(next_repair_tick) of
+    % If out of order, watch for repair.
+    % Repair tick was already set when last failure was triggered.
+    %
+    case ?getAttr(next_repair_tick) of
 
-		 uninitialized->
+         uninitialized->
 
-			%trace_utils:debug_fmt(
-			%   "handle_dysfunction at #~B: no next repair set.",
-			%   [ CurrentTickOffset ] ),
+            %trace_utils:debug_fmt(
+            %   "handle_dysfunction at #~B: no next repair set.",
+            %   [ CurrentTickOffset ] ),
 
-			send_probe( CurrentTickOffset, dysfunction, State ),
+            send_probe( CurrentTickOffset, dysfunction, State ),
 
-			% Repair tick not set yet, let's request it:
-			RequestState = class_Actor:send_actor_message(
-				?getAttr(repair_model_pid), getNextRepair, State ),
+            % Repair tick not set yet, let's request it:
+            RequestState = class_Actor:send_actor_message(
+                ?getAttr(repair_model_pid), getNextRepair, State ),
 
-			WaitingState = setAttribute( RequestState, next_repair_tick,
-										 waiting ),
+            WaitingState = setAttribute( RequestState, next_repair_tick,
+                                         waiting ),
 
-			% Acts nevertheless, in a nominal way here.
+            % Acts nevertheless, in a nominal way here.
 
-			?debug( "Equipment acting in dysfunction, until knowing "
-					"when the next reparation will occur." ),
+            ?debug( "Equipment acting in dysfunction, until knowing "
+                    "when the next reparation will occur." ),
 
-			% Calls directly overridden actNominal oneway:
-			executeOneway( WaitingState, actInDysfunction );
-
-
-		CurrentTickOffset ->
-
-			?notice( "Equipment reparation is over." ),
-
-			%trace_utils:debug_fmt(
-			%   "handle_dysfunction at #~B: being repaired!",
-			%   [ CurrentTickOffset ] ),
-
-			send_probe( CurrentTickOffset-1, dysfunction, State ),
-			send_probe( CurrentTickOffset, nominal, State ),
-
-			% Repairing over!
-			RepairState = trigger_repair( State ),
-
-			% Calls directly overridden onReparation oneway:
-
-			% Notifies the transition:
-			FirstRepairedState = executeOneway( RepairState, onReparation ),
-
-			% And acts accordingly to this newly repaired state, returns an
-			% updated state:
-			%
-			executeOneway( FirstRepairedState, actNominal );
+            % Calls directly overridden actNominal oneway:
+            executeOneway( WaitingState, actInDysfunction );
 
 
-		_OtherTick ->
+        CurrentTickOffset ->
 
-			%trace_utils:debug_fmt(
-			%   "handle_dysfunction at #~B: being out of order.",
-			%   [ CurrentTickOffset ] ),
+            ?notice( "Equipment reparation is over." ),
 
-			send_probe( CurrentTickOffset, dysfunction, State ),
+            %trace_utils:debug_fmt(
+            %   "handle_dysfunction at #~B: being repaired!",
+            %   [ CurrentTickOffset ] ),
 
-			% Includes any repair tick and the 'waiting' atom:
+            send_probe( CurrentTickOffset-1, dysfunction, State ),
+            send_probe( CurrentTickOffset, nominal, State ),
 
-			?debug( "Equipment still out of order." ),
+            % Repairing over!
+            RepairState = trigger_repair( State ),
 
-			% Returns an updated state:
-			executeOneway( State, actInDysfunction )
+            % Calls directly overridden onReparation oneway:
 
-	end.
+            % Notifies the transition:
+            FirstRepairedState = executeOneway( RepairState, onReparation ),
+
+            % And acts accordingly to this newly repaired state, returns an
+            % updated state:
+            %
+            executeOneway( FirstRepairedState, actNominal );
+
+
+        _OtherTick ->
+
+            %trace_utils:debug_fmt(
+            %   "handle_dysfunction at #~B: being out of order.",
+            %   [ CurrentTickOffset ] ),
+
+            send_probe( CurrentTickOffset, dysfunction, State ),
+
+            % Includes any repair tick and the 'waiting' atom:
+
+            ?debug( "Equipment still out of order." ),
+
+            % Returns an updated state:
+            executeOneway( State, actInDysfunction )
+
+    end.
 
 
 
@@ -605,15 +605,15 @@ handle_dysfunction( State ) ->
 -spec notify_failure( wooper:state() ) -> wooper:state().
 notify_failure( State ) ->
 
-	case ?getAttr(reliability_listener) of
+    case ?getAttr(reliability_listener) of
 
-		undefined ->
-			State;
+        undefined ->
+            State;
 
-		ListenerPid ->
-			class_Actor:send_actor_message( ListenerPid, notifyFailure, State )
+        ListenerPid ->
+            class_Actor:send_actor_message( ListenerPid, notifyFailure, State )
 
-	end.
+    end.
 
 
 
@@ -621,38 +621,38 @@ notify_failure( State ) ->
 -spec notify_reparation( wooper:state() ) -> wooper:state().
 notify_reparation( State ) ->
 
-	case ?getAttr(reliability_listener) of
+    case ?getAttr(reliability_listener) of
 
-		undefined ->
-			State;
+        undefined ->
+            State;
 
-		ListenerPid ->
-			class_Actor:send_actor_message( ListenerPid, notifyReparation,
-											State )
+        ListenerPid ->
+            class_Actor:send_actor_message( ListenerPid, notifyReparation,
+                                            State )
 
-	end.
+    end.
 
 
 -doc "Sends reliability information to the probe.".
 send_probe( CurrentTickOffset, Status, State ) ->
 
-	case ?getAttr(reliability_probe) of
+    case ?getAttr(reliability_probe) of
 
-		undefined ->
-			ok;
+        undefined ->
+            ok;
 
-		ProbePid ->
+        ProbePid ->
 
-			SampleData = case Status of
+            SampleData = case Status of
 
-				nominal ->
-					?nominal_status;
+                nominal ->
+                    ?nominal_status;
 
-				dysfunction ->
-					?failed_status
+                dysfunction ->
+                    ?failed_status
 
-			end,
+            end,
 
-			ProbePid ! { setData, [ CurrentTickOffset, { SampleData } ] }
+            ProbePid ! { setData, [ CurrentTickOffset, { SampleData } ] }
 
-	end.
+    end.

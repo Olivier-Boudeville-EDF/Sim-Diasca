@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -72,24 +72,24 @@ one or more items of data.
 
 -export([ destruct/1, destruct/2, destruct_direct/1,
 
-		  set_sizer/2, fit_to_sizer/2, set_and_fit_to_sizer/2,
-		  layout/1,
+          set_sizer/2, fit_to_sizer/2, set_and_fit_to_sizer/2,
+          layout/1,
 
-		  set_foreground_color/2, set_background_color/2,
+          set_foreground_color/2, set_background_color/2,
 
-		  set_font/2, set_font/4,
+          set_font/2, set_font/4,
 
-		  set_tooltip/2,
+          set_tooltip/2,
 
-		  sync/1, enable_repaint/1, refresh/1, update/1,
-		  lock/1, unlock/1,
+          sync/1, enable_repaint/1, refresh/1, update/1,
+          lock/1, unlock/1,
 
-		  get_focused/0, set_focus/1,
+          get_focused/0, set_focus/1,
 
-		  set_enable_status/2, get_enable_status/1,
+          set_enable_status/2, get_enable_status/1,
 
-		  get_size/1, get_client_size/1, get_best_size/1, set_client_size/2,
-		  fit/1, maximise_in_parent/1 ]).
+          get_size/1, get_client_size/1, get_best_size/1, set_client_size/2,
+          fit/1, maximise_in_parent/1 ]).
 
 
 
@@ -123,7 +123,7 @@ one or more items of data.
 -doc "Destructs the specified widget.".
 -spec destruct( widget() ) -> void().
 destruct( Widget ) ->
-	destruct( Widget, gui:get_environment_server() ).
+    destruct( Widget, gui:get_environment_server() ).
 
 
 
@@ -133,27 +133,27 @@ Destructs the specified widget, using the specified environment server.
 -spec destruct( widget(), gui_env_pid() ) -> void().
 destruct( Widget, GUIEnvPid ) ->
 
-	% Note that the resource destruction done by wxWindow:destroy/1 (which is
-	% possibly instantaneous) may happen whereas concurrent, message-based
-	% operations (typically drawings) may still be on the fly; in this case,
-	% when their processing will happen, they may find out that their backend
-	% resources do not exist (anymore), for example with
-	% {unknown_env,{wxPen,new,2}},[{wxe_util,rec,1,[...).
-	%
-	% A solution is to stop synchronously all GUI-using callers, then have the
-	% GUI loop be waited for to flush any pending operations, before triggering
-	% the requested destruction:
+    % Note that the resource destruction done by wxWindow:destroy/1 (which is
+    % possibly instantaneous) may happen whereas concurrent, message-based
+    % operations (typically drawings) may still be on the fly; in this case,
+    % when their processing will happen, they may find out that their backend
+    % resources do not exist (anymore), for example with
+    % {unknown_env,{wxPen,new,2}},[{wxe_util,rec,1,[...).
+    %
+    % A solution is to stop synchronously all GUI-using callers, then have the
+    % GUI loop be waited for to flush any pending operations, before triggering
+    % the requested destruction:
 
-	gui:get_main_loop_pid( GUIEnvPid ) ! { synchroniseWithCaller, [], self() },
+    gui:get_main_loop_pid( GUIEnvPid ) ! { synchroniseWithCaller, [], self() },
 
-	receive
+    receive
 
-		onSynchronisedWithCaller ->
-			ok
+        onSynchronisedWithCaller ->
+            ok
 
-	end,
+    end,
 
-	destruct_direct( Widget ).
+    destruct_direct( Widget ).
 
 
 
@@ -166,7 +166,7 @@ so an actual destruction may not happen immediately.
 """.
 -spec destruct_direct( widget() ) -> void().
 destruct_direct( Widget ) ->
-	wxWindow:destroy( Widget ).
+    wxWindow:destroy( Widget ).
 
 
 
@@ -178,17 +178,17 @@ widget (typically prior to showing that widget).
 """.
 -spec set_sizer( widget(), sizer() ) -> void().
 set_sizer( _Canvas={ myriad_object_ref, myr_canvas, CanvasId }, Sizer ) ->
-	gui:get_main_loop_pid() ! { getCanvasPanel, [ CanvasId ], self() },
+    gui:get_main_loop_pid() ! { getCanvasPanel, [ CanvasId ], self() },
 
-	receive
+    receive
 
-		{ notifyCanvasPanel, Panel } ->
-			set_sizer( Panel, Sizer )
+        { notifyCanvasPanel, Panel } ->
+            set_sizer( Panel, Sizer )
 
-	end;
+    end;
 
 set_sizer( Widget, Sizer ) ->
-	wxWindow:setSizer( Widget, Sizer ).
+    wxWindow:setSizer( Widget, Sizer ).
 
 
 
@@ -198,7 +198,7 @@ the specified sizer.
 """.
 -spec fit_to_sizer( widget(), sizer() ) -> void().
 fit_to_sizer( Widget, Sizer ) ->
-	wxSizer:fit( Sizer, Widget ).
+    wxSizer:fit( Sizer, Widget ).
 
 
 
@@ -208,12 +208,12 @@ minimal size of the widget accordingly.
 """.
 -spec set_and_fit_to_sizer( widget(), sizer() ) -> void().
 set_and_fit_to_sizer( Canvas={ myriad_object_ref, myr_canvas, _CanvasId },
-					  Sizer ) ->
-	set_sizer( Canvas, Sizer ),
-	fit_to_sizer( Canvas, Sizer );
+                      Sizer ) ->
+    set_sizer( Canvas, Sizer ),
+    fit_to_sizer( Canvas, Sizer );
 
 set_and_fit_to_sizer( Widget, Sizer ) ->
-	wxWindow:setSizerAndFit( Widget, Sizer ).
+    wxWindow:setSizerAndFit( Widget, Sizer ).
 
 
 
@@ -223,46 +223,46 @@ nothing (except if it is a top level window).
 """.
 -spec layout( widget() ) -> void().
 layout( Widget ) ->
-	wxWindow:layout( Widget ).
+    wxWindow:layout( Widget ).
 
 
 
 -doc "Sets the foreground color of the specified widget.".
 -spec set_foreground_color( widget(), color() ) -> void().
 set_foreground_color( _Canvas={ myriad_object_ref, myr_canvas, CanvasId },
-					  Color ) ->
+                      Color ) ->
 
-	%trace_utils:debug_fmt( "Setting foreground color of canvas ~w to ~p.",
-	%                       [ Canvas, Color ] ),
+    %trace_utils:debug_fmt( "Setting foreground color of canvas ~w to ~p.",
+    %                       [ Canvas, Color ] ),
 
-	gui:get_main_loop_pid() ! { setCanvasForegroundColor, [ CanvasId, Color ] };
+    gui:get_main_loop_pid() ! { setCanvasForegroundColor, [ CanvasId, Color ] };
 
 set_foreground_color( Widget, Color ) ->
-	ActualColor = gui_color:get_color( Color ),
-	wxWindow:setForegroundColour( Widget, ActualColor ).
+    ActualColor = gui_color:get_color( Color ),
+    wxWindow:setForegroundColour( Widget, ActualColor ).
 
 
 
 -doc "Sets the background color of the specified widget.".
 -spec set_background_color( widget(), color() ) -> void().
 set_background_color( _Canvas={ myriad_object_ref, myr_canvas, CanvasId },
-					  Color ) ->
+                      Color ) ->
 
-	%trace_utils:debug_fmt( "Setting background color of canvas ~w to ~p.",
-	%                       [ Canvas, Color ] ),
+    %trace_utils:debug_fmt( "Setting background color of canvas ~w to ~p.",
+    %                       [ Canvas, Color ] ),
 
-	gui:get_main_loop_pid() ! { setCanvasBackgroundColor, [ CanvasId, Color ] };
+    gui:get_main_loop_pid() ! { setCanvasBackgroundColor, [ CanvasId, Color ] };
 
 set_background_color( Widget, Color ) ->
-	ActualColor = gui_color:get_color( Color ),
-	wxWindow:setBackgroundColour( Widget, ActualColor ).
+    ActualColor = gui_color:get_color( Color ),
+    wxWindow:setBackgroundColour( Widget, ActualColor ).
 
 
 
 -doc "Sets the font to be used by the specified widget and its children.".
 -spec set_font( widget(), font() ) -> void().
 set_font( Widget, Font ) ->
-	set_font( Widget, Font, _DestructFont=false ).
+    set_font( Widget, Font, _DestructFont=false ).
 
 
 
@@ -272,11 +272,11 @@ requested, destructs that font.
 """.
 -spec set_font( widget(), font(), boolean() ) -> void().
 set_font( Widget, Font, _DestructFont=true ) ->
-	set_font( Widget, Font, _DoDestructFont=false ),
-	gui_font:destruct( Font );
+    set_font( Widget, Font, _DoDestructFont=false ),
+    gui_font:destruct( Font );
 
 set_font( Widget, Font, _DestructFont=false ) ->
-	wxWindow:setFont( Widget, Font ).
+    wxWindow:setFont( Widget, Font ).
 
 
 
@@ -289,17 +289,17 @@ A side-effect is that the foreground color gets set.
 -spec set_font( widget(), font(), color(), boolean() ) -> void().
 % wxWindow, wxPanel, etc.:
 set_font( Widget={ wx_ref, _Id, _AnyWxWidgetLike, _State }, Font, Color,
-		  _DestructFont=false ) ->
+          _DestructFont=false ) ->
 
-	%trace_utils:debug_fmt( "Setting for widget ~w font to ~w (color: ~w).",
-	%                       [ Widget, Font, Color ] ),
+    %trace_utils:debug_fmt( "Setting for widget ~w font to ~w (color: ~w).",
+    %                       [ Widget, Font, Color ] ),
 
-	wxWindow:setFont( Widget, Font ),
-	wxWindow:setForegroundColour( Widget, gui_color:get_color( Color ) );
+    wxWindow:setFont( Widget, Font ),
+    wxWindow:setForegroundColour( Widget, gui_color:get_color( Color ) );
 
 set_font( Widget, Font, Color, _DestructFont=true ) ->
-	set_font( Widget, Font, Color, _DestructFnt=false ),
-	gui_font:destruct( Font ).
+    set_font( Widget, Font, Color, _DestructFnt=false ),
+    gui_font:destruct( Font ).
 
 
 
@@ -311,14 +311,14 @@ case for ex_button.erl).
 """.
 -spec set_tooltip( widget(), label() ) -> void().
 set_tooltip( _Canvas={ myriad_object_ref, myr_canvas, CanvasId }, Label ) ->
-	gui:get_main_loop_pid() ! { setTooltip, [ CanvasId, Label ] };
+    gui:get_main_loop_pid() ! { setTooltip, [ CanvasId, Label ] };
 
 set_tooltip( Widget, Label ) ->
 
-	%trace_utils:debug_fmt( "Setting tooltip '~ts' to ~ts.",
-	%                       [ Label, object_to_string( Widget ) ] ),
+    %trace_utils:debug_fmt( "Setting tooltip '~ts' to ~ts.",
+    %                       [ Label, object_to_string( Widget ) ] ),
 
-	wxWindow:setToolTip( Widget, Label ).
+    wxWindow:setToolTip( Widget, Label ).
 
 
 
@@ -338,14 +338,14 @@ See also gui_opengl:set_context_on_shown/2 for another synchronisation need.
 """.
 -spec sync( widget() ) -> size().
 sync( Widget ) ->
-	% The result in itself may be of no use; the point here is just, through a
-	% synchronous operation (a request), to ensure that the specified widget is
-	% "ready" (that it has processed all its previous messages) with a
-	% sufficient probability (and with certainty if past operations were
-	% triggered by the same process as this calling one):
-	%
+    % The result in itself may be of no use; the point here is just, through a
+    % synchronous operation (a request), to ensure that the specified widget is
+    % "ready" (that it has processed all its previous messages) with a
+    % sufficient probability (and with certainty if past operations were
+    % triggered by the same process as this calling one):
+    %
 
-	wxWindow:getSize( Widget ).
+    wxWindow:getSize( Widget ).
 
 
 
@@ -361,8 +361,8 @@ Based on our tests, does not seem strictly necessary.
 """.
 -spec enable_repaint( widget() ) -> void().
 enable_repaint( Widget ) ->
-	DC = wxPaintDC:new( Widget ),
-	wxPaintDC:destroy( DC ).
+    DC = wxPaintDC:new( Widget ),
+    wxPaintDC:destroy( DC ).
 
 
 
@@ -374,7 +374,7 @@ If you need to update the widget immediately, use update/1 instead.
 """.
 -spec refresh( widget() ) -> void().
 refresh( Widget ) ->
-	wxWindow:refresh( Widget ).
+    wxWindow:refresh( Widget ).
 
 
 
@@ -390,7 +390,7 @@ unconditionally.
 """.
 -spec update( widget() ) -> void().
 update( Widget ) ->
-	wxWindow:update( Widget ).
+    wxWindow:update( Widget ).
 
 
 
@@ -402,16 +402,16 @@ Once the desired changes will have been made, this widget must be unlocked.
 """.
 -spec lock( widget() ) -> device_context().
 lock( Widget ) ->
-	DC = wxWindowDC:new( Widget ),
-	case wxDC:isOk( DC ) of
+    DC = wxWindowDC:new( Widget ),
+    case wxDC:isOk( DC ) of
 
-		true ->
-			DC;
+        true ->
+            DC;
 
-		false ->
-			throw( { lock_widget_failed, Widget } )
+        false ->
+            throw( { lock_widget_failed, Widget } )
 
-	end.
+    end.
 
 
 
@@ -421,7 +421,7 @@ from a previous locking.
 """.
 -spec unlock( device_context() ) -> void().
 unlock( DC ) ->
-	wxWindowDC:destroy( DC ).
+    wxWindowDC:destroy( DC ).
 
 
 
@@ -433,7 +433,7 @@ further information.
 """.
 -spec get_focused() -> option( widget() ).
 get_focused() ->
-	wxWindow:findFocus().
+    wxWindow:findFocus().
 
 
 
@@ -447,7 +447,7 @@ further information.
 
 -spec set_focus( widget() ) -> void().
 set_focus( Widget ) ->
-	wxWindow:setFocus( Widget ).
+    wxWindow:setFocus( Widget ).
 
 
 
@@ -464,7 +464,7 @@ calling its create/0 default constructor (if any).
 """.
 -spec set_enable_status( widget(), boolean() ) -> boolean().
 set_enable_status( Widget, DoEnable ) ->
-	wxWindow:enable( Widget, _Opt=[ { enable, DoEnable } ] ).
+    wxWindow:enable( Widget, _Opt=[ { enable, DoEnable } ] ).
 
 
 -doc """
@@ -476,7 +476,7 @@ the intrinsic status of this widget, use get_own_enable_status/1.
 """.
 -spec get_enable_status( widget() ) -> boolean().
 get_enable_status( Widget ) ->
-	wxWindow:isEnabled( Widget ).
+    wxWindow:isEnabled( Widget ).
 
 
 
@@ -487,23 +487,23 @@ and menus.
 -spec get_size( widget() ) -> size().
 get_size( _Canvas={ myriad_object_ref, myr_canvas, CanvasId } ) ->
 
-	%trace_utils:debug_fmt( "Getting size of canvas #~B.", [ CanvasId ] ),
+    %trace_utils:debug_fmt( "Getting size of canvas #~B.", [ CanvasId ] ),
 
-	gui:get_main_loop_pid() ! { getCanvasSize, CanvasId, self() },
-	receive
+    gui:get_main_loop_pid() ! { getCanvasSize, CanvasId, self() },
+    receive
 
-		{ notifyCanvasSize, Size } ->
-			Size
+        { notifyCanvasSize, Size } ->
+            Size
 
-	end;
+    end;
 
 % Not available:
 %get_size( Menu={ _Wx_ref, _Id, wxMenu, _ } ) ->
 %  gui_menu:get_size( Menu );
 
 get_size( Widget ) ->
-	%trace_utils:debug_fmt( "get_size for ~w.", [ Widget ] ),
-	wxWindow:getSize( Widget ).
+    %trace_utils:debug_fmt( "get_size for ~w.", [ Widget ] ),
+    wxWindow:getSize( Widget ).
 
 
 
@@ -514,16 +514,16 @@ actual size of the area that can be drawn upon (excluded menu, bars, etc.).
 -spec get_client_size( widget() ) -> size().
 get_client_size( _Canvas={ myriad_object_ref, myr_canvas, CanvasId } ) ->
 
-	gui:get_main_loop_pid() ! { getCanvasClientSize, CanvasId, self() },
-	receive
+    gui:get_main_loop_pid() ! { getCanvasClientSize, CanvasId, self() },
+    receive
 
-		{ notifyCanvasClientSize, Size } ->
-			Size
+        { notifyCanvasClientSize, Size } ->
+            Size
 
-	end;
+    end;
 
 get_client_size( Widget ) ->
-	wxWindow:getClientSize( Widget ).
+    wxWindow:getClientSize( Widget ).
 
 
 
@@ -534,27 +534,27 @@ best acceptable minimal size.
 -spec get_best_size( widget() ) -> size().
 get_best_size( _Canvas={ myriad_object_ref, myr_canvas, CanvasId } ) ->
 
-	gui:get_main_loop_pid() ! { getCanvasClientSize, CanvasId, self() },
-	receive
+    gui:get_main_loop_pid() ! { getCanvasClientSize, CanvasId, self() },
+    receive
 
-		{ notifyCanvasClientSize, Size } ->
-			Size
+        { notifyCanvasClientSize, Size } ->
+            Size
 
-	end;
+    end;
 
 get_best_size( Widget ) ->
-	wxWindow:getBestSize( Widget ).
+    wxWindow:getBestSize( Widget ).
 
 
 
 -doc "Sets the size of the client area of the specified widget.".
 -spec set_client_size( widget(), size() ) -> void().
 set_client_size( _Canvas={ myriad_object_ref, myr_canvas, _CanvasId },
-				 _Size ) ->
-	throw( not_implemented );
+                 _Size ) ->
+    throw( not_implemented );
 
 set_client_size( Widget, Size ) ->
-	wxWindow:setClientSize( Widget, Size ).
+    wxWindow:setClientSize( Widget, Size ).
 
 
 
@@ -565,10 +565,10 @@ Corresponds to setting its client size to its best one.
 """.
 -spec fit( widget() ) -> void().
 fit( _Canvas={ myriad_object_ref, myr_canvas, _CanvasId } ) ->
-	throw( not_implemented );
+    throw( not_implemented );
 
 fit( Widget ) ->
-	wxWindow:fit( Widget ).
+    wxWindow:fit( Widget ).
 
 
 
@@ -579,7 +579,7 @@ widget.
 """.
 -spec maximise_in_parent( widget() ) -> size().
 maximise_in_parent( Widget ) ->
-	ParentWindow = wxWindow:getParent( Widget ),
-	ParentWindowClientSize = wxWindow:getClientSize( ParentWindow ),
-	wxWindow:setSize( Widget, ParentWindowClientSize ),
-	ParentWindowClientSize.
+    ParentWindow = wxWindow:getParent( Widget ),
+    ParentWindowClientSize = wxWindow:getClientSize( ParentWindow ),
+    wxWindow:setSize( Widget, ParentWindowClientSize ),
+    ParentWindowClientSize.

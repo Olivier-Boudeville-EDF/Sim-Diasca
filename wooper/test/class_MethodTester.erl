@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -33,42 +33,49 @@ Test of the **support of methods**.
 
 
 -define( class_description,
-		 "Class introduced notably to test the support of methods.").
+         "Class introduced notably to test the support of methods.").
 
 
 % Determines what are the direct mother classes of this class (if any):
 -define( superclasses, [] ).
 
 
--define( class_attributes, [ name ] ).
+-define( class_attributes, [ id, name ] ).
 
 
 % Allows to define WOOPER base variables and methods for that class:
 -include("wooper.hrl").
 
 
-% Local type:
+% Local types:
+-type id() :: integer().
 -type name() :: text_utils:ustring().
 
 
+% Type shorthand:
+-type concurrent_result( R ) :: wooper:concurrent_result( R ).
+
+
 -doc "Simplest possible signature.".
--spec construct( wooper:state() ) -> wooper:state().
-construct( State ) ->
+-spec construct( wooper:state(), id() ) -> wooper:state().
+construct( State, Id ) ->
 
-	trace_utils:info( "Construction." ),
+    trace_utils:info_fmt( "Construction of method tester of identifier #~B.",
+                          [ Id ] ),
 
-	% No mother class.
-	setAttribute( State, name, "Terry" ).
+    % No mother class.
+    setAttributes( State, [ { id, Id },
+                            { name, "Terry" } ] ).
 
 
 
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
-	trace_utils:info( "Destruction." ),
+    trace_utils:info( "Destruction." ),
 
-	io:format( "  I am ~ts, and I am just destructed.~n", [ ?getAttr(name) ] ),
-	State.
+    io:format( "  I am ~ts, and I am just destructed.~n", [ ?getAttr(name) ] ),
+    State.
 
 
 
@@ -78,30 +85,53 @@ destruct( State ) ->
 -doc "Returns the name of this instance.".
 -spec getName( wooper:state() ) -> const_request_return( name() ).
 getName( State ) ->
-	trace_utils:info( "getName/1 called." ),
-	wooper:const_return_result( ?getAttr(name) ).
+    trace_utils:info( "getName/1 called." ),
+    wooper:const_return_result( ?getAttr(name) ).
 
 
 
 -doc "Sets the name of this instance.".
 -spec setName( wooper:state(), name() ) -> oneway_return().
 setName( State, Name ) ->
-	trace_utils:info( "setName/2 called." ),
-	NewState = setAttribute( State, name, Name ),
-	wooper:return_state( NewState ).
+    trace_utils:info( "setName/2 called." ),
+    NewState = setAttribute( State, name, Name ),
+    wooper:return_state( NewState ).
+
+
+
+-doc "Returns the identifier of this instance.".
+-spec getId( wooper:state() ) ->
+                    const_request_return( concurrent_result( id() ) ).
+getId( State ) ->
+    ReportedId = case ?getAttr(id) of
+
+        2 ->
+            trace_utils:warning(
+                "Tester instance #2 will answer too late (and wrongly)." ),
+            timer:sleep( _Ms=5000 ),
+            -1;
+
+        CorrectId ->
+            trace_utils:info_fmt( "Returning our (correct) identifier, #~B.",
+                                  [ CorrectId ] ),
+            CorrectId
+
+    end,
+
+    wooper:const_return_result( wooper:forge_concurrent_result( ReportedId ) ).
 
 
 
 -doc "Returns a value established in a static context.".
 -spec get_static_info( integer(), integer() ) -> static_return( integer() ).
 get_static_info( A, B ) ->
-	trace_utils:info( "get_static_info/2 called" ),
-	wooper:return_static( A + B + 10 ).
+    trace_utils:info( "get_static_info/2 called" ),
+    wooper:return_static( A + B + 10 ).
 
 
 
 -doc "Test of a static method returning nothing (void return).".
 -spec test_static_void() -> static_void_return().
 test_static_void() ->
-	%trace_utils:debug( "test_static_void/0 called!" ),
-	wooper:return_static_void().
+    %trace_utils:debug( "test_static_void/0 called!" ),
+    wooper:return_static_void().

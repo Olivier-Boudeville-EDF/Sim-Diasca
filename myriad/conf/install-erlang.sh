@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2009-2025 Olivier Boudeville
+# Copyright (C) 2009-2026 Olivier Boudeville
 #
 # Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
 #
@@ -51,7 +51,9 @@ fi
 
 
 # Note: if one wants to download src or doc base (i.e. not patch ones) archives
-# by oneself, one may also point directly to http://erlang.org/download/.
+# by oneself, one may also point directly to
+# https://github.com/erlang/otp/releases/download/OTP-x.y/otp_src_x.y.tar.gz
+# (otherwise rely on http://erlang.org/download/).
 
 # Now we keep the SHA512 (previously: MD5) sums of the sources of former
 # Erlang/OTP versions, in order to reduce any risk of downloading an altered
@@ -62,6 +64,18 @@ fi
 # As for erlang_commit_id_for_* (Git commit of the release; currently not used),
 # it is just obtained from (some) downloaded source archive.
 
+
+erlang_sha512_for_29_0_3="38ff5c7afe6a46093ae2e7b481e3d182320f2d6aa7ebf4b332e09e36ffc8763b6fa521ee53e90b79fabcda7188e6d377a8785c13bb9b454925b92c491b34d2df"
+
+erlang_sha512_for_28_5="1c56cf3030ebe474c84d2e3deec1355e6bff4ef58994666c6e4266e4d3fb7ff50c53b107782883294f000f9a3186fc2c4c57797a11c10a1140c0d905782aebcd"
+
+erlang_sha512_for_28_4="1715354642f41abc7ee736f577179df27e66163ee7fc3b4432bf28fc6b0f26952fbf3177f84a12de7ba0316e9551eca1e5d7f66189dba494e664f1a8973d2387"
+
+erlang_sha512_for_28_3="cd1906f8ad49e6ea603c55383682559a0a3cde91cc152a6bb9805805a32c14b1c2231f76d9d42ac389366652fe45408dead32ee93fda724505e6bd2cad302940"
+
+erlang_sha512_for_28_1="045c7f5d1dd926c277b344ca396d12ff61fb01e0c3419a3171307faa0ecb252e8fe8d67922361d34cda59e30da45b17c347a776c7dc7b4d218f94bdd9764bfaa"
+
+erlang_sha512_for_28_0_2="5b13e1e743edc4c53767fe360906740175fff5bf31e752cbda264bdb0728c6733ff3101fc5552b32e0f4827f546e4ace57eebe783837716b2603b472ca3115f0"
 
 erlang_sha512_for_28_0_1="77a0a40ea0f81a08fa00b018c55a34e632eb693c8ca4114066e9a98dbf997c1a017f986bc180c095616939f65a465bb776846c8a6a81f2773d6e8111d93ce527"
 
@@ -125,11 +139,9 @@ erlang_md5_for_20_1="4c9eb112cd0e56f17c474218825060ee"
 # (refer to https://github.com/erlang/otp/releases/download/ to obtain the right
 # versions)
 #
-erlang_version="28.0.1"
-#erlang_version="27.3.2"
+erlang_version="29.0.3"
+erlang_sum="${erlang_sha512_for_29_0_3}"
 
-erlang_sum="${erlang_sha512_for_28_0_1}"
-#erlang_sum="${erlang_sha512_for_27_3_2}"
 
 #erlang_commit_id="${erlang_commit_id_for_27_1_0}"
 
@@ -137,8 +149,8 @@ erlang_sum="${erlang_sha512_for_28_0_1}"
 # Candidate version (e.g. either cutting-edge or, most probably, the previous
 # version that we deem stable enough, should the current introduce regressions):
 #
-erlang_version_candidate="28.0" # "27.3.2"
-erlang_sum_candidate="${erlang_sha512_for_28_0}"
+erlang_version_candidate="28.5" # "28.4"
+erlang_sum_candidate="${erlang_sha512_for_28_5}"
 #erlang_commit_id_candidate=""
 
 base_install_dir="${HOME}/Software/Erlang"
@@ -593,7 +605,7 @@ if [ $do_download -eq 0 ]; then
 
 		if [ -z "${erlang_sum}" ]; then
 
-			echo "  Error, no Erlang checksum available for this version." 1>&2
+			echo "  Error, no Erlang checksum available for this version ('${erlang_version}')." 1>&2
 
 			exit 55
 

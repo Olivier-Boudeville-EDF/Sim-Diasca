@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
@@ -25,146 +25,146 @@ See the class_Reptile.erl tested module.
 
 -spec run() -> no_return().
 run() ->
-	run( class_Reptile:is_wooper_debug() ).
+    run( class_Reptile:is_wooper_debug() ).
 
 
 -spec run( boolean() ) -> no_return().
 run( IsDebug ) ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	% Allows to support both OTP conventions and ad hoc, automatic ones:
-	wooper_utils:start_for_test(),
+    % Allows to support both OTP conventions and ad hoc, automatic ones:
+    wooper_utils:start_for_test(),
 
-	test_facilities:display( "Debug mode: ~ts.",
-							 [ class_Reptile:is_wooper_debug() ] ),
+    test_facilities:display( "Debug mode: ~ts.",
+                             [ class_Reptile:is_wooper_debug() ] ),
 
 
-	MyR = class_Reptile:new_link( 1, male ),
+    MyR = class_Reptile:new_link( 1, male ),
 
-	MyR ! { getClassname, [], self() },
-	receive
+    MyR ! { getClassname, [], self() },
+    receive
 
-		{ wooper_result, class_Reptile } ->
-			test_facilities:display(
-				"After constructor, getClassname/1 returned 'class_Reptile' "
-				"as expected." );
+        { wooper_result, class_Reptile } ->
+            test_facilities:display(
+                "After constructor, getClassname/1 returned 'class_Reptile' "
+                "as expected." );
 
-		{ wooper_result, UnexpectedClass } ->
-			test_facilities:fail( "wrong class: ~p", [ UnexpectedClass ] )
+        { wooper_result, UnexpectedClass } ->
+            test_facilities:fail( "wrong class: ~p", [ UnexpectedClass ] )
 
-	end,
+    end,
 
-	MyR ! { getSuperclasses, [], self() },
-	receive
+    MyR ! { getSuperclasses, [], self() },
+    receive
 
-		{ wooper_result, [ class_OvoviviparousBeing, class_Serialisable,
-						   class_StaticDescribable ] } ->
-			test_facilities:display(
-				"After constructor, correct superclasses returned." );
+        { wooper_result, [ class_OvoviviparousBeing, class_Serialisable,
+                           class_StaticDescribable ] } ->
+            test_facilities:display(
+                "After constructor, correct superclasses returned." );
 
-		{ wooper_result, UnexpectedSuperclasses } ->
-			test_facilities:fail( "wrong superclasses: ~p",
-								  [ UnexpectedSuperclasses ] )
+        { wooper_result, UnexpectedSuperclasses } ->
+            test_facilities:fail( "wrong superclasses: ~p",
+                                  [ UnexpectedSuperclasses ] )
 
-	end,
+    end,
 
-	MyR ! { getAge, [], self() },
-	receive
+    MyR ! { getAge, [], self() },
+    receive
 
-		{ wooper_result, 1 } ->
-			test_facilities:display(
-				"After constructor, getAge/1 returned 1 as expected." );
+        { wooper_result, 1 } ->
+            test_facilities:display(
+                "After constructor, getAge/1 returned 1 as expected." );
 
-		{ wooper_result, UnexpectedAge } ->
-			test_facilities:fail( "wrong age: ~p", [ UnexpectedAge ] )
+        { wooper_result, UnexpectedAge } ->
+            test_facilities:fail( "wrong age: ~p", [ UnexpectedAge ] )
 
-	end,
+    end,
 
-	MyR ! { getGender, [], self() },
-	receive
+    MyR ! { getGender, [], self() },
+    receive
 
-		{ wooper_result, male } ->
-			test_facilities:display(
-				"After constructor, getGender/1 returned male as expected." );
+        { wooper_result, male } ->
+            test_facilities:display(
+                "After constructor, getGender/1 returned male as expected." );
 
-		{ wooper_result, UnexpectedGender } ->
-			test_facilities:fail( "wrong gender: ~p", [ UnexpectedGender ] )
+        { wooper_result, UnexpectedGender } ->
+            test_facilities:fail( "wrong gender: ~p", [ UnexpectedGender ] )
 
-	end,
+    end,
 
-	MyR ! { setAge, 2 },
+    MyR ! { setAge, 2 },
 
-	MyR ! { getAge, [], self() },
-	receive
+    MyR ! { getAge, [], self() },
+    receive
 
-		{ wooper_result, 2 }->
-			test_facilities:display(
-				"After setAge, getAge/1 returned 2 as expected." );
+        { wooper_result, 2 }->
+            test_facilities:display(
+                "After setAge, getAge/1 returned 2 as expected." );
 
-		{ wooper_result, UnexpectedNewAge } ->
-			test_facilities:fail( "wrong age: ~p", [ UnexpectedNewAge ] )
+        { wooper_result, UnexpectedNewAge } ->
+            test_facilities:fail( "wrong age: ~p", [ UnexpectedNewAge ] )
 
-	end,
+    end,
 
-	MyR ! declareBirthday,
+    MyR ! declareBirthday,
 
-	MyR ! { getAge, [], self() },
-	receive
+    MyR ! { getAge, [], self() },
+    receive
 
-		{ wooper_result, 3 }->
-			test_facilities:display(
-				"After declareBirthday, getAge/1 returned 3 as expected." );
+        { wooper_result, 3 }->
+            test_facilities:display(
+                "After declareBirthday, getAge/1 returned 3 as expected." );
 
-		{ wooper_result, UnexpectedLastAge } ->
-			test_facilities:fail( "wrong age: ~p", [ UnexpectedLastAge ] )
+        { wooper_result, UnexpectedLastAge } ->
+            test_facilities:fail( "wrong age: ~p", [ UnexpectedLastAge ] )
 
-	end,
+    end,
 
-	MyR ! declareBirthday,
+    MyR ! declareBirthday,
 
-	MyR ! { isHotBlooded, [], self() },
-	receive
+    MyR ! { isHotBlooded, [], self() },
+    receive
 
-		{ wooper_result, false }->
-			test_facilities:display(
-				"isHotBlooded/1 returned false as expected." );
+        { wooper_result, false }->
+            test_facilities:display(
+                "isHotBlooded/1 returned false as expected." );
 
-		{ wooper_result, UnexpectedBlood } ->
-			test_facilities:fail( "wrong blood type: ~p", [ UnexpectedBlood ] )
+        { wooper_result, UnexpectedBlood } ->
+            test_facilities:fail( "wrong blood type: ~p", [ UnexpectedBlood ] )
 
-	end,
+    end,
 
-	MyR ! { canMoult, [], self() },
-	receive
+    MyR ! { canMoult, [], self() },
+    receive
 
-		{ wooper_result, true }->
-			test_facilities:display(
-				"canMoult/1 returned true as expected." );
+        { wooper_result, true }->
+            test_facilities:display(
+                "canMoult/1 returned true as expected." );
 
-		{ wooper_result, UnexpectedMoultType } ->
-			test_facilities:fail( "wrong moult type: ~p",
-								  [ UnexpectedMoultType ] )
+        { wooper_result, UnexpectedMoultType } ->
+            test_facilities:fail( "wrong moult type: ~p",
+                                  [ UnexpectedMoultType ] )
 
-	end,
+    end,
 
-	IsDebug andalso
-		begin
+    IsDebug andalso
+        begin
 
-			MyR ! { wooper_get_instance_description, [], self() },
+            MyR ! { wooper_get_instance_description, [], self() },
 
-			receive
+            receive
 
-				{ wooper_result, InspectString } ->
-					test_facilities:display( "Instance description: ~ts",
-											 [ InspectString ] )
-			end
+                { wooper_result, InspectString } ->
+                    test_facilities:display( "Instance description: ~ts",
+                                             [ InspectString ] )
+            end
 
-		end,
+        end,
 
-	% To check the result when using a faulty destructor:
-	test_facilities:display( "synchronous deletion of the instance." ),
+    % To check the result when using a faulty destructor:
+    test_facilities:display( "synchronous deletion of the instance." ),
 
-	wooper:delete_synchronously_instance( MyR ),
+    wooper:delete_synchronously_instance( MyR ),
 
-	test_facilities:stop().
+    test_facilities:stop().

@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -57,7 +57,7 @@ Gathering of various facilities for **quaternion-related** operations.
 A quaternion encodes an axis-angle representation of a 3D rotation.
 """.
 -type quaternion() :: { A :: coordinate(), B :: coordinate(),
-						C :: coordinate(), D :: coordinate() }.
+                        C :: coordinate(), D :: coordinate() }.
 
 
 
@@ -84,14 +84,14 @@ Defined for documentation purpose.
 
 
 -export([ new/4, null/0, rotation/2,
-		  add/2, mult/2,
-		  are_close/2, are_equal/2,
-		  square_magnitude/1, magnitude/1,
-		  negate/1, scale/2, normalise/1, conjugate/1, inverse/1, rotate/2,
-		  from_vector3/1, to_vector3/1,
-		  to_matrix4/1, to_rot_matrix3/1, to_rot_matrix3/2,
-		  is_unitary/1,
-		  to_string/1, to_compact_string/1, to_user_string/1 ]).
+          add/2, mult/2,
+          are_close/2, are_equal/2,
+          square_magnitude/1, magnitude/1,
+          negate/1, scale/2, normalise/1, conjugate/1, inverse/1, rotate/2,
+          from_vector3/1, to_vector3/1,
+          to_matrix4/1, to_rot_matrix3/1, to_rot_matrix3/2,
+          is_unitary/1,
+          to_string/1, to_compact_string/1, to_user_string/1 ]).
 
 
 % Shorthands:
@@ -126,18 +126,18 @@ Defined for documentation purpose.
 
 -doc "Returns a corresponding (checked) quaternion.".
 -spec new( any_coordinate(), any_coordinate(), any_coordinate(),
-		   any_coordinate() ) -> quaternion().
+           any_coordinate() ) -> quaternion().
 new( A, B, C, D ) ->
-	{ type_utils:ensure_float( A ), type_utils:ensure_float( B ),
-	  type_utils:ensure_float( C ), type_utils:ensure_float( D ) }.
+    { type_utils:ensure_float( A ), type_utils:ensure_float( B ),
+      type_utils:ensure_float( C ), type_utils:ensure_float( D ) }.
 
 
 
 -doc "Returns the null quaternion.".
 -spec null() -> quaternion().
 null() ->
-	Zero = 0.0,
-	{ Zero, Zero, Zero, Zero }.
+    Zero = 0.0,
+    { Zero, Zero, Zero, Zero }.
 
 
 
@@ -159,17 +159,17 @@ See also: rotate/2.
 -spec rotation( unit_vector3(), radians() ) -> quaternion().
 rotation( UnitAxis=[ Ux, Uy, Uz ], RadAngle ) ->
 
-	% Not an assertion, as UnitAxis must be ignored if no check is done:
-	cond_utils:if_defined( myriad_check_linear,
-						   true = vector3:is_unitary( UnitAxis ),
-						   basic_utils:ignore_unused( UnitAxis ) ),
+    % Not an assertion, as UnitAxis must be ignored if no check is done:
+    cond_utils:if_defined( myriad_check_linear,
+                           true = vector3:is_unitary( UnitAxis ),
+                           basic_utils:ignore_unused( UnitAxis ) ),
 
-	HalfAngle = RadAngle / 2.0,
+    HalfAngle = RadAngle / 2.0,
 
-	C = math:cos( HalfAngle ),
-	S = math:sin( HalfAngle ),
+    C = math:cos( HalfAngle ),
+    S = math:sin( HalfAngle ),
 
-	{ C, S*Ux, S*Uy, S*Uz }.
+    { C, S*Ux, S*Uy, S*Uz }.
 
 
 
@@ -181,7 +181,7 @@ Addition is associative, commutative, and every quaternion Q has its opposite
 """.
 -spec add( quaternion(), quaternion() ) -> quaternion().
 add( _Q1={A1,B1,C1,D1}, _Q2={A2,B2,C2,D2} ) ->
-	{ A1 + A2, B1 + B2, C1 + C2, D1 + D2 }.
+    { A1 + A2, B1 + B2, C1 + C2, D1 + D2 }.
 
 
 
@@ -200,12 +200,12 @@ Q2^-1*Q1.
 -spec mult( quaternion(), quaternion() ) -> quaternion().
 mult( _Q1={A1,B1,C1,D1}, _Q2={A2,B2,C2,D2} ) ->
 
-	A = A1*A2 - B1*B2 - C1*C2 - D1*D1,
-	B = A1*B2 + B1*A2 + C1*D2 - D1*C2,
-	C = A1*C2 - B1*D2 + C1*A2 + D1*B2,
-	D = A1*D2 + B1*C2 - C1*B2 + D1*A2,
+    A = A1*A2 - B1*B2 - C1*C2 - D1*D1,
+    B = A1*B2 + B1*A2 + C1*D2 - D1*C2,
+    C = A1*C2 - B1*D2 + C1*A2 + D1*B2,
+    D = A1*D2 + B1*C2 - C1*B2 + D1*A2,
 
-	{ A, B, C, D }.
+    { A, B, C, D }.
 
 
 
@@ -216,7 +216,7 @@ quaternions).
 """.
 -spec are_close( quaternion(), quaternion() ) -> boolean().
 are_close( Q1, Q2 ) ->
-	are_equal( Q1, Q2 ).
+    are_equal( Q1, Q2 ).
 
 
 
@@ -227,23 +227,23 @@ quaternions).
 """.
 -spec are_equal( quaternion(), quaternion() ) -> boolean().
 are_equal( _Q1={A1,B1,C1,D1}, _Q2={A2,B2,C2,D2} ) ->
-	math_utils:are_close( A1, A2 ) andalso math_utils:are_close( B1, B2 )
-		andalso math_utils:are_close( C1, C2 )
-		andalso math_utils:are_close( D1, D2 ).
+    math_utils:are_close( A1, A2 ) andalso math_utils:are_close( B1, B2 )
+        andalso math_utils:are_close( C1, C2 )
+        andalso math_utils:are_close( D1, D2 ).
 
 
 
 -doc "Returns the square of the magnitude of the specified quaternion.".
 -spec square_magnitude( quaternion() ) -> square_distance().
 square_magnitude( _Q={A,B,C,D} ) ->
-	A*A + B*B + C*C + D*D.
+    A*A + B*B + C*C + D*D.
 
 
 
 -doc "Returns the magnitude of the specified quaternion.".
 -spec magnitude( quaternion() ) -> distance().
 magnitude( Q ) ->
-	math:sqrt( square_magnitude( Q ) ).
+    math:sqrt( square_magnitude( Q ) ).
 
 
 
@@ -255,14 +255,14 @@ See also: conjugate/1.
 """.
 -spec negate( quaternion() ) -> quaternion().
 negate( _Q={A,B,C,D} ) ->
-	{ -A, -B, -C, -D }.
+    { -A, -B, -C, -D }.
 
 
 
 -doc "Scales the specified quaternion of the specified scalar factor.".
 -spec scale( quaternion(), factor() ) -> quaternion().
 scale( _Q={A,B,C,D}, Factor ) ->
-	{ Factor*A, Factor*B, Factor*C, Factor*D }.
+    { Factor*A, Factor*B, Factor*C, Factor*D }.
 
 
 
@@ -272,37 +272,37 @@ an unit length (whose magnitude is thus 1.0).
 """.
 -spec normalise( quaternion() ) -> unit_quaternion().
 normalise( Q ) ->
-	case magnitude( Q ) of
+    case magnitude( Q ) of
 
-		M when M < ?epsilon ->
-			throw( cannot_normalise_null_quaternion );
+        M when M < ?epsilon ->
+            throw( cannot_normalise_null_quaternion );
 
-		M ->
-			scale( Q, _Factor=1.0/M )
+        M ->
+            scale( Q, _Factor=1.0/M )
 
-	end.
+    end.
 
 
 
 -doc "Returns the conjugate of the specified quaternion.".
 -spec conjugate( quaternion() ) -> quaternion().
 conjugate( _Q={A,B,C,D} ) ->
-	{ A, -B, -C, -D }.
+    { A, -B, -C, -D }.
 
 
 
 -doc "Returns the inverse of the specified quaternion.".
 -spec inverse( quaternion() ) -> quaternion().
 inverse( Q ) ->
-	case square_magnitude( Q ) of
+    case square_magnitude( Q ) of
 
-		SM when SM < ?epsilon ->
-			throw( cannot_inverse_null_quaternion );
+        SM when SM < ?epsilon ->
+            throw( cannot_inverse_null_quaternion );
 
-		SM ->
-			scale( conjugate( Q ), _Factor=1.0/SM )
+        SM ->
+            scale( conjugate( Q ), _Factor=1.0/SM )
 
-	end.
+    end.
 
 
 
@@ -320,48 +320,48 @@ A quaternion-based approach allows to avoid the problem of gimbal lock (see
 -spec rotate( unit_quaternion(), vector3() ) -> vector3().
 rotate( Q={ A, B, C, D }, V ) ->
 
-	cond_utils:if_defined( myriad_check_linear,
-						   true = is_unitary( Q ),
-						   basic_utils:ignore_unused( Q ) ),
+    cond_utils:if_defined( myriad_check_linear,
+                           true = is_unitary( Q ),
+                           basic_utils:ignore_unused( Q ) ),
 
-	% Basic implementation:
+    % Basic implementation:
 
-	% QRotv = Q * Qv * Q^-1
+    % QRotv = Q * Qv * Q^-1
 
-	%Qv = from_vector3( V ),
+    %Qv = from_vector3( V ),
 
-	% Q being unitary:
-	%InvQ = conjugate( Q ),
+    % Q being unitary:
+    %InvQ = conjugate( Q ),
 
-	% Multiplication is associative:
-	%QRotv = mult( Q, mult( Qv, InvQ ) ),
+    % Multiplication is associative:
+    %QRotv = mult( Q, mult( Qv, InvQ ) ),
 
-	%to_vector3( QRotv ).
+    %to_vector3( QRotv ).
 
-	% Optimised implementation (1) derived from
-	% https://gamedev.stackexchange.com/questions/28395/rotating-vector3-by-a-quaternion
-	% returning V' = 2.(Vq.V).Vq + (A*A-Vq.Vq).V + 2.A.(Vq^V) = V1 + V2 + V3
+    % Optimised implementation (1) derived from
+    % https://gamedev.stackexchange.com/questions/28395/rotating-vector3-by-a-quaternion
+    % returning V' = 2.(Vq.V).Vq + (A*A-Vq.Vq).V + 2.A.(Vq^V) = V1 + V2 + V3
 
-	% A variation (2), not used here, based only on cross-products (not dot
-	% products) exist also: V' = V + A.Vq^V + 2.U^(U^V)
+    % A variation (2), not used here, based only on cross-products (not dot
+    % products) exist also: V' = V + A.Vq^V + 2.U^(U^V)
 
-	Vq = [ B, C, D ],
+    Vq = [ B, C, D ],
 
-	% Constructing (1):
+    % Constructing (1):
 
-	V1 = vector3:scale( Vq, 2.0 * vector3:dot_product( Vq, V ) ),
+    V1 = vector3:scale( Vq, 2.0 * vector3:dot_product( Vq, V ) ),
 
-	% V2 = vector3:scale( V, A*A - vector3:square_magnitude( Vq ) ),
-	%
-	% However, as Q is normalised, A*A - vector3:square_magnitude( Vq ) =
-	% A*A - ( B*B + C*C + D*D ) = A*A - (1 - A*A) = 2* AA - 1
-	%
-	% So:
-	V2 = vector3:scale( V, 2.0*A*A - 1.0 ),
+    % V2 = vector3:scale( V, A*A - vector3:square_magnitude( Vq ) ),
+    %
+    % However, as Q is normalised, A*A - vector3:square_magnitude( Vq ) =
+    % A*A - ( B*B + C*C + D*D ) = A*A - (1 - A*A) = 2* AA - 1
+    %
+    % So:
+    V2 = vector3:scale( V, 2.0*A*A - 1.0 ),
 
-	V3 = vector3:scale( vector3:cross_product( Vq, V ), 2.0*A ),
+    V3 = vector3:scale( vector3:cross_product( Vq, V ), 2.0*A ),
 
-	vector3:add( [ V1, V2, V3 ] ).
+    vector3:add( [ V1, V2, V3 ] ).
 
 
 
@@ -371,7 +371,7 @@ Returns the quaternion obtained from the specified 3D vector, that is the vector
 """.
 -spec from_vector3( vector3() ) -> vector_quaternion().
 from_vector3( _V=[ Vx, Vy, Vz ] ) ->
-	{ 0.0, Vx, Vy, Vz }.
+    { 0.0, Vx, Vy, Vz }.
 
 
 
@@ -382,12 +382,12 @@ quaternion (that is to have is scalar part null).
 -spec to_vector3( vector_quaternion() ) -> vector3().
 to_vector3( _Q={ A, B, C, D } ) ->
 
-	% Not an assertion, as A must be ignored if no check is done:
-	cond_utils:if_defined( myriad_check_linear,
-						   true = math_utils:is_null( A ),
-						   basic_utils:ignore_unused( A ) ),
+    % Not an assertion, as A must be ignored if no check is done:
+    cond_utils:if_defined( myriad_check_linear,
+                           true = math_utils:is_null( A ),
+                           basic_utils:ignore_unused( A ) ),
 
-	[ B, C, D ].
+    [ B, C, D ].
 
 
 
@@ -397,10 +397,10 @@ quaternion.
 """.
 -spec to_matrix4( quaternion() ) -> matrix4().
 to_matrix4( _Q={A,B,C,D} ) ->
-	#matrix4{ m11=A, m12=-B, m13=-C, m14=-D,
-			  m21=B, m22= A, m23=-D, m24= C,
-			  m31=C, m32= D, m33= A, m34=-B,
-			  m41=D, m42=-C, m43= B, m44= A }.
+    #matrix4{ m11=A, m12=-B, m13=-C, m14=-D,
+              m21=B, m22= A, m23=-D, m24= C,
+              m31=C, m32= D, m33= A, m34=-B,
+              m41=D, m42=-C, m43= B, m44= A }.
 
 
 
@@ -411,37 +411,37 @@ quaternion.
 -spec to_rot_matrix3( unit_quaternion() ) -> rot_matrix3().
 to_rot_matrix3( Q={A,B,C,D} ) ->
 
-	cond_utils:if_defined( myriad_check_linear,
-						   true = is_unitary( Q ),
-						   basic_utils:ignore_unused( Q ) ),
+    cond_utils:if_defined( myriad_check_linear,
+                           true = is_unitary( Q ),
+                           basic_utils:ignore_unused( Q ) ),
 
-	AB = A*B,
-	AC = A*C,
-	AD = A*D,
+    AB = A*B,
+    AC = A*C,
+    AD = A*D,
 
-	BB = B*B,
-	BC = B*C,
-	BD = B*D,
+    BB = B*B,
+    BC = B*C,
+    BD = B*D,
 
-	CC = C*C,
-	CD = C*D,
-	DD = D*D,
+    CC = C*C,
+    CD = C*D,
+    DD = D*D,
 
-	M11 = 1 - 2*(CC+DD),
-	M12 = 2*(BC-AD),
-	M13 = 2*(BD+AC),
+    M11 = 1 - 2*(CC+DD),
+    M12 = 2*(BC-AD),
+    M13 = 2*(BD+AC),
 
-	M21 = 2*(BC+AD),
-	M22 = 1 - 2*(BB+DD),
-	M23 = 2*(CD-AB),
+    M21 = 2*(BC+AD),
+    M22 = 1 - 2*(BB+DD),
+    M23 = 2*(CD-AB),
 
-	M31 = 2*(BD-AC),
-	M32 = 2*(CD+AB),
-	M33 = 1 - 2*(BB+CC),
+    M31 = 2*(BD-AC),
+    M32 = 2*(CD+AB),
+    M33 = 1 - 2*(BB+CC),
 
-	#matrix3{ m11=M11, m12=M12, m13=M13,
-			  m21=M21, m22=M22, m23=M23,
-			  m31=M31, m32=M32, m33=M33 }.
+    #matrix3{ m11=M11, m12=M12, m13=M13,
+              m21=M21, m22=M22, m23=M23,
+              m31=M31, m32=M32, m33=M33 }.
 
 
 
@@ -451,8 +451,8 @@ rotation of the specified angle around the axis specified as a unit vector.
 """.
 -spec to_rot_matrix3( unit_vector3(), radians() ) -> rot_matrix3().
 to_rot_matrix3( UnitAxis, RadAngle ) ->
-	Q = rotation( UnitAxis, RadAngle ),
-	to_rot_matrix3( Q ).
+    Q = rotation( UnitAxis, RadAngle ),
+    to_rot_matrix3( Q ).
 
 
 
@@ -462,8 +462,8 @@ magnitude (norm) 1.0.
 """.
 -spec is_unitary( quaternion() ) -> boolean().
 is_unitary( Q ) ->
-	% No specific need of computing the square root thereof:
-	math_utils:are_equal( 1.0, square_magnitude( Q ) ).
+    % No specific need of computing the square root thereof:
+    math_utils:are_equal( 1.0, square_magnitude( Q ) ).
 
 
 
@@ -473,7 +473,7 @@ is shown.
 """.
 -spec to_string( quaternion() ) -> ustring().
 to_string( Q ) ->
-	to_compact_string( Q ).
+    to_compact_string( Q ).
 
 
 
@@ -485,12 +485,12 @@ This is the recommended representation.
 -spec to_compact_string( quaternion() ) -> ustring().
 to_compact_string( _Q={ A, B, C, D } ) ->
 
-	% Not the following, as would induce unwanting spacing:
-	%text_utils:format( ?coord_float_format ++ " + " ++ ?coord_float_format
-	%   ++ ".i + " ++ ?coord_float_format ++ ".j + "
-	%   ++ ?coord_float_format ++ ".k", [ A, B, C, D ] ).
+    % Not the following, as would induce unwanting spacing:
+    %text_utils:format( ?coord_float_format ++ " + " ++ ?coord_float_format
+    %   ++ ".i + " ++ ?coord_float_format ++ ".j + "
+    %   ++ ?coord_float_format ++ ".k", [ A, B, C, D ] ).
 
-	text_utils:format( "~w + ~w.i + ~w.j + ~w.k", [ A, B, C, D ] ).
+    text_utils:format( "~w + ~w.i + ~w.j + ~w.k", [ A, B, C, D ] ).
 
 
 
@@ -502,16 +502,16 @@ quaternion; full float precision is shown.
 -spec to_user_string( quaternion() ) -> ustring().
 to_user_string( Q ) ->
 
-	Coords = tuple_to_list( Q ),
+    Coords = tuple_to_list( Q ),
 
-	Strs = linear:coords_to_best_width_strings( Coords ),
+    Strs = linear:coords_to_best_width_strings( Coords ),
 
-	% No need for ~ts here (and a different representation from vector):
-	ElemFormatStr = "| ~s |~n",
+    % No need for ~ts here (and a different representation from vector):
+    ElemFormatStr = "| ~s |~n",
 
-	FormatStr = "~n" ++ text_utils:duplicate( length( Coords ), ElemFormatStr ),
+    FormatStr = "~n" ++ text_utils:duplicate( length( Coords ), ElemFormatStr ),
 
-	%trace_utils:debug_fmt( "FormatStr: ~ts; Strs: ~p.",
-	%                       [ FormatStr, Strs ] ),
+    %trace_utils:debug_fmt( "FormatStr: ~ts; Strs: ~p.",
+    %                       [ FormatStr, Strs ] ),
 
-	text_utils:format( FormatStr, Strs ).
+    text_utils:format( FormatStr, Strs ).

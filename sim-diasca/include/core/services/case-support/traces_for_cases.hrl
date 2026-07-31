@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2025 EDF R&D
+% Copyright (C) 2012-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -79,45 +79,45 @@
 % TraceAggregatorPid voluntarily exported from case_start, for case_stop:
 
 -define( case_start,
-	% No supervisor wanted from scratch, as their trace file will have to be
-	% renamed and the LogMX supervisor cannot change the file it is tracking:
-	%
-	% (not binding even a mute variable, would have been:
-	% _InitTraceSupervisor=false)
-	%
-	TraceAggregatorPid = traces_for_cases:case_start( ?MODULE, false )
+    % No supervisor wanted from scratch, as their trace file will have to be
+    % renamed and the LogMX supervisor cannot change the file it is tracking:
+    %
+    % (not binding even a mute variable, would have been:
+    % _InitTraceSupervisor=false)
+    %
+    TraceAggregatorPid = traces_for_cases:case_start( ?MODULE, false )
 ).
 
 
 -define( case_start(TraceType),
-	% No supervisor wanted from scratch, as their trace file will have to be
-	% renamed and the LogMX supervisor cannot change the file it is tracking:
-	%
-	% (not binding even a mute variable, would have been:
-	% _InitTraceSupervisor=false)
-	%
-	TraceAggregatorPid = traces_for_cases:case_start( ?MODULE, false,
-													  TraceType )
+    % No supervisor wanted from scratch, as their trace file will have to be
+    % renamed and the LogMX supervisor cannot change the file it is tracking:
+    %
+    % (not binding even a mute variable, would have been:
+    % _InitTraceSupervisor=false)
+    %
+    TraceAggregatorPid = traces_for_cases:case_start( ?MODULE, false,
+                                                      TraceType )
 ).
 
 
 -define( case_stop,
-	% Consistent with case_start above:
-	%
-	% (not binding even a mute variable, would have been:
-	% _WaitForTraceSupervisor=true)
-	%
-	traces_for_cases:case_stop( ?MODULE, TraceAggregatorPid, true )
+    % Consistent with case_start above:
+    %
+    % (not binding even a mute variable, would have been:
+    % _WaitForTraceSupervisor=true)
+    %
+    traces_for_cases:case_stop( ?MODULE, TraceAggregatorPid, true )
 ).
 
 
 -define( case_stop_no_supervisor,
-	% Consistent with case_start above:
-	%
-	% (not binding even a mute variable, would have been:
-	% _WaitForTraceSupervisor=false)
-	%
-	traces_for_cases:case_stop( ?MODULE, TraceAggregatorPid, false )
+    % Consistent with case_start above:
+    %
+    % (not binding even a mute variable, would have been:
+    % _WaitForTraceSupervisor=false)
+    %
+    traces_for_cases:case_stop( ?MODULE, TraceAggregatorPid, false )
 ).
 
 
@@ -126,45 +126,45 @@
 
 
 -define( case_start,
-	% Here, even if the trace sending is deactivated, a trace aggregator is
-	% created, as some processes nevertheless expect to find one at start-up, or
-	% some of them may have been recompiled to be trace-enabled.
-	%
-	% However no trace supervisor is triggered here.
-	%
-	% (not binding even a mute variable, would have been:
-	% _InitTraceSupervisor=false; )
-	%
-	% The case_stop macro shall be consistent with it.
-	%
-	TraceAggregatorPid = traces_for_cases:case_start( ?MODULE, false )
+    % Here, even if the trace sending is deactivated, a trace aggregator is
+    % created, as some processes nevertheless expect to find one at start-up, or
+    % some of them may have been recompiled to be trace-enabled.
+    %
+    % However no trace supervisor is triggered here.
+    %
+    % (not binding even a mute variable, would have been:
+    % _InitTraceSupervisor=false; )
+    %
+    % The case_stop macro shall be consistent with it.
+    %
+    TraceAggregatorPid = traces_for_cases:case_start( ?MODULE, false )
 ).
 
 
 -define( case_start(TraceType),
-	% Here, even if the trace sending is deactivated, a trace aggregator is
-	% created, as some processes nevertheless expect to find one at start-up, or
-	% some of them may have been recompiled to be trace-enabled.
-	%
-	% However no trace supervisor is triggered here.
-	%
-	% (not binding even a mute variable, would have been:
-	% _InitTraceSupervisor=false; )
-	%
-	% The case_stop macro shall be consistent with it.
-	%
-	TraceAggregatorPid = traces_for_cases:case_start( ?MODULE, false,
-													  TraceType )
+    % Here, even if the trace sending is deactivated, a trace aggregator is
+    % created, as some processes nevertheless expect to find one at start-up, or
+    % some of them may have been recompiled to be trace-enabled.
+    %
+    % However no trace supervisor is triggered here.
+    %
+    % (not binding even a mute variable, would have been:
+    % _InitTraceSupervisor=false; )
+    %
+    % The case_stop macro shall be consistent with it.
+    %
+    TraceAggregatorPid = traces_for_cases:case_start( ?MODULE, false,
+                                                      TraceType )
 ).
 
 
 -define( case_stop,
 
-	% Consistent with case_start above:
-	%
-	% (not a call to case_immediate_stop/3 either)
-	%
-	traces_for_cases:case_immediate_stop( ?MODULE, TraceAggregatorPid )
+    % Consistent with case_start above:
+    %
+    % (not a call to case_immediate_stop/3 either)
+    %
+    traces_for_cases:case_immediate_stop( ?MODULE, TraceAggregatorPid )
 ).
 
 
@@ -177,11 +177,11 @@
 % Valid whether or not tracing is activated:
 
 -define( case_stop_without_waiting_for_trace_supervisor,
-	traces_for_cases:case_immediate_stop( ?MODULE, TraceAggregatorPid ) ).
+    traces_for_cases:case_immediate_stop( ?MODULE, TraceAggregatorPid ) ).
 
 
 -define( case_stop_on_shell,
-	traces_for_cases:case_stop_on_shell( ?MODULE, TraceAggregatorPid ) ).
+    traces_for_cases:case_stop_on_shell( ?MODULE, TraceAggregatorPid ) ).
 
 
 
@@ -214,20 +214,20 @@ Handles a case failure, using the specified string as advertised reason.
 -spec case_failed( text_utils:ustring() ) -> no_return().
 case_failed( Reason ) ->
 
-	% For some reason erlang:error is unable to interpret strings as strings,
-	% they are always output as unreadable lists.
+    % For some reason erlang:error is unable to interpret strings as strings,
+    % they are always output as unreadable lists.
 
-	Message = text_utils:format( "Case ~ts failed, reason: ~ts.",
-								 [ ?MODULE, Reason ] ),
+    Message = text_utils:format( "Case ~ts failed, reason: ~ts.",
+                                 [ ?MODULE, Reason ] ),
 
-	trace_utils:error( Message ),
+    trace_utils:error( Message ),
 
-	?case_emergency( Message ),
+    ?case_emergency( Message ),
 
-	% Needed, otherwise the standard logger may not display anything:
-	system_utils:await_output_completion(),
+    % Needed, otherwise the standard logger may not display anything:
+    system_utils:await_output_completion(),
 
-	erlang:error( "Case ~ts failed.", [ ?MODULE ] ).
+    erlang:error( "Case ~ts failed.", [ ?MODULE ] ).
 
 
 
@@ -237,9 +237,9 @@ with format characters (e.g. '~w') and specified list as actual values to be
 formatted.
 """.
 -spec case_failed( text_utils:format_string(), text_utils:format_values() ) ->
-						no_return().
+                        no_return().
 case_failed( Reason, FormatValues ) ->
-	case_failed( text_utils:format( Reason, FormatValues ) ).
+    case_failed( text_utils:format( Reason, FormatValues ) ).
 
 
 
@@ -247,10 +247,10 @@ case_failed( Reason, FormatValues ) ->
 
 -spec test_failed( text_utils:ustring() ) -> no_return().
 test_failed( Reason ) ->
-	case_failed( Reason ).
+    case_failed( Reason ).
 
 
 -spec test_failed( text_utils:format_string(), text_utils:format_values() ) ->
                                                     no_return().
 test_failed( Reason, FormatValues ) ->
-	case_failed( Reason, FormatValues ).
+    case_failed( Reason, FormatValues ).

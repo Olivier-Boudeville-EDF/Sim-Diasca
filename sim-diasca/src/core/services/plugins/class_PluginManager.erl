@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 EDF R&D
+% Copyright (C) 2014-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -28,8 +28,8 @@ interface to the engine.
 
 
 -define( class_description,
-		 "Manager of the Sim-Diasca plugins, which allows third-party tools "
-		 "to interface to the engine." ).
+         "Manager of the Sim-Diasca plugins, which allows third-party tools "
+         "to interface to the engine." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -39,10 +39,10 @@ interface to the engine.
 % The class-specific attributes of a plugin manager:
 -define( class_attributes, [
 
-	{ plugin_table, table( basic_utils:module_name(), option( term() ) ),
-	  "an associative table whose keys are the module name of each plugin "
-	  "(as an atom) and whose values are any state information returned by a "
-	  "given plugin" } ] ).
+    { plugin_table, table( basic_utils:module_name(), option( term() ) ),
+      "an associative table whose keys are the module name of each plugin "
+      "(as an atom) and whose values are any state information returned by a "
+      "given plugin" } ] ).
 
 
 
@@ -98,43 +98,43 @@ into, in order to look-up for plugins.
 -spec construct( wooper:state(), [ directory_path() ] ) -> wooper:state().
 construct( State, PluginDirectories ) ->
 
-	TraceState = class_EngineBaseObject:construct( State,
-		?trace_categorize("Plugin manager") ),
+    TraceState = class_EngineBaseObject:construct( State,
+        ?trace_categorize("Plugin manager") ),
 
-	% Then the class-specific actions:
+    % Then the class-specific actions:
 
-	% Ensures also it is a singleton indeed:
-	naming_utils:register_as( ?plugin_manager_name, ?registration_scope ),
+    % Ensures also it is a singleton indeed:
+    naming_utils:register_as( ?plugin_manager_name, ?registration_scope ),
 
-	DirMessage = case PluginDirectories of
+    DirMessage = case PluginDirectories of
 
-		[] ->
-			"no plugin directory specified.";
+        [] ->
+            "no plugin directory specified.";
 
-		_ ->
-			text_utils:format( "following ~B plugin directories specified: ~ts",
-				[ length( PluginDirectories ),
-				  text_utils:strings_to_string( PluginDirectories ) ] )
+        _ ->
+            text_utils:format( "following ~B plugin directories specified: ~ts",
+                [ length( PluginDirectories ),
+                  text_utils:strings_to_string( PluginDirectories ) ] )
 
-	end,
+    end,
 
-	?send_info( TraceState,
-				"Initialising plugin manager, with " ++ DirMessage ),
+    ?send_info( TraceState,
+                "Initialising plugin manager, with " ++ DirMessage ),
 
 
-	% List of absolute paths, extension-less BEAMs:
-	Plugins = get_plugins_from( PluginDirectories, TraceState ),
+    % List of absolute paths, extension-less BEAMs:
+    Plugins = get_plugins_from( PluginDirectories, TraceState ),
 
-	% Keys are the plugin module names (as atoms), associated values start at
-	% 'undefined':
-	%
-	PluginTable = create_initial_plugin_table( Plugins, TraceState ),
+    % Keys are the plugin module names (as atoms), associated values start at
+    % 'undefined':
+    %
+    PluginTable = create_initial_plugin_table( Plugins, TraceState ),
 
-	ModuleState = setAttribute( TraceState, plugin_table, PluginTable ),
+    ModuleState = setAttribute( TraceState, plugin_table, PluginTable ),
 
-	load_plugins( Plugins, ModuleState ),
+    load_plugins( Plugins, ModuleState ),
 
-	ModuleState.
+    ModuleState.
 
 
 
@@ -142,17 +142,17 @@ construct( State, PluginDirectories ) ->
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
-	% Class-specific actions:
-	?info( "Deleting plugin manager." ),
+    % Class-specific actions:
+    ?info( "Deleting plugin manager." ),
 
-	class_InstanceTracker:unregister_agent(),
+    class_InstanceTracker:unregister_agent(),
 
-	naming_utils:unregister( ?plugin_manager_name, ?registration_scope ),
+    naming_utils:unregister( ?plugin_manager_name, ?registration_scope ),
 
-	?debug( "Plugin manager deleted." ),
+    ?debug( "Plugin manager deleted." ),
 
-	% Then allow chaining:
-	State.
+    % Then allow chaining:
+    State.
 
 
 
@@ -162,12 +162,12 @@ destruct( State ) ->
 
 -doc "Requests all plugins to be notified of the specified standard event.".
 -spec notifyEvent( wooper:state(), plugin_event() ) ->
-						request_return( 'event_notified' ).
+                        request_return( 'event_notified' ).
 notifyEvent( State, Event ) ->
 
-	NewState = notify_event( Event, State ),
+    NewState = notify_event( Event, State ),
 
-	wooper:return_state_result( NewState, event_notified ).
+    wooper:return_state_result( NewState, event_notified ).
 
 
 
@@ -178,37 +178,37 @@ them a chance of performing the requested configuration changes.
 (request, for synchronicity)
 """.
 -spec notifySimulatorStart( wooper:state() ) ->
-		request_return( configuration_changes() ).
+        request_return( configuration_changes() ).
 notifySimulatorStart( State ) ->
 
-	?info( "Notifying all plugins that the simulator starts, giving them "
-		   "a chance of updating the requested configuration changes." ),
+    ?info( "Notifying all plugins that the simulator starts, giving them "
+           "a chance of updating the requested configuration changes." ),
 
-	BlankConfChanges = #configuration_changes{},
+    BlankConfChanges = #configuration_changes{},
 
-	InitialPluginTable = ?getAttr(plugin_table),
+    InitialPluginTable = ?getAttr(plugin_table),
 
-	{ FinalChanges, FinalTable } = lists:foldl(
-		fun( { Mod, PlugState }, { Changes, Table } ) ->
+    { FinalChanges, FinalTable } = lists:foldl(
+        fun( { Mod, PlugState }, { Changes, Table } ) ->
 
-			{ NewChanges, NewPlugState } =
-				Mod:on_simulator_start( Changes, PlugState ),
+            { NewChanges, NewPlugState } =
+                Mod:on_simulator_start( Changes, PlugState ),
 
-			% Update state:
-			NewTable = table:add_entry( _K=Mod, _V=NewPlugState, Table ),
+            % Update state:
+            NewTable = table:add_entry( _K=Mod, _V=NewPlugState, Table ),
 
-			{ NewChanges, NewTable }
+            { NewChanges, NewTable }
 
-		end,
-		_Acc0={ BlankConfChanges, InitialPluginTable },
-		_List=table:enumerate( InitialPluginTable ) ),
+        end,
+        _Acc0={ BlankConfChanges, InitialPluginTable },
+        _List=table:enumerate( InitialPluginTable ) ),
 
-	?info_fmt( "Final requested configuration changes are: ~p.",
-			   [ FinalChanges ] ),
+    ?info_fmt( "Final requested configuration changes are: ~p.",
+               [ FinalChanges ] ),
 
-	FinalState = setAttribute( State, plugin_table, FinalTable ),
+    FinalState = setAttribute( State, plugin_table, FinalTable ),
 
-	wooper:return_state_result( FinalState, FinalChanges ).
+    wooper:return_state_result( FinalState, FinalChanges ).
 
 
 
@@ -218,12 +218,12 @@ Requests all plugins to be notified of following parametrised event.
 (request, for synchronicity)
 """.
 -spec notifyParametrisedEvent( wooper:state(), plugin_event(), event_data() ) ->
-					request_return( 'parametrised_event_notified' ).
+                    request_return( 'parametrised_event_notified' ).
 notifyParametrisedEvent( State, Event, Parameters ) ->
 
-	NewState = notify_parametrised_event( Event, Parameters, State ),
+    NewState = notify_parametrised_event( Event, Parameters, State ),
 
-	wooper:return_state_result( NewState, parametrised_event_notified ).
+    wooper:return_state_result( NewState, parametrised_event_notified ).
 
 
 
@@ -234,13 +234,13 @@ associated parameter.
 (request, for synchronicity)
 """.
 -spec notifyCaseSpecificEvent( wooper:state(), case_specific_event(),
-			event_data() ) -> request_return( 'case_specific_event_notified' ).
+            event_data() ) -> request_return( 'case_specific_event_notified' ).
 notifyCaseSpecificEvent( State, CaseSpecificEvent, EventParameter ) ->
 
-	NewState =
-		notify_case_specific_event( CaseSpecificEvent, EventParameter, State ),
+    NewState =
+        notify_case_specific_event( CaseSpecificEvent, EventParameter, State ),
 
-	wooper:return_state_result( NewState, case_specific_event_notified ).
+    wooper:return_state_result( NewState, case_specific_event_notified ).
 
 
 
@@ -254,42 +254,42 @@ of the plugin modules.
 """.
 -spec get_plugins_from( [ directory_path() ], wooper:state() ) -> [ ustring() ].
 get_plugins_from( PluginDirectories, State ) ->
-	get_plugins_from( PluginDirectories, State, _AccPlugins=[] ).
+    get_plugins_from( PluginDirectories, State, _AccPlugins=[] ).
 
 
 
 % (helper)
 get_plugins_from( _PluginDirectories=[], _State, AccPlugins ) ->
-	AccPlugins;
+    AccPlugins;
 
 get_plugins_from( _PluginDirectories=[ Dir | T ], State, AccPlugins ) ->
 
-	AbsDir = file_utils:ensure_path_is_absolute( Dir ),
+    AbsDir = file_utils:ensure_path_is_absolute( Dir ),
 
-	case file_utils:is_existing_directory( AbsDir ) of
+    case file_utils:is_existing_directory( AbsDir ) of
 
-		true ->
-			NewPlugins = case get_plugins_from_dir( AbsDir ) of
+        true ->
+            NewPlugins = case get_plugins_from_dir( AbsDir ) of
 
-				[] ->
-					?debug_fmt( "No plugin found in directory '~ts'.",
-								[ AbsDir ] ),
-					[];
+                [] ->
+                    ?debug_fmt( "No plugin found in directory '~ts'.",
+                                [ AbsDir ] ),
+                    [];
 
-				Plugins ->
-					?debug_fmt( "~B plugin(s) found in directory '~ts': ~p.",
-								[ length( Plugins ), AbsDir, Plugins ] ),
-					Plugins
+                Plugins ->
+                    ?debug_fmt( "~B plugin(s) found in directory '~ts': ~p.",
+                                [ length( Plugins ), AbsDir, Plugins ] ),
+                    Plugins
 
-			end,
+            end,
 
-			get_plugins_from( T, State, NewPlugins ++ AccPlugins );
+            get_plugins_from( T, State, NewPlugins ++ AccPlugins );
 
-		false ->
-			?debug_fmt( "Plugin directory '~ts' does not exist.", [ AbsDir ] ),
-			get_plugins_from( T, State, AccPlugins )
+        false ->
+            ?debug_fmt( "Plugin directory '~ts' does not exist.", [ AbsDir ] ),
+            get_plugins_from( T, State, AccPlugins )
 
-	end.
+    end.
 
 
 
@@ -300,99 +300,99 @@ removed) found in the specified directory.
 -spec get_plugins_from_dir( directory_path() ) -> [ file_path() ].
 get_plugins_from_dir( DirectoryPath ) ->
 
-	% First, select all BEAM regular files:
-	{ Files, _Symlinks, _Dirs, _Others, _Devs } =
-		file_utils:list_dir_elements( DirectoryPath ),
+    % First, select all BEAM regular files:
+    { Files, _Symlinks, _Dirs, _Others, _Devs } =
+        file_utils:list_dir_elements( DirectoryPath ),
 
-	Beams = file_utils:filter_by_extension( Files, ".beam" ),
+    Beams = file_utils:filter_by_extension( Files, ".beam" ),
 
-	% Then remove their extension (to specify moduels) and make them absolute
-	% paths:
-	%
-	Modules = [ file_utils:replace_extension( _Filename=B,
-		_SourceExtension=".beam", _TargetExtension="" ) || B <- Beams ],
+    % Then remove their extension (to specify moduels) and make them absolute
+    % paths:
+    %
+    Modules = [ file_utils:replace_extension( _Filename=B,
+        _SourceExtension=".beam", _TargetExtension="" ) || B <- Beams ],
 
-	% Full paths needed:
-	[ file_utils:join( DirectoryPath, M ) || M <- Modules ].
+    % Full paths needed:
+    [ file_utils:join( DirectoryPath, M ) || M <- Modules ].
 
 
 
 -doc "Initialises and returns the plugin table.".
 create_initial_plugin_table( Plugins, State ) ->
 
-	case Plugins of
+    case Plugins of
 
-		[] ->
-			?info( "Plugin manager started, but no plugin found." ),
-			table:new();
+        [] ->
+            ?info( "Plugin manager started, but no plugin found." ),
+            table:new();
 
-		_ ->
+        _ ->
 
-			StringModules = [ filename:basename( P ) || P <- Plugins ],
+            StringModules = [ filename:basename( P ) || P <- Plugins ],
 
-			Count = length( Plugins ),
+            Count = length( Plugins ),
 
-			?info_fmt( "Plugin manager started, with ~B plugin(s): ~ts",
-				[ Count, text_utils:strings_to_string( StringModules ) ] ),
+            ?info_fmt( "Plugin manager started, with ~B plugin(s): ~ts",
+                [ Count, text_utils:strings_to_string( StringModules ) ] ),
 
-			Modules = [ text_utils:string_to_atom( S ) || S <- StringModules ],
+            Modules = [ text_utils:string_to_atom( S ) || S <- StringModules ],
 
-			EmptyTable = table:new(),
+            EmptyTable = table:new(),
 
-			lists:foldl( fun( Mod, Table ) ->
-							% Initial plugin state is undefined:
-							table:add_entry( _K=Mod, _V=undefined, Table )
-						 end,
-						 _Acc0=EmptyTable,
-						 _List=Modules )
+            lists:foldl( fun( Mod, Table ) ->
+                            % Initial plugin state is undefined:
+                            table:add_entry( _K=Mod, _V=undefined, Table )
+                         end,
+                         _Acc0=EmptyTable,
+                         _List=Modules )
 
-	end.
+    end.
 
 
 
 % Loads specified plugins.
 load_plugins( Plugins, State ) ->
-	[ load_plugin( P, State ) || P <- Plugins ].
+    [ load_plugin( P, State ) || P <- Plugins ].
 
 
 % Loads specified plugin.
 load_plugin( Plugin, State ) ->
 
-	% No need to tweak the code paths:
-	case code:load_abs( Plugin ) of
+    % No need to tweak the code paths:
+    case code:load_abs( Plugin ) of
 
-		{ error, Reason } ->
-			?error_fmt( "Loading of plugin '~ts' failed: ~ts.",
-						[ Plugin, Reason ] ),
-			throw( { plugin_loading_failed, Plugin, Reason } );
+        { error, Reason } ->
+            ?error_fmt( "Loading of plugin '~ts' failed: ~ts.",
+                        [ Plugin, Reason ] ),
+            throw( { plugin_loading_failed, Plugin, Reason } );
 
-		{ module, Module } ->
-			?debug_fmt( "Plugin '~ts' successfully loaded from '~ts'.",
-						[ Module, filename:dirname( Plugin ) ] )
+        { module, Module } ->
+            ?debug_fmt( "Plugin '~ts' successfully loaded from '~ts'.",
+                        [ Module, filename:dirname( Plugin ) ] )
 
-	end.
+    end.
 
 
 
 -doc "Notifies known plugins of specified event; returns an updated state.".
 notify_event( Event, State ) ->
 
-	PluginTable = ?getAttr(plugin_table),
+    PluginTable = ?getAttr(plugin_table),
 
-	?info_fmt( "Notifying all plugins of event '~ts'.", [ Event ] ),
+    ?info_fmt( "Notifying all plugins of event '~ts'.", [ Event ] ),
 
-	NewTable = lists:foldl( fun( { Mod, PlugState }, Table ) ->
+    NewTable = lists:foldl( fun( { Mod, PlugState }, Table ) ->
 
-		NewPlugState = Mod:Event( PlugState ),
+        NewPlugState = Mod:Event( PlugState ),
 
-		% Update state:
-		table:add_entry( _K=Mod, _V=NewPlugState, Table )
+        % Update state:
+        table:add_entry( _K=Mod, _V=NewPlugState, Table )
 
-							end,
-							_Acc0=PluginTable,
-							_List=table:enumerate( PluginTable ) ),
+                            end,
+                            _Acc0=PluginTable,
+                            _List=table:enumerate( PluginTable ) ),
 
-	setAttribute( State, plugin_table, NewTable ).
+    setAttribute( State, plugin_table, NewTable ).
 
 
 
@@ -402,23 +402,23 @@ state.
 """.
 notify_parametrised_event( Event, Parameters, State ) ->
 
-	PluginTable = ?getAttr(plugin_table),
+    PluginTable = ?getAttr(plugin_table),
 
-	?info_fmt( "Notifying all plugins of event '~ts' "
-			   "parametrised with '~p'.", [ Event, Parameters ] ),
+    ?info_fmt( "Notifying all plugins of event '~ts' "
+               "parametrised with '~p'.", [ Event, Parameters ] ),
 
-	NewTable = lists:foldl( fun( { Mod, PlugState }, Table ) ->
+    NewTable = lists:foldl( fun( { Mod, PlugState }, Table ) ->
 
-		NewPlugState = Mod:Event( Parameters, PlugState ),
+        NewPlugState = Mod:Event( Parameters, PlugState ),
 
-		% Update state:
-		table:add_entry( _K=Mod, _V=NewPlugState, Table )
+        % Update state:
+        table:add_entry( _K=Mod, _V=NewPlugState, Table )
 
-							end,
-							_Acc0=PluginTable,
-							_List=table:enumerate( PluginTable ) ),
+                            end,
+                            _Acc0=PluginTable,
+                            _List=table:enumerate( PluginTable ) ),
 
-	setAttribute( State, plugin_table, NewTable ).
+    setAttribute( State, plugin_table, NewTable ).
 
 
 
@@ -428,24 +428,24 @@ state.
 """.
 notify_case_specific_event( CaseSpecificEvent, EventParameter, State ) ->
 
-	PluginTable = ?getAttr(plugin_table),
+    PluginTable = ?getAttr(plugin_table),
 
-	?info_fmt( "Notifying all plugins of case-specific event '~ts' "
-			   "with parameter '~p'.", [ CaseSpecificEvent, EventParameter ] ),
+    ?info_fmt( "Notifying all plugins of case-specific event '~ts' "
+               "with parameter '~p'.", [ CaseSpecificEvent, EventParameter ] ),
 
-	NewTable = lists:foldl( fun( { Mod, PlugState }, Table ) ->
+    NewTable = lists:foldl( fun( { Mod, PlugState }, Table ) ->
 
-		NewPlugState = Mod:on_case_specific_event( CaseSpecificEvent,
-												   EventParameter, PlugState ),
+        NewPlugState = Mod:on_case_specific_event( CaseSpecificEvent,
+                                                   EventParameter, PlugState ),
 
-		% Update state:
-		table:add_entry( _K=Mod, _V=NewPlugState, Table )
+        % Update state:
+        table:add_entry( _K=Mod, _V=NewPlugState, Table )
 
-							end,
-							_Acc0=PluginTable,
-							_List=table:enumerate( PluginTable ) ),
+                            end,
+                            _Acc0=PluginTable,
+                            _List=table:enumerate( PluginTable ) ),
 
-	setAttribute( State, plugin_table, NewTable ).
+    setAttribute( State, plugin_table, NewTable ).
 
 
 
@@ -457,18 +457,18 @@ notify_case_specific_event( CaseSpecificEvent, EventParameter, State ) ->
 -spec notify( plugin_event() ) -> static_void_return().
 notify( Event ) ->
 
-	PluginManagerPid = naming_utils:get_registered_pid_for(
-		?plugin_manager_name, _Scope=?look_up_scope ),
+    PluginManagerPid = naming_utils:get_registered_pid_for(
+        ?plugin_manager_name, _Scope=?look_up_scope ),
 
 
-	PluginManagerPid ! { notifyEvent, [ Event ], self() },
+    PluginManagerPid ! { notifyEvent, [ Event ], self() },
 
-	receive
+    receive
 
-		{ wooper_result, event_notified } ->
-			wooper:return_static_void()
+        { wooper_result, event_notified } ->
+            wooper:return_static_void()
 
-	end.
+    end.
 
 
 
@@ -479,23 +479,23 @@ event.
 -spec notify_if_registered( plugin_event() ) -> static_void_return().
 notify_if_registered( Event ) ->
 
-	case naming_utils:is_registered( ?plugin_manager_name,
-									 _Scope=?look_up_scope ) of
+    case naming_utils:is_registered( ?plugin_manager_name,
+                                     _Scope=?look_up_scope ) of
 
-		not_registered ->
-			wooper:return_static_void();
+        not_registered ->
+            wooper:return_static_void();
 
-		PluginManagerPid ->
-			PluginManagerPid ! { notifyEvent, [ Event ], self() },
+        PluginManagerPid ->
+            PluginManagerPid ! { notifyEvent, [ Event ], self() },
 
-			receive
+            receive
 
-				{ wooper_result, event_notified } ->
-					wooper:return_static_void()
+                { wooper_result, event_notified } ->
+                    wooper:return_static_void()
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -506,18 +506,18 @@ requests for configuration changes.
 -spec notify_simulator_start() -> static_return( configuration_changes() ).
 notify_simulator_start() ->
 
-	PluginManagerPid = naming_utils:get_registered_pid_for(
-		?plugin_manager_name, _Scope=?look_up_scope ),
+    PluginManagerPid = naming_utils:get_registered_pid_for(
+        ?plugin_manager_name, _Scope=?look_up_scope ),
 
-	% Starts with blank changes:
-	PluginManagerPid ! { notifySimulatorStart, [], self() },
+    % Starts with blank changes:
+    PluginManagerPid ! { notifySimulatorStart, [], self() },
 
-	receive
+    receive
 
-		{ wooper_result, ConfigurationChanges } ->
-			wooper:return_static( ConfigurationChanges )
+        { wooper_result, ConfigurationChanges } ->
+            wooper:return_static( ConfigurationChanges )
 
-	end.
+    end.
 
 
 
@@ -525,35 +525,35 @@ notify_simulator_start() ->
 -spec notify( plugin_event(), event_data() ) -> static_void_return().
 notify( Event, Parameters ) ->
 
-	PluginManagerPid = naming_utils:get_registered_pid_for(
-		?plugin_manager_name, _Scope=?look_up_scope ),
+    PluginManagerPid = naming_utils:get_registered_pid_for(
+        ?plugin_manager_name, _Scope=?look_up_scope ),
 
-	PluginManagerPid ! { notifyParametrisedEvent, [ Event, Parameters ],
-						 self() },
+    PluginManagerPid ! { notifyParametrisedEvent, [ Event, Parameters ],
+                         self() },
 
-	receive
+    receive
 
-		{ wooper_result, parametrised_event_notified } ->
-			wooper:return_static_void()
+        { wooper_result, parametrised_event_notified } ->
+            wooper:return_static_void()
 
-	end.
+    end.
 
 
 
 -doc "To notify from any place the plugin manager of a case-specific event.".
 -spec notify_case_specific( case_specific_event(), event_data() ) ->
-										static_void_return().
+                                        static_void_return().
 notify_case_specific( Event, EventParameter ) ->
 
-	PluginManagerPid = naming_utils:get_registered_pid_for(
-		?plugin_manager_name, _Scope=?look_up_scope ),
+    PluginManagerPid = naming_utils:get_registered_pid_for(
+        ?plugin_manager_name, _Scope=?look_up_scope ),
 
-	PluginManagerPid !
-		{ notifyCaseSpecificEvent, [ Event, EventParameter ], self() },
+    PluginManagerPid !
+        { notifyCaseSpecificEvent, [ Event, EventParameter ], self() },
 
-	receive
+    receive
 
-		{ wooper_result, case_specific_event_notified } ->
-			wooper:return_static_void()
+        { wooper_result, case_specific_event_notified } ->
+            wooper:return_static_void()
 
-	end.
+    end.

@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -28,8 +28,8 @@ creation, etc.
 
 
 -define( class_description,
-		 "Test of the Actor class, regarding time management, communication, "
-		 "actor creation, etc." ).
+         "Test of the Actor class, regarding time management, communication, "
+         "actor creation, etc." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -40,32 +40,32 @@ creation, etc.
 % Tne class-specific attributes of this test actor are:
 -define( class_attributes, [
 
-	{ target_peers, [ actor_pid() ],
-	  "the other actors this actor sends messages to" },
+    { target_peers, [ actor_pid() ],
+      "the other actors this actor sends messages to" },
 
-	{ source_peers, [ actor_pid() ],
-	  "the actors that send messages to this actor" },
+    { source_peers, [ actor_pid() ],
+      "the actors that send messages to this actor" },
 
-	{ next_planned, [ tick_offset() ], "a list of the next tick offsets at "
-	  "which a spontaneous action was requested (useful to declare them only "
-	  "once, even with very erratic scheduling plans)" },
+    { next_planned, [ tick_offset() ], "a list of the next tick offsets at "
+      "which a spontaneous action was requested (useful to declare them only "
+      "once, even with very erratic scheduling plans)" },
 
-	{ scheduling_policy, scheduling_policy(),
-	  "describes how this actor should be scheduled" },
+    { scheduling_policy, scheduling_policy(),
+      "describes how this actor should be scheduled" },
 
-	{ creation_policy, creation_policy(), "describes how this actor should "
-	  "create actors, e.g. {_InterCount=10, {_SchedulingPolicy={periodic,4}, "
-	  "_CreationPolicy=no_creation}}" },
+    { creation_policy, creation_policy(), "describes how this actor should "
+      "create actors, e.g. {_InterCount=10, {_SchedulingPolicy={periodic,4}, "
+      "_CreationPolicy=no_creation}}" },
 
-	{ creation_countdown, union( 'no_creation', count() ),
-	  "keeps track of the number of spontaneous actions before the next actor "
-	  "creation, if not equal to 'no_creation'" },
+    { creation_countdown, union( 'no_creation', count() ),
+      "keeps track of the number of spontaneous actions before the next actor "
+      "creation, if not equal to 'no_creation'" },
 
-	{ created_actors, [ actor_pid() ],
-	  "keeps track of the actors already created" },
+    { created_actors, [ actor_pid() ],
+      "keeps track of the actors already created" },
 
-	{ termination_tick_offset, tick_offset(),
-	  "the tick offset at which this test actor shall terminate" } ] ).
+    { termination_tick_offset, tick_offset(),
+      "the tick offset at which this test actor shall terminate" } ] ).
 
 
 
@@ -77,7 +77,7 @@ creation, etc.
 
 
 -type scheduling_policy() ::  { 'periodic', tick_duration() }
-							| { 'erratic',  tick_duration() }.
+                            | { 'erratic',  tick_duration() }.
 
 
 -type schedule_count() :: class_TimeManager:schedule_count().
@@ -89,11 +89,11 @@ creation, etc.
 % OnFirstDiasca/2).
 %
 -type creation_policy() ::
-		'no_creation'
-	  | 'initial_creation'
-	  | 'creation_from_constructor'
-	  | { schedule_count(), { scheduling_policy(), creation_policy() } }
-	  | tick_offset().
+        'no_creation'
+      | 'initial_creation'
+      | 'creation_from_constructor'
+      | { schedule_count(), { scheduling_policy(), creation_policy() } }
+      | tick_offset().
 
 
 -export_type([ scheduling_policy/0, creation_policy/0 ]).
@@ -230,145 +230,145 @@ actors, among:
 - TerminationTickOffset the duration after which this actor should terminate
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 class_Actor:name(), scheduling_policy(), creation_policy(),
-				 tick_offset() ) -> wooper:state().
+                 class_Actor:name(), scheduling_policy(), creation_policy(),
+                 tick_offset() ) -> wooper:state().
 construct( State, ActorSettings, ActorName, SchedulingPolicy, CreationPolicy,
-		   TerminationTickOffset ) ->
+           TerminationTickOffset ) ->
 
-	% Cannot use 'output' yet (no talkative attribute):
-	%trace_utils:debug_fmt( "Creating a class_TestActor ~p with parameters:"
-	%   "~n~p.", [ self(), [ ?wooper_construct_parameters ] ] ),
+    % Cannot use 'output' yet (no talkative attribute):
+    %trace_utils:debug_fmt( "Creating a class_TestActor ~p with parameters:"
+    %   "~n~p.", [ self(), [ ?wooper_construct_parameters ] ] ),
 
-	% First the direct mother classes, then this class-specific actions:
-	ActorState = class_Actor:construct( State, ActorSettings,
-										?trace_categorize(ActorName) ),
+    % First the direct mother classes, then this class-specific actions:
+    ActorState = class_Actor:construct( State, ActorSettings,
+                                        ?trace_categorize(ActorName) ),
 
-	InitialCountdown = case CreationPolicy of
+    InitialCountdown = case CreationPolicy of
 
-		no_creation ->
-			no_creation;
+        no_creation ->
+            no_creation;
 
-		initial_creation ->
-			no_creation;
+        initial_creation ->
+            no_creation;
 
-		creation_from_constructor ->
-			no_creation;
+        creation_from_constructor ->
+            no_creation;
 
-		{ InterCount, _KindOfCreatedActor } ->
-			InterCount
+        { InterCount, _KindOfCreatedActor } ->
+            InterCount
 
-	end,
-
-
-	% Case of initial creation:
-	CreatedActors = case CreationPolicy of
-
-		initial_creation ->
-
-			false = class_Actor:is_running( ActorState ),
-
-			InitialName = text_utils:format(
-				"Initial Circular Actor created by '~ts'",
-				[ ActorName ] ),
-
-			%trace_utils:debug_fmt( "Creating circular '~ts'.",
-			%                       [ InitialName ] ),
-
-			CircularPid = class_Actor:create_initial_actor(
-				class_TestCircularActor, [ InitialName, "My Message" ] ),
-
-			%trace_utils:debug_fmt( "Created circular ~p.", [ CircularPid ] ),
-
-			[ CircularPid ];
-
-		_ ->
-			[]
-
-	end,
+    end,
 
 
-	CreatedState = case CreationPolicy of
+    % Case of initial creation:
+    CreatedActors = case CreationPolicy of
 
-		% Not an allowed operation!
-		creation_from_constructor ->
+        initial_creation ->
 
-			% Only to be done at runtime:
-			true = class_Actor:is_running( ActorState ),
+            false = class_Actor:is_running( ActorState ),
 
-			RuntimeName = text_utils:format(
-				"Runtime Circular Actor created by '~ts'", [ ActorName ] ),
+            InitialName = text_utils:format(
+                "Initial Circular Actor created by '~ts'",
+                [ ActorName ] ),
 
-			%trace_utils:debug_fmt( "Creating circular '~ts'.",
-			%                       [ RuntimeName ] ),
+            %trace_utils:debug_fmt( "Creating circular '~ts'.",
+            %                       [ InitialName ] ),
 
-			class_Actor:create_actor( class_TestCircularActor,
-				[ RuntimeName, "My Message" ], ActorState );
+            CircularPid = class_Actor:create_initial_actor(
+                class_TestCircularActor, [ InitialName, "My Message" ] ),
 
-		_ ->
-			ActorState
+            %trace_utils:debug_fmt( "Created circular ~p.", [ CircularPid ] ),
 
-	end,
+            [ CircularPid ];
 
-	TraceState = setAttributes( CreatedState, [
-		{ target_peers, [] },
-		{ source_peers, [] },
-		{ scheduling_policy, SchedulingPolicy },
-		{ creation_policy, CreationPolicy },
-		{ creation_countdown, InitialCountdown },
-		{ created_actors, CreatedActors },
-		{ hello_count, 0 },
-		{ next_planned, undefined },
-		{ termination_tick_offset, TerminationTickOffset },
-		{ termination_initiated, false },
+        _ ->
+            []
 
-		% Useful to select console verbosity:
-		%{ talkative, true },
-		{ talkative, false },
+    end,
 
-		% Allows to avoid too many traces to be sent in some heavy tests:
-		{ trace_intensity, low },
 
-		% We define here 15 extra attributes, to have a more realistic emulation
-		% of a usual model, each like:
-		% (attribute_example: [{1276,6016,712254}, #Ref<0.0.0.40>,
-		% {1276,6016,712259},#Ref<0.0.0.41>]}.
-		%
-		% Each of the values of these attributes adds 96 bytes of memory
-		% footprint in 32-bit mode, and 192 bytes in 64-bit mode, thus these 15
-		% attributes add 1440 bytes per instance in 32-bit, and 2880 bytes in
-		% 64-bit.
-		{ attr_1 , get_sized_value() },
-		{ attr_2 , get_sized_value() },
-		{ attr_3 , get_sized_value() },
-		{ attr_4 , get_sized_value() },
-		{ attr_5 , get_sized_value() },
-		{ attr_6 , get_sized_value() },
-		{ attr_7 , get_sized_value() },
-		{ attr_8 , get_sized_value() },
-		{ attr_9 , get_sized_value() },
-		{ attr_10, get_sized_value() },
-		{ attr_11, get_sized_value() },
-		{ attr_12, get_sized_value() },
-		{ attr_13, get_sized_value() },
-		{ attr_14, get_sized_value() },
-		{ attr_15, get_sized_value() } ] ),
+    CreatedState = case CreationPolicy of
 
-	?send_notice_fmt( TraceState, "Creating a test actor (PID: ~w, "
-		"AAI: ~B, seed: ~w), terminating no sooner than tick offset #~w.",
-		[ self(), getAttribute( TraceState, actor_abstract_id ),
-		  getAttribute( TraceState, random_seed ), TerminationTickOffset ] ),
+        % Not an allowed operation!
+        creation_from_constructor ->
 
-	output( "class_TestActor created: AAI: ~B, seed: ~w",
-			[ getAttribute( TraceState, actor_abstract_id ),
-			  getAttribute( TraceState, random_seed ) ], TraceState ),
+            % Only to be done at runtime:
+            true = class_Actor:is_running( ActorState ),
 
-	TraceState.
+            RuntimeName = text_utils:format(
+                "Runtime Circular Actor created by '~ts'", [ ActorName ] ),
+
+            %trace_utils:debug_fmt( "Creating circular '~ts'.",
+            %                       [ RuntimeName ] ),
+
+            class_Actor:create_actor( class_TestCircularActor,
+                [ RuntimeName, "My Message" ], ActorState );
+
+        _ ->
+            ActorState
+
+    end,
+
+    TraceState = setAttributes( CreatedState, [
+        { target_peers, [] },
+        { source_peers, [] },
+        { scheduling_policy, SchedulingPolicy },
+        { creation_policy, CreationPolicy },
+        { creation_countdown, InitialCountdown },
+        { created_actors, CreatedActors },
+        { hello_count, 0 },
+        { next_planned, undefined },
+        { termination_tick_offset, TerminationTickOffset },
+        { termination_initiated, false },
+
+        % Useful to select console verbosity:
+        %{ talkative, true },
+        { talkative, false },
+
+        % Allows to avoid too many traces to be sent in some heavy tests:
+        { trace_intensity, low },
+
+        % We define here 15 extra attributes, to have a more realistic emulation
+        % of a usual model, each like:
+        % (attribute_example: [{1276,6016,712254}, #Ref<0.0.0.40>,
+        % {1276,6016,712259},#Ref<0.0.0.41>]}.
+        %
+        % Each of the values of these attributes adds 96 bytes of memory
+        % footprint in 32-bit mode, and 192 bytes in 64-bit mode, thus these 15
+        % attributes add 1440 bytes per instance in 32-bit, and 2880 bytes in
+        % 64-bit.
+        { attr_1 , get_sized_value() },
+        { attr_2 , get_sized_value() },
+        { attr_3 , get_sized_value() },
+        { attr_4 , get_sized_value() },
+        { attr_5 , get_sized_value() },
+        { attr_6 , get_sized_value() },
+        { attr_7 , get_sized_value() },
+        { attr_8 , get_sized_value() },
+        { attr_9 , get_sized_value() },
+        { attr_10, get_sized_value() },
+        { attr_11, get_sized_value() },
+        { attr_12, get_sized_value() },
+        { attr_13, get_sized_value() },
+        { attr_14, get_sized_value() },
+        { attr_15, get_sized_value() } ] ),
+
+    ?send_notice_fmt( TraceState, "Creating a test actor (PID: ~w, "
+        "AAI: ~B, seed: ~w), terminating no sooner than tick offset #~w.",
+        [ self(), getAttribute( TraceState, actor_abstract_id ),
+          getAttribute( TraceState, random_seed ), TerminationTickOffset ] ),
+
+    output( "class_TestActor created: AAI: ~B, seed: ~w",
+            [ getAttribute( TraceState, actor_abstract_id ),
+              getAttribute( TraceState, random_seed ) ], TraceState ),
+
+    TraceState.
 
 
 
 get_sized_value() ->
-	[ time_utils:get_precise_timestamp(), make_ref(),
-	  time_utils:get_precise_timestamp(), make_ref() ].
+    [ time_utils:get_precise_timestamp(), make_ref(),
+      time_utils:get_precise_timestamp(), make_ref() ].
 
 
 
@@ -382,31 +382,31 @@ get_sized_value() ->
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
-	%?notice_fmt( "actSpontaneous: local agenda is ~w.",
-	%             [ ?getAttr(next_planned) ] ),
+    %?notice_fmt( "actSpontaneous: local agenda is ~w.",
+    %             [ ?getAttr(next_planned) ] ),
 
-	?getAttr(trace_intensity) =:= high andalso
-			?notice_fmt( "Test Actor acting, having for peers: ~p.",
-						 [ ?getAttr(target_peers) ] ),
+    ?getAttr(trace_intensity) =:= high andalso
+            ?notice_fmt( "Test Actor acting, having for peers: ~p.",
+                         [ ?getAttr(target_peers) ] ),
 
-	CurrentTickOffset = ?getAttr(current_tick_offset),
-	TerminationOffset = ?getAttr(termination_tick_offset),
+    CurrentTickOffset = ?getAttr(current_tick_offset),
+    TerminationOffset = ?getAttr(termination_tick_offset),
 
-	UpdatedPlannedState = update_plan( CurrentTickOffset, State ),
+    UpdatedPlannedState = update_plan( CurrentTickOffset, State ),
 
-	% Terminates if the termination offset is reached or exceeded:
-	NewState = case CurrentTickOffset of
+    % Terminates if the termination offset is reached or exceeded:
+    NewState = case CurrentTickOffset of
 
-		PastOffset when PastOffset >= TerminationOffset ->
-			terminate( PastOffset, UpdatedPlannedState );
+        PastOffset when PastOffset >= TerminationOffset ->
+            terminate( PastOffset, UpdatedPlannedState );
 
-		CurrentOffset ->
-			% Non-termination behaviour:
-			behave_normally( CurrentOffset, UpdatedPlannedState )
+        CurrentOffset ->
+            % Non-termination behaviour:
+            behave_normally( CurrentOffset, UpdatedPlannedState )
 
-	end,
+    end,
 
-	wooper:return_state( NewState ).
+    wooper:return_state( NewState ).
 
 
 
@@ -415,49 +415,49 @@ Overridden, in order to synchronise correctly the internal planning that this
 test actor maintains, and to start its behaviour.
 """.
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-											actor_oneway_return().
+                                            actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
-	output( "onFirstDiasca called at diasca ~B",
-			[ ?getAttr(current_diasca) ], State ),
+    output( "onFirstDiasca called at diasca ~B",
+            [ ?getAttr(current_diasca) ], State ),
 
-	TargetOffset = ?getAttr(current_tick_offset) + 1,
+    TargetOffset = ?getAttr(current_tick_offset) + 1,
 
-	% We are allowed to send actor messages from this very first diasca, let's
-	% do it if possible, and if yes in a similarly random way:
-	%
-	% (thus we can reach diasca 2)
-	%
-	SentState = case ?getAttr(target_peers) of
+    % We are allowed to send actor messages from this very first diasca, let's
+    % do it if possible, and if yes in a similarly random way:
+    %
+    % (thus we can reach diasca 2)
+    %
+    SentState = case ?getAttr(target_peers) of
 
-		[] ->
-			% Nobody to contact:
-			State;
+        [] ->
+            % Nobody to contact:
+            State;
 
-		[ TargetPeer | _T ] ->
+        [ TargetPeer | _T ] ->
 
-			RandomValue = 3 * ?getAttr(actor_abstract_id)
-				+ 2 * TargetOffset + ?getAttr(current_diasca),
+            RandomValue = 3 * ?getAttr(actor_abstract_id)
+                + 2 * TargetOffset + ?getAttr(current_diasca),
 
-			case RandomValue rem 2 of
+            case RandomValue rem 2 of
 
-				0 ->
-					State;
+                0 ->
+                    State;
 
-				1 ->
-					class_Actor:send_actor_message( TargetPeer,
-						{ hello, [ ?getAttr(name) ] }, State )
+                1 ->
+                    class_Actor:send_actor_message( TargetPeer,
+                        { hello, [ ?getAttr(name) ] }, State )
 
-			end
+            end
 
-	end,
+    end,
 
-	% Update the internal information to plan a next action as well:
-	PlanState = setAttribute( SentState, next_planned, [ TargetOffset ] ),
+    % Update the internal information to plan a next action as well:
+    PlanState = setAttribute( SentState, next_planned, [ TargetOffset ] ),
 
-	UpdatedState = executeOneway( PlanState, addSpontaneousTick, TargetOffset ),
+    UpdatedState = executeOneway( PlanState, addSpontaneousTick, TargetOffset ),
 
-	actor:return_state( UpdatedState ).
+    actor:return_state( UpdatedState ).
 
 
 
@@ -471,17 +471,17 @@ Returns an updated state.
 -spec update_plan( tick_offset(), wooper:state() ) -> wooper:state().
 update_plan( CurrentTickOffset, State ) ->
 
-	NextPlanned = ?getAttr(next_planned),
+    NextPlanned = ?getAttr(next_planned),
 
-	case lists:member( CurrentTickOffset, NextPlanned ) of
+    case lists:member( CurrentTickOffset, NextPlanned ) of
 
-		true ->
-			deleteFromAttribute( State, next_planned, CurrentTickOffset );
+        true ->
+            deleteFromAttribute( State, next_planned, CurrentTickOffset );
 
-		false ->
-			throw( { spontaneous_plan_error, CurrentTickOffset, NextPlanned } )
+        false ->
+            throw( { spontaneous_plan_error, CurrentTickOffset, NextPlanned } )
 
-	end.
+    end.
 
 
 
@@ -495,32 +495,32 @@ Returns an updated state.
 -spec terminate( tick_offset(), wooper:state() ) -> wooper:state().
 terminate( PastOffset, State ) ->
 
-	case ?getAttr(termination_initiated) of
+    case ?getAttr(termination_initiated) of
 
-		false ->
-			?notice( "Test Actor preparing deferred termination." ),
+        false ->
+            ?notice( "Test Actor preparing deferred termination." ),
 
-			% Source and target peers must be notified here, otherwise, next
-			% time they will send a message to this actor, they will hang
-			% forever:
-			%
-			% (we are at {T,D}, termination process starts)
-			%
-			% (this returns a new state)
-			%
-			notify_termination( State );
+            % Source and target peers must be notified here, otherwise, next
+            % time they will send a message to this actor, they will hang
+            % forever:
+            %
+            % (we are at {T,D}, termination process starts)
+            %
+            % (this returns a new state)
+            %
+            notify_termination( State );
 
-		true ->
-			% We are at least at {T,D+1}.
+        true ->
+            % We are at least at {T,D+1}.
 
-			TerminatingState =
-				executeOneway( State, declareTermination ),
+            TerminatingState =
+                executeOneway( State, declareTermination ),
 
-			output( "terminating at #~B", [ PastOffset ], TerminatingState ),
+            output( "terminating at #~B", [ PastOffset ], TerminatingState ),
 
-			TerminatingState
+            TerminatingState
 
-	end.
+    end.
 
 
 
@@ -528,50 +528,50 @@ terminate( PastOffset, State ) ->
 -spec behave_normally( tick_offset(), wooper:state() ) -> wooper:state().
 behave_normally( CurrentOffset, State ) ->
 
-	output( "acting spontaneously at #~B on ~ts",
-			[ CurrentOffset, net_utils:localnode() ], State ),
+    output( "acting spontaneously at #~B on ~ts",
+            [ CurrentOffset, net_utils:localnode() ], State ),
 
-	CreationState = manage_actor_creation( CurrentOffset, State ),
+    CreationState = manage_actor_creation( CurrentOffset, State ),
 
-	% Erratic yet reproducible scheduling, always in the future, most actors
-	% should have a different scheduling:
-	%
-	NextSpontaneousOffset = determine_next_spontaneous_tick( CurrentOffset,
-															 CreationState ),
+    % Erratic yet reproducible scheduling, always in the future, most actors
+    % should have a different scheduling:
+    %
+    NextSpontaneousOffset = determine_next_spontaneous_tick( CurrentOffset,
+                                                             CreationState ),
 
-	TerminationOffset = ?getAttr(termination_tick_offset),
+    TerminationOffset = ?getAttr(termination_tick_offset),
 
-	% We should not plan a post-termination action:
-	FutureState = case NextSpontaneousOffset of
+    % We should not plan a post-termination action:
+    FutureState = case NextSpontaneousOffset of
 
-		undefined ->
-			% Nothing special to schedule:
-			CreationState;
+        undefined ->
+            % Nothing special to schedule:
+            CreationState;
 
-		LateOffset when LateOffset >= TerminationOffset ->
-			% Here we clamp to the termination tick and prepare for the
-			% termination:
-			%
-			InternalState = appendToAttribute( CreationState,
-				next_planned, TerminationOffset ),
+        LateOffset when LateOffset >= TerminationOffset ->
+            % Here we clamp to the termination tick and prepare for the
+            % termination:
+            %
+            InternalState = appendToAttribute( CreationState,
+                next_planned, TerminationOffset ),
 
-			executeOneway( InternalState, addSpontaneousTick,
-						   TerminationOffset );
+            executeOneway( InternalState, addSpontaneousTick,
+                           TerminationOffset );
 
-		NormalOffset ->
+        NormalOffset ->
 
-			InternalState = appendToAttribute( CreationState,
-											   next_planned, NormalOffset ),
+            InternalState = appendToAttribute( CreationState,
+                                               next_planned, NormalOffset ),
 
-			executeOneway( InternalState, addSpontaneousTick, NormalOffset )
+            executeOneway( InternalState, addSpontaneousTick, NormalOffset )
 
-	end,
+    end,
 
 
-	% Resets the count each tick, for the next one:
-	HelloState = say_hello( FutureState ),
+    % Resets the count each tick, for the next one:
+    HelloState = say_hello( FutureState ),
 
-	setAttribute( HelloState, hello_count, 0 ).
+    setAttribute( HelloState, hello_count, 0 ).
 
 
 
@@ -583,25 +583,25 @@ Returns an updated tick offset.
 (helper)
 """.
 -spec determine_next_spontaneous_tick( tick_offset(), wooper:state() ) ->
-												option( tick_offset() ).
+                                                option( tick_offset() ).
 determine_next_spontaneous_tick( CurrentOffset, State ) ->
 
-	TargetOffset = case ?getAttr(scheduling_policy) of
+    TargetOffset = case ?getAttr(scheduling_policy) of
 
-		{ periodic, Period } ->
-			CurrentOffset + Period;
+        { periodic, Period } ->
+            CurrentOffset + Period;
 
-		{ erratic, MinRange } ->
+        { erratic, MinRange } ->
 
-			% Changing, between actors and between ticks of any given actor:
-			VariableOffset = 2 * ?getAttr(actor_abstract_id) + CurrentOffset,
+            % Changing, between actors and between ticks of any given actor:
+            VariableOffset = 2 * ?getAttr(actor_abstract_id) + CurrentOffset,
 
-			CurrentOffset + 1 + VariableOffset rem
-				( MinRange + length( ?getAttr(target_peers) ) )
+            CurrentOffset + 1 + VariableOffset rem
+                ( MinRange + length( ?getAttr(target_peers) ) )
 
-	end,
+    end,
 
-	ensure_planned( TargetOffset, State ).
+    ensure_planned( TargetOffset, State ).
 
 
 
@@ -614,19 +614,19 @@ Returns an updated state.
 (helper)
 """.
 -spec ensure_planned( tick_offset(), wooper:state() ) ->
-										option( tick_offset() ).
+                                        option( tick_offset() ).
 ensure_planned( TickOffset, State ) ->
 
-	% A given tick must not be declared more than once as a future action:
-	case lists:member( TickOffset, ?getAttr(next_planned) ) of
+    % A given tick must not be declared more than once as a future action:
+    case lists:member( TickOffset, ?getAttr(next_planned) ) of
 
-		true ->
-			undefined;
+        true ->
+            undefined;
 
-		false ->
-			TickOffset
+        false ->
+            TickOffset
 
-	end.
+    end.
 
 
 
@@ -640,108 +640,108 @@ Returns an updated state.
 -spec manage_actor_creation( tick_offset(), wooper:state() ) -> wooper:state().
 manage_actor_creation( CurrentOffset, State ) ->
 
-	case ?getAttr(creation_countdown) of
+    case ?getAttr(creation_countdown) of
 
-		no_creation ->
-			%trace_utils:debug_fmt( "(this actor does not create actors)" ),
-			State;
+        no_creation ->
+            %trace_utils:debug_fmt( "(this actor does not create actors)" ),
+            State;
 
-		0 ->
+        0 ->
 
-			% Let's create an actor:
-			{ InterCount, { NewSchedulingPolicy, NewCreationPolicy } } =
-				?getAttr(creation_policy),
+            % Let's create an actor:
+            { InterCount, { NewSchedulingPolicy, NewCreationPolicy } } =
+                ?getAttr(creation_policy),
 
-			NewActorCount = length( ?getAttr(created_actors) ) + 1,
+            NewActorCount = length( ?getAttr(created_actors) ) + 1,
 
-			NewActorName = lists:flatten( text_utils:format( "~ts-~B",
-				[ ?getAttr(name), NewActorCount ] ) ),
-
-
-			ActorTerminationTickOffset = CurrentOffset + 5
-				+ class_RandomManager:get_uniform_value( 500 ),
-
-			ConstructionParameters = [ NewActorName,
-									   _SchedulingPolicy=NewSchedulingPolicy,
-									   _CreationPolicy=NewCreationPolicy,
-									   ActorTerminationTickOffset ],
+            NewActorName = lists:flatten( text_utils:format( "~ts-~B",
+                [ ?getAttr(name), NewActorCount ] ) ),
 
 
-			% We perform roughly as many basic creations as placed ones, with or
-			% without tags:
-			%
-			CreatedState = case ActorTerminationTickOffset rem 4 of
+            ActorTerminationTickOffset = CurrentOffset + 5
+                + class_RandomManager:get_uniform_value( 500 ),
 
-				0 ->
-					output( "(actor creation #~B just requested)",
-							[ NewActorCount ], State ),
-
-					class_Actor:create_actor( _CreatedClassname=class_TestActor,
-											  ConstructionParameters, State );
-
-				1 ->
-					output( "(actor tagged creation #~B just requested)",
-							[ NewActorCount ], State ),
-
-					% We chose here to have unique tags:
-					TagString = text_utils:format( "my_tag_at_~B_~B",
-						[ CurrentOffset,
-						  basic_utils:get_process_specific_value() ] ),
-
-					Tag = text_utils:string_to_atom( TagString ),
-
-					class_Actor:create_actor( _CreatedClassname=class_TestActor,
-						ConstructionParameters, Tag, State );
-
-				2 ->
-					PlacementHint = ActorTerminationTickOffset,
-
-					output( "(placed actor creation #~B requested)",
-							[ NewActorCount ], State ),
-
-					class_Actor:create_placed_actor(
-						_CreatedClassname=class_TestActor,
-						ConstructionParameters, PlacementHint, State );
-
-				3 ->
-
-					TagString = text_utils:format( "my_placed_tag_at_~B",
-												   [ CurrentOffset ] ),
-
-					Tag = text_utils:string_to_atom( TagString ),
-
-					PlacementHint = ActorTerminationTickOffset,
-
-					output( "(placed tagged actor creation #~B requested)",
-							[ NewActorCount ], State ),
-
-					class_Actor:create_placed_actor(
-						_CreatedClassname=class_TestActor,
-						ConstructionParameters, Tag, PlacementHint, State )
-
-			 end,
-
-			% Resets creation timer:
-			setAttribute( CreatedState, creation_countdown, InterCount );
+            ConstructionParameters = [ NewActorName,
+                                       _SchedulingPolicy=NewSchedulingPolicy,
+                                       _CreationPolicy=NewCreationPolicy,
+                                       ActorTerminationTickOffset ],
 
 
-		NonNullCount ->
-			NextCount = NonNullCount - 1,
+            % We perform roughly as many basic creations as placed ones, with or
+            % without tags:
+            %
+            CreatedState = case ActorTerminationTickOffset rem 4 of
 
-			%trace_utils:debug_fmt(
-			%   "(this actor will create an actor in ~B activations)",
-			%   [ NextCount ] ),
+                0 ->
+                    output( "(actor creation #~B just requested)",
+                            [ NewActorCount ], State ),
 
-			setAttribute( State, creation_countdown, NextCount )
+                    class_Actor:create_actor( _CreatedClassname=class_TestActor,
+                                              ConstructionParameters, State );
 
-	end.
+                1 ->
+                    output( "(actor tagged creation #~B just requested)",
+                            [ NewActorCount ], State ),
+
+                    % We chose here to have unique tags:
+                    TagString = text_utils:format( "my_tag_at_~B_~B",
+                        [ CurrentOffset,
+                          basic_utils:get_process_specific_value() ] ),
+
+                    Tag = text_utils:string_to_atom( TagString ),
+
+                    class_Actor:create_actor( _CreatedClassname=class_TestActor,
+                        ConstructionParameters, Tag, State );
+
+                2 ->
+                    PlacementHint = ActorTerminationTickOffset,
+
+                    output( "(placed actor creation #~B requested)",
+                            [ NewActorCount ], State ),
+
+                    class_Actor:create_placed_actor(
+                        _CreatedClassname=class_TestActor,
+                        ConstructionParameters, PlacementHint, State );
+
+                3 ->
+
+                    TagString = text_utils:format( "my_placed_tag_at_~B",
+                                                   [ CurrentOffset ] ),
+
+                    Tag = text_utils:string_to_atom( TagString ),
+
+                    PlacementHint = ActorTerminationTickOffset,
+
+                    output( "(placed tagged actor creation #~B requested)",
+                            [ NewActorCount ], State ),
+
+                    class_Actor:create_placed_actor(
+                        _CreatedClassname=class_TestActor,
+                        ConstructionParameters, Tag, PlacementHint, State )
+
+             end,
+
+            % Resets creation timer:
+            setAttribute( CreatedState, creation_countdown, InterCount );
+
+
+        NonNullCount ->
+            NextCount = NonNullCount - 1,
+
+            %trace_utils:debug_fmt(
+            %   "(this actor will create an actor in ~B activations)",
+            %   [ NextCount ] ),
+
+            setAttribute( State, creation_countdown, NextCount )
+
+    end.
 
 
 
 -doc "Lowers the trace sending intensity of this actor.".
 -spec lowerTraceIntensity( wooper:state() ) -> oneway_return().
 lowerTraceIntensity( State ) ->
-	wooper:return_state( setAttribute( State, trace_intensity, low ) ).
+    wooper:return_state( setAttribute( State, trace_intensity, low ) ).
 
 
 
@@ -750,20 +750,20 @@ Overridden oneway, called by the load balancer whenever it performed the
 corresponding creation request.
 """.
 -spec onActorCreated( wooper:state(), actor_pid(), class_Actor:tag(),
-					  load_balancer_pid() ) -> actor_oneway_return().
+                      load_balancer_pid() ) -> actor_oneway_return().
 onActorCreated( State, CreatedActorPid, CreatedActorTag, _LoadBalancerPid ) ->
 
-	output( "notified that creation of actor ~w with tag ~p completed",
-			[ CreatedActorPid, CreatedActorTag ], State ),
+    output( "notified that creation of actor ~w with tag ~p completed",
+            [ CreatedActorPid, CreatedActorTag ], State ),
 
-	%?debug_fmt( "Test actor notified that actor ~w with tag ~p was created "
-	%   "on its behalf; adding it as a peer.",
-	%   [ CreatedActorPid, CreatedActorTag ] ),
+    %?debug_fmt( "Test actor notified that actor ~w with tag ~p was created "
+    %   "on its behalf; adding it as a peer.",
+    %   [ CreatedActorPid, CreatedActorTag ] ),
 
-	PeerState = add_peer( CreatedActorPid, State ),
+    PeerState = add_peer( CreatedActorPid, State ),
 
-	actor:return_state( appendToAttribute( PeerState, created_actors,
-										   CreatedActorPid ) ).
+    actor:return_state( appendToAttribute( PeerState, created_actors,
+                                           CreatedActorPid ) ).
 
 
 
@@ -775,12 +775,12 @@ To be called initially, from tests, before the simulation is started.
 (request, for synchronisation purpose).
 """.
 -spec addInitialPeer( wooper:state(), actor_pid() ) ->
-							request_return( 'peer_added' ).
+                            request_return( 'peer_added' ).
 addInitialPeer( State, PeerPid ) ->
 
-	NewState = add_peer( PeerPid, State ),
+    NewState = add_peer( PeerPid, State ),
 
-	wooper:return_state_result( NewState, peer_added ).
+    wooper:return_state_result( NewState, peer_added ).
 
 
 
@@ -792,22 +792,22 @@ To be called from an actor, while the simulation is running.
 -spec addPeer( wooper:state(), sending_actor_pid() ) -> actor_oneway_return().
 addPeer( State, PeerPid ) ->
 
-	output( "peer ~w added", [ PeerPid ], State ),
+    output( "peer ~w added", [ PeerPid ], State ),
 
-	?getAttr(trace_intensity) =:= high andalso
-		?notice_fmt( "Peer ~w added.", [ PeerPid ] ),
+    ?getAttr(trace_intensity) =:= high andalso
+        ?notice_fmt( "Peer ~w added.", [ PeerPid ] ),
 
-	case lists:member( PeerPid, ?getAttr(target_peers) ) of
+    case lists:member( PeerPid, ?getAttr(target_peers) ) of
 
-		true ->
-			% Nothing to be done here, already there:
-			actor:const_return();
+        true ->
+            % Nothing to be done here, already there:
+            actor:const_return();
 
-		false ->
-			actor:return_state(
-				appendToAttribute( State, target_peers, PeerPid ) )
+        false ->
+            actor:return_state(
+                appendToAttribute( State, target_peers, PeerPid ) )
 
-	end.
+    end.
 
 
 
@@ -816,14 +816,14 @@ Actor oneway called by a peer requesting this actor not to send it anymore
 messages, for example because this actor is terminating.
 """.
 -spec removePeer( wooper:state(), sending_actor_pid() ) ->
-											actor_oneway_return().
+                                            actor_oneway_return().
 removePeer( State, PeerPid ) ->
 
-	% A peer is expected to be registered exactly once.
+    % A peer is expected to be registered exactly once.
 
-	UpdatedState = deleteFromAttribute( State, target_peers, PeerPid ),
+    UpdatedState = deleteFromAttribute( State, target_peers, PeerPid ),
 
-	actor:return_state( UpdatedState ).
+    actor:return_state( UpdatedState ).
 
 
 
@@ -832,43 +832,43 @@ Oneway called by a peer telling this actor that it will never send hello
 messages any more to it, and thus that the latter can forget the former.
 """.
 -spec forgetPeer( wooper:state(), sending_actor_pid() ) ->
-											actor_oneway_return().
+                                            actor_oneway_return().
 forgetPeer( State, PeerPid ) ->
-	actor:return_state(
-		deleteFromAttribute( State, source_peers, PeerPid ) ).
+    actor:return_state(
+        deleteFromAttribute( State, source_peers, PeerPid ) ).
 
 
 
 -doc "Receives an 'hello' message.".
 -spec hello( wooper:state(), class_Actor:internal_name(),
-			 sending_actor_pid() ) -> actor_oneway_return().
+             sending_actor_pid() ) -> actor_oneway_return().
 hello( State, SenderName, SendingActorPid ) ->
 
-	%CurrentOffset = class_Actor:get_current_tick_offset( State ),
+    %CurrentOffset = class_Actor:get_current_tick_offset( State ),
 
-	%trace_utils:debug_fmt(
-	%    " - for ~w at #~B, instant_spontaneous_requested: ~p",
-	%    [ self(), CurrentOffset, ?getAttr(instant_spontaneous_requested) ] ),
+    %trace_utils:debug_fmt(
+    %    " - for ~w at #~B, instant_spontaneous_requested: ~p",
+    %    [ self(), CurrentOffset, ?getAttr(instant_spontaneous_requested) ] ),
 
-	%output( "being said hello by ~ts (i.e. ~w) at #~B",
-	%        [ SenderName, SendingActorPid, CurrentOffset ], State ),
+    %output( "being said hello by ~ts (i.e. ~w) at #~B",
+    %        [ SenderName, SendingActorPid, CurrentOffset ], State ),
 
-	?getAttr(trace_intensity) =:= high andalso
-		?notice_fmt( "Received an hello message from ~ts (~w).",
-					 [ SenderName, SendingActorPid ] ),
+    ?getAttr(trace_intensity) =:= high andalso
+        ?notice_fmt( "Received an hello message from ~ts (~w).",
+                     [ SenderName, SendingActorPid ] ),
 
-	SourceState = case lists:member( SendingActorPid,
-									 ?getAttr(source_peers) ) of
+    SourceState = case lists:member( SendingActorPid,
+                                     ?getAttr(source_peers) ) of
 
-		true ->
-			State;
+        true ->
+            State;
 
-		false ->
-			appendToAttribute( State, source_peers, SendingActorPid )
+        false ->
+            appendToAttribute( State, source_peers, SendingActorPid )
 
-	end,
+    end,
 
-	actor:return_state( addToAttribute( SourceState, hello_count, 1 ) ).
+    actor:return_state( addToAttribute( SourceState, hello_count, 1 ) ).
 
 
 
@@ -885,20 +885,20 @@ Note: defined for convenience, to avoid code duplication in tests.
 -spec add_initial_peers( actor_pid(), [ actor_pid() ] ) -> static_void_return().
 add_initial_peers( TargetPeer, Peers ) ->
 
-	% We call a request to ensure we are synchronised (no race condition with
-	% start message):
-	%
-	[ TargetPeer ! { addInitialPeer, P, self() } || P <- Peers ],
+    % We call a request to ensure we are synchronised (no race condition with
+    % start message):
+    %
+    [ TargetPeer ! { addInitialPeer, P, self() } || P <- Peers ],
 
-	% A nice side effect is that we can run these operations in parallel:
-	[ receive
+    % A nice side effect is that we can run these operations in parallel:
+    [ receive
 
-		  { wooper_result, peer_added } ->
-			  ok
+          { wooper_result, peer_added } ->
+              ok
 
-	  end || _X <- lists:seq( 1, length( Peers ) ) ],
+      end || _X <- lists:seq( 1, length( Peers ) ) ],
 
-	wooper:return_static_void().
+    wooper:return_static_void().
 
 
 
@@ -910,22 +910,22 @@ add_initial_peers( TargetPeer, Peers ) ->
 -spec add_peer( actor_pid(), wooper:state() ) -> wooper:state().
 add_peer( PeerPid, State ) ->
 
-	case lists:member( PeerPid, ?getAttr(target_peers) ) of
+    case lists:member( PeerPid, ?getAttr(target_peers) ) of
 
-		true ->
-			% Already registered, nothing done:
-			State;
+        true ->
+            % Already registered, nothing done:
+            State;
 
 
-		false ->
-			output( "peer ~w added", [ PeerPid ], State ),
+        false ->
+            output( "peer ~w added", [ PeerPid ], State ),
 
-			?getAttr(trace_intensity) =:= high andalso
-				?notice_fmt( "Peer ~w added.", [ PeerPid ] ),
+            ?getAttr(trace_intensity) =:= high andalso
+                ?notice_fmt( "Peer ~w added.", [ PeerPid ] ),
 
-			appendToAttribute( State, target_peers, PeerPid )
+            appendToAttribute( State, target_peers, PeerPid )
 
-	end.
+    end.
 
 
 
@@ -933,40 +933,40 @@ add_peer( PeerPid, State ) ->
 -spec say_hello( wooper:state() ) -> wooper:state().
 say_hello( State ) ->
 
-	CurrentTickOffset = class_Actor:get_current_tick_offset( State ),
+    CurrentTickOffset = class_Actor:get_current_tick_offset( State ),
 
-	case ?getAttr(target_peers) of
+    case ?getAttr(target_peers) of
 
-		[] ->
-			%?info_fmt( "Test Actor acting spontaneously at tick offset #~B, "
-			%   "but having no target peer to say hello to.",
-			%   [ CurrentTickOffset ] ),
-			State;
+        [] ->
+            %?info_fmt( "Test Actor acting spontaneously at tick offset #~B, "
+            %   "but having no target peer to say hello to.",
+            %   [ CurrentTickOffset ] ),
+            State;
 
-		Peers ->
-			?getAttr(talkative) andalso
-				?notice_fmt( "Test Actor acting spontaneously "
-					"at tick offset #~B, saying hello to ~w.",
-					[ CurrentTickOffset, Peers ] ),
+        Peers ->
+            ?getAttr(talkative) andalso
+                ?notice_fmt( "Test Actor acting spontaneously "
+                    "at tick offset #~B, saying hello to ~w.",
+                    [ CurrentTickOffset, Peers ] ),
 
-			SendFun = fun( Peer, FunState ) ->
+            SendFun = fun( Peer, FunState ) ->
 
-				output( "saying hello to ~w at #~B",
-						[ Peer, CurrentTickOffset ], State ),
+                output( "saying hello to ~w at #~B",
+                        [ Peer, CurrentTickOffset ], State ),
 
-				?getAttr(trace_intensity) =:= high andalso
-					?notice_fmt( "Saying hello to ~w.", [ Peer ] ),
+                ?getAttr(trace_intensity) =:= high andalso
+                    ?notice_fmt( "Saying hello to ~w.", [ Peer ] ),
 
-				% Returns an updated state:
-				class_Actor:send_actor_message( Peer,
-					{ hello, [ ?getAttr(name) ] }, FunState )
+                % Returns an updated state:
+                class_Actor:send_actor_message( Peer,
+                    { hello, [ ?getAttr(name) ] }, FunState )
 
-			end,
+            end,
 
-			% Returns an updated state:
-			lists:foldl( SendFun, State, Peers )
+            % Returns an updated state:
+            lists:foldl( SendFun, State, Peers )
 
-	end.
+    end.
 
 
 
@@ -978,96 +978,96 @@ and will stall the simulation.
 -spec notify_termination( wooper:state() ) -> wooper:state().
 notify_termination( State ) ->
 
-	CurrentTickOffset = class_Actor:get_current_tick_offset( State ),
+    CurrentTickOffset = class_Actor:get_current_tick_offset( State ),
 
-	SourcePeers = ?getAttr(source_peers),
+    SourcePeers = ?getAttr(source_peers),
 
-	% First, tells the actors targeting this actor to stop, otherwise they will
-	% hang:
-	%
-	SourceState = case SourcePeers of
+    % First, tells the actors targeting this actor to stop, otherwise they will
+    % hang:
+    %
+    SourceState = case SourcePeers of
 
-		[] ->
-			?info_fmt( "Test Actor terminating at tick offset #~B, "
-				"having no source peer to notify.", [ CurrentTickOffset ] ),
-			State;
+        [] ->
+            ?info_fmt( "Test Actor terminating at tick offset #~B, "
+                "having no source peer to notify.", [ CurrentTickOffset ] ),
+            State;
 
-		SourcePeers ->
-			?notice_fmt( "Test Actor terminating at tick offset #~B, "
-				"requesting source peers ~w to stop sending messages.",
-				[ CurrentTickOffset, SourcePeers ] ),
+        SourcePeers ->
+            ?notice_fmt( "Test Actor terminating at tick offset #~B, "
+                "requesting source peers ~w to stop sending messages.",
+                [ CurrentTickOffset, SourcePeers ] ),
 
-			SourceSendFun = fun( Peer, FunState ) ->
+            SourceSendFun = fun( Peer, FunState ) ->
 
-				output( "requests ~w to stop sending messages", [ Peer ],
-						State ),
+                output( "requests ~w to stop sending messages", [ Peer ],
+                        State ),
 
-				%?notice_fmt( "Requesting ~w to stop sending messages.",
-				%             [ Peer ] ),
+                %?notice_fmt( "Requesting ~w to stop sending messages.",
+                %             [ Peer ] ),
 
-				% Returns an updated state:
-				class_Actor:send_actor_message( Peer, removePeer, FunState )
+                % Returns an updated state:
+                class_Actor:send_actor_message( Peer, removePeer, FunState )
 
-			end,
+            end,
 
-			% Returns an updated state:
-			lists:foldl( SourceSendFun, State, SourcePeers )
+            % Returns an updated state:
+            lists:foldl( SourceSendFun, State, SourcePeers )
 
-	end,
+    end,
 
 
-	TargetPeers = ?getAttr(target_peers),
+    TargetPeers = ?getAttr(target_peers),
 
-	% Second, tells the targeted actors they will not be notified by this actor
-	% anymore:
-	%
-	TargetState = case ?getAttr(target_peers) of
+    % Second, tells the targeted actors they will not be notified by this actor
+    % anymore:
+    %
+    TargetState = case ?getAttr(target_peers) of
 
-		[] ->
-			?info_fmt( "Test Actor terminating at tick offset #~B, "
-				"having no target peer to notify.", [ CurrentTickOffset ] ),
-			SourceState;
+        [] ->
+            ?info_fmt( "Test Actor terminating at tick offset #~B, "
+                "having no target peer to notify.", [ CurrentTickOffset ] ),
+            SourceState;
 
-		TargetPeers ->
-			?notice_fmt( "Test Actor terminating at tick offset #~B, "
-				"notifying target peers ~w to forget it.",
-				[ CurrentTickOffset, TargetPeers ] ),
+        TargetPeers ->
+            ?notice_fmt( "Test Actor terminating at tick offset #~B, "
+                "notifying target peers ~w to forget it.",
+                [ CurrentTickOffset, TargetPeers ] ),
 
-			TargetSendFun = fun( Peer, FunState ) ->
+            TargetSendFun = fun( Peer, FunState ) ->
 
-				output( "requests ~w to forget it", [ Peer ], State ),
+                output( "requests ~w to forget it", [ Peer ], State ),
 
-				%?notice_fmt( "Requesting ~w to forget it.", [ Peer ] ),
+                %?notice_fmt( "Requesting ~w to forget it.", [ Peer ] ),
 
-				% Returns an updated state:
-				class_Actor:send_actor_message( Peer, forgetPeer, FunState )
+                % Returns an updated state:
+                class_Actor:send_actor_message( Peer, forgetPeer, FunState )
 
-			end,
+            end,
 
-			% Returns an updated state:
-			lists:foldl( TargetSendFun, SourceState, TargetPeers )
+            % Returns an updated state:
+            lists:foldl( TargetSendFun, SourceState, TargetPeers )
 
-	end,
+    end,
 
-	TerminationDelay = case SourcePeers ++ TargetPeers of
+    TerminationDelay = case SourcePeers ++ TargetPeers of
 
-			[] ->
-				% Nothing to wait for, we can terminate immediately:
-				0;
+            [] ->
+                % Nothing to wait for, we can terminate immediately:
+                0;
 
-			_ ->
-				% We have sent at least an actor message at this diasca D, thus
-				% (depending on reordering) at D+1 the peers might already send
-				% a message to this actor before processing the message that was
-				% just sent; this second message would be processed at D+2, thus
-				% we cannot terminate before D+3:
-				3
+            _ ->
+                % We have sent at least an actor message at this diasca D, thus
+                % (depending on reordering) at D+1 the peers might already send
+                % a message to this actor before processing the message that was
+                % just sent; this second message would be processed at D+2, thus
+                % we cannot terminate before D+3:
+                3
 
-	end,
+    end,
 
-	%TerminationDelay = unlimited,
+    %TerminationDelay = unlimited,
 
-	executeOneway( TargetState, declareTermination, TerminationDelay ).
+    executeOneway( TargetState, declareTermination, TerminationDelay ).
 
 
 
@@ -1075,12 +1075,12 @@ notify_termination( State ) ->
 -spec output( ustring(), wooper:state() ) -> void().
 output( Message, State ) ->
 
-	?getAttr(talkative) andalso
-		begin
-			TickOffset = class_Actor:get_current_tick_offset( State ),
-			trace_utils:debug_fmt( " [~ts (~w) at ~p] " ++ Message,
-								   [ ?getAttr(name), self(), TickOffset ] )
-		end.
+    ?getAttr(talkative) andalso
+        begin
+            TickOffset = class_Actor:get_current_tick_offset( State ),
+            trace_utils:debug_fmt( " [~ts (~w) at ~p] " ++ Message,
+                                   [ ?getAttr(name), self(), TickOffset ] )
+        end.
 
 
 
@@ -1089,5 +1089,5 @@ Outputs the specified formatted message in console, iff talkative.
 """.
 -spec output( ustring(), ustring() ) -> void().
 output( Format, Values, State ) ->
-	Message = text_utils:format( Format, Values ),
-	output( Message, State ).
+    Message = text_utils:format( Format, Values ),
+    output( Message, State ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 EDF R&D
+% Copyright (C) 2014-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -29,11 +29,11 @@ simple, centralised way.
 
 
 -define( class_description,
-		 "Class modelling a two-dimensional upright rectangular environment, "
-		 "as an actor in charge of keeping track of spatialised simulation "
-		 "elements and resolve queries on them."
-		 "Its lower-left corner is at the origin of the coordinate system "
-		 "({0,0})." ).
+         "Class modelling a two-dimensional upright rectangular environment, "
+         "as an actor in charge of keeping track of spatialised simulation "
+         "elements and resolve queries on them."
+         "Its lower-left corner is at the origin of the coordinate system "
+         "({0,0})." ).
 
 
 
@@ -45,27 +45,27 @@ simple, centralised way.
 -define( class_attributes, [
 
   { width, border_extent(),
-	"the abscissa extent of the environment, from the origin" },
+    "the abscissa extent of the environment, from the origin" },
 
   { height, border_extent(),
-	"the ordinate extent of the environment, from origin" },
+    "the ordinate extent of the environment, from origin" },
 
   { border_settings, border_description(),
-	"describes how border crossings shall be managed" },
+    "describes how border crossings shall be managed" },
 
   { entities, table( entity_pid(), entity() ),
-	"a table associating to the PID of an entity the knowledge (as a record) "
-	"held about this entity about this environment" },
+    "a table associating to the PID of an entity the knowledge (as a record) "
+    "held about this entity about this environment" },
 
   { query_table, table( requester_pid(), query() ),
-	"the working table for the computation of vicinity queries; keys are the "
-	"PID of the requester of a vicinity determination, whose values are the "
-	"corresponding stored query" },
+    "the working table for the computation of vicinity queries; keys are the "
+    "PID of the requester of a vicinity determination, whose values are the "
+    "corresponding stored query" },
 
   { request_table, table( entity_pid(), [ requester_pid() ] ),
-	"a table that allows, when an entity requested for its position answers, "
-	"to determine the pending queries waiting for it, i.e. the requesters of "
-	"the queries for which this entity is in the 'maybe list')" } ] ).
+    "a table that allows, when an entity requested for its position answers, "
+    "to determine the pending queries waiting for it, i.e. the requesters of "
+    "the queries for which this entity is in the 'maybe list')" } ] ).
 
 
 
@@ -178,14 +178,14 @@ The position of an entity in an environment, at specified simulation timestamp
 
 -record( entity, {
 
-	% Last known position, with its corresponding timestamp:
-	last_timed_position = undefined :: option( timed_position() ),
+    % Last known position, with its corresponding timestamp:
+    last_timed_position = undefined :: option( timed_position() ),
 
-	% An upper-bound (if any) to the speed of this entity:
-	max_speed = undefined :: option( meters_per_tick() ),
+    % An upper-bound (if any) to the speed of this entity:
+    max_speed = undefined :: option( meters_per_tick() ),
 
-	% The entity's class name is cached here to accelerate some queries:
-	classname :: classname() } ).
+    % The entity's class name is cached here to accelerate some queries:
+    classname :: classname() } ).
 
 
 
@@ -217,19 +217,19 @@ value associated to a key which is this PID.
 %
 -record( disc_query, {
 
-	% Center of the vicinity disc:
-	center :: position(),
+    % Center of the vicinity disc:
+    center :: position(),
 
-	% Radius of the vicinity disc:
-	radius :: radius(),
+    % Radius of the vicinity disc:
+    radius :: radius(),
 
-	% Entities already known to be in that disc:
-	entities_in :: [ entity_pid() ],
+    % Entities already known to be in that disc:
+    entities_in :: [ entity_pid() ],
 
-	% Entities whose position has been requested, to determine whether
-	% they are in that disc (they may be in):
-	%
-	entities_requested :: [ entity_pid() ] } ).
+    % Entities whose position has been requested, to determine whether
+    % they are in that disc (they may be in):
+    %
+    entities_requested :: [ entity_pid() ] } ).
 
 
 
@@ -255,8 +255,8 @@ Describes a spatial query, when having to be stored while being processed.
 
 
 -export_type([ border_description/0, border_extent/0, position/0, max_speed/0,
-			   entity/0, entity_pid/0, requester_pid/0,
-			   spatial_query/0, range_outcome/0, environment_pid/0 ]).
+               entity/0, entity_pid/0, requester_pid/0,
+               spatial_query/0, range_outcome/0, environment_pid/0 ]).
 
 
 
@@ -299,22 +299,22 @@ Construction parameters are:
 - BorderSettings describes how the borders of this environment shall be managed
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-		border_extent(), border_extent(), border_description() ) ->
-						wooper:state().
+        border_extent(), border_extent(), border_description() ) ->
+                        wooper:state().
 construct( State, ActorSettings, Width, Height, BorderSettings ) ->
 
-	ActorState = class_Actor:construct( State, ActorSettings,
-										?trace_categorize("Environment") ),
+    ActorState = class_Actor:construct( State, ActorSettings,
+                                        ?trace_categorize("Environment") ),
 
-	EmptyTable = table:new(),
+    EmptyTable = table:new(),
 
-	setAttributes( ActorState, [
-		{ width, Width },
-		{ height, Height },
-		{ border_settings, BorderSettings },
-		{ entities, EmptyTable },
-		{ query_table, EmptyTable },
-		{ request_table, EmptyTable } ] ).
+    setAttributes( ActorState, [
+        { width, Width },
+        { height, Height },
+        { border_settings, BorderSettings },
+        { entities, EmptyTable },
+        { query_table, EmptyTable },
+        { request_table, EmptyTable } ] ).
 
 
 
@@ -327,15 +327,15 @@ construct( State, ActorSettings, Width, Height, BorderSettings ) ->
 
 -doc "First scheduling of an environment.".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-							const_actor_oneway_return().
+                            const_actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
-	% No specific planned scheduling, an environment is mostly passive.
+    % No specific planned scheduling, an environment is mostly passive.
 
-	?info_fmt( "Environment just created: ~ts.", [ to_string( State ) ] ),
+    ?info_fmt( "Environment just created: ~ts.", [ to_string( State ) ] ),
 
-	% Creates an initial deadline at the tick, to trigger the burners:
-	actor:const_return().
+    % Creates an initial deadline at the tick, to trigger the burners:
+    actor:const_return().
 
 
 
@@ -344,8 +344,8 @@ The definition of the spontaneous behaviour of this (passive) environment.
 """.
 -spec actSpontaneous( wooper:state() ) -> const_oneway_return().
 actSpontaneous( State ) ->
-	% None specific here (passive behaviour).
-	wooper:const_return().
+    % None specific here (passive behaviour).
+    wooper:const_return().
 
 
 
@@ -354,32 +354,32 @@ Declares the specified new entity, and triggers back a
 notifyEnvironmentSettings/5 actor message.
 """.
 -spec declareEntity( wooper:state(), position(),
-			option( meters_per_second() ), classname(), actor_pid() ) ->
-								actor_oneway_return().
+            option( meters_per_second() ), classname(), actor_pid() ) ->
+                                actor_oneway_return().
 declareEntity( State, CurrentPosition, MaxSpeed, Classname,
-			   SpatialisedActorPid ) ->
+               SpatialisedActorPid ) ->
 
-	?debug_fmt( "~ts entity ~p declared at ~p (max speed: ~p).",
-				[ Classname, SpatialisedActorPid, CurrentPosition, MaxSpeed ] ),
+    ?debug_fmt( "~ts entity ~p declared at ~p (max speed: ~p).",
+                [ Classname, SpatialisedActorPid, CurrentPosition, MaxSpeed ] ),
 
-	TimedPosition = { CurrentPosition, ?getAttr(current_tick_offset) },
+    TimedPosition = { CurrentPosition, ?getAttr(current_tick_offset) },
 
-	NewEntityRecord = #entity{
-		last_timed_position=TimedPosition,
-		max_speed=convert_max_speed( MaxSpeed, State ),
-		classname=Classname },
+    NewEntityRecord = #entity{
+        last_timed_position=TimedPosition,
+        max_speed=convert_max_speed( MaxSpeed, State ),
+        classname=Classname },
 
-	NewEntities = table:add_entry( _K=SpatialisedActorPid,
-								   _V=NewEntityRecord, ?getAttr(entities) ),
+    NewEntities = table:add_entry( _K=SpatialisedActorPid,
+                                   _V=NewEntityRecord, ?getAttr(entities) ),
 
-	NewState = setAttribute( State, entities, NewEntities ),
+    NewState = setAttribute( State, entities, NewEntities ),
 
-	SentState = class_Actor:send_actor_message( SpatialisedActorPid,
-		{ notifyEnvironmentSettings, [ ?getAttr(width),
-			?getAttr(height), ?getAttr(border_settings) ] },
-		NewState ),
+    SentState = class_Actor:send_actor_message( SpatialisedActorPid,
+        { notifyEnvironmentSettings, [ ?getAttr(width),
+            ?getAttr(height), ?getAttr(border_settings) ] },
+        NewState ),
 
-	actor:return_state( SentState ).
+    actor:return_state( SentState ).
 
 
 
@@ -390,35 +390,35 @@ not keep track of it anymore.
 Typically called when a spatialised actor is being deleted.
 """.
 -spec undeclareEntity( wooper:state(), sending_actor_pid() ) ->
-								actor_oneway_return().
+                                actor_oneway_return().
 undeclareEntity( State, SpatialisedActorPid ) ->
 
-	?debug_fmt( "Entity ~p undeclared.", [ SpatialisedActorPid ] ),
+    ?debug_fmt( "Entity ~p undeclared.", [ SpatialisedActorPid ] ),
 
-	NewEntityTable = table:remove_entry( _K=SpatialisedActorPid,
-										 ?getAttr(entities) ),
+    NewEntityTable = table:remove_entry( _K=SpatialisedActorPid,
+                                         ?getAttr(entities) ),
 
-	% Just a safety check:
-	CurrentRequesters = table:keys( ?getAttr(query_table) ),
+    % Just a safety check:
+    CurrentRequesters = table:keys( ?getAttr(query_table) ),
 
-	lists:member( SpatialisedActorPid, CurrentRequesters ) andalso
-		throw( { undeclaring_with_pending_request, SpatialisedActorPid } ),
+    lists:member( SpatialisedActorPid, CurrentRequesters ) andalso
+        throw( { undeclaring_with_pending_request, SpatialisedActorPid } ),
 
-	% This undeclared entity may happen being looked up by pending third-party
-	% vicinity requests; it could be removed from their 'maybe' list (based on
-	% request_table), however anyway this undeclaring may be executed in this
-	% diasca just after a vicinity look-up (that would thus have returned this
-	% terminating entity).
-	%
-	% As a consequence, a vicinity requester shall take into account the fact
-	% that among the returned spatialised actors, some of them might be
-	% terminating.
-	%
-	% We do not disrupt the processing of look-ups by removing this actor from
-	% pending requests (otherwise expectations could become wrong, like finding
-	% this actor is query lists).
+    % This undeclared entity may happen being looked up by pending third-party
+    % vicinity requests; it could be removed from their 'maybe' list (based on
+    % request_table), however anyway this undeclaring may be executed in this
+    % diasca just after a vicinity look-up (that would thus have returned this
+    % terminating entity).
+    %
+    % As a consequence, a vicinity requester shall take into account the fact
+    % that among the returned spatialised actors, some of them might be
+    % terminating.
+    %
+    % We do not disrupt the processing of look-ups by removing this actor from
+    % pending requests (otherwise expectations could become wrong, like finding
+    % this actor is query lists).
 
-	actor:return_state( setAttribute( State, entities, NewEntityTable ) ).
+    actor:return_state( setAttribute( State, entities, NewEntityTable ) ).
 
 
 
@@ -435,100 +435,100 @@ The environment takes advantage of this call to update its knowledge about the
 position of the caller actor.
 """.
 -spec getEntitiesWithin( wooper:state(), position(), radius(),
-								sending_actor_pid() ) -> actor_oneway_return().
+                                sending_actor_pid() ) -> actor_oneway_return().
 getEntitiesWithin( State, Position, Radius, SpatialisedActorPid ) ->
 
-	?debug_fmt( "Vicinity request from ~p at ~p: radius ~p m.",
-				[ SpatialisedActorPid, Position, Radius ] ),
+    ?debug_fmt( "Vicinity request from ~p at ~p: radius ~p m.",
+                [ SpatialisedActorPid, Position, Radius ] ),
 
-	% First, update the knowledge of this environment about this actor:
+    % First, update the knowledge of this environment about this actor:
 
-	CurrentTickOffset = class_Actor:get_current_tick_offset( State ),
+    CurrentTickOffset = class_Actor:get_current_tick_offset( State ),
 
-	EntityTable = ?getAttr(entities),
+    EntityTable = ?getAttr(entities),
 
-	% Returned table does not have the record for the requesting actor, to avoid
-	% finding oneself in one's vicinity:
-	%
-	{ UpdatedEntityRecord, ShrunkEntityTable } = update_position(
-		SpatialisedActorPid, Position, CurrentTickOffset, EntityTable ),
+    % Returned table does not have the record for the requesting actor, to avoid
+    % finding oneself in one's vicinity:
+    %
+    { UpdatedEntityRecord, ShrunkEntityTable } = update_position(
+        SpatialisedActorPid, Position, CurrentTickOffset, EntityTable ),
 
-	% Currently we use the most primitive method spatial-wise: full iteration.
+    % Currently we use the most primitive method spatial-wise: full iteration.
 
-	% Will return { EntitiesIn, EntitiesMaybeIn }:
-	SelectFun = fun( { EntityPid, EntityRecord }, Acc={ In, MaybeIn } ) ->
+    % Will return { EntitiesIn, EntitiesMaybeIn }:
+    SelectFun = fun( { EntityPid, EntityRecord }, Acc={ In, MaybeIn } ) ->
 
-		% Most frequent first:
-		case is_in_range( Position, Radius, EntityRecord, CurrentTickOffset ) of
+        % Most frequent first:
+        case is_in_range( Position, Radius, EntityRecord, CurrentTickOffset ) of
 
-			out_of_range ->
-				Acc;
+            out_of_range ->
+                Acc;
 
-			unknown ->
-				{ In, [ EntityPid | MaybeIn ] };
+            unknown ->
+                { In, [ EntityPid | MaybeIn ] };
 
-			in_range ->
-				{ [ EntityPid | In ], MaybeIn }
+            in_range ->
+                { [ EntityPid | In ], MaybeIn }
 
-		end
+        end
 
-	end,
+    end,
 
-	FullEntityTable = table:add_entry( SpatialisedActorPid,
-									   UpdatedEntityRecord, ShrunkEntityTable ),
+    FullEntityTable = table:add_entry( SpatialisedActorPid,
+                                       UpdatedEntityRecord, ShrunkEntityTable ),
 
-	UpdatedState = setAttribute( State, entities, FullEntityTable ),
+    UpdatedState = setAttribute( State, entities, FullEntityTable ),
 
-	NewState = case lists:foldl(
-			SelectFun,
-			_InitialAcc={ _InitialIns=[], _InitialMaybeIns=[] },
-			_List=table:enumerate( ShrunkEntityTable ) ) of
-
-
-		{ EntitiesIn, _EntitiesMaybeIn=[] } ->
-
-			?debug_fmt( "Direct answer: all ~p entities in.", [ EntitiesIn ] ),
-
-				% Maybe none in vicinity; anyway able to answer directly:
-				class_Actor:send_actor_message( SpatialisedActorPid,
-					{ notifyEntitiesNearby, [ EntitiesIn ] }, UpdatedState );
+    NewState = case lists:foldl(
+            SelectFun,
+            _InitialAcc={ _InitialIns=[], _InitialMaybeIns=[] },
+            _List=table:enumerate( ShrunkEntityTable ) ) of
 
 
-		{ EntitiesIn, EntitiesMaybeIn } ->
+        { EntitiesIn, _EntitiesMaybeIn=[] } ->
 
-			%?debug_fmt( "Entities in: ~p, maybe in: ~p.",
-			%            [ EntitiesIn, EntitiesMaybeIn ] ),
+            ?debug_fmt( "Direct answer: all ~p entities in.", [ EntitiesIn ] ),
 
-			% Not able to answer directly, requests shall be issued (updates
-			% requesters):
-			%
-			RequestState = request_position_update( EntitiesMaybeIn,
-				SpatialisedActorPid, UpdatedState ),
+                % Maybe none in vicinity; anyway able to answer directly:
+                class_Actor:send_actor_message( SpatialisedActorPid,
+                    { notifyEntitiesNearby, [ EntitiesIn ] }, UpdatedState );
 
-			% Stores the information about this query for later use:
-			Query = #disc_query{ center=Position,
-								 radius=Radius,
-								 entities_in=EntitiesIn,
-								 entities_requested=EntitiesMaybeIn },
 
-			% Environment unsure about at least one entity, requesting them to
-			% update their position at next diasca:
-			%
-			% Currently no more than one pending request per actor:
-			%
-			QueryTable = ?getAttr(query_table),
+        { EntitiesIn, EntitiesMaybeIn } ->
 
-			table:has_entry( SpatialisedActorPid, QueryTable ) andalso
-				throw( { multiple_pending_requests, SpatialisedActorPid } ),
+            %?debug_fmt( "Entities in: ~p, maybe in: ~p.",
+            %            [ EntitiesIn, EntitiesMaybeIn ] ),
 
-			NewQTable = table:add_entry( SpatialisedActorPid, Query,
-										 QueryTable ),
+            % Not able to answer directly, requests shall be issued (updates
+            % requesters):
+            %
+            RequestState = request_position_update( EntitiesMaybeIn,
+                SpatialisedActorPid, UpdatedState ),
 
-			setAttribute( RequestState, query_table, NewQTable )
+            % Stores the information about this query for later use:
+            Query = #disc_query{ center=Position,
+                                 radius=Radius,
+                                 entities_in=EntitiesIn,
+                                 entities_requested=EntitiesMaybeIn },
 
-	end,
+            % Environment unsure about at least one entity, requesting them to
+            % update their position at next diasca:
+            %
+            % Currently no more than one pending request per actor:
+            %
+            QueryTable = ?getAttr(query_table),
 
-	actor:return_state( NewState ).
+            table:has_entry( SpatialisedActorPid, QueryTable ) andalso
+                throw( { multiple_pending_requests, SpatialisedActorPid } ),
+
+            NewQTable = table:add_entry( SpatialisedActorPid, Query,
+                                         QueryTable ),
+
+            setAttribute( RequestState, query_table, NewQTable )
+
+    end,
+
+    actor:return_state( NewState ).
 
 
 
@@ -546,102 +546,102 @@ The environment takes advantage of this call to update its knowledge about the
 position of the caller actor.
 """.
 -spec getTypedEntitiesWithin( wooper:state(), classname(), position(),
-			radius(), sending_actor_pid() ) -> actor_oneway_return().
+            radius(), sending_actor_pid() ) -> actor_oneway_return().
 getTypedEntitiesWithin( State, TargetClass, Position, Radius,
-						SpatialisedActorPid ) ->
+                        SpatialisedActorPid ) ->
 
-	?debug_fmt( "Vicinity request for class ~ts from ~p at ~p: radius ~p m.",
-				[ TargetClass, SpatialisedActorPid, Position, Radius ] ),
+    ?debug_fmt( "Vicinity request for class ~ts from ~p at ~p: radius ~p m.",
+                [ TargetClass, SpatialisedActorPid, Position, Radius ] ),
 
-	% First, update the knowledge of this environment about this actor:
+    % First, update the knowledge of this environment about this actor:
 
-	CurrentTickOffset = class_Actor:get_current_tick_offset( State ),
+    CurrentTickOffset = class_Actor:get_current_tick_offset( State ),
 
-	EntityTable = ?getAttr(entities),
+    EntityTable = ?getAttr(entities),
 
-	% Returned table does not have the record for the requesting actor, to avoid
-	% finding oneself in one's vicinity:
-	%
-	{ UpdatedEntityRecord, ShrunkEntityTable } = update_position(
-		SpatialisedActorPid, Position, CurrentTickOffset, EntityTable ),
+    % Returned table does not have the record for the requesting actor, to avoid
+    % finding oneself in one's vicinity:
+    %
+    { UpdatedEntityRecord, ShrunkEntityTable } = update_position(
+        SpatialisedActorPid, Position, CurrentTickOffset, EntityTable ),
 
-	% Currently we use the most primitive method spatial-wise: full iteration.
+    % Currently we use the most primitive method spatial-wise: full iteration.
 
-	% Will return {EntitiesIn, EntitiesMaybeIn}:
-	SelectFun = fun( { EntityPid, EntityRecord }, Acc={ In, MaybeIn } ) ->
+    % Will return {EntitiesIn, EntitiesMaybeIn}:
+    SelectFun = fun( { EntityPid, EntityRecord }, Acc={ In, MaybeIn } ) ->
 
-		% Most frequent first:
-		case is_in_range( TargetClass, Position, Radius, EntityRecord,
-						  CurrentTickOffset ) of
+        % Most frequent first:
+        case is_in_range( TargetClass, Position, Radius, EntityRecord,
+                          CurrentTickOffset ) of
 
-			out_of_range ->
-				Acc;
+            out_of_range ->
+                Acc;
 
-			unknown ->
-				{ In, [ EntityPid | MaybeIn ] };
+            unknown ->
+                { In, [ EntityPid | MaybeIn ] };
 
-			in_range ->
-				{ [ EntityPid | In ], MaybeIn }
+            in_range ->
+                { [ EntityPid | In ], MaybeIn }
 
-		end
+        end
 
-	end,
+    end,
 
-	FullEntityTable = table:add_entry( SpatialisedActorPid,
-									   UpdatedEntityRecord, ShrunkEntityTable ),
+    FullEntityTable = table:add_entry( SpatialisedActorPid,
+                                       UpdatedEntityRecord, ShrunkEntityTable ),
 
-	UpdatedState = setAttribute( State, entities, FullEntityTable ),
+    UpdatedState = setAttribute( State, entities, FullEntityTable ),
 
-	NewState = case lists:foldl(
-			SelectFun,
-			_InitialAcc={ _InitialIns=[], _InitialMaybeIns=[] },
-			_List=table:enumerate( ShrunkEntityTable ) ) of
-
-
-		{ EntitiesIn, _EntitiesMaybeIn=[] } ->
-
-			%?debug_fmt( "Direct answer: all ~p entities in.", [ EntitiesIn ] ),
-
-			% Maybe none in vicinity; anyway able to answer directly:
-			class_Actor:send_actor_message( SpatialisedActorPid,
-				{ notifyEntitiesNearby, [ EntitiesIn ] }, UpdatedState );
+    NewState = case lists:foldl(
+            SelectFun,
+            _InitialAcc={ _InitialIns=[], _InitialMaybeIns=[] },
+            _List=table:enumerate( ShrunkEntityTable ) ) of
 
 
-		{ EntitiesIn, EntitiesMaybeIn } ->
+        { EntitiesIn, _EntitiesMaybeIn=[] } ->
 
-			%?debug_fmt( "Entities in: ~p, maybe in: ~p.",
-			%            [ EntitiesIn, EntitiesMaybeIn ] ),
+            %?debug_fmt( "Direct answer: all ~p entities in.", [ EntitiesIn ] ),
 
-			% Not able to answer directly, requests shall be issued (updates
-			% requesters):
-			%
-			RequestState = request_position_update( EntitiesMaybeIn,
-				SpatialisedActorPid, UpdatedState ),
+            % Maybe none in vicinity; anyway able to answer directly:
+            class_Actor:send_actor_message( SpatialisedActorPid,
+                { notifyEntitiesNearby, [ EntitiesIn ] }, UpdatedState );
 
-			% Stores the information about this query for later use:
-			Query = #disc_query{ center=Position,
-								 radius=Radius,
-								 entities_in=EntitiesIn,
-								 entities_requested=EntitiesMaybeIn },
 
-			% Environment unsure about at least one entity, requesting them to
-			% update their position at next diasca:
-			%
-			% Currently no more than one pending request per actor:
-			%
-			QueryTable = ?getAttr(query_table),
+        { EntitiesIn, EntitiesMaybeIn } ->
 
-			table:has_entry( SpatialisedActorPid, QueryTable ) andalso
-				throw( { multiple_pending_requests, SpatialisedActorPid } ),
+            %?debug_fmt( "Entities in: ~p, maybe in: ~p.",
+            %            [ EntitiesIn, EntitiesMaybeIn ] ),
 
-			NewQTable = table:add_entry( SpatialisedActorPid, Query,
-										 QueryTable ),
+            % Not able to answer directly, requests shall be issued (updates
+            % requesters):
+            %
+            RequestState = request_position_update( EntitiesMaybeIn,
+                SpatialisedActorPid, UpdatedState ),
 
-			setAttribute( RequestState, query_table, NewQTable )
+            % Stores the information about this query for later use:
+            Query = #disc_query{ center=Position,
+                                 radius=Radius,
+                                 entities_in=EntitiesIn,
+                                 entities_requested=EntitiesMaybeIn },
 
-	end,
+            % Environment unsure about at least one entity, requesting them to
+            % update their position at next diasca:
+            %
+            % Currently no more than one pending request per actor:
+            %
+            QueryTable = ?getAttr(query_table),
 
-	actor:return_state( NewState ).
+            table:has_entry( SpatialisedActorPid, QueryTable ) andalso
+                throw( { multiple_pending_requests, SpatialisedActorPid } ),
+
+            NewQTable = table:add_entry( SpatialisedActorPid, Query,
+                                         QueryTable ),
+
+            setAttribute( RequestState, query_table, NewQTable )
+
+    end,
+
+    actor:return_state( NewState ).
 
 
 
@@ -652,62 +652,62 @@ Note: triggered in answer to a getPosition oneway; must only be in the context
 of a getEntitiesWithin call.
 """.
 -spec notifyPosition( wooper:state(), position(), sending_actor_pid() ) ->
-							actor_oneway_return().
+                            actor_oneway_return().
 notifyPosition( State, Position, EntityPid ) ->
 
-	?debug_fmt( "Entity ~p notified its position: ~p.",
-				[ EntityPid, Position ] ),
+    ?debug_fmt( "Entity ~p notified its position: ~p.",
+                [ EntityPid, Position ] ),
 
-	CurrentTickOffset = class_Actor:get_current_tick_offset( State ),
+    CurrentTickOffset = class_Actor:get_current_tick_offset( State ),
 
-	EntityTable = ?getAttr(entities),
+    EntityTable = ?getAttr(entities),
 
-	% First, updates that position:
-	{ NewEntityRecord, ShrunkEntityTable } =
-		update_position( EntityPid, Position, CurrentTickOffset, EntityTable ),
+    % First, updates that position:
+    { NewEntityRecord, ShrunkEntityTable } =
+        update_position( EntityPid, Position, CurrentTickOffset, EntityTable ),
 
-	% Second, manages the implicitly pending getEntitiesWithin call; this
-	% updated position can unblock multiple requests regarding vicinity:
+    % Second, manages the implicitly pending getEntitiesWithin call; this
+    % updated position can unblock multiple requests regarding vicinity:
 
-	RequestTable = ?getAttr(request_table),
+    RequestTable = ?getAttr(request_table),
 
-	{ RequesterList, ShrunkRequestTable} =
-		table:extract_entry( _Key=EntityPid, RequestTable ),
+    { RequesterList, ShrunkRequestTable} =
+        table:extract_entry( _Key=EntityPid, RequestTable ),
 
-	% Makes all vicinity queries that depend on the notifier progress (and
-	% possibly complete):
-	%
-	{ FoldState, FoldQueryTable } = lists:foldl(
+    % Makes all vicinity queries that depend on the notifier progress (and
+    % possibly complete):
+    %
+    { FoldState, FoldQueryTable } = lists:foldl(
 
-		fun( RequesterPid, { AccState, AccQueryTable } ) ->
+        fun( RequesterPid, { AccState, AccQueryTable } ) ->
 
-			{ Query, NewQueryTable } =
-				table:extract_entry( _K=RequesterPid, AccQueryTable ),
+            { Query, NewQueryTable } =
+                table:extract_entry( _K=RequesterPid, AccQueryTable ),
 
-			% Returns an updated accumulator:
-			update_query( Query, RequesterPid, EntityPid, Position,
-						  NewQueryTable, AccState )
+            % Returns an updated accumulator:
+            update_query( Query, RequesterPid, EntityPid, Position,
+                          NewQueryTable, AccState )
 
-		end,
-		_Acc0={ State, ?getAttr(query_table) },
-		_List=RequesterList ),
+        end,
+        _Acc0={ State, ?getAttr(query_table) },
+        _List=RequesterList ),
 
-	NewEntityTable = table:add_entry( EntityPid, NewEntityRecord,
-									  ShrunkEntityTable ),
+    NewEntityTable = table:add_entry( EntityPid, NewEntityRecord,
+                                      ShrunkEntityTable ),
 
-	FinalState = setAttributes( FoldState, [
-		{ entities, NewEntityTable },
-		{ query_table, FoldQueryTable },
-		{ request_table, ShrunkRequestTable } ] ),
+    FinalState = setAttributes( FoldState, [
+        { entities, NewEntityTable },
+        { query_table, FoldQueryTable },
+        { request_table, ShrunkRequestTable } ] ),
 
-	actor:return_state( FinalState ).
+    actor:return_state( FinalState ).
 
 
 
 -doc "Returns a textual description of this instance.".
 -spec toString( wooper:state() ) -> const_request_return( ustring() ).
 toString( State ) ->
-	wooper:const_return_result( to_string( State ) ).
+    wooper:const_return_result( to_string( State ) ).
 
 
 
@@ -719,32 +719,32 @@ Returns a textual representation of this instance.
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
-	WidthString = case ?getAttr(width) of
+    WidthString = case ?getAttr(width) of
 
-		unlimited ->
-			"unlimited width";
+        unlimited ->
+            "unlimited width";
 
-		W ->
-			text_utils:format( "width of ~ts",
-							   [ text_utils:distance_to_string( 1000 * W ) ] )
+        W ->
+            text_utils:format( "width of ~ts",
+                               [ text_utils:distance_to_string( 1000 * W ) ] )
 
-	end,
+    end,
 
-	HeightString = case ?getAttr(height) of
+    HeightString = case ?getAttr(height) of
 
-		unlimited ->
-			"unlimited height";
+        unlimited ->
+            "unlimited height";
 
-		H ->
-			text_utils:format( "height of ~ts",
-							   [ text_utils:distance_to_string( 1000 * H ) ] )
+        H ->
+            text_utils:format( "height of ~ts",
+                               [ text_utils:distance_to_string( 1000 * H ) ] )
 
-	end,
+    end,
 
-	text_utils:format(
-		"Environment '~ts' with border settings '~p', ~ts and ~ts, ",
-		[ ?getAttr(name), ?getAttr(border_settings), WidthString,
-		  HeightString ] ).
+    text_utils:format(
+        "Environment '~ts' with border settings '~p', ~ts and ~ts, ",
+        [ ?getAttr(name), ?getAttr(border_settings), WidthString,
+          HeightString ] ).
 
 
 
@@ -755,16 +755,16 @@ second) to engine-level ones (meters per tick).
 (helper)
 """.
 -spec convert_max_speed( max_speed(), wooper:state() ) ->
-								option( meters_per_tick() ).
+                                option( meters_per_tick() ).
 convert_max_speed( _MeterPerSecondSpeed=undefined, _State ) ->
-	undefined;
+    undefined;
 
 convert_max_speed( MeterPerSecondSpeed, State ) ->
 
-	% In virtual seconds:
-	TickDuration = ?getAttr(simulation_tick_duration),
+    % In virtual seconds:
+    TickDuration = ?getAttr(simulation_tick_duration),
 
-	MeterPerSecondSpeed * TickDuration.
+    MeterPerSecondSpeed * TickDuration.
 
 
 
@@ -777,22 +777,22 @@ See implementation notes ('About vicinity determination') for more information.
 (helper)
 """.
 -spec is_in_range( classname(), position(), radius(), entity(),
-				   tick_offset() ) -> range_outcome().
+                   tick_offset() ) -> range_outcome().
 is_in_range( TargetClass,
-			 ReferencedPosition,
-			 Radius,
-			 E=#entity{ classname=TargetClass },
-			 CurrentTickOffset ) ->
-	is_in_range( ReferencedPosition, Radius, E, CurrentTickOffset );
+             ReferencedPosition,
+             Radius,
+             E=#entity{ classname=TargetClass },
+             CurrentTickOffset ) ->
+    is_in_range( ReferencedPosition, Radius, E, CurrentTickOffset );
 
 
 % Here the class does not match:
 is_in_range( _TargetClass,
-			 _ReferencedPosition,
-			 _Radius,
-			 _EntityRecord,
-			 _CurrentTickOffset ) ->
-	out_of_range.
+             _ReferencedPosition,
+             _Radius,
+             _EntityRecord,
+             _CurrentTickOffset ) ->
+    out_of_range.
 
 
 
@@ -805,73 +805,73 @@ See implementation notes ('About vicinity determination') for more information.
 (helper)
 """.
 -spec is_in_range( position(), radius(), entity(), tick_offset() ) ->
-													range_outcome().
+                                                    range_outcome().
 is_in_range( ReferencedPosition,
-			 Radius,
-			 #entity{ last_timed_position={ EntPosition, CurrentTickOffset },
-					  max_speed=undefined },
-			 CurrentTickOffset ) ->
+             Radius,
+             #entity{ last_timed_position={ EntPosition, CurrentTickOffset },
+                      max_speed=undefined },
+             CurrentTickOffset ) ->
 
-	% Here we do not know the maximum speed of the entity, hence we cannot bound
-	% its movement; we strictly need to rely on its current coordinates and
-	% fortunately their timestamps are matching (possibly both set to
-	% 'undefined'), we thus will be able to decide directly:
-	%
-	case point2:is_within( EntPosition, ReferencedPosition, Radius ) of
+    % Here we do not know the maximum speed of the entity, hence we cannot bound
+    % its movement; we strictly need to rely on its current coordinates and
+    % fortunately their timestamps are matching (possibly both set to
+    % 'undefined'), we thus will be able to decide directly:
+    %
+    case point2:is_within( EntPosition, ReferencedPosition, Radius ) of
 
-		true ->
-			in_range;
+        true ->
+            in_range;
 
-		false ->
-			out_of_range
+        false ->
+            out_of_range
 
-	end;
+    end;
 
 
 is_in_range( _ReferencedPosition, _Radius, #entity{ max_speed=undefined },
-			 _CurrentTickOffset ) ->
+             _CurrentTickOffset ) ->
 
-	% Here we do not know the maximum speed of the entity, hence we cannot bound
-	% its movement and strictly need to rely on its current coordinates, however
-	% they are currently outdated (timestamps do not match); hence we cannot
-	% decide for the moment:
-	%
-	unknown;
+    % Here we do not know the maximum speed of the entity, hence we cannot bound
+    % its movement and strictly need to rely on its current coordinates, however
+    % they are currently outdated (timestamps do not match); hence we cannot
+    % decide for the moment:
+    %
+    unknown;
 
 
 is_in_range( ReferencedPosition, Radius,
-			 #entity{ last_timed_position={ EntPosition, EntTimestamp },
-					  max_speed=MaxSpeed },
-			 CurrentTickOffset ) ->
+             #entity{ last_timed_position={ EntPosition, EntTimestamp },
+                      max_speed=MaxSpeed },
+             CurrentTickOffset ) ->
 
-	% Here, we have a maximum speed specified:
-	D = point2:distance( ReferencedPosition, EntPosition ),
+    % Here, we have a maximum speed specified:
+    D = point2:distance( ReferencedPosition, EntPosition ),
 
-	Re = ( CurrentTickOffset - EntTimestamp ) * MaxSpeed,
+    Re = ( CurrentTickOffset - EntTimestamp ) * MaxSpeed,
 
-	% Most likely case first:
-	case Radius < D - Re of
+    % Most likely case first:
+    case Radius < D - Re of
 
-		true ->
-			% Certainly outside:
-			out_of_range;
+        true ->
+            % Certainly outside:
+            out_of_range;
 
 
-		false ->
+        false ->
 
-			case Radius > D + Re of
+            case Radius > D + Re of
 
-				true ->
-					% Certainly inside:
-					in_range;
+                true ->
+                    % Certainly inside:
+                    in_range;
 
-				false ->
-					% Neither case, we do not know yet:
-					unknown
+                false ->
+                    % Neither case, we do not know yet:
+                    unknown
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -886,27 +886,27 @@ Returns an updated state.
 """.
 request_position_update( EntityList, RequestingEntityPid, State ) ->
 
-	RequestTable = ?getAttr(request_table),
+    RequestTable = ?getAttr(request_table),
 
-	{ FoldState, NewRequestTable } = lists:foldl(
+    { FoldState, NewRequestTable } = lists:foldl(
 
-		fun( EntityPid, { AccState, ReqTable } ) ->
+        fun( EntityPid, { AccState, ReqTable } ) ->
 
-				GetState = class_Actor:send_actor_message( EntityPid,
-					getPosition, AccState ),
+                GetState = class_Actor:send_actor_message( EntityPid,
+                    getPosition, AccState ),
 
-				NewReqTable = declare_requester( RequestingEntityPid,
-												 EntityPid, ReqTable ),
+                NewReqTable = declare_requester( RequestingEntityPid,
+                                                 EntityPid, ReqTable ),
 
-				{ GetState, NewReqTable }
+                { GetState, NewReqTable }
 
-		end,
+        end,
 
-		_Acc0={ State, RequestTable },
+        _Acc0={ State, RequestTable },
 
-		_List=EntityList ),
+        _List=EntityList ),
 
-	setAttribute( FoldState, request_table, NewRequestTable ).
+    setAttribute( FoldState, request_table, NewRequestTable ).
 
 
 
@@ -921,13 +921,13 @@ the entity table without this record.
 """.
 update_position( EntityPid, Position, CurrentTickOffset, EntityTable ) ->
 
-	{ EntRecord, ShrunkEntityTable } =
-		table:extract_entry( EntityPid, EntityTable ),
+    { EntRecord, ShrunkEntityTable } =
+        table:extract_entry( EntityPid, EntityTable ),
 
-	NewEntRecord = EntRecord#entity{
-		last_timed_position={ Position, CurrentTickOffset } },
+    NewEntRecord = EntRecord#entity{
+        last_timed_position={ Position, CurrentTickOffset } },
 
-	{ NewEntRecord, ShrunkEntityTable }.
+    { NewEntRecord, ShrunkEntityTable }.
 
 
 
@@ -938,24 +938,24 @@ Declares a new requester: returns an updated version of the request table.
 """.
 declare_requester( RequestingEntityPid, EntityPid, RequestTable ) ->
 
-	% We create the reverse table allowing, when the requested entity answers,
-	% to find back the requester(s):
-	%
-	case table:lookup_entry( _K=EntityPid, RequestTable ) of
+    % We create the reverse table allowing, when the requested entity answers,
+    % to find back the requester(s):
+    %
+    case table:lookup_entry( _K=EntityPid, RequestTable ) of
 
-		key_not_found ->
-			% So add a new entry:
-			table:add_entry( EntityPid, [ RequestingEntityPid ],
-							 RequestTable );
+        key_not_found ->
+            % So add a new entry:
+            table:add_entry( EntityPid, [ RequestingEntityPid ],
+                             RequestTable );
 
-		{ value, RequestingList } ->
-			% This requesting entity might be registered multiple times, if for
-			% example issuing requests with different radius:
-			%
-			table:add_entry( EntityPid,
-				[ RequestingEntityPid | RequestingList ], RequestTable )
+        { value, RequestingList } ->
+            % This requesting entity might be registered multiple times, if for
+            % example issuing requests with different radius:
+            %
+            table:add_entry( EntityPid,
+                [ RequestingEntityPid | RequestingList ], RequestTable )
 
-	end.
+    end.
 
 
 
@@ -968,38 +968,38 @@ Returns {wooper:state(), query_table()}.
 (helper)
 """.
 update_query( Query=#disc_query{ center=Center, radius=Radius, entities_in=Ins,
-								 entities_requested=Requested },
-			  RequesterPid, EntityPid, EntityPosition, QueryTable, State ) ->
+                                 entities_requested=Requested },
+              RequesterPid, EntityPid, EntityPosition, QueryTable, State ) ->
 
-	NewIns = case point2:is_within( EntityPosition, Center, Radius ) of
+    NewIns = case point2:is_within( EntityPosition, Center, Radius ) of
 
-		true ->
-			[ EntityPid | Ins ];
+        true ->
+            [ EntityPid | Ins ];
 
-		false ->
-			Ins
+        false ->
+            Ins
 
-	end,
+    end,
 
-	case list_utils:delete_existing( EntityPid, Requested ) of
+    case list_utils:delete_existing( EntityPid, Requested ) of
 
-		[] ->
-			% This query can thus complete now:
-			SentState = class_Actor:send_actor_message( RequesterPid,
-				{ notifyEntitiesNearby, [ NewIns ] }, State ),
+        [] ->
+            % This query can thus complete now:
+            SentState = class_Actor:send_actor_message( RequesterPid,
+                { notifyEntitiesNearby, [ NewIns ] }, State ),
 
-			% This query is expected to be already extracted:
-			{ SentState, QueryTable };
+            % This query is expected to be already extracted:
+            { SentState, QueryTable };
 
 
-		RequesterList ->
-			% Still waiting for other requested entities:
-			UpdatedQuery = Query#disc_query{ entities_in=NewIns,
-											 entities_requested=RequesterList },
+        RequesterList ->
+            % Still waiting for other requested entities:
+            UpdatedQuery = Query#disc_query{ entities_in=NewIns,
+                                             entities_requested=RequesterList },
 
-			UpdatedQueryTable =
-				table:add_entry( RequesterPid, UpdatedQuery, QueryTable ),
+            UpdatedQueryTable =
+                table:add_entry( RequesterPid, UpdatedQuery, QueryTable ),
 
-			{ State, UpdatedQueryTable }
+            { State, UpdatedQueryTable }
 
-	end.
+    end.

@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 EDF R&D
+% Copyright (C) 2014-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -36,110 +36,110 @@ Test for the **loading of the initial state** of a soda simulation from files.
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+    ?case_start,
 
-	% Use default simulation settings (50Hz, batch reproducible):
-	SimulationSettings = #simulation_settings{
+    % Use default simulation settings (50Hz, batch reproducible):
+    SimulationSettings = #simulation_settings{
 
-		simulation_name="Initial State Loading Test",
+        simulation_name="Initial State Loading Test",
 
-		% Using 100Hz here:
-		tick_duration=0.01,
+        % Using 100Hz here:
+        tick_duration=0.01,
 
-		% To load from file a part of the initial state of the simulation:
-		%initialisation_files = []
+        % To load from file a part of the initial state of the simulation:
+        %initialisation_files = []
 
-		% 9 initial actor instances:
-		initialisation_files=[ "soda-instances.init" ] },
+        % 9 initial actor instances:
+        initialisation_files=[ "soda-instances.init" ] },
 
-		% 265 initial actor instances:
-		%initialisation_files=[ "soda-instances-larger.init" ] },
-
-
-	DeploymentSettings = #deployment_settings{
-
-		% Note that the configuration file below has not to be declared above as
-		% well:
-		%
-		enable_data_exchanger={ true, [ "soda_parameters.cfg" ] },
-
-		enable_performance_tracker=true },
+        % 265 initial actor instances:
+        %initialisation_files=[ "soda-instances-larger.init" ] },
 
 
-	% Default load balancing settings (round-robin placement heuristic):
-	LoadBalancingSettings = #load_balancing_settings{},
+    DeploymentSettings = #deployment_settings{
 
-	% A deployment manager is created directly on the user node:
-	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-		DeploymentSettings, LoadBalancingSettings ),
+        % Note that the configuration file below has not to be declared above as
+        % well:
+        %
+        enable_data_exchanger={ true, [ "soda_parameters.cfg" ] },
 
-
-	% We loaded instances from file, but of course we can still create others
-	% programmatically as well:
-
-	% First machine starts with 100 cans, 2 euros each:
-	SVM1 = class_Actor:create_initial_actor( class_SodaVendingMachine,
-		[ _FirstMachineName="First soda machine", _FirstInitialCanCount=100,
-		  _FirstCanCost=1.0 ] ),
-
-	% Second machine starts with 8 cans, 1.15 euro each:
-	SVM2 = class_Actor:create_initial_placed_actor( class_SodaVendingMachine,
-		[ _SecondMachineName="Second soda machine", _SecondInitialCanCount=8,
-		  _SecondCanCost=1.15 ], _PlacementHint=gimme_some_shelter ),
+        enable_performance_tracker=true },
 
 
-	% First customer is deterministic, uses SVM1, is thirsty 2 minutes after
-	% having drunk, and has 35 euros in his pockets:
-	%
-	_TC1 = class_Actor:create_initial_actor( class_DeterministicThirstyCustomer,
-		[ _FirstCustomerName="John", _FirstKnownMachine=SVM1,
-		  _FirstRepletionDuration=2, _FirstInitialBudget=35.0 ] ),
+    % Default load balancing settings (round-robin placement heuristic):
+    LoadBalancingSettings = #load_balancing_settings{},
+
+    % A deployment manager is created directly on the user node:
+    DeploymentManagerPid = sim_diasca:init( SimulationSettings,
+        DeploymentSettings, LoadBalancingSettings ),
 
 
-	% Second customer uses SVM1 too, yet is stochastic: he will be thirsty again
-	% between 1 and 7 minutes after having drunk, and has 40 euros in his
-	% pockets initially:
-	%
-	_TC2 = class_Actor:create_initial_actor( class_StochasticThirstyCustomer,
-		[ _SecondCustomerName="Terry", _SecondKnownMachine=SVM1,
-		  _SecondRepletionLaw={ uniform, 7 }, _SecondInitialBudget=40.0 ] ),
+    % We loaded instances from file, but of course we can still create others
+    % programmatically as well:
+
+    % First machine starts with 100 cans, 2 euros each:
+    SVM1 = class_Actor:create_initial_actor( class_SodaVendingMachine,
+        [ _FirstMachineName="First soda machine", _FirstInitialCanCount=100,
+          _FirstCanCost=1.0 ] ),
+
+    % Second machine starts with 8 cans, 1.15 euro each:
+    SVM2 = class_Actor:create_initial_placed_actor( class_SodaVendingMachine,
+        [ _SecondMachineName="Second soda machine", _SecondInitialCanCount=8,
+          _SecondCanCost=1.15 ], _PlacementHint=gimme_some_shelter ),
 
 
-	% Third customer uses SVM2, is deterministic and thirsty 2 minutes after
-	% having drunk, and has 77 euros in his pockets:
-	%
-	_TC3 = class_Actor:create_initial_actor( class_DeterministicThirstyCustomer,
-		[ _ThirdCustomerName="Michael", _ThirdKnownMachine=SVM2,
-		  _ThirdRepletionDuration=2, _ThirdInitialBudget=77.0 ] ),
+    % First customer is deterministic, uses SVM1, is thirsty 2 minutes after
+    % having drunk, and has 35 euros in his pockets:
+    %
+    _TC1 = class_Actor:create_initial_actor( class_DeterministicThirstyCustomer,
+        [ _FirstCustomerName="John", _FirstKnownMachine=SVM1,
+          _FirstRepletionDuration=2, _FirstInitialBudget=35.0 ] ),
 
 
-	% We want this test to end once a specified virtual duration elapsed, in
-	% seconds:
-	%
-	SimulationDuration = 150,
+    % Second customer uses SVM1 too, yet is stochastic: he will be thirsty again
+    % between 1 and 7 minutes after having drunk, and has 40 euros in his
+    % pockets initially:
+    %
+    _TC2 = class_Actor:create_initial_actor( class_StochasticThirstyCustomer,
+        [ _SecondCustomerName="Terry", _SecondKnownMachine=SVM1,
+          _SecondRepletionLaw={ uniform, 7 }, _SecondInitialBudget=40.0 ] ),
 
-	DeploymentManagerPid ! { getRootTimeManager, [], self() },
-	RootTimeManagerPid = test_receive(),
 
-	?test_info_fmt( "Starting simulation, for a stop after a duration "
-					"in virtual time of ~Bms.", [ SimulationDuration ] ),
+    % Third customer uses SVM2, is deterministic and thirsty 2 minutes after
+    % having drunk, and has 77 euros in his pockets:
+    %
+    _TC3 = class_Actor:create_initial_actor( class_DeterministicThirstyCustomer,
+        [ _ThirdCustomerName="Michael", _ThirdKnownMachine=SVM2,
+          _ThirdRepletionDuration=2, _ThirdInitialBudget=77.0 ] ),
 
-	RootTimeManagerPid ! { startFor, [ SimulationDuration, self() ] },
 
-	?test_info( "Waiting for the simulation to end, "
-				"since having been declared as a simulation listener." ),
+    % We want this test to end once a specified virtual duration elapsed, in
+    % seconds:
+    %
+    SimulationDuration = 150,
 
-	receive
+    DeploymentManagerPid ! { getRootTimeManager, [], self() },
+    RootTimeManagerPid = test_receive(),
 
-		simulation_stopped ->
-			?test_info( "Simulation stopped spontaneously, "
-						"specified stop tick must have been reached." )
+    ?test_info_fmt( "Starting simulation, for a stop after a duration "
+                    "in virtual time of ~Bms.", [ SimulationDuration ] ),
 
-	end,
+    RootTimeManagerPid ! { startFor, [ SimulationDuration, self() ] },
 
-	?test_info( "Browsing the report results, if in batch mode." ),
-	class_ResultManager:browse_reports(),
+    ?test_info( "Waiting for the simulation to end, "
+                "since having been declared as a simulation listener." ),
 
-	sim_diasca:shutdown(),
+    receive
 
-	?case_stop.
+        simulation_stopped ->
+            ?test_info( "Simulation stopped spontaneously, "
+                        "specified stop tick must have been reached." )
+
+    end,
+
+    ?test_info( "Browsing the report results, if in batch mode." ),
+    class_ResultManager:browse_reports(),
+
+    sim_diasca:shutdown(),
+
+    ?case_stop.

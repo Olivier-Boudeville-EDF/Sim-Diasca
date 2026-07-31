@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -31,21 +31,21 @@
 
 
 -export([ setAttribute/3, setAttributes/2,
-		  swapInAttribute/3,
-		  getAttribute/2, getAttributes/2, getMaybeAttribute/2,
-		  is_wooper_debug/0,
-		  hasAttribute/2,
-		  removeAttribute/2,
-		  addToAttribute/3,
-		  subtractFromAttribute/3,
-		  incrementAttribute/2,
-		  decrementAttribute/2,
-		  toggleAttribute/2,
-		  appendToAttribute/3,
-		  concatToAttribute/3,
-		  deleteFromAttribute/3,
-		  addKeyValueToAttribute/4,
-		  popFromAttribute/2 ]).
+          swapInAttribute/3,
+          getAttribute/2, getAttributes/2, getMaybeAttribute/2,
+          is_wooper_debug/0,
+          hasAttribute/2,
+          removeAttribute/2,
+          addToAttribute/3,
+          subtractFromAttribute/3,
+          incrementAttribute/2,
+          decrementAttribute/2,
+          toggleAttribute/2,
+          appendToAttribute/3,
+          concatToAttribute/3,
+          deleteFromAttribute/3,
+          addKeyValueToAttribute/4,
+          popFromAttribute/2 ]).
 
 
 
@@ -126,7 +126,7 @@
 % Pseudo spec: getAttr(attribute_name()) -> attribute_value().
 %
 -define( getAttr(AttributeName),
-	getAttribute( State, (AttributeName) )
+    getAttribute( State, (AttributeName) )
 ).
 
 
@@ -145,7 +145,7 @@
 % Pseudo spec: getMaybeAttr(attribute_name()) -> option(attribute_value()).
 %
 -define( getMaybeAttr(AttributeName),
-	getMaybeAttribute( State, (AttributeName) )
+    getMaybeAttribute( State, (AttributeName) )
 ).
 
 
@@ -171,7 +171,7 @@
 % Definitively not a legacy macro.
 %
 -define( getAttrList(AttributeNameList),
-	getAttributes( State, (AttributeNameList) )
+    getAttributes( State, (AttributeNameList) )
 ).
 
 
@@ -207,19 +207,19 @@
 % See also: the setAttributes macro to set more than one attribute at a time.
 %
 %-define( setAttribute( State, AttributeName, AttributeValue ),
-%	(State)#state_holder{
-%		attribute_table = ?wooper_table_type:add_entry(
-%			(AttributeName),
-%			(AttributeValue),
-%			(State)#state_holder.attribute_table )
-%	}
+%   (State)#state_holder{
+%       attribute_table = ?wooper_table_type:add_entry(
+%           (AttributeName),
+%           (AttributeValue),
+%           (State)#state_holder.attribute_table )
+%   }
 %).
 
 
 % Macro defined for backward compatibility only:
 
 -define( setAttribute( State, AttributeName, AttributeValue ),
-	setAttribute( (State), (AttributeName), (AttributeValue) )
+    setAttribute( (State), (AttributeName), (AttributeValue) )
 ).
 
 
@@ -239,18 +239,18 @@
 % See also: setAttribute/3.
 %
 %-define( setAttributes( State, ListOfAttributePairs ),
-%	(State)#state_holder{
-%		attribute_table = ?wooper_table_type:add_entries(
-%			(ListOfAttributePairs),
-%			(State)#state_holder.attribute_table )
-%	}
+%   (State)#state_holder{
+%       attribute_table = ?wooper_table_type:add_entries(
+%           (ListOfAttributePairs),
+%           (State)#state_holder.attribute_table )
+%   }
 %).
 
 
 % Macro defined for backward compatibility only:
 
 -define( setAttributes( State, ListOfAttributePairs ),
-	setAttributes( (State), (ListOfAttributePairs) )
+    setAttributes( (State), (ListOfAttributePairs) )
 ).
 
 
@@ -268,14 +268,14 @@
 % good practise is respected.
 %
 %-define( hasAttribute( State, AttributeName ),
-%	?wooper_table_type:has_entry( (AttributeName),
-%		(State)#state_holder.attribute_table ) ).
+%   ?wooper_table_type:has_entry( (AttributeName),
+%       (State)#state_holder.attribute_table ) ).
 
 
 % Macro defined for backward compatibility only:
 
 -define( hasAttribute( State, AttributeName ),
-	hasAttribute( (State), (AttributeName) )
+    hasAttribute( (State), (AttributeName) )
 ).
 
 
@@ -291,14 +291,14 @@
 % See also: the getAttr/1 shorthand.
 %
 %-define( getAttribute( State, AttributeName ),
-%	?wooper_table_type:get_value( (AttributeName),
-%		(State)#state_holder.attribute_table ) ).
+%   ?wooper_table_type:get_value( (AttributeName),
+%       (State)#state_holder.attribute_table ) ).
 
 
 % Macro defined for backward compatibility only:
 
 -define( getAttribute( State, AttributeName ),
-	getAttribute( (State), (AttributeName) ) ).
+    getAttribute( (State), (AttributeName) ) ).
 
 
 
@@ -309,17 +309,17 @@
 % No error is triggered if the specified attribute was not existing.
 %
 %-define( removeAttribute( State, AttributeName ),
-%	(State)#state_holder{
-%		attribute_table = ?wooper_table_type:remove_entry( (AttributeName),
-%			(State)#state_holder.attribute_table )
-%	}
+%   (State)#state_holder{
+%       attribute_table = ?wooper_table_type:remove_entry( (AttributeName),
+%           (State)#state_holder.attribute_table )
+%   }
 %).
 
 
 % Macro defined for backward compatibility only:
 
 -define( removeAttribute( State, AttributeName ),
-	removeAttribute( (State), (AttributeName) )
+    removeAttribute( (State), (AttributeName) )
 ).
 
 
@@ -331,19 +331,19 @@
 % A case clause is triggered if the attribute did not exist, a bad arithm is
 % triggered if no addition can be performed on the attribute value.
 %-define( addToAttribute( State, AttributeName, Value ),
-%	(State)#state_holder{
-%		attribute_table = ?wooper_table_type:add_to_entry(
-%			(AttributeName),
-%			(Value),
-%			(State)#state_holder.attribute_table )
-%	}
+%   (State)#state_holder{
+%       attribute_table = ?wooper_table_type:add_to_entry(
+%           (AttributeName),
+%           (Value),
+%           (State)#state_holder.attribute_table )
+%   }
 %).
 
 
 % Macro defined for backward compatibility only:
 
 -define( addToAttribute( State, AttributeName, Value ),
-	addToAttribute( (State), (AttributeName), (Value) )
+    addToAttribute( (State), (AttributeName), (Value) )
 ).
 
 
@@ -356,19 +356,19 @@
 % triggered if no subtraction can be performed on the attribute value.
 %
 %-define( subtractFromAttribute( State, AttributeName, Value ),
-%	(State)#state_holder{
-%		attribute_table = ?wooper_table_type:subtract_from_entry(
-%			(AttributeName),
-%			(Value),
-%			(State)#state_holder.attribute_table )
-%	}
+%   (State)#state_holder{
+%       attribute_table = ?wooper_table_type:subtract_from_entry(
+%           (AttributeName),
+%           (Value),
+%           (State)#state_holder.attribute_table )
+%   }
 %).
 
 
 % Macro defined for backward compatibility only:
 
 -define( subtractFromAttribute( State, AttributeName, Value ),
-	subtractFromAttribute( (State), (AttributeName), (Value) )
+    subtractFromAttribute( (State), (AttributeName), (Value) )
 ).
 
 
@@ -380,18 +380,18 @@
 % A case clause is triggered if the attribute does not exist or it is not a
 % boolean value.
 %-define( toggleAttribute( State, BooleanAttributeName ),
-%	(State)#state_holder{
-%		attribute_table = ?wooper_table_type:toggle_entry(
-%			(BooleanAttributeName),
-%			(State)#state_holder.attribute_table )
-%	}
+%   (State)#state_holder{
+%       attribute_table = ?wooper_table_type:toggle_entry(
+%           (BooleanAttributeName),
+%           (State)#state_holder.attribute_table )
+%   }
 %).
 
 
 % Macro defined for backward compatibility only:
 
 -define( toggleAttribute( State, BooleanAttributeName ),
-	toggleAttribute( (State), (BooleanAttributeName) )
+    toggleAttribute( (State), (BooleanAttributeName) )
 ).
 
 
@@ -406,19 +406,19 @@
 %
 %-define( appendToAttribute( State, AttributeName, Element ),
 %
-%	(State)#state_holder{
-%		attribute_table = ?wooper_table_type:append_to_entry(
-%			(AttributeName),
-%			(Element),
-%			(State)#state_holder.attribute_table )
-%	}
+%   (State)#state_holder{
+%       attribute_table = ?wooper_table_type:append_to_entry(
+%           (AttributeName),
+%           (Element),
+%           (State)#state_holder.attribute_table )
+%   }
 %).
 
 
 % Macro defined for backward compatibility only:
 
 -define(appendToAttribute( State, AttributeName, Element ),
-	appendToAttribute( (State), (AttributeName), (Element) )
+    appendToAttribute( (State), (AttributeName), (Element) )
 ).
 
 
@@ -435,19 +435,19 @@
 %
 %-define( deleteFromAttribute( State, AttributeName, Element ),
 %
-%	(State)#state_holder{
-%		attribute_table = ?wooper_table_type:delete_from_entry(
-%			(AttributeName),
-%			(Element),
-%			(State)#state_holder.attribute_table )
-%	}
+%   (State)#state_holder{
+%       attribute_table = ?wooper_table_type:delete_from_entry(
+%           (AttributeName),
+%           (Element),
+%           (State)#state_holder.attribute_table )
+%   }
 %).
 
 
 % Macro defined for backward compatibility only:
 
 -define( deleteFromAttribute( State, AttributeName, Element ),
-	deleteFromAttribute( (State), (AttributeName), (Element) )
+    deleteFromAttribute( (State), (AttributeName), (Element) )
 ).
 
 
@@ -461,21 +461,21 @@
 %
 %-define( addKeyValueToAttribute( State, AttributeName, Key, Value ),
 %
-%	(State)#state_holder{
-%		attribute_table = ?wooper_table_type:add_entry(
-%			(AttributeName),
-%			?wooper_table_type:add_entry( (Key), (Value),
-%				?wooper_table_type:get_value( (AttributeName),
-%					(State)#state_holder.attribute_table ) ),
-%			(State)#state_holder.attribute_table )
-%	}
+%   (State)#state_holder{
+%       attribute_table = ?wooper_table_type:add_entry(
+%           (AttributeName),
+%           ?wooper_table_type:add_entry( (Key), (Value),
+%               ?wooper_table_type:get_value( (AttributeName),
+%                   (State)#state_holder.attribute_table ) ),
+%           (State)#state_holder.attribute_table )
+%   }
 %).
 
 
 % Macro defined for backward compatibility only:
 
 -define( addKeyValueToAttribute( State, AttributeName, Key, Value ),
-	addKeyValueToAttribute( (State), (AttributeName), (Key), (Value) )
+    addKeyValueToAttribute( (State), (AttributeName), (Key), (Value) )
 ).
 
 
@@ -495,14 +495,14 @@
 % Note: This cannot be a one-line macro, it has to be a function.
 %
 %-define( popFromAttribute( State, AttributeName ),
-%	wooper_pop_from_attribute( (State), (AttributeName) )
+%   wooper_pop_from_attribute( (State), (AttributeName) )
 %).
 
 
 % Macro defined for backward compatibility only:
 
 -define( popFromAttribute( State, AttributeName ),
-	popFromAttribute( (State), (AttributeName) )
+    popFromAttribute( (State), (AttributeName) )
 ).
 
 

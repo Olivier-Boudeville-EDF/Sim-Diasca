@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -37,50 +37,50 @@ See the `class_Locatable` module.
 -spec run() -> no_return().
 run() ->
 
-	?test_start,
+    ?test_start,
 
-	?test_info( "Creating a test Locatable." ),
+    ?test_info( "Creating a test Locatable." ),
 
-	MyLocation = { 1, 2, 3 },
+    MyLocation = { 1, 2, 3 },
 
-	MyLocatable = class_Locatable:new_link( MyLocation ),
+    MyLocatable = class_Locatable:new_link( MyLocation ),
 
-	MyLocatable ! { getLocation, [], self() },
-	MyLocation = test_receive(),
+    MyLocatable ! { getLocation, [], self() },
+    MyLocation = test_receive(),
 
-	Origin = linear_3D:get_origin(),
+    Origin = linear_3D:get_origin(),
 
-	?test_notice_fmt( "Origin is ~p.", [ Origin ] ),
+    ?test_notice_fmt( "Origin is ~p.", [ Origin ] ),
 
-	MyLocatable ! { setLocation, Origin },
+    MyLocatable ! { setLocation, Origin },
 
-	MyLocatable ! { getLocation, [], self() },
-	Origin = test_receive(),
+    MyLocatable ! { getLocation, [], self() },
+    Origin = test_receive(),
 
-	?test_info( "setLocation succeeded." ),
+    ?test_info( "setLocation succeeded." ),
 
-	Abscissa = 7,
-	MyLocatable ! { setAbscissa, Abscissa },
+    Abscissa = 7,
+    MyLocatable ! { setAbscissa, Abscissa },
 
-	MyLocatable ! { getAbscissa, [], self() },
-	Abscissa = test_receive(),
+    MyLocatable ! { getAbscissa, [], self() },
+    Abscissa = test_receive(),
 
-	?test_info( "setAbscissa and getAbscissa succeeded." ),
+    ?test_info( "setAbscissa and getAbscissa succeeded." ),
 
 
-	Ordinate = 17,
-	Altitude = 22,
+    Ordinate = 17,
+    Altitude = 22,
 
-	MyLocatable ! { setOrdinate, Ordinate },
-	MyLocatable ! { setAltitude, Altitude },
+    MyLocatable ! { setOrdinate, Ordinate },
+    MyLocatable ! { setAltitude, Altitude },
 
-	FinalLocation = { Abscissa, Ordinate, Altitude },
+    FinalLocation = { Abscissa, Ordinate, Altitude },
 
-	MyLocatable ! { getLocation, [], self() },
-	FinalLocation = test_receive(),
+    MyLocatable ! { getLocation, [], self() },
+    FinalLocation = test_receive(),
 
-	?test_info( "set/get for abscissa, ordinate and altitude succeeded." ),
+    ?test_info( "set/get for abscissa, ordinate and altitude succeeded." ),
 
-	wooper:delete_synchronously_instance( MyLocatable ),
+    wooper:delete_synchronously_instance( MyLocatable ),
 
-	?test_stop.
+    ?test_stop.

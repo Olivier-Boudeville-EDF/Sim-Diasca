@@ -1,4 +1,4 @@
-% Copyright (C) 2013-2025 Olivier Boudeville
+% Copyright (C) 2013-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -94,9 +94,9 @@ Returns the path found, i.e. the ordered list of vertices, from the initial
 vertex to the found one.
 """.
 -spec find_breadth_first( vertex(), predicate(), feeder() ) ->
-								'no_path_found' | [ vertex() ].
+                                'no_path_found' | [ vertex() ].
 find_breadth_first( InitialVertex, Predicate, Feeder ) ->
-	find_breadth_first( InitialVertex, Predicate, Feeder, _UserData=undefined ).
+    find_breadth_first( InitialVertex, Predicate, Feeder, _UserData=undefined ).
 
 
 
@@ -112,20 +112,20 @@ The user data might be anything, from 'undefined' to a description of the graph
 structure (see graph_utils_test.erl).
 """.
 -spec find_breadth_first( vertex(), predicate(), feeder(),
-				basic_utils:user_data() ) -> 'no_path_found' | [ vertex() ].
+                basic_utils:user_data() ) -> 'no_path_found' | [ vertex() ].
 find_breadth_first( InitialVertex, Predicate, Feeder, UserData ) ->
 
-	% We rely on a queue, to examine vertices at increasing ranges
-	% (breadth-first). We insert elements at its back, but pop them from its
-	% front (like a list). Elements are paths (reversed lists of vertices).
-	%
-	InitialQueue = queue:in( [ InitialVertex ], queue:new() ),
+    % We rely on a queue, to examine vertices at increasing ranges
+    % (breadth-first). We insert elements at its back, but pop them from its
+    % front (like a list). Elements are paths (reversed lists of vertices).
+    %
+    InitialQueue = queue:in( [ InitialVertex ], queue:new() ),
 
-	% A sorted list allows to explore each vertex only once (otherwise cycles
-	% would prevent termination):
-	Explored = ?list_impl:new(),
+    % A sorted list allows to explore each vertex only once (otherwise cycles
+    % would prevent termination):
+    Explored = ?list_impl:new(),
 
-	find_bfs_helper( Predicate, Feeder, InitialQueue, Explored, UserData ).
+    find_bfs_helper( Predicate, Feeder, InitialQueue, Explored, UserData ).
 
 
 
@@ -138,50 +138,50 @@ find_breadth_first( InitialVertex, Predicate, Feeder, UserData ) ->
 %
 find_bfs_helper( Predicate, Feeder, CandidateQueue, ExploredList, UserData ) ->
 
-	case queue:out( CandidateQueue ) of
+    case queue:out( CandidateQueue ) of
 
-		{ empty, _Q } ->
-			no_path_found;
+        { empty, _Q } ->
+            no_path_found;
 
-		{ { value, Path=[ Vertex | _LeadingPath ] }, PoppedQueue } ->
+        { { value, Path=[ Vertex | _LeadingPath ] }, PoppedQueue } ->
 
-			%io:format( "Examining vertex ~p.~n", [ Vertex ] ),
+            %io:format( "Examining vertex ~p.~n", [ Vertex ] ),
 
-			case Predicate( Vertex, UserData ) of
+            case Predicate( Vertex, UserData ) of
 
-				true ->
-					% Found!
-					%io:format( "Vertex ~p validated!~n", [ Vertex ] ),
-					lists:reverse( Path );
+                true ->
+                    % Found!
+                    %io:format( "Vertex ~p validated!~n", [ Vertex ] ),
+                    lists:reverse( Path );
 
-				false ->
-					% Search must continue; once this generation will have been
-					% inspected, will recurse in the next one:
-					Children = Feeder( Vertex, UserData ),
+                false ->
+                    % Search must continue; once this generation will have been
+                    % inspected, will recurse in the next one:
+                    Children = Feeder( Vertex, UserData ),
 
-					SelectedChildren = [ C || C <- Children,
-						not ?list_impl:is_member( C, ExploredList ) ],
+                    SelectedChildren = [ C || C <- Children,
+                        not ?list_impl:is_member( C, ExploredList ) ],
 
-					%trace_utils:debug_fmt( "Vertex ~p not suitable, "
-					%  "enqueuing ~w.~n", [ Vertex, SelectedChildren ] ),
+                    %trace_utils:debug_fmt( "Vertex ~p not suitable, "
+                    %  "enqueuing ~w.~n", [ Vertex, SelectedChildren ] ),
 
-					% Uncomment if wanting to check the cycle management:
+                    % Uncomment if wanting to check the cycle management:
 
-					% SelectedChildren =:= Children orelse
-					%     trace_utils:debug_fmt( "Removed: ~w.~n",
-					%  [ lists:subtract( Children, SelectedChildren ) ] ),
+                    % SelectedChildren =:= Children orelse
+                    %     trace_utils:debug_fmt( "Removed: ~w.~n",
+                    %  [ lists:subtract( Children, SelectedChildren ) ] ),
 
-					NewQueue = lists:foldl( fun( C, Q ) ->
-												queue:in( [ C | Path ], Q )
-											end,
-											_Acc0=PoppedQueue,
-											_List=SelectedChildren ),
+                    NewQueue = lists:foldl( fun( C, Q ) ->
+                                                queue:in( [ C | Path ], Q )
+                                            end,
+                                            _Acc0=PoppedQueue,
+                                            _List=SelectedChildren ),
 
-					NewExplored = ?list_impl:add( Vertex, ExploredList ),
+                    NewExplored = ?list_impl:add( Vertex, ExploredList ),
 
-					find_bfs_helper( Predicate, Feeder, NewQueue,
-									 NewExplored, UserData )
+                    find_bfs_helper( Predicate, Feeder, NewQueue,
+                                     NewExplored, UserData )
 
-			end
+            end
 
-	end.
+    end.

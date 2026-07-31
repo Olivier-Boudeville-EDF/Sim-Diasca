@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -118,25 +118,25 @@ Defined for documentation purpose.
 A specialised vector that is of one of the specifically supported dimensions.
 """.
 -type specialised_vector() :: vector2:vector2()
-							| vector3:vector3()
-							| vector4:vector4().
+                            | vector3:vector3()
+                            | vector4:vector4().
 
 
 -export_type([ user_vector/0, vector/0, integer_vector/0, any_vector/0,
-			   unit_vector/0, normal/0, unit_normal/0, specialised_vector/0 ]).
+               unit_vector/0, normal/0, unit_normal/0, specialised_vector/0 ]).
 
 
 -export([ new/1, null/1,
-		  from_point/1, to_point/1,
-		  dimension/1,
-		  add/2, add/1, sub/2, mult/2,
-		  are_equal/2,
-		  square_magnitude/1, magnitude/1, negate/1, scale/2, normalise/1,
-		  dot_product/2,
-		  is_unitary/1,
-		  check/1, check_integer/1,
-		  to_string/1, to_compact_string/1, to_basic_string/1,
-		  to_user_string/1 ] ).
+          from_point/1, to_point/1,
+          dimension/1,
+          add/2, add/1, sub/2, mult/2,
+          are_equal/2,
+          square_magnitude/1, magnitude/1, negate/1, scale/2, normalise/1,
+          dot_product/2,
+          is_unitary/1,
+          check/1, check_integer/1,
+          to_string/1, to_compact_string/1, to_basic_string/1,
+          to_user_string/1 ] ).
 
 
 
@@ -165,7 +165,7 @@ A specialised vector that is of one of the specifically supported dimensions.
 %   new( tuple_to_list( UserVector ) );
 % Throws bad_generator anyway if a tuple:
 new( UserVector ) -> %when is_list( UserVector ) ->
-	[ type_utils:ensure_float( UC ) || UC <- UserVector ].
+    [ type_utils:ensure_float( UC ) || UC <- UserVector ].
 
 
 
@@ -175,14 +175,14 @@ null.
 """.
 -spec null( dimension() ) -> vector().
 null( Dim ) ->
-	lists:duplicate( Dim, 0.0 ).
+    lists:duplicate( Dim, 0.0 ).
 
 
 
 -doc "Returns an (arbitrary) vector corresponding to the specified point.".
 -spec from_point( any_point() ) -> vector().
 from_point( P ) ->
-	[ type_utils:ensure_float( C ) || C <- tuple_to_list( P ) ].
+    [ type_utils:ensure_float( C ) || C <- tuple_to_list( P ) ].
 
 
 
@@ -192,14 +192,14 @@ to the specified vector.
 """.
 -spec to_point( vector() ) -> point().
 to_point( V ) ->
-	point:from_vector( V ).
+    point:from_vector( V ).
 
 
 
 -doc "Returns the dimension of the specified vector.".
 -spec dimension( any_vector() ) -> dimension().
 dimension( V ) ->
-	length( V ).
+    length( V ).
 
 
 
@@ -208,10 +208,10 @@ Returns the sum of the two specified vectors (supposedly of the same dimension).
 """.
 -spec add( vector(), vector() ) -> vector().
 add( V1, V2 ) ->
-	lists:zipwith( fun( C1, C2 ) ->
-						C1 + C2
-				   end,
-				   V1, V2 ).
+    lists:zipwith( fun( C1, C2 ) ->
+                        C1 + C2
+                   end,
+                   V1, V2 ).
 
 
 
@@ -222,11 +222,11 @@ specified (supposedly non-empty) list.
 -spec add( [ vector() ] ) -> vector().
 % Just to avoid using null() as Acc0 and thus having to compute the dimension:
 add( _Vectors=[ VFirst | VOthers ] ) ->
-	lists:foldl( fun( V, AccV ) ->
-					add( V, AccV )
-				 end,
-				 _InitialAcc=VFirst,
-				 _List=VOthers ).
+    lists:foldl( fun( V, AccV ) ->
+                    add( V, AccV )
+                 end,
+                 _InitialAcc=VFirst,
+                 _List=VOthers ).
 
 
 
@@ -236,10 +236,10 @@ dimension): `V = V1 - V2`.
 """.
 -spec sub( vector(), vector() ) -> vector().
 sub( V1, V2 ) ->
-	lists:zipwith( fun( C1, C2 ) ->
-						C1 - C2
-				   end,
-				   V1, V2 ).
+    lists:zipwith( fun( C1, C2 ) ->
+                        C1 - C2
+                   end,
+                   V1, V2 ).
 
 
 
@@ -251,14 +251,14 @@ same ranks in the two input vectors.
 """.
 -spec mult( vector(), vector() ) -> vector().
 mult( V1, V2 ) ->
-	mult( V1, V2, _Acc=[] ).
+    mult( V1, V2, _Acc=[] ).
 
 
 mult( _V1=[], _V2=[], Acc ) ->
-	lists:reverse( Acc );
+    lists:reverse( Acc );
 
 mult( _V1=[ C1 | T1 ], _V2=[ C2 | T2 ], Acc ) ->
-	mult( T1, T2, [ C1*C2 | Acc ] ).
+    mult( T1, T2, [ C1*C2 | Acc ] ).
 
 
 
@@ -268,40 +268,40 @@ mult( _V1=[ C1 | T1 ], _V2=[ C2 | T2 ], Acc ) ->
 -doc "Returns true iff the two specified vectors are considered equal.".
 -spec are_equal( vector(), vector() ) -> boolean().
 are_equal( _V1=[], _V2=[] ) ->
-	true;
+    true;
 
 are_equal( _V1=[ C1 | T1 ], _V2=[ C2 | T2 ] ) ->
-	case math_utils:are_close( C1, C2 ) of
+    case math_utils:are_close( C1, C2 ) of
 
-		true ->
-			are_equal( T1, T2 );
+        true ->
+            are_equal( T1, T2 );
 
-		false ->
-			false
+        false ->
+            false
 
-	end.
+    end.
 
 
 
 -doc "Returns the square of the magnitude of the specified vector.".
 -spec square_magnitude( vector() ) -> any_square_distance().
 square_magnitude( V ) ->
-	square_magnitude( V, _Acc=0.0 ).
+    square_magnitude( V, _Acc=0.0 ).
 
 
 % (helper)
 square_magnitude( _V=[], Acc ) ->
-	Acc;
+    Acc;
 
 square_magnitude( _V=[ C | T ], Acc ) ->
-	square_magnitude( T, Acc + C*C ).
+    square_magnitude( T, Acc + C*C ).
 
 
 
 -doc "Returns the magnitude of the specified vector.".
 -spec magnitude( vector() ) -> distance().
 magnitude( V ) ->
-	math:sqrt( square_magnitude( V ) ).
+    math:sqrt( square_magnitude( V ) ).
 
 
 
@@ -310,14 +310,14 @@ Negates the specified vector: returns the opposite one (of the same magnitude).
 """.
 -spec negate( vector() ) -> vector().
 negate( V ) ->
-	[ -C || C <- V ].
+    [ -C || C <- V ].
 
 
 
 -doc "Scales the specified vector of the specified factor.".
 -spec scale( vector(), factor() ) -> vector().
 scale( V, Factor ) ->
-	[ Factor*C || C <- V ].
+    [ Factor*C || C <- V ].
 
 
 
@@ -327,30 +327,30 @@ unit length (whose magnitude is thus 1.0).
 """.
 -spec normalise( vector() ) -> unit_vector().
 normalise( V ) ->
-	case magnitude( V ) of
+    case magnitude( V ) of
 
-		M when M < ?epsilon ->
-			throw( cannot_normalise_null_vector );
+        M when M < ?epsilon ->
+            throw( cannot_normalise_null_vector );
 
-		M ->
-			scale( V, 1 / M )
+        M ->
+            scale( V, 1 / M )
 
-	end.
+    end.
 
 
 
 -doc "Returns the dot-product of the two specified vectors.".
 -spec dot_product( vector(), vector() ) -> float().
 dot_product( V1, V2 ) ->
-	dot_product( V1, V2, _Acc=0.0 ).
+    dot_product( V1, V2, _Acc=0.0 ).
 
 
 % (helper)
 dot_product( _V1=[], _V2=[], Acc ) ->
-	Acc;
+    Acc;
 
 dot_product( _V1=[ H1 | T1 ], _V2=[ H2 | T2 ], Acc ) ->
-	dot_product( T1, T2, Acc + H1*H2 ).
+    dot_product( T1, T2, Acc + H1*H2 ).
 
 
 
@@ -360,22 +360,22 @@ magnitude 1.0.
 """.
 -spec is_unitary( vector() ) -> boolean().
 is_unitary( V ) ->
-	% No specific need of computing the square root thereof:
-	math_utils:are_equal( 1.0, square_magnitude( V ) ).
+    % No specific need of computing the square root thereof:
+    math_utils:are_equal( 1.0, square_magnitude( V ) ).
 
 
 
 -doc "Checks that the specified vector is legit, and returns it.".
 -spec check( vector() ) -> vector().
 check( V ) ->
-	type_utils:check_floats( V ).
+    type_utils:check_floats( V ).
 
 
 
 -doc "Checks that the specified integer vector is legit, and returns it.".
 -spec check_integer( integer_vector() ) -> integer_vector().
 check_integer( V ) ->
-	type_utils:check_integers( V ).
+    type_utils:check_integers( V ).
 
 
 
@@ -385,7 +385,7 @@ is shown.
 """.
 -spec to_string( user_vector() ) -> ustring().
 to_string( Vector ) ->
-	to_user_string( Vector ).
+    to_user_string( Vector ).
 
 
 
@@ -395,11 +395,11 @@ Returns a compact, textual, informal representation of the specified vector.
 -spec to_compact_string( user_vector() ) -> ustring().
 to_compact_string( Vector ) ->
 
-	%Ws = [ "~w" || _ <- Vector ],
-	%FormatStr = "[ " ++ text_utils:join( _Sep=", ", Ws ) ++ " ]",
-	%text_utils:format( FormatStr, Vector ).
+    %Ws = [ "~w" || _ <- Vector ],
+    %FormatStr = "[ " ++ text_utils:join( _Sep=", ", Ws ) ++ " ]",
+    %text_utils:format( FormatStr, Vector ).
 
-	text_utils:format( "~w", [ Vector ] ).
+    text_utils:format( "~w", [ Vector ] ).
 
 
 
@@ -410,15 +410,15 @@ linear.hrl for width and precision) representation of the specified vector.
 -spec to_basic_string( vector() ) -> ustring().
 to_basic_string( Vector ) ->
 
-	% Vectors supposed to be lists of floats:
-	ElemFormatStr = "[ " ++ ?coord_float_format ++ " ]~n",
+    % Vectors supposed to be lists of floats:
+    ElemFormatStr = "[ " ++ ?coord_float_format ++ " ]~n",
 
-	FormatStr = "~n" ++ text_utils:duplicate( length( Vector ), ElemFormatStr ),
+    FormatStr = "~n" ++ text_utils:duplicate( length( Vector ), ElemFormatStr ),
 
-	%trace_utils:debug_fmt( "FormatStr: ~ts; CoordList: ~w.",
-	%                       [ FormatStr, CoordList ] ),
+    %trace_utils:debug_fmt( "FormatStr: ~ts; CoordList: ~w.",
+    %                       [ FormatStr, CoordList ] ),
 
-	text_utils:format( FormatStr, Vector ).
+    text_utils:format( FormatStr, Vector ).
 
 
 
@@ -431,14 +431,14 @@ This is the recommended representation.
 -spec to_user_string( user_vector() ) -> ustring().
 to_user_string( Vector ) ->
 
-	Strs = linear:coords_to_best_width_strings( Vector ),
+    Strs = linear:coords_to_best_width_strings( Vector ),
 
-	% No need for ~ts here:
-	ElemFormatStr = "[ ~s ]~n",
+    % No need for ~ts here:
+    ElemFormatStr = "[ ~s ]~n",
 
-	FormatStr = "~n" ++ text_utils:duplicate( length( Vector ), ElemFormatStr ),
+    FormatStr = "~n" ++ text_utils:duplicate( length( Vector ), ElemFormatStr ),
 
-	%trace_utils:debug_fmt( "FormatStr: ~ts; Strs: ~p.",
-	%                       [ FormatStr, Strs ] ),
+    %trace_utils:debug_fmt( "FormatStr: ~ts; Strs: ~p.",
+    %                       [ FormatStr, Strs ] ),
 
-	text_utils:format( FormatStr, Strs ).
+    text_utils:format( FormatStr, Strs ).

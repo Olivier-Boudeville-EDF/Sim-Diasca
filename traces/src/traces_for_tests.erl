@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -35,7 +35,7 @@ This module gathers all the code that allows to **lighten the trace macros for
 
 
 -export([ test_start/2, test_stop/3, test_immediate_stop/2,
-		  test_stop_on_shell/2 ]).
+          test_stop_on_shell/2 ]).
 
 
 -define( trace_emitter_categorization, "test.life-cycle" ).
@@ -81,65 +81,65 @@ remain unnoticed (just leading to an EXIT message happily sitting in the mailbox
 of the app process).
 """.
 -spec test_start( module_name(),
-		class_TraceAggregator:initialise_supervision() ) -> aggregator_pid().
+        class_TraceAggregator:initialise_supervision() ) -> aggregator_pid().
 % All values possible for InitTraceSupervisor here:
 test_start( ModuleName, InitTraceSupervisor ) ->
 
-	% See comments above about:
-	erlang:process_flag( trap_exit, false ),
+    % See comments above about:
+    erlang:process_flag( trap_exit, false ),
 
-	% Create first, synchronously (to avoid race conditions), a trace
-	% aggregator.
-	%
-	% Race conditions could occur at least with trace emitters (they would
-	% create their own aggregator, should none by found) and with trace
-	% supervisor (which expects a trace file to be already created at start-up).
+    % Create first, synchronously (to avoid race conditions), a trace
+    % aggregator.
+    %
+    % Race conditions could occur at least with trace emitters (they would
+    % create their own aggregator, should none by found) and with trace
+    % supervisor (which expects a trace file to be already created at start-up).
 
-	TestIsBatch = executable_utils:is_batch(),
+    TestIsBatch = executable_utils:is_batch(),
 
-	%trace_utils:debug_fmt( "At test_start/2: TestIsBatch=~ts, "
-	%   "InitTraceSupervisor=~ts.", [ TestIsBatch, InitTraceSupervisor ] ),
+    %trace_utils:debug_fmt( "At test_start/2: TestIsBatch=~ts, "
+    %   "InitTraceSupervisor=~ts.", [ TestIsBatch, InitTraceSupervisor ] ),
 
-	TraceFilename = traces:get_trace_filename( ModuleName ),
+    TraceFilename = traces:get_trace_filename( ModuleName ),
 
-	% Not wanting the trace aggregator to initialize the trace supervisor, as
-	% otherwise the latter would notify that its monitoring is over to the
-	% former, whereas we want instead the calling process (i.e. the test) to be
-	% notified of it (see test_stop/2):
-	%
-	TraceAggregatorPid = class_TraceAggregator:synchronous_new_link(
-		TraceFilename, ?TraceType, ?TraceTitle,
-		_MaybeRegistrationScope=global_only, TestIsBatch,
-		_AggInitTraceSupervisor=false ),
+    % Not wanting the trace aggregator to initialize the trace supervisor, as
+    % otherwise the latter would notify that its monitoring is over to the
+    % former, whereas we want instead the calling process (i.e. the test) to be
+    % notified of it (see test_stop/2):
+    %
+    TraceAggregatorPid = class_TraceAggregator:synchronous_new_link(
+        TraceFilename, ?TraceType, ?TraceTitle,
+        _MaybeRegistrationScope=global_only, TestIsBatch,
+        _AggInitTraceSupervisor=false ),
 
-	case ModuleName of
+    case ModuleName of
 
-		traces_via_otp ->
-			?test_info( "Starting the Ceylan-Traces test from an "
-						"OTP context." );
+        traces_via_otp ->
+            ?test_info( "Starting the Ceylan-Traces test from an "
+                        "OTP context." );
 
-		_ ->
-			?test_info_fmt( "Starting test ~ts.", [ ModuleName ] )
+        _ ->
+            ?test_info_fmt( "Starting test ~ts.", [ ModuleName ] )
 
-	end,
+    end,
 
-	% So we trigger the supervisor launch by ourselves:
-	%
-	% (e.g. InitTraceSupervisor could have been set to 'later')
-	%
-	( not TestIsBatch ) andalso ( InitTraceSupervisor =:= true ) andalso
-		begin
-			TraceAggregatorPid ! { launchTraceSupervisor, [], self() },
-			receive
+    % So we trigger the supervisor launch by ourselves:
+    %
+    % (e.g. InitTraceSupervisor could have been set to 'later')
+    %
+    ( not TestIsBatch ) andalso ( InitTraceSupervisor =:= true ) andalso
+        begin
+            TraceAggregatorPid ! { launchTraceSupervisor, [], self() },
+            receive
 
-				{ wooper_result, _SupervisorPid } ->
-					ok
+                { wooper_result, _SupervisorPid } ->
+                    ok
 
-			end
+            end
 
-		end,
+        end,
 
-	TraceAggregatorPid.
+    TraceAggregatorPid.
 
 
 
@@ -151,17 +151,18 @@ To be called from the counterpart macro.
 -spec test_stop( module_name(), aggregator_pid(), boolean() ) -> no_return().
 test_stop( ModuleName, TraceAggregatorPid, WaitForTraceSupervisor ) ->
 
-	% As test_start might have been called with InitTraceSupervisor=false.
+    % As test_start might have been called with InitTraceSupervisor=false.
 
-	%trace_utils:info_fmt( "Test stopping (aggregator: ~w, wait supervisor: "
-	%    "~ts).", [ TraceAggregatorPid, WaitForTraceSupervisor] ),
+    %trace_utils:info_fmt(
+    %    "Test stopping (aggregator: ~w, wait supervisor: ~ts).",
+    %    [ TraceAggregatorPid, WaitForTraceSupervisor] ),
 
-	WaitForTraceSupervisor andalso class_TraceSupervisor:wait_for(),
+    WaitForTraceSupervisor andalso class_TraceSupervisor:wait_for(),
 
-	%trace_utils:info( "Going for immediate stop." ),
+    %trace_utils:info( "Going for immediate stop." ),
 
-	% Stop trace sent there:
-	test_immediate_stop( ModuleName, TraceAggregatorPid ).
+    % Stop trace sent there:
+    test_immediate_stop( ModuleName, TraceAggregatorPid ).
 
 
 
@@ -174,13 +175,13 @@ To be called from the counterpart macro.
 -spec test_immediate_stop( module_name(), aggregator_pid() ) -> no_return().
 test_immediate_stop( ModuleName, TraceAggregatorPid ) ->
 
-	%trace_utils:info( "Immediate stop." ),
+    %trace_utils:info( "Immediate stop." ),
 
-	test_stop_on_shell( ModuleName, TraceAggregatorPid ),
+    test_stop_on_shell( ModuleName, TraceAggregatorPid ),
 
-	%trace_utils:info( "Finishing." ),
+    %trace_utils:info( "Finishing." ),
 
-	test_facilities:finished().
+    test_facilities:finished().
 
 
 
@@ -193,20 +194,20 @@ To be called from the counterpart macro, directly or not.
 -spec test_stop_on_shell( module_name(), aggregator_pid() ) -> no_return().
 test_stop_on_shell( ModuleName, TraceAggregatorPid ) ->
 
-	?test_info_fmt( "Stopping test ~ts.", [ ModuleName ] ),
+    ?test_info_fmt( "Stopping test ~ts.", [ ModuleName ] ),
 
-	% Also possible: class_TraceAggregator:remove(),
+    % Also possible: class_TraceAggregator:remove(),
 
-	% Variable shared through macro use:
-	TraceAggregatorPid ! { synchronous_delete, self() },
+    % Variable shared through macro use:
+    TraceAggregatorPid ! { synchronous_delete, self() },
 
-	receive
+    receive
 
-		{ deleted, TraceAggregatorPid } ->
-			ok
+        { deleted, TraceAggregatorPid } ->
+            ok
 
-	end,
+    end,
 
-	traces:check_pending_wooper_results(),
+    traces:check_pending_wooper_results(),
 
-	test_facilities:display( "End of test ~ts.", [ ModuleName ] ).
+    test_facilities:display( "End of test ~ts.", [ ModuleName ] ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 EDF R&D
+% Copyright (C) 2016-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -25,8 +25,8 @@
 
 
 -define( class_description,
-		 "Basic test dataflow object."
-		 "No specific state of its own nor additional method." ).
+         "Basic test dataflow object."
+         "No specific state of its own nor additional method." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -40,7 +40,7 @@
 
 % Must be included before class_TraceEmitter header:
 -define( trace_emitter_categorization,
-		 "Core.Dataflow.Unit-testing.BaseTestDataflowObject" ).
+         "Core.Dataflow.Unit-testing.BaseTestDataflowObject" ).
 
 
 % Allows to use macros for trace sending:
@@ -75,18 +75,18 @@ actor, as assigned by the load balancer
 - DataflowPid is the PID of the dataflow instance
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(), object_name(),
-				 [ integer() | ustring() ], dataflow_pid() ) -> wooper:state().
+                 [ integer() | ustring() ], dataflow_pid() ) -> wooper:state().
 construct( State, ActorSettings, ObjectName,
-		   InitialAttributeValues=[ _FooAttributeValue, _BarAttributeValue ],
-		   DataflowPid ) ->
+           InitialAttributeValues=[ _FooAttributeValue, _BarAttributeValue ],
+           DataflowPid ) ->
 
-	AttributeSpecs = get_dataflow_attribute_specs(),
+    AttributeSpecs = get_dataflow_attribute_specs(),
 
-	% First the direct mother class:
-	class_DataflowObject:construct( State, ActorSettings,
-		?trace_categorize(ObjectName), AttributeSpecs,
-		InitialAttributeValues, _SpecForUniquePeers=[],
-		_SpecForMultiplePeers=[], DataflowPid ).
+    % First the direct mother class:
+    class_DataflowObject:construct( State, ActorSettings,
+        ?trace_categorize(ObjectName), AttributeSpecs,
+        InitialAttributeValues, _SpecForUniquePeers=[],
+        _SpecForMultiplePeers=[], DataflowPid ).
 
 
 
@@ -95,22 +95,22 @@ construct( State, ActorSettings, ObjectName,
 
 -doc "Allows to fully specify the dataflow attributes of this object.".
 -spec get_dataflow_attribute_specs() ->
-							static_return( [ dataflow_attribute_spec() ] ).
+                            static_return( [ dataflow_attribute_spec() ] ).
 get_dataflow_attribute_specs() ->
-	wooper:return_static( [
+    wooper:return_static( [
 
-	 #dataflow_attribute_spec{
-		attribute_name="foo",
-		semantics=[ ?base_test_semantics, ?some_test_semantics ],
-		unit="W",
-		type_description="integer",
-		constraints=[ positive ] },
+     #dataflow_attribute_spec{
+        attribute_name="foo",
+        semantics=[ ?base_test_semantics, ?some_test_semantics ],
+        unit="W",
+        text_type="integer()",
+        constraints=[ positive ] },
 
-	 #dataflow_attribute_spec{
-		attribute_name="bar",
-		semantics=[ ?other_test_semantics ],
-		unit="dimensionless",
-		type_description="float" } ] ).
+     #dataflow_attribute_spec{
+        attribute_name="bar",
+        semantics=[ ?other_test_semantics ],
+        unit="dimensionless",
+        text_type="float()" } ] ).
 
 
 
@@ -121,6 +121,6 @@ get_dataflow_attribute_specs() ->
 -doc "Returns a textual description of this dataflow object.".
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
-	text_utils:format( "Basic test dataflow object named '~ts', having ~ts",
-		[ ?getAttr(name),
-		  class_DataflowObject:attributes_to_string( State ) ] ).
+    text_utils:format( "Basic test dataflow object named '~ts', having ~ts",
+        [ ?getAttr(name),
+          class_DataflowObject:attributes_to_string( State ) ] ).

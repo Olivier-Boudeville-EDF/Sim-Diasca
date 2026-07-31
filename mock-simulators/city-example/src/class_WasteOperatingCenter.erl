@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2025 EDF R&D
+% Copyright (C) 2012-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -25,9 +25,9 @@
 
 
 -define( class_description,
-		 "Class modelling a waste operating center, i.e. a centralised "
-		 "organisation that drives a waste chain (waste loading and unloading "
-		 "points, garbage trucks, etc.)" ).
+         "Class modelling a waste operating center, i.e. a centralised "
+         "organisation that drives a waste chain (waste loading and unloading "
+         "points, garbage trucks, etc.)" ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -47,8 +47,8 @@
 % The class-specific attributes of a geolocalized element are:
 -define( class_attributes, [
 
-	{ location, class_GIS:geo_coordinate(),
-	  "the current location of this element" } ] ).
+    { location, class_GIS:geo_coordinate(),
+      "the current location of this element" } ] ).
 
 
 -include_lib("wooper/include/wooper.hrl").
@@ -71,20 +71,20 @@ WGS84 polar coordinate
 """.
 -spec construct( wooper:state(), class_GIS:location() ) -> wooper:state().
 construct( State, ContainerPid ) when is_pid( ContainerPid ) ->
-	class_GeolocalizedElement:construct( State, ContainerPid );
+    class_GeolocalizedElement:construct( State, ContainerPid );
 
 
 construct( State, { wgs84_polar, PolarCoord } ) ->
-	CartesianCoord = class_GIS:wgs84_polar_to_cartesian( PolarCoord ),
-	construct( State, { wgs84_cartesian, CartesianCoord } );
+    CartesianCoord = class_GIS:wgs84_polar_to_cartesian( PolarCoord ),
+    construct( State, { wgs84_cartesian, CartesianCoord } );
 
 
 construct( State, { wgs84_cartesian, PolarCoord } ) ->
-	setAttribute( State, location, PolarCoord );
+    setAttribute( State, location, PolarCoord );
 
 
 construct( State, ImplicitlyWGS84PolarCoord ) ->
-	construct( State, { wgs84_polar, ImplicitlyWGS84PolarCoord } ).
+    construct( State, { wgs84_polar, ImplicitlyWGS84PolarCoord } ).
 
 
 
@@ -94,4 +94,4 @@ construct( State, ImplicitlyWGS84PolarCoord ) ->
 -doc "Requests this container to enter.".
 -spec requestStaticEntry( wooper:state() ) -> request_return( entry_outcome() ).
 requestStaticEntry( _State ) ->
-	throw( is_abstract ).
+    throw( is_abstract ).

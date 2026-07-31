@@ -1,4 +1,4 @@
-% Copyright (C) 2024-2025 Olivier Boudeville
+% Copyright (C) 2024-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -33,7 +33,7 @@ Unit tests for the **shell-related** facilities.
 Note that, if run interactively, this test will use a text user interface that
 may cause problems on some terminals when terminating.
 
-See the shell_utils.erl tested module.
+See the `shell_utils` tested module.
 """.
 
 
@@ -52,40 +52,40 @@ See the shell_utils.erl tested module.
 -spec test_interactive( shell_pid() ) -> void().
 test_interactive( ShellPid ) ->
 
-	test_facilities:display( "Starting shell interaction with ~w "
-		"(one may enter 'halt().' to stop).", [ ShellPid ] ),
+    test_facilities:display( "Starting shell interaction with ~w "
+        "(one may enter 'halt().' to stop).", [ ShellPid ] ),
 
-	text_ui:start(),
+    text_ui:start(),
 
-	test_main_loop( ShellPid ),
+    test_main_loop( ShellPid ),
 
-	text_ui:stop(),
+    text_ui:stop(),
 
-	test_facilities:display( "Stopped shell interaction with ~w.",
-							 [ ShellPid ] ).
+    test_facilities:display( "Stopped shell interaction with ~w.",
+                             [ ShellPid ] ).
 
 
 
 test_main_loop( ShellPid ) ->
 
-	Prompt = "Enter the next Erlang expression to evaluate: ",
-	ExprText = text_ui:get_text( Prompt ),
+    Prompt = "Enter the next Erlang expression to evaluate: ",
+    ExprText = text_ui:get_text( Prompt ),
 
-	case shell_utils:execute_command( text_utils:ensure_binary( ExprText ),
-									  ShellPid ) of
+    case shell_utils:execute_command( text_utils:ensure_binary( ExprText ),
+                                      ShellPid ) of
 
-		{ success, CmdResValue, CmdId, MaybeBinTimestamp } ->
-			test_facilities:display( "Shell expression '~ts' (#~B) "
-				"evaluated (timestamp: ~ts) to '~p'.",
-				[ ExprText, CmdId, MaybeBinTimestamp, CmdResValue ] );
+        { success, CmdResValue, CmdId, MaybeBinTimestamp } ->
+            test_facilities:display( "Shell expression '~ts' (#~B) "
+                "evaluated (timestamp: ~ts) to '~p'.",
+                [ ExprText, CmdId, MaybeBinTimestamp, CmdResValue ] );
 
-		{ error, ErrorInfo } ->
-			test_facilities:display( "The processing of shell expression '~ts' "
-				"failed with: '~ts'.", [ ExprText, ErrorInfo ] )
+        { error, ErrorInfo } ->
+            test_facilities:display( "The processing of shell expression '~ts' "
+                "failed with: '~ts'.", [ ExprText, ErrorInfo ] )
 
-	end,
+    end,
 
-	test_main_loop( ShellPid ).
+    test_main_loop( ShellPid ).
 
 
 
@@ -94,110 +94,113 @@ test_main_loop( ShellPid ) ->
 -spec test_shell( shell_pid() ) -> void().
 test_shell( ShellPid ) ->
 
-	{ processing_success, FirstRes, _FirstNextCmdId=2,
-	  MaybeFirstBinTimestamp } = shell_utils:execute_command( "A=1.",
-															  ShellPid ),
+    { processing_success, FirstRes, _FirstNextCmdId=2,
+      MaybeFirstBinTimestamp } = shell_utils:execute_command( "A=1.",
+                                                              ShellPid ),
 
-	test_facilities:display( "First assignment result (timestamp: ~ts): ~p.",
-							 [ MaybeFirstBinTimestamp,FirstRes  ] ),
-	FirstRes = 1,
+    test_facilities:display( "First assignment result (timestamp: ~ts): ~p.",
+                             [ MaybeFirstBinTimestamp,FirstRes  ] ),
+    FirstRes = 1,
 
-	test_facilities:display( "Flushing command history."),
-	ShellPid ! flushCommandHistory,
+    test_facilities:display( "Flushing command history."),
+    ShellPid ! flushCommandHistory,
 
-	{ processing_success, SecondRes, _SecondNextCmdId=3,
-	  MaybeSecondBinTimestamp } = shell_utils:execute_command( "B=2.",
-															   ShellPid ),
+    { processing_success, SecondRes, _SecondNextCmdId=3,
+      MaybeSecondBinTimestamp } = shell_utils:execute_command( "B=2.",
+                                                               ShellPid ),
 
-	test_facilities:display( "Second assignment result (timestamp: ~ts): ~p.",
-							 [ MaybeSecondBinTimestamp, SecondRes ] ),
-	SecondRes = 2,
-
-
-	{ processing_success, ThirdRes, _ThirdNextCmdId=4,
-	  MaybeThirdBinTimestamp } = shell_utils:execute_command( "A+B.",
-															  ShellPid ),
-
-	test_facilities:display( "Addition result (timestamp: ~ts): ~p.",
-							 [ MaybeThirdBinTimestamp, ThirdRes ] ),
-	ThirdRes = 3,
+    test_facilities:display( "Second assignment result (timestamp: ~ts): ~p.",
+                             [ MaybeSecondBinTimestamp, SecondRes ] ),
+    SecondRes = 2,
 
 
-	{ processing_success, LRes, _LNextCmdId=5, MaybeLBinTimestamp } =
-		shell_utils:execute_command( "L = [3, 2, 1].", ShellPid ),
+    { processing_success, ThirdRes, _ThirdNextCmdId=4,
+      MaybeThirdBinTimestamp } = shell_utils:execute_command( "A+B.",
+                                                              ShellPid ),
 
-	test_facilities:display( "List assignment result (timestamp: ~ts): ~p.",
-							 [ MaybeLBinTimestamp, LRes ] ),
-	LRes = [ 3, 2, 1 ],
-
-
-	{ processing_success, SortRes, _SortNextCmdId=6, MaybeSortBinTimestamp } =
-		shell_utils:execute_command( "lists:sort(L).", ShellPid ),
-
-	test_facilities:display( "Sorting result (timestamp: ~ts): ~p.",
-							 [ MaybeSortBinTimestamp, SortRes ] ),
-	SortRes = [ 1, 2, 3 ],
+    test_facilities:display( "Addition result (timestamp: ~ts): ~p.",
+                             [ MaybeThirdBinTimestamp, ThirdRes ] ),
+    ThirdRes = 3,
 
 
-	% Therefore typed as "--interactive-shell":
-	case cmd_line_utils:get_command_arguments_for_option(
-			_Option='-interactive-shell' ) of
+    { processing_success, LRes, _LNextCmdId=5, MaybeLBinTimestamp } =
+        shell_utils:execute_command( "L = [3, 2, 1].", ShellPid ),
 
-		undefined ->
-			test_facilities:display( "Not in interactive mode, stopping." );
+    test_facilities:display( "List assignment result (timestamp: ~ts): ~p.",
+                             [ MaybeLBinTimestamp, LRes ] ),
+    LRes = [ 3, 2, 1 ],
 
-		_ ->
-			test_facilities:display( "Switching to interactive mode." ),
-			test_interactive( ShellPid )
 
-	end,
+    { processing_success, SortRes, _SortNextCmdId=6, MaybeSortBinTimestamp } =
+        shell_utils:execute_command( "lists:sort(L).", ShellPid ),
 
-	ShellPid ! { terminateSynch, self() },
+    test_facilities:display( "Sorting result (timestamp: ~ts): ~p.",
+                             [ MaybeSortBinTimestamp, SortRes ] ),
+    SortRes = [ 1, 2, 3 ],
 
-	receive
 
-		onShellTerminated ->
-			ok
 
-	end.
+    % Therefore typed as "--interactive-shell":
+    case cmd_line_utils:get_command_arguments_for_option(
+            _Option='-interactive-shell' ) of
+
+        undefined ->
+            test_facilities:display( "Not in interactive mode, stopping." );
+
+        _ ->
+            test_facilities:display( "Switching to interactive mode." ),
+            test_interactive( ShellPid )
+
+    end,
+
+    ShellPid ! { terminateSynch, self() },
+
+    receive
+
+        onShellTerminated ->
+            ok
+
+    end,
+
+    basic_utils:check_no_pending_message().
 
 
 
 get_test_shell_opts() ->
 
-	%[].
+    %[].
 
-	%HistOpt = no_history,
-	%HistOpt = { histories, _MaybeMaxCmdDepth=0, _MaybeMaxResDepth=0 },
-	%HistOpt = { histories,  _MaybeMaxCmdDepth=1, undefined },
-	HistOpt = { histories,  _MaybeMaxCmdDepth=10, 2 },
+    %HistOpt = no_history,
+    %HistOpt = { histories, _MaybeMaxCmdDepth=0, _MaybeMaxResDepth=0 },
+    %HistOpt = { histories,  _MaybeMaxCmdDepth=1, undefined },
+    HistOpt = { histories,  _MaybeMaxCmdDepth=10, 2 },
 
-	%HistOpts = [],
-	HistOpts = [ HistOpt ],
+    %HistOpts = [],
+    HistOpts = [ HistOpt ],
 
-	%TimestampOpts = [],
-	TimestampOpts = [ timestamp ],
+    %TimestampOpts = [],
+    TimestampOpts = [ timestamp ],
 
-	%LogOpts = [],
-	LogOpts = [ log ],
-	%LogOpts = [ { log, "../test-shell.txt" } ],
+    %LogOpts = [],
+    LogOpts = [ log ],
+    %LogOpts = [ { log, "../test-shell.txt" } ],
 
-	HistOpts ++ TimestampOpts ++ LogOpts.
+    HistOpts ++ TimestampOpts ++ LogOpts.
 
 
 
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	ShellOpts = get_test_shell_opts(),
+    ShellOpts = get_test_shell_opts(),
 
-	test_facilities:display( "Testing the Myriad custom shell, "
-		"based on following options:~n ~p.", [ ShellOpts ] ),
+    test_facilities:display( "Testing the Myriad custom shell, "
+        "based on the following options:~n ~p", [ ShellOpts ] ),
 
-	ShellPid = shell_utils:start_link_shell( ShellOpts ),
+    ShellPid = shell_utils:start_link_shell( ShellOpts ),
 
-	test_shell( ShellPid ),
+    test_shell( ShellPid ),
 
-	test_facilities:stop().
+    test_facilities:stop().

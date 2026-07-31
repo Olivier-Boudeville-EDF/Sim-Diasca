@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -47,134 +47,134 @@ specified).
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+    ?case_start,
 
-	% Default simulation settings (50Hz, batch reproducible) are used, except
-	% for the name:
-	%
-	SimulationSettings = #simulation_settings{
+    % Default simulation settings (50Hz, batch reproducible) are used, except
+    % for the name:
+    %
+    SimulationSettings = #simulation_settings{
 
-		simulation_name=
-			"Scheduling multiple coupled erratic actor longer test" },
-
-
-	% Default deployment settings (unavailable nodes allowed, on-the-fly
-	% generation of the deployment package requested), but computing
-	% hosts are specified (to be updated depending on your environment):
-	%
-	% (note that localhost is implied)
-	%
-	DeploymentSettings = #deployment_settings{
-
-		computing_hosts=
-			{ use_host_file_otherwise_local, "sim-diasca-host-candidates.etf" }
-
-	},
+        simulation_name=
+            "Scheduling multiple coupled erratic actor longer test" },
 
 
-	% Default load balancing settings (round-robin placement heuristic):
-	LoadBalancingSettings = #load_balancing_settings{},
+    % Default deployment settings (unavailable nodes allowed, on-the-fly
+    % generation of the deployment package requested), but computing
+    % hosts are specified (to be updated depending on your environment):
+    %
+    % (note that localhost is implied)
+    %
+    DeploymentSettings = #deployment_settings{
+
+        computing_hosts=
+            { use_host_file_otherwise_local, "sim-diasca-host-candidates.etf" }
+
+    },
 
 
-	?test_notice_fmt( "This test will deploy a distributed simulation "
-		"based on computing hosts specified as ~p.",
-		[ DeploymentSettings#deployment_settings.computing_hosts ] ),
+    % Default load balancing settings (round-robin placement heuristic):
+    LoadBalancingSettings = #load_balancing_settings{},
 
 
-	% Directly created on the user node:
-	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-		DeploymentSettings, LoadBalancingSettings ),
+    ?test_notice_fmt( "This test will deploy a distributed simulation "
+        "based on computing hosts specified as ~p.",
+        [ DeploymentSettings#deployment_settings.computing_hosts ] ),
 
 
-	?test_info( "Deployment manager created, retrieving the load balancer." ),
-
-	DeploymentManagerPid ! { getLoadBalancer, [], self() },
-	LoadBalancerPid = test_receive(),
-
-
-	?test_info( "Requesting to the load balancer the creation of "
-				"a first initial test actor." ),
-
-	FirstActorPid = class_Actor:create_initial_actor( class_TestActor,
-		[ "First test actor", { erratic, _FirstMinRange=5 }, no_creation,
-		  _FirstTerminationTickOffset=8000 ], LoadBalancerPid ),
-
-	FirstActorPid ! { getAAI, [], self() },
-	2 = test_receive(),
+    % Directly created on the user node:
+    DeploymentManagerPid = sim_diasca:init( SimulationSettings,
+        DeploymentSettings, LoadBalancingSettings ),
 
 
-	?test_notice_fmt( "First actor has for PID ~w and for AAI 2.",
-					  [ FirstActorPid ] ),
+    ?test_info( "Deployment manager created, retrieving the load balancer." ),
+
+    DeploymentManagerPid ! { getLoadBalancer, [], self() },
+    LoadBalancerPid = test_receive(),
 
 
-	?test_info( "First actor has a correct AAI." ),
+    ?test_info( "Requesting to the load balancer the creation of "
+                "a first initial test actor." ),
 
-	SecondActorPid = class_Actor:create_initial_actor( class_TestActor,
-		[ "Second test actor", { erratic, _SecondMinRange=7 }, no_creation,
-		  _SecondTerminationTickOffset=10000 ],
-		LoadBalancerPid ),
+    FirstActorPid = class_Actor:create_initial_actor( class_TestActor,
+        [ "First test actor", { erratic, _FirstMinRange=5 }, no_creation,
+          _FirstTerminationTickOffset=8000 ], LoadBalancerPid ),
 
-	SecondActorPid ! { getAAI, [], self() },
-	3 = test_receive(),
-
-
-	ThirdActorPid = class_Actor:create_initial_actor( class_TestActor,
-		[ "Third test actor", { erratic, _ThirdMinRange=10 },
-		  no_creation, _ThirdTerminationTickOffset=15000 ], LoadBalancerPid ),
-
-	ThirdActorPid ! { getAAI, [], self() },
-	4 = test_receive(),
-
-	?test_info( "First three actors have correct AAI." ),
-
-	AllActors = [ FirstActorPid, SecondActorPid, ThirdActorPid ],
-
-	[ A ! lowerTraceIntensity || A <- AllActors ],
-
-	?test_info( "Linking actors." ),
-
-	class_TestActor:add_initial_peers( FirstActorPid,
-									   [ SecondActorPid, ThirdActorPid ] ),
-
-	class_TestActor:add_initial_peers( SecondActorPid,
-									   [ FirstActorPid, ThirdActorPid ] ),
-
-	class_TestActor:add_initial_peers( ThirdActorPid,
-									   [ FirstActorPid, SecondActorPid ] ),
+    FirstActorPid ! { getAAI, [], self() },
+    2 = test_receive(),
 
 
-	DeploymentManagerPid ! { getRootTimeManager, [], self() },
-	RootTimeManagerPid = test_receive(),
+    ?test_notice_fmt( "First actor has for PID ~w and for AAI 2.",
+                      [ FirstActorPid ] ),
 
 
-	?test_info( "Starting simulation." ),
-	RootTimeManagerPid ! { start, [ _StopTick=12000, self() ] },
+    ?test_info( "First actor has a correct AAI." ),
+
+    SecondActorPid = class_Actor:create_initial_actor( class_TestActor,
+        [ "Second test actor", { erratic, _SecondMinRange=7 }, no_creation,
+          _SecondTerminationTickOffset=10000 ],
+        LoadBalancerPid ),
+
+    SecondActorPid ! { getAAI, [], self() },
+    3 = test_receive(),
 
 
-	?test_info( "Requesting textual timings (first)." ),
+    ThirdActorPid = class_Actor:create_initial_actor( class_TestActor,
+        [ "Third test actor", { erratic, _ThirdMinRange=10 },
+          no_creation, _ThirdTerminationTickOffset=15000 ], LoadBalancerPid ),
 
-	RootTimeManagerPid ! { getTextualTimings, [], self() },
-	FirstTimingString = test_receive(),
+    ThirdActorPid ! { getAAI, [], self() },
+    4 = test_receive(),
 
-	?test_notice_fmt( "Received first time: ~ts.", [ FirstTimingString ] ),
+    ?test_info( "First three actors have correct AAI." ),
+
+    AllActors = [ FirstActorPid, SecondActorPid, ThirdActorPid ],
+
+    [ A ! lowerTraceIntensity || A <- AllActors ],
+
+    ?test_info( "Linking actors." ),
+
+    class_TestActor:add_initial_peers( FirstActorPid,
+                                       [ SecondActorPid, ThirdActorPid ] ),
+
+    class_TestActor:add_initial_peers( SecondActorPid,
+                                       [ FirstActorPid, ThirdActorPid ] ),
+
+    class_TestActor:add_initial_peers( ThirdActorPid,
+                                       [ FirstActorPid, SecondActorPid ] ),
 
 
-	% Waits until simulation is finished:
-	receive
-
-		simulation_stopped ->
-			?test_info( "Simulation stopped spontaneously." )
-
-	end,
+    DeploymentManagerPid ! { getRootTimeManager, [], self() },
+    RootTimeManagerPid = test_receive(),
 
 
-	?test_info( "Requesting textual timings (second)." ),
+    ?test_info( "Starting simulation." ),
+    RootTimeManagerPid ! { start, [ _StopTick=12000, self() ] },
 
-	RootTimeManagerPid ! { getTextualTimings, [], self() },
-	SecondTimingString = test_receive(),
 
-	?test_notice_fmt( "Received second time: ~ts.", [ SecondTimingString ] ),
+    ?test_info( "Requesting textual timings (first)." ),
 
-	sim_diasca:shutdown(),
+    RootTimeManagerPid ! { getTextualTimings, [], self() },
+    FirstTimingString = test_receive(),
 
-	?case_stop.
+    ?test_notice_fmt( "Received first time: ~ts.", [ FirstTimingString ] ),
+
+
+    % Waits until simulation is finished:
+    receive
+
+        simulation_stopped ->
+            ?test_info( "Simulation stopped spontaneously." )
+
+    end,
+
+
+    ?test_info( "Requesting textual timings (second)." ),
+
+    RootTimeManagerPid ! { getTextualTimings, [], self() },
+    SecondTimingString = test_receive(),
+
+    ?test_notice_fmt( "Received second time: ~ts.", [ SecondTimingString ] ),
+
+    sim_diasca:shutdown(),
+
+    ?case_stop.

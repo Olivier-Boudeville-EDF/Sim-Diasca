@@ -1,4 +1,4 @@
-% Copyright (C) 2013-2025 Olivier Boudeville
+% Copyright (C) 2013-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -44,44 +44,44 @@ See the gui.erl tested module.
 -spec run_test_gui() -> void().
 run_test_gui() ->
 
-	test_facilities:display(
-		"~nStarting the actual minimal test of MyriadGUI, from ~w. ",
-		[ self() ] ),
+    test_facilities:display(
+        "~nStarting the actual minimal test of MyriadGUI, from ~w. ",
+        [ self() ] ),
 
-	trace_utils:notice( "An empty, resizable test frame shall appear; "
-						"the test will end as soon as it is closed." ),
+    trace_utils:notice( "An empty, resizable test frame shall appear; "
+                        "the test will end as soon as it is closed." ),
 
-	gui:start(),
+    gui:start(),
 
-	TestFrame = gui_frame:create( "This is the single and only test frame" ),
+    TestFrame = gui_frame:create( "This is the single and only test frame" ),
 
-	EventOfInterest = { onWindowClosed, TestFrame },
+    EventOfInterest = { onWindowClosed, TestFrame },
 
-	gui:subscribe_to_events( EventOfInterest ),
-
-
-	trace_utils:notice( "Please close the frame to end this test." ),
-
-	gui_frame:show( TestFrame ),
+    gui:subscribe_to_events( EventOfInterest ),
 
 
-	% Not even a real main loop here, just a one-shot event waited:
-	receive
+    trace_utils:notice( "Please close the frame to end this test." ),
 
-		{ onWindowClosed, [ TestFrame, _TestFrameId, EventContext ] } ->
+    gui_frame:show( TestFrame ),
 
-			trace_utils:info_fmt( "Test frame '~ts' closed (~ts).",
-				[ gui:object_to_string( TestFrame ),
-				  gui_event:context_to_string( EventContext ) ] ),
 
-			% A frame is a window:
-			gui_frame:destruct( TestFrame ),
+    % Not even a real main loop here, just a one-shot event waited:
+    receive
 
-			trace_utils:info( "Test frame closed, test success." ),
+        { onWindowClosed, [ TestFrame, _TestFrameId, EventContext ] } ->
 
-			gui:stop()
+            trace_utils:info_fmt( "Test frame '~ts' closed (~ts).",
+                [ gui:object_to_string( TestFrame ),
+                  gui_event:context_to_string( EventContext ) ] ),
 
-	end.
+            % A frame is a window:
+            gui_frame:destruct( TestFrame ),
+
+            trace_utils:info( "Test frame closed, test success." ),
+
+            gui:stop()
+
+    end.
 
 
 
@@ -89,17 +89,17 @@ run_test_gui() ->
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	case executable_utils:is_batch() of
+    case executable_utils:is_batch() of
 
-		true ->
-			test_facilities:display(
-				"(not running the MyriadGUI test, being in batch mode)" );
+        true ->
+            test_facilities:display(
+                "(not running the MyriadGUI test, being in batch mode)" );
 
-		false ->
-			run_test_gui()
+        false ->
+            run_test_gui()
 
-	end,
+    end,
 
-	test_facilities:stop().
+    test_facilities:stop().

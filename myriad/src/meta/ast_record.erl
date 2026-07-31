@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2025 Olivier Boudeville
+% Copyright (C) 2018-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -65,7 +65,7 @@ lines are also stored so that the full, actual form can be recreated - far
 clearer to interpret afterwards).
 """.
 -type field_definition() :: { maybe_ast_type(), maybe_ast_immediate_value(),
-							  file_loc(), file_loc() }.
+                              file_loc(), file_loc() }.
 
 
 -doc "A field pair.".
@@ -83,7 +83,7 @@ clearer to interpret afterwards).
 
 -doc "AST definition for a field of a record, when creating it.".
 -type ast_record_field_definition() ::
-		ast_record_field_definition( ast_base:ast_element() ).
+        ast_record_field_definition( ast_base:ast_element() ).
 
 
 
@@ -94,30 +94,30 @@ AST definition for a field of a record, when creating it.
 Precisely: `{record_field, FILE_LOC, Rep(Field_1), Rep(ValueType)}`.
 """.
 -type ast_untyped_record_field_definition( ValueType ) ::
-		{ 'record_field', file_loc(), ast_field_id(), ValueType }.
+        { 'record_field', file_loc(), ast_field_id(), ValueType }.
 
 
 -doc "Non-typed AST definition for a field of a record.".
 -type ast_untyped_record_field_definition() ::
-		ast_untyped_record_field_definition( term() ).
+        ast_untyped_record_field_definition( term() ).
 
 
 -doc "Typed AST definition for a field of a record.".
 -type ast_typed_record_field_definition( ValueType ) ::
-		{ 'typed_record_field', file_loc(),
-		  ast_untyped_record_field_definition( ValueType ), ast_type() }.
+        { 'typed_record_field', file_loc(),
+          ast_untyped_record_field_definition( ValueType ), ast_type() }.
 
 
 -doc "AST definition for a field of a record.".
 -type ast_record_field_definition( ValueType ) ::
-		ast_untyped_record_field_definition( ValueType )
-	  | ast_typed_record_field_definition( ValueType ).
+        ast_untyped_record_field_definition( ValueType )
+      | ast_typed_record_field_definition( ValueType ).
 
 
 -doc "Typically used in ast_pattern.".
 -type ast_pattern_field() :: { 'record_field', file_loc(),
-							   ast_field_id() | { 'var', file_loc(), '_' },
-							   ast_pattern:ast_pattern() }.
+                               ast_field_id() | { 'var', file_loc(), '_' },
+                               ast_pattern:ast_pattern() }.
 
 
 % TO-DO:
@@ -126,19 +126,19 @@ Precisely: `{record_field, FILE_LOC, Rep(Field_1), Rep(ValueType)}`.
 
 
 -export_type([ record_pair/0,
-			   field_definition/0, field_id/0, field_name/0, field_pair/0,
-			   ast_field_id/0,
-			   ast_untyped_record_field_definition/1,
-			   ast_untyped_record_field_definition/0,
-			   ast_typed_record_field_definition/1,
-			   ast_record_field_definition/0, ast_record_field_definition/1,
-			   ast_pattern_field/0, ast_record_field_init/0 ]).
+               field_definition/0, field_id/0, field_name/0, field_pair/0,
+               ast_field_id/0,
+               ast_untyped_record_field_definition/1,
+               ast_untyped_record_field_definition/0,
+               ast_typed_record_field_definition/1,
+               ast_record_field_definition/0, ast_record_field_definition/1,
+               ast_pattern_field/0, ast_record_field_init/0 ]).
 
 
 -export([ transform_record_definitions/2,
-		  transform_record_field_definitions/2,
-		  transform_record_field_definition/2,
-		  get_located_forms_for/1 ]).
+          transform_record_field_definitions/2,
+          transform_record_field_definition/2,
+          get_located_forms_for/1 ]).
 
 
 % For the table macro:
@@ -192,22 +192,22 @@ Transforms the specified record definitions (e.g. coming for the 'records' field
 of a module_info record), according to specified transforms.
 """.
 -spec transform_record_definitions( ast_info:record_table(),
-			ast_transforms() ) -> { ast_info:record_table(), ast_transforms() }.
+            ast_transforms() ) -> { ast_info:record_table(), ast_transforms() }.
 transform_record_definitions( RecordTable, Transforms ) ?rec_guard ->
 
-	%ast_utils:display_trace( "transforming the definition of following "
-	%                         "records: ~p", [ ?table:keys( RecordTable ) ] ),
+    %ast_utils:display_trace( "transforming the definition of following "
+    %                         "records: ~p", [ ?table:keys( RecordTable ) ] ),
 
-	% { record_name(), record_definition() } pairs:
-	RecordPairs = ?table:enumerate( RecordTable ),
+    % { record_name(), record_definition() } pairs:
+    RecordPairs = ?table:enumerate( RecordTable ),
 
-	{ NewRecordPairs, NewTransforms } = lists:mapfoldl(
-		fun transform_record_pair/2, _Acc0=Transforms,
-		_List=RecordPairs ),
+    { NewRecordPairs, NewTransforms } = lists:mapfoldl(
+        fun transform_record_pair/2, _Acc0=Transforms,
+        _List=RecordPairs ),
 
-	NewRecordTable = ?table:new( NewRecordPairs ),
+    NewRecordTable = ?table:new( NewRecordPairs ),
 
-	{ NewRecordTable, NewTransforms }.
+    { NewRecordTable, NewTransforms }.
 
 
 
@@ -217,72 +217,72 @@ Transforms the specified record pair: {RecordName, RecordDef}.
 Allows to keep around the record name, to recreate the record table more easily.
 """.
 -spec transform_record_pair( record_pair(), ast_transforms() ) ->
-									{ record_pair(), ast_transforms() }.
+                                    { record_pair(), ast_transforms() }.
 transform_record_pair(
-		_RecordPair={ RecordName,
-			_RecordDefinition={ FieldTable, ASTLoc, FileLoc } },
-		Transforms ) ?rec_guard ->
+        _RecordPair={ RecordName,
+            _RecordDefinition={ FieldTable, ASTLoc, FileLoc } },
+        Transforms ) ?rec_guard ->
 
-	% { FieldName, FieldDefinition } pairs:
-	FieldPairs = ?table:enumerate( FieldTable ),
+    % { FieldName, FieldDefinition } pairs:
+    FieldPairs = ?table:enumerate( FieldTable ),
 
-	{ NewFieldPairs, NewTransforms } = lists:mapfoldl(
-		fun transform_field_pair/2, _Acc0=Transforms,
-		_List=FieldPairs ),
+    { NewFieldPairs, NewTransforms } = lists:mapfoldl(
+        fun transform_field_pair/2, _Acc0=Transforms,
+        _List=FieldPairs ),
 
-	%ast_utils:display_trace( "transforming record ~p", [ RecordName ] ),
+    %ast_utils:display_trace( "transforming record ~p", [ RecordName ] ),
 
-	NewFieldTable = ?table:new( NewFieldPairs ),
+    NewFieldTable = ?table:new( NewFieldPairs ),
 
-	NewRecordDefinition = { NewFieldTable, ASTLoc, FileLoc },
+    NewRecordDefinition = { NewFieldTable, ASTLoc, FileLoc },
 
-	{ { RecordName, NewRecordDefinition }, NewTransforms }.
+    { { RecordName, NewRecordDefinition }, NewTransforms }.
 
 
 
 -doc "Transforms the specified field definition.".
 -spec transform_field_pair( { field_name(), field_definition() },
-							ast_transforms() ) ->
-					 { { field_name(), field_definition() }, ast_transforms() }.
+                            ast_transforms() ) ->
+                     { { field_name(), field_definition() }, ast_transforms() }.
 transform_field_pair( { FieldName,
-						_FieldDescription={ FieldType, FieldDefaultValue } },
-					  Transforms ) ?rec_guard ->
+                        _FieldDescription={ FieldType, FieldDefaultValue } },
+                      Transforms ) ?rec_guard ->
 
-	{ NewFieldType, FieldTransforms } =
-		transform_field_definition_type( FieldType, Transforms ),
+    { NewFieldType, FieldTransforms } =
+        transform_field_definition_type( FieldType, Transforms ),
 
-	{ NewFieldDefaultValue, DefTransforms } =
-		transform_field_definition_default_value( FieldDefaultValue,
-												  FieldTransforms ),
+    { NewFieldDefaultValue, DefTransforms } =
+        transform_field_definition_default_value( FieldDefaultValue,
+                                                  FieldTransforms ),
 
-	NewFieldDescription = { NewFieldType, NewFieldDefaultValue },
+    NewFieldDescription = { NewFieldType, NewFieldDefaultValue },
 
-	{ { FieldName, NewFieldDescription }, DefTransforms }.
+    { { FieldName, NewFieldDescription }, DefTransforms }.
 
 
 
 -doc "Transforms the specified field type.".
 -spec transform_field_definition_type( maybe_ast_type(), ast_transforms() ) ->
-										{ maybe_ast_type(), ast_transforms() }.
+                                        { maybe_ast_type(), ast_transforms() }.
 transform_field_definition_type( _FieldType=undefined,
-								 Transforms ) ?rec_guard ->
-	{ undefined, Transforms };
+                                 Transforms ) ?rec_guard ->
+    { undefined, Transforms };
 
 transform_field_definition_type( FieldType, Transforms ) ?rec_guard ->
-	ast_type:transform_type( FieldType, Transforms ).
+    ast_type:transform_type( FieldType, Transforms ).
 
 
 
 -doc "Transforms the specified field default value.".
 -spec transform_field_definition_default_value( maybe_ast_immediate_value(),
-	  ast_transforms() ) -> { maybe_ast_immediate_value(), ast_transforms() }.
+      ast_transforms() ) -> { maybe_ast_immediate_value(), ast_transforms() }.
 transform_field_definition_default_value( _FieldDefaultValue=undefined,
-										  Transforms ) ?rec_guard ->
-	{ undefined, Transforms };
+                                          Transforms ) ?rec_guard ->
+    { undefined, Transforms };
 
 transform_field_definition_default_value( FieldDefaultValue,
-										  Transforms ) ?rec_guard ->
-	ast_value:transform_value( FieldDefaultValue, Transforms ).
+                                          Transforms ) ?rec_guard ->
+    ast_value:transform_value( FieldDefaultValue, Transforms ).
 
 
 
@@ -294,11 +294,11 @@ depends on the context; e.g. if being in a guard, in an expression).
 (counterpart of record_inits/1 in erl_id_trans)
 """.
 -spec transform_record_field_definitions( [ ast_record_field_definition() ],
-										  ast_transforms() ) ->
-			{ [ ast_record_field_definition() ], ast_transforms() }.
+                                          ast_transforms() ) ->
+            { [ ast_record_field_definition() ], ast_transforms() }.
 transform_record_field_definitions( RecordFields, Transforms ) ?rec_guard ->
-	lists:mapfoldl( fun transform_record_field_definition/2, _Acc0=Transforms,
-					_List=RecordFields ).
+    lists:mapfoldl( fun transform_record_field_definition/2, _Acc0=Transforms,
+                    _List=RecordFields ).
 
 
 
@@ -308,101 +308,101 @@ Transforms the specified record field definition.
 For example {record_field, FILE_LOC, Rep(Field_k), Rep(Gt_k)}.
 """.
 -spec transform_record_field_definition( ast_record_field_definition(),
-										 ast_transforms() ) ->
-			{ ast_record_field_definition(), ast_transforms() }.
+                                         ast_transforms() ) ->
+            { ast_record_field_definition(), ast_transforms() }.
 % With a value and no type specified here:
 transform_record_field_definition(
-		_RF={ 'record_field', FileLoc, ASTFieldName, ASTValue },
-		Transforms ) ?rec_guard ->
+        _RF={ 'record_field', FileLoc, ASTFieldName, ASTValue },
+        Transforms ) ?rec_guard ->
 
-	%ast_utils:display_trace( "transforming record field '~p' of value ~p"
-	%                         " (type 1).", [ ASTFieldName, ASTValue ] ),
+    %ast_utils:display_trace( "transforming record field '~p' of value ~p"
+    %                         " (type 1).", [ ASTFieldName, ASTValue ] ),
 
-	{ NewASTFieldName, FieldTransforms } =
-		transform_record_field_name( ASTFieldName, Transforms ),
+    { NewASTFieldName, FieldTransforms } =
+        transform_record_field_name( ASTFieldName, Transforms ),
 
-	{ NewASTValue, ValueTransforms } =
-		ast_value:transform_value( ASTValue, FieldTransforms ),
+    { NewASTValue, ValueTransforms } =
+        ast_value:transform_value( ASTValue, FieldTransforms ),
 
-	NewRF = { 'record_field', FileLoc, NewASTFieldName, NewASTValue },
+    NewRF = { 'record_field', FileLoc, NewASTFieldName, NewASTValue },
 
-	{ NewRF, ValueTransforms };
+    { NewRF, ValueTransforms };
 
 
 % With no value and no type specified here:
 transform_record_field_definition(
-		_RF={ 'record_field', FileLoc, ASTFieldName }, Transforms )
-			?rec_guard ->
+        _RF={ 'record_field', FileLoc, ASTFieldName }, Transforms )
+            ?rec_guard ->
 
-	%ast_utils:display_trace( "transforming record field '~p' (type 2).",
-	%                         [ ASTFieldName ] ),
+    %ast_utils:display_trace( "transforming record field '~p' (type 2).",
+    %                         [ ASTFieldName ] ),
 
-	{ NewASTFieldName, NewTransforms } =
-		transform_record_field_name( ASTFieldName, Transforms ),
+    { NewASTFieldName, NewTransforms } =
+        transform_record_field_name( ASTFieldName, Transforms ),
 
-	{ { 'record_field', FileLoc, NewASTFieldName }, NewTransforms };
+    { { 'record_field', FileLoc, NewASTFieldName }, NewTransforms };
 
 
 % With a value and a type specified here:
 transform_record_field_definition( _RF={ 'typed_record_field',
-		{ 'record_field', FileLoc, ASTFieldName, ASTValue },
-										 ASTType }, Transforms ) ?rec_guard ->
+        { 'record_field', FileLoc, ASTFieldName, ASTValue },
+                                         ASTType }, Transforms ) ?rec_guard ->
 
-	%ast_utils:display_trace( "transforming record field '~p' of value ~p and "
-	%   "type ~p (type 3).", [ ASTFieldName, ASTValue, ASTType ] ),
+    %ast_utils:display_trace( "transforming record field '~p' of value ~p and "
+    %   "type ~p (type 3).", [ ASTFieldName, ASTValue, ASTType ] ),
 
-	{ NewASTFieldName, NameTransforms } =
-		transform_record_field_name( ASTFieldName, Transforms ),
+    { NewASTFieldName, NameTransforms } =
+        transform_record_field_name( ASTFieldName, Transforms ),
 
-	{ NewASTValue, ValueTransforms } =
-		ast_value:transform_value( ASTValue, NameTransforms ),
+    { NewASTValue, ValueTransforms } =
+        ast_value:transform_value( ASTValue, NameTransforms ),
 
-	{ NewASTType, TypeTransforms } =
-		ast_type:transform_type( ASTType, ValueTransforms ),
+    { NewASTType, TypeTransforms } =
+        ast_type:transform_type( ASTType, ValueTransforms ),
 
-	RF = { 'typed_record_field',
-		{ 'record_field', FileLoc, NewASTFieldName, NewASTValue }, NewASTType },
+    RF = { 'typed_record_field',
+        { 'record_field', FileLoc, NewASTFieldName, NewASTValue }, NewASTType },
 
-	{ RF, TypeTransforms };
+    { RF, TypeTransforms };
 
 
 % With no value and a type specified here:
 transform_record_field_definition( _RF={ 'typed_record_field',
-		{ 'record_field', FileLoc, ASTFieldName }, ASTType },
-								   Transforms ) ?rec_guard ->
+        { 'record_field', FileLoc, ASTFieldName }, ASTType },
+                                   Transforms ) ?rec_guard ->
 
-	%ast_utils:display_trace( "transforming record field '~p' of type ~p "
-	%                         "(type 4).", [ ASTFieldName, ASTType ] ),
+    %ast_utils:display_trace( "transforming record field '~p' of type ~p "
+    %                         "(type 4).", [ ASTFieldName, ASTType ] ),
 
-	{ NewASTFieldName, NameTransforms } =
-		transform_record_field_name( ASTFieldName, Transforms ),
+    { NewASTFieldName, NameTransforms } =
+        transform_record_field_name( ASTFieldName, Transforms ),
 
-	{ NewASTType, TypeTransforms } =
-		ast_type:transform_type( ASTType, NameTransforms ),
+    { NewASTType, TypeTransforms } =
+        ast_type:transform_type( ASTType, NameTransforms ),
 
-	RF = { 'typed_record_field', { 'record_field', FileLoc, NewASTFieldName },
-		   NewASTType },
+    RF = { 'typed_record_field', { 'record_field', FileLoc, NewASTFieldName },
+           NewASTType },
 
-	{ RF, TypeTransforms }.
+    { RF, TypeTransforms }.
 
 
 
 -doc "Transforms the name of the specified field.".
 -spec transform_record_field_name( ast_element(), ast_transforms() ) ->
-										{ ast_element(), ast_transforms() }.
+                                        { ast_element(), ast_transforms() }.
 transform_record_field_name( ASTFieldName, Transforms ) ?rec_guard ->
 
-	% Note: field names are full expressions here, but only atoms are allowed
-	% by the parser (dixit the id parse transform).
-	% So we could expect to have ASTFieldName={atom,FileLoc,Value} here.
+    % Note: field names are full expressions here, but only atoms are allowed
+    % by the parser (dixit the id parse transform).
+    % So we could expect to have ASTFieldName={atom,FileLoc,Value} here.
 
-	%ast_type:check_ast_atom( ASTFieldName, FileLoc ),
-	%NewASTFieldName = TransformFun( ASTFieldName, Transforms ),
+    %ast_type:check_ast_atom( ASTFieldName, FileLoc ),
+    %NewASTFieldName = TransformFun( ASTFieldName, Transforms ),
 
-	{ [ NameExpr ], NewTransforms } =
-		ast_expression:transform_expression( ASTFieldName, Transforms ),
+    { [ NameExpr ], NewTransforms } =
+        ast_expression:transform_expression( ASTFieldName, Transforms ),
 
-	{ NameExpr, NewTransforms }.
+    { NameExpr, NewTransforms }.
 
 
 
@@ -410,59 +410,59 @@ transform_record_field_name( ASTFieldName, Transforms ) ?rec_guard ->
 -spec get_located_forms_for( record_table() ) -> [ located_form() ].
 get_located_forms_for( RecordTable ) ->
 
-	RecordPairs = ?table:enumerate( RecordTable ),
+    RecordPairs = ?table:enumerate( RecordTable ),
 
-	lists:foldl( fun( { RecordName, RecordDef }, Acc ) ->
-				  [ get_located_form_for_record( RecordName, RecordDef ) | Acc ]
-				 end,
-				 _Acc0=[],
-				 _List=RecordPairs ).
+    lists:foldl( fun( { RecordName, RecordDef }, Acc ) ->
+                  [ get_located_form_for_record( RecordName, RecordDef ) | Acc ]
+                 end,
+                 _Acc0=[],
+                 _List=RecordPairs ).
 
 
 
 -doc "Returns a located form corresponding to specified record.".
 -spec get_located_form_for_record( record_name(), record_definition() ) ->
-											located_form().
+                                            located_form().
 get_located_form_for_record( RecordName,
-							 _RecordDef={ FieldTable, Loc, RecordFileLoc } ) ->
+                             _RecordDef={ FieldTable, Loc, RecordFileLoc } ) ->
 
-	FieldDefs = recompose_field_definitions( FieldTable ),
+    FieldDefs = recompose_field_definitions( FieldTable ),
 
-	Form = { attribute, RecordFileLoc, record, { RecordName, FieldDefs } },
+    Form = { attribute, RecordFileLoc, record, { RecordName, FieldDefs } },
 
-	{ Loc, Form }.
+    { Loc, Form }.
 
 
 
 -doc "Recomposes the forms corresponding to the specified record fields.".
 -spec recompose_field_definitions( field_table() ) -> [ form() ].
 recompose_field_definitions( FieldTable ) ->
-	[ recompose_field_definition( FieldName, FieldDef )
-		|| { FieldName, FieldDef } <- FieldTable ].
+    [ recompose_field_definition( FieldName, FieldDef )
+        || { FieldName, FieldDef } <- FieldTable ].
 
 
 
 -doc "Recomposes the form corresponding to the specified record field.".
 -spec recompose_field_definition( field_name(), field_definition() ) -> form().
 recompose_field_definition( FieldName,
-		_FieldDef={ _MaybeASTType=undefined, _MaybeASTDefaultValue=undefined,
-					FirstFileLoc, SecondFileLoc } ) ->
-	{ 'record_field', FirstFileLoc, { atom, SecondFileLoc, FieldName } };
+        _FieldDef={ _MaybeASTType=undefined, _MaybeASTDefaultValue=undefined,
+                    FirstFileLoc, SecondFileLoc } ) ->
+    { 'record_field', FirstFileLoc, { atom, SecondFileLoc, FieldName } };
 
 recompose_field_definition( FieldName,
-		_FieldDef={ _MaybeASTType=undefined, ASTDefaultValue, FirstFileLoc,
-					SecondFileLoc } ) ->
-	{ 'record_field', FirstFileLoc, { atom, SecondFileLoc, FieldName },
-	  ASTDefaultValue };
+        _FieldDef={ _MaybeASTType=undefined, ASTDefaultValue, FirstFileLoc,
+                    SecondFileLoc } ) ->
+    { 'record_field', FirstFileLoc, { atom, SecondFileLoc, FieldName },
+      ASTDefaultValue };
 
 recompose_field_definition( FieldName,
-		_FieldDef={ ASTType, _MaybeASTDefaultValue=undefined, FirstFileLoc,
-					SecondFileLoc } ) ->
-	{ 'typed_record_field', { 'record_field', FirstFileLoc,
-								{ atom, SecondFileLoc, FieldName } }, ASTType };
+        _FieldDef={ ASTType, _MaybeASTDefaultValue=undefined, FirstFileLoc,
+                    SecondFileLoc } ) ->
+    { 'typed_record_field', { 'record_field', FirstFileLoc,
+                                { atom, SecondFileLoc, FieldName } }, ASTType };
 
 recompose_field_definition( FieldName,
-		_FieldDef={ ASTType, ASTDefaultValue, FirstFileLoc, SecondFileLoc } ) ->
-	{ 'typed_record_field',
-	  { 'record_field', FirstFileLoc, { atom, SecondFileLoc, FieldName },
-		ASTDefaultValue }, ASTType }.
+        _FieldDef={ ASTType, ASTDefaultValue, FirstFileLoc, SecondFileLoc } ) ->
+    { 'typed_record_field',
+      { 'record_field', FirstFileLoc, { atom, SecondFileLoc, FieldName },
+        ASTDefaultValue }, ASTType }.

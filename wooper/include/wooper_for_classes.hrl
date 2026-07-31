@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -78,7 +78,7 @@ Note: available to the user.
 % (syntax) error in your 'superclasses' define.
 %
 get_superclasses() ->
-	wooper:return_static( ?superclasses ).
+    wooper:return_static( ?superclasses ).
 
 
 -else. % superclasses
@@ -86,7 +86,7 @@ get_superclasses() ->
 
 % Specifying nothing means no superclass:
 get_superclasses() ->
-	wooper:return_static( [] ).
+    wooper:return_static( [] ).
 
 -endif. % superclasses
 
@@ -105,7 +105,7 @@ get_superclasses() ->
 %""".
 %
 -spec wooper_get_class_specific_attributes() ->
-							[ wooper_info:attribute_spec() ].
+                            [ wooper_info:attribute_spec() ].
 
 
 -ifdef(class_attributes).
@@ -125,13 +125,13 @@ get_superclasses() ->
 %
 wooper_get_class_specific_attributes() ->
 
-	% Note: if your compiler points to these lines, you must have introduced a
-	% parse (syntax) error in your 'class_attributes' define.
-	%
-	% Check that your brackets and parentheses are balanced, that commas are at
-	% their expected places (and only them), etc.
-	%
-	?class_attributes.
+    % Note: if your compiler points to these lines, you must have introduced a
+    % parse (syntax) error in your 'class_attributes' define.
+    %
+    % Check that your brackets and parentheses are balanced, that commas are at
+    % their expected places (and only them), etc.
+    %
+    ?class_attributes.
 
 
 -else. % class_attributes
@@ -139,7 +139,7 @@ wooper_get_class_specific_attributes() ->
 
 % Specifying nothing means no superclass:
 wooper_get_class_specific_attributes() ->
-	[].
+    [].
 
 
 -endif. % class_attributes
@@ -152,7 +152,7 @@ Returns the description (if any) specified for this class.
 Note: available to the user.
 """.
 -spec get_class_description() ->
-			static_return( option( wooper_info:class_description() ) ).
+            static_return( option( wooper_info:class_description() ) ).
 
 
 -ifdef(class_description).
@@ -164,11 +164,11 @@ Note: available to the user.
 % transform.
 %
 get_class_description() ->
-	% Note: if your compiler points to these lines, you must have introduced a
-	% parse (syntax) error in your 'class_description' define (expected to be a
-	% string).
-	%
-	wooper:return_static( ?class_description ).
+    % Note: if your compiler points to these lines, you must have introduced a
+    % parse (syntax) error in your 'class_description' define (expected to be a
+    % string).
+    %
+    wooper:return_static( ?class_description ).
 
 
 -else. % class_attributes
@@ -176,7 +176,7 @@ get_class_description() ->
 
 % Nothing specified:
 get_class_description() ->
-	wooper:return_static( undefined ).
+    wooper:return_static( undefined ).
 
 
 -endif. % class_attributes

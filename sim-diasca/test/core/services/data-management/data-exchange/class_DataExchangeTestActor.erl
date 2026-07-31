@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2025 EDF R&D
+% Copyright (C) 2011-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -27,7 +27,7 @@ Test of the **data-exchange facilities**, from a simulation actor.
 
 
 -define( class_description,
-		 "Test of the data-exchange facilities, from a simulation actor." ).
+         "Test of the data-exchange facilities, from a simulation actor." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -36,16 +36,16 @@ Test of the **data-exchange facilities**, from a simulation actor.
 
 -define( class_attributes, [
 
-	{ data_key, class_DataExchanger:key(),
-	  "designates a value of interest read and possibly modified by this "
-	  "test actor interacting with the data-exchanger" },
+    { data_key, class_DataExchanger:key(),
+      "designates a value of interest read and possibly modified by this "
+      "test actor interacting with the data-exchanger" },
 
-	{ termination_tick_offset, class_TimeManager:tick_offset(),
-	  "the tick offset at which this test actor will terminate" },
+    { termination_tick_offset, class_TimeManager:tick_offset(),
+      "the tick offset at which this test actor will terminate" },
 
-	{ talkative, boolean(), "tells whether this actor is talkative" },
+    { talkative, boolean(), "tells whether this actor is talkative" },
 
-	{ expected_value, integer(), "records the test expected value" } ] ).
+    { expected_value, integer(), "records the test expected value" } ] ).
 
 
 
@@ -80,49 +80,49 @@ that actor
 - TerminationTickOffset the duration after which this actor should terminate
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				class_Actor:name(), class_DataExchanger:key(),
-				class_TimeManager:tick_offset() ) -> wooper:state().
+                class_Actor:name(), class_DataExchanger:key(),
+                class_TimeManager:tick_offset() ) -> wooper:state().
 construct( State, ActorSettings, ActorName, DataKey, TerminationTickOffset ) ->
 
-	% Cannot use 'output' yet (no talkative attribute):
-	%trace_utils:debug_fmt( "Creating a test actor named '~ts', with key '~p'.",
-	%   [ ActorName, DataKey ] ),
+    % Cannot use 'output' yet (no talkative attribute):
+    %trace_utils:debug_fmt( "Creating a test actor named '~ts', with key '~p'.",
+    %   [ ActorName, DataKey ] ),
 
-	% First the direct mother classes, then this class-specific actions:
-	ActorState = class_Actor:construct( State, ActorSettings,
-										?trace_categorize(ActorName) ),
+    % First the direct mother classes, then this class-specific actions:
+    ActorState = class_Actor:construct( State, ActorSettings,
+                                        ?trace_categorize(ActorName) ),
 
-	?send_notice_fmt( ActorState, "Creating a data-exchange test actor, "
-		"terminating no sooner than tick offset #~w.",
-		[ TerminationTickOffset ] ),
+    ?send_notice_fmt( ActorState, "Creating a data-exchange test actor, "
+        "terminating no sooner than tick offset #~w.",
+        [ TerminationTickOffset ] ),
 
-	% This actor will make use of the data-exchange service:
-	ExchangeState = class_Actor:enable_data_exchange( ActorState ),
+    % This actor will make use of the data-exchange service:
+    ExchangeState = class_Actor:enable_data_exchange( ActorState ),
 
-	% Common to all actors:
-	{ 3, mutable } = class_Actor:read_qualified_data( example_key_for_actors,
-													  ExchangeState ),
+    % Common to all actors:
+    { 3, mutable } = class_Actor:read_qualified_data( example_key_for_actors,
+                                                      ExchangeState ),
 
-	1 = class_Actor:read_data( other_example_key_for_actors, ExchangeState ),
+    1 = class_Actor:read_data( other_example_key_for_actors, ExchangeState ),
 
 
-	% Read-modify-write its "own" specified key:
-	V = class_Actor:read_data( DataKey, ExchangeState ),
-	class_Actor:modify_data( DataKey, V+1, mutable, ExchangeState ),
+    % Read-modify-write its "own" specified key:
+    V = class_Actor:read_data( DataKey, ExchangeState ),
+    class_Actor:modify_data( DataKey, V+1, mutable, ExchangeState ),
 
-	setAttributes( ExchangeState, [
+    setAttributes( ExchangeState, [
 
-		{ data_key, DataKey },
-		{ termination_tick_offset, TerminationTickOffset },
+        { data_key, DataKey },
+        { termination_tick_offset, TerminationTickOffset },
 
-		% Useful to select console verbosity:
-		{ talkative, false },
-		%{ talkative, true },
+        % Useful to select console verbosity:
+        { talkative, false },
+        %{ talkative, true },
 
-		% Allows to check that the value read from the data-exchange service is
-		% correct:
-		%
-		{ expected_value, V+1 } ] ).
+        % Allows to check that the value read from the data-exchange service is
+        % correct:
+        %
+        { expected_value, V+1 } ] ).
 
 
 
@@ -130,14 +130,14 @@ construct( State, ActorSettings, ActorName, DataKey, TerminationTickOffset ) ->
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
-	%trace_utils:debug_fmt( "Test actor ~w deleted, while was still at tick "
-	%   "offset #~p.", [ self(), ?getAttr(current_tick_offset) ] ),
+    %trace_utils:debug_fmt( "Test actor ~w deleted, while was still at tick "
+    %   "offset #~p.", [ self(), ?getAttr(current_tick_offset) ] ),
 
-	% Class-specific actions:
-	?notice( "Deleting data-exchange test actor." ),
+    % Class-specific actions:
+    ?notice( "Deleting data-exchange test actor." ),
 
-	% Then allow chaining:
-	State.
+    % Then allow chaining:
+    State.
 
 
 
@@ -152,61 +152,61 @@ destruct( State ) ->
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
-	%trace_utils:debug_fmt( "--> tick offset #~p for ~w.",
-	%   [ ?getAttr(current_tick_offset), self() ] ),
+    %trace_utils:debug_fmt( "--> tick offset #~p for ~w.",
+    %   [ ?getAttr(current_tick_offset), self() ] ),
 
-	TerminationOffset = ?getAttr(termination_tick_offset),
+    TerminationOffset = ?getAttr(termination_tick_offset),
 
-	% Terminates if the termination offset is reached or exceeded:
-	NewState = case ?getAttr(current_tick_offset) of
-
-
-		PastOffset when PastOffset >= TerminationOffset ->
-
-			?notice( "Test Actor preparing termination." ),
-
-			%trace_utils:debug_fmt( "Test Actor ~p preparing termination "
-			%    "at #~p.", [ self(), PastOffset ] ),
-
-			% Following two calls could also have been grouped into an
-			% overloading of the default declareTermination/2 implementation:
-			%
-			% (we request an immediate termination here, as we should not have
-			% to wait for anyone)
-			%
-			TerminatingState = executeOneway( State, declareTermination,
-											  _IntercalaryDiasca=0 ),
-
-			output( "~w terminating at #~B.", [ self(), PastOffset ],
-					TerminatingState ),
-
-			TerminatingState;
+    % Terminates if the termination offset is reached or exceeded:
+    NewState = case ?getAttr(current_tick_offset) of
 
 
-		CurrentOffset ->
+        PastOffset when PastOffset >= TerminationOffset ->
 
-			output( "~w acting spontaneously at #~B on ~ts",
-					[ self(), CurrentOffset, net_utils:localnode() ], State ),
+            ?notice( "Test Actor preparing termination." ),
 
-			Key = ?getAttr(data_key),
+            %trace_utils:debug_fmt( "Test Actor ~p preparing termination "
+            %    "at #~p.", [ self(), PastOffset ] ),
 
-			V = class_Actor:read_data( Key, State ),
+            % Following two calls could also have been grouped into an
+            % overloading of the default declareTermination/2 implementation:
+            %
+            % (we request an immediate termination here, as we should not have
+            % to wait for anyone)
+            %
+            TerminatingState = executeOneway( State, declareTermination,
+                                              _IntercalaryDiasca=0 ),
 
-			% Checking:
-			V = ?getAttr(expected_value),
+            output( "~w terminating at #~B.", [ self(), PastOffset ],
+                    TerminatingState ),
 
-			NewV = V + CurrentOffset rem (?getAttr(actor_abstract_id) + 2 ),
-
-			class_Actor:modify_data( Key, NewV, mutable, State ),
-
-			ExpectedState = setAttribute( State, expected_value,NewV ),
-
-			executeOneway( ExpectedState, addSpontaneousTick, CurrentOffset+7 )
+            TerminatingState;
 
 
-	end,
+        CurrentOffset ->
 
-	wooper:return_state( NewState ).
+            output( "~w acting spontaneously at #~B on ~ts",
+                    [ self(), CurrentOffset, net_utils:localnode() ], State ),
+
+            Key = ?getAttr(data_key),
+
+            V = class_Actor:read_data( Key, State ),
+
+            % Checking:
+            V = ?getAttr(expected_value),
+
+            NewV = V + CurrentOffset rem (?getAttr(actor_abstract_id) + 2 ),
+
+            class_Actor:modify_data( Key, NewV, mutable, State ),
+
+            ExpectedState = setAttribute( State, expected_value,NewV ),
+
+            executeOneway( ExpectedState, addSpontaneousTick, CurrentOffset+7 )
+
+
+    end,
+
+    wooper:return_state( NewState ).
 
 
 
@@ -215,14 +215,14 @@ actSpontaneous( State ) ->
 
 
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-							actor_oneway_return().
+                            actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
-	% We choose here not to do anything until the next tick:
-	NewState = executeOneway( State, addSpontaneousTick,
-							  ?getAttr(current_tick_offset) + 1 ),
+    % We choose here not to do anything until the next tick:
+    NewState = executeOneway( State, addSpontaneousTick,
+                              ?getAttr(current_tick_offset) + 1 ),
 
-	actor:return_state( NewState ).
+    actor:return_state( NewState ).
 
 
 
@@ -236,12 +236,12 @@ Outputs specified message in console, iff talkative.
 (helper)
 """.
 -spec output( text_utils:format_string(), text_utils:format_values(),
-			  wooper:state() ) -> void().
+              wooper:state() ) -> void().
 output( MessageFormat, FormatValues, State ) ->
 
-	?getAttr(talkative) andalso
-		begin
-			TickOffset = class_Actor:get_current_tick_offset( State ),
-			trace_utils:debug_fmt( "[~ts (~w) at ~p] " ++ MessageFormat,
-				[ ?getAttr(name), self(), TickOffset ] ++ FormatValues )
-		end.
+    ?getAttr(talkative) andalso
+        begin
+            TickOffset = class_Actor:get_current_tick_offset( State ),
+            trace_utils:debug_fmt( "[~ts (~w) at ~p] " ++ MessageFormat,
+                [ ?getAttr(name), self(), TickOffset ] ++ FormatValues )
+        end.

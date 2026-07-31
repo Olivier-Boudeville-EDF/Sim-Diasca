@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2025 EDF R&D
+% Copyright (C) 2010-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -24,10 +24,10 @@
 -moduledoc """
 Unit tests for the **Probe class implementation**.
 
-Note: unlike the probe_rendering_test, this test uses the full simulation
+Note: unlike the `probe_rendering_test`, this test uses the full simulation
 framework (e.g. the result manager).
 
-See the class_Probe.erl module.
+See the `class_Probe` module.
 """.
 
 
@@ -48,7 +48,8 @@ See the class_Probe.erl module.
 -include("class_Probe.hrl").
 
 
-% Type shorthand:
+
+% Type shorthands:
 
 -type ustring() :: text_utils:ustring().
 
@@ -64,118 +65,118 @@ simulation test case.
 -spec manage_facility_probe( ustring(), boolean() ) -> probe_pid().
 manage_facility_probe( ProbeName, UseTickOffsets ) ->
 
-	% Will be overridden anyway:
-	TargetDir = class_ResultManager:get_result_directory(),
+    % Will be overridden anyway:
+    TargetDir = class_ResultManager:get_result_directory(),
 
-	% To test different settings:
-	%
-	ProbeOptions = #probe_options{ create_command_file_initially=false,
-								   deferred_data_writes=true,
-								   probe_directory=TargetDir },
+    % To test different settings:
+    %
+    ProbeOptions = #probe_options{ create_command_file_initially=false,
+                                   deferred_data_writes=true,
+                                   probe_directory=TargetDir },
 
-	% Corresponds to the first second of Y2K (with default settings):
-	InitialTick = 3155695200000,
+    % Corresponds to the first second of Y2K (with default settings):
+    InitialTick = 3155695200000,
 
-	% Note: the actual directory the probe files will be created in:
-	TargetFacilityDir = file_utils:get_current_directory(),
+    % Note: the actual directory the probe files will be created in:
+    TargetFacilityDir = file_utils:get_current_directory(),
 
-	% We could as well have used the class_Probe:set_data/3 static method
-	% directly (without needing a 'case' here):
-	%
-	% (this is a facility probe, not a result per se; it should create in the
-	% current directory the following files: Test_Facility_Probe.dat,
-	% Test_Facility_Probe.p and Test_Facility_Probe.png; and this probe will not
-	% be shown in the result browser)
-	%
-	ProbePid = class_Probe:create_facility_probe(
-		{ ProbeName, ProbeOptions },
-		_CurveNames=[ "First curve", "Second curve", "Last curve" ],
-		_Zones=[],
-		_Title="This is a test of the generic probe class for facility probes",
-		_XLabel="Simulation tick (20 ms)",
-		_YLabel="Number of events",
-		TargetFacilityDir ),
+    % We could as well have used the class_Probe:set_data/3 static method
+    % directly (without needing a 'case' here):
+    %
+    % (this is a facility probe, not a result per se; it should create in the
+    % current directory the following files: Test_Facility_Probe.dat,
+    % Test_Facility_Probe.p and Test_Facility_Probe.png; and this probe will not
+    % be shown in the result browser)
+    %
+    ProbePid = class_Probe:create_facility_probe(
+        { ProbeName, ProbeOptions },
+        _CurveNames=[ "First curve", "Second curve", "Last curve" ],
+        _Zones=[],
+        _Title="This is a test of the generic probe class for facility probes",
+        _XLabel="Simulation tick (20 ms)",
+        _YLabel="Number of events",
+        TargetFacilityDir ),
 
-	% Tells whether we should display full ticks or tick offsets (note: their
-	% origin can be freely defined, there are not necessarily simulation tick
-	% offsets):
+    % Tells whether we should display full ticks or tick offsets (note: their
+    % origin can be freely defined, there are not necessarily simulation tick
+    % offsets):
 
-	case UseTickOffsets of
+    case UseTickOffsets of
 
-		true ->
-			ProbePid ! setRotatedTickLabels,
-			ProbePid ! { setPointSize, 3 },
-			ProbePid ! { setTickOffset, InitialTick };
+        true ->
+            ProbePid ! setRotatedTickLabels,
+            ProbePid ! { setPointSize, 3 },
+            ProbePid ! { setTickOffset, InitialTick };
 
-		false ->
-			% Longer, exact, rotated and a probably less useful abscissa
-			% labels (useful otherwise they may overlap):
-			%
-			ProbePid ! setRotatedTickLabels
+        false ->
+            % Longer, exact, rotated and a probably less useful abscissa
+            % labels (useful otherwise they may overlap):
+            %
+            ProbePid ! setRotatedTickLabels
 
-	end,
+    end,
 
-	ProbePid ! { setData, [ InitialTick+1, {1,3,7} ] },
-	ProbePid ! { setData, [ InitialTick+2, {2,2,3} ] },
+    ProbePid ! { setData, [ InitialTick+1, {1,3,7} ] },
+    ProbePid ! { setData, [ InitialTick+2, {2,2,3} ] },
 
-	% Here we happen to have no relevant value for the second curve:
-	ProbePid ! { setData, [ InitialTick+3, {3,undefined,0} ] },
+    % Here we happen to have no relevant value for the second curve:
+    ProbePid ! { setData, [ InitialTick+3, {3,undefined,0} ] },
 
-	% We can jump over time-steps:
-	ProbePid ! { setData, [ InitialTick+5, {4,2,-1} ] },
+    % We can jump over time-steps:
+    ProbePid ! { setData, [ InitialTick+5, {4,2,-1} ] },
 
-	% Surprise, a new curve is added dynamically:
-	ProbePid ! { addCurve, [ "Dynamically-added curve"] },
-	ProbePid ! { setData,  [ InitialTick+6, {4,3,1,2} ] },
-	ProbePid ! { setData,  [ InitialTick+7, {5,2,3,4} ] },
-	ProbePid ! { setData,  [ InitialTick+8, {4,3,7,0} ] },
+    % Surprise, a new curve is added dynamically:
+    ProbePid ! { addCurve, [ "Dynamically-added curve"] },
+    ProbePid ! { setData,  [ InitialTick+6, {4,3,1,2} ] },
+    ProbePid ! { setData,  [ InitialTick+7, {5,2,3,4} ] },
+    ProbePid ! { setData,  [ InitialTick+8, {4,3,7,0} ] },
 
-	% We can jump over time-steps:
-	ProbePid ! { setData, [ InitialTick+10, {5,4,8,1} ] },
-	ProbePid ! { setData, [ InitialTick+11, {3,4,2,5} ] },
+    % We can jump over time-steps:
+    ProbePid ! { setData, [ InitialTick+10, {5,4,8,1} ] },
+    ProbePid ! { setData, [ InitialTick+11, {3,4,2,5} ] },
 
-	% Changing the default settings:
-	ProbePid ! { setKeyOptions, [ "outside right" ] },
+    % Changing the default settings:
+    ProbePid ! { setKeyOptions, [ "outside right" ] },
 
-	ProbePid ! { setCanvasSize, [ 800, 300 ] },
+    ProbePid ! { setCanvasSize, [ 800, 300 ] },
 
-	% Let's retrieve the curve names in order to re-order their
-	% rendering:
-	%
-	ProbePid ! { getCurveRenderOrder, [], self() },
-	CurveNames = test_receive(),
+    % Let's retrieve the curve names in order to re-order their
+    % rendering:
+    %
+    ProbePid ! { getCurveRenderOrder, [], self() },
+    CurveNames = test_receive(),
 
-	?test_notice_fmt( "Original curve names: ~ts.",
-					  [ text_utils:strings_to_string( CurveNames ) ] ),
+    ?test_notice_fmt( "Original curve names: ~ts.",
+                      [ text_utils:strings_to_string( CurveNames ) ] ),
 
-	% Let's suppose we want to reorder these curves:
-	[ N1, N2, N3, N4 ] = CurveNames,
+    % Let's suppose we want to reorder these curves:
+    [ N1, N2, N3, N4 ] = CurveNames,
 
-	NewCurveNames = [ N1, N4, N2, N3 ],
+    NewCurveNames = [ N1, N4, N2, N3 ],
 
-	?test_notice_fmt( "Curve names after reordering: ~ts.",
-					  [ text_utils:strings_to_string( NewCurveNames ) ] ),
+    ?test_notice_fmt( "Curve names after reordering: ~ts.",
+                      [ text_utils:strings_to_string( NewCurveNames ) ] ),
 
-	ProbePid ! { setCurveRenderOrder, [ NewCurveNames ] },
+    ProbePid ! { setCurveRenderOrder, [ NewCurveNames ] },
 
-	ProbePid ! { addLabel, [ "This is a label", _FirstLocation={2,1} ] },
+    ProbePid ! { addLabel, [ "This is a label", _FirstLocation={2,1} ] },
 
-	ProbePid ! { addLabel, [ "This is another label",
-							 _SecondLocation={8,5}, _SecondColor="#ff00ff",
-							 _Orientation=45, _Position=right ] },
+    ProbePid ! { addLabel, [ "This is another label",
+                             _SecondLocation={8,5}, _SecondColor="#ff00ff",
+                             _Orientation=45, _Position=right ] },
 
-	% Let's make so that the curve named "Second curve" is in pink now (was
-	% originally probably blue)
-	%
-	ProbePid ! { setCurveColor,
-					[ "Second curve", _ExtraCurveColorSettings="#ffc0cb" ] },
+    % Let's make so that the curve named "Second curve" is in pink now (was
+    % originally probably blue)
+    %
+    ProbePid ! { setCurveColor,
+                    [ "Second curve", _ExtraCurveColorSettings="#ffc0cb" ] },
 
-	% Now the dynamic curve is the third, and the so-called "last" is indeed the
-	% last:
-	%
-	class_Probe:send_data( ProbePid, InitialTick+13, {4,3,5,2} ),
+    % Now the dynamic curve is the third, and the so-called "last" is indeed the
+    % last:
+    %
+    class_Probe:send_data( ProbePid, InitialTick+13, {4,3,5,2} ),
 
-	ProbePid.
+    ProbePid.
 
 
 
@@ -186,104 +187,104 @@ simulation test case.
 -spec manage_test_probe( ustring() ) -> probe_ref().
 manage_test_probe( ProbeName ) ->
 
-	% To test different settings:
-	%
-	% (note however that if the probe directory is overridden and set to the
-	% result directory, as the simulation will not have taken place yet, the
-	% result manager will not have created the directory yet, thus writings
-	% should neither be done initially nor immediately)
-	%
-	ProbeOptions = #probe_options{ create_command_file_initially=false,
-								   deferred_data_writes=true },
+    % To test different settings:
+    %
+    % (note however that if the probe directory is overridden and set to the
+    % result directory, as the simulation will not have taken place yet, the
+    % result manager will not have created the directory yet, thus writings
+    % should neither be done initially nor immediately)
+    %
+    ProbeOptions = #probe_options{ create_command_file_initially=false,
+                                   deferred_data_writes=true },
 
-	InitialTick = 500,
+    InitialTick = 500,
 
-	% We could as well have used the class_Probe:set_data/3 static method
-	% directly (without needing a 'case' here):
-	%
-	% (this is a test probe, i.e. a result per se; if selected by the result
-	% manager, it should create in the current directory the following files:
-	% Test_probe.dat, Test_probe.p and Test_probe.png; and this probe will not
-	% be shown in result browser)
-	%
-	CreationResult = case class_Probe:declare_test_probe(
+    % We could as well have used the class_Probe:set_data/3 static method
+    % directly (without needing a 'case' here):
+    %
+    % (this is a test probe, i.e. a result per se; if selected by the result
+    % manager, it should create in the current directory the following files:
+    % Test_probe.dat, Test_probe.p and Test_probe.png; and this probe will not
+    % be shown in result browser)
+    %
+    CreationResult = case class_Probe:declare_test_probe(
 
-			{ ProbeName, ProbeOptions },
+            { ProbeName, ProbeOptions },
 
-			_CurveNames=[ "First curve", "Second curve" ],
+            _CurveNames=[ "First curve", "Second curve" ],
 
-			 _Zones=[ { "Zone A", { abscissa_bottom, "First curve" } },
-					  { "Zone B", { "First curve", "Second curve" } },
-					  { "Zone C", { abscissa_top, "Second curve" } } ],
+             _Zones=[ { "Zone A", { abscissa_bottom, "First curve" } },
+                      { "Zone B", { "First curve", "Second curve" } },
+                      { "Zone C", { abscissa_top, "Second curve" } } ],
 
-			_Title="This is a test of the generic probe class for test probes",
+            _Title="This is a test of the generic probe class for test probes",
 
-			_XLabel="Simulation tick (20 ms)",
+            _XLabel="Simulation tick (20 ms)",
 
-			_YLabel="Number of events" ) of
-
-
-		non_wanted_probe ->
-			?test_info( "The basic probe to be directly created from "
-						"the test case did not match the "
-						"result specification, thus was not created." ),
-			non_wanted_probe;
-
-		ProbePid ->
-
-			?test_info( "Probe selected by the result manager, "
-						"sending data to it." ),
-
-			ProbePid ! { setData, [ InitialTick, {0,50} ] },
-			ProbePid ! { setData, [ InitialTick+10, {10,60} ] },
-
-			% Here we happen to have no relevant value for the second curve:
-			ProbePid ! { setData, [ InitialTick+20, {20,undefined} ] },
+            _YLabel="Number of events" ) of
 
 
-			% Surprise, a new curve is added dynamically:
-			ProbePid ! { addCurve, [ "Dynamically-added curve"] },
-			ProbePid ! { setData,  [ InitialTick+30, {30,70,0} ] },
-			ProbePid ! { setData,  [ InitialTick+40, {20,70,5} ] },
+        non_wanted_probe ->
+            ?test_info( "The basic probe to be directly created from "
+                        "the test case did not match the "
+                        "result specification, thus was not created." ),
+            non_wanted_probe;
+
+        ProbePid ->
+
+            ?test_info( "Probe selected by the result manager, "
+                        "sending data to it." ),
+
+            ProbePid ! { setData, [ InitialTick, {0,50} ] },
+            ProbePid ! { setData, [ InitialTick+10, {10,60} ] },
+
+            % Here we happen to have no relevant value for the second curve:
+            ProbePid ! { setData, [ InitialTick+20, {20,undefined} ] },
 
 
-			% Let's retrieve the curve names in order to re-order their
-			% rendering:
-			%
-			ProbePid ! { getCurveRenderOrder, [], self() },
-			CurveNames = test_receive(),
-
-			?test_notice_fmt( "Original curve names: ~ts.",
-							  [ text_utils:strings_to_string( CurveNames ) ] ),
-
-			% Let's suppose we want to reorder these curves:
-			[ N1, N2, N3 ] = CurveNames,
-
-			NewCurveNames = [ N1, N2, N3 ],
-
-			?test_notice_fmt( "Curve names after reordering: ~ts.",
-				[ text_utils:strings_to_string( NewCurveNames ) ] ),
-
-			ProbePid ! { setCurveRenderOrder, [ NewCurveNames ] },
-
-			ProbePid ! { addLabel, [ "This is a label",
-									 _FirstLocation={2,1} ] },
-
-			ProbePid ! { addLabel, [ "This is another label",
-				_SecondLocation={8,5}, _SecondColor="#FF00FF",
-				_Orientation=45, _Position=right ] },
-
-			ProbePid
+            % Surprise, a new curve is added dynamically:
+            ProbePid ! { addCurve, [ "Dynamically-added curve"] },
+            ProbePid ! { setData,  [ InitialTick+30, {30,70,0} ] },
+            ProbePid ! { setData,  [ InitialTick+40, {20,70,5} ] },
 
 
-	end,
+            % Let's retrieve the curve names in order to re-order their
+            % rendering:
+            %
+            ProbePid ! { getCurveRenderOrder, [], self() },
+            CurveNames = test_receive(),
 
-	% Just to show that we could use blindly the result of
-	% class_Probe:declare_test_probe/6:
-	%
-	class_Probe:send_data( CreationResult, InitialTick+50, {10,80,10} ),
+            ?test_notice_fmt( "Original curve names: ~ts.",
+                              [ text_utils:strings_to_string( CurveNames ) ] ),
 
-	CreationResult.
+            % Let's suppose we want to reorder these curves:
+            [ N1, N2, N3 ] = CurveNames,
+
+            NewCurveNames = [ N1, N2, N3 ],
+
+            ?test_notice_fmt( "Curve names after reordering: ~ts.",
+                [ text_utils:strings_to_string( NewCurveNames ) ] ),
+
+            ProbePid ! { setCurveRenderOrder, [ NewCurveNames ] },
+
+            ProbePid ! { addLabel, [ "This is a label",
+                                     _FirstLocation={2,1} ] },
+
+            ProbePid ! { addLabel, [ "This is another label",
+                _SecondLocation={8,5}, _SecondColor="#FF00FF",
+                _Orientation=45, _Position=right ] },
+
+            ProbePid
+
+
+    end,
+
+    % Just to show that we could use blindly the result of
+    % class_Probe:declare_test_probe/6:
+    %
+    class_Probe:send_data( CreationResult, InitialTick+50, {10,80,10} ),
+
+    CreationResult.
 
 
 
@@ -294,118 +295,118 @@ Runs the tests for all basic probes not created from an actor:
 """.
 -spec run() -> no_return().
 run() ->
-	run( _UseTickOffsets=true ).
+    run( _UseTickOffsets=true ).
 
 
 
 run( UseTickOffsets ) ->
 
-	?case_start,
+    ?case_start,
 
-	% Default simulation settings (50Hz, batch reproducible) are used, except
-	% for the name:
-	%
-	SimulationSettings = #simulation_settings{
+    % Default simulation settings (50Hz, batch reproducible) are used, except
+    % for the name:
+    %
+    SimulationSettings = #simulation_settings{
 
-		simulation_name="Basic probe test"
+        simulation_name="Basic probe test"
 
-		% Allows to test various combinations of result specifications:
+        % Allows to test various combinations of result specifications:
 
-		% Default result specification can be left. Otherwise add a comma above
-		% and uncomment one of the specifications below:
+        % Default result specification can be left. Otherwise add a comma above
+        % and uncomment one of the specifications below:
 
-		% Correct, accepted specifications:
+        % Correct, accepted specifications:
 
-		%result_specification=no_output
-		%result_specification=all_outputs
-		%result_specification=all_basic_probes_only
-		%result_specification=all_virtual_probes_only
+        %result_specification=no_output
+        %result_specification=all_outputs
+        %result_specification=all_basic_probes_only
+        %result_specification=all_virtual_probes_only
 
-		% Will select nothing:
-		%result_specification=[]
+        % Will select nothing:
+        %result_specification=[]
 
-		% Will select all (basic) probes:
-		%result_specification=[ {targeted_patterns, [ ".*" ] } ]
+        % Will select all (basic) probes:
+        %result_specification=[ {targeted_patterns, [ ".*" ] } ]
 
-		% Will select nothing here, as blacklisted:
-		%result_specification=[
-		%   { targeted_patterns, [ {".*",[rendering_only]} ] },
-		%   { blacklisted_patterns, ["Test probe" ]} ]
-
-
-		% Incorrect, rejected specifications:
-
-		%result_specification = unexpected_option
-		%result_specification = [ {targeted_patterns, unexpected_pattern} ]
-		%result_specification = [ {targeted_patterns, [ ".*" ]},
-		%                         unexpected_option ]
-
-	},
+        % Will select nothing here, as blacklisted:
+        %result_specification=[
+        %   { targeted_patterns, [ {".*",[rendering_only]} ] },
+        %   { blacklisted_patterns, ["Test probe" ]} ]
 
 
-	% Default deployment settings (unavailable nodes allowed, on-the-fly
-	% generation of the deployment package requested, use an host file otherwise
-	% fall back to local).
-	%
-	DeploymentSettings =
-		#deployment_settings{ enable_performance_tracker=false },
+        % Incorrect, rejected specifications:
+
+        %result_specification = unexpected_option
+        %result_specification = [ {targeted_patterns, unexpected_pattern} ]
+        %result_specification = [ {targeted_patterns, [ ".*" ]},
+        %                         unexpected_option ]
+
+    },
 
 
-	% Default load balancing settings (round-robin placement heuristic):
-	LoadBalancingSettings = #load_balancing_settings{},
+    % Default deployment settings (unavailable nodes allowed, on-the-fly
+    % generation of the deployment package requested, use an host file otherwise
+    % fall back to local).
+    %
+    DeploymentSettings =
+        #deployment_settings{ enable_performance_tracker=false },
 
 
-	?test_notice_fmt( "This test will deploy a distributed simulation "
-		"based on computing hosts specified as ~p.",
-		[ DeploymentSettings#deployment_settings.computing_hosts ] ),
+    % Default load balancing settings (round-robin placement heuristic):
+    LoadBalancingSettings = #load_balancing_settings{},
 
 
-	% Directly created on the user node:
-	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-		DeploymentSettings, LoadBalancingSettings ),
+    ?test_notice_fmt( "This test will deploy a distributed simulation "
+        "based on computing hosts specified as ~p.",
+        [ DeploymentSettings#deployment_settings.computing_hosts ] ),
 
 
-	?test_info( "Creating a facility probe." ),
-
-	FacilityProbePid = manage_facility_probe(
-		_FacilityProbeName="Test Facility Probe", UseTickOffsets ),
-
-
-	?test_info( "Creating a test probe." ),
-
-	_TestProbePid = manage_test_probe( _TestProbeName="Test Probe" ),
-
-	?test_info( "Creating a test probe, checking it is needed indeed." ),
-
-	% No actor to schedule, thus will stop immediately anyway:
-	StopTick = 30,
-
-	DeploymentManagerPid ! { getRootTimeManager, [], self() },
-	RootTimeManagerPid = test_receive(),
-
-	RootTimeManagerPid ! { start, [ StopTick, self() ] },
-
-	?test_info( "Waiting for the simulation to end, "
-				"since having been declared as a simulation listener." ),
+    % Directly created on the user node:
+    DeploymentManagerPid = sim_diasca:init( SimulationSettings,
+        DeploymentSettings, LoadBalancingSettings ),
 
 
-	receive
+    ?test_info( "Creating a facility probe." ),
 
-		simulation_stopped ->
-			?test_info( "Simulation stopped spontaneously." )
+    FacilityProbePid = manage_facility_probe(
+        _FacilityProbeName="Test Facility Probe", UseTickOffsets ),
 
-	end,
 
-	% Allows to manage synchronous aspects, batch mode and all:
-	class_Probe:generate_report_for( FacilityProbePid ),
+    ?test_info( "Creating a test probe." ),
 
-	class_Probe:delete_facility_probe( FacilityProbePid ),
+    _TestProbePid = manage_test_probe( _TestProbeName="Test Probe" ),
 
-	% Test probe does not need any explicit deallocation.
+    ?test_info( "Creating a test probe, checking it is needed indeed." ),
 
-	?test_info( "Browsing the report results, if not in batch mode." ),
-	class_ResultManager:browse_reports(),
+    % No actor to schedule, thus will stop immediately anyway:
+    StopTick = 30,
 
-	sim_diasca:shutdown(),
+    DeploymentManagerPid ! { getRootTimeManager, [], self() },
+    RootTimeManagerPid = test_receive(),
 
-	?case_stop.
+    RootTimeManagerPid ! { start, [ StopTick, self() ] },
+
+    ?test_info( "Waiting for the simulation to end, "
+                "since having been declared as a simulation listener." ),
+
+
+    receive
+
+        simulation_stopped ->
+            ?test_info( "Simulation stopped spontaneously." )
+
+    end,
+
+    % Allows to manage synchronous aspects, batch mode and all:
+    class_Probe:generate_report_for( FacilityProbePid ),
+
+    class_Probe:delete_facility_probe( FacilityProbePid ),
+
+    % Test probe does not need any explicit deallocation.
+
+    ?test_info( "Browsing the report results, if not in batch mode." ),
+    class_ResultManager:browse_reports(),
+
+    sim_diasca:shutdown(),
+
+    ?case_stop.

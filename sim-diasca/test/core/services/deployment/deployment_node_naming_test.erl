@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -39,80 +39,80 @@ specified).
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+    ?case_start,
 
-	% Default simulation settings (50Hz, batch reproducible) are used, except
-	% for the name:
-	%
-	SimulationSettings = #simulation_settings{
-		simulation_name="Test of the management of node naming modes" },
-
-
-	% Default deployment settings (unavailable nodes allowed, on-the-fly
-	% generation of the deployment package requested), but computing
-	% hosts are specified (to be updated depending on your environment):
-	% (note that localhost is implied)
-
-	% Differs from the defaults hence interesting to test:
-	PreferredNodeNamingModes = [ short_name, long_name ],
-
-	% Other values that can be tested:
-	%PreferredNodeNamingModes = [ long_name, short_name ],
-	%PreferredNodeNamingModes = [ short_name ],
-	%PreferredNodeNamingModes = [ long_name ],
-	%PreferredNodeNamingModes = [ bogus_value ],
-	%PreferredNodeNamingModes = [],
-
-	DeploymentSettings = #deployment_settings{
-
-		computing_hosts=
-			{ use_host_file_otherwise_local, "sim-diasca-host-candidates.etf" },
-
-		% Reversed conventions compared to defaults:
-		preferred_node_naming_modes=PreferredNodeNamingModes },
-
-	?test_warning( "By default this test will not use an alternate EPMD port, "
-		"as the overall engine settings have to be changed "
-		"accordingly for this test to succeed." ),
-
-	% Default load balancing settings (round-robin placement heuristic):
-	LoadBalancingSettings = #load_balancing_settings{},
+    % Default simulation settings (50Hz, batch reproducible) are used, except
+    % for the name:
+    %
+    SimulationSettings = #simulation_settings{
+        simulation_name="Test of the management of node naming modes" },
 
 
-	?test_notice_fmt( "This test will deploy a distributed simulation"
-		" based on computing hosts specified as ~p, with following node "
-		"naming conventions: ~p.",
-		[ DeploymentSettings#deployment_settings.computing_hosts,
-		  PreferredNodeNamingModes ] ),
+    % Default deployment settings (unavailable nodes allowed, on-the-fly
+    % generation of the deployment package requested), but computing
+    % hosts are specified (to be updated depending on your environment):
+    % (note that localhost is implied)
+
+    % Differs from the defaults hence interesting to test:
+    PreferredNodeNamingModes = [ short_name, long_name ],
+
+    % Other values that can be tested:
+    %PreferredNodeNamingModes = [ long_name, short_name ],
+    %PreferredNodeNamingModes = [ short_name ],
+    %PreferredNodeNamingModes = [ long_name ],
+    %PreferredNodeNamingModes = [ bogus_value ],
+    %PreferredNodeNamingModes = [],
+
+    DeploymentSettings = #deployment_settings{
+
+        computing_hosts=
+            { use_host_file_otherwise_local, "sim-diasca-host-candidates.etf" },
+
+        % Reversed conventions compared to defaults:
+        preferred_node_naming_modes=PreferredNodeNamingModes },
+
+    ?test_warning( "By default this test will not use an alternate EPMD port, "
+        "as the overall engine settings have to be changed "
+        "accordingly for this test to succeed." ),
+
+    % Default load balancing settings (round-robin placement heuristic):
+    LoadBalancingSettings = #load_balancing_settings{},
 
 
-	% Directly created on the user node:
-	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-		DeploymentSettings, LoadBalancingSettings ),
+    ?test_notice_fmt( "This test will deploy a distributed simulation"
+        " based on computing hosts specified as ~p, with following node "
+        "naming conventions: ~p.",
+        [ DeploymentSettings#deployment_settings.computing_hosts,
+          PreferredNodeNamingModes ] ),
 
 
-	?test_info( "Here we do not create any actor, "
-				"thus the simulation will stop immediately." ),
-
-	DeploymentManagerPid ! { getRootTimeManager, [], self() },
-	RootTimeManagerPid = test_receive(),
+    % Directly created on the user node:
+    DeploymentManagerPid = sim_diasca:init( SimulationSettings,
+        DeploymentSettings, LoadBalancingSettings ),
 
 
-	?test_info( "Starting simulation." ),
-	RootTimeManagerPid ! { start, [ _StopTick=120, self() ] },
+    ?test_info( "Here we do not create any actor, "
+                "thus the simulation will stop immediately." ),
+
+    DeploymentManagerPid ! { getRootTimeManager, [], self() },
+    RootTimeManagerPid = test_receive(),
 
 
-	% Waits until simulation is finished:
-	receive
-
-		simulation_stopped ->
-			?test_info( "Simulation stopped spontaneously." )
-
-	end,
+    ?test_info( "Starting simulation." ),
+    RootTimeManagerPid ! { start, [ _StopTick=120, self() ] },
 
 
-	?test_info( "Requesting textual timings (second)." ),
+    % Waits until simulation is finished:
+    receive
 
-	sim_diasca:shutdown(),
+        simulation_stopped ->
+            ?test_info( "Simulation stopped spontaneously." )
 
-	?case_stop.
+    end,
+
+
+    ?test_info( "Requesting textual timings (second)." ),
+
+    sim_diasca:shutdown(),
+
+    ?case_stop.

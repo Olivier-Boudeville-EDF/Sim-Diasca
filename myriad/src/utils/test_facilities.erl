@@ -1,4 +1,4 @@
-% Copyright (C) 2009-2025 Olivier Boudeville
+% Copyright (C) 2009-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -39,7 +39,7 @@ This module defines a few **basic facilities for tests**, at the level of the
 
 
 -export([ start/1, stop/0, display/1, display/2, display_fmt/2,
-		  fail/1, fail/2, finished/0 ] ).
+          fail/1, fail/2, finished/0 ] ).
 
 
 % Resource information, notably useful for multimedia tests:
@@ -68,35 +68,35 @@ in the mailbox of the test process).
 """.
 -spec start( module() | [ module() ] ) -> void().
 start( Module ) when is_atom( Module ) ->
-	start_common(),
-	basic_utils:display( "~n--> Testing module ~ts.~n", [ Module ] );
+    start_common(),
+    basic_utils:display( "~n--> Testing module ~ts.~n", [ Module ] );
 
 start( Modules ) when is_list( Modules ) ->
-	start_common(),
-	basic_utils:display( "~n--> Testing modules ~p.~n", [ Modules ] ).
+    start_common(),
+    basic_utils:display( "~n--> Testing modules ~p.~n", [ Modules ] ).
 
 
 % (helper)
 start_common() ->
 
-	% We prefer tests to fail (i.e. that they crash through the link(s) that
-	% they create with their tested elements), rather than resisting silently to
-	% any failure (with EXIT messages sitting in their mailboxes and probably be
-	% never read):
-	%
-	erlang:process_flag( trap_exit, false ),
+    % We prefer tests to fail (i.e. that they crash through the link(s) that
+    % they create with their tested elements), rather than resisting silently to
+    % any failure (with EXIT messages sitting in their mailboxes and probably be
+    % never read):
+    %
+    erlang:process_flag( trap_exit, false ),
 
-	% To avoid that special characters are not displayed properly:
-	system_utils:force_unicode_support(),
+    % To avoid that special characters are not displayed properly:
+    system_utils:force_unicode_support(),
 
-	% We want to ensure that the standard logger behaves synchronously (e.g. not
-	% wanting an error trace to be lost because we crashed on purpose the VM
-	% just after an error was reported whereas it happened not to have been
-	% notified already - since a corresponding message was not sent yet, or was
-	% received but not yet processed).
+    % We want to ensure that the standard logger behaves synchronously (e.g. not
+    % wanting an error trace to be lost because we crashed on purpose the VM
+    % just after an error was reported whereas it happened not to have been
+    % notified already - since a corresponding message was not sent yet, or was
+    % received but not yet processed).
 
-	ok = logger:set_handler_config( _HandlerId=default, _Key=sync_mode_qlen,
-									_Value=0 ).
+    ok = logger:set_handler_config( _HandlerId=default, _Key=sync_mode_qlen,
+                                    _Value=0 ).
 
 
 
@@ -105,17 +105,17 @@ Stops a test; expected to be the last test statement in the normal case.
 """.
 -spec stop() -> no_return().
 stop() ->
-	basic_utils:display( "\n--> Successful end of test.\n" ),
-	finished().
+    basic_utils:display( "\n--> Successful end of test.\n" ),
+    finished().
 
 
 
 -doc "Displays a test message.".
 -spec display( ustring() ) -> void().
 display( Message ) ->
-	% Carriage return already added in basic_utils:display/1:
-	% (empty list added so that ~n are automatically converted)
-	basic_utils:display( lists:flatten( Message ), _Values=[] ).
+    % Carriage return already added in basic_utils:display/1:
+    % (empty list added so that ~n are automatically converted)
+    basic_utils:display( lists:flatten( Message ), _Values=[] ).
 
 
 
@@ -127,7 +127,7 @@ list of field values.
 """.
 -spec display( format_string(), format_values() ) -> void().
 display( FormatString, Values ) ->
-	basic_utils:display( FormatString, Values ).
+    basic_utils:display( FormatString, Values ).
 
 
 
@@ -141,7 +141,7 @@ list of field values.
 """.
 -spec display_fmt( format_string(), format_values() ) -> void().
 display_fmt( FormatString, Values ) ->
-	basic_utils:display( FormatString, Values ).
+    basic_utils:display( FormatString, Values ).
 
 
 % Comment out to be able to use the interpreter after the test:
@@ -160,18 +160,18 @@ display_fmt( FormatString, Values ) ->
 
 finished() ->
 
-	basic_utils:display( "(test finished, interpreter halted)" ),
+    basic_utils:display( "(test finished, interpreter halted)" ),
 
-	% Probably not that useful:
-	system_utils:await_output_completion(),
+    % Probably not that useful:
+    system_utils:await_output_completion(),
 
-	% Implies flushing as well:
-	basic_utils:stop_on_success(),
+    % Implies flushing as well:
+    basic_utils:stop_on_success(),
 
-	% Useless, but otherwise Dialyzer will complain that this function has no
-	% local return:
-	%
-	test_success.
+    % Useless, but otherwise Dialyzer will complain that this function has no
+    % local return:
+    %
+    test_success.
 
 
 -else. % exit_after_test
@@ -179,15 +179,15 @@ finished() ->
 
 finished() ->
 
-	basic_utils:display( "(test finished, interpreter still running)~n"
-		"(if the Erlang shell is not available, ensure that "
-		"no '-noinput' VM command-line option is used;~n "
-		"see EXEC_INTERNAL_OPTIONS in Ceylan-Myriad's "
-		"GNUmakevars.inc for that)", _Necessary=[] ),
+    basic_utils:display( "(test finished, interpreter still running)~n"
+        "(if the Erlang shell is not available, ensure that "
+        "no '-noinput' VM command-line option is used;~n "
+        "see EXEC_INTERNAL_OPTIONS in Ceylan-Myriad's "
+        "GNUmakevars.inc for that)", _Necessary=[] ),
 
-	%system_utils:await_output_completion(),
+    %system_utils:await_output_completion(),
 
-	test_success.
+    test_success.
 
 
 -endif. % exit_after_test
@@ -202,23 +202,23 @@ For example: `test_facilities:fail("server on strike")`.
 -spec fail( ustring() ) -> no_return().
 fail( Reason ) ->
 
-	% For some reason erlang:error is unable to interpret strings as strings,
-	% they are always output as unreadable lists.
+    % For some reason erlang:error is unable to interpret strings as strings,
+    % they are always output as unreadable lists.
 
-	basic_utils:display( "~n!!!! Test failed, reason: ~ts~n", [ Reason ] ),
+    basic_utils:display( "~n!!!! Test failed, reason: ~ts~n", [ Reason ] ),
 
-	% Never returns:
-	erlang:error( "Test failed" ),
+    % Never returns:
+    erlang:error( "Test failed" ),
 
-	% Hence probably not that useful:
-	system_utils:await_output_completion(),
+    % Hence probably not that useful:
+    system_utils:await_output_completion(),
 
-	basic_utils:stop_on_failure(),
+    basic_utils:stop_on_failure(),
 
-	% Useless, but otherwise Dialyzer will complain that this function has no
-	% local return:
-	%
-	test_failed.
+    % Useless, but otherwise Dialyzer will complain that this function has no
+    % local return:
+    %
+    test_failed.
 
 
 
@@ -233,12 +233,12 @@ For example: `test_facilities:fail("server ~ts on strike", ["foobar.org"])`.
 -spec fail( format_string(), format_values() ) -> no_return().
 fail( FormatString, Values ) ->
 
-	% For some reason, erlang:error is unable to interpret strings as strings,
-	% they are always output as unreadable lists.
+    % For some reason, erlang:error is unable to interpret strings as strings,
+    % they are always output as unreadable lists.
 
-	ReasonMessage = text_utils:format( FormatString, Values ),
+    ReasonMessage = text_utils:format( FormatString, Values ),
 
-	fail( ReasonMessage ).
+    fail( ReasonMessage ).
 
 
 
@@ -249,7 +249,7 @@ one, like `test/user-interface/`.
 """.
 -spec get_myriad_icon_path() -> image_path().
 get_myriad_icon_path() ->
-	"../../doc/myriad-icon.png".
+    "../../doc/myriad-icon.png".
 
 
 
@@ -260,4 +260,4 @@ subdirectory of the 'test' one, like 'test/user-interface/'.
 """.
 -spec get_myriad_logo_path() -> image_path().
 get_myriad_logo_path() ->
-	"../../doc/myriad-title.png".
+    "../../doc/myriad-title.png".

@@ -182,39 +182,31 @@ or, better, in an OTP-compliant fashion::
 This process can be a standalone module (e.g. a test or an application launcher, see `trace_management_test.erl <https://github.com/Olivier-Boudeville/Ceylan-Traces/blob/master/test/trace_management_test.erl>`_) or, more frequently, it might correspond to a WOOPER (active or passive) instance, in which case it shall inherit, directly or not, from ``class_TraceEmitter`` (see `class_TestTraceEmitter.erl <https://github.com/Olivier-Boudeville/Ceylan-Traces/blob/master/test/class_TestTraceEmitter.erl>`_ for a complete example of it).
 
 
-.. _`trace bridge`:
 
-Traces can also be emitted thanks to Myriad's `trace_bridge <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/utils/trace_bridge.erl>`_. This is especially useful when developing lower-level libraries that can depend on Myriad, but *may* introduce extra runtime dependencies such as WOOPER and Traces only optionally. Using that bridge, the traces will by default go through Myriad's low level `trace_utils <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/utils/trace_utils.erl>`_, unless Traces is available, in which case its default trace aggregator will be used.
-
-Such a bridge is also useful whenever spawning processes that have not direct trace emitter state of their own, yet may at least in some cases send traces; the bridge allows them to use a designated trace emitter as a relay.
-
-
-
-From member methods
+From Member Methods
 ===================
 
-Then sending-primitives can be used, such as::
+Then, once a ``State`` variable that corresponds to a ``class_TraceEmitter`` state is available in the scope of a method, sending primitives can be directly used, like in::
 
   ?info("Hello world!")
 
 or::
 
-  ?info_fmt("The value ~B is the answer.",[MyValue])
+  ?info_fmt("The value ~B is the answer.", [MyValue])
 
 
-Many API variations exist (see `class_TraceEmitter.hrl <https://github.com/Olivier-Boudeville/Ceylan-Traces/blob/master/include/class_TraceEmitter.hrl>`_), to account for the various `trace content`_, contexts, etc., but ``?S(Message)`` and ``?S_fmt(MessageFormat,MessageValues)``, for ``S`` corresponding to a `trace severity`_ (e.g. ``S`` being ``notice``), are by far the most frequently used.
+Many API variations exist (see `class_TraceEmitter.hrl <https://github.com/Olivier-Boudeville/Ceylan-Traces/blob/master/include/class_TraceEmitter.hrl>`_), to account for the various `trace content`_, contexts, etc., but ``?S(Message)`` and ``?S_fmt(MessageFormat, MessageValues)``, for ``S`` corresponding to a `trace severity`_ (e.g. ``S`` being ``notice``), are by far the most frequently used.
 
 
 
-From constructors
+From Constructors
 =================
-
 
 Note that for example ``?debug(Message)`` is a macro that (if Traces is enabled) expands (literally) to:
 
 .. code:: erlang
 
-  class_TraceEmitter:send(debug,State,Message)
+  class_TraceEmitter:send(debug, State, Message)
 
 As a result, the availability of a ``State`` variable in the scope of this macro is expected. Moreover, this WOOPER state variable shall be the one of a ``class_TraceEmitter`` instance (either directly or, more probably, through inheritance).
 
@@ -235,6 +227,28 @@ An example of some class ``Foobar`` inheriting directly from ``TraceEmitter`` wi
 	 ?send_info(TraceState,"Hello!"),
 	 [...]
 	 FinalState.
+
+
+
+.. _`trace bridge`:
+
+By Using a Trace Bridge
+=======================
+
+Traces can also be emitted thanks to Myriad's `trace_bridge <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/utils/trace_bridge.erl>`_.
+
+This is especially useful when developing lower-level libraries that can depend on Myriad, but *may* introduce extra runtime dependencies such as WOOPER and Traces - only optionally.
+
+Using that bridge, the traces will by default go through Myriad's low level `trace_utils <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/src/utils/trace_utils.erl>`_, unless Traces is available, in which case its default trace aggregator will be used [#]_. In this case, except for the emitter categorization (set to ``Trace Bridge``), these messages cannot be discriminated from the ones sent the usual way from a TraceEmitter.
+
+.. [#] The trace bridge is provided by Ceylan-Myriad and works by storing in the process dictionary a ``trace_bridge:user_bridge_info/0`` term enabling the use of any specific trace system, like Ceylan-Traces here.
+
+
+A bridge may also be used in order to send traces (for example with ``trace_bridge:debug("Hello")``) from functions that are executed in the context of a TraceEmitter instance, but do not have a Traces-enabled state in their scope. Having run once the ``class_TraceEmitter:register_bridge/1`` helper function before, with a proper TraceEmitter state, is sufficient for that.
+
+Such a bridge is also useful whenever spawning processes that do not have direct trace emitter state of their own, yet may at least in some cases have to send traces; the bridge allows them to act as a trace emitter (see the ``class_TraceEmitter:register_as_bridge/{2,3}`` static methods).
+
+Refer to ``trace_bridging_test.erl`` for a complete example of use of an ad-hoc bridge.
 
 
 
@@ -561,7 +575,7 @@ Refer to the corresponding `Myriad prerequisite section <http://myriad.esperide.
 
 
 
-Using Cutting-Edge GIT
+Using Cutting-Edge Git
 ======================
 
 This is the installation method that we use and recommend; the Traces ``master`` branch is meant to stick to the latest stable version: we try to ensure that this main line always stays functional (sorry for the pun). Evolutions are to take place in feature branches and to be merged only when ready.
@@ -664,7 +678,7 @@ Then, for example for a test module defined in ``foobar_test.erl``, running from
 Testing Traces
 --------------
 
-Once the prerequisites (`Myriad <https://myriad.esperide.org>`_ and `WOOPER <https://wooper.esperide.org>`_) and Traces itself have been secured (for that refer to either `Using Cutting-Edge GIT`_ or `Using Rebar3`_), just run from the root directory of Traces:
+Once the prerequisites (`Myriad <https://myriad.esperide.org>`_ and `WOOPER <https://wooper.esperide.org>`_) and Traces itself have been secured (for that refer to either `Using Cutting-Edge Git`_ or `Using Rebar3`_), just run from the root directory of Traces:
 
 .. code:: bash
 
@@ -752,6 +766,23 @@ One may use check with:
 
 Arch users may also install a relevant Java with ``pacman -Sy jre-openjdk`` and run ``archlinux-java status`` to check which version shall be used (then possibly ``archlinux-java set java-21-openjdk`` to select it).
 
+
+
+Requested Widths for LogMX Entry Columns Not Honored
+====================================================
+
+The preferred respective widths for the various entry columns can be set (in ``Tools -> Options -> Display``, thanks to the ``Entries table columns...`` button) and recorded (in ``logmx.properties``), yet, with some versions of Java, such settings might not be respected.
+
+At least on Arch Linux, switching (thanks to ``archlinux-java``) from ``java-24-openjdk`` back to ``java-11-openjdk`` allowed to restore the correct management of these settings (otherwise ignored with more recent Java versions - at least with ancient versions of LogMX).
+
+It just boils down to run as root:
+
+.. code:: bash
+
+ $ pacman -Sy jdk11-openjdk
+ $ archlinux-java set java-11-openjdk
+
+(the full ``jdk`` is not necessary, the ``jre`` would suffice)
 
 
 

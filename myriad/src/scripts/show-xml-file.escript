@@ -20,43 +20,43 @@
 
 % Message to display as usage information:
 display_usage() ->
-	io:format( "~cUsage: show_xml_file.escript XML_FILE_PATH~n~n"
-		"~cDisplays sequentially in a {name,Value} tree the structure of"
-		" specified XML file (XML elements along with their XML attributes).~n",
-		[ 9, 9 ] ).
+    io:format( "~cUsage: show_xml_file.escript XML_FILE_PATH~n~n"
+        "~cDisplays sequentially in a {name,Value} tree the structure of"
+        " specified XML file (XML elements along with their XML attributes).~n",
+        [ 9, 9 ] ).
 
 
 
 % Entry point of the script.
 main( [ "-h" ] ) ->
-	display_usage();
+    display_usage();
 
 main( [ "--help" ] ) ->
-	display_usage();
+    display_usage();
 
 main( [ FileName ] ) ->
 
-	io:format( "~cParsing XML file: ~s~n~n", [ 9, FileName ] ),
+    io:format( "~cParsing XML file: ~s~n~n", [ 9, FileName ] ),
 
-	case exists( FileName ) of
+    case exists( FileName ) of
 
-		true ->
-			{ FileContent, _Misc } = xmerl_scan:file( FileName ),
-			show_node( _Level=0, _Node=FileContent );
+        true ->
+            { FileContent, _Misc } = xmerl_scan:file( FileName ),
+            show_node( _Level=0, _Node=FileContent );
 
-		false ->
-			io:format( "~cError: file '~s' could not be found.",
-					   [ 9, FileName ] ),
+        false ->
+            io:format( "~cError: file '~s' could not be found.",
+                       [ 9, FileName ] ),
 
-			throw( { file_not_found, FileName } )
+            throw( { file_not_found, FileName } )
 
-	end;
+    end;
 
 
 main( _FileName ) ->
-	io:format( "~cError, exactly one parameter should be specified.~n",
-			   [ 9 ] ),
-	display_usage().
+    io:format( "~cError, exactly one parameter should be specified.~n",
+               [ 9 ] ),
+    display_usage().
 
 
 
@@ -64,58 +64,58 @@ main( _FileName ) ->
 % Shows a node/element and then the children of that node.
 show_node( Level, Node ) ->
 
-	case Node of
+    case Node of
 
-		#xmlElement{ name=Name, attributes=Attributes, content=Content } ->
-			show_indent( Level ),
-			io:format( "name: ~s~n", [ Name ] ),
-			show_attributes( Level+1, Attributes ),
-			show_children( Level+1, Content );
+        #xmlElement{ name=Name, attributes=Attributes, content=Content } ->
+            show_indent( Level ),
+            io:format( "name: ~s~n", [ Name ] ),
+            show_attributes( Level+1, Attributes ),
+            show_children( Level+1, Content );
 
-		#xmlText{ value=Value } ->
-			if
-				hd( Value ) =/= hd( "\n" ) ->
-					show_indent( Level ),
-					io:format( "Text: ~p~n", [ Value ] );
+        #xmlText{ value=Value } ->
+            if
+                hd( Value ) =/= hd( "\n" ) ->
+                    show_indent( Level ),
+                    io:format( "Text: ~p~n", [ Value ] );
 
-				true ->
-					ok
+                true ->
+                    ok
 
-			end;
+            end;
 
-		_ ->
-			ok
+        _ ->
+            ok
 
-	end.
+    end.
 
 
 
 % Shows all direct children of a node.
 show_children( _Level, [] ) ->
-	ok;
+    ok;
 
 show_children( Level, [ Node | MoreNodes ] ) ->
-	show_node( Level, Node ),
-	show_children( Level, MoreNodes ).
+    show_node( Level, Node ),
+    show_children( Level, MoreNodes ).
 
 
 
 % Shows the attributes of a node.
 show_attributes( _Level, [] ) ->
-	ok;
+    ok;
 
 show_attributes( Level,
-		[ #xmlAttribute{ name=Name, value=Value } | MoreAttributes ] ) ->
-	show_indent( Level ),
-	io:format( "Attribute -- ~s: ~s~n", [ Name, Value ] ),
-	show_attributes( Level, MoreAttributes ).
+        [ #xmlAttribute{ name=Name, value=Value } | MoreAttributes ] ) ->
+    show_indent( Level ),
+    io:format( "Attribute -- ~s: ~s~n", [ Name, Value ] ),
+    show_attributes( Level, MoreAttributes ).
 
 show_indent( Level ) ->
-	Seq = lists:seq( 1, Level ),
-	F = fun(_) ->
-			io:format( "~c", [ 9 ] )
-		end,
-	lists:foreach( F, Seq ).
+    Seq = lists:seq( 1, Level ),
+    F = fun(_) ->
+            io:format( "~c", [ 9 ] )
+        end,
+    lists:foreach( F, Seq ).
 
 
 
@@ -139,15 +139,15 @@ show_indent( Level ) ->
 
 % @doc Tells whether specified file entry exists, regardless of its type.
 exists( EntryName ) ->
-	case file:read_file_info( EntryName ) of
+    case file:read_file_info( EntryName ) of
 
-		{ ok, _FileInfo } ->
-			true;
+        { ok, _FileInfo } ->
+            true;
 
-		{ error, _Reason } ->
-			false
+        { error, _Reason } ->
+            false
 
-	end.
+    end.
 
 
 % End of the myriad/src/utils/file_utils.erl section.

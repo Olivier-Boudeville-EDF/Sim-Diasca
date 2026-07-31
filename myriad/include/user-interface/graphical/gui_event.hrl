@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -37,62 +37,62 @@
 %
 -record( app_gui_state, {
 
-	% Similar to a user event registry, defined to abstract out the various ways
-	% for the user to generate application-level events (e.g. based on remapped
-	% keys, mouse actions, etc.).
-	%
-	% Event drivers are to take care of the various types of incoming user
-	% events; for maximum flexibility, the built-in default event driver may be
-	% overridden by the application.
-	%
-	% Also aggregates tables translating user events into higher-level
-	% application events.
-	%
+    % Similar to a user event registry, defined to abstract out the various ways
+    % for the user to generate application-level events (e.g. based on remapped
+    % keys, mouse actions, etc.).
+    %
+    % Event drivers are to take care of the various types of incoming user
+    % events; for maximum flexibility, the built-in default event driver may be
+    % overridden by the application.
+    %
+    % Also aggregates tables translating user events into higher-level
+    % application events.
+    %
 
-	% Allows to determine how a (lower-level) user event (such as {onResized,
-	% [...]}) shall be processed (possibly resulting in an application event),
-	% by calling, based on the type of that event, any corresponding registered
-	% event driver.
-	%
-	event_driver_table :: gui_event:event_driver_table(),
+    % Allows to determine how a (lower-level) user event (such as {onResized,
+    % [...]}) shall be processed (possibly resulting in an application event),
+    % by calling, based on the type of that event, any corresponding registered
+    % event driver.
+    %
+    event_driver_table :: gui_event:event_driver_table(),
 
-	% So that all sorts of basic, atom-based user-level events (like
-	% 'window_closed' - as opposed to events related to mice or keyboards) can
-	% be converted into application-level events:
-	%
-	basic_event_table :: gui_event:basic_event_table(),
+    % So that all sorts of basic, atom-based user-level events (like
+    % 'window_closed' - as opposed to events related to mice or keyboards) can
+    % be converted into application-level events:
+    %
+    basic_event_table :: gui_event:basic_event_table(),
 
-	% So that a button being clicked may result into an application event:
-	button_table :: gui_event:button_table(),
+    % So that a button being clicked may result into an application event:
+    button_table :: gui_event:button_table(),
 
-	% So that a key-as-scancode being pressed can result into an application
-	% event:
-	%
-	scancode_table :: gui_event:scancode_table(),
+    % So that a key-as-scancode being pressed can result into an application
+    % event:
+    %
+    scancode_table :: gui_event:scancode_table(),
 
-	% So that a key-as-keycode being pressed can result into an application
-	% event:
-	%
-	keycode_table :: gui_event:keycode_table(),
-
-
-
-	% Any OpenGL state to be kept around.
-	%
-	% (exposed separately to be accessible from all drivers in a standard way)
-	%
-	% Useful as event drivers (at least default ones) may act differently
-	% depending on whether OpenGL is used (e.g. when repainting is needed).
-	%
-	opengl_base_state :: gui_event:opengl_base_state(),
+    % So that a key-as-keycode being pressed can result into an application
+    % event:
+    %
+    keycode_table :: gui_event:keycode_table(),
 
 
-	% Any arbitrary application-specific GUI information (typically a record) to
-	% be kept around, notably so that it can be used by the application-specific
-	% event drivers.
-	%
-	% Contains generally references to the widgets instantiated by the
-	% application (e.g. the main frame, buttons, etc.), and possibly OpenGL
-	% elements.
-	%
-	app_specific_info :: option( gui_event:app_specific_info() ) } ).
+
+    % Any OpenGL state to be kept around.
+    %
+    % (exposed separately to be accessible from all drivers in a standard way)
+    %
+    % Useful as event drivers (at least default ones) may act differently
+    % depending on whether OpenGL is used (e.g. when repainting is needed).
+    %
+    opengl_base_state :: gui_event:opengl_base_state(),
+
+
+    % Any arbitrary application-specific GUI information (typically a record) to
+    % be kept around, notably so that it can be used by the application-specific
+    % event drivers.
+    %
+    % Contains generally references to the widgets instantiated by the
+    % application (e.g. the main frame, buttons, etc.), and possibly OpenGL
+    % elements.
+    %
+    app_specific_info :: option( gui_event:app_specific_info() ) } ).

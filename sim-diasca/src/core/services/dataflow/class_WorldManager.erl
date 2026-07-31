@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 EDF R&D
+% Copyright (C) 2016-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -30,9 +30,9 @@ simulated world.
 
 
 -define( class_description,
-		 "The World Manager (WM) is a singleton instance in charge of "
-		 "federating all the object managers that account, in a dataflow "
-		 "context, for the simulated world." ).
+         "The World Manager (WM) is a singleton instance in charge of "
+         "federating all the object managers that account, in a dataflow "
+         "context, for the simulated world." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -89,7 +89,7 @@ To determine the object manager in charge of a given object type, to dispatch
 events.
 """.
 -type object_type_table() ::
-	table( dataflow_object_type(), [ object_manager_pid() ] ).
+    table( dataflow_object_type(), [ object_manager_pid() ] ).
 
 
 
@@ -117,50 +117,50 @@ objects are to be suspended.
 % Class-specific attributes:
 -define( class_attributes, [
 
-	{ object_type_table, object_type_table(),
-	  "an associative table allowing to determine the object managers in "
-	  "charge of any given object type (table expected to be constant)" },
+    { object_type_table, object_type_table(),
+      "an associative table allowing to determine the object managers in "
+      "charge of any given object type (table expected to be constant)" },
 
-	{ object_managers, [ object_manager_pid() ],
-	  "a list of the PID of the known object managers" },
+    { object_managers, [ object_manager_pid() ],
+      "a list of the PID of the known object managers" },
 
-	{ experiment_manager_pid, experiment_manager_pid(),
-	  "PID of the experiment manager, once it has subscribed" },
+    { experiment_manager_pid, experiment_manager_pid(),
+      "PID of the experiment manager, once it has subscribed" },
 
-	{ entry_point_pid, option( dataflow_entry_point_pid() ),
-	  "the PID of the experiment entry point (if any)" },
+    { entry_point_pid, option( dataflow_entry_point_pid() ),
+      "the PID of the experiment entry point (if any)" },
 
-	{ exit_point_pid, option( dataflow_exit_point_pid() ),
-	  "the PID of the experiment exit point (if any)" },
+    { exit_point_pid, option( dataflow_exit_point_pid() ),
+      "the PID of the experiment exit point (if any)" },
 
-	{ dispatch_table, dispatch_table(),
-	  "allows to keep track of which world event has been dispatched to which "
-	  "object manager; we consider that all known object managers are "
-	  "registered once for all in this table (associated first to an empty "
-	  "list); as a result, their key is supposed to always exist (hence "
-	  "append_to_existing_entry/3 can be used for more checking)" },
+    { dispatch_table, dispatch_table(),
+      "allows to keep track of which world event has been dispatched to which "
+      "object manager; we consider that all known object managers are "
+      "registered once for all in this table (associated first to an empty "
+      "list); as a result, their key is supposed to always exist (hence "
+      "append_to_existing_entry/3 can be used for more checking)" },
 
-	{ all_changesets_injected, boolean(),
-	  "tells whether all changesets have been already injected (thus no one "
-	  "is expected anymore)" },
+    { all_changesets_injected, boolean(),
+      "tells whether all changesets have been already injected (thus no one "
+      "is expected anymore)" },
 
-	{ last_changeset_injection_tick, option( class_TimeManager:tick_offset() ),
-	  "records the tick of the last changeset that has not been processed yet, "
-	  "so that any (series of) calls to injectChangeset/3 not followed by "
-	  "one to notifyAllChangesetsInjected/2 can be detected" },
+    { last_changeset_injection_tick, option( class_TimeManager:tick_offset() ),
+      "records the tick of the last changeset that has not been processed yet, "
+      "so that any (series of) calls to injectChangeset/3 not followed by "
+      "one to notifyAllChangesetsInjected/2 can be detected" },
 
-	{ completed_events, [ world_event() ],
-	  "a flat list (i.e. with no more induced events) of the world events that "
-	  "are ready to be sent to the experiment manager (e.g. world events "
-	  "dealing with dataflow objects that have been currently reported as done "
-	  "by the object managers)" },
+    { completed_events, [ world_event() ],
+      "a flat list (i.e. with no more induced events) of the world events that "
+      "are ready to be sent to the experiment manager (e.g. world events "
+      "dealing with dataflow objects that have been currently reported as done "
+      "by the object managers)" },
 
-	{ event_count, basic_utils:count(),
-	  "the count maintained by the event manager in order to provide a simple "
-	  "identifier to the events being handled; it corresponds to the last "
-	  "identifier set (hence the next event is to use this value once "
-	  "incremented); events happen to be dispatched in the order of their "
-	  "identifier" } ] ).
+    { event_count, basic_utils:count(),
+      "the count maintained by the event manager in order to provide a simple "
+      "identifier to the events being handled; it corresponds to the last "
+      "identifier set (hence the next event is to use this value once "
+      "incremented); events happen to be dispatched in the order of their "
+      "identifier" } ] ).
 
 
 
@@ -184,7 +184,7 @@ listing (in that order):
 specified, as the information is already provided with the event)
 """.
 -type binary_association_completion_extra_info() ::
-	{ object_pid(), object_pid() }.
+    { object_pid(), object_pid() }.
 
 
 -doc """
@@ -192,7 +192,7 @@ The extra information that an object manager sends back once an association
 event (of any kind) has been processed.
 """.
 -type association_completion_extra_info() ::
-	binary_association_completion_extra_info() | any().
+    binary_association_completion_extra_info() | any().
 
 
 -doc """
@@ -200,7 +200,7 @@ The extra information that an object manager may send back once a world event
 has been processed (e.g. the PID of a created dataflow object).
 """.
 -type completion_extra_info() :: basic_utils:option(
-	creation_completion_extra_info() | association_completion_extra_info() ).
+    creation_completion_extra_info() | association_completion_extra_info() ).
 
 
 -export_type([ completion_extra_info/0, external_id/0 ]).
@@ -234,31 +234,31 @@ abstract identifier (AAI) and seed of this actor, as assigned by the load
 balancer.
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings() ) ->
-												wooper:state().
+                                                wooper:state().
 construct( State, ActorSettings ) ->
 
-	% First the direct mother class:
-	ActorState = class_Actor:construct( State, ActorSettings,
-										?trace_categorize("WorldManager") ),
+    % First the direct mother class:
+    ActorState = class_Actor:construct( State, ActorSettings,
+                                        ?trace_categorize("WorldManager") ),
 
-	?send_info( ActorState, "World manager being created." ),
+    ?send_info( ActorState, "World manager being created." ),
 
-	naming_utils:register_as( ?world_manager_name, global_only ),
+    naming_utils:register_as( ?world_manager_name, global_only ),
 
-	EmptyTable = table:new(),
+    EmptyTable = table:new(),
 
-	% Then the class-specific actions:
-	setAttributes( ActorState, [
-		{ object_type_table, EmptyTable },
-		{ object_managers, [] },
-		{ experiment_manager_pid, undefined },
-		{ entry_point_pid, undefined },
-		{ exit_point_pid, undefined },
-		{ dispatch_table, EmptyTable },
-		{ all_changesets_injected, false },
-		{ last_changeset_injection_tick, undefined },
-		{ completed_events, [] },
-		{ event_count, 0 } ] ).
+    % Then the class-specific actions:
+    setAttributes( ActorState, [
+        { object_type_table, EmptyTable },
+        { object_managers, [] },
+        { experiment_manager_pid, undefined },
+        { entry_point_pid, undefined },
+        { exit_point_pid, undefined },
+        { dispatch_table, EmptyTable },
+        { all_changesets_injected, false },
+        { last_changeset_injection_tick, undefined },
+        { completed_events, [] },
+        { event_count, 0 } ] ).
 
 
 
@@ -266,15 +266,15 @@ construct( State, ActorSettings ) ->
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
-	ObjectManagers = ?getAttr(object_managers),
+    ObjectManagers = ?getAttr(object_managers),
 
-	?info_fmt( "Being deleted (its ~B object managers will be "
-		"automatically be deleted as well).", [ length( ObjectManagers ) ] ),
+    ?info_fmt( "Being deleted (its ~B object managers will be "
+        "automatically be deleted as well).", [ length( ObjectManagers ) ] ),
 
-	% No need to remove these managers explicitly, as they are actors (hence
-	% will be removed automatically at simulation end).
+    % No need to remove these managers explicitly, as they are actors (hence
+    % will be removed automatically at simulation end).
 
-	State.
+    State.
 
 
 
@@ -285,28 +285,28 @@ destruct( State ) ->
 Callback executed on the first diasca of existence of this manager.
 """.
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-							const_actor_oneway_return().
+                            const_actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
-	?debug_fmt( "Created ~ts.", [ to_string( State ) ] ),
+    ?debug_fmt( "Created ~ts.", [ to_string( State ) ] ),
 
-	actor:const_return().
+    actor:const_return().
 
 
 
 -doc "Declares the specified experiment manager.".
 -spec setExperimentManager( wooper:state(), experiment_manager_pid() ) ->
-									actor_oneway_return().
+                                    actor_oneway_return().
 setExperimentManager( State, ExperimentManagerPid ) ->
 
-	wooper:check_undefined( experiment_manager_pid, State ),
+    wooper:check_undefined( experiment_manager_pid, State ),
 
-	?info_fmt( "Experiment manager set, is ~w.", [ ExperimentManagerPid ] ),
+    ?info_fmt( "Experiment manager set, is ~w.", [ ExperimentManagerPid ] ),
 
-	NewState =
-		setAttribute( State, experiment_manager_pid, ExperimentManagerPid ),
+    NewState =
+        setAttribute( State, experiment_manager_pid, ExperimentManagerPid ),
 
-	actor:return_state( NewState ).
+    actor:return_state( NewState ).
 
 
 
@@ -314,17 +314,17 @@ setExperimentManager( State, ExperimentManagerPid ) ->
 Registers (synchronously) specified (optional) experiment entry point.
 """.
 -spec registerExperimentEntryPoint( wooper:state() ) ->
-						request_return( 'experiment_entry_point_registered' ).
+                        request_return( 'experiment_entry_point_registered' ).
 registerExperimentEntryPoint( State ) ->
 
-	EntryPointPid = ?getSender(),
+    EntryPointPid = ?getSender(),
 
-	% Check:
-	undefined = ?getAttr(entry_point_pid),
+    % Check:
+    undefined = ?getAttr(entry_point_pid),
 
-	NewState = setAttribute( State, entry_point_pid, EntryPointPid ),
+    NewState = setAttribute( State, entry_point_pid, EntryPointPid ),
 
-	wooper:return_state_result( NewState, experiment_entry_point_registered ).
+    wooper:return_state_result( NewState, experiment_entry_point_registered ).
 
 
 
@@ -332,17 +332,17 @@ registerExperimentEntryPoint( State ) ->
 Registers (synchronously) specified (optional) experiment exit point.
 """.
 -spec registerExperimentExitPoint( wooper:state() ) ->
-						request_return( 'experiment_exit_point_registered' ).
+                        request_return( 'experiment_exit_point_registered' ).
 registerExperimentExitPoint( State ) ->
 
-	ExitPointPid = ?getSender(),
+    ExitPointPid = ?getSender(),
 
-	% Check:
-	undefined = ?getAttr(exit_point_pid),
+    % Check:
+    undefined = ?getAttr(exit_point_pid),
 
-	NewState = setAttribute( State, exit_point_pid, ExitPointPid ),
+    NewState = setAttribute( State, exit_point_pid, ExitPointPid ),
 
-	wooper:return_state_result( NewState, experiment_exit_point_registered ).
+    wooper:return_state_result( NewState, experiment_exit_point_registered ).
 
 
 
@@ -356,78 +356,78 @@ manager should obviously be stateless.
 Note: request to be run prior to simulation start.
 """.
 -spec registerObjectManager( wooper:state(), [ dataflow_object_type() ] ) ->
-				request_return( 'object_manager_registered' ).
+                request_return( 'object_manager_registered' ).
 registerObjectManager( State, ManagedObjectTypes ) ->
 
-	% Sitting at the top of the hierarchy, storing all object associations:
+    % Sitting at the top of the hierarchy, storing all object associations:
 
-	ObjectManagerPid = ?getSender(),
+    ObjectManagerPid = ?getSender(),
 
-	ObjectManagers = ?getAttr(object_managers),
+    ObjectManagers = ?getAttr(object_managers),
 
-	NewObjectManagers = case lists:member( ObjectManagerPid, ObjectManagers ) of
+    NewObjectManagers = case lists:member( ObjectManagerPid, ObjectManagers ) of
 
-		true ->
-			throw( { object_manager_already_registered, ObjectManagerPid } );
+        true ->
+            throw( { object_manager_already_registered, ObjectManagerPid } );
 
-		false ->
-			[ ObjectManagerPid | ObjectManagers ]
+        false ->
+            [ ObjectManagerPid | ObjectManagers ]
 
-	end,
+    end,
 
-	% Associating each listed type of object to this object manager:
-	NewTypeTable = register_type_associations( ManagedObjectTypes,
-		ObjectManagerPid, ?getAttr(object_type_table) ),
+    % Associating each listed type of object to this object manager:
+    NewTypeTable = register_type_associations( ManagedObjectTypes,
+        ObjectManagerPid, ?getAttr(object_type_table) ),
 
-	% Let's populate now the dispatch table accordingly:
-	DispatchTable = ?getAttr(dispatch_table),
+    % Let's populate now the dispatch table accordingly:
+    DispatchTable = ?getAttr(dispatch_table),
 
-	NewDispatchTable = table:add_new_entry( ObjectManagerPid,
-											_NoEventYet=[], DispatchTable ),
+    NewDispatchTable = table:add_new_entry( ObjectManagerPid,
+                                            _NoEventYet=[], DispatchTable ),
 
-	NewState = setAttributes( State, [ { object_managers, NewObjectManagers },
-									   { object_type_table, NewTypeTable },
-									   { dispatch_table, NewDispatchTable } ] ),
+    NewState = setAttributes( State, [ { object_managers, NewObjectManagers },
+                                       { object_type_table, NewTypeTable },
+                                       { dispatch_table, NewDispatchTable } ] ),
 
-	wooper:return_state_result( NewState, object_manager_registered ).
+    wooper:return_state_result( NewState, object_manager_registered ).
 
 
 
 -doc "Registers the associations regarding specified object types.".
 -spec register_type_associations( [ dataflow_object_type() ],
-		object_manager_pid(), object_type_table() ) -> object_type_table().
+        object_manager_pid(), object_type_table() ) -> object_type_table().
 register_type_associations( _ManagedObjectTypes=[], _ObjectManagerPid,
-							TypeTable ) ->
-	TypeTable;
+                            TypeTable ) ->
+    TypeTable;
 
 register_type_associations( _ManagedObjectTypes=[ ObjectType | T ],
-							ObjectManagerPid, TypeTable ) ->
+                            ObjectManagerPid, TypeTable ) ->
 
-	UpdatedTypeTable = case table:lookup_entry( ObjectType, TypeTable ) of
+    UpdatedTypeTable = case table:lookup_entry( ObjectType, TypeTable ) of
 
-		key_not_found ->
+        key_not_found ->
 
-			% We had no list yet for this type of dataflow object; let's create
-			% a new list for this type, including a corresponding new object
-			% manager:
-			%
-			NewListOfManagers = [ ObjectManagerPid ],
+            % We had no list yet for this type of dataflow object; let's create
+            % a new list for this type, including a corresponding new object
+            % manager:
+            %
+            NewListOfManagers = [ ObjectManagerPid ],
 
-			% Registers this one-element list:
-			table:add_new_entry( ObjectType, NewListOfManagers, TypeTable );
+            % Registers this one-element list:
+            table:add_new_entry( ObjectType, NewListOfManagers, TypeTable );
 
 
-		{ value, ObjectManagerList } ->
+        { value, ObjectManagerList } ->
 
-			% We already have a list for this object type, adding this manager:
-			UpdatedObjectManagerList = [ ObjectManagerPid | ObjectManagerList ],
+            % We already have a list for this object type, adding this manager:
+            UpdatedObjectManagerList = [ ObjectManagerPid | ObjectManagerList ],
 
-			table:update_entry( ObjectType, UpdatedObjectManagerList,
-								TypeTable )
+            table:update_entry( ObjectType, UpdatedObjectManagerList,
+                                TypeTable )
 
-	end,
+    end,
 
-	register_type_associations( T, ObjectManagerPid, UpdatedTypeTable ).
+    register_type_associations( T, ObjectManagerPid, UpdatedTypeTable ).
 
 
 
@@ -451,82 +451,82 @@ step-by-step dataflow modifications can be performed (possibly even from a
 single changeset source, provided it schedules itself from a diasca to another).
 """.
 -spec injectChangeset( wooper:state(), changeset(), sending_actor_pid() ) ->
-							actor_oneway_return().
+                            actor_oneway_return().
 injectChangeset( State, Changeset, SendingActorPid ) ->
 
-	CurrentTimestamp = { CurrentTickOffset, _CurrentDiasca } =
-		class_Actor:get_current_logical_timestamp( State ),
+    CurrentTimestamp = { CurrentTickOffset, _CurrentDiasca } =
+        class_Actor:get_current_logical_timestamp( State ),
 
-	NewInjectionTickOffset = case ?getAttr(last_changeset_injection_tick) of
+    NewInjectionTickOffset = case ?getAttr(last_changeset_injection_tick) of
 
-		undefined ->
-			CurrentTickOffset;
+        undefined ->
+            CurrentTickOffset;
 
-		% Pattern-matched (already bound):
-		CurrentTickOffset ->
-			CurrentTickOffset;
+        % Pattern-matched (already bound):
+        CurrentTickOffset ->
+            CurrentTickOffset;
 
-		PastTickOffset when PastTickOffset < CurrentTickOffset ->
+        PastTickOffset when PastTickOffset < CurrentTickOffset ->
 
-			?error_fmt( "A changeset for tick offset ~p has just been "
-				"injected, whereas the last injected and "
-				"not-yet-processed changeset relates to past "
-				"tick offset ~p. It is likely that during this "
-				"last tick the end of injections has not been "
-				"notified to the world manager (lacking call to the "
-				"notifyAllChangesetsInjected/2 method?).",
-				[ CurrentTickOffset, PastTickOffset ] ),
+            ?error_fmt( "A changeset for tick offset ~p has just been "
+                "injected, whereas the last injected and "
+                "not-yet-processed changeset relates to past "
+                "tick offset ~p. It is likely that during this "
+                "last tick the end of injections has not been "
+                "notified to the world manager (lacking call to the "
+                "notifyAllChangesetsInjected/2 method?).",
+                [ CurrentTickOffset, PastTickOffset ] ),
 
-			throw( { lacking_changeset_notification, PastTickOffset,
-					 CurrentTickOffset } );
+            throw( { lacking_changeset_notification, PastTickOffset,
+                     CurrentTickOffset } );
 
-		% By design FutureTickOffset > CurrentTickOffset:
-		FutureTickOffset ->
+        % By design FutureTickOffset > CurrentTickOffset:
+        FutureTickOffset ->
 
-			?error_fmt( "A changeset for tick offset ~p has just been "
-				"injected, whereas the last injected and "
-				"not-yet-processed changeset relates to future "
-				"tick offset ~p (abnormal).",
-				[ CurrentTickOffset, FutureTickOffset ] ),
+            ?error_fmt( "A changeset for tick offset ~p has just been "
+                "injected, whereas the last injected and "
+                "not-yet-processed changeset relates to future "
+                "tick offset ~p (abnormal).",
+                [ CurrentTickOffset, FutureTickOffset ] ),
 
-			throw( { invalid_changeset_notification, FutureTickOffset,
-					 CurrentTickOffset } )
+            throw( { invalid_changeset_notification, FutureTickOffset,
+                     CurrentTickOffset } )
 
-	end,
+    end,
 
 
-	% Here we set the identifiers of the events and prepare their dispatching:
+    % Here we set the identifiers of the events and prepare their dispatching:
 
-	LastId = ?getAttr(event_count),
+    LastId = ?getAttr(event_count),
 
-	% First-level induced events to be sent when their parent event will have
-	% been fully processed:
-	%
-	{ IdentifiedChangeset, UpdatedLastId } =
-		assign_identifiers_to_top_level_events( Changeset, LastId,
-												CurrentTimestamp ),
+    % First-level induced events to be sent when their parent event will have
+    % been fully processed:
+    %
+    { IdentifiedChangeset, UpdatedLastId } =
+        assign_identifiers_to_top_level_events( Changeset, LastId,
+                                                CurrentTimestamp ),
 
-	?info_fmt( "Changeset injected by ~w; top-level events have been "
-		"identified: ~ts", [ SendingActorPid,
-		dataflow_support:changeset_to_string( IdentifiedChangeset,
-											  _IsVerbose=false ) ] ),
+    ?info_fmt( "Changeset injected by ~w; top-level events have been "
+        "identified: ~ts", [ SendingActorPid,
+        dataflow_support:changeset_to_string( IdentifiedChangeset,
+                                              _IsVerbose=false ) ] ),
 
-	% Let's then dispatch these top-level events:
+    % Let's then dispatch these top-level events:
 
-	DispatchTable = ?getAttr(dispatch_table),
+    DispatchTable = ?getAttr(dispatch_table),
 
-	{ NewDispatchTable, DispatchState } = dispatch_top_level_events(
-		IdentifiedChangeset, DispatchTable, State ),
+    { NewDispatchTable, DispatchState } = dispatch_top_level_events(
+        IdentifiedChangeset, DispatchTable, State ),
 
-	?info_fmt( "Changeset received from ~w applied, "
-			   "waiting for its completion.", [ SendingActorPid ] ),
+    ?info_fmt( "Changeset received from ~w applied, "
+               "waiting for its completion.", [ SendingActorPid ] ),
 
-	FinalState = setAttributes( DispatchState, [
-		{ event_count, UpdatedLastId },
-		{ dispatch_table, NewDispatchTable },
-		{ last_changeset_injection_tick, NewInjectionTickOffset } ] ),
+    FinalState = setAttributes( DispatchState, [
+        { event_count, UpdatedLastId },
+        { dispatch_table, NewDispatchTable },
+        { last_changeset_injection_tick, NewInjectionTickOffset } ] ),
 
-	actor:return_state( FinalState ).
+    actor:return_state( FinalState ).
 
 
 
@@ -537,161 +537,161 @@ changeset.
 Also sets timestamps and normalises external identifiers.
 """.
 -spec assign_identifiers_to_top_level_events( changeset(), event_id(),
-		class_TimeManager:logical_timestamp() ) -> { changeset(), event_id() }.
+        class_TimeManager:logical_timestamp() ) -> { changeset(), event_id() }.
 assign_identifiers_to_top_level_events( Changeset, LastId, CurrentTimestamp ) ->
-	assign_identifiers_to_top_level_events( Changeset, LastId, CurrentTimestamp,
-											_Acc=[] ).
+    assign_identifiers_to_top_level_events( Changeset, LastId, CurrentTimestamp,
+                                            _Acc=[] ).
 
 
 assign_identifiers_to_top_level_events( _Changeset=[], LastId,
-										_CurrentTimestamp, Acc ) ->
-	% Preserve event order:
-	{ lists:reverse( Acc ), LastId };
+                                        _CurrentTimestamp, Acc ) ->
+    % Preserve event order:
+    { lists:reverse( Acc ), LastId };
 
 
 % Having to list all kinds of events:
 assign_identifiers_to_top_level_events( _Changeset=[
-					Event=#creation_event{ id=undefined,
-										   timestamp=undefined,
-										   external_id=ExtId } | T ],
-										LastId, CurrentTimestamp, Acc ) ->
-	NewId = LastId + 1,
+                    Event=#creation_event{ id=undefined,
+                                           timestamp=undefined,
+                                           external_id=ExtId } | T ],
+                                        LastId, CurrentTimestamp, Acc ) ->
+    NewId = LastId + 1,
 
-	NewEvent = Event#creation_event{
-		id=NewId,
-		timestamp=CurrentTimestamp,
-		external_id=normalise_external_id( ExtId ) },
+    NewEvent = Event#creation_event{
+        id=NewId,
+        timestamp=CurrentTimestamp,
+        external_id=normalise_external_id( ExtId ) },
 
-	assign_identifiers_to_top_level_events( T, NewId, CurrentTimestamp,
-											[ NewEvent | Acc ] );
+    assign_identifiers_to_top_level_events( T, NewId, CurrentTimestamp,
+                                            [ NewEvent | Acc ] );
 
 
 assign_identifiers_to_top_level_events( _Changeset=[
-		Event=#destruction_event{ id=undefined,
+        Event=#destruction_event{ id=undefined,
                                   timestamp=undefined,
                                   external_id=ExtId } | T ],
-										LastId, CurrentTimestamp, Acc ) ->
-	NewId = LastId + 1,
+                                        LastId, CurrentTimestamp, Acc ) ->
+    NewId = LastId + 1,
 
-	NewEvent = Event#destruction_event{
-		id=NewId,
-		timestamp=CurrentTimestamp,
-		external_id=normalise_external_id( ExtId ) },
+    NewEvent = Event#destruction_event{
+        id=NewId,
+        timestamp=CurrentTimestamp,
+        external_id=normalise_external_id( ExtId ) },
 
-	assign_identifiers_to_top_level_events( T, NewId, CurrentTimestamp,
-											[ NewEvent | Acc ] );
+    assign_identifiers_to_top_level_events( T, NewId, CurrentTimestamp,
+                                            [ NewEvent | Acc ] );
 
 
 assign_identifiers_to_top_level_events( _Changeset=[
-		Event=#association_event{ id=undefined,
+        Event=#association_event{ id=undefined,
                                   timestamp=undefined,
                                   external_id=ExtId } | T ],
-										LastId, CurrentTimestamp, Acc ) ->
-	NewId = LastId + 1,
+                                        LastId, CurrentTimestamp, Acc ) ->
+    NewId = LastId + 1,
 
-	NewEvent = Event#association_event{
-		id=NewId,
-		timestamp=CurrentTimestamp,
-		external_id=normalise_external_id( ExtId ) },
+    NewEvent = Event#association_event{
+        id=NewId,
+        timestamp=CurrentTimestamp,
+        external_id=normalise_external_id( ExtId ) },
 
-	assign_identifiers_to_top_level_events( T, NewId, CurrentTimestamp,
-											[ NewEvent | Acc ] );
-
-
-assign_identifiers_to_top_level_events( _Changeset=[
-		Event=#binary_association_event{
-			id=undefined,
-			timestamp=undefined,
-			source_external_id=SourceExtId,
-			target_external_id=TargetExtId } | T ],
-										LastId, CurrentTimestamp, Acc ) ->
-	NewId = LastId + 1,
-
-	NewEvent = Event#binary_association_event{
-		id=NewId,
-		timestamp=CurrentTimestamp,
-		source_external_id=normalise_external_id( SourceExtId ),
-		target_external_id=normalise_external_id( TargetExtId ) },
-
-	assign_identifiers_to_top_level_events( T, NewId, CurrentTimestamp,
-											[ NewEvent | Acc ] );
+    assign_identifiers_to_top_level_events( T, NewId, CurrentTimestamp,
+                                            [ NewEvent | Acc ] );
 
 
 assign_identifiers_to_top_level_events( _Changeset=[
-		Event=#disassociation_event{ id=undefined,
+        Event=#binary_association_event{
+            id=undefined,
+            timestamp=undefined,
+            source_external_id=SourceExtId,
+            target_external_id=TargetExtId } | T ],
+                                        LastId, CurrentTimestamp, Acc ) ->
+    NewId = LastId + 1,
+
+    NewEvent = Event#binary_association_event{
+        id=NewId,
+        timestamp=CurrentTimestamp,
+        source_external_id=normalise_external_id( SourceExtId ),
+        target_external_id=normalise_external_id( TargetExtId ) },
+
+    assign_identifiers_to_top_level_events( T, NewId, CurrentTimestamp,
+                                            [ NewEvent | Acc ] );
+
+
+assign_identifiers_to_top_level_events( _Changeset=[
+        Event=#disassociation_event{ id=undefined,
                                      timestamp=undefined,
                                      external_id=ExtId } | T ],
-										LastId, CurrentTimestamp, Acc ) ->
-	NewId = LastId + 1,
+                                        LastId, CurrentTimestamp, Acc ) ->
+    NewId = LastId + 1,
 
-	NewEvent = Event#disassociation_event{
-		id=NewId,
-		timestamp=CurrentTimestamp,
-		external_id=normalise_external_id( ExtId ) },
+    NewEvent = Event#disassociation_event{
+        id=NewId,
+        timestamp=CurrentTimestamp,
+        external_id=normalise_external_id( ExtId ) },
 
-	assign_identifiers_to_top_level_events( T, NewId, CurrentTimestamp,
-											[ NewEvent | Acc ] );
+    assign_identifiers_to_top_level_events( T, NewId, CurrentTimestamp,
+                                            [ NewEvent | Acc ] );
 
 
 assign_identifiers_to_top_level_events( _Changeset=[
-		Event=#connection_event{ id=undefined,
+        Event=#connection_event{ id=undefined,
                                  timestamp=undefined,
                                  source_external_id=SourceExtId,
                                  target_external_id=TargetExtId } | T ],
-										LastId, CurrentTimestamp, Acc ) ->
-	NewId = LastId + 1,
+                                        LastId, CurrentTimestamp, Acc ) ->
+    NewId = LastId + 1,
 
-	NewEvent = Event#connection_event{
-		id=NewId,
-		timestamp=CurrentTimestamp,
-		source_external_id=normalise_external_id( SourceExtId ),
-		target_external_id=normalise_external_id( TargetExtId ) },
+    NewEvent = Event#connection_event{
+        id=NewId,
+        timestamp=CurrentTimestamp,
+        source_external_id=normalise_external_id( SourceExtId ),
+        target_external_id=normalise_external_id( TargetExtId ) },
 
-	assign_identifiers_to_top_level_events( T, NewId, CurrentTimestamp,
-											[ NewEvent | Acc ] );
+    assign_identifiers_to_top_level_events( T, NewId, CurrentTimestamp,
+                                            [ NewEvent | Acc ] );
 
 
 assign_identifiers_to_top_level_events( _Changeset=[
-		Event=#disconnection_event{ id=undefined,
+        Event=#disconnection_event{ id=undefined,
                                     timestamp=undefined,
                                     source_external_id=SourceExtId,
                                     target_external_id=TargetExtId } | T ],
-										LastId, CurrentTimestamp, Acc ) ->
-	NewId = LastId + 1,
+                                        LastId, CurrentTimestamp, Acc ) ->
+    NewId = LastId + 1,
 
-	NewEvent = Event#disconnection_event{
-		id=NewId,
-		timestamp=CurrentTimestamp,
-		source_external_id=normalise_external_id( SourceExtId ),
-		target_external_id=normalise_external_id( TargetExtId ) },
+    NewEvent = Event#disconnection_event{
+        id=NewId,
+        timestamp=CurrentTimestamp,
+        source_external_id=normalise_external_id( SourceExtId ),
+        target_external_id=normalise_external_id( TargetExtId ) },
 
-	assign_identifiers_to_top_level_events( T, NewId, CurrentTimestamp,
-											[ NewEvent | Acc ] );
+    assign_identifiers_to_top_level_events( T, NewId, CurrentTimestamp,
+                                            [ NewEvent | Acc ] );
 
 
 assign_identifiers_to_top_level_events( _Changeset=[
-		Event=#update_event{ id=undefined,
+        Event=#update_event{ id=undefined,
                              timestamp=undefined,
                              external_id=ExtId } | T ], LastId,
-										CurrentTimestamp, Acc ) ->
-	NewId = LastId + 1,
+                                        CurrentTimestamp, Acc ) ->
+    NewId = LastId + 1,
 
-	NewEvent = Event#update_event{
-		id=NewId,
-		timestamp=CurrentTimestamp,
-		external_id=normalise_external_id( ExtId ) },
+    NewEvent = Event#update_event{
+        id=NewId,
+        timestamp=CurrentTimestamp,
+        external_id=normalise_external_id( ExtId ) },
 
-	assign_identifiers_to_top_level_events( T, NewId, CurrentTimestamp,
-											[ NewEvent | Acc ] );
+    assign_identifiers_to_top_level_events( T, NewId, CurrentTimestamp,
+                                            [ NewEvent | Acc ] );
 
 
 assign_identifiers_to_top_level_events( _Changeset=[ Event | _T ], _LastId,
-										_CurrentTimestamp, _Acc ) ->
+                                        _CurrentTimestamp, _Acc ) ->
 
-	trace_utils:error_fmt( "Following world event could not be handled: ~ts",
-		[ dataflow_support:world_event_to_string( Event ) ] ),
+    trace_utils:error_fmt( "Following world event could not be handled: ~ts",
+        [ dataflow_support:world_event_to_string( Event ) ] ),
 
-	throw( { unhandled_event, Event } ).
+    throw( { unhandled_event, Event } ).
 
 
 
@@ -705,28 +705,28 @@ Returns an updated state, comprising an updated list of the identifiers of the
 (top-level) dispatched events (that will be then waited for).
 """.
 -spec dispatch_top_level_events( changeset(), dispatch_table(),
-				wooper:state() ) -> { dispatch_table(), wooper:state() }.
+                wooper:state() ) -> { dispatch_table(), wooper:state() }.
 dispatch_top_level_events( Changeset, DispatchTable, State ) ->
 
-	ObjectTypeTable = ?getAttr(object_type_table),
+    ObjectTypeTable = ?getAttr(object_type_table),
 
-	dispatch_top_level_events( Changeset, DispatchTable, ObjectTypeTable,
-							   State ).
+    dispatch_top_level_events( Changeset, DispatchTable, ObjectTypeTable,
+                               State ).
 
 
 dispatch_top_level_events( _Changeset=[], DispatchTable, _ObjectTypeTable,
-						   State ) ->
-	{ DispatchTable, State };
+                           State ) ->
+    { DispatchTable, State };
 
 dispatch_top_level_events( _Changeset=[ E | T ], DispatchTable,
-						   ObjectTypeTable, State ) ->
+                           ObjectTypeTable, State ) ->
 
-	{ UpdatedDispatchTable, SentState } =
-		dispatch_event( E, DispatchTable, ObjectTypeTable, State ),
+    { UpdatedDispatchTable, SentState } =
+        dispatch_event( E, DispatchTable, ObjectTypeTable, State ),
 
 
-	dispatch_top_level_events( T, UpdatedDispatchTable, ObjectTypeTable,
-							   SentState ).
+    dispatch_top_level_events( T, UpdatedDispatchTable, ObjectTypeTable,
+                               SentState ).
 
 
 
@@ -741,18 +741,18 @@ Implemented so that only having strings leads to significant processing
 -spec normalise_external_id( external_id() ) -> external_id().
 normalise_external_id( ExtId ) when is_list( ExtId ) ->
 
-	case text_utils:is_string( ExtId ) of
+    case text_utils:is_string( ExtId ) of
 
-		true ->
-			text_utils:string_to_binary( ExtId );
+        true ->
+            text_utils:string_to_binary( ExtId );
 
-		false ->
-			ExtId
+        false ->
+            ExtId
 
-	end;
+    end;
 
 normalise_external_id( ExtId ) ->
-	ExtId.
+    ExtId.
 
 
 
@@ -781,59 +781,59 @@ User code is then free to inject changesets and their final notification
 regardless of this issue.
 """.
 -spec notifyAllChangesetsInjected( wooper:state(), sending_actor_pid() ) ->
-										actor_oneway_return().
+                                        actor_oneway_return().
 notifyAllChangesetsInjected( State, _SendingActorPid ) ->
 
-	false = ?getAttr(all_changesets_injected),
+    false = ?getAttr(all_changesets_injected),
 
-	?notice( "End of changesets notified; when their processing will be "
-		"completed, all unitary changesets will be sent to the "
-		"experiment manager." ),
+    ?notice( "End of changesets notified; when their processing will be "
+        "completed, all unitary changesets will be sent to the "
+        "experiment manager." ),
 
-	% The processing of this oneway may come after the one, at the same diasca,
-	% of (any number of) injectChangeset/2.
-	%
-	% We should not set unilaterally here the 'all_changesets_injected'
-	% attribute to true, as otherwise, when said injected changeset(s) will be
-	% fully processed, we would then attempt to set all_changesets_injected to
-	% true, and discover it is already the case, which is not expected, thus an
-	% error condition; so:
+    % The processing of this oneway may come after the one, at the same diasca,
+    % of (any number of) injectChangeset/2.
+    %
+    % We should not set unilaterally here the 'all_changesets_injected'
+    % attribute to true, as otherwise, when said injected changeset(s) will be
+    % fully processed, we would then attempt to set all_changesets_injected to
+    % true, and discover it is already the case, which is not expected, thus an
+    % error condition; so:
 
-	ReadyState = case no_more_dispatched_event( ?getAttr(dispatch_table) ) of
+    ReadyState = case no_more_dispatched_event( ?getAttr(dispatch_table) ) of
 
-		true ->
-			SetState = setAttribute( State, all_changesets_injected, true ),
+        true ->
+            SetState = setAttribute( State, all_changesets_injected, true ),
 
-			% In the current diasca, any number of injectChangeset/3 oneways may
-			% still have to be processed; the following call will be useful iff
-			% there was none of these changesets received:
-			%
-			class_Actor:send_actor_message( self(), checkChangesetsCompletion,
-											SetState );
+            % In the current diasca, any number of injectChangeset/3 oneways may
+            % still have to be processed; the following call will be useful iff
+            % there was none of these changesets received:
+            %
+            class_Actor:send_actor_message( self(), checkChangesetsCompletion,
+                                            SetState );
 
-		false ->
-			% Attribute kept to false; will be set to true when the
-			% corresponding events will be processed:
-			%
-			State
+        false ->
+            % Attribute kept to false; will be set to true when the
+            % corresponding events will be processed:
+            %
+            State
 
-	end,
+    end,
 
-	% Note: the injection of changesets and this notification are all triggered
-	% thanks to actor messages, possibly at the same diasca (e.g. as a series
-	% sent from a single function of the entry point); as a result of message
-	% reordering, injection(s) can be processed by this world manager *after*
-	% this notification method; this notification shall thus be actually
-	% processed at the next diasca, to ensure that no more injections can be
-	% expected.
-	%
-	% We have to ensure that the completion will be checked in all cases,
-	% including the one where no changeset at all is injected (in which case the
-	% checking that is done once some events are completed is of no use).
-	%
-	% As a consequence, we plan this delayed checking for the next diasca:
+    % Note: the injection of changesets and this notification are all triggered
+    % thanks to actor messages, possibly at the same diasca (e.g. as a series
+    % sent from a single function of the entry point); as a result of message
+    % reordering, injection(s) can be processed by this world manager *after*
+    % this notification method; this notification shall thus be actually
+    % processed at the next diasca, to ensure that no more injections can be
+    % expected.
+    %
+    % We have to ensure that the completion will be checked in all cases,
+    % including the one where no changeset at all is injected (in which case the
+    % checking that is done once some events are completed is of no use).
+    %
+    % As a consequence, we plan this delayed checking for the next diasca:
 
-	actor:return_state( ReadyState ).
+    actor:return_state( ReadyState ).
 
 
 
@@ -845,48 +845,48 @@ immediately following the notification that all changesets were injected, to
 handle the case where no actual changeset was actually injected at all.
 """.
 -spec checkChangesetsCompletion( wooper:state(), sending_actor_pid() ) ->
-										actor_oneway_return().
+                                        actor_oneway_return().
 checkChangesetsCompletion( State, _SendingActorPid ) ->
 
-	?debug( "Checking the completion of changesets." ),
+    ?debug( "Checking the completion of changesets." ),
 
-	% May not be equal to true, as between the notifyAllChangesetsInjected/2
-	% call and this one, injected event(s) may have been already completed:
-	%
-	CheckedState = case ?getAttr(all_changesets_injected) of
+    % May not be equal to true, as between the notifyAllChangesetsInjected/2
+    % call and this one, injected event(s) may have been already completed:
+    %
+    CheckedState = case ?getAttr(all_changesets_injected) of
 
-		true ->
-			% We must handle the case where no changeset was injected, and the
-			% one where any number were injected, possibly in previous diascas.
+        true ->
+            % We must handle the case where no changeset was injected, and the
+            % one where any number were injected, possibly in previous diascas.
 
-			case no_more_dispatched_event( ?getAttr(dispatch_table) ) of
+            case no_more_dispatched_event( ?getAttr(dispatch_table) ) of
 
-				true ->
-					% Possibly here no event at all were ever injected, thus no
-					% processing thereof result to a call as:
-					%
-					on_all_changesets_processed( ?getAttr(completed_events),
-												 State );
+                true ->
+                    % Possibly here no event at all were ever injected, thus no
+                    % processing thereof result to a call as:
+                    %
+                    on_all_changesets_processed( ?getAttr(completed_events),
+                                                 State );
 
-				false ->
-					% Then wait for the completion of these events (resulting in
-					% a later call to on_all_changesets_processed/2:
-					%
-					State
+                false ->
+                    % Then wait for the completion of these events (resulting in
+                    % a later call to on_all_changesets_processed/2:
+                    %
+                    State
 
-		end;
+        end;
 
-		% Here, notifyAllChangesetsInjected/2 set this attribute to true, but
-		% afterwards injected events have been processed, which reset it to
-		% false; as the work has already been done (e.g. the completed changeset
-		% has been sent to the experiment manager), nothing to do left here:
-		%
-		false ->
-			State
+        % Here, notifyAllChangesetsInjected/2 set this attribute to true, but
+        % afterwards injected events have been processed, which reset it to
+        % false; as the work has already been done (e.g. the completed changeset
+        % has been sent to the experiment manager), nothing to do left here:
+        %
+        false ->
+            State
 
-	end,
+    end,
 
-	actor:return_state( CheckedState ).
+    actor:return_state( CheckedState ).
 
 
 
@@ -898,83 +898,83 @@ opening the possibility of applying their induced events in turn), and possibly
 reports new events that shall be injected as well.
 """.
 -spec reportChangesetCompletion( wooper:state(),
-		[ { event_id(), completion_extra_info() } ], changeset(),
-								sending_actor_pid() ) -> actor_oneway_return().
+        [ { event_id(), completion_extra_info() } ], changeset(),
+                                sending_actor_pid() ) -> actor_oneway_return().
 reportChangesetCompletion( State, CompletedEventInfos, InjectedChangeset,
-						   SendingObjectManagerPid ) ->
+                           SendingObjectManagerPid ) ->
 
-	?void_fmt( "Received a notification of changeset completion "
-		"from object manager ~p; the information relative to the "
-		"corresponding completed events are ~w, while the newly "
-		"injected changeset is: ~ts",
-		[ SendingObjectManagerPid, CompletedEventInfos,
-		  dataflow_support:changeset_to_string( InjectedChangeset,
-												_IsVerbose=false ) ] ),
+    ?void_fmt( "Received a notification of changeset completion "
+        "from object manager ~p; the information relative to the "
+        "corresponding completed events are ~w, while the newly "
+        "injected changeset is: ~ts",
+        [ SendingObjectManagerPid, CompletedEventInfos,
+          dataflow_support:changeset_to_string( InjectedChangeset,
+                                                _IsVerbose=false ) ] ),
 
-	% Based on their IDs, we extract the corresponding waited events, append
-	% them to the completed ones, and possibly inject their induced events, if
-	% any, augmented with extra events that may be introduced by the object
-	% manager (e.g. if the creation of a car leads, according to the car object
-	% manager, to the creation of 4 wheels):
+    % Based on their IDs, we extract the corresponding waited events, append
+    % them to the completed ones, and possibly inject their induced events, if
+    % any, augmented with extra events that may be introduced by the object
+    % manager (e.g. if the creation of a car leads, according to the car object
+    % manager, to the creation of 4 wheels):
 
-	DispatchTable = ?getAttr(dispatch_table),
+    DispatchTable = ?getAttr(dispatch_table),
 
-	{ CompletedEvents, ShrunkDispatchTable, SuspendTable } =
-		extract_and_complete_events( CompletedEventInfos,
-									 SendingObjectManagerPid, DispatchTable ),
+    { CompletedEvents, ShrunkDispatchTable, SuspendTable } =
+        extract_and_complete_events( CompletedEventInfos,
+                                     SendingObjectManagerPid, DispatchTable ),
 
-	% Let's declare the suspensions to the corresponding dataflows:
-	SuspendState = declare_suspensions( SuspendTable, State ),
+    % Let's declare the suspensions to the corresponding dataflows:
+    SuspendState = declare_suspensions( SuspendTable, State ),
 
-	% We separate the top-level events (the roots) from their induced ones (the
-	% subtrees); a partition a bit like the consing of a forest (a set of trees:
-	% [Root|Subtree] for each of them):
-	%
-	{ BaseCompletedEvents, InducedEvents } = split_events( CompletedEvents ),
+    % We separate the top-level events (the roots) from their induced ones (the
+    % subtrees); a partition a bit like the consing of a forest (a set of trees:
+    % [Root|Subtree] for each of them):
+    %
+    { BaseCompletedEvents, InducedEvents } = split_events( CompletedEvents ),
 
-	% We have to assign an identifier to the top-level events of both the
-	% induced events and the newly injected ones:
+    % We have to assign an identifier to the top-level events of both the
+    % induced events and the newly injected ones:
 
-	LastId = ?getAttr(event_count),
+    LastId = ?getAttr(event_count),
 
-	% The induced events shall in general be more numerous than the injected
-	% ones, and we prefer assigning lower identifiers to the former:
-	%
-	NewChangeset = InjectedChangeset ++ InducedEvents,
+    % The induced events shall in general be more numerous than the injected
+    % ones, and we prefer assigning lower identifiers to the former:
+    %
+    NewChangeset = InjectedChangeset ++ InducedEvents,
 
-	CurrentTimestamp = class_Actor:get_current_logical_timestamp( State ),
+    CurrentTimestamp = class_Actor:get_current_logical_timestamp( State ),
 
-	{ NewChangesetWithIds, UpdatedLastId } =
-		assign_identifiers_to_top_level_events( NewChangeset, LastId,
-												CurrentTimestamp ),
+    { NewChangesetWithIds, UpdatedLastId } =
+        assign_identifiers_to_top_level_events( NewChangeset, LastId,
+                                                CurrentTimestamp ),
 
-	{ NewDispatchTable, DispatchedState } = dispatch_top_level_events(
-		NewChangesetWithIds, ShrunkDispatchTable, SuspendState ),
+    { NewDispatchTable, DispatchedState } = dispatch_top_level_events(
+        NewChangesetWithIds, ShrunkDispatchTable, SuspendState ),
 
-	ReadyState = setAttributes( DispatchedState, [
-		{ dispatch_table, NewDispatchTable },
-		{ event_count, UpdatedLastId } ] ),
+    ReadyState = setAttributes( DispatchedState, [
+        { dispatch_table, NewDispatchTable },
+        { event_count, UpdatedLastId } ] ),
 
-	NewCompletedEvents = BaseCompletedEvents ++ ?getAttr(completed_events),
+    NewCompletedEvents = BaseCompletedEvents ++ ?getAttr(completed_events),
 
-	% We have to wait for all events to complete; none shall arrive next, and
-	% all pending ones (decided here or formerly) shall be over:
-	%
-	FinalState = case ?getAttr(all_changesets_injected)
+    % We have to wait for all events to complete; none shall arrive next, and
+    % all pending ones (decided here or formerly) shall be over:
+    %
+    FinalState = case ?getAttr(all_changesets_injected)
             andalso no_more_dispatched_event( NewDispatchTable ) of
 
-		% Here no report of changeset completion can be expected anymore:
-		true ->
-			FullOrderedChangeset = lists:reverse( NewCompletedEvents ),
-			on_all_changesets_processed( FullOrderedChangeset, ReadyState );
+        % Here no report of changeset completion can be expected anymore:
+        true ->
+            FullOrderedChangeset = lists:reverse( NewCompletedEvents ),
+            on_all_changesets_processed( FullOrderedChangeset, ReadyState );
 
-		false ->
-			% Still have to wait for at least one event to complete:
-			setAttribute( ReadyState, completed_events, NewCompletedEvents )
+        false ->
+            % Still have to wait for at least one event to complete:
+            setAttribute( ReadyState, completed_events, NewCompletedEvents )
 
-	end,
+    end,
 
-	actor:return_state( FinalState ).
+    actor:return_state( FinalState ).
 
 
 
@@ -988,50 +988,50 @@ Returns the requested events, an updated dispatch table and a newly created
 suspend table.
 """.
 -spec extract_and_complete_events( [ { event_id(), completion_extra_info() } ],
-		object_manager_pid(), dispatch_table() ) ->
-			{ changeset(), dispatch_table(), suspend_table() }.
+        object_manager_pid(), dispatch_table() ) ->
+            { changeset(), dispatch_table(), suspend_table() }.
 extract_and_complete_events( EventInfos, ObjectManagerPid, DispatchTable ) ->
 
-	EventList = table:get_value( ObjectManagerPid, DispatchTable ),
+    EventList = table:get_value( ObjectManagerPid, DispatchTable ),
 
-	{ ExtractedEvents, RemainingEvents, SuspendTable } =
-		extract_and_complete_events( EventInfos, EventList, _AccEvents=[],
-									 _EmptySuspendTable=list_table:new() ),
+    { ExtractedEvents, RemainingEvents, SuspendTable } =
+        extract_and_complete_events( EventInfos, EventList, _AccEvents=[],
+                                     _EmptySuspendTable=list_table:new() ),
 
-	NewDispatchTable = table:add_entry( ObjectManagerPid, RemainingEvents,
-										DispatchTable ),
+    NewDispatchTable = table:add_entry( ObjectManagerPid, RemainingEvents,
+                                        DispatchTable ),
 
-	{ ExtractedEvents, NewDispatchTable, SuspendTable }.
+    { ExtractedEvents, NewDispatchTable, SuspendTable }.
 
 
 
 % (helper)
 extract_and_complete_events( _EventInfos=[], EventList, AccEvents,
-							 SuspendTable ) ->
-	{ AccEvents, EventList, SuspendTable };
+                             SuspendTable ) ->
+    { AccEvents, EventList, SuspendTable };
 
 extract_and_complete_events( _EventInfos=[ { Id, ExtraInfo } | T ],
-							 EventList, AccEvents, SuspendTable ) ->
+                             EventList, AccEvents, SuspendTable ) ->
 
-	% Gets the event for which extra information are specified:
-	{ TargetEvent, RemainingEventList } =
-		dataflow_support:find_event_by_id( Id, EventList ),
+    % Gets the event for which extra information are specified:
+    { TargetEvent, RemainingEventList } =
+        dataflow_support:find_event_by_id( Id, EventList ),
 
-	% Applies these information, returns an updated event and suspend table:
-	{ FullEvent, NewSuspendedTable } =
-			case finalise_event( TargetEvent, ExtraInfo ) of
+    % Applies these information, returns an updated event and suspend table:
+    { FullEvent, NewSuspendedTable } =
+            case finalise_event( TargetEvent, ExtraInfo ) of
 
-		{ CompletedEvent, DataflowPid, SuspendSet } ->
-			{ CompletedEvent, list_table:append_list_to_entry( DataflowPid,
-				SuspendSet, SuspendTable ) };
+        { CompletedEvent, DataflowPid, SuspendSet } ->
+            { CompletedEvent, list_table:append_list_to_entry( DataflowPid,
+                SuspendSet, SuspendTable ) };
 
-		CompletedEvent ->
-			{ CompletedEvent, SuspendTable }
+        CompletedEvent ->
+            { CompletedEvent, SuspendTable }
 
-	end,
+    end,
 
-	extract_and_complete_events( T, RemainingEventList,
-								 [ FullEvent | AccEvents ], NewSuspendedTable ).
+    extract_and_complete_events( T, RemainingEventList,
+                                 [ FullEvent | AccEvents ], NewSuspendedTable ).
 
 
 
@@ -1043,99 +1043,99 @@ available, in which case we update accordingly that reference view based on said
 event, so that it becomes complete.
 """.
 -spec finalise_event( world_event(), completion_extra_info() ) ->
-							{ world_event(), [ object_pid() ] }.
+                            { world_event(), [ object_pid() ] }.
 finalise_event( CreationEvent=#creation_event{ object_pid=undefined },
-				_CreationExtraInfo=CreatedObjectPid ) ->
+                _CreationExtraInfo=CreatedObjectPid ) ->
 
-	CompletedCreationEvent =
-		CreationEvent#creation_event{ object_pid=CreatedObjectPid },
+    CompletedCreationEvent =
+        CreationEvent#creation_event{ object_pid=CreatedObjectPid },
 
-	% Just created dataflow objects automatically consider themselves as
-	% suspended, yet their dataflow must be notified of it, so that they can
-	% resume them when appropriate.
-	%
-	% However, no need to declare that suspension here, as when the dataflow
-	% object will join the simulation (i.e. when its onFirstDiasca/2 oneway will
-	% be executed), it will register to the dataflow, which implies that the
-	% dataflow will automatically include it among its suspended blocks.
-	%
+    % Just created dataflow objects automatically consider themselves as
+    % suspended, yet their dataflow must be notified of it, so that they can
+    % resume them when appropriate.
+    %
+    % However, no need to declare that suspension here, as when the dataflow
+    % object will join the simulation (i.e. when its onFirstDiasca/2 oneway will
+    % be executed), it will register to the dataflow, which implies that the
+    % dataflow will automatically include it among its suspended blocks.
+    %
 
-	% So:
-	%{ CompletedCreationEvent, DataflowPid, _SuspendSet=[ CreatedObjectPid ] };
-	CompletedCreationEvent;
+    % So:
+    %{ CompletedCreationEvent, DataflowPid, _SuspendSet=[ CreatedObjectPid ] };
+    CompletedCreationEvent;
 
 
 finalise_event( DestructionEvent=#destruction_event{},
-				_DestructionExtraInfo=DestructedObjectPid ) ->
-	% No object suspension here:
-	DestructionEvent#destruction_event{ object_pid=DestructedObjectPid };
+                _DestructionExtraInfo=DestructedObjectPid ) ->
+    % No object suspension here:
+    DestructionEvent#destruction_event{ object_pid=DestructedObjectPid };
 
 
 finalise_event( AssociationEvent=#association_event{},
-				_AssocExtraInfo=undefined ) ->
-	% No object suspension here:
-	AssociationEvent;
+                _AssocExtraInfo=undefined ) ->
+    % No object suspension here:
+    AssociationEvent;
 
 
 finalise_event( BinAssociationEvent=#binary_association_event{},
-				_BinAssocExtraInfo={ SourceObjectPid, TargetObjectPid } ) ->
-	% No object suspension here:
-	BinAssociationEvent#binary_association_event{
-		source_object_pid=SourceObjectPid,
-		target_object_pid=TargetObjectPid };
+                _BinAssocExtraInfo={ SourceObjectPid, TargetObjectPid } ) ->
+    % No object suspension here:
+    BinAssociationEvent#binary_association_event{
+        source_object_pid=SourceObjectPid,
+        target_object_pid=TargetObjectPid };
 
 
 finalise_event( DisassociationEvent=#disassociation_event{},
-				_DisassocExtraInfo={ ObjectPid, DisassociationInfo } ) ->
-	% No object suspension here:
-	DisassociationEvent#disassociation_event{
-		object_pid=ObjectPid,
-		disassociation_information=DisassociationInfo };
+                _DisassocExtraInfo={ ObjectPid, DisassociationInfo } ) ->
+    % No object suspension here:
+    DisassociationEvent#disassociation_event{
+        object_pid=ObjectPid,
+        disassociation_information=DisassociationInfo };
 
 
 finalise_event( ConnectionEvent=#connection_event{},
-				_ConnectionExtraInfo=undefined ) ->
-	% No object suspension here:
-	ConnectionEvent;
+                _ConnectionExtraInfo=undefined ) ->
+    % No object suspension here:
+    ConnectionEvent;
 
 
 finalise_event( DisconnectionEvent=#disconnection_event{},
-				_DisconnectionExtraInfo=undefined ) ->
-	% No object suspension here:
-	DisconnectionEvent;
+                _DisconnectionExtraInfo=undefined ) ->
+    % No object suspension here:
+    DisconnectionEvent;
 
 
 finalise_event( UpdateEvent=#update_event{ object_pid=undefined },
-				UpdateExtraInfo=ObjectPid ) ->
+                UpdateExtraInfo=ObjectPid ) ->
 
-	% Recording specified object PID, and jumping to next clause:
-	finalise_event( UpdateEvent#update_event{ object_pid=ObjectPid },
-					UpdateExtraInfo );
+    % Recording specified object PID, and jumping to next clause:
+    finalise_event( UpdateEvent#update_event{ object_pid=ObjectPid },
+                    UpdateExtraInfo );
 
 
 finalise_event( UpdateEvent=#update_event{ object_pid=ObjectPid,
-										   dataflow_pid=DataflowPid },
-				_UpdateExtraInfo=ObjectPid ) ->
+                                           dataflow_pid=DataflowPid },
+                _UpdateExtraInfo=ObjectPid ) ->
 
-	% PIDs match, consistent here.
+    % PIDs match, consistent here.
 
-	% As for creations, just updated dataflow objects already recorded that they
-	% were suspended, yet their dataflow must be notified of it, so that they
-	% can resume them when appropriate.
-	%
-	% Not done elsewhere, hence done here:
-	%
-	{ UpdateEvent#update_event{ object_pid=ObjectPid }, DataflowPid,
-	  _SuspendSet=[ ObjectPid ] };
+    % As for creations, just updated dataflow objects already recorded that they
+    % were suspended, yet their dataflow must be notified of it, so that they
+    % can resume them when appropriate.
+    %
+    % Not done elsewhere, hence done here:
+    %
+    { UpdateEvent#update_event{ object_pid=ObjectPid }, DataflowPid,
+      _SuspendSet=[ ObjectPid ] };
 
 
 finalise_event( Event, ExtraInfo ) ->
-	trace_utils:error_fmt( "Unexpected event/extra information combination:~n"
-		" - event is ~ts~n"
-		" - extra information is ~p",
-		[ dataflow_support:world_event_to_string( Event ), ExtraInfo ] ),
+    trace_utils:error_fmt( "Unexpected event/extra information combination:~n"
+        " - event is ~ts~n"
+        " - extra information is ~p",
+        [ dataflow_support:world_event_to_string( Event ), ExtraInfo ] ),
 
-	throw( { unexpected_event_finalisation, Event, ExtraInfo } ).
+    throw( { unexpected_event_finalisation, Event, ExtraInfo } ).
 
 
 
@@ -1146,17 +1146,17 @@ Declares to specified dataflows (the keys of the table) which of their objects
 -spec declare_suspensions( suspend_table(), wooper:state() ) -> wooper:state().
 declare_suspensions( SuspendTable, State ) ->
 
-	SuspendPairs = list_table:enumerate( SuspendTable ),
+    SuspendPairs = list_table:enumerate( SuspendTable ),
 
-	%trace_utils:debug_fmt( "Suspending ~p.", [ SuspendPairs ] ),
+    %trace_utils:debug_fmt( "Suspending ~p.", [ SuspendPairs ] ),
 
-	lists:foldl(
-		fun( { DataflowPid, SuspendSet }, AccState ) ->
-			class_Actor:send_actor_message( DataflowPid,
-				{ declareSuspendedBlocks, [ SuspendSet ] }, AccState )
-		end,
-		_Acc0=State,
-		_List=SuspendPairs ).
+    lists:foldl(
+        fun( { DataflowPid, SuspendSet }, AccState ) ->
+            class_Actor:send_actor_message( DataflowPid,
+                { declareSuspendedBlocks, [ SuspendSet ] }, AccState )
+        end,
+        _Acc0=State,
+        _List=SuspendPairs ).
 
 
 
@@ -1167,57 +1167,57 @@ induced ones, as subtrees.
 """.
 -spec split_events( changeset() ) -> { changeset(), changeset() }.
 split_events( Changeset ) ->
-	split_events( Changeset, _AccTop=[], _AccInduced=[] ).
+    split_events( Changeset, _AccTop=[], _AccInduced=[] ).
 
 
 split_events( _Changeset=[], AccTop, AccInduced ) ->
-	{ AccTop, AccInduced };
+    { AccTop, AccInduced };
 
 % We have to special-case each event type:
 split_events( _Changeset=[ E=#creation_event{ induced_events=Induced } | T ],
-			  AccTop, AccInduced ) ->
-	split_events( T, [ E#creation_event{ induced_events=[] } | AccTop ],
-				  Induced ++ AccInduced );
+              AccTop, AccInduced ) ->
+    split_events( T, [ E#creation_event{ induced_events=[] } | AccTop ],
+                  Induced ++ AccInduced );
 
 split_events( _Changeset=[ E=#destruction_event{ induced_events=Induced } | T ],
-			  AccTop, AccInduced ) ->
-	split_events( T, [ E#destruction_event{ induced_events=[] } | AccTop ],
-				  Induced ++ AccInduced );
+              AccTop, AccInduced ) ->
+    split_events( T, [ E#destruction_event{ induced_events=[] } | AccTop ],
+                  Induced ++ AccInduced );
 
 split_events( _Changeset=[
-					E=#association_event{ induced_events=Induced } | T ],
-			  AccTop, AccInduced ) ->
-	split_events( T, [ E#association_event{ induced_events=[] } | AccTop ],
-				  Induced ++ AccInduced );
+                    E=#association_event{ induced_events=Induced } | T ],
+              AccTop, AccInduced ) ->
+    split_events( T, [ E#association_event{ induced_events=[] } | AccTop ],
+                  Induced ++ AccInduced );
 
 split_events( _Changeset=[
-				E=#binary_association_event{ induced_events=Induced } | T ],
-			  AccTop, AccInduced ) ->
-	split_events( T,
-				  [ E#binary_association_event{ induced_events=[] } | AccTop ],
-				  Induced ++ AccInduced );
+                E=#binary_association_event{ induced_events=Induced } | T ],
+              AccTop, AccInduced ) ->
+    split_events( T,
+                  [ E#binary_association_event{ induced_events=[] } | AccTop ],
+                  Induced ++ AccInduced );
 
 split_events( _Changeset=[
-					E=#disassociation_event{ induced_events=Induced } | T ],
-			  AccTop, AccInduced ) ->
-	split_events( T, [ E#disassociation_event{ induced_events=[] } | AccTop ],
-				  Induced ++ AccInduced );
+                    E=#disassociation_event{ induced_events=Induced } | T ],
+              AccTop, AccInduced ) ->
+    split_events( T, [ E#disassociation_event{ induced_events=[] } | AccTop ],
+                  Induced ++ AccInduced );
 
 split_events( _Changeset=[ E=#connection_event{ induced_events=Induced } | T ],
-			  AccTop, AccInduced ) ->
-	split_events( T, [ E#connection_event{ induced_events=[] } | AccTop ],
-				  Induced ++ AccInduced );
+              AccTop, AccInduced ) ->
+    split_events( T, [ E#connection_event{ induced_events=[] } | AccTop ],
+                  Induced ++ AccInduced );
 
 split_events( _Changeset=[
-					E=#disconnection_event{ induced_events=Induced } | T ],
-			  AccTop, AccInduced ) ->
-	split_events( T, [ E#disconnection_event{ induced_events=[] } | AccTop ],
-				  Induced ++ AccInduced );
+                    E=#disconnection_event{ induced_events=Induced } | T ],
+              AccTop, AccInduced ) ->
+    split_events( T, [ E#disconnection_event{ induced_events=[] } | AccTop ],
+                  Induced ++ AccInduced );
 
 split_events( _Changeset=[ E=#update_event{ induced_events=Induced } | T ],
-			  AccTop, AccInduced ) ->
-	split_events( T, [ E#update_event{ induced_events=[] } | AccTop ],
-				  Induced ++ AccInduced ).
+              AccTop, AccInduced ) ->
+    split_events( T, [ E#update_event{ induced_events=[] } | AccTop ],
+                  Induced ++ AccInduced ).
 
 
 
@@ -1228,22 +1228,22 @@ specified table.
 -spec no_more_dispatched_event( dispatch_table() ) -> boolean().
 no_more_dispatched_event( DispatchTable ) ->
 
-	% Gathers all event lists (associated to known object managers):
-	EventLists = table:values( DispatchTable ),
+    % Gathers all event lists (associated to known object managers):
+    EventLists = table:values( DispatchTable ),
 
-	are_all_empty( EventLists ).
+    are_all_empty( EventLists ).
 
 
 % (helper)
 are_all_empty( [] ) ->
-	true;
+    true;
 
 are_all_empty( [ _EventList=[] | T ] ) ->
-	are_all_empty( T );
+    are_all_empty( T );
 
 % At least one list is non-empty then:
 are_all_empty( _ ) ->
-	false.
+    false.
 
 
 
@@ -1252,30 +1252,30 @@ Called whenever all changesets have been fully processed by this world manager
 for this tick.
 """.
 -spec on_all_changesets_processed( changeset(), wooper:state() ) ->
-											wooper:state().
+                                            wooper:state().
 on_all_changesets_processed( FullChangeset, State ) ->
 
-	true = ?getAttr(all_changesets_injected),
+    true = ?getAttr(all_changesets_injected),
 
-	?void_fmt( "Sending following overall, final, completed, "
-		"flat changeset to the experiment manager: ~ts",
-		[ dataflow_support:changeset_to_string( FullChangeset,
-												_NotVerbose=false ) ] ),
+    ?void_fmt( "Sending following overall, final, completed, "
+        "flat changeset to the experiment manager: ~ts",
+        [ dataflow_support:changeset_to_string( FullChangeset,
+                                                _NotVerbose=false ) ] ),
 
-	?void_fmt( "Sending following overall, final, completed, "
-		"flat changeset to the experiment manager: ~ts",
-		[ dataflow_support:changeset_to_string( FullChangeset,
-												_Verbose=true ) ] ),
+    ?void_fmt( "Sending following overall, final, completed, "
+        "flat changeset to the experiment manager: ~ts",
+        [ dataflow_support:changeset_to_string( FullChangeset,
+                                                _Verbose=true ) ] ),
 
-	SentState = class_Actor:send_actor_message(
-		?getAttr(experiment_manager_pid),
-		{ notifyFullyCompletedChangeset, [ FullChangeset ] }, State ),
+    SentState = class_Actor:send_actor_message(
+        ?getAttr(experiment_manager_pid),
+        { notifyFullyCompletedChangeset, [ FullChangeset ] }, State ),
 
-	% Prepare for next tick (reset):
-	setAttributes( SentState, [
-		{ completed_events, [] },
-		{ all_changesets_injected, false },
-		{ last_changeset_injection_tick, undefined } ] ).
+    % Prepare for next tick (reset):
+    setAttributes( SentState, [
+        { completed_events, [] },
+        { all_changesets_injected, false },
+        { last_changeset_injection_tick, undefined } ] ).
 
 
 
@@ -1288,14 +1288,14 @@ external identifier.
 """.
 select_object_manager_for_event( ExternalId, ListOfManagerPids ) ->
 
-	IdHash = erlang:phash2( ExternalId ),
+    IdHash = erlang:phash2( ExternalId ),
 
-	% Select one of them:
+    % Select one of them:
 
-	HashMod = IdHash rem length( ListOfManagerPids ),
+    HashMod = IdHash rem length( ListOfManagerPids ),
 
-	% Returns the nth manager then:
-	lists:nth( HashMod+1, ListOfManagerPids ).
+    % Returns the nth manager then:
+    lists:nth( HashMod+1, ListOfManagerPids ).
 
 
 
@@ -1309,213 +1309,213 @@ Induced events will be tackled once their parent one will have completed.
 (helper)
 """.
 -spec dispatch_event( world_event(), dispatch_table(), object_type_table(),
-					  wooper:state() ) -> { dispatch_table(), wooper:state() }.
+                      wooper:state() ) -> { dispatch_table(), wooper:state() }.
 % We have again to perform roughly the same operation for all event types.
 %
 % Routing creations:
 dispatch_event( Event=#creation_event{ object_type=ObjectType,
-									   external_id=ExternalId },
-				DispatchTable, ObjectTypeTable, State ) ->
+                                       external_id=ExternalId },
+                DispatchTable, ObjectTypeTable, State ) ->
 
-	case table:lookup_entry( ObjectType, ObjectTypeTable ) of
+    case table:lookup_entry( ObjectType, ObjectTypeTable ) of
 
-		{ value, ListOfManagerPids } ->
+        { value, ListOfManagerPids } ->
 
-			ObjectManagerPid = select_object_manager_for_event( ExternalId,
-				ListOfManagerPids ),
+            ObjectManagerPid = select_object_manager_for_event( ExternalId,
+                ListOfManagerPids ),
 
-			?void_fmt( "Creation event for object type '~ts' (~ts) dispatched "
-				"to object manager ~w.", [ ObjectType,
-					dataflow_support:world_event_to_string( Event ),
-					ObjectManagerPid ] ),
+            ?void_fmt( "Creation event for object type '~ts' (~ts) dispatched "
+                "to object manager ~w.", [ ObjectType,
+                    dataflow_support:world_event_to_string( Event ),
+                    ObjectManagerPid ] ),
 
-			% No need to send the induced events as well, the whole event is
-			% recorded next by this world manager:
-			%
-			StrippedEvent = Event#creation_event{ induced_events=[] },
-			ManagerChangeset = [ StrippedEvent ],
+            % No need to send the induced events as well, the whole event is
+            % recorded next by this world manager:
+            %
+            StrippedEvent = Event#creation_event{ induced_events=[] },
+            ManagerChangeset = [ StrippedEvent ],
 
-			SentState = class_Actor:send_actor_message( ObjectManagerPid,
-				{ applyChangeset, [ ManagerChangeset ] }, State ),
+            SentState = class_Actor:send_actor_message( ObjectManagerPid,
+                { applyChangeset, [ ManagerChangeset ] }, State ),
 
-			% We record the full event, the entry already exists by design:
-			NewDispatchTable = table:append_to_existing_entry( ObjectManagerPid,
-				Event, DispatchTable ),
+            % We record the full event, the entry already exists by design:
+            NewDispatchTable = table:append_to_existing_entry( ObjectManagerPid,
+                Event, DispatchTable ),
 
-			{ NewDispatchTable, SentState };
-
-
-		key_not_found ->
-			throw( { unregistered_object_type, ObjectType } )
+            { NewDispatchTable, SentState };
 
 
-	end;
+        key_not_found ->
+            throw( { unregistered_object_type, ObjectType } )
+
+
+    end;
 
 
 % Routing destructions:
 dispatch_event( Event=#destruction_event{ object_type=ObjectType,
-										  external_id=ExternalId  },
-				DispatchTable, ObjectTypeTable, State ) ->
+                                          external_id=ExternalId  },
+                DispatchTable, ObjectTypeTable, State ) ->
 
-	case table:lookup_entry( ObjectType, ObjectTypeTable ) of
+    case table:lookup_entry( ObjectType, ObjectTypeTable ) of
 
-		{ value, ListOfManagerPids } ->
+        { value, ListOfManagerPids } ->
 
-			ObjectManagerPid = select_object_manager_for_event( ExternalId,
-														 ListOfManagerPids ),
+            ObjectManagerPid = select_object_manager_for_event( ExternalId,
+                                                         ListOfManagerPids ),
 
-			?void_fmt( "Destruction event for object type '~ts' (~ts) "
-				"dispatched to object manager ~w.",
-				[ ObjectType,
-				  dataflow_support:world_event_to_string( Event ),
-				  ObjectManagerPid ] ),
+            ?void_fmt( "Destruction event for object type '~ts' (~ts) "
+                "dispatched to object manager ~w.",
+                [ ObjectType,
+                  dataflow_support:world_event_to_string( Event ),
+                  ObjectManagerPid ] ),
 
-			% No need to send the induced events as well:
-			StrippedEvent = Event#destruction_event{ induced_events=[] },
-			ManagerChangeset = [ StrippedEvent ],
+            % No need to send the induced events as well:
+            StrippedEvent = Event#destruction_event{ induced_events=[] },
+            ManagerChangeset = [ StrippedEvent ],
 
-			SentState = class_Actor:send_actor_message( ObjectManagerPid,
-				{ applyChangeset, [ ManagerChangeset ] }, State ),
+            SentState = class_Actor:send_actor_message( ObjectManagerPid,
+                { applyChangeset, [ ManagerChangeset ] }, State ),
 
-			% We record the full event:
-			NewDispatchTable = table:append_to_existing_entry( ObjectManagerPid,
-				Event, DispatchTable ),
+            % We record the full event:
+            NewDispatchTable = table:append_to_existing_entry( ObjectManagerPid,
+                Event, DispatchTable ),
 
-			{ NewDispatchTable, SentState };
+            { NewDispatchTable, SentState };
 
-		key_not_found ->
-			throw( { unregistered_object_type, ObjectType } )
+        key_not_found ->
+            throw( { unregistered_object_type, ObjectType } )
 
-	end;
+    end;
 
 
 % Routing (non-binary) associations:
 dispatch_event( Event=#association_event{
-						object_type=ObjectType,
-						external_id=ExternalId  },
-				DispatchTable, ObjectTypeTable, State ) ->
+                        object_type=ObjectType,
+                        external_id=ExternalId  },
+                DispatchTable, ObjectTypeTable, State ) ->
 
-	case table:lookup_entry( ObjectType, ObjectTypeTable ) of
+    case table:lookup_entry( ObjectType, ObjectTypeTable ) of
 
-		{ value, ListOfManagerPids } ->
+        { value, ListOfManagerPids } ->
 
-			ObjectManagerPid = select_object_manager_for_event(
-				ExternalId, ListOfManagerPids ),
+            ObjectManagerPid = select_object_manager_for_event(
+                ExternalId, ListOfManagerPids ),
 
-			?void_fmt( "Association event for object type '~ts' (~ts) "
-				"dispatched to object manager ~w.", [ ObjectType,
-				dataflow_support:world_event_to_string( Event ),
-				ObjectManagerPid ] ),
+            ?void_fmt( "Association event for object type '~ts' (~ts) "
+                "dispatched to object manager ~w.", [ ObjectType,
+                dataflow_support:world_event_to_string( Event ),
+                ObjectManagerPid ] ),
 
-			% No need to send the induced events as well:
-			StrippedEvent = Event#association_event{ induced_events=[] },
-			ManagerChangeset = [ StrippedEvent ],
+            % No need to send the induced events as well:
+            StrippedEvent = Event#association_event{ induced_events=[] },
+            ManagerChangeset = [ StrippedEvent ],
 
-			SentState = class_Actor:send_actor_message( ObjectManagerPid,
-				{ applyChangeset, [ ManagerChangeset ] }, State ),
+            SentState = class_Actor:send_actor_message( ObjectManagerPid,
+                { applyChangeset, [ ManagerChangeset ] }, State ),
 
-			% We record the full event:
-			NewDispatchTable = table:append_to_existing_entry( ObjectManagerPid,
-														Event, DispatchTable ),
+            % We record the full event:
+            NewDispatchTable = table:append_to_existing_entry( ObjectManagerPid,
+                                                        Event, DispatchTable ),
 
-			{ NewDispatchTable, SentState };
+            { NewDispatchTable, SentState };
 
-		key_not_found ->
-			throw( { unregistered_object_type, ObjectType } )
+        key_not_found ->
+            throw( { unregistered_object_type, ObjectType } )
 
-	end;
+    end;
 
 
 % Routing binary associations, based on the *source* event type:
 dispatch_event( Event=#binary_association_event{
-						source_object_type=ObjectType,
-						source_external_id=ExternalId },
-				DispatchTable, ObjectTypeTable, State ) ->
+                        source_object_type=ObjectType,
+                        source_external_id=ExternalId },
+                DispatchTable, ObjectTypeTable, State ) ->
 
-	case table:lookup_entry( ObjectType, ObjectTypeTable ) of
+    case table:lookup_entry( ObjectType, ObjectTypeTable ) of
 
-		{ value, ListOfManagerPids } ->
+        { value, ListOfManagerPids } ->
 
-			ObjectManagerPid = select_object_manager_for_event( ExternalId,
-				ListOfManagerPids ),
+            ObjectManagerPid = select_object_manager_for_event( ExternalId,
+                ListOfManagerPids ),
 
-			?void_fmt( "Binary association event for object type '~ts' (~ts) "
-				"dispatched to object manager ~w.", [ ObjectType,
-				dataflow_support:world_event_to_string( Event ),
-				ObjectManagerPid ] ),
+            ?void_fmt( "Binary association event for object type '~ts' (~ts) "
+                "dispatched to object manager ~w.", [ ObjectType,
+                dataflow_support:world_event_to_string( Event ),
+                ObjectManagerPid ] ),
 
-			% No need to send the induced events as well:
-			StrippedEvent = Event#binary_association_event{ induced_events=[] },
-			ManagerChangeset = [ StrippedEvent ],
+            % No need to send the induced events as well:
+            StrippedEvent = Event#binary_association_event{ induced_events=[] },
+            ManagerChangeset = [ StrippedEvent ],
 
-			SentState = class_Actor:send_actor_message( ObjectManagerPid,
-				{ applyChangeset, [ ManagerChangeset ] }, State ),
+            SentState = class_Actor:send_actor_message( ObjectManagerPid,
+                { applyChangeset, [ ManagerChangeset ] }, State ),
 
-			% We record the full event:
-			NewDispatchTable = table:append_to_existing_entry( ObjectManagerPid,
-				Event, DispatchTable ),
+            % We record the full event:
+            NewDispatchTable = table:append_to_existing_entry( ObjectManagerPid,
+                Event, DispatchTable ),
 
-			{ NewDispatchTable, SentState };
+            { NewDispatchTable, SentState };
 
-		key_not_found ->
-			throw( { unregistered_object_type, ObjectType } )
+        key_not_found ->
+            throw( { unregistered_object_type, ObjectType } )
 
-	end;
+    end;
 
 
 % Routing disassociations:
 dispatch_event( Event=#disassociation_event{ object_type=ObjectType,
-											 external_id=ExternalId },
-				DispatchTable, ObjectTypeTable, State ) ->
+                                             external_id=ExternalId },
+                DispatchTable, ObjectTypeTable, State ) ->
 
-	case table:lookup_entry( ObjectType, ObjectTypeTable ) of
+    case table:lookup_entry( ObjectType, ObjectTypeTable ) of
 
-		{ value, ListOfManagerPids } ->
+        { value, ListOfManagerPids } ->
 
-			ObjectManagerPid = select_object_manager_for_event( ExternalId,
-				ListOfManagerPids ),
+            ObjectManagerPid = select_object_manager_for_event( ExternalId,
+                ListOfManagerPids ),
 
-			?void_fmt( "Disassociation event for object type '~ts' (~ts) "
-				"dispatched to object manager ~w.", [ ObjectType,
-				dataflow_support:world_event_to_string( Event ),
-				ObjectManagerPid ] ),
+            ?void_fmt( "Disassociation event for object type '~ts' (~ts) "
+                "dispatched to object manager ~w.", [ ObjectType,
+                dataflow_support:world_event_to_string( Event ),
+                ObjectManagerPid ] ),
 
-			% No need to send the induced events as well:
-			StrippedEvent = Event#disassociation_event{ induced_events=[] },
-			ManagerChangeset = [ StrippedEvent ],
+            % No need to send the induced events as well:
+            StrippedEvent = Event#disassociation_event{ induced_events=[] },
+            ManagerChangeset = [ StrippedEvent ],
 
-			SentState = class_Actor:send_actor_message( ObjectManagerPid,
-				{ applyChangeset, [ ManagerChangeset ] }, State ),
+            SentState = class_Actor:send_actor_message( ObjectManagerPid,
+                { applyChangeset, [ ManagerChangeset ] }, State ),
 
-			% We record the full event:
-			NewDispatchTable = table:append_to_existing_entry( ObjectManagerPid,
-				Event, DispatchTable ),
+            % We record the full event:
+            NewDispatchTable = table:append_to_existing_entry( ObjectManagerPid,
+                Event, DispatchTable ),
 
-			{ NewDispatchTable, SentState };
+            { NewDispatchTable, SentState };
 
-		key_not_found ->
-			throw( { unregistered_object_type, ObjectType } )
+        key_not_found ->
+            throw( { unregistered_object_type, ObjectType } )
 
-	end;
+    end;
 
 
 % Routing connections (we dispatch them to the object manager in charge of the
 % source object):
 %
 dispatch_event( Event=#connection_event{ induced_events=InducedEvents },
-				DispatchTable, _ObjectTypeTable, State ) ->
+                DispatchTable, _ObjectTypeTable, State ) ->
 
-	% These events, typically involving a dataflow object and a processing unit,
-	% are not specifically managed by object managers, but generally by unit
-	% managers; from the point of view of the world manager, they are
-	% "pass-through" events:
+    % These events, typically involving a dataflow object and a processing unit,
+    % are not specifically managed by object managers, but generally by unit
+    % managers; from the point of view of the world manager, they are
+    % "pass-through" events:
 
-	StrippedEvent = Event#connection_event{ induced_events=[] },
+    StrippedEvent = Event#connection_event{ induced_events=[] },
 
-	HandledState =
-		handle_pass_through_event( StrippedEvent, InducedEvents, State ),
+    HandledState =
+        handle_pass_through_event( StrippedEvent, InducedEvents, State ),
 
-	{ DispatchTable, HandledState };
+    { DispatchTable, HandledState };
 
 
 
@@ -1523,55 +1523,55 @@ dispatch_event( Event=#connection_event{ induced_events=InducedEvents },
 % the source object):
 %
 dispatch_event( Event=#disconnection_event{ induced_events=InducedEvents },
-				DispatchTable, _ObjectTypeTable, State ) ->
+                DispatchTable, _ObjectTypeTable, State ) ->
 
-	% These events, typically involving a dataflow object and a processing unit,
-	% are not specifically managed by object managers, but generally by unit
-	% managers; from the point of view of the world manager, they are
-	% "pass-through" events:
+    % These events, typically involving a dataflow object and a processing unit,
+    % are not specifically managed by object managers, but generally by unit
+    % managers; from the point of view of the world manager, they are
+    % "pass-through" events:
 
-	StrippedEvent = Event#disconnection_event{ induced_events=[] },
+    StrippedEvent = Event#disconnection_event{ induced_events=[] },
 
-	HandledState =
-		handle_pass_through_event( StrippedEvent, InducedEvents, State ),
+    HandledState =
+        handle_pass_through_event( StrippedEvent, InducedEvents, State ),
 
-	{ DispatchTable, HandledState };
+    { DispatchTable, HandledState };
 
 
 % Routing updates:
 dispatch_event( Event=#update_event{ object_type=ObjectType,
-									 external_id=ExternalId },
-				DispatchTable, ObjectTypeTable, State ) ->
+                                     external_id=ExternalId },
+                DispatchTable, ObjectTypeTable, State ) ->
 
-	case table:lookup_entry( ObjectType, ObjectTypeTable ) of
+    case table:lookup_entry( ObjectType, ObjectTypeTable ) of
 
-		{ value, ListOfManagerPids } ->
+        { value, ListOfManagerPids } ->
 
-			ObjectManagerPid = select_object_manager_for_event( ExternalId,
-				ListOfManagerPids ),
+            ObjectManagerPid = select_object_manager_for_event( ExternalId,
+                ListOfManagerPids ),
 
-			?void_fmt( "Update event for object type '~ts' (~ts) dispatched "
-				"to object manager ~w.", [ ObjectType,
-				dataflow_support:world_event_to_string( Event ),
-				ObjectManagerPid ] ),
+            ?void_fmt( "Update event for object type '~ts' (~ts) dispatched "
+                "to object manager ~w.", [ ObjectType,
+                dataflow_support:world_event_to_string( Event ),
+                ObjectManagerPid ] ),
 
-			% No need to send the induced events as well:
-			StrippedEvent = Event#update_event{ induced_events=[] },
-			ManagerChangeset = [ StrippedEvent ],
+            % No need to send the induced events as well:
+            StrippedEvent = Event#update_event{ induced_events=[] },
+            ManagerChangeset = [ StrippedEvent ],
 
-			SentState = class_Actor:send_actor_message( ObjectManagerPid,
-				{ applyChangeset, [ ManagerChangeset ] }, State ),
+            SentState = class_Actor:send_actor_message( ObjectManagerPid,
+                { applyChangeset, [ ManagerChangeset ] }, State ),
 
-			% We record the full event:
-			NewDispatchTable = table:append_to_existing_entry( ObjectManagerPid,
-				Event, DispatchTable ),
+            % We record the full event:
+            NewDispatchTable = table:append_to_existing_entry( ObjectManagerPid,
+                Event, DispatchTable ),
 
-			{ NewDispatchTable, SentState };
+            { NewDispatchTable, SentState };
 
-		key_not_found ->
-			throw( { unregistered_object_type, ObjectType } )
+        key_not_found ->
+            throw( { unregistered_object_type, ObjectType } )
 
-	end.
+    end.
 
 
 
@@ -1581,56 +1581,56 @@ managers; typically to be dispatched by the next-to-come experiment manager, to
 the unit managers).
 """.
 -spec handle_pass_through_event( world_event(), [ world_event() ],
-								 wooper:state() ) -> wooper:state().
+                                 wooper:state() ) -> wooper:state().
 handle_pass_through_event( PassThroughEvent, InducedEvents, State ) ->
 
-	?void_fmt( "Handling pass-through event ~ts.",
-			   [ dataflow_support:world_event_to_string( PassThroughEvent ) ] ),
+    ?void_fmt( "Handling pass-through event ~ts.",
+               [ dataflow_support:world_event_to_string( PassThroughEvent ) ] ),
 
-	% Inspired from reportChangesetCompletion/4:
+    % Inspired from reportChangesetCompletion/4:
 
-	% We have to assign now an identifier to the pass-through event and its
-	% top-level induced events (if any):
+    % We have to assign now an identifier to the pass-through event and its
+    % top-level induced events (if any):
 
-	LastId = ?getAttr(event_count),
+    LastId = ?getAttr(event_count),
 
-	% PassThroughEvent has already been identified:
-	NewChangeset = InducedEvents,
+    % PassThroughEvent has already been identified:
+    NewChangeset = InducedEvents,
 
-	CurrentTimestamp = class_Actor:get_current_logical_timestamp( State ),
+    CurrentTimestamp = class_Actor:get_current_logical_timestamp( State ),
 
-	% Event order preserved in new changeset:
-	{ NewChangesetWithIds, UpdatedLastId } =
-		assign_identifiers_to_top_level_events( NewChangeset, LastId,
-												CurrentTimestamp ),
+    % Event order preserved in new changeset:
+    { NewChangesetWithIds, UpdatedLastId } =
+        assign_identifiers_to_top_level_events( NewChangeset, LastId,
+                                                CurrentTimestamp ),
 
-	% A pass-through event is directly completed, as the world manager is not
-	% to handle it specifically:
-	%
-	NewCompletedEvents =
-		[ PassThroughEvent | ?getAttr(completed_events) ],
+    % A pass-through event is directly completed, as the world manager is not
+    % to handle it specifically:
+    %
+    NewCompletedEvents =
+        [ PassThroughEvent | ?getAttr(completed_events) ],
 
-	{ NewDispatchTable, DispatchedState } = dispatch_top_level_events(
-		NewChangesetWithIds, ?getAttr(dispatch_table), State ),
+    { NewDispatchTable, DispatchedState } = dispatch_top_level_events(
+        NewChangesetWithIds, ?getAttr(dispatch_table), State ),
 
-	ReadyState = setAttributes( DispatchedState, [
-		{ dispatch_table, NewDispatchTable },
-		{ event_count, UpdatedLastId } ] ),
+    ReadyState = setAttributes( DispatchedState, [
+        { dispatch_table, NewDispatchTable },
+        { event_count, UpdatedLastId } ] ),
 
-	% Returning a final state:
-	case ?getAttr(all_changesets_injected)
+    % Returning a final state:
+    case ?getAttr(all_changesets_injected)
             andalso no_more_dispatched_event( NewDispatchTable ) of
 
-		% Here no report of changeset completion can be expected anymore:
-		true ->
-			FullOrderedChangeset = lists:reverse( NewCompletedEvents ),
-			on_all_changesets_processed( FullOrderedChangeset, ReadyState );
+        % Here no report of changeset completion can be expected anymore:
+        true ->
+            FullOrderedChangeset = lists:reverse( NewCompletedEvents ),
+            on_all_changesets_processed( FullOrderedChangeset, ReadyState );
 
-		false ->
-			% Still have to wait for at least one event to complete:
-			setAttribute( ReadyState, completed_events, NewCompletedEvents )
+        false ->
+            % Still have to wait for at least one event to complete:
+            setAttribute( ReadyState, completed_events, NewCompletedEvents )
 
-	end.
+    end.
 
 
 
@@ -1638,100 +1638,100 @@ handle_pass_through_event( PassThroughEvent, InducedEvents, State ) ->
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
-	ExpString = case ?getAttr(experiment_manager_pid) of
+    ExpString = case ?getAttr(experiment_manager_pid) of
 
-		undefined ->
-			"not associated to the experiment manager";
+        undefined ->
+            "not associated to the experiment manager";
 
-		ExpPid ->
-			text_utils:format( "associated to the experiment manager ~w",
-							   [ ExpPid ] )
+        ExpPid ->
+            text_utils:format( "associated to the experiment manager ~w",
+                               [ ExpPid ] )
 
-	end,
+    end,
 
-	ObjectString = case ?getAttr(object_managers) of
+    ObjectString = case ?getAttr(object_managers) of
 
-		[] ->
-			"not registering any object manager";
+        [] ->
+            "not registering any object manager";
 
-		ObjectManagers ->
-			text_utils:format( "having registered ~B object managers: ~w",
-							   [ length( ObjectManagers ), ObjectManagers ] )
+        ObjectManagers ->
+            text_utils:format( "having registered ~B object managers: ~w",
+                               [ length( ObjectManagers ), ObjectManagers ] )
 
-	end,
+    end,
 
-	EntryString = case ?getAttr(entry_point_pid) of
+    EntryString = case ?getAttr(entry_point_pid) of
 
-		undefined ->
-			"not referencing an experiment entry point";
+        undefined ->
+            "not referencing an experiment entry point";
 
-		EntryPid ->
-			text_utils:format( "referencing the experiment entry point ~w",
-							   [ EntryPid ] )
+        EntryPid ->
+            text_utils:format( "referencing the experiment entry point ~w",
+                               [ EntryPid ] )
 
-	end,
+    end,
 
-	ExitString = case ?getAttr(exit_point_pid) of
+    ExitString = case ?getAttr(exit_point_pid) of
 
-		undefined ->
-			"not referencing an experiment exit point";
+        undefined ->
+            "not referencing an experiment exit point";
 
-		ExitPid ->
-			text_utils:format( "referencing the experiment exit point ~w",
-							   [ ExitPid ] )
+        ExitPid ->
+            text_utils:format( "referencing the experiment exit point ~w",
+                               [ ExitPid ] )
 
-	end,
+    end,
 
-	TypeString = object_type_to_string( ?getAttr(object_type_table) ),
+    TypeString = object_type_to_string( ?getAttr(object_type_table) ),
 
-	DispatchSubstrings = [
+    DispatchSubstrings = [
 
-	  begin
+      begin
 
-		case DispatchedEvents of
+        case DispatchedEvents of
 
-			[] ->
-				text_utils:format( "no event dispatched to "
-								   "object manager ~w", [ ObjManPid ] );
+            [] ->
+                text_utils:format( "no event dispatched to "
+                                   "object manager ~w", [ ObjManPid ] );
 
-			_ ->
-				SubStrings = [ dataflow_support:world_event_to_string( E )
-							   || E <- DispatchedEvents ],
+            _ ->
+                SubStrings = [ dataflow_support:world_event_to_string( E )
+                               || E <- DispatchedEvents ],
 
-				text_utils:format(
-				  "~B events dispatched to object manager ~w: ~ts",
-				   [ length( DispatchedEvents ), ObjManPid,
-					 text_utils:strings_to_string( SubStrings, _IdentLevel=1 )
-				   ] )
+                text_utils:format(
+                  "~B events dispatched to object manager ~w: ~ts",
+                   [ length( DispatchedEvents ), ObjManPid,
+                     text_utils:strings_to_string( SubStrings, _IdentLevel=1 )
+                   ] )
 
-		end
+        end
 
-	  end || { ObjManPid, DispatchedEvents }
-					<- table:enumerate( ?getAttr(dispatch_table) ) ],
+      end || { ObjManPid, DispatchedEvents }
+                    <- table:enumerate( ?getAttr(dispatch_table) ) ],
 
-	DispatchString = text_utils:strings_to_string( DispatchSubstrings ),
+    DispatchString = text_utils:strings_to_string( DispatchSubstrings ),
 
 
-	EventString = case ?getAttr(completed_events) of
+    EventString = case ?getAttr(completed_events) of
 
-		[] ->
-			"no world event is reported as completed";
+        [] ->
+            "no world event is reported as completed";
 
-		Events ->
-			RevEvents = lists:reverse( Events ),
-			EventStrings = [ dataflow_support:world_event_to_string( E )
-								|| E <- RevEvents ],
-			text_utils:format( "following ~B world events are reported as "
-				"completed: ~ts", [ length( Events ),
-				text_utils:strings_to_string( EventStrings ) ] )
+        Events ->
+            RevEvents = lists:reverse( Events ),
+            EventStrings = [ dataflow_support:world_event_to_string( E )
+                                || E <- RevEvents ],
+            text_utils:format( "following ~B world events are reported as "
+                "completed: ~ts", [ length( Events ),
+                text_utils:strings_to_string( EventStrings ) ] )
 
-	end,
+    end,
 
-	text_utils:format( "world manager ~ts, ~ts, ~ts, ~ts, managing ~ts~n"
-		"Regarding the dispatching of world events: ~ts~n"
-		"Regarding the completion of world events: ~ts",
-		[ ExpString, ObjectString, EntryString, ExitString, TypeString,
-		  DispatchString, EventString ] ).
+    text_utils:format( "world manager ~ts, ~ts, ~ts, ~ts, managing ~ts~n"
+        "Regarding the dispatching of world events: ~ts~n"
+        "Regarding the completion of world events: ~ts",
+        [ ExpString, ObjectString, EntryString, ExitString, TypeString,
+          DispatchString, EventString ] ).
 
 
 
@@ -1742,21 +1742,21 @@ world manager.
 -spec object_type_to_string( object_type_table() ) -> ustring().
 object_type_to_string( TypeTable ) ->
 
-	Entries = table:enumerate( TypeTable ),
+    Entries = table:enumerate( TypeTable ),
 
-	case length( Entries ) of
+    case length( Entries ) of
 
-		0 ->
-			"no association of object type";
+        0 ->
+            "no association of object type";
 
-		L ->
-			TypeStrings = [ text_utils:format(
-				"type '~ts' managed by object manager ~p",
-				[ Type, ManagerPid ] ) || { Type, ManagerPid } <- Entries ],
+        L ->
+            TypeStrings = [ text_utils:format(
+                "type '~ts' managed by object manager ~p",
+                [ Type, ManagerPid ] ) || { Type, ManagerPid } <- Entries ],
 
-			TypeString = text_utils:strings_to_string( TypeStrings ),
+            TypeString = text_utils:strings_to_string( TypeStrings ),
 
-			text_utils:format( "~B associations of object types: ~ts",
-							   [ L, TypeString ] )
+            text_utils:format( "~B associations of object types: ~ts",
+                               [ L, TypeString ] )
 
-	end.
+    end.

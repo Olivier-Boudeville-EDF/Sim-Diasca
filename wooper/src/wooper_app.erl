@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2025 Olivier Boudeville
+% Copyright (C) 2019-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -55,26 +55,26 @@ Starts the WOOPER services.
 Note: RestartType and StartArgs at least currently ignored.
 """.
 -spec start( application:start_type(), StartArgs :: term() ) -> { 'ok', pid() }
-		| { 'ok', pid(), State :: term() } | { 'error', Reason :: term() }.
+        | { 'ok', pid(), State :: term() } | { 'error', Reason :: term() }.
 start( RestartType, StartArgs ) ->
 
-	trace_utils:debug_fmt( "Starting the WOOPER application (restart type: ~w, "
-		"start arguments: ~w).", [ RestartType, StartArgs ] ),
+    trace_utils:debug_fmt( "Starting the WOOPER application (restart type: ~w, "
+        "start arguments: ~w).", [ RestartType, StartArgs ] ),
 
-	% Previously, no specific root supervisor was to launch, but:
-	%wooper_class_manager:start().
+    % Previously, no specific root supervisor was to launch, but:
+    %wooper_class_manager:start().
 
-	case wooper_sup:start_link() of
+    case wooper_sup:start_link() of
 
-		R={ ok, _RootSupervisorPid } ->
-			R;
+        R={ ok, _RootSupervisorPid } ->
+            R;
 
-		Other ->
-			trace_utils:error_fmt( "The WOOPER root supervisor did not start "
-								   "properly:~n  ~p.", [ Other ] ),
-			{ error, Other }
+        Other ->
+            trace_utils:error_fmt( "The WOOPER root supervisor did not start "
+                                   "properly:~n  ~p.", [ Other ] ),
+            { error, Other }
 
-	end.
+    end.
 
 
 
@@ -82,10 +82,10 @@ start( RestartType, StartArgs ) ->
 -spec stop( State :: term() ) -> void().
 stop( State ) ->
 
-	trace_utils:debug_fmt( "Stopping the WOOPER application (state: ~w).",
-						   [ State ] ),
+    trace_utils:debug_fmt( "Stopping the WOOPER application (state: ~w).",
+                           [ State ] ),
 
-	% Previously (now managed by the root supervisor):
-	% wooper_class_manager:stop().
+    % Previously (now managed by the root supervisor):
+    % wooper_class_manager:stop().
 
-	ok.
+    ok.

@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -25,9 +25,9 @@
 
 
 -define( class_description,
-		 "Class modelling a forest dweller. This module is an abstract one "
-		 "derived from class_Actor.erl and defining some common forest dweller "
-		 "attributes and spontaneous behaviours." ).
+         "Class modelling a forest dweller. This module is an abstract one "
+         "derived from class_Actor.erl and defining some common forest dweller "
+         "attributes and spontaneous behaviours." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -74,19 +74,19 @@ Refer to `class_Actor` for other attributes.
 """.
 construct( State, ActorSettings, DwellerName, GivenAge, ForestPid ) ->
 
-	% Firstly, the mother class:
-	ActorState = class_Actor:construct( State, ActorSettings,
-										?trace_categorize(DwellerName) ),
+    % Firstly, the mother class:
+    ActorState = class_Actor:construct( State, ActorSettings,
+                                        ?trace_categorize(DwellerName) ),
 
-	% Then the class-specific attributes:
-	setAttributes( ActorState, [
-		{ is_registered, false },
-		{ givenAge, GivenAge },
-		{ forest_pid, ForestPid },
-		{ termination_tick_offset, undefined },
-		{ termination_waiting_ticks, undefined },
-		{ termination_initiated, false },
-		{ target_peers, [] } ] ).
+    % Then the class-specific attributes:
+    setAttributes( ActorState, [
+        { is_registered, false },
+        { givenAge, GivenAge },
+        { forest_pid, ForestPid },
+        { termination_tick_offset, undefined },
+        { termination_waiting_ticks, undefined },
+        { termination_initiated, false },
+        { target_peers, [] } ] ).
 
 
 
@@ -99,12 +99,12 @@ construct( State, ActorSettings, DwellerName, GivenAge, ForestPid ) ->
 -spec beRegistered( wooper:state(), actor_pid() ) -> actor_oneway_return().
 beRegistered( State, ForestPid ) ->
 
-	?notice_fmt( "~w has been registed to ~w.", [ self(), ForestPid ] ),
+    ?notice_fmt( "~w has been registed to ~w.", [ self(), ForestPid ] ),
 
-	UpdatedState = setAttributes( State, [ { is_registered, true },
-										   { forest_pid, ForestPid } ] ),
+    UpdatedState = setAttributes( State, [ { is_registered, true },
+                                           { forest_pid, ForestPid } ] ),
 
-	actor:return_state( UpdatedState ).
+    actor:return_state( UpdatedState ).
 
 
 
@@ -114,9 +114,9 @@ Called whenever an Alert message is received.
 This method will be overridden by the specific dweller.
 """.
 -spec beAlert( wooper:state(), alert(), sending_actor_pid() ) ->
-										const_actor_oneway_return().
+                                        const_actor_oneway_return().
 beAlert( State, _Alert, _SendingActorPID ) ->
-	actor:const_return().
+    actor:const_return().
 
 
 
@@ -124,8 +124,8 @@ beAlert( State, _Alert, _SendingActorPID ) ->
 -spec prepareTermination( wooper:state() ) -> wooper:state().
 prepareTermination( State ) ->
 
-	CurrentOffset = ?getAttr(current_tick_offset),
+    CurrentOffset = ?getAttr(current_tick_offset),
 
-	setAttributes( State, [
-		{ termination_initiated, true },
-		{ termination_tick_offset, CurrentOffset } ] ).
+    setAttributes( State, [
+        { termination_initiated, true },
+        { termination_tick_offset, CurrentOffset } ] ).

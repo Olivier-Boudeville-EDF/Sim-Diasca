@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2025 EDF R&D
+% Copyright (C) 2012-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -70,12 +70,12 @@ the mailbox of the case process).
 """.
 -spec start( maybe_list( module_name() ) ) -> void().
 start( Module ) when is_atom( Module ) ->
-	erlang:process_flag( trap_exit, false ),
-	basic_utils:display( "~n~n--> Running case ~ts.~n", [ Module ] );
+    erlang:process_flag( trap_exit, false ),
+    basic_utils:display( "~n~n--> Running case ~ts.~n", [ Module ] );
 
 start( Modules ) when is_list( Modules ) ->
-	erlang:process_flag( trap_exit, false ),
-	basic_utils:display( "~n~n--> Running case ~p.~n", [ Modules ] ).
+    erlang:process_flag( trap_exit, false ),
+    basic_utils:display( "~n~n--> Running case ~p.~n", [ Modules ] ).
 
 
 
@@ -84,16 +84,16 @@ Stops a case; expected to be the last case statement in the normal case.
 """.
 -spec stop() -> no_return().
 stop() ->
-	basic_utils:display( "\n--> Successful termination of case.\n" ),
-	finished().
+    basic_utils:display( "\n--> Successful termination of case.\n" ),
+    finished().
 
 
 
 -doc "Displays a case message.".
 -spec display( ustring() ) -> void().
 display( Message ) ->
-	% Carriage return already added in basic_utils:display/1:
-	basic_utils:display( lists:flatten( Message ) ).
+    % Carriage return already added in basic_utils:display/1:
+    basic_utils:display( lists:flatten( Message ) ).
 
 
 
@@ -105,7 +105,7 @@ list of field values.
 """.
 -spec display( format_string(), format_values() ) -> void().
 display( FormatString, ValueList ) ->
-	basic_utils:display( FormatString, ValueList ).
+    basic_utils:display( FormatString, ValueList ).
 
 
 % Comment out to be able to use the interpreter after the case:
@@ -121,18 +121,18 @@ display( FormatString, ValueList ) ->
 
 finished() ->
 
-	basic_utils:display( "(case finished, interpreter halted)" ),
+    basic_utils:display( "(case finished, interpreter halted)" ),
 
-	% Probably not that useful:
-	system_utils:await_output_completion(),
+    % Probably not that useful:
+    system_utils:await_output_completion(),
 
-	% Implies flushing as well:
-	basic_utils:stop_on_success(),
+    % Implies flushing as well:
+    basic_utils:stop_on_success(),
 
-	% Useless, but otherwise Dialyzer will complain that this function has no
-	% local return:
-	%
-	case_success.
+    % Useless, but otherwise Dialyzer will complain that this function has no
+    % local return:
+    %
+    case_success.
 
 
 -else. % ExitAfterCase
@@ -140,11 +140,11 @@ finished() ->
 
 finished() ->
 
-	basic_utils:display( "(case finished, interpreter still running)~n" ),
+    basic_utils:display( "(case finished, interpreter still running)~n" ),
 
-	%system_utils:await_output_completion(),
+    %system_utils:await_output_completion(),
 
-	case_success.
+    case_success.
 
 
 -endif. % ExitAfterCase
@@ -159,23 +159,23 @@ For example: ``case_facilities:fail("server on strike").``
 -spec fail( ustring() ) -> no_return().
 fail( Reason ) ->
 
-	% For some reason erlang:error is unable to interpret strings as strings,
-	% they are always output as unreadable lists.
+    % For some reason erlang:error is unable to interpret strings as strings,
+    % they are always output as unreadable lists.
 
-	basic_utils:display( "~n!!!! Case failed, reason: ~ts.~n~n", [ Reason ] ),
+    basic_utils:display( "~n!!!! Case failed, reason: ~ts.~n~n", [ Reason ] ),
 
-	% Never returns:
-	erlang:error( "Case failed" ),
+    % Never returns:
+    erlang:error( "Case failed" ),
 
-	% Hence probably not that useful:
-	system_utils:await_output_completion(),
+    % Hence probably not that useful:
+    system_utils:await_output_completion(),
 
-	basic_utils:stop_on_failure(),
+    basic_utils:stop_on_failure(),
 
-	% Useless, but otherwise Dialyzer will complain that this function has no
-	% local return:
+    % Useless, but otherwise Dialyzer will complain that this function has no
+    % local return:
     %
-	case_failed.
+    case_failed.
 
 
 
@@ -190,23 +190,23 @@ For example: ``case_facilities:fail("server ~ts on strike", ["foobar.org"])``.
 -spec fail( format_string(), format_values() ) -> no_return().
 fail( FormatString, ValueList ) ->
 
-	% For some reason, erlang:error/1 is unable to interpret strings as strings,
-	% they are always output as unreadable lists.
+    % For some reason, erlang:error/1 is unable to interpret strings as strings,
+    % they are always output as unreadable lists.
 
-	ErrorMessage = text_utils:format( "~n!!!! Case failed, reason: ~ts.~n~n",
-		[ text_utils:format( FormatString, ValueList ) ] ),
+    ErrorMessage = text_utils:format( "~n!!!! Case failed, reason: ~ts.~n~n",
+        [ text_utils:format( FormatString, ValueList ) ] ),
 
-	basic_utils:display( "~n!!!! Case failed, reason: ~ts.~n~n",
-						 [ ErrorMessage ] ),
+    basic_utils:display( "~n!!!! Case failed, reason: ~ts.~n~n",
+                         [ ErrorMessage ] ),
 
-	erlang:error( "Case failed" ),
+    erlang:error( "Case failed" ),
 
-	% Hence probably not that useful:
-	system_utils:await_output_completion(),
+    % Hence probably not that useful:
+    system_utils:await_output_completion(),
 
-	basic_utils:stop_on_failure(),
+    basic_utils:stop_on_failure(),
 
-	% Useless, but otherwise Dialyzer will complain that this function has no
-	% local return:
-	%
-	case_failed.
+    % Useless, but otherwise Dialyzer will complain that this function has no
+    % local return:
+    %
+    case_failed.

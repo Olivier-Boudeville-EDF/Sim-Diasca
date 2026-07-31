@@ -131,18 +131,19 @@ If having very demanding 2D needs, one may refer to the `3D services`_ section (
 .. Note:: Currently MyriadGUI does not adhere yet to the ``ui`` conventions, but it will ultimately. MyriadGUI already provides many lower-level services and offers a graphical API (currently on top of ``wx``; see `our HOWTO <http://howtos.esperide.org/Erlang.html#using-wx>`_ for some information regarding that backend) that can be used in order to  develop one's GUI application hopefully in a future-proof way.
 
 
-.. _`wx availability`:
-
-As a consequence, `wxWidgets <https://www.wxwidgets.org/>`_ must be available on the host (otherwise a ``{load_driver,"No driver found"}`` exception will be raised on GUI start). This should correspond to the ``wxgtk3`` Arch Linux package, or the ``libwxgtk3.0-dev`` Debian one. This can be tested by executing ``wx-config --version`` on a shell.
-
-``wxWidgets`` must be installed *prior* to building Erlang, so that it is detected by its configuration script and a proper ``wx`` module can be used afterwards. Running then ``wx:demo()`` is a good test of the actual support.
 
 
 
 Purpose of ``gui``
 ******************
 
-The goal is to provide a small, lightweight API (including message types) that are higher-level than ``wx`` and OpenGL (more integrated, more typed, possibly clearer, having more runtime checks - that can be toggled at build time), and do not depend on any particular GUI backend (such as ``wx``, ``gs``, etc.; so none of their includes, records, types or functions leak in the user realm), to avoid that user programs become obsolete too quickly because of the UI backend they rely on.
+The goal is to provide a small, lightweight API (including message types) that are higher-level than ``wx`` and OpenGL (more integrated, more typed, possibly clearer, having more runtime checks - that can be toggled at build time), and whose use does not rely explicitly on any particular GUI backend (such as ``wx``, ``gs``, etc.; so none of their includes, records, types or functions leak in the user realm), to avoid that user programs become obsolete too quickly because of the UI backend they rely on.
+
+
+.. Note::
+
+   Of course, as MyriadGUI translates ultimately in ``wx`` calls, the latter must be available at runtime. Refer to `this section <#securing-an-erlang-environment-with-gui-support-recommended>`_ to secure such a support.
+
 
 So for example the messages received by the user programs do not mention ``wx``, and respect only MyriadGUI conventions. These conventions are in line with the `WOOPER ones <https://wooper.esperide.org/#method-invocation>`_, enabling (in a fully optional manner) the user code to rely on WOOPER if wanted [#]_.
 
@@ -387,4 +388,3 @@ So an Erlang program needing audio output (e.g. sound special effects, musics) a
 Currently only very basic support for audio output is available, as ``audio_utils:playback_file/{2,3}``.
 
 See also our support for `speech synthesis`_.
-

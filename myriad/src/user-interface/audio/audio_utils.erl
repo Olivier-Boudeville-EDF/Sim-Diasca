@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -96,7 +96,7 @@ Refer to <https://en.wikipedia.org/wiki/Comparison_of_audio_coding_formats> for
 further details.
 """.
 -type audio_format() :: 'raw' | 'pcm' | 'mp3' | 'vorbis' | 'aac' | 'flac'
-					  | 'opus' | 'mulaw' | 'alaw' | 'truesilk'.
+                      | 'opus' | 'mulaw' | 'alaw' | 'truesilk'.
 
 
 % For the audio_stream_settings record:
@@ -116,14 +116,14 @@ of FFmpeg).
 
 
 -export_type([ sample_rate/0, standard_sampling_rate/0,
-			   channel_layout/0,
-			   bit_rate/0, bit_depth/0, bit_level/0,
-			   container_format/0, audio_format/0, audio_stream_settings/0,
-			   codec/0 ]).
+               channel_layout/0,
+               bit_rate/0, bit_depth/0, bit_level/0,
+               container_format/0, audio_format/0, audio_stream_settings/0,
+               codec/0 ]).
 
 
 -export([ playback_file/2, playback_file/3,
-		  audio_stream_settings_to_string/1 ]).
+          audio_stream_settings_to_string/1 ]).
 
 
 % Type shorthands:
@@ -140,9 +140,9 @@ Performs a playblack of the specified audio file, with specified settings (if
 any), in a non-blocking (in the background) way.
 """.
 -spec playback_file( any_file_path(), option( audio_stream_settings() ) ) ->
-											void().
+                                            void().
 playback_file( AudioFilePath, MaybeAudioStreamSettings ) ->
-	playback_file( AudioFilePath, MaybeAudioStreamSettings, _DoBlock=false ).
+    playback_file( AudioFilePath, MaybeAudioStreamSettings, _DoBlock=false ).
 
 
 
@@ -151,9 +151,9 @@ Performs a playblack of the specified audio file, with specified settings,
 either in a blocking or in a non-blocking (in the background) way.
 """.
 -spec playback_file( any_file_path(), option( audio_stream_settings() ),
-					 boolean() ) -> void().
+                     boolean() ) -> void().
 playback_file( AudioFilePath, _MaybeAudioStreamSettings, DoBlock ) ->
-	executable_utils:playback_audio_file( AudioFilePath, DoBlock ).
+    executable_utils:playback_audio_file( AudioFilePath, DoBlock ).
 
 
 
@@ -162,22 +162,22 @@ Returns a textual description of the specified audio stream settings.
 """.
 -spec audio_stream_settings_to_string( audio_stream_settings() ) -> ustring().
 audio_stream_settings_to_string( #audio_stream_settings{
-							sampling_rate=SamplingRate,
-							channel_layout=ChannelLayout,
-							bit_level=BitLevel,
-							container_format=ContainerFormat,
-							audio_format=AudioFormat } ) ->
+                            sampling_rate=SamplingRate,
+                            channel_layout=ChannelLayout,
+                            bit_level=BitLevel,
+                            container_format=ContainerFormat,
+                            audio_format=AudioFormat } ) ->
 
-	BitStr = case BitLevel of
+    BitStr = case BitLevel of
 
-		{ bit, BitDepth } ->
-			text_utils:format( "~B-bit", [ BitDepth ] );
+        { bit, BitDepth } ->
+            text_utils:format( "~B-bit", [ BitDepth ] );
 
-		{ kbps, BitRate } ->
-			text_utils:format( "~B kbps", [ BitRate ] )
+        { kbps, BitRate } ->
+            text_utils:format( "~B kbps", [ BitRate ] )
 
-	end,
+    end,
 
-	text_utils:format( "~ts ~ts stream whose sampling rate is ~B kHz, "
-		"as ~ts-encoded audio in a ~ts container",
-		[ ChannelLayout, BitStr, SamplingRate, AudioFormat, ContainerFormat ] ).
+    text_utils:format( "~ts ~ts stream whose sampling rate is ~B kHz, "
+        "as ~ts-encoded audio in a ~ts container",
+        [ ChannelLayout, BitStr, SamplingRate, AudioFormat, ContainerFormat ] ).

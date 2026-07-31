@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -46,65 +46,65 @@ See the physics_utils tested module.
 
 test_basics() ->
 
-	GEarth = physics_utils:get_gravitational_acceleration(
-		_Distance=physics_utils:r_earth(), _Mass=physics_utils:m_earth() ),
+    GEarth = physics_utils:get_gravitational_acceleration(
+        _Distance=physics_utils:r_earth(), _Mass=physics_utils:m_earth() ),
 
-	GSun = physics_utils:get_gravitational_acceleration(
-		physics_utils:r_sun(), physics_utils:m_sun() ),
+    GSun = physics_utils:get_gravitational_acceleration(
+        physics_utils:r_sun(), physics_utils:m_sun() ),
 
-	test_facilities:display( "The gravitational acceleration on the surface "
-		"of Earth is about ~.2f m/s², while on the Sun it is ~.2f m/s².",
-		[ GEarth, GSun ] ),
-
-
-	EVSun = physics_utils:get_escape_velocity(
-		physics_utils:r_sun(), physics_utils:m_sun() ),
-
-	EVEarth = physics_utils:get_escape_velocity(
-		physics_utils:r_earth(), physics_utils:m_earth() ),
+    test_facilities:display( "The gravitational acceleration on the surface "
+        "of Earth is about ~.2f m/s², while on the Sun it is ~.2f m/s².",
+        [ GEarth, GSun ] ),
 
 
-	% Thus from their surface:
-	test_facilities:display( "The escape velocity from Earth is about ~ts,"
-		" i.e. ~.2f km/h, while from Sun it is ~ts, i.e. ~.2f km/h.",
-		[ unit_utils:speed_to_string( EVEarth ),
-		  unit_utils:meters_per_second_to_km_per_hour( EVEarth ),
-		  unit_utils:speed_to_string( EVSun ),
-		  unit_utils:meters_per_second_to_km_per_hour( EVSun ) ] ),
+    EVSun = physics_utils:get_escape_velocity(
+        physics_utils:r_sun(), physics_utils:m_sun() ),
+
+    EVEarth = physics_utils:get_escape_velocity(
+        physics_utils:r_earth(), physics_utils:m_earth() ),
 
 
-	SRs = [ physics_utils:get_schwarzschild_radius( R )
-		|| R <- [ physics_utils:m_earth(), physics_utils:m_sun(),
-				  10 * physics_utils:m_sun(),
-				  physics_utils:m_sagittarius_a_star() ] ],
-
-	test_facilities:display( "The Schwarzschild radius of Earth is about ~ts, "
-		"the one of Sun about ~ts, the one of a 10 solar-mass black hole ~ts, "
-		"and the one of Sagittarius A* about ~ts.",
-		[ unit_utils:meters_to_string( SR ) || SR <- SRs ] ),
+    % Thus from their surface:
+    test_facilities:display( "The escape velocity from Earth is about ~ts,"
+        " i.e. ~.2f km/h, while from Sun it is ~ts, i.e. ~.2f km/h.",
+        [ unit_utils:speed_to_string( EVEarth ),
+          unit_utils:meters_per_second_to_km_per_hour( EVEarth ),
+          unit_utils:speed_to_string( EVSun ),
+          unit_utils:meters_per_second_to_km_per_hour( EVSun ) ] ),
 
 
-	M = 10 * physics_utils:m_sun(),
+    SRs = [ physics_utils:get_schwarzschild_radius( R )
+        || R <- [ physics_utils:m_earth(), physics_utils:m_sun(),
+                  10 * physics_utils:m_sun(),
+                  physics_utils:m_sagittarius_a_star() ] ],
 
-	MinDistance = physics_utils:get_schwarzschild_radius( M ),
+    test_facilities:display( "The Schwarzschild radius of Earth is about ~ts, "
+        "the one of Sun about ~ts, the one of a 10 solar-mass black hole ~ts, "
+        "and the one of Sagittarius A* about ~ts.",
+        [ unit_utils:meters_to_string( SR ) || SR <- SRs ] ),
 
-	Distances = [ C*MinDistance || C <- lists:seq( 1, 20 ) ],
 
-	test_facilities:display( "Evaluating the time factor experienced by "
-		"an observer due to a primary body of 10 solar masses, "
-		"starting from the corresponding Schwarzschild radius: ~ts",
-		[ text_utils:strings_to_string( [ text_utils:format( "at ~ts: ~.2f%",
-			[ unit_utils:meters_to_string( D ),
-			  100*physics_utils:get_time_factor( D , M ) ] )
-				  || D <- Distances ] ) ] ).
+    M = 10 * physics_utils:m_sun(),
+
+    MinDistance = physics_utils:get_schwarzschild_radius( M ),
+
+    Distances = [ C*MinDistance || C <- lists:seq( 1, 20 ) ],
+
+    test_facilities:display( "Evaluating the time factor experienced by "
+        "an observer due to a primary body of 10 solar masses, "
+        "starting from the corresponding Schwarzschild radius: ~ts",
+        [ text_utils:strings_to_string( [ text_utils:format( "at ~ts: ~.2f%",
+            [ unit_utils:meters_to_string( D ),
+              100*physics_utils:get_time_factor( D , M ) ] )
+                  || D <- Distances ] ) ] ).
 
 
 
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	test_basics(),
+    test_basics(),
 
-	test_facilities:stop().
+    test_facilities:stop().

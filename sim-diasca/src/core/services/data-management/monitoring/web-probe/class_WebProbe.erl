@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2025 EDF R&D
+% Copyright (C) 2019-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -23,12 +23,14 @@
 
 -moduledoc """
 Abstract **web-based probe class**, in charge of generating results to be
-displayed in a (web) browser-module.
+displayed in a (web) browser.
+
+Depends on the web manager.
 """.
 
 -define( class_description,
-		 "Abstract web-based probe class, in charge of generating results "
-		 "to be displayed in a (web) browser; depends on the web manager." ).
+         "Abstract web-based probe class, in charge of generating results "
+         "to be displayed in a (web) browser; depends on the web manager." ).
 
 
 % See web_result_management_test.erl for a test of these probes.
@@ -61,77 +63,80 @@ displayed in a (web) browser-module.
 % inspirations rather than usable facilities.
 
 
+% Facility probes cannot and should not be created relatively the web root, as
+% they are managed quite differently, since they are not driven by the result
+% manager. Notably their files are created regardless of the simulation success,
+% and possibly in any directory of any node (not under any web root, which may
+% anyway never be created).
+%
+% So no link to them can/should be created from the simulation results, and they
+% shall be browsed separately.
+
+
+
+% At least currently, facility probes are created relatively the web root, and
+% thus are expected to be created on the user node (not on computing ones).
+
+
 
 % Attributes that are specific to a web probe instance are:
 -define( class_attributes, [
 
-	{ web_dir, bin_directory_path(),
-	  "the directory where the (web) content shall be written (i.e. "
-	  "the local, temporary content root for this probe)" },
+    { web_dir, bin_directory_path(),
+      "the directory where the (web) content shall be written (i.e. "
+      "the local, possibly temporary, content root for this probe)" },
 
-	{ web_filename, bin_file_name(),
-	  "the (main, local to web content) filename (typically with "
-	  "a '.html' extension) in which this probe is to write its content" },
+    { web_filename, bin_file_name(),
+      "the (main, local to web content) filename (typically with "
+      "a '.html' extension) in which this probe is to write its content" },
 
-	{ web_manager_pid, web_manager_pid(),
-	  "the PID of the overall web manager" },
+    { web_manager_pid, web_manager_pid(),
+      "the PID of the overall web manager" },
 
-	{ available_content_files, [ bin_file_path() ],
-	  "a list of the names of the content files that are currently available "
-	  "(probably after having been generated), notably in the context of "
-	  "result sending" },
+    { available_content_files, [ bin_file_path() ],
+      "a list of the names of the content files that are currently available "
+      "(probably after having been generated), notably in the context of "
+      "result sending" },
 
-	{ meta_data, class_ResultManager:meta_data(),
-	  "corresponds to the meta-data to be added in probe-generated data "
-	  "files" },
+    { meta_data, class_ResultManager:meta_data(),
+      "corresponds to the meta-data to be added in probe-generated data "
+      "files" },
 
-	% Commented-out and not used anymore as misleading: both the webserver
-	% installation and the engine tree are on the user host, whereas a probe may
-	% be on any other host:
+    % Commented-out and not used anymore as misleading: both the webserver
+    % installation and the engine tree are on the user host, whereas a probe may
+    % be on any other host:
 
-	%{ webserver_install_root, bin_directory_path(),
-	% "the root directory of the webserver runtime install" },
+    %{ webserver_install_root, bin_directory_path(),
+    % "the root directory of the webserver runtime install" },
 
-	%{ engine_root_dir, bin_directory_path(),
-	%  "the root directory of the engine" }
+    %{ engine_root_dir, bin_directory_path(),
+    %  "the root directory of the engine" }
 
-	{ resource_dir, option( bin_directory_path() ),
-	  "the (preferably absolute) path to the root directory of the static "
-	  "resources to be used by that probe" } ] ).
-
-
+    { resource_dir, option( bin_directory_path() ),
+      "the (preferably absolute) path to the root directory of the static "
+      "resources to be used by that probe" } ] ).
 
 
-% A probe may not be a wanted result producer (cf. 'non_wanted_probe'):
+
+
+-doc """
+A probe may not be a wanted result producer (cf. `non_wanted_probe`).
+""".
 -type probe_ref() :: class_Probe:probe_ref().
 
 -type probe_pid() :: class_Probe:probe_pid().
 
--type name_options() :: probe_name() | { probe_name(), web_probe_options() }.
+-type facility_probe_pid() :: class_Probe:facility_probe_pid().
 
 
--export_type([ probe_ref/0, probe_pid/0, web_probe_options/0, name_options/0 ]).
+-doc "Initialisation information for a web probe.".
+-type web_probe_init() ::
+    probe_name_init() | { probe_name_init(), web_probe_options() }.
 
 
+-export_type([ probe_ref/0, probe_pid/0, facility_probe_pid/0,
+               web_probe_options/0 ]).
 
-% Type shorthands:
-
--type probe_name() :: class_ResultProducer:producer_name().
-
--type ustring() :: text_utils:ustring().
--type any_string() :: text_utils:any_string().
-
--type bin_file_name() :: file_utils:bin_file_name().
-
--type directory_path() :: file_utils:directory_path().
-
--type probe_name_init() :: class_Probe:probe_name_init().
-
--type meta_data() :: class_ResultManager:meta_data().
-
-% In attributes:
-%-type bin_directory_path() :: file_utils:bin_directory_path().
-%-type bin_file_path() :: file_utils:bin_file_path().
 
 
 % Exported helpers:
@@ -161,134 +166,181 @@ displayed in a (web) browser-module.
 
 
 
+
+% Type shorthands:
+
+-type probe_name() :: class_ResultProducer:producer_name().
+
+-type ustring() :: text_utils:ustring().
+-type any_string() :: text_utils:any_string().
+
+-type bin_file_name() :: file_utils:bin_file_name().
+
+-type directory_path() :: file_utils:directory_path().
+-type bin_directory_path() :: file_utils:bin_directory_path().
+
+-type probe_name_init() :: class_Probe:probe_name_init().
+
+-type meta_data() :: class_ResultManager:meta_data().
+
+% In attributes:
+%-type bin_directory_path() :: file_utils:bin_directory_path().
+%-type bin_file_path() :: file_utils:bin_file_path().
+
+
+
 -doc """
 Constructs a web probe, from:
 
-- NameInit tells about the name (and possibly categorization) of this probe
+- WebProbeInit, which tells about the name, and possibly categorization and web
+  options of this probe
 
-- ProbeOptions, if available, specifies the options that shall apply
-
-- MetaData is an option list that corresponds to extra, contextual information
-that can be taken into account in the probe-generated data files
+- MetaData, which is an option list that corresponds to extra, contextual
+information that can be taken into account in the probe-generated data files
 """.
--spec construct( wooper:state(),
-		probe_name_init() | { probe_name_init(), web_probe_options() },
-		meta_data() ) -> wooper:state().
-construct( State, { NameInit, ProbeOptions }, Metadata )
-							when is_record( ProbeOptions, web_probe_options ) ->
+-spec construct( wooper:state(), web_probe_init(), meta_data() ) ->
+                                                wooper:state().
+construct( State, _WebProbeInit={ NameInit, WebProbeOpts }, Metadata )
+                            when is_record( WebProbeOpts, web_probe_options ) ->
 
-	%trace_utils:debug_fmt( "Creating a web probe '~ts' from ~p.",
-	%                       [ NameInit, ProbeOptions ] ),
+    %trace_utils:debug_fmt( "Creating a web probe '~ts' from ~p.",
+    %                       [ NameInit, ProbeOptions ] ),
 
-	% Early interleaving:
+    % Early interleaving:
 
-	ProbeName = class_Probe:get_actual_probe_name( NameInit ),
+    ProbeName = class_Probe:get_actual_probe_name( NameInit ),
 
-	% The deployment of the *webserver* is currently asynchronous (as it is
-	% launched in the background; relevant HTTP connections would have to be
-	% done in order to poll when/if it becomes available), so we cannot tell for
-	% sure when it is ready; yet the creation of the web manager *is*
-	% synchronous, so this manager must already be available and thus no
-	% specific waiting is to be to performed here:
-	%
-	WebManagerPid =
-		naming_utils:get_registered_pid_for( ?web_manager_name, global ),
+    % The deployment of the *webserver* is currently asynchronous (as it is
+    % launched in the background; relevant HTTP connections would have to be
+    % done in order to poll when/if it becomes available), so we cannot tell for
+    % sure when it is ready; yet the creation of the web manager *is*
+    % synchronous, so this manager must already be available and thus no
+    % specific waiting is to be to performed here:
+    %
+    WebManagerPid =
+        naming_utils:get_registered_pid_for( ?web_manager_name, global ),
 
-	ProducerState = class_ResultProducer:construct( State,
-		?trace_categorize(NameInit) ),
+    ProducerState = class_ResultProducer:construct( State,
+        ?trace_categorize(NameInit) ),
 
-	% Such an instance is both a probe and a web element, so:
+    % Such an instance is both a probe and a web element, so:
 
-	BinProbeName = text_utils:string_to_binary( ProbeName ),
+    BinProbeName = text_utils:string_to_binary( ProbeName ),
 
-	{ IsTrackedProducer, MaybeBinProbeDir } = interpret_options( ProbeOptions ),
+    %{ IsTrackedProducer, MaybeBinProbeDir, IsLocalAccessRequired } =
+    { IsTrackedProducer, MaybeBinProbeDir } = interpret_options( WebProbeOpts ),
 
-	% Thanks to WOOPER, even if we are here in the mother class of the actual,
-	% non-already constructed class (e.g. could be class_TestWebProbe), we
-	% already know the actual, most precise classname that we will be using in
-	% order to trigger, on the web manager side, any relevant code that is
-	% specific to this class:
-	%
-	ActualClassname = wooper:get_classname( ProducerState ),
+    %trace_utils:debug_fmt( "Web-probe maybe-directory for '~ts': ~ts.",
+    %                       [ BinProbeName, MaybeBinProbeDir ] ),
 
-	WebManagerPid ! { declareWebProbe,
-		[ BinProbeName, ActualClassname, MaybeBinProbeDir ], self() },
+    % As facility probes are separate:
+    %MaybeBinProbeDir =/= undefined andalso
+    %    file_utils:is_absolute_path( MaybeBinProbeDir ) andalso
+    %        throw( { non_relative_probe_directory, MaybeBinProbeDir } ),
 
-	ResultManagerPid = getAttribute( ProducerState, result_manager_pid ),
+    % Thanks to WOOPER, even if we are here in the mother class of the actual,
+    % non-already constructed class (e.g. could be class_TestWebProbe), we
+    % already know the actual, most precise classname that we will be using in
+    % order to trigger, on the web manager side, any relevant code that is
+    % specific to this class:
+    %
+    ActualClassname = wooper:get_classname( ProducerState ),
 
-	ResultManagerPid !
-		{ declareWebProbe, [ BinProbeName, IsTrackedProducer ], self() },
+    %WebManagerPid ! { declareWebProbe, [ BinProbeName, ActualClassname,
+    %    MaybeBinProbeDir, IsLocalAccessRequired ], self() },
 
-	BinFilename = get_filename_for( ProbeName ),
-
-	receive
-
-		% From web manager's declareWebProbe/4:
-		{ wooper_result, web_probe_declared } ->
-
-			% If a directory is specified in the options, it supersedes the
-			% default one (which is the current deployed directory):
-			%
-			ActualBinRootDir = case MaybeBinProbeDir of
-
-				undefined ->
-					text_utils:string_to_binary(
-						file_utils:get_current_directory() );
-
-				_ ->
-					MaybeBinProbeDir
-
-			end,
-
-			BinProbeFilePath = file_utils:join( ActualBinRootDir, BinFilename ),
-
-			file_utils:is_existing_file_or_link( BinProbeFilePath ) andalso
-				begin
-
-					?send_error_fmt( ProducerState,
-						"Already existing probe filename (~ts). "
-						"Multiple web probes declared as being named '~ts'?",
-						[ BinProbeFilePath, ProbeName ] ),
-
-					throw( { already_existing_web_probe_filename,
-							 BinProbeFilePath } )
-
-				end,
-
-			ContentState = setAttributes( ProducerState, [
-				{ web_dir, ActualBinRootDir },
-				{ web_filename, BinFilename },
-				{ web_manager_pid, WebManagerPid },
-				{ available_content_files, [] },
-				{ meta_data, Metadata },
-				{ resource_dir, undefined } ] ),
-
-			?send_notice_fmt( ContentState, "Created ~ts.",
-							  [ to_string( ContentState ) ] ),
-
-			% From result manager:
-			class_Probe:wait_result_declaration_outcome( ProbeName,
-														 ContentState )
-
-	end;
+    WebManagerPid ! { declareWebProbe,
+        [ BinProbeName, ActualClassname, MaybeBinProbeDir ], self() },
 
 
-construct( State, Name, Metadata ) ->
-	construct( State, { Name, _DefaultOptions=#web_probe_options{} },
-			   Metadata ).
+    ResultManagerPid = getAttribute( ProducerState, result_manager_pid ),
+
+    ResultManagerPid !
+        { declareWebProbe, [ BinProbeName, IsTrackedProducer ], self() },
+
+
+    BinFilename = get_generated_html_filename( ProbeName ),
+
+    %trace_utils:debug_fmt( "Probe filename: '~ts'.", [ BinFilename ] ),
+
+    receive
+
+        % From web manager's declareWebProbe/4:
+        { wooper_result, web_probe_declared } ->
+
+            % If a directory is specified in the options, it supersedes the
+            % default one (which is the current deployed directory):
+            %
+            ActualBinRootDir = case MaybeBinProbeDir of
+
+                undefined ->
+                    text_utils:string_to_binary(
+                        file_utils:get_current_directory() );
+
+                _ ->
+                    MaybeBinProbeDir
+
+            end,
+
+            BinProbeFilePath = file_utils:join( ActualBinRootDir, BinFilename ),
+
+            file_utils:is_existing_file_or_link( BinProbeFilePath ) andalso
+                begin
+
+                    CurrentDir = file_utils:get_current_directory(),
+
+                    ?send_error_fmt( ProducerState,
+                        "Already existing probe filename ('~ts', while "
+                        "being in '~ts'). "
+                        "Multiple web probes declared as being named '~ts'?",
+                        [ BinProbeFilePath, CurrentDir, ProbeName ] ),
+
+                    throw( { already_existing_web_probe_filename,
+                             BinProbeFilePath, CurrentDir } )
+
+                end,
+
+            ContentState = setAttributes( ProducerState, [
+                { web_dir, ActualBinRootDir },
+                { web_filename, BinFilename },
+                { web_manager_pid, WebManagerPid },
+                { available_content_files, [] },
+                { meta_data, Metadata },
+                { resource_dir, undefined } ] ),
+
+            ?send_notice_fmt( ContentState, "Created ~ts.",
+                              [ to_string( ContentState ) ] ),
+
+            % From result manager:
+            class_Probe:wait_result_declaration_outcome( ProbeName,
+                                                         ContentState )
+
+    end;
+
+
+construct( State, NameInit, Metadata ) ->
+    construct( State, { NameInit, _DefaultOptions=#web_probe_options{} },
+               Metadata ).
+
 
 
 
 % (helper)
 interpret_options( #web_probe_options{
-						register_as_tracked_producer=IsTrackedProducer,
-						probe_directory=undefined } ) ->
-	{ IsTrackedProducer, undefined };
+                        register_as_tracked_producer=IsTrackedProducer,
+                        probe_directory=undefined } ) ->
+                        %local_access_required=IsLocalAccessRequired } ) ->
+    %{ IsTrackedProducer, undefined, IsLocalAccessRequired };
+    { IsTrackedProducer, undefined };
 
 interpret_options( #web_probe_options{
-						register_as_tracked_producer=IsTrackedProducer,
-						probe_directory=ProbeDir } ) ->
-	{ IsTrackedProducer, text_utils:string_to_binary( ProbeDir ) }.
+                        register_as_tracked_producer=IsTrackedProducer,
+                        probe_directory=ProbeDir } ) ->
+                        %local_access_required=IsLocalAccessRequired } ) ->
+    %{ IsTrackedProducer, text_utils:string_to_binary( ProbeDir ),
+    %  IsLocalAccessRequired }.
+
+    { IsTrackedProducer, text_utils:string_to_binary( ProbeDir ) }.
 
 
 
@@ -296,14 +348,14 @@ interpret_options( #web_probe_options{
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
-	% Class-specific actions:
+    % Class-specific actions:
 
-	?info( "Deleting web probe." ),
+    ?info( "Deleting web probe." ),
 
-	%?debug( "Probe deleted." ),
+    %?debug( "Probe deleted." ),
 
-	% Then call the direct mother class counterparts and allow chaining:
-	State.
+    % Then call the direct mother class counterparts and allow chaining:
+    State.
 
 
 
@@ -311,31 +363,43 @@ destruct( State ) ->
 % Methods section.
 
 
+-doc "Returns the directory where the web probe files are to be written.".
+-spec getProbeDirectory( wooper:state() ) ->
+            const_request_return( option( bin_directory_path() ) ).
+getProbeDirectory( State ) ->
+    wooper:const_return_result( ?getAttr(web_dir) ).
+
+
+
 -doc "Sets the content of the main file of this web probe.".
 -spec setMainContent( wooper:state(), any_string() ) ->
-								request_return( 'content_set' ).
+                                request_return( 'content_set' ).
 setMainContent( State, ContentString ) when is_list( ContentString ) ->
 
-	{ SetState, Res } =
-		setMainContent( State, text_utils:string_to_binary( ContentString ) ),
+    { SetState, Res } =
+        setMainContent( State, text_utils:string_to_binary( ContentString ) ),
 
-	wooper:return_state_result( SetState, Res );
+    wooper:return_state_result( SetState, Res );
 
 
 setMainContent( State, BinContent ) when is_binary( BinContent ) ->
 
-	ContentFilename = ?getAttr(web_filename),
+    ContentFilename = ?getAttr(web_filename),
 
-	TargetPath = file_utils:join( ?getAttr(web_dir), ContentFilename ),
+    WebDir = ?getAttr(web_dir),
 
-	?debug_fmt( "Writing (main) content of web probe in '~ts', namely:~n~ts",
-				[ TargetPath, BinContent ] ),
+    file_utils:create_directory_if_not_existing( WebDir ),
 
-	file_utils:write_whole( TargetPath, BinContent ),
+    TargetPath = file_utils:join( WebDir, ContentFilename ),
 
-	DeclaredState = declare_content_file( ContentFilename, State ),
+    ?debug_fmt( "Writing (main) content of web probe in '~ts', namely:~n~ts",
+                [ TargetPath, BinContent ] ),
 
-	wooper:return_state_result( DeclaredState, content_set ).
+    file_utils:write_whole( TargetPath, BinContent ),
+
+    DeclaredState = declare_content_file( ContentFilename, State ),
+
+    wooper:return_state_result( DeclaredState, content_set ).
 
 
 
@@ -346,75 +410,75 @@ result manager).
 (request, notably for synchronous operations)
 """.
 -spec sendResults( wooper:state(), class_ResultProducer:producer_options() ) ->
-			request_return( class_ResultProducer:producer_result() ).
+            request_return( class_ResultProducer:producer_result() ).
 sendResults( State, _ProducerOptions ) ->
 
-	%trace_utils:debug_fmt( "sendResults/2 called for web probe ~w",
-	%                       [ self() ] ),
+    %trace_utils:debug_fmt( "sendResults/2 called for web probe ~w",
+    %                       [ self() ] ),
 
-	% For web probes, data and rendering are the same: web content is produced,
-	% and the webserver is to display them.
+    % For web probes, data and rendering are the same: web content is produced,
+    % and the webserver is to display them.
 
-	% Check:
-	false = ?getAttr(result_collected),
+    % Check:
+    false = ?getAttr(result_collected),
 
-	% Call to a (possibly overridden) empty callback method, so that any
-	% finalization of a web content (e.g. the addition of a web footer) can be
-	% done when needed:
-	%
-	FinalizedState = executeOneway( State, onFinalizationTime ),
+    % Call to a (possibly overridden) empty callback method, so that any
+    % finalization of a web content (e.g. the addition of a web footer) can be
+    % done when needed:
+    %
+    FinalizedState = executeOneway( State, onFinalizationTime ),
 
-	% An actual (specialised through inheritance) web probe is expected to
-	% generate a content (through overridden methods) in all cases:
-	%
-	Result = case getAttribute( FinalizedState, available_content_files ) of
+    % An actual (specialised through inheritance) web probe is expected to
+    % generate a content (through overridden methods) in all cases:
+    %
+    Result = case getAttribute( FinalizedState, available_content_files ) of
 
-		[] ->
-			?debug( "No available content for sending." ),
-			{ self(), no_result };
-
-
-		[ BinFilename ] ->
-
-			?debug_fmt( "Sending a single content file, '~ts'.",
-						[ BinFilename ] ),
-
-			BinContentFilename =
-				file_utils:join( ?getAttr(web_dir), BinFilename ),
-
-			BinContent = file_utils:read_whole( BinContentFilename ),
-
-			%trace_utils:debug_fmt( "Removing '~ts'.", [ BinContentFilename ] ),
-
-			file_utils:remove_file( BinContentFilename ),
-
-			{ self(), raw, { BinFilename, BinContent } };
+        [] ->
+            ?debug( "No available content for sending." ),
+            { self(), no_result };
 
 
-		BinFilenames ->
+        [ BinFilename ] ->
 
-			WebDir = text_utils:binary_to_string( ?getAttr(web_dir) ),
+            ?debug_fmt( "Sending a single content file, '~ts'.",
+                        [ BinFilename ] ),
 
-			Filenames =
-				[ text_utils:binary_to_string( F ) || F <- BinFilenames ],
+            BinContentFilename =
+                file_utils:join( ?getAttr(web_dir), BinFilename ),
 
-			?debug_fmt( "Sending, from ~ts, ~B content file(s): ~ts",
-				[ WebDir, length( Filenames ),
-				  text_utils:strings_to_string( Filenames ) ] ),
+            BinContent = file_utils:read_whole( BinContentFilename ),
 
-			BinArchive = file_utils:files_to_zipped_term( Filenames, WebDir ),
+            %trace_utils:debug_fmt( "Removing '~ts'.", [ BinContentFilename ] ),
 
-			FilesToRemove = [ file_utils:join( WebDir, F ) || F <- Filenames ],
+            file_utils:remove_file( BinContentFilename ),
 
-			file_utils:remove_files( FilesToRemove ),
+            { self(), raw, { BinFilename, BinContent } };
 
-			{ self(), archive, BinArchive }
 
-	end,
+        BinFilenames ->
 
-	LastState = setAttribute( FinalizedState, result_collected, true ),
+            WebDir = text_utils:binary_to_string( ?getAttr(web_dir) ),
 
-	wooper:return_state_result( LastState, Result ).
+            Filenames =
+                [ text_utils:binary_to_string( F ) || F <- BinFilenames ],
+
+            ?debug_fmt( "Sending, from ~ts, ~B content file(s): ~ts",
+                [ WebDir, length( Filenames ),
+                  text_utils:strings_to_string( Filenames ) ] ),
+
+            BinArchive = file_utils:files_to_zipped_term( Filenames, WebDir ),
+
+            FilesToRemove = [ file_utils:join( WebDir, F ) || F <- Filenames ],
+
+            file_utils:remove_files( FilesToRemove ),
+
+            { self(), archive, BinArchive }
+
+    end,
+
+    LastState = setAttribute( FinalizedState, result_collected, true ),
+
+    wooper:return_state_result( LastState, Result ).
 
 
 
@@ -422,9 +486,9 @@ sendResults( State, _ProducerOptions ) ->
 -spec onFinalizationTime( wooper:state() ) -> const_oneway_return().
 onFinalizationTime( State ) ->
 
-	% No-op here.
+    % No-op here.
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 
@@ -432,62 +496,60 @@ onFinalizationTime( State ) ->
 
 
 -doc """
-Creates a facility probe, that is a lingering probe, to be created
-(unilaterally) from a test case, and that will not to considered as a result.
-
-NameOptions is either:
-
-- Name :: ustring(), i.e. directly the name of this probe (specified as a plain
-string), which will be used for the generated data and command files
-
-- or {Name :: ustring(), ProbeOptions :: web_probe_options()}
+Creates a facility web probe, that is a lingering probe, to be created
+(unilaterally) from a test case, and that will not to considered as a result
+(thus written and available directly in their subdirectory of the web root).
 """.
--spec create_facility_probe( name_options() ) -> static_return( probe_ref() ).
-create_facility_probe( NameOptions ) ->
+-spec create_facility_probe( web_probe_init() ) -> static_return( probe_ref() ).
+create_facility_probe( WebProbeInit ) ->
 
-	ProbeDirectory = file_utils:get_current_directory(),
+    % Setting an explicit directory, as it is not a web result, thus not
+    % relative to the web root:
+    %
+    Res = create_facility_probe( WebProbeInit, undefined ),
 
-	Res = create_facility_probe( NameOptions, ProbeDirectory ),
-
-	wooper:return_static( Res ).
+    wooper:return_static( Res ).
 
 
 
 -doc """
-Creates a facility probe, that is a lingering probe, to be created
+Creates a facility web probe, that is a lingering probe, to be created
 (unilaterally) from a test case, and that will not to considered as a result.
 
-The first parameter is either:
-
-- Name :: ustring(), i.e. directly the name of this probe (specified as a plain
-string), which will be used for the generated data and command files
-
-- or {Name :: ustring(), ProbeOptions :: web_probe_options() }
+A directory (by default the current one) will be retained in all cases,
+overriding any prior option in `WebProbeInit`.
 """.
--spec create_facility_probe( name_options(), directory_path() ) ->
-									static_return( probe_ref() ).
-create_facility_probe( { Name, Options }, ProbeDirectory ) ->
+-spec create_facility_probe( web_probe_init(), option( directory_path() ) ) ->
+                                    static_return( probe_ref() ).
+create_facility_probe( WebProbeInit, _MaybeProbeDir=undefined ) ->
+    % Facility probes cannot be relative to the result web root:
+    wooper:return_static( create_facility_probe( WebProbeInit,
+                           _ProbeDir=file_utils:get_current_directory() ) );
 
-	% Overrides any previous probe directory definition:
-	NewOptions = Options#web_probe_options{ register_as_tracked_producer=false,
-											probe_directory=ProbeDirectory },
+create_facility_probe( _WebProbeInit={ NameInit, WebProbeOpts }, ProbeDir ) ->
 
-	ProbePid = class_WebProbe:synchronous_new_link( { Name, NewOptions },
-													_Metadata=[] ),
+    % Overrides any previous probe directory definition:
+    NewWebProbeOpts = WebProbeOpts#web_probe_options{
+        register_as_tracked_producer=false,
+        probe_directory=ProbeDir },
 
-	wooper:return_static( ProbePid );
+    ProbePid = synchronous_new_link(
+        _NewWebProbeInit={ NameInit, NewWebProbeOpts }, _Metadata=[] ),
+
+    wooper:return_static( ProbePid );
 
 
-create_facility_probe( Name, ProbeDirectory ) ->
+create_facility_probe( ProbeName, ProbeDir ) ->
 
-	% Overrides any previous probe directory definition:
-	Options = #web_probe_options{ register_as_tracked_producer=false,
-								  probe_directory=ProbeDirectory },
+    WebProbeOpts = #web_probe_options{
+        register_as_tracked_producer=false,
+        probe_directory=ProbeDir },
 
-	ProbePid = class_WebProbe:synchronous_new_link( { Name, Options },
-													_Metadata=[] ),
+    ProbePid = synchronous_new_link(
+        _NewWebProbeInit={ _NameInit=ProbeName, WebProbeOpts }, _Metadata=[] ),
 
-	wooper:return_static( ProbePid ).
+    wooper:return_static( ProbePid ).
+
 
 
 
@@ -495,73 +557,113 @@ create_facility_probe( Name, ProbeDirectory ) ->
 Declares (synchronously) a new (web) probe, to be seen as a result producer, and
 be created either from an actor or from a test case.
 
-- NameOptions is either:
-
- - Name :: ustring(), i.e. directly the name of this probe (specified as a plain
- string), which will be used for the generated data and command files
-
- - or {Name :: ustring(), ProbeOptions :: web_probe_options()}
-
 Returns either the PID of this newly created probe (if the name of that probe is
 acknowledged as a wanted result by the result manager), or the
-'non_wanted_probe' atom.
-
+`non_wanted_probe` atom.
 """.
--spec declare_result_probe( name_options() ) -> static_return( probe_ref() ).
-declare_result_probe( NameOptions ) ->
+-spec declare_result_probe( web_probe_init() ) -> static_return( probe_ref() ).
+declare_result_probe( WebProbeInit ) ->
 
-	case is_wanted( NameOptions ) of
+    case is_wanted( WebProbeInit ) of
 
-		false ->
-			wooper:return_static( non_wanted_probe );
+        false ->
+            wooper:return_static( non_wanted_probe );
 
-		Metadata ->
-			% Created in current directory (i.e. the one for temporary data):
-			wooper:return_static(
-				class_WebProbe:synchronous_new_link( NameOptions, Metadata ) )
+        Metadata ->
+            % Created in current directory (i.e. the one for temporary data):
+            wooper:return_static(
+                synchronous_new_link( WebProbeInit, Metadata ) )
 
-	end.
+    end.
 
 
 
 -doc """
-Tells whether the specified web probe is wanted.
+Tells whether the specified result web probe is wanted.
 
 (useful factored code for child classes)
 """.
--spec is_wanted( name_options() ) ->
-				static_return( 'false' | class_ResultManager:meta_data() ).
-is_wanted( NameOptions ) ->
+-spec is_wanted( web_probe_init() ) ->
+                    static_return( 'false' | class_ResultManager:meta_data() ).
+is_wanted( WebProbeInit ) ->
 
-	%trace_utils:debug_fmt( "Declaring result probe, with ~p.",
-	%                       [ NameOptions ] ),
+    %trace_utils:debug_fmt( "Declaring result web probe, with ~p.",
+    %                       [ WebProbeInit ] ),
 
-	ActualName = case NameOptions of
+    ActualName = case WebProbeInit of
 
-		 { Name, _ProbeOptions } ->
-			Name;
+        % Any kind of WebProbeOpts (including ones of child classes):
+        { { ProbeName, _ProbeCateg }, _WebProbeOpts } ->
+            ProbeName;
 
-		 Name when is_list( Name ) ->
-			Name
+        { ProbeName, _ProbeCategOrWebProbeOpts } ->
+             ProbeName;
 
-	end,
+        ProbeName when is_list( ProbeName ) ->
+            ProbeName
 
-	ActualBinName = text_utils:string_to_binary( ActualName ),
+    end,
 
-	ResultManagerPid = class_ResultManager:get_result_manager(),
+    ActualBinName = text_utils:string_to_binary( ActualName ),
 
-	ResultManagerPid ! { isResultProducerWanted,
-							[ ActualBinName, _Nature=web_probe ], self() },
+    ResultManagerPid = class_ResultManager:get_result_manager(),
 
-	receive
+    ResultManagerPid ! { isResultProducerWanted,
+                            [ ActualBinName, _Nature=web_probe ], self() },
 
-		{ wooper_result, { true, Metadata } } ->
-			wooper:return_static( Metadata );
+    receive
 
-		{ wooper_result, false } ->
-			wooper:return_static( false )
+        { wooper_result, { true, Metadata } } ->
+            wooper:return_static( Metadata );
 
-	end.
+        { wooper_result, false } ->
+            wooper:return_static( false )
+
+    end.
+
+
+
+% Not used anymore:
+% -doc """
+% Returns a web probe initialisation term that requires in all cases the support
+% for local filesystem access.
+
+% (factored code, useful for child classes)
+% """.
+% -spec secure_local_access_in( web_probe_init() ) ->
+%                                 static_return( web_probe_init() ).
+% % Full elements here:
+% secure_local_access_in( { P={ _ProbeName, _ProbeCateg }, WebProbeOpts  } ) ->
+
+%     NewWebProbeOpts =
+%         WebProbeOpts#web_probe_options{ local_access_required=true },
+
+%     wooper:return_static( { P, NewWebProbeOpts } );
+
+
+% % No categorisation here:
+% secure_local_access_in( { ProbeName, WebProbeOpts } )
+%                  when is_record( WebProbeOpts, web_probe_options ) ->
+
+%     NewWebProbeOpts =
+%         WebProbeOpts#web_probe_options{ local_access_required=true },
+
+%     wooper:return_static( { ProbeName, NewWebProbeOpts } );
+
+
+% % No options here:
+% secure_local_access_in( P={ _ProbeName, _ProbeCateg } ) ->
+%     % Default options except for:
+%     wooper:return_static(
+%         { P, #web_probe_options{ local_access_required=true } } );
+
+
+% secure_local_access_in( ProbeName ) when is_list( ProbeName ) ->
+%     % Default options except for:
+%     wooper:return_static(
+%         { ProbeName, #web_probe_options{ local_access_required=true } } ).
+
+
 
 
 
@@ -573,34 +675,38 @@ manager).
 -spec delete_facility_probe( probe_ref() ) -> static_void_return().
 delete_facility_probe( ProbePid ) when is_pid( ProbePid ) ->
 
-	%trace_utils:debug( "Deleting this facility web probe." ),
+    %trace_utils:debug( "Deleting this facility web probe." ),
 
-	% Disable checking for this very specific case:
-	ProbePid ! { setResultCollectedStatus, true },
+    % Disable checking for this very specific case:
+    ProbePid ! { setResultCollectedStatus, true },
 
-	% This is necessarily a PID, not a 'non_wanted_probe' atom; synchronicity is
-	% better here, to detect all failures:
-	%
-	wooper:delete_synchronously_instance( ProbePid ),
+    % This is necessarily a PID, not a 'non_wanted_probe' atom; synchronicity is
+    % better here, to detect all failures:
+    %
+    wooper:delete_synchronously_instance( ProbePid ),
 
-	wooper:return_static_void().
+    wooper:return_static_void().
 
 
 
 -doc """
 Returns the filename (not a full path) of the main HTML page corresponding to
-the specified probe.
+the specified (web) probe.
 """.
--spec get_filename_for( probe_name() ) -> static_return( bin_file_name() ).
-get_filename_for( WebProbeName ) ->
+-spec get_generated_html_filename( probe_name() ) ->
+                                            static_return( bin_file_name() ).
+get_generated_html_filename( WebProbeName ) ->
 
-	BinFilename = text_utils:string_to_binary( file_utils:convert_to_filename(
-		text_utils:format( "web-probe-~ts.html", [ WebProbeName ] ) ) ),
+    PfxStr = text_utils:format( "web-probe-~ts", [ WebProbeName ] ),
 
-	%trace_utils:debug_fmt( "The filename corresponding to the web probe "
-	%    "named '~ts' is: '~ts'.", [ WebProbeName, BinFilename ] ),
+    BinFilename = text_utils:string_to_binary(
+        file_utils:convert_to_filename_with_extension( PfxStr, "html" ) ),
 
-	wooper:return_static( BinFilename ).
+
+    %trace_utils:debug_fmt( "The filename corresponding to the web probe "
+    %    "named '~ts' is: '~ts'.", [ WebProbeName, BinFilename ] ),
+
+    wooper:return_static( BinFilename ).
 
 
 
@@ -618,21 +724,21 @@ absolute path.
 -spec declare_content_file( bin_file_name(), wooper:state() ) -> wooper:state().
 declare_content_file( BinFilename, State ) ->
 
-	ContentFiles = ?getAttr(available_content_files),
+    ContentFiles = ?getAttr(available_content_files),
 
-	% Poor man's set:
-	NewContentFiles = case lists:member( BinFilename, ContentFiles ) of
+    % Poor man's set:
+    NewContentFiles = case lists:member( BinFilename, ContentFiles ) of
 
-		true ->
-			ContentFiles;
+        true ->
+            ContentFiles;
 
-		false ->
-			[ BinFilename | ContentFiles ]
+        false ->
+            [ BinFilename | ContentFiles ]
 
-	end,
+    end,
 
-	setAttributes( State, [ { available_content_files, NewContentFiles },
-							{ result_produced, true } ] ).
+    setAttributes( State, [ { available_content_files, NewContentFiles },
+                            { result_produced, true } ] ).
 
 
 
@@ -640,33 +746,33 @@ declare_content_file( BinFilename, State ) ->
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
-	RscStr = case ?getAttr(resource_dir) of
+    RscStr = case ?getAttr(resource_dir) of
 
-		undefined ->
-			"no resource directory";
+        undefined ->
+            "no resource directory";
 
-		RscDir ->
-			text_utils:format( "resource directory '~ts'", [ RscDir ] )
+        RscDir ->
+            text_utils:format( "resource directory '~ts'", [ RscDir ] )
 
-	end,
+    end,
 
-	ContentStr = case ?getAttr(available_content_files) of
+    ContentStr = case ?getAttr(available_content_files) of
 
-		[] ->
-			"no content currently available";
+        [] ->
+            "no content currently available";
 
-		Files ->
-			text_utils:format( "~B content file(s) currently available: ~ts",
-							   [ length( Files ), Files ] )
+        Files ->
+            text_utils:format( "~B content file(s) currently available: ~ts",
+                               [ length( Files ), Files ] )
 
-	end,
+    end,
 
-	% meta_data not taken into account here.
+    % meta_data not taken into account here.
 
-	text_utils:format( "web probe using content web directory '~ts', "
-		"with ~ts defined, "
-		"producing main web file '~ts', linked to "
-		"web manager ~w and to result manager ~w, having ~ts" ,
-		[ ?getAttr(web_dir), RscStr, ?getAttr(web_filename),
-		  ?getAttr(web_manager_pid), ?getAttr(result_manager_pid),
-		  ContentStr ] ).
+    text_utils:format( "web probe using content web directory '~ts', "
+        "with ~ts defined, "
+        "producing main web file '~ts', linked to "
+        "web manager ~w and to result manager ~w, having ~ts" ,
+        [ ?getAttr(web_dir), RscStr, ?getAttr(web_filename),
+          ?getAttr(web_manager_pid), ?getAttr(result_manager_pid),
+          ContentStr ] ).

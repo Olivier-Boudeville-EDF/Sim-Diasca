@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -33,8 +33,8 @@ Tests the support of **multiple constructors**.
 
 
 -define( class_description,
-		 "Allows the testing the support of multiple constructors: three "
-		 "different ones are defined, none exported." ).
+         "Allows the testing the support of multiple constructors: three "
+         "different ones are defined, none exported." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -56,8 +56,8 @@ Tests the support of **multiple constructors**.
 -doc "Constructs an instance from two construction parameters.".
 -spec construct( wooper:state(), name(), gender() ) -> wooper:state().
 construct( State, Name, Gender ) ->
-	% No mother class.
-	setAttributes( State, [ { name, Name }, { gender, Gender } ] ).
+    % No mother class.
+    setAttributes( State, [ { name, Name }, { gender, Gender } ] ).
 
 
 
@@ -68,28 +68,28 @@ Of course multiple clauses may exist:
 """.
 -spec construct( wooper:state(), name() ) -> wooper:state().
 construct( State, Name="Murdock" ) ->
-	% No mother class.
-	setAttributes( State, [ { name, Name }, { gender, undefined } ] );
+    % No mother class.
+    setAttributes( State, [ { name, Name }, { gender, undefined } ] );
 
 construct( State, Name ) ->
-	% No mother class.
-	setAttributes( State, [ { name, Name }, { gender, unknown } ] ).
+    % No mother class.
+    setAttributes( State, [ { name, Name }, { gender, unknown } ] ).
 
 
 
 -doc "Simplest possible signature.".
 -spec construct( wooper:state() ) -> wooper:state().
 construct( State ) ->
-	% No mother class.
-	setAttributes( State, [ { name, "Terry" }, { gender, unknown } ] ).
+    % No mother class.
+    setAttributes( State, [ { name, "Terry" }, { gender, unknown } ] ).
 
 
 
 -doc "Overriding the default destructor.".
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
-	io:format( "  I am ~ts, and I am just destructed.~n", [ ?getAttr(name) ] ),
-	State.
+    io:format( "  I am ~ts, and I am just destructed.~n", [ ?getAttr(name) ] ),
+    State.
 
 
 
@@ -99,10 +99,10 @@ destruct( State ) ->
 -doc "Returns the name of this instance.".
 -spec getName( wooper:state() ) -> const_request_return( name() ).
 getName( State ) ->
-	wooper:const_return_result( ?getAttr(name) ).
+    wooper:const_return_result( ?getAttr(name) ).
 
 
 -doc "Returns the gender of this instance.".
 -spec getGender( wooper:state() ) -> const_request_return( gender() ).
 getGender( State ) ->
-	wooper:const_return_result( ?getAttr(gender) ).
+    wooper:const_return_result( ?getAttr(gender) ).

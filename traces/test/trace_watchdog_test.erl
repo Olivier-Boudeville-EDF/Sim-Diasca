@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2025 Olivier Boudeville
+% Copyright (C) 2020-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -42,30 +42,30 @@ Testing the **watchdog** for the trace aggregator.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	% Allows to support both OTP conventions and ad hoc, automatic ones:
-	wooper_utils:start_for_test(),
+    % Allows to support both OTP conventions and ad hoc, automatic ones:
+    wooper_utils:start_for_test(),
 
-	% Test target here:
-	?test_start,
+    % Test target here:
+    ?test_start,
 
-	AggregatorPid = case class_TraceAggregator:get_aggregator() of
+    AggregatorPid = case class_TraceAggregator:get_aggregator() of
 
-		trace_aggregator_not_found ->
-			throw( trace_aggregator_not_found );
+        trace_aggregator_not_found ->
+            throw( trace_aggregator_not_found );
 
-		AgPid ->
-			AgPid
+        AgPid ->
+            AgPid
 
-	end,
+    end,
 
-	% Will run as long as the test is not stopped; 1 check per second:
-	AggregatorPid ! { enableWatchdog, [ _Period=1 ] },
+    % Will run as long as the test is not stopped; 1 check per second:
+    AggregatorPid ! { enableWatchdog, [ _Period=1 ] },
 
-	timer:sleep( 1000 ),
+    timer:sleep( 1000 ),
 
-	% Test target here:
-	?test_stop,
+    % Test target here:
+    ?test_stop,
 
-	test_facilities:stop().
+    test_facilities:stop().

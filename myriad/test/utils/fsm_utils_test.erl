@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -45,16 +45,16 @@ See the fsm_utils.erl tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	StartFsmState = fsm_utils:create_blank_fsm_state(),
-	FsmState = ?setFsmAttribute( StartFsmState, test_question, 42 ),
-	{ value, 42 } = ?getFsmAttr( test_question ),
+    StartFsmState = fsm_utils:create_blank_fsm_state(),
+    FsmState = ?setFsmAttribute( StartFsmState, test_question, 42 ),
+    { value, 42 } = ?getFsmAttr( test_question ),
 
-	FsmStateTwo = fsm_utils:setFsmAttribute( FsmState, other_test_question,
-											 43 ),
+    FsmStateTwo = fsm_utils:setFsmAttribute( FsmState, other_test_question,
+                                             43 ),
 
-	{ value, 43 } = fsm_utils:getFsmAttribute( FsmStateTwo,
-											   other_test_question ),
+    { value, 43 } = fsm_utils:getFsmAttribute( FsmStateTwo,
+                                               other_test_question ),
 
-	test_facilities:stop().
+    test_facilities:stop().

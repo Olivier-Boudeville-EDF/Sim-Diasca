@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 EDF R&D
+% Copyright (C) 2016-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -30,7 +30,7 @@ Module storing all the helper functions facilitating the support of the
 
 % Exports of helpers:
 -export([ execute_request/4, execute_request_locally/3,
-		  execute_request_locally/4 ]).
+          execute_request_locally/4 ]).
 
 
 % For trace generations (involving a WOOPER state):
@@ -67,29 +67,29 @@ Note: trace messages received while this request is being processed are managed
 on the fly (directly, i.e. their processing is not postponed).
 """.
 -spec execute_request( java_mbox_pid(), request_name(), request_result(),
-		emitter_categorization() | wooper:state() ) -> result().
+        emitter_categorization() | wooper:state() ) -> result().
 % Here we have just a trace categorization:
 execute_request( MailboxPid, RequestName, RequestParams, TraceCat )
-										when is_list( TraceCat ) ->
+                                        when is_list( TraceCat ) ->
 
-	trace_utils:debug_fmt( "Executing request '~ts' with parameters ~p "
-		"(categorization: ~ts).",
-		[ RequestName, RequestParams, TraceCat ] ),
+    trace_utils:debug_fmt( "Executing request '~ts' with parameters ~p "
+        "(categorization: ~ts).",
+        [ RequestName, RequestParams, TraceCat ] ),
 
-	java_utils:send_oneway( MailboxPid, RequestName, RequestParams ),
+    java_utils:send_oneway( MailboxPid, RequestName, RequestParams ),
 
-	handle_request_results( MailboxPid, RequestName, TraceCat );
+    handle_request_results( MailboxPid, RequestName, TraceCat );
 
 
 % Here we have an actual State to rely on:
 execute_request( MailboxPid, RequestName, RequestParams, State ) ->
 
-	trace_utils:debug_fmt( "Executing request '~ts' with parameters ~p.",
-						   [ RequestName, RequestParams ] ),
+    trace_utils:debug_fmt( "Executing request '~ts' with parameters ~p.",
+                           [ RequestName, RequestParams ] ),
 
-	java_utils:send_oneway( MailboxPid, RequestName, RequestParams ),
+    java_utils:send_oneway( MailboxPid, RequestName, RequestParams ),
 
-	handle_request_results( MailboxPid, RequestName, State ).
+    handle_request_results( MailboxPid, RequestName, State ).
 
 
 
@@ -102,15 +102,15 @@ that do not rely on the state of a particular Jinterface mailbox (e.g. static
 methods only).
 """.
 -spec execute_request_locally( request_name(), request_result(),
-			emitter_categorization() | wooper:state() ) ->
-									{ result(), java_mbox_pid() }.
+            emitter_categorization() | wooper:state() ) ->
+                                    { result(), java_mbox_pid() }.
 execute_request_locally( RequestName, RequestParams, TraceCatOrState ) ->
 
-	% Gets the PID of the global instance managing Java resources:
-	JavaBindingManagerPid = class_JavaBindingManager:get_registered_manager(),
+    % Gets the PID of the global instance managing Java resources:
+    JavaBindingManagerPid = class_JavaBindingManager:get_registered_manager(),
 
-	execute_request_locally( RequestName, RequestParams, JavaBindingManagerPid,
-							 TraceCatOrState ).
+    execute_request_locally( RequestName, RequestParams, JavaBindingManagerPid,
+                             TraceCatOrState ).
 
 
 
@@ -122,27 +122,27 @@ Hence this function is only relevant for requests that do not rely on the state
 of a particular Jinterface mailbox (e.g. static methods only).
 """.
 -spec execute_request_locally( request_name(), request_result(),
-			class_JavaBindingManager:manager_pid(),
-			emitter_categorization() | wooper:state() ) ->
-										{ result(), java_mbox_pid() }.
+            class_JavaBindingManager:manager_pid(),
+            emitter_categorization() | wooper:state() ) ->
+                                        { result(), java_mbox_pid() }.
 execute_request_locally( RequestName, RequestParams, JavaBindingManagerPid,
-						 TraceCatOrState ) ->
+                         TraceCatOrState ) ->
 
-	% We know here the Java binding manager.
+    % We know here the Java binding manager.
 
-	% Selects one of the active local mailboxes (could have been the controller
-	% one as well, yet we prefer a worker one):
-	%
-	% FIXME: re-enable once workers are ready, Java-side.
-	%MailboxPid = class_JavaBindingManager:get_any_worker_mailbox(
-	MailboxPid =
-		class_JavaBindingManager:get_controller_mbox( JavaBindingManagerPid ),
+    % Selects one of the active local mailboxes (could have been the controller
+    % one as well, yet we prefer a worker one):
+    %
+    % FIXME: re-enable once workers are ready, Java-side.
+    %MailboxPid = class_JavaBindingManager:get_any_worker_mailbox(
+    MailboxPid =
+        class_JavaBindingManager:get_controller_mbox( JavaBindingManagerPid ),
 
-	% Executes a classical request in the selected worker thread:
-	Result = execute_request( MailboxPid, RequestName, RequestParams,
-							  TraceCatOrState ),
+    % Executes a classical request in the selected worker thread:
+    Result = execute_request( MailboxPid, RequestName, RequestParams,
+                              TraceCatOrState ),
 
-	{ Result, MailboxPid }.
+    { Result, MailboxPid }.
 
 
 
@@ -155,138 +155,138 @@ Stops as soon as the request is successfully completed, or an error message is
 received, or an exception has been raised by the process hosting the mailbox.
 """.
 -spec handle_request_results( java_mbox_pid(), request_name(),
-				emitter_categorization() | wooper:state() ) -> result().
+                emitter_categorization() | wooper:state() ) -> result().
 handle_request_results( MailboxPid, RequestName, TraceEmitterCategorization )
                                 when is_list( TraceEmitterCategorization ) ->
 
-	%trace_utils:debug_fmt( "Waiting for the result of request '~ts', from ~w.",
-	%                       [ RequestName, MailboxPid ] ),
+    %trace_utils:debug_fmt( "Waiting for the result of request '~ts', from ~w.",
+    %                       [ RequestName, MailboxPid ] ),
 
-	case java_utils:wait_for_request_result( MailboxPid, RequestName ) of
+    case java_utils:wait_for_request_result( MailboxPid, RequestName ) of
 
-		{ request_completed, ReceivedData } ->
-			%trace_utils:debug_fmt( "Result from ~w, for request '~ts':~p.",
-			%                       [ MailboxPid, RequestName, ReceivedData ] ),
-			ReceivedData;
+        { request_completed, ReceivedData } ->
+            %trace_utils:debug_fmt( "Result from ~w, for request '~ts':~p.",
+            %                       [ MailboxPid, RequestName, ReceivedData ] ),
+            ReceivedData;
 
-		{ trace_emitted, debug, TraceFormattedMessage } ->
-			?notify_debug_cat( TraceFormattedMessage,
-							   TraceEmitterCategorization ),
-			handle_request_results( MailboxPid, RequestName,
-									TraceEmitterCategorization );
+        { trace_emitted, debug, TraceFormattedMessage } ->
+            ?notify_debug_cat( TraceFormattedMessage,
+                               TraceEmitterCategorization ),
+            handle_request_results( MailboxPid, RequestName,
+                                    TraceEmitterCategorization );
 
-		{ trace_emitted, info, TraceFormattedMessage } ->
-			?notify_info_cat( TraceFormattedMessage,
-							  TraceEmitterCategorization ),
-			handle_request_results( MailboxPid, RequestName,
-									TraceEmitterCategorization );
+        { trace_emitted, info, TraceFormattedMessage } ->
+            ?notify_info_cat( TraceFormattedMessage,
+                              TraceEmitterCategorization ),
+            handle_request_results( MailboxPid, RequestName,
+                                    TraceEmitterCategorization );
 
-		{ trace_emitted, notice, TraceFormattedMessage } ->
-			?notify_notice_cat( TraceFormattedMessage,
-								TraceEmitterCategorization ),
-			handle_request_results( MailboxPid, RequestName,
-									TraceEmitterCategorization );
+        { trace_emitted, notice, TraceFormattedMessage } ->
+            ?notify_notice_cat( TraceFormattedMessage,
+                                TraceEmitterCategorization ),
+            handle_request_results( MailboxPid, RequestName,
+                                    TraceEmitterCategorization );
 
-		{ trace_emitted, warning, TraceFormattedMessage } ->
-			?notify_warning_cat( TraceFormattedMessage,
-								 TraceEmitterCategorization ),
-			handle_request_results( MailboxPid, RequestName,
-									TraceEmitterCategorization );
+        { trace_emitted, warning, TraceFormattedMessage } ->
+            ?notify_warning_cat( TraceFormattedMessage,
+                                 TraceEmitterCategorization ),
+            handle_request_results( MailboxPid, RequestName,
+                                    TraceEmitterCategorization );
 
-		{ trace_emitted, error, TraceFormattedMessage } ->
-			?notify_error_cat( TraceFormattedMessage,
-							   TraceEmitterCategorization ),
-			class_JavaBindingManager:get_registered_manager() ! delete,
-			throw( { java_error_raised, TraceFormattedMessage } );
+        { trace_emitted, error, TraceFormattedMessage } ->
+            ?notify_error_cat( TraceFormattedMessage,
+                               TraceEmitterCategorization ),
+            class_JavaBindingManager:get_registered_manager() ! delete,
+            throw( { java_error_raised, TraceFormattedMessage } );
 
-		{ trace_emitted, critical, TraceFormattedMessage } ->
-			?notify_critical_cat( TraceFormattedMessage,
-							   TraceEmitterCategorization ),
-			class_JavaBindingManager:get_registered_manager() ! delete,
-			throw( { java_critical_error_raised, TraceFormattedMessage } );
+        { trace_emitted, critical, TraceFormattedMessage } ->
+            ?notify_critical_cat( TraceFormattedMessage,
+                               TraceEmitterCategorization ),
+            class_JavaBindingManager:get_registered_manager() ! delete,
+            throw( { java_critical_error_raised, TraceFormattedMessage } );
 
-		{ trace_emitted, alert, TraceFormattedMessage } ->
-			?notify_alert_cat( TraceFormattedMessage,
-							   TraceEmitterCategorization ),
-			class_JavaBindingManager:get_registered_manager() ! delete,
-			throw( { java_alert_error_raised, TraceFormattedMessage } );
+        { trace_emitted, alert, TraceFormattedMessage } ->
+            ?notify_alert_cat( TraceFormattedMessage,
+                               TraceEmitterCategorization ),
+            class_JavaBindingManager:get_registered_manager() ! delete,
+            throw( { java_alert_error_raised, TraceFormattedMessage } );
 
-		{ trace_emitted, emergency, TraceFormattedMessage } ->
-			?notify_emergency_cat( TraceFormattedMessage,
-							   TraceEmitterCategorization ),
-			class_JavaBindingManager:get_registered_manager() ! delete,
-			throw( { java_emergency_error_raised, TraceFormattedMessage } );
+        { trace_emitted, emergency, TraceFormattedMessage } ->
+            ?notify_emergency_cat( TraceFormattedMessage,
+                               TraceEmitterCategorization ),
+            class_JavaBindingManager:get_registered_manager() ! delete,
+            throw( { java_emergency_error_raised, TraceFormattedMessage } );
 
-		{ trace_emitted, OtherTraceType, TraceFormattedMessage } ->
-			?notify_warning_fmt_cat(
-				"Invalid trace received from Java: the trace type '~p' is not "
-				"known; the original trace message is:~n~n'~ts'.",
-				[ OtherTraceType, TraceFormattedMessage ],
-				TraceEmitterCategorization ),
-			handle_request_results( MailboxPid, RequestName,
-									TraceEmitterCategorization );
+        { trace_emitted, OtherTraceType, TraceFormattedMessage } ->
+            ?notify_warning_fmt_cat(
+                "Invalid trace received from Java: the trace type '~p' is not "
+                "known; the original trace message is:~n~n'~ts'.",
+                [ OtherTraceType, TraceFormattedMessage ],
+                TraceEmitterCategorization ),
+            handle_request_results( MailboxPid, RequestName,
+                                    TraceEmitterCategorization );
 
-		{ exception_raised, ExceptionType, ExceptionFormattedMessage } ->
-			?notify_error_cat( ExceptionFormattedMessage,
-							   TraceEmitterCategorization ),
-			class_JavaBindingManager:get_registered_manager() ! delete,
-			throw( { java_exception_raised, ExceptionType } )
+        { exception_raised, ExceptionType, ExceptionFormattedMessage } ->
+            ?notify_error_cat( ExceptionFormattedMessage,
+                               TraceEmitterCategorization ),
+            class_JavaBindingManager:get_registered_manager() ! delete,
+            throw( { java_exception_raised, ExceptionType } )
 
-	end;
+    end;
 
 % Here the third element is a state, not a TraceEmitterCategorization:
 handle_request_results( MailboxPid, RequestName, State ) ->
 
-	case java_utils:wait_for_request_result( MailboxPid, RequestName ) of
+    case java_utils:wait_for_request_result( MailboxPid, RequestName ) of
 
-		{ request_completed, ReceivedData } ->
-			ReceivedData;
+        { request_completed, ReceivedData } ->
+            ReceivedData;
 
-		{ trace_emitted, debug, TraceFormattedMessage } ->
-			?debug( TraceFormattedMessage ),
-			handle_request_results( MailboxPid, RequestName, State );
+        { trace_emitted, debug, TraceFormattedMessage } ->
+            ?debug( TraceFormattedMessage ),
+            handle_request_results( MailboxPid, RequestName, State );
 
-		{ trace_emitted, info, TraceFormattedMessage } ->
-			?info( TraceFormattedMessage ),
-			handle_request_results( MailboxPid, RequestName, State );
+        { trace_emitted, info, TraceFormattedMessage } ->
+            ?info( TraceFormattedMessage ),
+            handle_request_results( MailboxPid, RequestName, State );
 
-		{ trace_emitted, notice, TraceFormattedMessage } ->
-			?notice( TraceFormattedMessage ),
-			handle_request_results( MailboxPid, RequestName, State );
+        { trace_emitted, notice, TraceFormattedMessage } ->
+            ?notice( TraceFormattedMessage ),
+            handle_request_results( MailboxPid, RequestName, State );
 
-		{ trace_emitted, warning, TraceFormattedMessage } ->
-			?warning( TraceFormattedMessage ),
-			handle_request_results( MailboxPid, RequestName, State );
+        { trace_emitted, warning, TraceFormattedMessage } ->
+            ?warning( TraceFormattedMessage ),
+            handle_request_results( MailboxPid, RequestName, State );
 
-		{ trace_emitted, error, TraceFormattedMessage } ->
-			?error( TraceFormattedMessage ),
-			class_JavaBindingManager:get_registered_manager() ! delete,
-			throw( { java_error, TraceFormattedMessage } );
+        { trace_emitted, error, TraceFormattedMessage } ->
+            ?error( TraceFormattedMessage ),
+            class_JavaBindingManager:get_registered_manager() ! delete,
+            throw( { java_error, TraceFormattedMessage } );
 
-		{ trace_emitted, critical, TraceFormattedMessage } ->
-			?critical( TraceFormattedMessage ),
-			class_JavaBindingManager:get_registered_manager() ! delete,
-			throw( { java_critical_raised, TraceFormattedMessage } );
+        { trace_emitted, critical, TraceFormattedMessage } ->
+            ?critical( TraceFormattedMessage ),
+            class_JavaBindingManager:get_registered_manager() ! delete,
+            throw( { java_critical_raised, TraceFormattedMessage } );
 
-		{ trace_emitted, alert, TraceFormattedMessage } ->
-			?alert( TraceFormattedMessage ),
-			class_JavaBindingManager:get_registered_manager() ! delete,
-			throw( { java_alert_raised, TraceFormattedMessage } );
+        { trace_emitted, alert, TraceFormattedMessage } ->
+            ?alert( TraceFormattedMessage ),
+            class_JavaBindingManager:get_registered_manager() ! delete,
+            throw( { java_alert_raised, TraceFormattedMessage } );
 
-		{ trace_emitted, emergency, TraceFormattedMessage } ->
-			?emergency( TraceFormattedMessage ),
-			class_JavaBindingManager:get_registered_manager() ! delete,
-			throw( { java_emergency_raised, TraceFormattedMessage } );
+        { trace_emitted, emergency, TraceFormattedMessage } ->
+            ?emergency( TraceFormattedMessage ),
+            class_JavaBindingManager:get_registered_manager() ! delete,
+            throw( { java_emergency_raised, TraceFormattedMessage } );
 
-		{ trace_emitted, OtherTraceType, TraceFormattedMessage } ->
-			?warning_fmt( "Invalid trace received from Java: the trace type "
-				"'~p' is not known; the original trace message is: ~n~n'~ts'.",
-				[ OtherTraceType, TraceFormattedMessage ] ),
-			handle_request_results( MailboxPid, RequestName, State );
+        { trace_emitted, OtherTraceType, TraceFormattedMessage } ->
+            ?warning_fmt( "Invalid trace received from Java: the trace type "
+                "'~p' is not known; the original trace message is: ~n~n'~ts'.",
+                [ OtherTraceType, TraceFormattedMessage ] ),
+            handle_request_results( MailboxPid, RequestName, State );
 
-		{ exception_raised, ExceptionType, ExceptionFormattedMessage } ->
-			?error( ExceptionFormattedMessage ),
-			class_JavaBindingManager:get_registered_manager() ! delete,
-			throw( { java_exception_raised, ExceptionType } )
+        { exception_raised, ExceptionType, ExceptionFormattedMessage } ->
+            ?error( ExceptionFormattedMessage ),
+            class_JavaBindingManager:get_registered_manager() ! delete,
+            throw( { java_exception_raised, ExceptionType } )
 
-	end.
+    end.

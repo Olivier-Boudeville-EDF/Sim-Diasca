@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 EDF R&D
+% Copyright (C) 2014-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -85,9 +85,9 @@ defaults.
 -spec run() -> no_return().
 run() ->
 
-	{ ScaleSetting, DurationSetting } = city_benchmarking:get_case_settings(),
+    { ScaleSetting, DurationSetting } = city_benchmarking:get_case_settings(),
 
-	run_common( ScaleSetting, DurationSetting, _StopShell=true ).
+    run_common( ScaleSetting, DurationSetting, _StopShell=true ).
 
 
 
@@ -95,9 +95,9 @@ run() ->
 -spec run( benchmarking_scale(), benchmarking_duration() ) -> no_return().
 run( ScaleSetting, DurationSetting ) ->
 
-	city_benchmarking:check_scale_setting( ScaleSetting ),
+    city_benchmarking:check_scale_setting( ScaleSetting ),
 
-	run_common( ScaleSetting, DurationSetting, _StopShell=false ).
+    run_common( ScaleSetting, DurationSetting, _StopShell=false ).
 
 
 
@@ -106,115 +106,115 @@ run( ScaleSetting, DurationSetting ) ->
                                             no_return() | void().
 run_common( ScaleSetting, DurationSetting, StopShell ) ->
 
-	?case_start,
+    ?case_start,
 
-	VersionString = text_utils:version_to_string( ?city_example_version),
+    VersionString = text_utils:version_to_string( ?city_example_version),
 
-	io:format( "Generating an initial state for the City-example benchmarking "
-			   "case v.~ts, with scale '~ts'.~n",
-			   [ VersionString, ScaleSetting ] ),
+    io:format( "Generating an initial state for the City-example benchmarking "
+               "case v.~ts, with scale '~ts'.~n",
+               [ VersionString, ScaleSetting ] ),
 
-	Filename = text_utils:format(
-				"city-example-instances-version-~ts-scale-~ts.init",
-				[ VersionString, ScaleSetting ] ),
+    Filename = text_utils:format(
+                "city-example-instances-version-~ts-scale-~ts.init",
+                [ VersionString, ScaleSetting ] ),
 
-	file_utils:is_existing_file( Filename ) andalso
+    file_utils:is_existing_file( Filename ) andalso
         begin
-			BackupFilename = Filename ++ "-"
-				++ time_utils:get_textual_timestamp_for_path(),
+            BackupFilename = Filename ++ "-"
+                ++ time_utils:get_textual_timestamp_for_path(),
 
-			?notify_warning_fmt( "Initialisation file '~ts' was already "
-				"existing, it has been moved to backup file '~ts'.",
-				[ Filename, BackupFilename ] ),
+            ?notify_warning_fmt( "Initialisation file '~ts' was already "
+                "existing, it has been moved to backup file '~ts'.",
+                [ Filename, BackupFilename ] ),
 
-			file_utils:move_file( Filename, BackupFilename )
+            file_utils:move_file( Filename, BackupFilename )
 
         end,
 
-	{ CityDescription, _EndTimestamp, TimestepDuration } =
-	  city_benchmarking:get_benchmark_settings( ScaleSetting, DurationSetting ),
+    { CityDescription, _EndTimestamp, TimestepDuration } =
+      city_benchmarking:get_benchmark_settings( ScaleSetting, DurationSetting ),
 
-	CityName = city_benchmarking:get_city_name_from_scale( ScaleSetting ),
+    CityName = city_benchmarking:get_city_name_from_scale( ScaleSetting ),
 
-	CityDescription = city_descriptions:get_description_for( CityName ),
+    CityDescription = city_descriptions:get_description_for( CityName ),
 
-	% Cannot use raw, as the city generator will write it as well:
-	InitFile = file_utils:open( Filename, _Opts=[ write, exclusive,
-		delayed_write, file_utils:get_default_encoding_option() ] ),
+    % Cannot use raw, as the city generator will write it as well:
+    InitFile = file_utils:open( Filename, _Opts=[ write, exclusive,
+        delayed_write, file_utils:get_default_encoding_option() ] ),
 
-	file_utils:write_ustring( InitFile,
-		"% This is a Sim-Diasca initialisation file "
-		"for the City-example case.~n~n"
-		"% Version: ~ts.~n% Scale: ~ts.~n~n"
-		"% Created on ~ts by ~ts, on host ~ts.~n~n"
-		"% City description: ~ts~n",
-		[ VersionString, ScaleSetting, time_utils:get_textual_timestamp(),
-		  system_utils:get_user_name(), net_utils:localhost(),
-		  city_descriptions:to_string( CityDescription ) ] ),
+    file_utils:write_ustring( InitFile,
+        "% This is a Sim-Diasca initialisation file "
+        "for the City-example case.~n~n"
+        "% Version: ~ts.~n% Scale: ~ts.~n~n"
+        "% Created on ~ts by ~ts, on host ~ts.~n~n"
+        "% City description: ~ts~n",
+        [ VersionString, ScaleSetting, time_utils:get_textual_timestamp(),
+          system_utils:get_user_name(), net_utils:localhost(),
+          city_descriptions:to_string( CityDescription ) ] ),
 
-	% Rather than creating a very rich mock-up environment, it is simpler to
-	% initialise the engine (with minimal settings) and to never start it:
-	%
-	SimulationSettings = #simulation_settings{
-		simulation_name="Sim-Diasca City-example Benchmarking Generation Case",
-		tick_duration=TimestepDuration,
-		result_specification=no_output },
-
-
-	DeploymentSettings = #deployment_settings{
-
-		computing_hosts={ use_host_file_otherwise_local,
-						  "sim-diasca-host-candidates.txt" },
-
-		% All code from mock-simulators/city-example/src:
-		additional_elements_to_deploy=[ { ".", code } ] },
+    % Rather than creating a very rich mock-up environment, it is simpler to
+    % initialise the engine (with minimal settings) and to never start it:
+    %
+    SimulationSettings = #simulation_settings{
+        simulation_name="Sim-Diasca City-example Benchmarking Generation Case",
+        tick_duration=TimestepDuration,
+        result_specification=no_output },
 
 
-	% A deployment manager is created directly on the user node:
-	_DeploymentManagerPid =
-		sim_diasca:init( SimulationSettings, DeploymentSettings ),
+    DeploymentSettings = #deployment_settings{
 
-	GISPid = class_Actor:create_initial_actor( class_GIS,
-		[ _DataSource=none, _PrepareRendering=false ] ),
+        computing_hosts={ use_host_file_otherwise_local,
+                          "sim-diasca-host-candidates.txt" },
+
+        % All code from mock-simulators/city-example/src:
+        additional_elements_to_deploy=[ { ".", code } ] },
 
 
-	CityGeneratorPid = class_CityGenerator:synchronous_new_link(
-		CityDescription, GISPid ),
+    % A deployment manager is created directly on the user node:
+    _DeploymentManagerPid =
+        sim_diasca:init( SimulationSettings, DeploymentSettings ),
 
-	CityGeneratorPid ! { writeInitialisation, [ InitFile ], self() },
+    GISPid = class_Actor:create_initial_actor( class_GIS,
+        [ _DataSource=none, _PrepareRendering=false ] ),
 
-	receive
 
-		{ wooper_result, initialisation_written } ->
-			ok
+    CityGeneratorPid = class_CityGenerator:synchronous_new_link(
+        CityDescription, GISPid ),
 
-	end,
+    CityGeneratorPid ! { writeInitialisation, [ InitFile ], self() },
 
-	% Generator not needed anymore here:
-	CityGeneratorPid ! delete,
+    receive
 
-	file_utils:write_ustring( InitFile,
-							  "~n% End of initialisation data.~n", [] ),
+        { wooper_result, initialisation_written } ->
+            ok
 
-	file_utils:close( InitFile ),
+    end,
 
-	Message = text_utils:format(
+    % Generator not needed anymore here:
+    CityGeneratorPid ! delete,
+
+    file_utils:write_ustring( InitFile,
+                              "~n% End of initialisation data.~n", [] ),
+
+    file_utils:close( InitFile ),
+
+    Message = text_utils:format(
         "~nInitialisation file '~ts' successfully generated.~n~n",
         [ Filename ] ),
 
-	?notify_info( Message ),
-	io:format( Message ),
+    ?notify_info( Message ),
+    io:format( Message ),
 
-	sim_diasca:shutdown(),
+    sim_diasca:shutdown(),
 
-	case StopShell of
+    case StopShell of
 
-		true ->
-			% Stopping the VM:
-			?case_stop;
+        true ->
+            % Stopping the VM:
+            ?case_stop;
 
-		false ->
-			% Stays on shell:
-			?case_stop_on_shell
+        false ->
+            % Stays on shell:
+            ?case_stop_on_shell
 
-	end.
+    end.

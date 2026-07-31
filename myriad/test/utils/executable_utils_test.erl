@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 Olivier Boudeville
+% Copyright (C) 2008-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -42,15 +42,15 @@ See the executable_utils.erl tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	test_facilities:display( "SSH mute option: '~ts'.",
-							 [ executable_utils:get_ssh_mute_option() ] ),
+    test_facilities:display( "SSH mute option: '~ts'.",
+                             [ executable_utils:get_ssh_mute_option() ] ),
 
-	true = lists:member( _Elem=executable_utils:find_executable( "rm" ),
-						 _PossiblePaths=[ "/bin/rm", "/usr/bin/rm" ] ),
+    true = lists:member( _Elem=executable_utils:find_executable( "rm" ),
+                         _PossiblePaths=[ "/bin/rm", "/usr/bin/rm" ] ),
 
-	% Not testing the get_default_*_tool_path() functions, as their result
-	% depends on system settings and the availability of tools.
+    % Not testing the get_default_*_tool_path() functions, as their result
+    % depends on system settings and the availability of tools.
 
-	test_facilities:stop().
+    test_facilities:stop().

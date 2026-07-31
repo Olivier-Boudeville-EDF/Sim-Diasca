@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -28,30 +28,30 @@
 
 -record( sequential_octants, {
 
-	% Top-level, North-East octant:
-	o1 :: option( octree:sequential_octree() ),
+    % Top-level, North-East octant:
+    o1 :: option( octree:sequential_octree() ),
 
-	% Top-level, South-East octant:
-	o2 :: option( octree:sequential_octree() ),
+    % Top-level, South-East octant:
+    o2 :: option( octree:sequential_octree() ),
 
-	% Top-level, South-West octant:
-	o3 :: option( octree:sequential_octree() ),
+    % Top-level, South-West octant:
+    o3 :: option( octree:sequential_octree() ),
 
-	% Top-level, North-West octant:
-	o4 :: option( octree:sequential_octree() ),
+    % Top-level, North-West octant:
+    o4 :: option( octree:sequential_octree() ),
 
 
-	% Bottom-level, North-East octant:
-	o5 :: option( octree:sequential_octree() ),
+    % Bottom-level, North-East octant:
+    o5 :: option( octree:sequential_octree() ),
 
-	% Bottom-level, South-East octant:
-	o6 :: option( octree:sequential_octree() ),
+    % Bottom-level, South-East octant:
+    o6 :: option( octree:sequential_octree() ),
 
-	% Bottom-level, South-West octant:
-	o7 :: option( octree:sequential_octree() ),
+    % Bottom-level, South-West octant:
+    o7 :: option( octree:sequential_octree() ),
 
-	% Bottom-level, North-West octant:
-	o8 :: option( octree:sequential_octree() ) } ).
+    % Bottom-level, North-West octant:
+    o8 :: option( octree:sequential_octree() ) } ).
 % Datastructure for pure sequential octrees, that is: octrees-as-terms.
 %
 % Stores the 8 sub-octrees (children cells) that any sequential octree node may
@@ -108,30 +108,30 @@
 
 -record( concurrent_octants, {
 
-	% Top-level, North-East octant:
-	o1 :: option( octree:octree_pid() ),
+    % Top-level, North-East octant:
+    o1 :: option( octree:octree_pid() ),
 
-	% Top-level, South-East octant:
-	o2 :: option( octree:octree_pid() ),
+    % Top-level, South-East octant:
+    o2 :: option( octree:octree_pid() ),
 
-	% Top-level, South-West octant:
-	o3 :: option( octree:octree_pid() ),
+    % Top-level, South-West octant:
+    o3 :: option( octree:octree_pid() ),
 
-	% Top-level, North-West octant:
-	o4 :: option( octree:octree_pid() ),
+    % Top-level, North-West octant:
+    o4 :: option( octree:octree_pid() ),
 
 
-	% Bottom-level, North-East octant:
-	o5 :: option( octree:octree_pid() ),
+    % Bottom-level, North-East octant:
+    o5 :: option( octree:octree_pid() ),
 
-	% Bottom-level, South-East octant:
-	o6 :: option( octree:octree_pid() ),
+    % Bottom-level, South-East octant:
+    o6 :: option( octree:octree_pid() ),
 
-	% Bottom-level, South-West octant:
-	o7 :: option( octree:octree_pid() ),
+    % Bottom-level, South-West octant:
+    o7 :: option( octree:octree_pid() ),
 
-	% Bottom-level, North-West octant:
-	o8 :: option( octree:octree_pid() ) } ).
+    % Bottom-level, North-West octant:
+    o8 :: option( octree:octree_pid() ) } ).
 % Datastructure for pure concurrent octrees, that is: octrees-as-processes.
 %
 % Stores the 8 sub-concurrent octrees (children cell processes) that any
@@ -143,30 +143,30 @@
 
 -record( hybrid_octants, {
 
-	% Top-level, North-East octant:
-	o1 :: option( octree:octree_designator() ),
+    % Top-level, North-East octant:
+    o1 :: option( octree:octree_designator() ),
 
-	% Top-level, South-East octant:
-	o2 :: option( octree:octree_designator() ),
+    % Top-level, South-East octant:
+    o2 :: option( octree:octree_designator() ),
 
-	% Top-level, South-West octant:
-	o3 :: option( octree:octree_designator() ),
+    % Top-level, South-West octant:
+    o3 :: option( octree:octree_designator() ),
 
-	% Top-level, North-West octant:
-	o4 :: option( octree:octree_designator() ),
+    % Top-level, North-West octant:
+    o4 :: option( octree:octree_designator() ),
 
 
-	% Bottom-level, North-East octant:
-	o5 :: option( octree:octree_designator() ),
+    % Bottom-level, North-East octant:
+    o5 :: option( octree:octree_designator() ),
 
-	% Bottom-level, South-East octant:
-	o6 :: option( octree:octree_designator() ),
+    % Bottom-level, South-East octant:
+    o6 :: option( octree:octree_designator() ),
 
-	% Bottom-level, South-West octant:
-	o7 :: option( octree:octree_designator() ),
+    % Bottom-level, South-West octant:
+    o7 :: option( octree:octree_designator() ),
 
-	% Bottom-level, North-West octant:
-	o8 :: option( octree:octree_designator() ) } ).
+    % Bottom-level, North-West octant:
+    o8 :: option( octree:octree_designator() ) } ).
 % Datastructure for hybrid octrees, that is: octrees as terms or processes.
 %
 % The 8 sub-hybrid octrees (children cell processes) that may partition any
@@ -177,31 +177,31 @@
 
 -record( hybrid_octree_term, {
 
-	% The overall octant identifier (octant_id()) of this octant in the overall
-	% octree can be determined from the two next fields:
+    % The overall octant identifier (octant_id()) of this octant in the overall
+    % octree can be determined from the two next fields:
 
-	height :: octree:height(),
-	% The height of this octant in the overall octree.
+    height :: octree:height(),
+    % The height of this octant in the overall octree.
 
-	short_id :: octree:octant_short_id(),
-	% The identifier of this octant, for its height in the overall octree.
+    short_id :: octree:octant_short_id(),
+    % The identifier of this octant, for its height in the overall octree.
 
-	parent_id :: option( octree:octant_short_id() ),
-	% The identifier of the parent (if any) of this octant, at a decremented
-	% height in the overall octree.
+    parent_id :: option( octree:octant_short_id() ),
+    % The identifier of the parent (if any) of this octant, at a decremented
+    % height in the overall octree.
 
-	children :: octree:hybrid_octants(),
-	% The up to 8 child (incremented-level) octants that may partition the
-	% current octant.
+    children :: octree:hybrid_octants(),
+    % The up to 8 child (incremented-level) octants that may partition the
+    % current octant.
 
-	%siblings :: [ octree:hybrid_octant_short_id() ],
-	% A list of the up to 26 sibling (same-level) neighbour octants of the
-	% current octant.
+    %siblings :: [ octree:hybrid_octant_short_id() ],
+    % A list of the up to 26 sibling (same-level) neighbour octants of the
+    % current octant.
 
-	center :: point3:point3(),
-	% The (geometrical) center of this octant.
+    center :: point3:point3(),
+    % The (geometrical) center of this octant.
 
-	half_len :: linear:distance()
-	% The half of the side length of this octant.
+    half_len :: linear:distance()
+    % The half of the side length of this octant.
 
 } ).

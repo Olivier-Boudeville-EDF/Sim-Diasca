@@ -118,13 +118,13 @@ Testing the binding:
   Compiled test/sqlite3_test.erl
   ======================== EUnit ========================
   module 'sqlite3_test'
-	sqlite3_test: all_test_ (basic_functionality)...[0.002 s] ok
-	sqlite3_test: all_test_ (table_info)...ok
-	[...]
-	sqlite3_lib: delete_sql_test...ok
-	sqlite3_lib: drop_table_sql_test...ok
-	[done in 0.024 s]
-	module 'sqlite3'
+    sqlite3_test: all_test_ (basic_functionality)...[0.002 s] ok
+    sqlite3_test: all_test_ (table_info)...ok
+    [...]
+    sqlite3_lib: delete_sql_test...ok
+    sqlite3_lib: drop_table_sql_test...ok
+    [done in 0.024 s]
+    module 'sqlite3'
   =======================================================
   All 30 tests passed.
   Cover analysis: ~/Software/erlang-sqlite3/.eunit/index.html
@@ -178,9 +178,9 @@ Testing it:
 
  $ cd myriad/src/data-management
  $ make sql_support_run
-		Compiling module sql_support.erl
-		Compiling module sql_support_test.erl
-		Running unitary test sql_support_run
+        Compiling module sql_support.erl
+        Compiling module sql_support_test.erl
+        Running unitary test sql_support_run
   [...]
   --> Testing module sql_support_test.
   Starting SQL support (based on SQLite3).
@@ -203,7 +203,3 @@ Compiling module sql_support.erl : can't find include file "sqlite3.hrl"
 
 - ``USE_SQLITE`` not set to ``true`` in ``myriad/GNUmakevars.inc``
 - ``erlang-sqlite3`` backend not correctly installed (e.g. ``SQLITE3_BASE`` not pointing to a right path in ``myriad/GNUmakevars.inc``)
-
-
-
-

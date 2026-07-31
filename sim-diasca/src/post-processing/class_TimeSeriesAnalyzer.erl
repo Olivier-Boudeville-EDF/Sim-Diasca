@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2025 EDF R&D
+% Copyright (C) 2011-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -52,37 +52,37 @@ See also `class_TimeSeriesAnalyzer_test.erl`.
 % Allows to record some information about a curve in a time series.
 -record( curve_metadata, {
 
-	% The name of the curve, as a plain string:
-	name :: ustring(),
+    % The name of the curve, as a plain string:
+    name :: ustring(),
 
-	% The index of that curve in the time series (positive integer)
-	index :: count(),
+    % The index of that curve in the time series (positive integer)
+    index :: count(),
 
-	% The minimum value reached by that curve, as a {MinValue,MinTick} pair,
-	% MinValue being a float:
-	%
-	min :: { curve_value(), tick() },
+    % The minimum value reached by that curve, as a {MinValue,MinTick} pair,
+    % MinValue being a float:
+    %
+    min :: { curve_value(), tick() },
 
-	% The maximum value reached by that curve, as a {MaxValue,MaxTick} pair,
-	% MaxValue being a float:
-	%
-	max :: { curve_value(), tick() },
+    % The maximum value reached by that curve, as a {MaxValue,MaxTick} pair,
+    % MaxValue being a float:
+    %
+    max :: { curve_value(), tick() },
 
-	% The tick at which this curve started:
-	starting_tick :: tick(),
+    % The tick at which this curve started:
+    starting_tick :: tick(),
 
-	% The tick at which the curve stopped:
-	stopping_tick :: tick(),
+    % The tick at which the curve stopped:
+    stopping_tick :: tick(),
 
-	% The total number of ticks defined for that curve (i.e. a tick is
-	% listed, and the corresponding curve value is not 'undefined'):
-	%
-	tick_count :: tick_offset(),
+    % The total number of ticks defined for that curve (i.e. a tick is
+    % listed, and the corresponding curve value is not 'undefined'):
+    %
+    tick_count :: tick_offset(),
 
-	% A list of the PID of any optional curve-specifid curve filter
-	% processes to send each {Tick,Value} samples to:
-	%
-	filters = [] :: [ filter_pid() ] } ).
+    % A list of the PID of any optional curve-specifid curve filter
+    % processes to send each {Tick,Value} samples to:
+    %
+    filters = [] :: [ filter_pid() ] } ).
 
 
 -doc "Allows to record some information about a curve in a time series.".
@@ -93,37 +93,37 @@ See also `class_TimeSeriesAnalyzer_test.erl`.
 % Allows to record some information about a time series (a set of curves).
 -record( series_metadata, {
 
-	% The name of the time series (e.g. associated probe name), as a plain
-	% string:
-	%
-	name :: ustring(),
+    % The name of the time series (e.g. associated probe name), as a plain
+    % string:
+    %
+    name :: ustring(),
 
-	% The title of the time series (e.g. associated probe title), as a plain
-	% string:
-	%
-	title :: ustring(),
+    % The title of the time series (e.g. associated probe title), as a plain
+    % string:
+    %
+    title :: ustring(),
 
-	% Creation time stamp:
-	creation_timestamp :: time_utils:timestamp(),
+    % Creation time stamp:
+    creation_timestamp :: time_utils:timestamp(),
 
-	% The tick at which the time series started:
-	starting_tick :: tick(),
+    % The tick at which the time series started:
+    starting_tick :: tick(),
 
-	% The tick at which the time series stopped:
-	stopping_tick :: tick(),
+    % The tick at which the time series stopped:
+    stopping_tick :: tick(),
 
-	% The total number of ticks (not necessarily
-	% stopping_tick - starting_tick + 1):
-	%
-	tick_count :: tick_offset(),
+    % The total number of ticks (not necessarily
+    % stopping_tick - starting_tick + 1):
+    %
+    tick_count :: tick_offset(),
 
-	% The list of curve meta-data (curve_metadata records):
-	curves = [] :: [ curve_metadata() ],
+    % The list of curve meta-data (curve_metadata records):
+    curves = [] :: [ curve_metadata() ],
 
-	% A list of the PID of any optional series filter processes to send each
-	% {Tick,Values} samples to:
-	%
-	filters = [] :: [ filter_pid() ] } ).
+    % A list of the PID of any optional series filter processes to send each
+    % {Tick,Values} samples to:
+    %
+    filters = [] :: [ filter_pid() ] } ).
 
 
 -doc "Allows to record some information about a time series (a set of curves).".
@@ -138,13 +138,13 @@ See also `class_TimeSeriesAnalyzer_test.erl`.
 % Class-specific attributes of a time series analyzer:
 -define( class_attributes, [
 
-	{ data_filename, file_path(),
-	  "the name of the time-series data file (.dat), as a plain string" },
+    { data_filename, file_path(),
+      "the name of the time-series data file (.dat), as a plain string" },
 
-	{ data_file, file_utils:file(), "the open file handle" },
+    { data_file, file_utils:file(), "the open file handle" },
 
-	{ series_metadata, series_metadata(),
-	  "the current version of the metadata associated to the time series" } ] ).
+    { series_metadata, series_metadata(),
+      "the current version of the metadata associated to the time series" } ] ).
 
 
 
@@ -277,22 +277,22 @@ filters to be created for that corresponding curve
 construct( State, TimeSeriesFilename, SeriesFilters, CommonCurveFilters,
            CurveSpecificFilters ) ->
 
-	%trace_utils:debug_fmt( "Analyzing the time series in the '~ts' data file.",
-	%                       [ TimeSeriesFilename ] ),
+    %trace_utils:debug_fmt( "Analyzing the time series in the '~ts' data file.",
+    %                       [ TimeSeriesFilename ] ),
 
-	BaseState = class_EngineBaseObject:construct( State,
-		?trace_categorize("Time Series Analyzer") ),
+    BaseState = class_EngineBaseObject:construct( State,
+        ?trace_categorize("Time Series Analyzer") ),
 
-	DataFile = open_data_file( TimeSeriesFilename, BaseState ),
+    DataFile = open_data_file( TimeSeriesFilename, BaseState ),
 
-	AllFilters = { SeriesFilters, CommonCurveFilters, CurveSpecificFilters },
+    AllFilters = { SeriesFilters, CommonCurveFilters, CurveSpecificFilters },
 
-	ReadSeries = parse_data_file( DataFile, AllFilters ),
+    ReadSeries = parse_data_file( DataFile, AllFilters ),
 
-	setAttributes( BaseState, [
-		{ data_filename, TimeSeriesFilename },
-		{ data_file, DataFile },
-		{ series_metadata, ReadSeries } ] ).
+    setAttributes( BaseState, [
+        { data_filename, TimeSeriesFilename },
+        { data_file, DataFile },
+        { series_metadata, ReadSeries } ] ).
 
 
 
@@ -300,26 +300,26 @@ construct( State, TimeSeriesFilename, SeriesFilters, CommonCurveFilters,
 -spec destruct( wooper:state() ) -> wooper:state() .
 destruct( State ) ->
 
-	% Class-specific actions:
-	?info( "Deleting time-series analyzer." ),
+    % Class-specific actions:
+    ?info( "Deleting time-series analyzer." ),
 
-	% Not synchronous:
-	[ F ! delete || F <- get_all_curve_filters( ?getAttr(series_metadata) ) ],
+    % Not synchronous:
+    [ F ! delete || F <- get_all_curve_filters( ?getAttr(series_metadata) ) ],
 
-	case ?getAttr(data_file) of
+    case ?getAttr(data_file) of
 
-		undefined ->
-			ok;
+        undefined ->
+            ok;
 
-		File ->
-			close_data_file( File )
+        File ->
+            close_data_file( File )
 
-	end,
+    end,
 
-	?debug( "Time-series analyzer deleted." ),
+    ?debug( "Time-series analyzer deleted." ),
 
-	% Then allow chaining:
-	State.
+    % Then allow chaining:
+    State.
 
 
 
@@ -330,53 +330,53 @@ destruct( State ) ->
 -spec open_data_file( file_path(), wooper:state() ) -> file().
 open_data_file( TimeSeriesFilename, State ) ->
 
-	?notice_fmt( "Opening data file '~ts' (from '~ts').",
+    ?notice_fmt( "Opening data file '~ts' (from '~ts').",
                  [ TimeSeriesFilename, file_utils:get_current_directory() ] ),
 
-	file_utils:is_existing_file( TimeSeriesFilename ) orelse
-		throw( { data_file_not_found, TimeSeriesFilename } ),
+    file_utils:is_existing_file( TimeSeriesFilename ) orelse
+        throw( { data_file_not_found, TimeSeriesFilename } ),
 
-	% Large data may have to be read (chunks of 512 kB):
-	ReadOptions = [ read, raw, { read_ahead, _Size=512*1024 } ],
+    % Large data may have to be read (chunks of 512 kB):
+    ReadOptions = [ read, raw, { read_ahead, _Size=512*1024 } ],
 
-	file_utils:open( TimeSeriesFilename, ReadOptions ).
+    file_utils:open( TimeSeriesFilename, ReadOptions ).
 
 
 
 -doc "Closes the specified data file.".
 -spec close_data_file( file() ) -> void().
 close_data_file( File ) ->
-	file_utils:close( File ).
+    file_utils:close( File ).
 
 
 
 -doc "Parses the specified data file.".
 parse_data_file( File,
-		{ SeriesFilters, CommonCurveFilters, CurveSpecificFilters } ) ->
+        { SeriesFilters, CommonCurveFilters, CurveSpecificFilters } ) ->
 
-	VanillaSeriesMetadata = parse_header( File ),
+    VanillaSeriesMetadata = parse_header( File ),
 
-	%trace_utils:debug_fmt( "After having parsed the header:~n~ts",
-	%                       [ series_to_string( VanillaSeriesMetadata ) ] ),
+    %trace_utils:debug_fmt( "After having parsed the header:~n~ts",
+    %                       [ series_to_string( VanillaSeriesMetadata ) ] ),
 
-	SeriesFilterMetadata = add_series_filters( SeriesFilters,
+    SeriesFilterMetadata = add_series_filters( SeriesFilters,
                                                VanillaSeriesMetadata ),
 
-	CommonSeriesMetadata = add_common_curve_filters( CommonCurveFilters,
-													 SeriesFilterMetadata ),
+    CommonSeriesMetadata = add_common_curve_filters( CommonCurveFilters,
+                                                     SeriesFilterMetadata ),
 
-	SpecificSeriesMetadata = add_specific_curve_filters( CurveSpecificFilters,
-														 CommonSeriesMetadata ),
+    SpecificSeriesMetadata = add_specific_curve_filters( CurveSpecificFilters,
+                                                         CommonSeriesMetadata ),
 
-	%trace_utils:debug_fmt( "After having added filters:~n~ts",
-	%                       [ series_to_string( SpecificSeriesMetadata ) ] ),
+    %trace_utils:debug_fmt( "After having added filters:~n~ts",
+    %                       [ series_to_string( SpecificSeriesMetadata ) ] ),
 
-	SampledMetadata = read_samples( File, SpecificSeriesMetadata ),
+    SampledMetadata = read_samples( File, SpecificSeriesMetadata ),
 
-	%trace_utils:debug_fmt( "After having read the samples:~n~ts",
-	%                       [ series_to_string( SampledMetadata ) ] ),
+    %trace_utils:debug_fmt( "After having read the samples:~n~ts",
+    %                       [ series_to_string( SampledMetadata ) ] ),
 
-	SampledMetadata.
+    SampledMetadata.
 
 
 
@@ -384,49 +384,49 @@ parse_data_file( File,
 -spec parse_header( file() ) -> series_metadata().
 parse_header( File ) ->
 
-	Header = read_header( File ),
-	%trace_utils:debug_fmt( "Initial header is: ~p.", [ Header ] ),
+    Header = read_header( File ),
+    %trace_utils:debug_fmt( "Initial header is: ~p.", [ Header ] ),
 
-	WarningLines = jump_warning( Header ),
-	%trace_utils:debug_fmt( "Warning-stripped header is: ~p.",
-	%                       [ WarningLines ] ),
+    WarningLines = jump_warning( Header ),
+    %trace_utils:debug_fmt( "Warning-stripped header is: ~p.",
+    %                       [ WarningLines ] ),
 
-	{ Timestamp, TimeLines } = extract_write_timing( WarningLines ),
-	%trace_utils:debug_fmt( "Timestamp: ~p, next lines: ~p.",
-	%                       [ Timestamp, TimeLines ] ),
+    { Timestamp, TimeLines } = extract_write_timing( WarningLines ),
+    %trace_utils:debug_fmt( "Timestamp: ~p, next lines: ~p.",
+    %                       [ Timestamp, TimeLines ] ),
 
-	{ ProbeName, ProbeTitle, ProbeLines } = extract_probe_info( TimeLines ),
+    { ProbeName, ProbeTitle, ProbeLines } = extract_probe_info( TimeLines ),
 
-	%trace_utils:debug_fmt(
-	%   "Probe is named '~ts', its title is '~ts', next lines: ~p.",
-	%   [ ProbeName, ProbeTitle, ProbeLines ] ),
+    %trace_utils:debug_fmt(
+    %   "Probe is named '~ts', its title is '~ts', next lines: ~p.",
+    %   [ ProbeName, ProbeTitle, ProbeLines ] ),
 
-	{ CurveMetadataList, _CurveLines=[] } = extract_curves_info( ProbeLines ),
-	%trace_utils:debug_fmt( "Curve metadata list is ~p, next lines: ~p.",
-	%                       [ CurveMetadataList, CurveLines ] ),
+    { CurveMetadataList, _CurveLines=[] } = extract_curves_info( ProbeLines ),
+    %trace_utils:debug_fmt( "Curve metadata list is ~p, next lines: ~p.",
+    %                       [ CurveMetadataList, CurveLines ] ),
 
-	#series_metadata{ name=ProbeName,
-					  title=ProbeTitle,
-					  creation_timestamp=Timestamp,
-					  curves=CurveMetadataList }.
+    #series_metadata{ name=ProbeName,
+                      title=ProbeTitle,
+                      creation_timestamp=Timestamp,
+                      curves=CurveMetadataList }.
 
 
 
 -doc "Reads the header of the specified file.".
 -spec read_header( file() ) -> [ ustring() ].
 read_header( File ) ->
-	{ ok, ReadLine } = file:read_line( File ),
-	read_header( File, ReadLine, _Acc=[] ).
+    { ok, ReadLine } = file:read_line( File ),
+    read_header( File, ReadLine, _Acc=[] ).
 
 
 % Reads header, defined by all text before next empty line.
 read_header( _File, _ReadLine="\n", Acc ) ->
-	lists:reverse( Acc );
+    lists:reverse( Acc );
 
 read_header( File, ReadLine, Acc ) ->
-	{ ok, NewReadLine } = file:read_line( File ),
-	%trace_utils:debug_fmt( "Read line: '~ts'.", [ NewReadLine ] ),
-	read_header( File, NewReadLine, [ ReadLine | Acc ] ).
+    { ok, NewReadLine } = file:read_line( File ),
+    %trace_utils:debug_fmt( "Read line: '~ts'.", [ NewReadLine ] ),
+    read_header( File, NewReadLine, [ ReadLine | Acc ] ).
 
 
 
@@ -438,13 +438,13 @@ Jumps over this warning:
 ```
 """.
 jump_warning( [ "# Warning: using immediate writes here" ++ _ | T ] ) ->
-	jump_warning( T );
+    jump_warning( T );
 
 jump_warning( [ "# should subsequent curve reordering" ++ _ | T ] ) ->
-	jump_warning( T );
+    jump_warning( T );
 
 jump_warning( Any ) ->
-	Any.
+    Any.
 
 
 
@@ -454,23 +454,24 @@ Extracts time and data of writing from the specified header.
 Returns {{Year,Month,Day}, {Hour,Minute,Second}, RemainingLines}.
 """.
 extract_write_timing( [ "# This time series data file has been written on "
-						++ TimeText | T ] ) ->
+                        ++ TimeText | T ] ) ->
 
-	% TimeText is like L="14/4/2011, at 18:48:51.\n".
+    % TimeText is like L="14/4/2011, at 18:48:51.\n".
 
-	% The objective here is to set it to a canonical form so that the timestamp
-	% can be directly extracted:
-	% string:tokens(L, " ") returns: ["14/4/2011,","at","18:48:51.\n"]
-	%
-	SplitTimestamp = lists:flatten( text_utils:format( "~ts",
-		[ re:replace( TimeText, ", at ", " " ) ] ) ),
+    % The objective here is to set it to a canonical form so that the timestamp
+    % can be directly extracted:
+    % string:tokens(L, " ") returns: ["14/4/2011,","at","18:48:51.\n"]
+    %
+    SplitTimestamp = lists:flatten( text_utils:format( "~ts",
+        [ re:replace( TimeText, ", at ", " ",
+              _Opts=[ unicode, { return, list } ]  ) ] ) ),
 
-	CanonicalTimestamp = text_utils:remove_last_characters( SplitTimestamp,
-															_Count=2 ),
+    CanonicalTimestamp = text_utils:remove_last_characters( SplitTimestamp,
+                                                            _Count=2 ),
 
-	Timestamp = time_utils:string_to_timestamp( CanonicalTimestamp ),
+    Timestamp = time_utils:string_to_timestamp( CanonicalTimestamp ),
 
-	{ Timestamp, _RemainingLines=T };
+    { Timestamp, _RemainingLines=T };
 
 extract_write_timing( [ Unexpected | _T ] ) ->
     throw( { unexpected_write_timing, Unexpected } ).
@@ -484,15 +485,15 @@ Extracts probe name and title, and advances until curve list.
 Returns `{ProbeName, ProbeTitle, NextLines}`.
 """.
 extract_probe_info( [ "# Probe name: "  ++ Name,
-					  "# Probe title: " ++ Title,
-					  "# First column " ++ _,
-					  "# Next columns"  ++ _ | NextLines ] ) ->
+                      "# Probe title: " ++ Title,
+                      "# First column " ++ _,
+                      "# Next columns"  ++ _ | NextLines ] ) ->
 
-	ProbeName = text_utils:remove_ending_carriage_return( Name ),
+    ProbeName = text_utils:remove_ending_carriage_return( Name ),
 
-	ProbeTitle = text_utils:remove_ending_carriage_return( Title ),
+    ProbeTitle = text_utils:remove_ending_carriage_return( Title ),
 
-	{ ProbeName, ProbeTitle, NextLines }.
+    { ProbeName, ProbeTitle, NextLines }.
 
 
 
@@ -501,26 +502,26 @@ Extracts the information for all curves, returns a `{CurveMetadataList,
 NextLines}` pair where CurveMetadataList is a list of curve_metadata records.
 """.
 extract_curves_info( Lines ) ->
-	extract_curves_info( Lines, _Acc=[] ).
+    extract_curves_info( Lines, _Acc=[] ).
 
 extract_curves_info( [ "# - curve #" ++ CurveInfoString | T ], Acc ) ->
 
-	SepIndex = string:chr( CurveInfoString, $: ),
+    SepIndex = string:chr( CurveInfoString, $: ),
 
-	CurveCount = text_utils:string_to_integer(
-		string:substr( CurveInfoString, 1, SepIndex-1 ) ),
+    CurveCount = text_utils:string_to_integer(
+        string:substr( CurveInfoString, 1, SepIndex-1 ) ),
 
-	CurveName = text_utils:remove_ending_carriage_return(
-		string:substr( CurveInfoString, SepIndex + 2 ) ),
+    CurveName = text_utils:remove_ending_carriage_return(
+        string:substr( CurveInfoString, SepIndex + 2 ) ),
 
-	NewCurveMetadata = #curve_metadata{ name=CurveName,
-										index=CurveCount },
+    NewCurveMetadata = #curve_metadata{ name=CurveName,
+                                        index=CurveCount },
 
-	extract_curves_info( T, [ NewCurveMetadata | Acc ] );
+    extract_curves_info( T, [ NewCurveMetadata | Acc ] );
 
 extract_curves_info( NextLines, Acc ) ->
-	% We prefer having the curve in the declaration order:
-	{ lists:reverse( Acc ), NextLines }.
+    % We prefer having the curve in the declaration order:
+    { lists:reverse( Acc ), NextLines }.
 
 
 
@@ -529,37 +530,37 @@ Returns a textual representation of the specified time-series metadata.
 """.
 -spec series_to_string( #series_metadata{} ) -> ustring().
 series_to_string( #series_metadata{ name=Name,
-									title=Title,
-									creation_timestamp=Timestamp,
-									starting_tick=StartTick,
-									stopping_tick=StopTick,
-									tick_count=TickCount,
-									curves=Curves,
-									filters=Filters } ) ->
+                                    title=Title,
+                                    creation_timestamp=Timestamp,
+                                    starting_tick=StartTick,
+                                    stopping_tick=StopTick,
+                                    tick_count=TickCount,
+                                    curves=Curves,
+                                    filters=Filters } ) ->
 
-	FilterString = case Filters of
+    FilterString = case Filters of
 
-		[] ->
-			"No series filter defined.";
+        [] ->
+            "No series filter defined.";
 
-		_ ->
-			text_utils:format( "Following time-series filters were defined: "
-							   "~p.", [ Filters ] )
+        _ ->
+            text_utils:format( "Following time-series filters were defined: "
+                               "~p.", [ Filters ] )
 
-	end,
+    end,
 
-	CurveDescriptions = [ curve_to_string( C ) ++ "\n" || C <- Curves ],
+    CurveDescriptions = [ curve_to_string( C ) ++ "\n" || C <- Curves ],
 
-	CurveCount = length( Curves ),
+    CurveCount = length( Curves ),
 
-	text_utils:format( "Time series named '~ts', whose title is '~ts', "
-		"created on ~ts."
-		" Its first referenced tick is ~p, is last one is ~p, "
-		"for a total of ~p listed ticks. " ++ FilterString
-		++ " Following ~B curves were defined:~n~ts",
-		[ Name, Title, time_utils:timestamp_to_string( Timestamp ),
-		  StartTick, StopTick, TickCount, CurveCount,
-		  text_utils:strings_to_string( CurveDescriptions ) ] ).
+    text_utils:format( "Time series named '~ts', whose title is '~ts', "
+        "created on ~ts."
+        " Its first referenced tick is ~p, is last one is ~p, "
+        "for a total of ~p listed ticks. " ++ FilterString
+        ++ " Following ~B curves were defined:~n~ts",
+        [ Name, Title, time_utils:timestamp_to_string( Timestamp ),
+          StartTick, StopTick, TickCount, CurveCount,
+          text_utils:strings_to_string( CurveDescriptions ) ] ).
 
 
 
@@ -568,54 +569,54 @@ Returns a textual representation of the specified curve metadata.
 """.
 -spec curve_to_string( #curve_metadata{} ) -> ustring().
 curve_to_string( #curve_metadata{ name=Name,
-								  index=Index,
-								  min=Min,
-								  max=Max,
-								  filters=Filters,
-								  starting_tick=StartTick,
-								  stopping_tick=StopTick,
-								  tick_count=TickCount } ) ->
+                                  index=Index,
+                                  min=Min,
+                                  max=Max,
+                                  filters=Filters,
+                                  starting_tick=StartTick,
+                                  stopping_tick=StopTick,
+                                  tick_count=TickCount } ) ->
 
-	MinString = case Min of
+    MinString = case Min of
 
-		undefined ->
-			[];
+        undefined ->
+            [];
 
-		{ MinValue, MinTick } ->
-			text_utils:format( " It reached its minimum, ~f, at tick #~B.",
-							   [ MinValue, MinTick ] )
+        { MinValue, MinTick } ->
+            text_utils:format( " It reached its minimum, ~f, at tick #~B.",
+                               [ MinValue, MinTick ] )
 
-	end,
-
-
-	MaxString = case Max of
-
-		undefined ->
-			[];
-
-		{ MaxValue, MaxTick } ->
-			text_utils:format( " It reached its maximum, ~f, at tick #~B.",
-							   [ MaxValue, MaxTick ] )
-
-	end,
+    end,
 
 
-	FilterString = case Filters of
+    MaxString = case Max of
 
-		[] ->
-			" Not associated to any curve filter";
+        undefined ->
+            [];
 
-		_ ->
-			text_utils:format( " Associated to following curve filters: ~w",
-							   [ Filters ] )
+        { MaxValue, MaxTick } ->
+            text_utils:format( " It reached its maximum, ~f, at tick #~B.",
+                               [ MaxValue, MaxTick ] )
 
-	end,
+    end,
 
-	text_utils:format( "curve named '~ts', whose curve index is ~B. "
-		"Its first referenced tick is ~p, is last one is ~p, "
-		"for a total of ~p listed measures.",
-		[ Name, Index, StartTick, StopTick, TickCount ] )
-					++ MinString ++ MaxString ++ FilterString.
+
+    FilterString = case Filters of
+
+        [] ->
+            " Not associated to any curve filter";
+
+        _ ->
+            text_utils:format( " Associated to following curve filters: ~w",
+                               [ Filters ] )
+
+    end,
+
+    text_utils:format( "curve named '~ts', whose curve index is ~B. "
+        "Its first referenced tick is ~p, is last one is ~p, "
+        "for a total of ~p listed measures.",
+        [ Name, Index, StartTick, StopTick, TickCount ] )
+                    ++ MinString ++ MaxString ++ FilterString.
 
 
 
@@ -625,46 +626,46 @@ of the series.
 """.
 read_samples( File, SeriesMetadata ) ->
 
-	case file:read_line( File ) of
+    case file:read_line( File ) of
 
-		{ ok, ReadLine } ->
+        { ok, ReadLine } ->
 
-			%trace_utils:debug( "Read a line" ),
+            %trace_utils:debug( "Read a line" ),
 
-			NewSeriesMetadata =
-				update_series( SeriesMetadata, parse_line( ReadLine ) ),
+            NewSeriesMetadata =
+                update_series( SeriesMetadata, parse_line( ReadLine ) ),
 
-			%trace_utils:debug( "Now reading samples" ),
-			read_samples( File, NewSeriesMetadata );
-
-
-		eof ->
-
-			SeriesFilters = SeriesMetadata#series_metadata.filters,
-			CurveFilters = get_all_curve_filters( SeriesMetadata ),
-
-			% Faster, but outputs may happen in any particular order:
-
-			%[ CurveF ! {onEndOfCurveData,self()} || CurveF <- CurveFilters ],
-			%[ SeriesF ! {onEndOfSeriesData,self()}
-			%  || SeriesF <- SeriesFilters ],
-			%wait_for_filters( CurveFilters ++ SeriesFilters ),
-
-			[ begin F ! { onEndOfSeriesData, self() },
-				receive { onFilterEnded, F } -> ok end
-			  end || F <- SeriesFilters ],
-
-			[ begin F ! { onEndOfCurveData, self() },
-				receive { onFilterEnded, F } -> ok end
-			  end || F <- CurveFilters ],
-
-			SeriesMetadata;
+            %trace_utils:debug( "Now reading samples" ),
+            read_samples( File, NewSeriesMetadata );
 
 
-		{ error, Reason } ->
-			throw( { error_reading_samples, Reason } )
+        eof ->
 
-	end.
+            SeriesFilters = SeriesMetadata#series_metadata.filters,
+            CurveFilters = get_all_curve_filters( SeriesMetadata ),
+
+            % Faster, but outputs may happen in any particular order:
+
+            %[ CurveF ! {onEndOfCurveData,self()} || CurveF <- CurveFilters ],
+            %[ SeriesF ! {onEndOfSeriesData,self()}
+            %  || SeriesF <- SeriesFilters ],
+            %wait_for_filters( CurveFilters ++ SeriesFilters ),
+
+            [ begin F ! { onEndOfSeriesData, self() },
+                receive { onFilterEnded, F } -> ok end
+              end || F <- SeriesFilters ],
+
+            [ begin F ! { onEndOfCurveData, self() },
+                receive { onFilterEnded, F } -> ok end
+              end || F <- CurveFilters ],
+
+            SeriesMetadata;
+
+
+        { error, Reason } ->
+            throw( { error_reading_samples, Reason } )
+
+    end.
 
 
 
@@ -673,67 +674,67 @@ Updates the series with the information read from this new line.
 """.
 update_series( SeriesMetadata, { Tick, Values } ) ->
 
-	%trace_utils:debug_fmt( "update_series for ~p", [ SeriesMetadata ] ),
+    %trace_utils:debug_fmt( "update_series for ~p", [ SeriesMetadata ] ),
 
-	% Parallelizing for the overall series, hopefully with no mailbox explosion
-	% of the filters:
-	%
-	[ SeriesF ! { setSample, [ Tick, Values ] }
+    % Parallelizing for the overall series, hopefully with no mailbox explosion
+    % of the filters:
+    %
+    [ SeriesF ! { setSample, [ Tick, Values ] }
         || SeriesF <- SeriesMetadata#series_metadata.filters ],
 
-	% Parallelizing for each curve, hopefully with no mailbox explosion of the
-	% filters:
-	%
-	send_to_curve_filters( Tick, Values,
-						   SeriesMetadata#series_metadata.curves ),
+    % Parallelizing for each curve, hopefully with no mailbox explosion of the
+    % filters:
+    %
+    send_to_curve_filters( Tick, Values,
+                           SeriesMetadata#series_metadata.curves ),
 
-	% Samples could be unordered:
+    % Samples could be unordered:
 
-	StartTick = case SeriesMetadata#series_metadata.starting_tick of
+    StartTick = case SeriesMetadata#series_metadata.starting_tick of
 
-		undefined ->
-			Tick;
+        undefined ->
+            Tick;
 
-		StartT when StartT > Tick ->
-			Tick;
+        StartT when StartT > Tick ->
+            Tick;
 
-		StartT ->
-			StartT
+        StartT ->
+            StartT
 
-	end,
-
-
-	StopTick = case SeriesMetadata#series_metadata.stopping_tick of
-
-		undefined ->
-			Tick;
-
-		StopT when StopT < Tick ->
-			Tick;
-
-		StopT ->
-			StopT
-
-	end,
+    end,
 
 
-	TickCount = case SeriesMetadata#series_metadata.tick_count of
+    StopTick = case SeriesMetadata#series_metadata.stopping_tick of
 
-		undefined ->
-			1;
+        undefined ->
+            Tick;
 
-		T ->
-			T+1
+        StopT when StopT < Tick ->
+            Tick;
 
-	end,
+        StopT ->
+            StopT
 
-	NewCurves = update_curves( SeriesMetadata#series_metadata.curves, Values,
-							   Tick ),
+    end,
 
-	SeriesMetadata#series_metadata{ starting_tick=StartTick,
-									stopping_tick=StopTick,
-									tick_count=TickCount,
-									curves=NewCurves } .
+
+    TickCount = case SeriesMetadata#series_metadata.tick_count of
+
+        undefined ->
+            1;
+
+        T ->
+            T+1
+
+    end,
+
+    NewCurves = update_curves( SeriesMetadata#series_metadata.curves, Values,
+                               Tick ),
+
+    SeriesMetadata#series_metadata{ starting_tick=StartTick,
+                                    stopping_tick=StopTick,
+                                    tick_count=TickCount,
+                                    curves=NewCurves } .
 
 
 
@@ -743,28 +744,28 @@ FloatList}` pair.
 """.
 parse_line( Line ) ->
 
-	CleanedLine = text_utils:remove_ending_carriage_return(Line),
+    CleanedLine = text_utils:remove_ending_carriage_return(Line),
 
-	[ StringTick | StringValues ] = string:tokens( CleanedLine, " " ),
-	Tick = text_utils:string_to_integer( StringTick ),
+    [ StringTick | StringValues ] = string:tokens( CleanedLine, " " ),
+    Tick = text_utils:string_to_integer( StringTick ),
 
-	ParseFun = fun( V ) ->
-		case V of
+    ParseFun = fun( V ) ->
+        case V of
 
-			"undefined" ->
+            "undefined" ->
                 undefined;
 
-			_ ->
-				text_utils:string_to_float( V )
+            _ ->
+                text_utils:string_to_float( V )
 
-		end
-	end,
+        end
+    end,
 
-	Values = [ ParseFun( S ) || S <- StringValues ],
+    Values = [ ParseFun( S ) || S <- StringValues ],
 
-	%trace_utils:debug( "Line parsed" ),
+    %trace_utils:debug( "Line parsed" ),
 
-	{ Tick, Values }.
+    { Tick, Values }.
 
 
 
@@ -773,107 +774,107 @@ Updates the curve metadata according to the specified values.
 """.
 update_curves( CurvesMetadata, Values, Tick ) ->
 
-	%trace_utils:debug_fmt( "Updating curves ~p at tick #~B with values ~p.",
-	%                       [ CurvesMetadata, Tick, Values ] ),
+    %trace_utils:debug_fmt( "Updating curves ~p at tick #~B with values ~p.",
+    %                       [ CurvesMetadata, Tick, Values ] ),
 
-	update_curves( CurvesMetadata, Values, Tick, _CurveAcc=[] ).
+    update_curves( CurvesMetadata, Values, Tick, _CurveAcc=[] ).
 
 
 
 % (helper)
 update_curves( _CurvesMetadata=[], _Values=[], _Tick, CurveAcc ) ->
-	% Preserve curve order for next call:
-	lists:reverse( CurveAcc );
+    % Preserve curve order for next call:
+    lists:reverse( CurveAcc );
 
 update_curves( _CurvesMetadata=[ C | Curves ], _Values=[ _V=undefined | T ],
-			   Tick, CurveAcc ) ->
+               Tick, CurveAcc ) ->
 
-	% Simply ignore for that curve any sample set to 'undefined':
-	update_curves( Curves, T, Tick, [ C | CurveAcc ] );
+    % Simply ignore for that curve any sample set to 'undefined':
+    update_curves( Curves, T, Tick, [ C | CurveAcc ] );
 
 update_curves( _CurvesMetadata=[ C=#curve_metadata{
-									min=MinE, max=MaxE,
-									starting_tick=StartTick,
-									stopping_tick=StopTick,
-									tick_count=TickCount } | Curves ],
-			   _Values=[ V | T ], Tick, CurveAcc ) ->
+                                    min=MinE, max=MaxE,
+                                    starting_tick=StartTick,
+                                    stopping_tick=StopTick,
+                                    tick_count=TickCount } | Curves ],
+               _Values=[ V | T ], Tick, CurveAcc ) ->
 
-	% Here V is defined.
+    % Here V is defined.
 
-	% Attempt of parallelizing:
-	%
-	% (note that if a filter happens to be slower than this reader process -
-	% which should be unlikely, its mailbox may explode over time)
+    % Attempt of parallelizing:
+    %
+    % (note that if a filter happens to be slower than this reader process -
+    % which should be unlikely, its mailbox may explode over time)
 
-	NewStartTick = case StartTick of
+    NewStartTick = case StartTick of
 
-		undefined ->
-			Tick;
+        undefined ->
+            Tick;
 
-		StartT when StartT > Tick ->
-			Tick;
+        StartT when StartT > Tick ->
+            Tick;
 
-		StartT ->
-			StartT
+        StartT ->
+            StartT
 
-	end,
-
-
-	NewStopTick = case StopTick of
-
-		undefined ->
-			Tick;
-
-		StopT when StopT < Tick ->
-			Tick;
-
-		StopT ->
-			StopT
-
-	end,
+    end,
 
 
-	NewTickCount = case TickCount of
+    NewStopTick = case StopTick of
 
-		undefined ->
-			1;
+        undefined ->
+            Tick;
 
-		_ ->
-			TickCount + 1
+        StopT when StopT < Tick ->
+            Tick;
 
-	end,
+        StopT ->
+            StopT
 
-	NewMin = case MinE of
+    end,
 
-		undefined ->
-			{ V, Tick };
 
-		{ MinValue, _MinTick } when MinValue > V ->
-			{ V, Tick };
+    NewTickCount = case TickCount of
 
-		_ ->
-			MinE
+        undefined ->
+            1;
 
-	end,
+        _ ->
+            TickCount + 1
 
-	NewMax = case MaxE of
+    end,
 
-		undefined ->
-			{ V, Tick };
+    NewMin = case MinE of
 
-		{ MaxValue, _MaxTick } when MaxValue < V ->
-			{ V, Tick };
+        undefined ->
+            { V, Tick };
 
-		_ ->
-			MaxE
+        { MinValue, _MinTick } when MinValue > V ->
+            { V, Tick };
 
-	end,
+        _ ->
+            MinE
 
-	NewCurve = C#curve_metadata{ min=NewMin,
-								 max=NewMax,
-								 starting_tick=NewStartTick,
-								 stopping_tick=NewStopTick,
-								 tick_count=NewTickCount },
+    end,
+
+    NewMax = case MaxE of
+
+        undefined ->
+            { V, Tick };
+
+        { MaxValue, _MaxTick } when MaxValue < V ->
+            { V, Tick };
+
+        _ ->
+            MaxE
+
+    end,
+
+    NewCurve = C#curve_metadata{ min=NewMin,
+                                 max=NewMax,
+                                 starting_tick=NewStartTick,
+                                 stopping_tick=NewStopTick,
+                                 tick_count=NewTickCount },
 
    update_curves( Curves, T, Tick, [ NewCurve | CurveAcc ] ).
 
@@ -884,23 +885,23 @@ update_curves( _CurvesMetadata=[ C=#curve_metadata{
 Returns the list of the PID of all curve filters involved in the time series.
 """.
 get_all_curve_filters( SeriesMetadata ) ->
-	CurvesMetadata = SeriesMetadata#series_metadata.curves,
-	get_all_curve_filters( CurvesMetadata, _Acc=[] ).
+    CurvesMetadata = SeriesMetadata#series_metadata.curves,
+    get_all_curve_filters( CurvesMetadata, _Acc=[] ).
 
 
 % (helper)
 get_all_curve_filters( _CurvesMetadata=[], Acc ) ->
-	lists:reverse( Acc );
+    lists:reverse( Acc );
 
 get_all_curve_filters( _CurvesMetadata=[ C | T ], Acc ) ->
-	get_all_curve_filters( T, C#curve_metadata.filters ++ Acc ).
+    get_all_curve_filters( T, C#curve_metadata.filters ++ Acc ).
 
 
 
 -doc "Returns the list of all curve names for that series.".
 get_all_curve_names( SeriesMetadata ) ->
-	Curves = SeriesMetadata#series_metadata.curves,
-	[ C#curve_metadata.name || C <- Curves ].
+    Curves = SeriesMetadata#series_metadata.curves,
+    [ C#curve_metadata.name || C <- Curves ].
 
 
 
@@ -911,32 +912,32 @@ Use `basic_utils:wait_for_acks/4` instead.
 """.
 -spec wait_for_filters( [ pid() ] ) -> void().
 wait_for_filters( _Filters=[] ) ->
-	ok;
+    ok;
 
 wait_for_filters( Filters ) ->
 
-	receive
+    receive
 
-		{ onFilterEnded, FilterPid } ->
-			NewFilters = lists:delete( FilterPid, Filters ),
-			wait_for_filters( NewFilters )
+        { onFilterEnded, FilterPid } ->
+            NewFilters = lists:delete( FilterPid, Filters ),
+            wait_for_filters( NewFilters )
 
-	end.
+    end.
 
 
 
 -doc "Adds the specified series filters to the series metadata.".
 add_series_filters( FilterSpecs, SeriesMetadata ) ->
 
-	CurveNameList = get_all_curve_names( SeriesMetadata ),
+    CurveNameList = get_all_curve_names( SeriesMetadata ),
 
-	SeriesName = SeriesMetadata#series_metadata.name,
+    SeriesName = SeriesMetadata#series_metadata.name,
 
-	NewFilters = SeriesMetadata#series_metadata.filters
-		++ [ create_series_filter( F, CurveNameList, SeriesName )
-				|| F <- FilterSpecs ],
+    NewFilters = SeriesMetadata#series_metadata.filters
+        ++ [ create_series_filter( F, CurveNameList, SeriesName )
+                || F <- FilterSpecs ],
 
-	SeriesMetadata#series_metadata{ filters=NewFilters }.
+    SeriesMetadata#series_metadata{ filters=NewFilters }.
 
 
 
@@ -949,25 +950,25 @@ the overall series metadata.
 """.
 add_common_curve_filters( FilterSpecs, SeriesMetadata ) ->
 
-	NewCurveMetadataList = add_common_curve_filters( FilterSpecs,
-		SeriesMetadata#series_metadata.curves, _Acc=[] ),
+    NewCurveMetadataList = add_common_curve_filters( FilterSpecs,
+        SeriesMetadata#series_metadata.curves, _Acc=[] ),
 
-	SeriesMetadata#series_metadata{
-		% Preserve law and order:
-		curves=lists:reverse( NewCurveMetadataList ) }.
+    SeriesMetadata#series_metadata{
+        % Preserve law and order:
+        curves=lists:reverse( NewCurveMetadataList ) }.
 
 
 add_common_curve_filters( _FilterSpecs, _CurveMetadataList=[], Acc ) ->
-	Acc;
+    Acc;
 
 add_common_curve_filters( FilterSpecs, _CurveMetadataList=[ C | T ], Acc ) ->
 
-	NewFilters = C#curve_metadata.filters ++
-		[ create_curve_filter( FSpec, C#curve_metadata.name )
-			|| FSpec <- FilterSpecs ],
+    NewFilters = C#curve_metadata.filters ++
+        [ create_curve_filter( FSpec, C#curve_metadata.name )
+            || FSpec <- FilterSpecs ],
 
-	add_common_curve_filters( FilterSpecs, T,
-		[ C#curve_metadata{ filters=NewFilters } | Acc ] ).
+    add_common_curve_filters( FilterSpecs, T,
+        [ C#curve_metadata{ filters=NewFilters } | Acc ] ).
 
 
 
@@ -978,13 +979,13 @@ Registers for all each specified curve name the associated list of filters,
 based on their FilterSpecs, and returns the overall series metadata.
 """.
 add_specific_curve_filters( _CurveSpecificFilters=[], SeriesMetadata ) ->
-	SeriesMetadata;
+    SeriesMetadata;
 
 add_specific_curve_filters(
-		_CurveSpecificFilters=[ { _CurveName, _FilterSpecList } | _T ],
-		SeriesMetadata ) ->
-	throw( not_implemented_yet ),
-	SeriesMetadata.
+        _CurveSpecificFilters=[ { _CurveName, _FilterSpecList } | _T ],
+        SeriesMetadata ) ->
+    throw( not_implemented_yet ),
+    SeriesMetadata.
 
 
 
@@ -993,11 +994,11 @@ Returns the PID of a new instance of a series filter, created according to the
 specified parameters.
 """.
 create_series_filter( _FilterSpec={FilterName,FilterParameters}, CurveNameList,
-					  SeriesName ) ->
+                      SeriesName ) ->
 
-	?myriad_spawn_link( _Mod=FilterName, _Fun=create,
-						_Args=[ SeriesName, CurveNameList,
-								ensure_list( FilterParameters ) ] ).
+    ?myriad_spawn_link( _Mod=FilterName, _Fun=create,
+                        _Args=[ SeriesName, CurveNameList,
+                                ensure_list( FilterParameters ) ] ).
 
 
 
@@ -1006,32 +1007,32 @@ Returns the PID of a new instance of a curve filter, created according to the
 specified parameters.
 """.
 create_curve_filter( _FilterSpec={ FilterName, FilterParameters },
-					 CurveName ) ->
+                     CurveName ) ->
 
-	?myriad_spawn_link( _Mod=FilterName, _Fun=create,
-						_Args=[ CurveName, ensure_list( FilterParameters ) ] ).
+    ?myriad_spawn_link( _Mod=FilterName, _Fun=create,
+                        _Args=[ CurveName, ensure_list( FilterParameters ) ] ).
 
 
 
 -doc "Ensures that the specified parameter is returned as a list.".
 ensure_list( L ) when is_list( L ) ->
-	L;
+    L;
 
 ensure_list( Other ) ->
-	[ Other ].
+    [ Other ].
 
 
 
 -doc "Sends, if appropriate, a new value to each filter of each curve.".
 send_to_curve_filters( _Tick, _Values=[], _CurveMetadataList=[] ) ->
-	ok;
+    ok;
 
 send_to_curve_filters( Tick, _Values=[ undefined | Tv ],
-					   _CurveMetadataList=[ _C | Tc ] ) ->
-	% Skip undefined:
-	send_to_curve_filters( Tick, Tv, Tc );
+                       _CurveMetadataList=[ _C | Tc ] ) ->
+    % Skip undefined:
+    send_to_curve_filters( Tick, Tv, Tc );
 
 send_to_curve_filters( Tick, _Values=[ V | Tv ],
-					   _CurveMetadataList=[ C | Tc ] ) ->
-	[ F ! { setSample, [ Tick, V ] } || F <- C#curve_metadata.filters ],
-	send_to_curve_filters( Tick, Tv, Tc ).
+                       _CurveMetadataList=[ C | Tc ] ) ->
+    [ F ! { setSample, [ Tick, V ] } || F <- C#curve_metadata.filters ],
+    send_to_curve_filters( Tick, Tv, Tc ).

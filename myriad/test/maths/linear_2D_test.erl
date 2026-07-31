@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2025 Olivier Boudeville
+% Copyright (C) 2010-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -46,73 +46,73 @@ See the linear_2D tested module.
 
 test_normal() ->
 
-	Ve = [9,1],
+    Ve = [9,1],
 
-	NL = vector2:normal_left( Ve ),
-	NR = vector2:normal_right( Ve ),
+    NL = vector2:normal_left( Ve ),
+    NR = vector2:normal_right( Ve ),
 
-	[ PVe, PNL, PNR ] = [ point2:from_vector( V ) || V <- [ Ve, NL, NR ] ],
+    [ PVe, PNL, PNR ] = [ point2:from_vector( V ) || V <- [ Ve, NL, NR ] ],
 
-	POrigin = point2:null(),
+    POrigin = point2:null(),
 
-	true  = linear_2D:is_strictly_on_the_right( PNR, POrigin, PVe ),
-	false = linear_2D:is_strictly_on_the_right( PNL, POrigin, PVe ),
-	false = linear_2D:is_strictly_on_the_right( PVe,  POrigin, PVe ),
+    true  = linear_2D:is_strictly_on_the_right( PNR, POrigin, PVe ),
+    false = linear_2D:is_strictly_on_the_right( PNL, POrigin, PVe ),
+    false = linear_2D:is_strictly_on_the_right( PVe,  POrigin, PVe ),
 
-	true  = linear_2D:is_strictly_on_the_right( PVe, POrigin, PNL ),
-	false = linear_2D:is_strictly_on_the_right( PVe, POrigin, PNR ),
+    true  = linear_2D:is_strictly_on_the_right( PVe, POrigin, PNL ),
+    false = linear_2D:is_strictly_on_the_right( PVe, POrigin, PNR ),
 
-	NonVe = vector2:scale( Ve, -1.0 ),
-	PNonVe = point2:from_vector( NonVe ),
+    NonVe = vector2:scale( Ve, -1.0 ),
+    PNonVe = point2:from_vector( NonVe ),
 
-	true  = linear_2D:is_strictly_on_the_right( PNL, POrigin, PNonVe ),
-	false = linear_2D:is_strictly_on_the_right( PNR, POrigin, PNonVe ).
+    true  = linear_2D:is_strictly_on_the_right( PNL, POrigin, PNonVe ),
+    false = linear_2D:is_strictly_on_the_right( PNR, POrigin, PNonVe ).
 
 
 
 test_pivot() ->
-	Pa    = {469,243},
-	Pivot = {348,268},
-	Pb    = {421,193},
-	false = linear_2D:is_strictly_on_the_right( Pa, Pivot, Pb ).
+    Pa    = {469,243},
+    Pivot = {348,268},
+    Pb    = {421,193},
+    false = linear_2D:is_strictly_on_the_right( Pa, Pivot, Pb ).
 
 
 
 test_angle() ->
 
-	A = point2:null(),
+    A = point2:null(),
 
-	B1 = {1,0},
-	B2 = {3,3},
-	B3 = {-5,3},
+    B1 = {1,0},
+    B2 = {3,3},
+    B3 = {-5,3},
 
-	C1 = {0,1},
-	C2 = {-2,-1},
-	C3 = {1,-4},
+    C1 = {0,1},
+    C2 = {-2,-1},
+    C3 = {1,-4},
 
-	[ test_facilities:display( "Unoriented angle between point ~ts and "
-		"~ts / ~ts is ~f degrees, oriented angle is ~f degrees.~n",
-		[ point2:to_string( P1 ), point2:to_string( P2 ),
-		  point2:to_string( P3 ), linear_2D:abs_angle_deg( P1, P2, P3 ),
-		  linear_2D:angle_deg( P1, P2, P3 ) ] )
-				|| P1 <- [A], P2 <- [B1,B2,B3], P3 <- [C1,C2,C3] ],
+    [ test_facilities:display( "Unoriented angle between point ~ts and "
+        "~ts / ~ts is ~f degrees, oriented angle is ~f degrees.~n",
+        [ point2:to_string( P1 ), point2:to_string( P2 ),
+          point2:to_string( P3 ), linear_2D:abs_angle_deg( P1, P2, P3 ),
+          linear_2D:angle_deg( P1, P2, P3 ) ] )
+                || P1 <- [A], P2 <- [B1,B2,B3], P3 <- [C1,C2,C3] ],
 
-	true  = point2:are_close( B1, point2:translate(B1,[0.000001,0]) ),
-	false = point2:are_close( B1, A ),
+    true  = point2:are_close( B1, point2:translate(B1,[0.000001,0]) ),
+    false = point2:are_close( B1, A ),
 
-	true  = point2:is_within( A, C1, 1 ),
-	true  = point2:is_within( A, B1, 1-0.0000001 ),
-	false = point2:is_within( A, B2, 2 ).
+    true  = point2:is_within( A, C1, 1 ),
+    true  = point2:is_within( A, B1, 1-0.0000001 ),
+    false = point2:is_within( A, B2, 2 ).
 
 
 
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	test_normal(),
-	test_pivot(),
-	test_angle(),
+    test_normal(),
+    test_pivot(),
+    test_angle(),
 
-	test_facilities:stop().
+    test_facilities:stop().

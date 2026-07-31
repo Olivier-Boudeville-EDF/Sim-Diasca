@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -42,45 +42,45 @@ See the audio_utils.erl tested module.
 % The actual test:
 run_audio_test() ->
 
-	test_facilities:display( "Testing the audio services." ),
+    test_facilities:display( "Testing the audio services." ),
 
-	RelPath = [ "..", "..", "..", "doc" ],
+    RelPath = [ "..", "..", "..", "doc" ],
 
-	FrenchSpeechPath =
-		file_utils:join( RelPath ++ [ "speech-test-fr-FR.ogg.opus" ] ),
+    FrenchSpeechPath =
+        file_utils:join( RelPath ++ [ "speech-test-fr-FR.ogg.opus" ] ),
 
-	MaybeAudioStreamSettings = undefined,
+    MaybeAudioStreamSettings = undefined,
 
-	audio_utils:playback_file( FrenchSpeechPath, MaybeAudioStreamSettings,
-							   _FirstDoBlock=false ),
+    audio_utils:playback_file( FrenchSpeechPath, MaybeAudioStreamSettings,
+                               _FirstDoBlock=false ),
 
-	timer:sleep( 2000 ),
+    timer:sleep( 2000 ),
 
-	EnglishSpeechPath =
-		file_utils:join( RelPath ++ [ "speech-test-en-US.ogg.opus" ] ),
+    EnglishSpeechPath =
+        file_utils:join( RelPath ++ [ "speech-test-en-US.ogg.opus" ] ),
 
-	% The two playbacks shall thus overlap, and this test shall not stop before
-	% the end of the second:
-	%
-	audio_utils:playback_file( EnglishSpeechPath, MaybeAudioStreamSettings,
-							   _SecondDoBlock=true ).
+    % The two playbacks shall thus overlap, and this test shall not stop before
+    % the end of the second:
+    %
+    audio_utils:playback_file( EnglishSpeechPath, MaybeAudioStreamSettings,
+                               _SecondDoBlock=true ).
 
 
 
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	case executable_utils:is_batch() of
+    case executable_utils:is_batch() of
 
-		true ->
-			test_facilities:display(
-				"(not running the audio test, being in batch mode)" );
+        true ->
+            test_facilities:display(
+                "(not running the audio test, being in batch mode)" );
 
-		false ->
-			run_audio_test()
+        false ->
+            run_audio_test()
 
-	end,
+    end,
 
-	test_facilities:stop().
+    test_facilities:stop().

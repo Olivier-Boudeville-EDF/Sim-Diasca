@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 Olivier Boudeville
+% Copyright (C) 2008-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -40,8 +40,8 @@ This is the static counterpart of class_Describable.
 
 
 -define( class_description,
-		 "Interface to be implemented by all instances able to output "
-		 "their static textual description." ).
+         "Interface to be implemented by all instances able to output "
+         "their static textual description." ).
 
 
 -define( superclasses, [ class_Describable ] ).
@@ -54,10 +54,10 @@ This is the static counterpart of class_Describable.
 %
 -define( class_attributes, [
 
-	{ wooper_describable_description, description(),
-	  "description held by this instance" }
+    { wooper_describable_description, description(),
+      "description held by this instance" }
 
-						   ] ).
+                           ] ).
 
 
 -doc "The PID of an instance implementing the StaticDescribable interface.".
@@ -91,9 +91,9 @@ Constructs a static describable instance, based on the specified description.
 """.
 -spec construct( wooper:state(), any_description() ) -> wooper:state().
 construct( State, Description ) ->
-	DescState = class_Describable:construct( State ),
-	setAttribute( DescState, wooper_describable_description,
-				  text_utils:ensure_binary( Description ) ).
+    DescState = class_Describable:construct( State ),
+    setAttribute( DescState, wooper_describable_description,
+                  text_utils:ensure_binary( Description ) ).
 
 
 % No destructor.
@@ -107,25 +107,25 @@ construct( State, Description ) ->
 -spec getDescription( wooper:state() ) -> const_request_return( description() ).
 getDescription( State ) ->
 
-	% Here the description may be dynamically updated, typically by calling a
-	% to_string( wooper:state() ) -> ustring() helper function whose result
-	% would be stored in the wooper_describable_description attribute and
-	% returned by this method.
+    % Here the description may be dynamically updated, typically by calling a
+    % to_string( wooper:state() ) -> ustring() helper function whose result
+    % would be stored in the wooper_describable_description attribute and
+    % returned by this method.
 
-	% Another option is to return a static (class-level, not instance-level)
-	% description.
+    % Another option is to return a static (class-level, not instance-level)
+    % description.
 
-	% Always defined by design:
-	wooper:const_return_result( ?getAttr(wooper_describable_description) ).
+    % Always defined by design:
+    wooper:const_return_result( ?getAttr(wooper_describable_description) ).
 
 
 
 -doc "Sets the description of this Describable.".
 -spec setDescription( wooper:state(), user_description() ) -> oneway_return().
 setDescription( State, NewUserDescription ) ->
-	NewBinDesc = text_utils:ensure_binary( NewUserDescription ),
-	wooper:return_state(
-		setAttribute( State, wooper_describable_description, NewBinDesc ) ).
+    NewBinDesc = text_utils:ensure_binary( NewUserDescription ),
+    wooper:return_state(
+        setAttribute( State, wooper_describable_description, NewBinDesc ) ).
 
 
 
@@ -144,7 +144,7 @@ Tells whether the corresponding instance implements the Describable interface.
 """.
 -spec is_describable( wooper:state() ) -> boolean().
 is_describable( State ) ->
-	hasAttribute( State, wooper_describable_description ).
+    hasAttribute( State, wooper_describable_description ).
 
 
 
@@ -158,10 +158,10 @@ Describable one or not.
 """.
 -spec get_maybe_description( wooper:state() ) -> option( description() ).
 get_maybe_description( State ) ->
-	% Allowed, as the type of this attribute does not include the 'undefined'
-	% atom:
-	%
-	?getMaybeAttr(wooper_describable_description).
+    % Allowed, as the type of this attribute does not include the 'undefined'
+    % atom:
+    %
+    ?getMaybeAttr(wooper_describable_description).
 
 
 
@@ -173,12 +173,12 @@ it implement the Describable interface.
 """.
 -spec to_maybe_string( wooper:state() ) -> option( ustring() ).
 to_maybe_string( State ) ->
-	case ?getMaybeAttr(wooper_describable_description) of
+    case ?getMaybeAttr(wooper_describable_description) of
 
-		undefined ->
-			undefined;
+        undefined ->
+            undefined;
 
-		Desc ->
-			text_utils:format( "whose description is: '~ts'", [ Desc ] )
+        Desc ->
+            text_utils:format( "whose description is: '~ts'", [ Desc ] )
 
-	end.
+    end.

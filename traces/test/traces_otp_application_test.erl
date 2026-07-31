@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2025 Olivier Boudeville
+% Copyright (C) 2019-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -47,84 +47,84 @@ for that).
 -doc "Actual test.".
 test_traces_application( OrderedAppNames ) ->
 
-	test_facilities:display( "Starting the Traces OTP active application." ),
+    test_facilities:display( "Starting the Traces OTP active application." ),
 
-	% We did not trap EXIT messages, as we wanted this test to crash (thanks to
-	% the link below) in case of problem (and not to receive an EXIT message
-	% bound not to be read).
-	%
-	% However this test was expected to crash (like its WOOPER counterpart) even
-	% when stopping (normally) applications, as apparently an OTP application
-	% has its child processes terminated with reason 'shutdown' (not 'normal');
-	% no crash happened though (a difference between standard supervisors and
-	% bridge ones?).
-	%
-	% So anyway now this test process traps EXIT messages, and ensures that none
-	% besides {'EXIT',P,shutdown}, P being the PID of the trace aggregator, is
-	% received.
-	%
-	false = erlang:process_flag( trap_exit, true ),
+    % We did not trap EXIT messages, as we wanted this test to crash (thanks to
+    % the link below) in case of problem (and not to receive an EXIT message
+    % bound not to be read).
+    %
+    % However this test was expected to crash (like its WOOPER counterpart) even
+    % when stopping (normally) applications, as apparently an OTP application
+    % has its child processes terminated with reason 'shutdown' (not 'normal');
+    % no crash happened though (a difference between standard supervisors and
+    % bridge ones?).
+    %
+    % So anyway now this test process traps EXIT messages, and ensures that none
+    % besides {'EXIT',P,shutdown}, P being the PID of the trace aggregator, is
+    % received.
+    %
+    false = erlang:process_flag( trap_exit, true ),
 
-	otp_utils:start_applications( OrderedAppNames ),
+    otp_utils:start_applications( OrderedAppNames ),
 
-	% Just to showcase that Traces is usable and running indeed:
+    % Just to showcase that Traces is usable and running indeed:
 
-	test_facilities:display( "Traces version: ~p.",
-		[ system_utils:get_application_version( traces ) ] ),
+    test_facilities:display( "Traces version: ~p.",
+        [ system_utils:get_application_version( traces ) ] ),
 
-	% As specified in *.config file(s):
-	test_facilities:display( "Traces configuration settings: ~p.",
-		[ application:get_all_env( traces ) ] ),
-
-
-	AggPid =
-		class_TraceAggregator:get_aggregator( _CreateIfNotAvailable=false ),
+    % As specified in *.config file(s):
+    test_facilities:display( "Traces configuration settings: ~p.",
+        [ application:get_all_env( traces ) ] ),
 
 
-	% The top-level user process may not be aware that an OTP application fails
-	% (e.g. because its main process crashed), which is a problem for a test. So
-	% here we link explicitly this test process to the trace aggregator, to have
-	% a chance of detecting issues:
-	%
-	erlang:link( AggPid ),
-
-	% Note that we did not link specifically to the WOOPER class manager.
-
-	test_facilities:display( "Linked to the trace aggregator ~w.", [ AggPid ] ),
+    AggPid =
+        class_TraceAggregator:get_aggregator( _CreateIfNotAvailable=false ),
 
 
-	% To test also a Traces module:
+    % The top-level user process may not be aware that an OTP application fails
+    % (e.g. because its main process crashed), which is a problem for a test. So
+    % here we link explicitly this test process to the trace aggregator, to have
+    % a chance of detecting issues:
+    %
+    erlang:link( AggPid ),
 
-	class_TraceEmitter:send_from_test( notice, "Sent from this OTP test!" ),
+    % Note that we did not link specifically to the WOOPER class manager.
 
-	%traces:manage_supervision(),
+    test_facilities:display( "Linked to the trace aggregator ~w.", [ AggPid ] ),
 
-	% Including Traces:
-	test_facilities:display( "Stopping all user applications found in ~p.",
-							 [ OrderedAppNames ] ),
 
-	otp_utils:stop_user_applications( OrderedAppNames ),
+    % To test also a Traces module:
 
-	% Not able to use Traces anymore:
-	trace_utils:debug_fmt( "Waiting for the termination of the trace "
-						   "aggregator (~w).", [ AggPid ] ),
+    class_TraceEmitter:send_from_test( notice, "Sent from this OTP test!" ),
 
-	receive
+    %traces:manage_supervision(),
 
-		{ 'EXIT', AggPid, normal } ->
-			ok;
+    % Including Traces:
+    test_facilities:display( "Stopping all user applications found in ~p.",
+                             [ OrderedAppNames ] ),
 
-		Other ->
-			trace_utils:error_fmt( "Received ~p.", [ Other ] ),
-			throw( { unexpected_receiving, Other } )
+    otp_utils:stop_user_applications( OrderedAppNames ),
 
-	end,
+    % Not able to use Traces anymore:
+    trace_utils:debug_fmt( "Waiting for the termination of the trace "
+                           "aggregator (~w).", [ AggPid ] ),
 
-	% None expected to be left:
-	basic_utils:check_no_pending_message(),
+    receive
 
-	test_facilities:display(
-		"Successful end of test of the Traces OTP application." ).
+        { 'EXIT', AggPid, normal } ->
+            ok;
+
+        Other ->
+            trace_utils:error_fmt( "Received ~p.", [ Other ] ),
+            throw( { unexpected_receiving, Other } )
+
+    end,
+
+    % None expected to be left:
+    basic_utils:check_no_pending_message(),
+
+    test_facilities:display(
+        "Successful end of test of the Traces OTP application." ).
 
 
 
@@ -136,22 +136,22 @@ available as prerequisite, fully-built OTP applications.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	% Build root directory from which sibling prerequisite applications may be
-	% found:
-	%
-	BuildRootDir = "..",
+    % Build root directory from which sibling prerequisite applications may be
+    % found:
+    %
+    BuildRootDir = "..",
 
-	% No dependency (such as WOOPER or Myriad) specified in this test, yet they
-	% are managed by otp_utils, based on the corresponding .app files:
-	%
-	OrderedAppNames = otp_utils:prepare_for_execution( _ThisApp=traces,
-													   BuildRootDir ),
+    % No dependency (such as WOOPER or Myriad) specified in this test, yet they
+    % are managed by otp_utils, based on the corresponding .app files:
+    %
+    OrderedAppNames = otp_utils:prepare_for_execution( _ThisApp=traces,
+                                                       BuildRootDir ),
 
-	trace_utils:notice_fmt( "Resulting applications to start, in order: ~w.",
-							[ OrderedAppNames ] ),
+    trace_utils:notice_fmt( "Resulting applications to start, in order: ~w.",
+                            [ OrderedAppNames ] ),
 
-	test_traces_application( OrderedAppNames ),
+    test_traces_application( OrderedAppNames ),
 
-	test_facilities:stop().
+    test_facilities:stop().

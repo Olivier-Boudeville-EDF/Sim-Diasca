@@ -1,4 +1,4 @@
-% Copyright (C) 2024-2025 Olivier Boudeville
+% Copyright (C) 2024-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -48,128 +48,128 @@ See the transform4 tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	TId = transform4:identity(),
+    TId = transform4:identity(),
 
-	transform4:check( TId ),
+    transform4:check( TId ),
 
-	CM = #compact_matrix4{ m11=1, m12=8, m13=3, tx=1,
-						   m21=4, m22=5, m23=6, ty=2,
-						   m31=7, m32=8, m33=9, tz=3  },
+    CM = #compact_matrix4{ m11=1, m12=8, m13=3, tx=1,
+                           m21=4, m22=5, m23=6, ty=2,
+                           m31=7, m32=8, m33=9, tz=3  },
 
-	T1 = transform4:new( CM ),
+    T1 = transform4:new( CM ),
 
-	% Useless as done by most operations: transform4:check( T1 ),
+    % Useless as done by most operations: transform4:check( T1 ),
 
-	CM = transform4:get_reference( T1 ),
+    CM = transform4:get_reference( T1 ),
 
-	true = matrix4:are_equal( matrix4:identity(),
-		matrix4:mult( CM, transform4:get_inverse( T1 ) ) ),
+    true = matrix4:are_equal( matrix4:identity(),
+        matrix4:mult( CM, transform4:get_inverse( T1 ) ) ),
 
-	test_facilities:display( "Base textual representation for T1=~w~n; "
-		"user-friendly one: ~ts~n", [ T1, transform4:to_string( T1 ) ] ),
-
-
-	VT = [ 1, 2, 3 ],
-
-	Tt = transform4:translation( VT ),
-
-	test_facilities:display( "Translation transform of vector ~ts: ~ts~n",
-		[ vector3:to_string( VT ), transform4:to_string( Tt ) ] ),
-
-	UnitVT = vector3:normalise( VT ),
-
-	RadAngle = math:pi() / 7,
-
-	Tr = transform4:rotation( UnitVT, RadAngle ),
-
-	test_facilities:display( "Rotation transform of unit axis ~ts "
-		"and angle ~w radians: ~ts~n",
-		[ vector3:to_string( UnitVT ), RadAngle, transform4:to_string( Tr ) ] ),
+    test_facilities:display( "Base textual representation for T1=~w~n; "
+        "user-friendly one: ~ts~n", [ T1, transform4:to_string( T1 ) ] ),
 
 
-	Factors = { _Sx=1.2, _Sy=0.9, _Sz=0.8 },
+    VT = [ 1, 2, 3 ],
 
-	Ts = transform4:scaling( Factors ),
+    Tt = transform4:translation( VT ),
 
-	test_facilities:display( "Scaling transform of factors ~w: ~ts~n",
-		[ Factors, transform4:to_string( Ts ) ] ),
+    test_facilities:display( "Translation transform of vector ~ts: ~ts~n",
+        [ vector3:to_string( VT ), transform4:to_string( Tt ) ] ),
 
+    UnitVT = vector3:normalise( VT ),
 
-	O = { 4, -4, 2 },
+    RadAngle = math:pi() / 7,
 
-	X = vector3:normalise( VT ),
+    Tr = transform4:rotation( UnitVT, RadAngle ),
 
-	% We want Y to be orthogonal to X so that we have an orthogonal basis:
-	Y = vector3:normalise( vector3:get_orthogonal( X ) ),
-
-	% Hence normalised by design (because X and Y are normalised, *and* are
-	% orthogonal):
-	%
-	Z = vector3:cross_product( X, Y ),
-
-	Ttr = transform4:transition( _Origin=O, X, Y, Z ),
-
-	test_facilities:display( "Transition transform to the coordinate system of "
-		"origin ~ts with axes: ~ts, ~ts and ~ts is: ~ts~n",
-		[ point3:to_string( O ), vector3:to_string( X ), vector3:to_string( Y ),
-		  vector3:to_string( Z ), transform4:to_string( Ttr ) ] ),
+    test_facilities:display( "Rotation transform of unit axis ~ts "
+        "and angle ~w radians: ~ts~n",
+        [ vector3:to_string( UnitVT ), RadAngle, transform4:to_string( Tr ) ] ),
 
 
-	VTOther = [ 7, -11, 1 ],
+    Factors = { _Sx=1.2, _Sy=0.9, _Sz=0.8 },
 
-	TBase = Ttr,
-	test_facilities:display( "Using from now base transform ~ts~n",
-							 [ transform4:to_string( TBase ) ] ),
+    Ts = transform4:scaling( Factors ),
 
-	TlTBase = transform4:translate_left( VTOther, TBase ),
-
-	test_facilities:display( "Base transform when left-translated of ~ts: "
-		"~ts~n", [ vector3:to_string( VTOther ),
-				   transform4:to_string( TlTBase ) ] ),
+    test_facilities:display( "Scaling transform of factors ~w: ~ts~n",
+        [ Factors, transform4:to_string( Ts ) ] ),
 
 
-	TrTBase = transform4:translate_right( TBase, VTOther ),
+    O = { 4, -4, 2 },
 
-	test_facilities:display( "Base transform when right-translated of ~ts: "
-		"~ts~n",
-		[ vector3:to_string( VTOther ), transform4:to_string( TrTBase ) ] ),
+    X = vector3:normalise( VT ),
 
+    % We want Y to be orthogonal to X so that we have an orthogonal basis:
+    Y = vector3:normalise( vector3:get_orthogonal( X ) ),
 
-	UnitVTOther = vector3:normalise( VTOther ),
+    % Hence normalised by design (because X and Y are normalised, *and* are
+    % orthogonal):
+    %
+    Z = vector3:cross_product( X, Y ),
 
-	RadAngleOther = math:pi() / 11,
+    Ttr = transform4:transition( _Origin=O, X, Y, Z ),
 
-	RlTBase = transform4:rotate_left( UnitVTOther, RadAngleOther, TBase ),
-
-	test_facilities:display( "Base transform when left-rotated "
-		"around axis ~ts of an angle of ~w radians: "
-		"~ts~n", [ vector3:to_string( UnitVTOther ), RadAngleOther,
-				   transform4:to_string( RlTBase ) ] ),
-
-	RrTBase = transform4:rotate_right( TBase, UnitVTOther, RadAngleOther ),
-
-	test_facilities:display( "Base transform when right-rotated "
-		"around axis ~ts of an angle of ~w radians: "
-		"~ts~n", [ vector3:to_string( UnitVTOther ), RadAngleOther,
-				   transform4:to_string( RrTBase ) ] ),
+    test_facilities:display( "Transition transform to the coordinate system of "
+        "origin ~ts with axes: ~ts, ~ts and ~ts is: ~ts~n",
+        [ point3:to_string( O ), vector3:to_string( X ), vector3:to_string( Y ),
+          vector3:to_string( Z ), transform4:to_string( Ttr ) ] ),
 
 
-	FactorsOther = { 1.8, 30.0, 12.5 },
+    VTOther = [ 7, -11, 1 ],
 
-	SlTBase = transform4:scale_left( FactorsOther, TBase ),
+    TBase = Ttr,
+    test_facilities:display( "Using from now base transform ~ts~n",
+                             [ transform4:to_string( TBase ) ] ),
 
-	test_facilities:display( "Base transform when left-scaled "
-		"of factors ~w: ~ts~n",
-		[ FactorsOther, transform4:to_string( SlTBase ) ] ),
+    TlTBase = transform4:translate_left( VTOther, TBase ),
 
-
-	SrTBase = transform4:scale_right( TBase, FactorsOther ),
-
-	test_facilities:display( "Base transform when right-scaled "
-		"of factors ~w: ~ts~n",
-		[ FactorsOther, transform4:to_string( SrTBase ) ] ),
+    test_facilities:display( "Base transform when left-translated of ~ts: "
+        "~ts~n", [ vector3:to_string( VTOther ),
+                   transform4:to_string( TlTBase ) ] ),
 
 
-	test_facilities:stop().
+    TrTBase = transform4:translate_right( TBase, VTOther ),
+
+    test_facilities:display( "Base transform when right-translated of ~ts: "
+        "~ts~n",
+        [ vector3:to_string( VTOther ), transform4:to_string( TrTBase ) ] ),
+
+
+    UnitVTOther = vector3:normalise( VTOther ),
+
+    RadAngleOther = math:pi() / 11,
+
+    RlTBase = transform4:rotate_left( UnitVTOther, RadAngleOther, TBase ),
+
+    test_facilities:display( "Base transform when left-rotated "
+        "around axis ~ts of an angle of ~w radians: "
+        "~ts~n", [ vector3:to_string( UnitVTOther ), RadAngleOther,
+                   transform4:to_string( RlTBase ) ] ),
+
+    RrTBase = transform4:rotate_right( TBase, UnitVTOther, RadAngleOther ),
+
+    test_facilities:display( "Base transform when right-rotated "
+        "around axis ~ts of an angle of ~w radians: "
+        "~ts~n", [ vector3:to_string( UnitVTOther ), RadAngleOther,
+                   transform4:to_string( RrTBase ) ] ),
+
+
+    FactorsOther = { 1.8, 30.0, 12.5 },
+
+    SlTBase = transform4:scale_left( FactorsOther, TBase ),
+
+    test_facilities:display( "Base transform when left-scaled "
+        "of factors ~w: ~ts~n",
+        [ FactorsOther, transform4:to_string( SlTBase ) ] ),
+
+
+    SrTBase = transform4:scale_right( TBase, FactorsOther ),
+
+    test_facilities:display( "Base transform when right-scaled "
+        "of factors ~w: ~ts~n",
+        [ FactorsOther, transform4:to_string( SrTBase ) ] ),
+
+
+    test_facilities:stop().

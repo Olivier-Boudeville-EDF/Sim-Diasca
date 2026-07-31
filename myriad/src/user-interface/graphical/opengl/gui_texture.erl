@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -83,20 +83,20 @@ An OpenGL color format (e.g. ?GL_RGBA), which specifies the number of color
 components in a texture.
 """.
 -type gl_color_format() :: 1 | 2 | 3 | 4
-	| ?GL_ALPHA | ?GL_ALPHA4 | ?GL_ALPHA8 | ?GL_ALPHA12 | ?GL_ALPHA16
-	| ?GL_LUMINANCE | ?GL_LUMINANCE4 | ?GL_LUMINANCE8 | ?GL_LUMINANCE12
-	| ?GL_LUMINANCE16 | ?GL_LUMINANCE_ALPHA | ?GL_LUMINANCE4_ALPHA4
-	| ?GL_LUMINANCE6_ALPHA2 | ?GL_LUMINANCE8_ALPHA8 | ?GL_LUMINANCE12_ALPHA4
-	| ?GL_LUMINANCE12_ALPHA12 | ?GL_LUMINANCE16_ALPHA16 | ?GL_INTENSITY
-	| ?GL_INTENSITY4 | ?GL_INTENSITY8 | ?GL_INTENSITY12 | ?GL_INTENSITY16
-	| ?GL_R3_G3_B2 | ?GL_RGB | ?GL_RGB4 | ?GL_RGB5 | ?GL_RGB8 | ?GL_RGB10
-	| ?GL_RGB12 | ?GL_RGB16 | ?GL_RGBA | ?GL_RGBA2 | ?GL_RGBA4
-	| ?GL_RGB5_A1 | ?GL_RGBA8 | ?GL_RGB10_A2 | ?GL_RGBA12 | ?GL_RGBA16.
+    | ?GL_ALPHA | ?GL_ALPHA4 | ?GL_ALPHA8 | ?GL_ALPHA12 | ?GL_ALPHA16
+    | ?GL_LUMINANCE | ?GL_LUMINANCE4 | ?GL_LUMINANCE8 | ?GL_LUMINANCE12
+    | ?GL_LUMINANCE16 | ?GL_LUMINANCE_ALPHA | ?GL_LUMINANCE4_ALPHA4
+    | ?GL_LUMINANCE6_ALPHA2 | ?GL_LUMINANCE8_ALPHA8 | ?GL_LUMINANCE12_ALPHA4
+    | ?GL_LUMINANCE12_ALPHA12 | ?GL_LUMINANCE16_ALPHA16 | ?GL_INTENSITY
+    | ?GL_INTENSITY4 | ?GL_INTENSITY8 | ?GL_INTENSITY12 | ?GL_INTENSITY16
+    | ?GL_R3_G3_B2 | ?GL_RGB | ?GL_RGB4 | ?GL_RGB5 | ?GL_RGB8 | ?GL_RGB10
+    | ?GL_RGB12 | ?GL_RGB16 | ?GL_RGBA | ?GL_RGBA2 | ?GL_RGBA4
+    | ?GL_RGB5_A1 | ?GL_RGBA8 | ?GL_RGB10_A2 | ?GL_RGBA12 | ?GL_RGBA16.
 
 
 -doc "A format of a pixel data.".
 -type gl_pixel_format() :: ?GL_COLOR_INDEX | ?GL_RED | ?GL_GREEN | ?GL_BLUE
-	| ?GL_ALPHA | ?GL_RGB | ?GL_RGBA | ?GL_LUMINANCE | ?GL_LUMINANCE_ALPHA.
+    | ?GL_ALPHA | ?GL_RGB | ?GL_RGBA | ?GL_LUMINANCE | ?GL_LUMINANCE_ALPHA.
 
 
 % A texel is a texture pixel.
@@ -130,17 +130,17 @@ The fragment shader interpolates the texture coordinates for each fragment.
 -doc "OpenGL mode for texture wrapping.".
 -type gl_texture_wrapping_mode() ::
 
-	?GL_REPEAT % The default behavior for textures. Repeats the texture image.
+    ?GL_REPEAT % The default behavior for textures. Repeats the texture image.
 
   | ?GL_MIRRORED_REPEAT % Same as GL_REPEAT, but mirrors the image with each
-						% repeat.
+                        % repeat.
 
   | ?GL_CLAMP_TO_EDGE % Clamps the coordinates between 0 and 1. The result
-					  % is that higher coordinates become clamped to the edge,
-					  % resulting in a stretched edge pattern.
+                      % is that higher coordinates become clamped to the edge,
+                      % resulting in a stretched edge pattern.
 
   | ?GL_CLAMP_TO_BORDER. % Coordinates outside the range are now given a
-						 % user-specified border color.
+                         % user-specified border color.
 
 
 -doc """
@@ -154,14 +154,14 @@ Other modes exist.
 """.
 -type gl_texture_filtering_mode() ::
 
-	?GL_NEAREST % Also known as nearest neighbor or point filtering); this is
-				% the default texture filtering method of OpenGL, where the
-				% texel whose center is closest to the texture coordinate is
-				% selected.
+    ?GL_NEAREST % Also known as nearest neighbor or point filtering); this is
+                % the default texture filtering method of OpenGL, where the
+                % texel whose center is closest to the texture coordinate is
+                % selected.
 
   | ?GL_LINEAR  % Also known as (bi)linear filtering; takes an interpolated
-				% value from the texture coordinate's neighboring texels,
-				% approximating a color between the texels.
+                % value from the texture coordinate's neighboring texels,
+                % approximating a color between the texels.
 
   | enum().
 
@@ -191,30 +191,30 @@ mipmaps generated indeed, otherwise no texturing may be done.
 """.
 -type gl_mipmap_filtering_mode() ::
 
-	?GL_NEAREST_MIPMAP_NEAREST % Takes the nearest mipmap to match the pixel
-							   % size and uses nearest neighbor interpolation
-							   % for texture sampling.
+    ?GL_NEAREST_MIPMAP_NEAREST % Takes the nearest mipmap to match the pixel
+                               % size and uses nearest neighbor interpolation
+                               % for texture sampling.
 
   | ?GL_LINEAR_MIPMAP_NEAREST  % Takes the nearest mipmap level and samples
-							   % that level using linear interpolation.
+                               % that level using linear interpolation.
 
   | ?GL_NEAREST_MIPMAP_LINEAR  % Linearly interpolates between the two mipmaps
-							   % that most closely match the size of a pixel,
-							   % and samples the interpolated level via nearest
-							   % neighbor interpolation.
+                               % that most closely match the size of a pixel,
+                               % and samples the interpolated level via nearest
+                               % neighbor interpolation.
 
   | ?GL_LINEAR_MIPMAP_LINEAR.  % Linearly interpolates between the two closest
-							   % mipmaps and samples the interpolated level via
-							   % linear interpolation.
+                               % mipmaps and samples the interpolated level via
+                               % linear interpolation.
 
 
 -export_type([ texture_id/0, texture_dimension/0, texture/0, texture_unit/0,
-			   gl_color_format/0, gl_pixel_format/0,
-			   uv_coordinate/0, uv_point/0,
+               gl_color_format/0, gl_pixel_format/0,
+               uv_coordinate/0, uv_point/0,
 
-			   gl_texture_wrapping_mode/0, gl_texture_filtering_mode/0,
+               gl_texture_wrapping_mode/0, gl_texture_filtering_mode/0,
 
-			   mipmap_level/0, gl_mipmap_filtering_mode/0 ]).
+               mipmap_level/0, gl_mipmap_filtering_mode/0 ]).
 
 
 
@@ -253,7 +253,7 @@ application, and a texture() record will be set iff if the corresponding texture
 is currently assigned to OpenGL, i.e. if it is available on the video card.
 """.
 -type texture_entry() ::
-		{ texture_spec_id(), option( image() ), option( texture() ) }.
+        { texture_spec_id(), option( image() ), option( texture() ) }.
 
 
 -doc "A table holding information regarding textures.".
@@ -283,47 +283,47 @@ Later texture search paths may be supported.
 
 
 -export_type([ user_texture_spec/0, texture_spec/0, texture_spec_id/0,
-			   texture_entry/0, texture_table/0, texture_cache/0 ]).
+               texture_entry/0, texture_table/0, texture_cache/0 ]).
 
 
 
 -export([ set_basic_general_settings/0,
 
-		  create_from_image/1, create_from_image/2,
-		  load_from_file/1, load_from_file/2,
+          create_from_image/1, create_from_image/2,
+          load_from_file/1, load_from_file/2,
 
-		  create_from_text/4, create_from_text/5,
+          create_from_text/4, create_from_text/5,
 
-		  destruct/1,
+          destruct/1,
 
-		  apply_basic_settings_on_current/0,
+          apply_basic_settings_on_current/0,
 
-		  generate_mipmaps/0, generate_mipmaps/1, generate_mipmaps_for_id/1,
+          generate_mipmaps/0, generate_mipmaps/1, generate_mipmaps_for_id/1,
 
-		  set_as_current/1, set_new_as_current/0, set_as_current_from_id/1,
-		  assign_current/4,
+          set_as_current/1, set_new_as_current/0, set_as_current_from_id/1,
+          assign_current/4,
 
-		  set_current_texture_unit/1,
+          set_current_texture_unit/1,
 
-		  recalibrate_coordinates_for/2,
+          recalibrate_coordinates_for/2,
 
-		  render/2, render/3,
+          render/2, render/3,
 
-		  get_color_buffer/1, get_color_buffer/3,
+          get_color_buffer/1, get_color_buffer/3,
 
 
-		  get_dimensions/1, get_dimensions/2,
-		  generate_id/0,
+          get_dimensions/1, get_dimensions/2,
+          generate_id/0,
 
-		  check_texture_coordinate_pair/1,
+          check_texture_coordinate_pair/1,
 
-		  to_string/1,
+          to_string/1,
 
-		  get_pixel_size/1, gl_pixel_format_to_pixel_format/1 ]).
+          get_pixel_size/1, gl_pixel_format_to_pixel_format/1 ]).
 
 
 -export([ create_cache/0, declare_texture/2, get_texture/2,
-		  get_texture_spec/2, cache_to_string/1 ]).
+          get_texture_spec/2, cache_to_string/1 ]).
 
 
 
@@ -420,8 +420,8 @@ texture instance.
 """.
 -spec set_basic_general_settings() -> void().
 set_basic_general_settings() ->
-	gl:enable( ?GL_TEXTURE_2D ),
-	cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ).
+    gl:enable( ?GL_TEXTURE_2D ),
+    cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ).
 
 
 
@@ -434,7 +434,7 @@ The image instance is safe to be deallocated afterwards.
 """.
 -spec create_from_image( image() ) -> texture().
 create_from_image( Image ) ->
-	create_from_image( Image, _GenMipmaps=true ).
+    create_from_image( Image, _GenMipmaps=true ).
 
 
 
@@ -448,88 +448,88 @@ The image instance is safe to be deallocated afterwards.
 -spec create_from_image( image(), boolean() ) -> texture().
 create_from_image( Image, GenMipmaps ) ->
 
-	cond_utils:if_defined( myriad_debug_textures,
-		trace_utils:debug_fmt( "Loading texture from a ~ts.",
-							   [ gui_image:to_string( Image ) ] ) ),
+    cond_utils:if_defined( myriad_debug_textures,
+        trace_utils:debug_fmt( "Loading texture from a ~ts.",
+                               [ gui_image:to_string( Image ) ] ) ),
 
-	% As OpenGL expects the 0.0 coordinate on the Y-axis to be on the bottom
-	% side of the image:
-	%
-	FlippedImage = gui_image:mirror( Image, _Orientation=vertical ),
+    % As OpenGL expects the 0.0 coordinate on the Y-axis to be on the bottom
+    % side of the image:
+    %
+    FlippedImage = gui_image:mirror( Image, _Orientation=vertical ),
 
-	OrigDims = { ImgWidth, ImgHeight } = gui_image:get_size( FlippedImage ),
+    OrigDims = { ImgWidth, ImgHeight } = gui_image:get_size( FlippedImage ),
 
-	% Going for power-of-two (larger) dimensions:
-	TargetDims = { TexWidth, TexHeight } = get_dimensions( OrigDims ),
+    % Going for power-of-two (larger) dimensions:
+    TargetDims = { TexWidth, TexHeight } = get_dimensions( OrigDims ),
 
-	% The wxImage is either RGB or RGBA; we have to expand it in buffer if
-	% needed, so that it has the right (power-of-two) dimensions:
-	%
-	ColorBuffer = get_color_buffer( FlippedImage, OrigDims, TargetDims ),
-	%trace_utils:debug_fmt( "ColorBuffer: ~p", [ ColorBuffer ] ),
+    % The wxImage is either RGB or RGBA; we have to expand it in buffer if
+    % needed, so that it has the right (power-of-two) dimensions:
+    %
+    ColorBuffer = get_color_buffer( FlippedImage, OrigDims, TargetDims ),
+    %trace_utils:debug_fmt( "ColorBuffer: ~p", [ ColorBuffer ] ),
 
-	% Let's create the OpenGL texture:
+    % Let's create the OpenGL texture:
 
-	TextureId = set_new_as_current(),
+    TextureId = set_new_as_current(),
 
-	PixFormat = case gui_image:has_alpha( FlippedImage ) of
+    PixFormat = case gui_image:has_alpha( FlippedImage ) of
 
-		true ->
-			%trace_utils:debug( "RGBA image detected." ),
-			?GL_RGBA;
+        true ->
+            %trace_utils:debug( "RGBA image detected." ),
+            ?GL_RGBA;
 
-		false ->
-			%trace_utils:debug( "RGB image detected." ),
-			?GL_RGB
+        false ->
+            %trace_utils:debug( "RGB image detected." ),
+            ?GL_RGB
 
-	end,
+    end,
 
-	gui_image:destruct( FlippedImage ),
+    gui_image:destruct( FlippedImage ),
 
-	assign_current( TexWidth, TexHeight, PixFormat, ColorBuffer ),
+    assign_current( TexWidth, TexHeight, PixFormat, ColorBuffer ),
 
-	% Add mipmaps if requested:
-	GenMipmaps andalso
-		begin
-			gl:generateMipmap( ?GL_TEXTURE_2D ),
-			cond_utils:if_defined( myriad_check_textures,
-								   gui_opengl:check_error() )
-		end,
+    % Add mipmaps if requested:
+    GenMipmaps andalso
+        begin
+            gl:generateMipmap( ?GL_TEXTURE_2D ),
+            cond_utils:if_defined( myriad_check_textures,
+                                   gui_opengl:check_error() )
+        end,
 
-	Zero = 0.0,
+    Zero = 0.0,
 
-	% This was quite strange but there seemed to be an off-by-one error
-	% regarding the Y coordinates: if selecting bright-green padding, we could
-	% see that the first row of the texture (hence the bottom one) was full
-	% green, whereas the color buffer was apparently correct (not starting at
-	% all with green but with the correct image pixels - see the ColorBuffer
-	% trace above; just ending with the proper, expected padding).
-	%
-	% So, instead of using a zero min_y, we used to offset it by one (scaled)
-	% source pixel (hence 1/TexWidth), however hackish it was. The culprit has
-	% been found since then: all our buffers and coordinates were right, it was
-	% just an artifact of the GL_REPEAT wrap parameter. Now relying on
-	% GL_CLAMP_TO_EDGE and there is no need to tweek coordinates anymore.
-	%
-	T = #texture{
-			id=TextureId, width=ImgWidth, height=ImgHeight,
-			min_x=Zero,
-			%min_x=1/TexWidth,
-			min_y=Zero,
-			%min_y=1/TexHeight,
+    % This was quite strange but there seemed to be an off-by-one error
+    % regarding the Y coordinates: if selecting bright-green padding, we could
+    % see that the first row of the texture (hence the bottom one) was full
+    % green, whereas the color buffer was apparently correct (not starting at
+    % all with green but with the correct image pixels - see the ColorBuffer
+    % trace above; just ending with the proper, expected padding).
+    %
+    % So, instead of using a zero min_y, we used to offset it by one (scaled)
+    % source pixel (hence 1/TexWidth), however hackish it was. The culprit has
+    % been found since then: all our buffers and coordinates were right, it was
+    % just an artifact of the GL_REPEAT wrap parameter. Now relying on
+    % GL_CLAMP_TO_EDGE and there is no need to tweek coordinates anymore.
+    %
+    T = #texture{
+            id=TextureId, width=ImgWidth, height=ImgHeight,
+            min_x=Zero,
+            %min_x=1/TexWidth,
+            min_y=Zero,
+            %min_y=1/TexHeight,
 
-			% These were other clumsy attempts of removing padding borders:
-			% (note that textures are filled upside-down, so padding occurs at
-			% the top; and on the right)
-			%
-			%max_x=ImgWidth / (TexWidth+1), max_y=ImgHeight / (TexHeight+1) }.
-			%max_x=(ImgWidth-1) / TexWidth, max_y=(ImgHeight-1) / TexHeight }.
-			max_x=ImgWidth / TexWidth, max_y=ImgHeight / TexHeight },
+            % These were other clumsy attempts of removing padding borders:
+            % (note that textures are filled upside-down, so padding occurs at
+            % the top; and on the right)
+            %
+            %max_x=ImgWidth / (TexWidth+1), max_y=ImgHeight / (TexHeight+1) }.
+            %max_x=(ImgWidth-1) / TexWidth, max_y=(ImgHeight-1) / TexHeight }.
+            max_x=ImgWidth / TexWidth, max_y=ImgHeight / TexHeight },
 
-	%trace_utils:debug_fmt( "~Bx~B texture created from image: ~ts",
-	%                       [ TexWidth, TexHeight, to_string( T ) ] ),
+    %trace_utils:debug_fmt( "~Bx~B texture created from image: ~ts",
+    %                       [ TexWidth, TexHeight, to_string( T ) ] ),
 
-	T.
+    T.
 
 
 
@@ -542,14 +542,14 @@ Prefer load_from_file/2 if applicable.
 -spec load_from_file( any_image_path() ) -> texture().
 load_from_file( ImagePath ) ->
 
-	Image = gui_image:load_from_file( ImagePath ),
+    Image = gui_image:load_from_file( ImagePath ),
 
-	%trace_utils:debug_fmt( "Image loaded from '~ts' of size ~Bx~B.",
-	%   [ ImagePath, wxImage:getWidth( Image ), wxImage:getHeight( Image ) ] ),
+    %trace_utils:debug_fmt( "Image loaded from '~ts' of size ~Bx~B.",
+    %   [ ImagePath, wxImage:getWidth( Image ), wxImage:getHeight( Image ) ] ),
 
-	Tex = create_from_image( Image ),
-	gui_image:destruct( Image ),
-	Tex.
+    Tex = create_from_image( Image ),
+    gui_image:destruct( Image ),
+    Tex.
 
 
 
@@ -559,10 +559,10 @@ the default texture settings on it, and makes it the currently active texture.
 """.
 -spec load_from_file( image_format(), any_image_path() ) -> texture().
 load_from_file( ImageFormat, ImagePath ) ->
-	Image = gui_image:load_from_file( ImageFormat, ImagePath ),
-	Tex = create_from_image( Image ),
-	gui_image:destruct( Image ),
-	Tex.
+    Image = gui_image:load_from_file( ImageFormat, ImagePath ),
+    Tex = create_from_image( Image ),
+    gui_image:destruct( Image ),
+    Tex.
 
 
 
@@ -572,9 +572,9 @@ specified font, brush and color, applies the default texture settings on it, and
 makes it the currently active texture.
 """.
 -spec create_from_text( ustring(), font(), brush(), color_by_decimal() ) ->
-											texture().
+                                            texture().
 create_from_text( Text, Font, Brush, Color ) ->
-	create_from_text( Text, Font, Brush, Color, _Flip=false ).
+    create_from_text( Text, Font, Brush, Color, _Flip=false ).
 
 
 
@@ -585,91 +585,91 @@ requested, applies the default texture settings on it, and makes it the
 currently active texture.
 """.
 -spec create_from_text( ustring(), font(), brush(), color_by_decimal(),
-						boolean() ) -> texture().
+                        boolean() ) -> texture().
 create_from_text( Text, Font, Brush, TextColor, Flip ) ->
-	% Directly deriving from lib/wx/examples/demo/ex_gl.erl:
+    % Directly deriving from lib/wx/examples/demo/ex_gl.erl:
 
-	StrDims = { StrW, StrH } = gui_font:get_text_extent( Text, Font ),
+    StrDims = { StrW, StrH } = gui_font:get_text_extent( Text, Font ),
 
-	{ Width, Height } = get_dimensions( StrDims ),
+    { Width, Height } = get_dimensions( StrDims ),
 
-	%trace_utils:debug_fmt( "Text dimensions: {~B,~B}; "
-	%   "texture dimensions: {~B,~B}.", [ StrW, StrH, Width, Height ] ),
+    %trace_utils:debug_fmt( "Text dimensions: {~B,~B}; "
+    %   "texture dimensions: {~B,~B}.", [ StrW, StrH, Width, Height ] ),
 
-	% Supposing no alpha information here:
-	Bmp = wxBitmap:new( Width, Height ),
-	cond_utils:assert( myriad_debug_gui_memory, wxBitmap:isOk( Bmp ) ),
+    % Supposing no alpha information here:
+    Bmp = wxBitmap:new( Width, Height ),
+    cond_utils:assert( myriad_debug_gui_memory, wxBitmap:isOk( Bmp ) ),
 
-	DC = wxMemoryDC:new( Bmp ),
-	cond_utils:assert( myriad_debug_gui_memory, wxDC:isOk( DC ) ),
+    DC = wxMemoryDC:new( Bmp ),
+    cond_utils:assert( myriad_debug_gui_memory, wxDC:isOk( DC ) ),
 
-	wxMemoryDC:setFont( DC, Font ),
+    wxMemoryDC:setFont( DC, Font ),
 
-	wxMemoryDC:setBackground( DC, Brush ),
+    wxMemoryDC:setBackground( DC, Brush ),
 
-	wxMemoryDC:clear( DC ),
+    wxMemoryDC:clear( DC ),
 
-	wxMemoryDC:setTextForeground( DC, _WhiteRGB={ 255, 255, 255 } ),
+    wxMemoryDC:setTextForeground( DC, _WhiteRGB={ 255, 255, 255 } ),
 
-	wxMemoryDC:drawText( DC, Text, _Origin={ 0, 0 } ),
+    wxMemoryDC:drawText( DC, Text, _Origin={ 0, 0 } ),
 
-	TextImg = wxBitmap:convertToImage( Bmp ),
+    TextImg = wxBitmap:convertToImage( Bmp ),
 
-	BaseImg = case Flip of
+    BaseImg = case Flip of
 
-		true ->
-			FlippedImg = wxImage:mirror( TextImg, [ { horizontally, false } ] ),
-			wxImage:destroy( TextImg ),
-			FlippedImg;
+        true ->
+            FlippedImg = wxImage:mirror( TextImg, [ { horizontally, false } ] ),
+            wxImage:destroy( TextImg ),
+            FlippedImg;
 
-		false ->
-			TextImg
+        false ->
+            TextImg
 
-	end,
+    end,
 
-	% If wanting to check:
-	%TestFilename = text_utils:format( "test-texture-~B.png",
-	%                                  [ length( Text) ] ),
-	%gui_image:save( BaseImg, TestFilename ),
+    % If wanting to check:
+    %TestFilename = text_utils:format( "test-texture-~B.png",
+    %                                  [ length( Text) ] ),
+    %gui_image:save( BaseImg, TestFilename ),
 
-	% Expected to be RGBA:
-	BaseBuffer = wxImage:getData( BaseImg ),
+    % Expected to be RGBA:
+    BaseBuffer = wxImage:getData( BaseImg ),
 
-	ReadyBuffer = gui_image:colorize( BaseBuffer, TextColor ),
+    ReadyBuffer = gui_image:colorize( BaseBuffer, TextColor ),
 
-	wxImage:destroy( BaseImg ),
-	wxBitmap:destroy( Bmp ),
-	wxMemoryDC:destroy( DC ),
+    wxImage:destroy( BaseImg ),
+    wxBitmap:destroy( Bmp ),
+    wxMemoryDC:destroy( DC ),
 
-	% To assign its buffer afterwards:
-	TextureId = set_new_as_current(),
+    % To assign its buffer afterwards:
+    TextureId = set_new_as_current(),
 
-	assign_current( Width, Height, _TexFormat=?GL_RGBA, ReadyBuffer ),
+    assign_current( Width, Height, _TexFormat=?GL_RGBA, ReadyBuffer ),
 
-	apply_basic_settings_on_current(),
+    apply_basic_settings_on_current(),
 
-	% Could be done if using a mipmap filtering such as GL_LINEAR_MIPMAP_LINEAR
-	% afterwards:
-	%
-	%generate_mipmaps(),
+    % Could be done if using a mipmap filtering such as GL_LINEAR_MIPMAP_LINEAR
+    % afterwards:
+    %
+    %generate_mipmaps(),
 
-	%trace_utils:debug( "Texture loaded from text." ),
+    %trace_utils:debug( "Texture loaded from text." ),
 
-	% Not supposed to be null dimensions:
-	#texture{ id=TextureId, width=StrW, height=StrH, min_x=0.0, min_y=0.0,
-			  max_x=StrW/Width, max_y=StrH/Height }.
+    % Not supposed to be null dimensions:
+    #texture{ id=TextureId, width=StrW, height=StrH, min_x=0.0, min_y=0.0,
+              max_x=StrW/Width, max_y=StrH/Height }.
 
 
 
 -doc "Destructs (that is: deletes) the specified texture(s).".
 -spec destruct( maybe_list( texture() ) ) -> void().
 destruct( Textures ) when is_list( Textures ) ->
-	gl:deleteTextures( [ Id || #texture{ id=Id } <- Textures ] ),
-	cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() );
+    gl:deleteTextures( [ Id || #texture{ id=Id } <- Textures ] ),
+    cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() );
 
 destruct( #texture{ id=Id } ) ->
-	gl:deleteTextures( [ Id ] ),
-	cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ).
+    gl:deleteTextures( [ Id ] ),
+    cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ).
 
 
 
@@ -684,21 +684,21 @@ destruct( #texture{ id=Id } ) ->
 -doc "Generates mipmaps for the currently active (2D) texture.".
 -spec generate_mipmaps() -> void().
 generate_mipmaps() ->
-	generate_mipmaps( _Dim=?GL_TEXTURE_2D ).
+    generate_mipmaps( _Dim=?GL_TEXTURE_2D ).
 
 
 -doc "Generates mipmaps for the currently active texture.".
 -spec generate_mipmaps( texture_dimension() ) -> void().
 generate_mipmaps( TexDim ) ->
-	gl:generateMipmap( TexDim ),
-	cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ).
+    gl:generateMipmap( TexDim ),
+    cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ).
 
 
 -doc "Generates mipmaps for the texture whose identifier is specified.".
 -spec generate_mipmaps_for_id( texture_id() ) -> void().
 generate_mipmaps_for_id( TextureId ) ->
-	gl:generateTextureMipmap( TextureId ),
-	cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ).
+    gl:generateTextureMipmap( TextureId ),
+    cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ).
 
 
 
@@ -709,7 +709,7 @@ Returns, if useful, its identifier.
 """.
 -spec set_as_current( texture() ) -> texture_id().
 set_as_current( #texture{ id=TextureId } ) ->
-	set_as_current_from_id( TextureId ).
+    set_as_current_from_id( TextureId ).
 
 
 -doc """
@@ -718,7 +718,7 @@ returns it.
 """.
 -spec set_new_as_current() -> texture_id().
 set_new_as_current() ->
-	set_as_current_from_id( generate_id() ).
+    set_as_current_from_id( generate_id() ).
 
 
 -doc """
@@ -735,15 +735,15 @@ Returns, if useful, the specified identifier.
 -spec set_as_current_from_id( texture_id() ) -> texture_id().
 set_as_current_from_id( TextureId ) ->
 
-	% To attach the texture specified from its ID to the currently active (2D)
-	% texture object in the GL context:
-	%
-	% (thus binding is a synonym of making currently active)
-	%
-	gl:bindTexture( ?GL_TEXTURE_2D, TextureId ),
-	cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ),
+    % To attach the texture specified from its ID to the currently active (2D)
+    % texture object in the GL context:
+    %
+    % (thus binding is a synonym of making currently active)
+    %
+    gl:bindTexture( ?GL_TEXTURE_2D, TextureId ),
+    cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ),
 
-	TextureId.
+    TextureId.
 
 
 -doc """
@@ -754,24 +754,24 @@ Normally this is the step where the texture data is transferred to the video
 card (i.e. copied from the CPU address space to the one of the GPU).
 """.
 -spec assign_current( width(), height(), gl_pixel_format(), color_buffer() ) ->
-								void().
+                                void().
 assign_current( TexWidth, TexHeight, PixelFormat, ColorBuffer ) ->
 
-	% Specifies this two-dimensional texture image:
-	%
-	% (note that the first format is a color one, the second one is the
-	% specified pixel one; in the general case they may not match)
-	%
-	% (this is typically a call that may result in a SEGV)
-	%
-	gl:texImage2D( _BindTarget=?GL_TEXTURE_2D, _MipmapLvl=0,
-		_InternalTexFormat=PixelFormat, TexWidth, TexHeight, _LegacyBorder=0,
-		_SrcBufferFormat=PixelFormat, _SrcPixelDataType=?GL_UNSIGNED_BYTE,
-		ColorBuffer ),
+    % Specifies this two-dimensional texture image:
+    %
+    % (note that the first format is a color one, the second one is the
+    % specified pixel one; in the general case they may not match)
+    %
+    % (this is typically a call that may result in a SEGV)
+    %
+    gl:texImage2D( _BindTarget=?GL_TEXTURE_2D, _MipmapLvl=0,
+        _InternalTexFormat=PixelFormat, TexWidth, TexHeight, _LegacyBorder=0,
+        _SrcBufferFormat=PixelFormat, _SrcPixelDataType=?GL_UNSIGNED_BYTE,
+        ColorBuffer ),
 
-	cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ),
+    cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ),
 
-	apply_basic_settings_on_current().
+    apply_basic_settings_on_current().
 
 
 -doc """
@@ -788,9 +788,9 @@ The initial value, usually set by default by OpenGL drivers, corresponds to 0
 """.
 -spec set_current_texture_unit( texture_unit() ) -> void().
 set_current_texture_unit( TexUnit ) ->
-	% As defined in order (contiguous):
-	gl:activeTexture( ?GL_TEXTURE0 + TexUnit ),
-	cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ).
+    % As defined in order (contiguous):
+    gl:activeTexture( ?GL_TEXTURE0 + TexUnit ),
+    cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ).
 
 
 -doc """
@@ -799,36 +799,36 @@ to the original texture, to the specified one, which is typically padded (to
 have power-of-two dimensions), hence is of different dimensions.
 """.
 -spec recalibrate_coordinates_for( [ uv_point() ], texture() ) ->
-										[ uv_point() ].
+                                        [ uv_point() ].
 recalibrate_coordinates_for( TexCoords, #texture{ min_x=MinX, min_y=MinY,
-												  max_x=MaxX, max_y=MaxY } ) ->
-	% We remap [0,1] to [Min,Max] in each dimension; generally MinX=MinY=0.0.
+                                                  max_x=MaxX, max_y=MaxY } ) ->
+    % We remap [0,1] to [Min,Max] in each dimension; generally MinX=MinY=0.0.
 
-	XDiff = MaxX - MinX,
-	YDiff = MaxY - MinY,
+    XDiff = MaxX - MinX,
+    YDiff = MaxY - MinY,
 
-	R = recalibrate_coordinates_for( TexCoords, MinX, MinY, XDiff, YDiff,
-									 _Acc=[] ),
+    R = recalibrate_coordinates_for( TexCoords, MinX, MinY, XDiff, YDiff,
+                                     _Acc=[] ),
 
-	cond_utils:if_defined( myriad_debug_textures,
-		trace_utils:debug_fmt( "Coordinates ~p once recalibrated:~n ~p.",
-							   [ TexCoords, R ] ) ),
+    cond_utils:if_defined( myriad_debug_textures,
+        trace_utils:debug_fmt( "Coordinates ~p once recalibrated:~n ~p.",
+                               [ TexCoords, R ] ) ),
 
-	R.
+    R.
 
 
 % (helper)
 recalibrate_coordinates_for( _TexCoords=[], _MinX, _MinY, _XDiff, _YDiff,
-							 Acc ) ->
-	lists:reverse( Acc );
+                             Acc ) ->
+    lists:reverse( Acc );
 
 recalibrate_coordinates_for( _TexCoords=[ { X, Y } | T ], MinX, MinY,
-							 XDiff, YDiff, Acc ) ->
-	XPadded = MinX + XDiff*X,
-	YPadded = MinY + YDiff*Y,
+                             XDiff, YDiff, Acc ) ->
+    XPadded = MinX + XDiff*X,
+    YPadded = MinY + YDiff*Y,
 
-	recalibrate_coordinates_for( T, MinX, MinY, XDiff, YDiff,
-								 [ { XPadded, YPadded } | Acc ] ).
+    recalibrate_coordinates_for( T, MinX, MinY, XDiff, YDiff,
+                                 [ { XPadded, YPadded } | Acc ] ).
 
 
 
@@ -841,101 +841,101 @@ texture instances).
 -spec apply_basic_settings_on_current() -> void().
 apply_basic_settings_on_current() ->
 
-	% These settings are not general, they will be assigned specifically to the
-	% currently active texture, see
-	% https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexParameter.xhtml
-	%
-	% (GL_LINEAR generally better than GL_NEAREST, see
-	% https://learnopengl.com/Getting-started/Textures)
-	%
+    % These settings are not general, they will be assigned specifically to the
+    % currently active texture, see
+    % https://registry.khronos.org/OpenGL-Refpages/gl4/html/glTexParameter.xhtml
+    %
+    % (GL_LINEAR generally better than GL_NEAREST, see
+    % https://learnopengl.com/Getting-started/Textures)
+    %
 
-	% No ?GL_LINEAR_MIPMAP* suitable yet, as they relate to down (not up)
-	% scaling:
-	%
-	gl:texParameteri( ?GL_TEXTURE_2D, ?GL_TEXTURE_MAG_FILTER, ?GL_LINEAR ),
-	cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ),
+    % No ?GL_LINEAR_MIPMAP* suitable yet, as they relate to down (not up)
+    % scaling:
+    %
+    gl:texParameteri( ?GL_TEXTURE_2D, ?GL_TEXTURE_MAG_FILTER, ?GL_LINEAR ),
+    cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ),
 
-	% GL_LINEAR_MIPMAP_LINEAR has been disabled, as no actual texturing will be
-	% done if the current texture has no mipmap generated:
-	%
-	gl:texParameteri( ?GL_TEXTURE_2D, ?GL_TEXTURE_MIN_FILTER,
-					  %?GL_LINEAR_MIPMAP_LINEAR ),
-					  ?GL_LINEAR ),
-	cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ),
+    % GL_LINEAR_MIPMAP_LINEAR has been disabled, as no actual texturing will be
+    % done if the current texture has no mipmap generated:
+    %
+    gl:texParameteri( ?GL_TEXTURE_2D, ?GL_TEXTURE_MIN_FILTER,
+                      %?GL_LINEAR_MIPMAP_LINEAR ),
+                      ?GL_LINEAR ),
+    cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ),
 
-	% Otherwise the current color will be applied to the textured polygons as
-	% well (as the default texture environment mode is GL_MODULATE, which
-	% multiplies the texture color with the vertex color):
-	%
-	% (another option is to reset the modulation at rendering with:
-	%  gl:color4f( 1.0, 1.0, 1.0, 1.0 ))
-	%
-	%gl:texEnvi( ?GL_TEXTURE_ENV, ?GL_TEXTURE_ENV_MODE, ?GL_MODULATE ),
-	gl:texEnvi( ?GL_TEXTURE_ENV, ?GL_TEXTURE_ENV_MODE, ?GL_REPLACE ),
-	cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ),
+    % Otherwise the current color will be applied to the textured polygons as
+    % well (as the default texture environment mode is GL_MODULATE, which
+    % multiplies the texture color with the vertex color):
+    %
+    % (another option is to reset the modulation at rendering with:
+    %  gl:color4f( 1.0, 1.0, 1.0, 1.0 ))
+    %
+    %gl:texEnvi( ?GL_TEXTURE_ENV, ?GL_TEXTURE_ENV_MODE, ?GL_MODULATE ),
+    gl:texEnvi( ?GL_TEXTURE_ENV, ?GL_TEXTURE_ENV_MODE, ?GL_REPLACE ),
+    cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ),
 
-	%gl:pixelStorei( ?GL_UNPACK_ROW_LENGTH, 0 ),
-	%gl:pixelStorei( ?GL_UNPACK_ALIGNMENT, 2 ),
+    %gl:pixelStorei( ?GL_UNPACK_ROW_LENGTH, 0 ),
+    %gl:pixelStorei( ?GL_UNPACK_ALIGNMENT, 2 ),
 
-	% Possibly not that useful, UV coordinates remaining generally in [0.0,
-	% 1.0]; moreover enabling padding with a bright green shows that because of
-	% tiling the first texture row (hence its bottom one) becomes a padding one:
-	%
-	%WrapParameter = ?GL_REPEAT
+    % Possibly not that useful, UV coordinates remaining generally in [0.0,
+    % 1.0]; moreover enabling padding with a bright green shows that because of
+    % tiling the first texture row (hence its bottom one) becomes a padding one:
+    %
+    %WrapParameter = ?GL_REPEAT
 
-	% No unwanting tiling:
-	WrapParameter = ?GL_CLAMP_TO_EDGE,
+    % No unwanting tiling:
+    WrapParameter = ?GL_CLAMP_TO_EDGE,
 
-	gl:texParameteri( ?GL_TEXTURE_2D, ?GL_TEXTURE_WRAP_S, WrapParameter ),
-	cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ),
+    gl:texParameteri( ?GL_TEXTURE_2D, ?GL_TEXTURE_WRAP_S, WrapParameter ),
+    cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ),
 
-	gl:texParameteri( ?GL_TEXTURE_2D, ?GL_TEXTURE_WRAP_T, WrapParameter ),
-	cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ).
+    gl:texParameteri( ?GL_TEXTURE_2D, ?GL_TEXTURE_WRAP_T, WrapParameter ),
+    cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ).
 
 
 
 -doc "Renders the specified texture, at the specified position.".
 -spec render( texture(), position() ) -> void().
 render( Texture, _Pos={X,Y} ) ->
-	render( Texture, X, Y ).
+    render( Texture, X, Y ).
 
 
 
 -doc "Renders the specified texture, at the specified position.".
 -spec render( texture(), coordinate(), coordinate() ) -> void().
 render( #texture{ id=TextureId,
-				  width=Width,
-				  height=Height,
-				  min_x=MinXt,
-				  min_y=MinYt,
-				  max_x=MaxXt,
-				  max_y=MaxYt }, Xp, Yp ) ->
+                  width=Width,
+                  height=Height,
+                  min_x=MinXt,
+                  min_y=MinYt,
+                  max_x=MaxXt,
+                  max_y=MaxYt }, Xp, Yp ) ->
 
-	%trace_utils:debug_fmt( "Rendering texture ~w (size: ~wx~w), from {~w,~w} "
-	%   "to {~w,~w}.",
-	%   [ TextureId, Width, Height, MinXt, MinYt, MaxXt, MaxYt ] ),
+    %trace_utils:debug_fmt( "Rendering texture ~w (size: ~wx~w), from {~w,~w} "
+    %   "to {~w,~w}.",
+    %   [ TextureId, Width, Height, MinXt, MinYt, MaxXt, MaxYt ] ),
 
-	set_as_current_from_id( TextureId ),
+    set_as_current_from_id( TextureId ),
 
-	% Covers the rectangular texture area thanks to two (right-angled) triangles
-	% sharing an edge:
-	%
-	% (a glRect*() might be relevant as well)
-	%
-	gl:'begin'( ?GL_TRIANGLE_STRIP ),
+    % Covers the rectangular texture area thanks to two (right-angled) triangles
+    % sharing an edge:
+    %
+    % (a glRect*() might be relevant as well)
+    %
+    gl:'begin'( ?GL_TRIANGLE_STRIP ),
 
-	OtherXp = Xp + Width,
-	OtherYp = Yp + Height,
+    OtherXp = Xp + Width,
+    OtherYp = Yp + Height,
 
-	% Associating a (2D) texture coordinate to each vertex:
-	gl:texCoord2f( MinXt, MinYt ), gl:vertex2i( Xp,      Yp ),
-	gl:texCoord2f( MaxXt, MinYt ), gl:vertex2i( OtherXp, Yp ),
-	gl:texCoord2f( MinXt, MaxYt ), gl:vertex2i( Xp,      OtherYp ),
-	gl:texCoord2f( MaxXt, MaxYt ), gl:vertex2i( OtherXp, OtherYp ),
+    % Associating a (2D) texture coordinate to each vertex:
+    gl:texCoord2f( MinXt, MinYt ), gl:vertex2i( Xp,      Yp ),
+    gl:texCoord2f( MaxXt, MinYt ), gl:vertex2i( OtherXp, Yp ),
+    gl:texCoord2f( MinXt, MaxYt ), gl:vertex2i( Xp,      OtherYp ),
+    gl:texCoord2f( MaxXt, MaxYt ), gl:vertex2i( OtherXp, OtherYp ),
 
-	gl:'end'(),
+    gl:'end'(),
 
-	cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ).
+    cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ).
 
 
 
@@ -945,7 +945,7 @@ dimensions.
 """.
 -spec get_dimensions( dimensions() ) -> dimensions().
 get_dimensions( _Dims={ W, H } ) ->
-	get_dimensions( W, H ).
+    get_dimensions( W, H ).
 
 
 
@@ -955,17 +955,17 @@ dimensions.
 """.
 -spec get_dimensions( width(), height() ) -> dimensions().
 get_dimensions( Width, Height ) ->
-	{ math_utils:get_next_power_of_two( Width ),
-	  math_utils:get_next_power_of_two( Height ) }.
+    { math_utils:get_next_power_of_two( Width ),
+      math_utils:get_next_power_of_two( Height ) }.
 
 
 
 -doc "Returns a new, unique, texture identifier.".
 -spec generate_id() -> texture_id().
 generate_id() ->
-	[ TextureId ] = gl:genTextures( _Count=1 ),
-	cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ),
-	TextureId.
+    [ TextureId ] = gl:genTextures( _Count=1 ),
+    cond_utils:if_defined( myriad_check_textures, gui_opengl:check_error() ),
+    TextureId.
 
 
 
@@ -975,26 +975,26 @@ returns it.
 """.
 -spec check_texture_coordinate_pair( term() ) -> uv_point().
 check_texture_coordinate_pair( P={ U, V } )
-		when is_float( U ) andalso is_float( V ) ->
-	P;
+        when is_float( U ) andalso is_float( V ) ->
+    P;
 
 check_texture_coordinate_pair( Other ) ->
-	throw( { invalid_texture_coordinate_pair, Other } ).
+    throw( { invalid_texture_coordinate_pair, Other } ).
 
 
 
 -doc "Returns a textual representation of the specified texture.".
 -spec to_string( texture() ) -> ustring().
 to_string( #texture{ id=TexId,
-					 width=Width,
-					 height=Height,
-					 min_x=MinX,
-					 min_y=MinY,
-					 max_x=MaxX,
-					 max_y=MaxY } ) ->
-	text_utils:format( "texture #~B, whose content size is ~Bx~B pixels, "
-		"and in-buffer coordinates are {~f,~f} to {~f,~f}",
-		[ TexId, Width, Height, MinX, MinY, MaxX, MaxY ] ).
+                     width=Width,
+                     height=Height,
+                     min_x=MinX,
+                     min_y=MinY,
+                     max_x=MaxX,
+                     max_y=MaxY } ) ->
+    text_utils:format( "texture #~B, whose content size is ~Bx~B pixels, "
+        "and in-buffer coordinates are {~f,~f} to {~f,~f}",
+        [ TexId, Width, Height, MinX, MinY, MaxX, MaxY ] ).
 
 
 
@@ -1007,34 +1007,34 @@ nor assigned to any image.
 -spec get_color_buffer( image() ) -> color_buffer().
 get_color_buffer( Image ) ->
 
-	RGBBuffer = wxImage:getData( Image ),
+    RGBBuffer = wxImage:getData( Image ),
 
-	case gui_image:has_alpha( Image ) of
+    case gui_image:has_alpha( Image ) of
 
-		true ->
-			% Obtain a pointer to the array storing the alpha coordinates for
-			% the pixels of this image:
-			%
-			AlphaBuffer = wxImage:getAlpha( Image ),
-			merge_alpha( RGBBuffer, AlphaBuffer );
+        true ->
+            % Obtain a pointer to the array storing the alpha coordinates for
+            % the pixels of this image:
+            %
+            AlphaBuffer = wxImage:getAlpha( Image ),
+            merge_alpha( RGBBuffer, AlphaBuffer );
 
-		false ->
-			RGBBuffer
+        false ->
+            RGBBuffer
 
-	end.
+    end.
 
 
 
 -doc "Merges the specified RGB and alpha buffers into a single RGBA one.".
 -spec merge_alpha( rgb_color_buffer(), alpha_buffer() ) -> rgba_color_buffer().
 merge_alpha( RGBBuffer, AlphaBuffer ) ->
-	% These are bitstring generators:
-	list_to_binary(
-		lists:zipwith( fun( {R,G,B}, A ) ->
-							<<R,G,B,A>>
-					   end,
-					   [ {R,G,B} || <<R,G,B>> <= RGBBuffer ],
-					   [ A || <<A>> <= AlphaBuffer ] ) ).
+    % These are bitstring generators:
+    list_to_binary(
+        lists:zipwith( fun( {R,G,B}, A ) ->
+                            <<R,G,B,A>>
+                       end,
+                       [ {R,G,B} || <<R,G,B>> <= RGBBuffer ],
+                       [ A || <<A>> <= AlphaBuffer ] ) ).
 
 
 
@@ -1048,22 +1048,22 @@ nor assigned to any image.
 -spec get_color_buffer( image(), dimensions(), dimensions() ) -> color_buffer().
 get_color_buffer( Image, CurrentDimensions, TargetDimensions ) ->
 
-	RGBBuffer = wxImage:getData( Image ),
+    RGBBuffer = wxImage:getData( Image ),
 
-	case gui_image:has_alpha( Image ) of
+    case gui_image:has_alpha( Image ) of
 
-		true ->
-			% Obtain a pointer to the array storing the alpha coordinates for
-			% the pixels of this image:
-			%
-			AlphaBuffer = wxImage:getAlpha( Image ),
-			pad_buffer_with_alpha( RGBBuffer, AlphaBuffer, CurrentDimensions,
-								   TargetDimensions  );
+        true ->
+            % Obtain a pointer to the array storing the alpha coordinates for
+            % the pixels of this image:
+            %
+            AlphaBuffer = wxImage:getAlpha( Image ),
+            pad_buffer_with_alpha( RGBBuffer, AlphaBuffer, CurrentDimensions,
+                                   TargetDimensions  );
 
-		false ->
-			pad_buffer( RGBBuffer, CurrentDimensions, TargetDimensions )
+        false ->
+            pad_buffer( RGBBuffer, CurrentDimensions, TargetDimensions )
 
-	end.
+    end.
 
 
 
@@ -1072,45 +1072,45 @@ Returns the specified RGB buffer once padded to the specified dimensions,
 expected to be at least as large as its own.
 """.
 -spec pad_buffer( rgb_color_buffer(), dimensions(), dimensions() ) ->
-			rgb_color_buffer().
+            rgb_color_buffer().
 pad_buffer( Buffer, CurrentDimensions={ CurrentW, CurrentH },
-			_TargetDimensions={ TargetW, TargetH } ) ->
+            _TargetDimensions={ TargetW, TargetH } ) ->
 
-	cond_utils:if_defined( myriad_debug_textures,
-		trace_utils:debug_fmt( "Padding a RGB buffer from {~B,~B} "
-			"to {~B,~B}.", [ CurrentW, CurrentH, TargetW, TargetH ] ) ),
+    cond_utils:if_defined( myriad_debug_textures,
+        trace_utils:debug_fmt( "Padding a RGB buffer from {~B,~B} "
+            "to {~B,~B}.", [ CurrentW, CurrentH, TargetW, TargetH ] ) ),
 
-	cond_utils:if_defined( myriad_check_textures,
-		begin
-			TargetW < CurrentW andalso
-				throw( { invalid_width_to_pad, TargetW, CurrentW } ),
+    cond_utils:if_defined( myriad_check_textures,
+        begin
+            TargetW < CurrentW andalso
+                throw( { invalid_width_to_pad, TargetW, CurrentW } ),
 
-			TargetH < CurrentH andalso
-				throw( { invalid_height_to_pad, TargetH, CurrentH } ),
+            TargetH < CurrentH andalso
+                throw( { invalid_height_to_pad, TargetH, CurrentH } ),
 
-			BufSize = byte_size( Buffer ),
-			ExpectedBufSize = 3 * CurrentW * CurrentH,
-			BufSize =:= ExpectedBufSize orelse
-				throw( { invalid_buffer_dimensions, CurrentDimensions,
-						 ExpectedBufSize, BufSize } )
-		end,
-		basic_utils:ignore_unused( CurrentDimensions ) ),
+            BufSize = byte_size( Buffer ),
+            ExpectedBufSize = 3 * CurrentW * CurrentH,
+            BufSize =:= ExpectedBufSize orelse
+                throw( { invalid_buffer_dimensions, CurrentDimensions,
+                         ExpectedBufSize, BufSize } )
+        end,
+        basic_utils:ignore_unused( CurrentDimensions ) ),
 
-	PadPixel = ?padding_rgb_bin,
+    PadPixel = ?padding_rgb_bin,
 
-	BinPadRow = bin_utils:replicate( PadPixel, _Count=TargetW - CurrentW ),
+    BinPadRow = bin_utils:replicate( PadPixel, _Count=TargetW - CurrentW ),
 
-	RowPaddedBuffer = pad_rows( Buffer, _OrigRowSize=3*CurrentW, BinPadRow ),
+    RowPaddedBuffer = pad_rows( Buffer, _OrigRowSize=3*CurrentW, BinPadRow ),
 
-	BinBlankRow = bin_utils:replicate( PadPixel, TargetW ),
+    BinBlankRow = bin_utils:replicate( PadPixel, TargetW ),
 
-	bin_utils:concatenate( RowPaddedBuffer, _BlankRowCount=TargetH-CurrentH,
-						   BinBlankRow ).
+    bin_utils:concatenate( RowPaddedBuffer, _BlankRowCount=TargetH-CurrentH,
+                           BinBlankRow ).
 
 
 -spec pad_rows( rgb_color_buffer(), count(), binary() ) -> rgb_color_buffer().
 pad_rows( Buffer, OrigRowSize, BinPadRow ) ->
-	pad_rows( Buffer, OrigRowSize, BinPadRow, _BinAcc= <<>> ).
+    pad_rows( Buffer, OrigRowSize, BinPadRow, _BinAcc= <<>> ).
 
 
 % Pads each row with the specified padding binary.
@@ -1118,7 +1118,7 @@ pad_rows( Buffer, OrigRowSize, BinPadRow ) ->
 % (helper)
 %
 pad_rows( _Buffer= <<>>, _OrigRowSize, _BinPadRow, BinAcc ) ->
-	BinAcc;
+    BinAcc;
 %
 % Matching not supported:
 %pad_rows( _Buffer= <<BinRow:OrigRowSize/binary,T/binary>>, OrigRowSize,
@@ -1128,20 +1128,20 @@ pad_rows( _Buffer= <<>>, _OrigRowSize, _BinPadRow, BinAcc ) ->
 
 pad_rows( Buffer, OrigRowSize, BinPadRow, BinAcc ) ->
 
-	%trace_utils:debug_fmt( "Padding row of original size ~B bytes.",
-	%                       [ OrigRowSize ] ),
+    %trace_utils:debug_fmt( "Padding row of original size ~B bytes.",
+    %                       [ OrigRowSize ] ),
 
-	%<<BinRow:OrigRowSize/binary,T/binary>> = Buffer,
-	case Buffer of
+    %<<BinRow:OrigRowSize/binary,T/binary>> = Buffer,
+    case Buffer of
 
-		<<BinRow:OrigRowSize/binary, T/binary>> ->
-			pad_rows( T, OrigRowSize, BinPadRow,
-					  <<BinAcc/binary, BinRow/binary, BinPadRow/binary>> );
+        <<BinRow:OrigRowSize/binary, T/binary>> ->
+            pad_rows( T, OrigRowSize, BinPadRow,
+                      <<BinAcc/binary, BinRow/binary, BinPadRow/binary>> );
 
-		_Other ->
-			throw( { unmatching_buffer, byte_size( Buffer ), OrigRowSize } )
+        _Other ->
+            throw( { unmatching_buffer, byte_size( Buffer ), OrigRowSize } )
 
-	end.
+    end.
 
 
 
@@ -1150,69 +1150,69 @@ Returns the specified RGB buffer once padded to the specified dimensions,
 expected to be at least as large as its own.
 """.
 -spec pad_buffer_with_alpha( rgb_color_buffer(), alpha_buffer(), dimensions(),
-							 dimensions() ) -> rgb_color_buffer().
+                             dimensions() ) -> rgb_color_buffer().
 pad_buffer_with_alpha( RGBBuffer, AlphaBuffer,
-		CurrentDimensions={ CurrentW, CurrentH },
-		_TargetDimensions={ TargetW, TargetH } ) ->
+        CurrentDimensions={ CurrentW, CurrentH },
+        _TargetDimensions={ TargetW, TargetH } ) ->
 
-	cond_utils:if_defined( myriad_debug_textures,
-		trace_utils:debug_fmt( "Padding a RGBA buffer from {~B,~B} "
-			"to {~B,~B}.", [ CurrentW, CurrentH, TargetW, TargetH ] ) ),
+    cond_utils:if_defined( myriad_debug_textures,
+        trace_utils:debug_fmt( "Padding a RGBA buffer from {~B,~B} "
+            "to {~B,~B}.", [ CurrentW, CurrentH, TargetW, TargetH ] ) ),
 
-	cond_utils:if_defined( myriad_check_textures,
-		begin
-			TargetW < CurrentW andalso
-				throw( { invalid_width_to_pad, TargetW, CurrentW } ),
+    cond_utils:if_defined( myriad_check_textures,
+        begin
+            TargetW < CurrentW andalso
+                throw( { invalid_width_to_pad, TargetW, CurrentW } ),
 
-			TargetH < CurrentH andalso
-				throw( { invalid_height_to_pad, TargetH, CurrentH } ),
+            TargetH < CurrentH andalso
+                throw( { invalid_height_to_pad, TargetH, CurrentH } ),
 
-			RGBBufSize = byte_size( RGBBuffer ),
-			ExpectedRGBBufSize = 3 * CurrentW * CurrentH,
-			RGBBufSize =:= ExpectedRGBBufSize orelse
-				throw( { invalid_rgb_buffer_dimensions, CurrentDimensions,
-						 ExpectedRGBBufSize, RGBBufSize } ),
+            RGBBufSize = byte_size( RGBBuffer ),
+            ExpectedRGBBufSize = 3 * CurrentW * CurrentH,
+            RGBBufSize =:= ExpectedRGBBufSize orelse
+                throw( { invalid_rgb_buffer_dimensions, CurrentDimensions,
+                         ExpectedRGBBufSize, RGBBufSize } ),
 
-			AlphaBufSize = byte_size( AlphaBuffer ),
-			ExpectedAlphaBufSize = 1 * CurrentW * CurrentH,
-			AlphaBufSize =:= ExpectedAlphaBufSize orelse
-				throw( { invalid_alpha_buffer_dimensions, CurrentDimensions,
-						 ExpectedAlphaBufSize, AlphaBufSize } )
-		end,
-		basic_utils:ignore_unused( CurrentDimensions ) ),
+            AlphaBufSize = byte_size( AlphaBuffer ),
+            ExpectedAlphaBufSize = 1 * CurrentW * CurrentH,
+            AlphaBufSize =:= ExpectedAlphaBufSize orelse
+                throw( { invalid_alpha_buffer_dimensions, CurrentDimensions,
+                         ExpectedAlphaBufSize, AlphaBufSize } )
+        end,
+        basic_utils:ignore_unused( CurrentDimensions ) ),
 
 
-	PadPixel = ?padding_rgba_bin,
+    PadPixel = ?padding_rgba_bin,
 
-	% The binary used to pad each row on its right:
-	BinPadRow = bin_utils:replicate( PadPixel, _Count=TargetW - CurrentW ),
+    % The binary used to pad each row on its right:
+    BinPadRow = bin_utils:replicate( PadPixel, _Count=TargetW - CurrentW ),
 
-	%basic_utils:assert_equal( byte_size( BinPadRow ),
-	%                          4*(TargetW - CurrentW) ),
+    %basic_utils:assert_equal( byte_size( BinPadRow ),
+    %                          4*(TargetW - CurrentW) ),
 
-	% Right-extended buffer:
-	RowPaddedBuffer =
-		pad_rows_with_alpha( RGBBuffer, AlphaBuffer, CurrentW, BinPadRow ),
+    % Right-extended buffer:
+    RowPaddedBuffer =
+        pad_rows_with_alpha( RGBBuffer, AlphaBuffer, CurrentW, BinPadRow ),
 
-	%basic_utils:assert_equal( byte_size( RowPaddedBuffer ),
-	%                          4*CurrentH*TargetW ),
+    %basic_utils:assert_equal( byte_size( RowPaddedBuffer ),
+    %                          4*CurrentH*TargetW ),
 
-	% The binary used to add full padding rows at the end (hence at the top) of
-	% the target texture:
-	%
-	BinBlankRow = bin_utils:replicate( PadPixel, TargetW ),
+    % The binary used to add full padding rows at the end (hence at the top) of
+    % the target texture:
+    %
+    BinBlankRow = bin_utils:replicate( PadPixel, TargetW ),
 
-	basic_utils:assert_equal( byte_size( BinBlankRow ),
-							  4*TargetW ),
+    basic_utils:assert_equal( byte_size( BinBlankRow ),
+                              4*TargetW ),
 
-	ResBuffer = bin_utils:concatenate( RowPaddedBuffer,
-		_BlankRowCount=TargetH-CurrentH, BinBlankRow ),
+    ResBuffer = bin_utils:concatenate( RowPaddedBuffer,
+        _BlankRowCount=TargetH-CurrentH, BinBlankRow ),
 
-	cond_utils:if_defined( myriad_debug_textures,
-		trace_utils:debug_fmt( "Size of the resulting buffer: ~B bytes.",
-							   [ byte_size( ResBuffer ) ] ) ),
+    cond_utils:if_defined( myriad_debug_textures,
+        trace_utils:debug_fmt( "Size of the resulting buffer: ~B bytes.",
+                               [ byte_size( ResBuffer ) ] ) ),
 
-	ResBuffer.
+    ResBuffer.
 
 
 
@@ -1221,33 +1221,33 @@ Pads each row, once the alpha coordinates have been interleaved, with the
 specified padding binary.
 """.
 -spec pad_rows_with_alpha( rgb_color_buffer(), alpha_buffer(), count(),
-						   binary() ) -> rgba_color_buffer().
+                           binary() ) -> rgba_color_buffer().
 pad_rows_with_alpha( RGBBuffer, AlphaBuffer, Width, BinPadRow ) ->
-	pad_rows_with_alpha( RGBBuffer, AlphaBuffer, _PixCount=0, Width, BinPadRow,
-						 _BinAcc= <<>> ).
+    pad_rows_with_alpha( RGBBuffer, AlphaBuffer, _PixCount=0, Width, BinPadRow,
+                         _BinAcc= <<>> ).
 
 
 % (helper)
 %
 % All pixels/rows scanned:
 pad_rows_with_alpha( _RGBBuffer= <<>>, _AlphaBuffer= <<>>,
-					 _PixCount=Width, Width, BinPadRow, BinAcc ) ->
-	 <<BinAcc/binary, BinPadRow/binary>>;
+                     _PixCount=Width, Width, BinPadRow, BinAcc ) ->
+     <<BinAcc/binary, BinPadRow/binary>>;
 
 % Reached the end of the current row:
 pad_rows_with_alpha( _RGBBuffer= <<R:8, G:8, B:8, T/binary>>,
-		_AlphaBuffer= <<A:8, Ta/binary>>, _PixCount=Width, Width, BinPadRow,
-		BinAcc ) ->
-	NewBinAcc = <<BinAcc/binary, BinPadRow/binary, R:8, G:8, B:8, A:8>>,
-	pad_rows_with_alpha( T, Ta, _NextPixCount=1, Width, BinPadRow, NewBinAcc );
+        _AlphaBuffer= <<A:8, Ta/binary>>, _PixCount=Width, Width, BinPadRow,
+        BinAcc ) ->
+    NewBinAcc = <<BinAcc/binary, BinPadRow/binary, R:8, G:8, B:8, A:8>>,
+    pad_rows_with_alpha( T, Ta, _NextPixCount=1, Width, BinPadRow, NewBinAcc );
 
 
 % Still filling the current row:
 pad_rows_with_alpha( _RGBBuffer= <<R:8, G:8, B:8, T/binary>>,
-		_AlphaBuffer= <<A:8, Ta/binary>>, PixCount, Width, BinPadRow,
-		BinAcc ) ->
-	NewBinAcc = <<BinAcc/binary, R:8, G:8, B:8, A:8>>,
-	pad_rows_with_alpha( T, Ta, PixCount+1, Width, BinPadRow, NewBinAcc ).
+        _AlphaBuffer= <<A:8, Ta/binary>>, PixCount, Width, BinPadRow,
+        BinAcc ) ->
+    NewBinAcc = <<BinAcc/binary, R:8, G:8, B:8, A:8>>,
+    pad_rows_with_alpha( T, Ta, PixCount+1, Width, BinPadRow, NewBinAcc ).
 
 
 
@@ -1256,7 +1256,7 @@ Returns the number of bytes used by each pixel of the specified GL format.
 """.
 -spec get_pixel_size( gl_pixel_format() ) -> byte_size().
 get_pixel_size( GLPixFormat ) ->
-	gui_color:get_pixel_size( gl_pixel_format_to_pixel_format( GLPixFormat ) ).
+    gui_color:get_pixel_size( gl_pixel_format_to_pixel_format( GLPixFormat ) ).
 
 
 
@@ -1265,10 +1265,10 @@ Returns our "standard" pixel format corresponding to the specified GL one.
 """.
 -spec gl_pixel_format_to_pixel_format( gl_pixel_format() ) -> pixel_format().
 gl_pixel_format_to_pixel_format( _GLPixFormat=?GL_RGB ) ->
-	rgb;
+    rgb;
 
 gl_pixel_format_to_pixel_format( _GLPixFormat=?GL_RGBA ) ->
-	rgba.
+    rgba.
 
 
 
@@ -1279,8 +1279,8 @@ gl_pixel_format_to_pixel_format( _GLPixFormat=?GL_RGBA ) ->
 -doc "Creates an (empty) texture cache.".
 -spec create_cache() -> texture_cache().
 create_cache() ->
-	#texture_cache{ texture_table=table:new(),
-					next_spec_id=1 }.
+    #texture_cache{ texture_table=table:new(),
+                    next_spec_id=1 }.
 
 
 
@@ -1293,26 +1293,26 @@ duplicated in the cache); of course it can be then requested as many times as
 needed, based on its specification identifier.
 """.
 -spec declare_texture( user_texture_spec(), texture_cache() ) ->
-										{ texture_spec_id(), texture_cache() }.
+                                        { texture_spec_id(), texture_cache() }.
 declare_texture( UserTexPathSpec, TexCache=#texture_cache{
-										texture_table=TexTable,
-										next_spec_id=NextSpecId } ) ->
+                                        texture_table=TexTable,
+                                        next_spec_id=NextSpecId } ) ->
 
-	BinTexPathSpec = text_utils:ensure_binary(
-		file_utils:ensure_path_is_absolute( UserTexPathSpec ) ),
+    BinTexPathSpec = text_utils:ensure_binary(
+        file_utils:ensure_path_is_absolute( UserTexPathSpec ) ),
 
-	file_utils:is_existing_file_or_link( BinTexPathSpec ) orelse
-		throw( { unresolvable_texture_spec, UserTexPathSpec, BinTexPathSpec } ),
+    file_utils:is_existing_file_or_link( BinTexPathSpec ) orelse
+        throw( { unresolvable_texture_spec, UserTexPathSpec, BinTexPathSpec } ),
 
-	% Lazy loading favored, just recording the specified path for now:
-	TexEntry = { BinTexPathSpec, _MaybeImg=undefined, _MaybeTexId=undefined },
+    % Lazy loading favored, just recording the specified path for now:
+    TexEntry = { BinTexPathSpec, _MaybeImg=undefined, _MaybeTexId=undefined },
 
-	NewTexTable = table:add_entry( NextSpecId, TexEntry, TexTable ),
+    NewTexTable = table:add_entry( NextSpecId, TexEntry, TexTable ),
 
-	NewTexCache = TexCache#texture_cache{ texture_table=NewTexTable,
-										  next_spec_id=NextSpecId+1 },
+    NewTexCache = TexCache#texture_cache{ texture_table=NewTexTable,
+                                          next_spec_id=NextSpecId+1 },
 
-	{ NextSpecId, NewTexCache }.
+    { NextSpecId, NewTexCache }.
 
 
 
@@ -1325,108 +1325,108 @@ Note that MyriadGUI shall be already started (see gui:start/*) and, more, OpenGL
 be already initialised.
 """.
 -spec get_texture( texture_spec_id(), texture_cache() ) ->
-										{ texture(), texture_cache() }.
+                                        { texture(), texture_cache() }.
 get_texture( SpecId, TexCache=#texture_cache{ texture_table=TexTable } ) ->
 
-	case table:lookup_entry( _K=SpecId, TexTable ) of
+    case table:lookup_entry( _K=SpecId, TexTable ) of
 
-		key_not_found ->
-			throw( { unknown_texture_spec, SpecId } );
-
-
-		% No texture, not even an image:
-		{ value, { BinTexSpec, _MaybeImg=undefined, _MaybeTexId=undefined } } ->
-			% Exists by design (already checked), MyriadGUI expected to be
-			% started:
-			%
-			Img = gui_image:load_from_file( BinTexSpec ),
-
-			% OpenGL must be initialised:
-			Tex = create_from_image( Img ),
-
-			NewTexEntry = { BinTexSpec, Img, Tex },
-			NewTexTable = table:add_entry( SpecId, NewTexEntry, TexTable ),
-			NewTexCache = TexCache#texture_cache{ texture_table=NewTexTable },
-			{ Tex, NewTexCache };
+        key_not_found ->
+            throw( { unknown_texture_spec, SpecId } );
 
 
-		% No texture, but already an image:
-		{ value, { BinTexSpec, Img, _MaybeTexId=undefined } } ->
-			% OpenGL must be initialised:
-			Tex = create_from_image( Img ),
+        % No texture, not even an image:
+        { value, { BinTexSpec, _MaybeImg=undefined, _MaybeTexId=undefined } } ->
+            % Exists by design (already checked), MyriadGUI expected to be
+            % started:
+            %
+            Img = gui_image:load_from_file( BinTexSpec ),
 
-			NewTexEntry = { BinTexSpec, Img, Tex },
-			NewTexTable = table:add_entry( SpecId, NewTexEntry, TexTable ),
-			NewTexCache = TexCache#texture_cache{ texture_table=NewTexTable },
-			{ Tex, NewTexCache };
+            % OpenGL must be initialised:
+            Tex = create_from_image( Img ),
+
+            NewTexEntry = { BinTexSpec, Img, Tex },
+            NewTexTable = table:add_entry( SpecId, NewTexEntry, TexTable ),
+            NewTexCache = TexCache#texture_cache{ texture_table=NewTexTable },
+            { Tex, NewTexCache };
 
 
-		% Already having a texture ready:
-		{ value, { _BinTexSpec, _Img, Tex } } ->
-			{ Tex, TexCache }
+        % No texture, but already an image:
+        { value, { BinTexSpec, Img, _MaybeTexId=undefined } } ->
+            % OpenGL must be initialised:
+            Tex = create_from_image( Img ),
 
-	end.
+            NewTexEntry = { BinTexSpec, Img, Tex },
+            NewTexTable = table:add_entry( SpecId, NewTexEntry, TexTable ),
+            NewTexCache = TexCache#texture_cache{ texture_table=NewTexTable },
+            { Tex, NewTexCache };
+
+
+        % Already having a texture ready:
+        { value, { _BinTexSpec, _Img, Tex } } ->
+            { Tex, TexCache }
+
+    end.
 
 
 
 -doc "Returns the specification of the designated texture.".
 -spec get_texture_spec( texture_spec_id(), texture_cache() ) -> texture_spec().
 get_texture_spec( SpecId, #texture_cache{ texture_table=TexTable } ) ->
-	case table:lookup_entry( _K=SpecId, TexTable ) of
+    case table:lookup_entry( _K=SpecId, TexTable ) of
 
-		key_not_found ->
-			throw( { unknown_texture_spec, SpecId } );
+        key_not_found ->
+            throw( { unknown_texture_spec, SpecId } );
 
-		{ value, { BinTexSpec, _MaybeImg, _MaybeTexId } } ->
-			BinTexSpec
+        { value, { BinTexSpec, _MaybeImg, _MaybeTexId } } ->
+            BinTexSpec
 
-	end.
+    end.
 
 
 
 -doc "Returns a textual description of the specified texture cache.".
 -spec cache_to_string( texture_cache() ) -> ustring().
 cache_to_string( #texture_cache{ texture_table=TexTable,
-								 next_spec_id=_NextSpecId } ) ->
-	case table:enumerate( TexTable ) of
+                                 next_spec_id=_NextSpecId } ) ->
+    case table:enumerate( TexTable ) of
 
-		[] ->
-			"empty texture cache";
+        [] ->
+            "empty texture cache";
 
-		[ SingleTexEntry ] ->
-			text_utils:format( "texture cache holding a single entry: ~ts",
-				[ texture_entry_to_string( SingleTexEntry ) ] );
+        [ SingleTexEntry ] ->
+            text_utils:format( "texture cache holding a single entry: ~ts",
+                [ texture_entry_to_string( SingleTexEntry ) ] );
 
-		TexEntries ->
-			text_utils:format( "texture cache holding ~B entries: ~ts",
-				[ length( TexEntries ), text_utils:strings_to_string(
-					[ texture_entry_to_string( TE ) || TE <- TexEntries ] ) ] )
+        TexEntries ->
+            text_utils:format( "texture cache holding ~B entries: ~ts",
+                [ length( TexEntries ), text_utils:strings_to_string(
+                    [ texture_entry_to_string( TE ) || TE <- TexEntries ] ) ] )
 
-	end.
+    end.
 
 
 
 -doc "Returns a textual description of the specified texture entry.".
 -spec texture_entry_to_string( texture_entry() ) -> ustring().
 texture_entry_to_string(
-		{ TextSpecId, _TextureEntry={ TexSpecId, MaybeImg, MaybeTexture } } ) ->
+        { TextSpecId, _TextureEntry={ TexSpecId, MaybeImg, MaybeTexture } } ) ->
 
-	ImgStr = text_utils:format(
-		"whose source image, of path '~ts', is~ts cached",
-		[ TexSpecId, case MaybeImg of
-						undefined -> " not";
-						 _ -> ""
-					 end ] ),
+    ImgStr = text_utils:format(
+        "whose source image, of path '~ts', is~ts cached",
+        [ TexSpecId, case MaybeImg of
+                        undefined -> " not";
+                         _ -> ""
+                     end ] ),
 
-	TexStr = "whose OpenGL texture is " ++ case MaybeTexture of
+    TexStr = "whose OpenGL texture is " ++ case MaybeTexture of
 
-		undefined ->
-			"not available";
+        undefined ->
+            "not available";
 
-		#texture{ id=TexId } ->
-			text_utils:format( "available as identifier #~B", [ TexId ] )
+        #texture{ id=TexId } ->
+            text_utils:format( "available as identifier #~B", [ TexId ] )
 
-										   end,
+                                           end,
 
-	text_utils:format( "texture entry #~B ~ts and ~ts",
-					   [ TextSpecId, ImgStr, TexStr ] ).
+    text_utils:format( "texture entry #~B ~ts and ~ts",
+                       [ TextSpecId, ImgStr, TexStr ] ).

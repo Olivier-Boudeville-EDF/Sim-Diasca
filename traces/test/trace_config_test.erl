@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -41,26 +41,26 @@ Allows to test the **configuration** of traces and of the related tools
 -spec run() -> no_return().
 run() ->
 
-	?test_start,
+    ?test_start,
 
-	?test_debug( "Hello debug!" ),
+    ?test_debug( "Hello debug!" ),
 
-	case executable_utils:is_batch() of
+    case executable_utils:is_batch() of
 
-		true ->
-			?test_warning( "Running in batch mode." );
+        true ->
+            ?test_warning( "Running in batch mode." );
 
-		false ->
-			?test_warning( "Running in interactive mode." )
+        false ->
+            ?test_warning( "Running in interactive mode." )
 
-	end,
+    end,
 
-	% Pipe being the field separator used internally for traces:
-	?test_debug( "Testing a message with pipes: AA|BB|CC|" ),
+    % Pipe being the field separator used internally for traces:
+    ?test_debug( "Testing a message with pipes: AA|BB|CC|" ),
 
-	?test_debug( "Testing a message with non-Latin1 characters: "
-				 "àâäéèêëîïôöùûü" ),
+    ?test_debug( "Testing a message with non-Latin1 characters: "
+                 "àâäéèêëîïôöùûü" ),
 
-	?test_debug_fmt( "End of test for ~ts.", [ ?MODULE ] ),
+    ?test_debug_fmt( "End of test for ~ts.", [ ?MODULE ] ),
 
-	?test_stop.
+    ?test_stop.

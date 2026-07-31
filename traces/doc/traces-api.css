@@ -73,8 +73,8 @@ h3 {
 
 
 h3.function,h3.typedecl {
-	background-color: #d0d0d0;
-	padding-left: 0.5em;
+    background-color: #d0d0d0;
+    padding-left: 0.5em;
 }
 
 
@@ -128,21 +128,21 @@ dl {
 
 
 div.spec {
-	margin-left: 2em;
-	background-color: #ddddee;
-	text-align: left;
-	margin-bottom: 1%;
+    margin-left: 2em;
+    background-color: #ddddee;
+    text-align: left;
+    margin-bottom: 1%;
 }
 
 
 ul.definitions {
-	list-style-type: none;
+    list-style-type: none;
 }
 
 ul.index {
-	list-style-type: none;
-	font-size: 16px;
-	background-color: #eeeeee;
+    list-style-type: none;
+    font-size: 16px;
+    background-color: #eeeeee;
 }
 
 
@@ -297,11 +297,11 @@ a:hover {
 
 
 a.module {
-	text-decoration:none
+    text-decoration:none
 }
 
 a.module:hover {
-	background-color: #eeeeee;
+    background-color: #eeeeee;
 }
 
 a:link {
@@ -324,8 +324,8 @@ a:hover {
 }
 
 ul.index a {
-	/*font-weight: bold;*/
-	background-color: #eeeeee;
+    /*font-weight: bold;*/
+    background-color: #eeeeee;
 }
 
 

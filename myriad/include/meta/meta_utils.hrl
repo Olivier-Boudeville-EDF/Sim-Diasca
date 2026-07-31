@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 Olivier Boudeville
+% Copyright (C) 2014-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -47,16 +47,16 @@
 -define( display_debug( S ), ast_utils:display_debug( "[Myriad-meta] " ++ S ) ).
 
 -define( display_debug( S, F ),
-		 ast_utils:display_debug( "[Myriad-meta] " ++ S, F ) ).
+         ast_utils:display_debug( "[Myriad-meta] " ++ S, F ) ).
 
 -else. % enable_myriad_meta_traces
 
 % To avoid variables being reported as unused depending on the mode:
 
 -define( display_debug( S ),
-		 basic_utils:ignore_unused( { myriad_tracesdisabled, S } ) ).
+         basic_utils:ignore_unused( { myriad_tracesdisabled, S } ) ).
 
 -define( display_debug( S, F ),
-		 basic_utils:ignore_unused( { myriad_traces_disabled, S, F } ) ).
+         basic_utils:ignore_unused( { myriad_traces_disabled, S, F } ) ).
 
 -endif. % enable_myriad_meta_traces

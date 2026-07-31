@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 Olivier Boudeville
+% Copyright (C) 2014-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -127,42 +127,42 @@ and the timestep (h).
 -spec compute_next_estimate3p( f3p(), point3(), time(), time() ) -> point3().
 compute_next_estimate3p( F, Point, Time, Step ) ->
 
-	% See compute_next_estimate3v/4 for comments.
+    % See compute_next_estimate3v/4 for comments.
 
-	K1 = vector3:from_point( F( Time, Point ) ),
+    K1 = vector3:from_point( F( Time, Point ) ),
 
-	HalfStep = Step / 2.0,
+    HalfStep = Step / 2.0,
 
-	% tn + h/2:
-	OneHalfStepAfter = Time + HalfStep,
+    % tn + h/2:
+    OneHalfStepAfter = Time + HalfStep,
 
-	% yn + h/2.k1:
-	SecondPoint = point3:translate( Point, vector3:scale( K1, HalfStep ) ),
+    % yn + h/2.k1:
+    SecondPoint = point3:translate( Point, vector3:scale( K1, HalfStep ) ),
 
-	K2 = vector3:from_point( F( OneHalfStepAfter, SecondPoint ) ),
+    K2 = vector3:from_point( F( OneHalfStepAfter, SecondPoint ) ),
 
-	% yn + h/2.k2:
-	ThirdPoint = point3:translate( Point, vector3:scale( K2, HalfStep ) ),
+    % yn + h/2.k2:
+    ThirdPoint = point3:translate( Point, vector3:scale( K2, HalfStep ) ),
 
-	K3 = vector3:from_point( F( OneHalfStepAfter, ThirdPoint ) ),
+    K3 = vector3:from_point( F( OneHalfStepAfter, ThirdPoint ) ),
 
-	% yn + h.k3:
-	FourthPoint = point3:translate( Point, vector3:scale( K3, Step ) ),
+    % yn + h.k3:
+    FourthPoint = point3:translate( Point, vector3:scale( K3, Step ) ),
 
-	OneFullStepAfter = Time + Step,
-	K4 = vector3:from_point( F( OneFullStepAfter, FourthPoint ) ),
+    OneFullStepAfter = Time + Step,
+    K4 = vector3:from_point( F( OneFullStepAfter, FourthPoint ) ),
 
-	MidStep = Step / 6.0,
-	FullStep = Step / 3.0,
+    MidStep = Step / 6.0,
+    FullStep = Step / 3.0,
 
-	SK1 = vector3:scale( K1, MidStep ),
-	SK2 = vector3:scale( K2, FullStep ),
-	SK3 = vector3:scale( K3, FullStep ),
-	SK4 = vector3:scale( K4, MidStep ),
+    SK1 = vector3:scale( K1, MidStep ),
+    SK2 = vector3:scale( K2, FullStep ),
+    SK3 = vector3:scale( K3, FullStep ),
+    SK4 = vector3:scale( K4, MidStep ),
 
-	% yn+1 = yn + h.( 1/6.k1 + 1/3.k2 + 1/3.k3 + 1/6.k4 )
-	ResVec = vector3:add( [ SK1, SK2, SK3, SK4 ] ),
-	point3:translate( Point, ResVec ).
+    % yn+1 = yn + h.( 1/6.k1 + 1/3.k2 + 1/3.k3 + 1/6.k4 )
+    ResVec = vector3:add( [ SK1, SK2, SK3, SK4 ] ),
+    point3:translate( Point, ResVec ).
 
 
 
@@ -173,52 +173,52 @@ and the timestep (h).
 -spec compute_next_estimate3v( f3v(), vector3(), time(), time() ) -> vector3().
 compute_next_estimate3v( F, Vector, Time, Step ) ->
 
-	%trace_utils:debug_fmt( "~w computing at ~p from point ~p.",
-	%                       [ self(), Time, Point ] ),
+    %trace_utils:debug_fmt( "~w computing at ~p from point ~p.",
+    %                       [ self(), Time, Point ] ),
 
-	% Ad-hoc implementation of a Butcher tableau, for RK4 (s=4):
+    % Ad-hoc implementation of a Butcher tableau, for RK4 (s=4):
 
-	% yn+1 = yn + h.sum(i=1 to s, bi.ki)
-	% with ki = f( tn + ci.h, yn + h.sum(j=1 to s, aij.kj) )
+    % yn+1 = yn + h.sum(i=1 to s, bi.ki)
+    % with ki = f( tn + ci.h, yn + h.sum(j=1 to s, aij.kj) )
 
-	% Here: yn+1 = yn + h.( 1/6.k1 + 1/3.k2 + 1/3.k3 + 1/6.k4 )
+    % Here: yn+1 = yn + h.( 1/6.k1 + 1/3.k2 + 1/3.k3 + 1/6.k4 )
 
-	% With:
-	%  k1 = f( tn,       yn          )
-	%  k2 = f( tn + h/2, yn + h/2.k1 )
-	%  k3 = f( tn + h/2, yn + h/2.k2 )
-	%  k4 = f( tn + h,   yn + h.  k3 )
+    % With:
+    %  k1 = f( tn,       yn          )
+    %  k2 = f( tn + h/2, yn + h/2.k1 )
+    %  k3 = f( tn + h/2, yn + h/2.k2 )
+    %  k4 = f( tn + h,   yn + h.  k3 )
 
-	K1 = F( Time, Vector ),
+    K1 = F( Time, Vector ),
 
-	HalfStep = Step / 2.0,
+    HalfStep = Step / 2.0,
 
-	% tn + h/2:
-	OneHalfStepAfter = Time + HalfStep,
+    % tn + h/2:
+    OneHalfStepAfter = Time + HalfStep,
 
-	% yn + h/2.k1:
-	SecondPoint = vector3:add( Vector, vector3:scale( K1, HalfStep ) ),
+    % yn + h/2.k1:
+    SecondPoint = vector3:add( Vector, vector3:scale( K1, HalfStep ) ),
 
-	K2 = F( OneHalfStepAfter, SecondPoint ),
+    K2 = F( OneHalfStepAfter, SecondPoint ),
 
-	% yn + h/2.k2:
-	ThirdPoint = vector3:add( Vector, vector3:scale( K2, HalfStep ) ),
+    % yn + h/2.k2:
+    ThirdPoint = vector3:add( Vector, vector3:scale( K2, HalfStep ) ),
 
-	K3 = F( OneHalfStepAfter, ThirdPoint ),
+    K3 = F( OneHalfStepAfter, ThirdPoint ),
 
-	% yn + h.k3:
-	FourthPoint = vector3:add( Vector, vector3:scale( K3, Step ) ),
+    % yn + h.k3:
+    FourthPoint = vector3:add( Vector, vector3:scale( K3, Step ) ),
 
-	OneFullStepAfter = Time + Step,
-	K4 = F( OneFullStepAfter, FourthPoint ),
+    OneFullStepAfter = Time + Step,
+    K4 = F( OneFullStepAfter, FourthPoint ),
 
-	MidStep = Step / 6.0,
-	FullStep = Step / 3.0,
+    MidStep = Step / 6.0,
+    FullStep = Step / 3.0,
 
-	SK1 = vector3:scale( K1, MidStep ),
-	SK2 = vector3:scale( K2, FullStep ),
-	SK3 = vector3:scale( K3, FullStep ),
-	SK4 = vector3:scale( K4, MidStep ),
+    SK1 = vector3:scale( K1, MidStep ),
+    SK2 = vector3:scale( K2, FullStep ),
+    SK3 = vector3:scale( K3, FullStep ),
+    SK4 = vector3:scale( K4, MidStep ),
 
-	% yn+1 = yn + h.( 1/6.k1 + 1/3.k2 + 1/3.k3 + 1/6.k4 )
-	vector3:add( [ Vector, SK1, SK2, SK3, SK4 ] ).
+    % yn+1 = yn + h.( 1/6.k1 + 1/3.k2 + 1/3.k3 + 1/6.k4 )
+    vector3:add( [ Vector, SK1, SK2, SK3, SK4 ] ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2025 EDF R&D
+% Copyright (C) 2012-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -36,10 +36,10 @@
 %
 -define( class_attributes, [
 
-	{ tank, waste_tank(), "the tank this transport stores waste in" },
+    { tank, waste_tank(), "the tank this transport stores waste in" },
 
-	{ probe_ref, probe_ref(),
-	  "the probe (if any) associated to this transport" } ] ).
+    { probe_ref, probe_ref(),
+      "the probe (if any) associated to this transport" } ] ).
 
 
 
@@ -101,50 +101,50 @@ states this transport can support
 A waste transport is created empty.
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 class_Actor:name(), class_GIS:location(),
-				 unit_utils:cubic_meters(), unit_utils:tons(),
-				 [ supported_waste_state() ] ) -> wooper:state().
+                 class_Actor:name(), class_GIS:location(),
+                 unit_utils:cubic_meters(), unit_utils:tons(),
+                 [ supported_waste_state() ] ) -> wooper:state().
 construct( State, ActorSettings, TransportName, InitialLocation,
-		   MaxTransportedVolume, MaxTransportedMass, SupportedWasteStates ) ->
+           MaxTransportedVolume, MaxTransportedMass, SupportedWasteStates ) ->
 
-	FullName = ?trace_categorize(TransportName),
+    FullName = ?trace_categorize(TransportName),
 
-	ActorState = class_Actor:construct( State, ActorSettings, FullName ),
+    ActorState = class_Actor:construct( State, ActorSettings, FullName ),
 
-	GeoState = class_GeolocalizedElement:construct( ActorState,
-													InitialLocation ),
+    GeoState = class_GeolocalizedElement:construct( ActorState,
+                                                    InitialLocation ),
 
-	Tank = #waste_tank{
-		id=1,
+    Tank = #waste_tank{
+        id=1,
 
-		% All types allowed here:
-		allowed_types=SupportedWasteStates,
+        % All types allowed here:
+        allowed_types=SupportedWasteStates,
 
-		current_type=none,
-		current_volume_stored=0.0,
-		max_volume_stored=MaxTransportedVolume,
-		current_mass_stored=0.0,
-		max_mass_stored=MaxTransportedMass,
-		busy=false },
+        current_type=none,
+        current_volume_stored=0.0,
+        max_volume_stored=MaxTransportedVolume,
+        current_mass_stored=0.0,
+        max_mass_stored=MaxTransportedMass,
+        busy=false },
 
-	ActualName = pair:first( FullName ),
+    ActualName = pair:first( FullName ),
 
-	% Depending on the choice of the result manager, it will be either a PID (if
-	% the corresponding result is wanted) or a 'non_wanted_probe' atom:
-	%
-	TransportProbeRef = class_Actor:declare_probe(
-		_Name=text_utils:format( "~ts Transported Waste Stock Probe",
-								 [ ActualName ] ),
-		_Curves=[ "Quantity of waste currently stored (in tons)" ],
-		_Zones=[],
-		_Title=text_utils:format( "Waste Storage Monitoring "
-								  "for Transport ~ts", [ ActualName ] ),
-		_XLabel="Simulation time",
-		_YLabel="Tons of wastes currently transported",
-		GeoState ),
+    % Depending on the choice of the result manager, it will be either a PID (if
+    % the corresponding result is wanted) or a 'non_wanted_probe' atom:
+    %
+    TransportProbeRef = class_Actor:declare_probe(
+        _Name=text_utils:format( "~ts Transported Waste Stock Probe",
+                                 [ ActualName ] ),
+        _Curves=[ "Quantity of waste currently stored (in tons)" ],
+        _Zones=[],
+        _Title=text_utils:format( "Waste Storage Monitoring "
+                                  "for Transport ~ts", [ ActualName ] ),
+        _XLabel="Simulation time",
+        _YLabel="Tons of wastes currently transported",
+        GeoState ),
 
-	setAttributes( GeoState, [ { tank, Tank },
-							   { probe_ref, TransportProbeRef } ] ).
+    setAttributes( GeoState, [ { tank, Tank },
+                               { probe_ref, TransportProbeRef } ] ).
 
 
 
@@ -156,15 +156,15 @@ construct( State, ActorSettings, TransportName, InitialLocation,
 -spec updateProbe( wooper:state() ) -> const_oneway_return().
 updateProbe( State ) ->
 
-	CurrentTickOffset = ?getAttr(current_tick_offset),
+    CurrentTickOffset = ?getAttr(current_tick_offset),
 
-	% Manages automatically the fact that the creation of this probe may have
-	% been rejected by the result manager:
-	%
-	class_Probe:send_data( ?getAttr(probe_ref), CurrentTickOffset,
-		{ (?getAttr(tank))#waste_tank.current_mass_stored } ),
+    % Manages automatically the fact that the creation of this probe may have
+    % been rejected by the result manager:
+    %
+    class_Probe:send_data( ?getAttr(probe_ref), CurrentTickOffset,
+        { (?getAttr(tank))#waste_tank.current_mass_stored } ),
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 
@@ -175,9 +175,9 @@ updateProbe( State ) ->
 -spec toString( wooper:state() ) -> const_request_return( ustring() ).
 toString( State ) ->
 
-	Tank = ?getAttr(tank),
+    Tank = ?getAttr(tank),
 
-	FinalString = text_utils:format( "Waste transport containing ~ts",
-		[ waste_utils:waste_tank_to_string( Tank ) ] ),
+    FinalString = text_utils:format( "Waste transport containing ~ts",
+        [ waste_utils:waste_tank_to_string( Tank ) ] ),
 
-	wooper:const_return_result( FinalString ).
+    wooper:const_return_result( FinalString ).

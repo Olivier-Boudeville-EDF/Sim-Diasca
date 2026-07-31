@@ -305,14 +305,14 @@ For example:
  ...
 
  FirstVendingMachinePid = class_Actor:create_initial_actor(
-	   class_SodaVendingMachine, [ _Name="My first machine",
-		  _FirstCanCount=15 ],
-	   LoadBalancerPid ),
+       class_SodaVendingMachine, [ _Name="My first machine",
+          _FirstCanCount=15 ],
+       LoadBalancerPid ),
  ...
  SecondVendingMachinePid = class_Actor:create_initial_actor(
-	   class_SodaVendingMachine, [ "My second machine",
-		  _SecondCanCount=8 ],
-	   LoadBalancerPid ),
+       class_SodaVendingMachine, [ "My second machine",
+          _SecondCanCount=8 ],
+       LoadBalancerPid ),
  ...
  % Now simulation can be started.
 
@@ -336,8 +336,8 @@ In the following example, first and second vending machines should be placed on 
 
  ...
  FirstVendingMachinePid = class_Actor:create_initial_placed_actor(
-	class_SodaVendingMachine, [ "My first machine", _CanCount=15 ]
-	my_placement_hint_a ),
+    class_SodaVendingMachine, [ "My first machine", _CanCount=15 ]
+    my_placement_hint_a ),
  ...
  % Using now the variation with an explicit load balancer:
  % (only available in the distributed case)
@@ -345,14 +345,14 @@ In the following example, first and second vending machines should be placed on 
  ...
 
  SecondVendingMachinePid = class_Actor:create_initial_placed_actor(
-	   class_SodaVendingMachine, [ "My second machine",
-		 _SecondCanCount=0 ],
-	   LoadBalancerPid, my_placement_hint_a ),
+       class_SodaVendingMachine, [ "My second machine",
+         _SecondCanCount=0 ],
+       LoadBalancerPid, my_placement_hint_a ),
  ...
  ThirdVendingMachinePid = class_Actor:create_initial_actor(
-	   class_SodaVendingMachine, [ "My third machine",
-		 _ThirdCanCount=8 ],
-	   LoadBalancerPid, my_placement_hint_b ),
+       class_SodaVendingMachine, [ "My third machine",
+         _ThirdCanCount=8 ],
+       LoadBalancerPid, my_placement_hint_b ),
  ...
  % Now simulation can be started.
 
@@ -384,8 +384,8 @@ For example:
 
  ...
  CreatedState = class_Actor:create_actor(
-		_CreatedClassname=class_PinkFlamingo,
-		[_Name="Ringo",_Age=34], CurrentState ),
+        _CreatedClassname=class_PinkFlamingo,
+        [_Name="Ringo",_Age=34], CurrentState ),
  ...
 
 
@@ -396,9 +396,9 @@ Indeed the load balancer will process the underlying actor creation message (whi
 .. code-block:: erlang
 
  onActorCreated( State, CreatedActorPid,
-				ActorClassName=class_PinkFlamingo,
-				ActorConstructionParameters=[ "Ringo", 34 ],
-				LoadBalancerPid ) ->
+                ActorClassName=class_PinkFlamingo,
+                ActorConstructionParameters=[ "Ringo", 34 ],
+                LoadBalancerPid ) ->
  % Of course this oneway is usually overridden, at least
  % to record the PID of the created actor and/or to start
  % interacting with it.
@@ -428,9 +428,9 @@ For example, a ``Foo`` class may define a constructor as:
 .. code:: erlang
 
  -spec construct(wooper:state(),actor_settings(),T1(), T2()) ->
-		    wooper:state().
+            wooper:state().
  construct(State,ActorSettings,FirstParameter,SecondParameter) ->
-	[...]
+    [...]
 
 
 Or course, should this class take no specific actual construction parameter, we would have had:
@@ -439,7 +439,7 @@ Or course, should this class take no specific actual construction parameter, we 
 
  -spec construct(wooper:state(),actor_settings()) -> wooper:state().
  construct(State,ActorSettings) ->
-	[...]
+    [...]
 
 
 The creation of an instance will require all actual parameters to be specified by the caller (since the actor settings will be determined and assigned by the simulation engine itself).
@@ -450,7 +450,7 @@ For example:
 
  ...
  MyFooPid = class_Actor:create_initial_actor( class_Foo,
-	[ MyFirstParameter, MySecondParameter] ),
+    [ MyFirstParameter, MySecondParameter] ),
  % Actor settings will be automatically added at creation-time
  % by the engine.
 
@@ -472,7 +472,7 @@ The simplest of all spontaneous behaviour is to do nothing at all:
 .. code:: erlang
 
  actSpontaneous(State) ->
-	State.
+    State.
 
 For a complete example, see ``class_TestActor.erl``.
 
@@ -529,16 +529,16 @@ As an example:
 
  % This actor oneway is not const, as not all its clauses are const:
  -spec notifySomeEvent(wooper:state(),a_type(),other_type(),
-					   sending_actor_pid()) -> actor_oneway_return().
+                       sending_actor_pid()) -> actor_oneway_return().
  % A non-const clause to handle fire-related events:
  notifySomeEvent(State,_FirstValue=fire_event,SecondValue,_SendingActorPid) ->
-	 [...]
-	 actor:return_state(SomeFireState);
+     [...]
+     actor:return_state(SomeFireState);
 
  % A const clause to handle other events (through side-effects only):
  notifySomeEvent(State,_FirstValue,_SecondValue,_SendingActorPid) ->
-	 [...]
-	 actor:const_return_state().
+     [...]
+     actor:const_return_state().
 
 
 Note that we also recommend to follow the conventions used above regarding the typing of the last parameter (``sending_actor_pid()``) and the name of its (often muted) associated value (``SendingActorPid``).
@@ -611,8 +611,8 @@ For example we may want to know, from the simulation case, what the initial time
  TimeManagerPid ! {getTextualTimings,[],self()},
  receive
 
-	{wooper_result,TimingString} when is_list(TimingString) ->
-		?test_info_fmt("Initial time is ~s.",[TimingString])
+    {wooper_result,TimingString} when is_list(TimingString) ->
+        ?test_info_fmt("Initial time is ~s.",[TimingString])
 
  end,
  ...
@@ -628,10 +628,10 @@ However, specifying, at each request call issued from the simulation case, a pro
 
 .. code-block:: erlang
 
-	TimeManagerPid ! {getTextualTimings,[],self()},
-	TimingString = test_receive(),
-	?test_info_fmt("Received time: ~s.",[TimingString]),
-	...
+    TimeManagerPid ! {getTextualTimings,[],self()},
+    TimingString = test_receive(),
+    ?test_info_fmt("Received time: ~s.",[TimingString]),
+    ...
 
 
 This ``test_receive/0`` function performs a (blocking) selective receive, retrieving any WOOPER result which is *not* emanating directly from the operation of the engine itself. That way, developers of simulation cases can reliably retrieve the values returned by the requests they send, with no fear of interference.

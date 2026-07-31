@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 EDF R&D
+% Copyright (C) 2016-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -101,254 +101,254 @@ See also the `Sim-Diasca Dataflow HOWTO`.
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+    ?case_start,
 
-	% The duration (in floating-point virtual seconds) of a fundamental tick in
-	% the simulation corresponds to one year:
-	%
-	% (the various case-specific information used here could come from the
-	% platform, for example thanks to REST calls that would be issued from this
-	% test case)
-	%
-	TickDuration = time_utils:years_to_seconds( 1 ),
+    % The duration (in floating-point virtual seconds) of a fundamental tick in
+    % the simulation corresponds to one year:
+    %
+    % (the various case-specific information used here could come from the
+    % platform, for example thanks to REST calls that would be issued from this
+    % test case)
+    %
+    TickDuration = time_utils:years_to_seconds( 1 ),
 
-	SimulationDurationInYears = 30,
+    SimulationDurationInYears = 30,
 
-	% Just for the sake of checking it on the display:
-	ExpectedTimestepCount = round( time_utils:years_to_seconds(
-		SimulationDurationInYears ) / TickDuration ),
+    % Just for the sake of checking it on the display:
+    ExpectedTimestepCount = round( time_utils:years_to_seconds(
+        SimulationDurationInYears ) / TickDuration ),
 
-	SimulationDurationInYears = ExpectedTimestepCount,
+    SimulationDurationInYears = ExpectedTimestepCount,
 
-	TimestepString = time_utils:duration_to_string(
-		_Microseconds=1000*TickDuration ),
+    TimestepString = time_utils:duration_to_string(
+        _Microseconds=1000*TickDuration ),
 
-	test_facilities:display( "Running a 'Dataflow Urban Example' simulation "
-		"case with a timestep of ~ts and a duration of "
-		"~B years (hence corresponding to ~p expected "
-		"timesteps), in a changeset-based way.",
-		[ TimestepString, SimulationDurationInYears, ExpectedTimestepCount ] ),
+    test_facilities:display( "Running a 'Dataflow Urban Example' simulation "
+        "case with a timestep of ~ts and a duration of "
+        "~B years (hence corresponding to ~p expected "
+        "timesteps), in a changeset-based way.",
+        [ TimestepString, SimulationDurationInYears, ExpectedTimestepCount ] ),
 
-	test_facilities:display( "Of course this is merely a technical example "
-		"being happily meaningless in terms of urban matters." ),
+    test_facilities:display( "Of course this is merely a technical example "
+        "being happily meaningless in terms of urban matters." ),
 
-	SimulationSettings = #simulation_settings{
-		simulation_name="Urban Dataflow Platform-Emulating Example",
-		tick_duration=TickDuration },
+    SimulationSettings = #simulation_settings{
+        simulation_name="Urban Dataflow Platform-Emulating Example",
+        tick_duration=TickDuration },
 
 
-	DeploymentSettings = #deployment_settings{
+    DeploymentSettings = #deployment_settings{
 
-		% We want to embed additionally this test and its specific
-		% prerequisites, defined in the Mock Simulators:
-		%
-		additional_elements_to_deploy = [ { ".", code } ] },
+        % We want to embed additionally this test and its specific
+        % prerequisites, defined in the Mock Simulators:
+        %
+        additional_elements_to_deploy = [ { ".", code } ] },
 
 
-	% We will initialise first the engine:
-	DeploymentManagerPid =
-		sim_diasca:init( SimulationSettings, DeploymentSettings ),
+    % We will initialise first the engine:
+    DeploymentManagerPid =
+        sim_diasca:init( SimulationSettings, DeploymentSettings ),
 
-	LoadBalancerPid = class_LoadBalancer:get_balancer(),
+    LoadBalancerPid = class_LoadBalancer:get_balancer(),
 
 
-	% Then the dataflow support:
-	DataflowState = dataflow_support:start(),
+    % Then the dataflow support:
+    DataflowState = dataflow_support:start(),
 
-	WorldManagerPid = DataflowState#dataflow_state.world_manager_pid,
+    WorldManagerPid = DataflowState#dataflow_state.world_manager_pid,
 
-	ExperimentManagerPid = DataflowState#dataflow_state.experiment_manager_pid,
+    ExperimentManagerPid = DataflowState#dataflow_state.experiment_manager_pid,
 
-	IdentificationServerPid =
-		DataflowState#dataflow_state.identification_manager_pid,
+    IdentificationServerPid =
+        DataflowState#dataflow_state.identification_manager_pid,
 
-	% Let's create our own dataflow, directly from this case, programmatically:
+    % Let's create our own dataflow, directly from this case, programmatically:
 
-	% Creating first the (here, single, overall) dataflow of interest:
-	DataflowPid = class_Actor:create_initial_actor( class_Dataflow,
-		[ "Urban Platform-Emulating Dataflow", ExperimentManagerPid ],
-		LoadBalancerPid ),
+    % Creating first the (here, single, overall) dataflow of interest:
+    DataflowPid = class_Actor:create_initial_actor( class_Dataflow,
+        [ "Urban Platform-Emulating Dataflow", ExperimentManagerPid ],
+        LoadBalancerPid ),
 
-	% A single dataflow here:
-	Dataflows = [ DataflowPid ],
+    % A single dataflow here:
+    Dataflows = [ DataflowPid ],
 
-	% Let's start on following year, January 1st at 00:00:00...
-	StartYear = 2020,
+    % Let's start on following year, January 1st at 00:00:00...
+    StartYear = 2020,
 
-	% Here the experiment step correspond to the year of interest:
-	%
-	FirstStep = StartYear,
-	LastStep = FirstStep + SimulationDurationInYears,
+    % Here the experiment step correspond to the year of interest:
+    %
+    FirstStep = StartYear,
+    LastStep = FirstStep + SimulationDurationInYears,
 
 
-	% For this experiment, we rely on these specific, optional entry and exit
-	% points (they are the main components linked to any remote platform; here
-	% they emulate the presence of such a platform):
-	%
-	UrbanExperimentEntryPointPid = class_Actor:create_initial_actor(
-		class_UrbanExperimentPlatformEmulatingEntryPoint,
-		[ Dataflows, FirstStep, LastStep, ExperimentManagerPid,
-		  WorldManagerPid ], LoadBalancerPid ),
+    % For this experiment, we rely on these specific, optional entry and exit
+    % points (they are the main components linked to any remote platform; here
+    % they emulate the presence of such a platform):
+    %
+    UrbanExperimentEntryPointPid = class_Actor:create_initial_actor(
+        class_UrbanExperimentPlatformEmulatingEntryPoint,
+        [ Dataflows, FirstStep, LastStep, ExperimentManagerPid,
+          WorldManagerPid ], LoadBalancerPid ),
 
 
-	_UrbanExperimentExitPointPid = class_Actor:create_initial_actor(
-		class_UrbanExperimentPlatformEmulatingExitPoint,
-		[ Dataflows, FirstStep, LastStep, UrbanExperimentEntryPointPid,
-		  ExperimentManagerPid, WorldManagerPid ], LoadBalancerPid ),
+    _UrbanExperimentExitPointPid = class_Actor:create_initial_actor(
+        class_UrbanExperimentPlatformEmulatingExitPoint,
+        [ Dataflows, FirstStep, LastStep, UrbanExperimentEntryPointPid,
+          ExperimentManagerPid, WorldManagerPid ], LoadBalancerPid ),
 
 
-	% Now that the engine and the dataflow are initialised, no specific, actual
-	% initial object or unit instance is created here: they will be created by
-	% the entry and exit points, and while the simulation is already running.
-	%
-	% So we create just the overall object and unit managers, and start the
-	% simulation immediately afterwards.
+    % Now that the engine and the dataflow are initialised, no specific, actual
+    % initial object or unit instance is created here: they will be created by
+    % the entry and exit points, and while the simulation is already running.
+    %
+    % So we create just the overall object and unit managers, and start the
+    % simulation immediately afterwards.
 
 
-	% For this example we could have considered up to three different dataflow
-	% object managers: DistrictManager, BuildingManager and HouseholdManager.
-	%
-	% To showcase that an object manager may handle more than one type of
-	% objects, here we have:
-	%
-	% - a DistrictManager, managing, well, districts (and only them)
-	%
-	% - a BuildingHouseholdManager, taking care of both the buildings and of the
-	% households that they are hosting (considering that these urban objects are
-	% tightly linked)
+    % For this example we could have considered up to three different dataflow
+    % object managers: DistrictManager, BuildingManager and HouseholdManager.
+    %
+    % To showcase that an object manager may handle more than one type of
+    % objects, here we have:
+    %
+    % - a DistrictManager, managing, well, districts (and only them)
+    %
+    % - a BuildingHouseholdManager, taking care of both the buildings and of the
+    % households that they are hosting (considering that these urban objects are
+    % tightly linked)
 
 
-	% Moreover there are two ways of creating an object manager:
-	%
-	% - either we create a generic one by instantiating it directly from the
-	% class_DataflowObjectManager (in which case it will rely on the default
-	% implementation and correspond to no specific child class thereof); this
-	% will be the case for class_DistrictManager
-	%
-	% - or we define specifically a child class of class_DataflowObjectManager,
-	% and create a singleton instance of it (should domain-specific code be
-	% needed for this particular object manager); this will be the case for
-	% class_UrbanUnitManager
+    % Moreover there are two ways of creating an object manager:
+    %
+    % - either we create a generic one by instantiating it directly from the
+    % class_DataflowObjectManager (in which case it will rely on the default
+    % implementation and correspond to no specific child class thereof); this
+    % will be the case for class_DistrictManager
+    %
+    % - or we define specifically a child class of class_DataflowObjectManager,
+    % and create a singleton instance of it (should domain-specific code be
+    % needed for this particular object manager); this will be the case for
+    % class_UrbanUnitManager
 
-	% We also consider here that the tree of the object managers is flat (all of
-	% them are directly linked to the world manager).
+    % We also consider here that the tree of the object managers is flat (all of
+    % them are directly linked to the world manager).
 
-	% Only one default object manager, in charge only of districts:
-	DefaultObjectManagerDefs =
-		[ { class_DistrictObjectManager, [ class_District ] } ],
+    % Only one default object manager, in charge only of districts:
+    DefaultObjectManagerDefs =
+        [ { class_DistrictObjectManager, [ class_District ] } ],
 
-	?test_info_fmt( "Creating directly following default dataflow "
-		"object managers, taking in charge following types of "
-		"dataflow objects: ~p.", [ DefaultObjectManagerDefs ] ),
+    ?test_info_fmt( "Creating directly following default dataflow "
+        "object managers, taking in charge following types of "
+        "dataflow objects: ~p.", [ DefaultObjectManagerDefs ] ),
 
-	_DefaultObjectManagers =
-		class_DataflowObjectManager:create_default_managers(
-			DefaultObjectManagerDefs, WorldManagerPid, LoadBalancerPid,
-			IdentificationServerPid ),
+    _DefaultObjectManagers =
+        class_DataflowObjectManager:create_default_managers(
+            DefaultObjectManagerDefs, WorldManagerPid, LoadBalancerPid,
+            IdentificationServerPid ),
 
-	% Only one specifically-defined object manager:
-	%
-	SpecificObjectManagers = [ class_BuildingHouseholdObjectManager ],
+    % Only one specifically-defined object manager:
+    %
+    SpecificObjectManagers = [ class_BuildingHouseholdObjectManager ],
 
-	?test_info_fmt( "Creating now the specifically defined dataflow "
-					"object managers: ~p", [ SpecificObjectManagers ] ),
+    ?test_info_fmt( "Creating now the specifically defined dataflow "
+                    "object managers: ~p", [ SpecificObjectManagers ] ),
 
-	_SpecificObjectManagers = [ _BuildingHouseholdManagerPid ] =
-		class_DataflowObjectManager:create_specific_managers(
-			SpecificObjectManagers, WorldManagerPid, LoadBalancerPid,
-			IdentificationServerPid ),
+    _SpecificObjectManagers = [ _BuildingHouseholdManagerPid ] =
+        class_DataflowObjectManager:create_specific_managers(
+            SpecificObjectManagers, WorldManagerPid, LoadBalancerPid,
+            IdentificationServerPid ),
 
 
-	% In a rather similar manner as for object managers, we define dataflow unit
-	% managers; there is here only one of them, driven by the experiment
-	% manager.
-	%
-	UnitManagerNames = [ class_UrbanUnitManager ],
+    % In a rather similar manner as for object managers, we define dataflow unit
+    % managers; there is here only one of them, driven by the experiment
+    % manager.
+    %
+    UnitManagerNames = [ class_UrbanUnitManager ],
 
-	% Gets the (enabled) binding managers:
-	DeploymentManagerPid ! { getBindingManagers, [], self() },
-	ActualBindingManagers = test_receive(),
+    % Gets the (enabled) binding managers:
+    DeploymentManagerPid ! { getBindingManagers, [], self() },
+    ActualBindingManagers = test_receive(),
 
 
-	?test_info_fmt( "Creating following dataflow unit managers: ~p, using .",
-					[ UnitManagerNames ] ),
+    ?test_info_fmt( "Creating following dataflow unit managers: ~p, using .",
+                    [ UnitManagerNames ] ),
 
-	_UnitManagers = [ _UrbanUnitManagerPid ] =
-		class_DataflowUnitManager:create_managers( UnitManagerNames,
-			ExperimentManagerPid, ActualBindingManagers, LoadBalancerPid ),
+    _UnitManagers = [ _UrbanUnitManagerPid ] =
+        class_DataflowUnitManager:create_managers( UnitManagerNames,
+            ExperimentManagerPid, ActualBindingManagers, LoadBalancerPid ),
 
 
 
-	% To show that semantics and types can be introduced from the simulation
-	% case as well:
+    % To show that semantics and types can be introduced from the simulation
+    % case as well:
 
-	CaseSemantics = [ ?average_population_gain, ?average_savings ],
+    CaseSemantics = [ ?average_population_gain, ?average_savings ],
 
-	dataflow_support:declare_vocabulary( CaseSemantics, DataflowState ),
+    dataflow_support:declare_vocabulary( CaseSemantics, DataflowState ),
 
 
-	% Definition of a type, and of another one directly depending on the first:
-	CaseTypes = [ { 'a_type_from_case', "[ float ]" },
-				  { 'my_other_type', "{ integer, a_type_from_case }" } ],
+    % Definition of a type, and of another one directly depending on the first:
+    CaseTypes = [ { 'a_type_from_case', "[ float ]" },
+                  { 'my_other_type', "{ integer, a_type_from_case }" } ],
 
-	dataflow_support:declare_types( CaseTypes, DataflowState ),
+    dataflow_support:declare_types( CaseTypes, DataflowState ),
 
 
-	% No creation of any actual dataflow object or unit; we just start the
-	% simulation, the entry point will take care of creating all domain-specific
-	% landscape directly at runtime:
+    % No creation of any actual dataflow object or unit; we just start the
+    % simulation, the entry point will take care of creating all domain-specific
+    % landscape directly at runtime:
 
-	DeploymentManagerPid ! { getRootTimeManager, [], self() },
-	RootTimeManagerPid = test_receive(),
+    DeploymentManagerPid ! { getRootTimeManager, [], self() },
+    RootTimeManagerPid = test_receive(),
 
-	StartDate = { StartYear, 1, 1 },
-	StartTime = { 0, 0, 0 },
+    StartDate = { StartYear, 1, 1 },
+    StartTime = { 0, 0, 0 },
 
-	RootTimeManagerPid !
-		{ setInitialSimulationTimestamp, [ StartDate, StartTime ] },
+    RootTimeManagerPid !
+        { setInitialSimulationTimestamp, [ StartDate, StartTime ] },
 
-	% ...and end specified years later:
-	EndDate = { StartYear + SimulationDurationInYears, 1, 1 },
-	EndTime = StartTime,
+    % ...and end specified years later:
+    EndDate = { StartYear + SimulationDurationInYears, 1, 1 },
+    EndTime = StartTime,
 
-	% No need to specifically set the end date, as it will be induced by the
-	% termination of the experiment entry point when it will have exhausted its
-	% steps (and thus will not request to be scheduled anymore):
-	%
-	%RootTimeManagerPid ! { setFinalSimulationTimestamp, [ EndDate, EndTime ] },
+    % No need to specifically set the end date, as it will be induced by the
+    % termination of the experiment entry point when it will have exhausted its
+    % steps (and thus will not request to be scheduled anymore):
+    %
+    %RootTimeManagerPid ! { setFinalSimulationTimestamp, [ EndDate, EndTime ] },
 
-	StartTimestamp = { StartDate, StartTime },
-	EndTimestamp = { EndDate, EndTime },
+    StartTimestamp = { StartDate, StartTime },
+    EndTimestamp = { EndDate, EndTime },
 
-	?test_info_fmt( "Starting simulation at ~ts, "
-		"for an expected stop at ending timestamp ~ts.",
-		[ time_utils:get_textual_timestamp( StartTimestamp ),
-		  time_utils:get_textual_timestamp( EndTimestamp ) ] ),
+    ?test_info_fmt( "Starting simulation at ~ts, "
+        "for an expected stop at ending timestamp ~ts.",
+        [ time_utils:get_textual_timestamp( StartTimestamp ),
+          time_utils:get_textual_timestamp( EndTimestamp ) ] ),
 
 
-	% Termination decided by the exit point, by not triggering the entry point
-	% anymore, leading to an automatic stop:
-	%
-	RootTimeManagerPid ! { start, self() },
+    % Termination decided by the exit point, by not triggering the entry point
+    % anymore, leading to an automatic stop:
+    %
+    RootTimeManagerPid ! { start, self() },
 
-	?test_info( "Waiting for the simulation to end, since having been "
-				"declared as a simulation listener." ),
+    ?test_info( "Waiting for the simulation to end, since having been "
+                "declared as a simulation listener." ),
 
-	receive
+    receive
 
-		simulation_stopped ->
-			?test_info( "Simulation stopped spontaneously, specified stop tick "
-						"must have been reached." )
+        simulation_stopped ->
+            ?test_info( "Simulation stopped spontaneously, specified stop tick "
+                        "must have been reached." )
 
-	end,
+    end,
 
-	?test_info( "Browsing the report results, if in batch mode." ),
-	class_ResultManager:browse_reports(),
+    ?test_info( "Browsing the report results, if in batch mode." ),
+    class_ResultManager:browse_reports(),
 
-	class_IdentificationServer:stop(),
+    class_IdentificationServer:stop(),
 
-	dataflow_support:stop(),
+    dataflow_support:stop(),
 
-	sim_diasca:shutdown(),
+    sim_diasca:shutdown(),
 
-	?case_stop.
+    ?case_stop.

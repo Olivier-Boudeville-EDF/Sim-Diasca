@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2025 Olivier Boudeville
+% Copyright (C) 2019-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -59,43 +59,43 @@ Starts the Traces services.
 Note: RestartType and StartArgs at least currently ignored.
 """.
 -spec start( application:start_type(), StartArgs :: term() ) -> { 'ok', pid() }
-		| { 'ok', pid() } | { 'error', Reason :: term() }.
+        | { 'ok', pid() } | { 'error', Reason :: term() }.
 start( RestartType, StartArgs ) ->
 
-	% See any {is_batch, boolean()} entry for the 'traces' application in any
-	% conf/sys.config defined for the current OTP release (or override it with
-	% --batch on the command-line):
-	%
-	TraceSupervisorWanted = not executable_utils:is_batch(),
+    % See any {is_batch, boolean()} entry for the 'traces' application in any
+    % conf/sys.config defined for the current OTP release (or override it with
+    % --batch on the command-line):
+    %
+    TraceSupervisorWanted = not executable_utils:is_batch(),
 
-	trace_utils:debug_fmt( "Starting the Traces application (restart type: ~w, "
-		"start arguments: ~w, supervisor wanted: ~ts).",
-		[ RestartType, StartArgs, TraceSupervisorWanted ] ),
+    trace_utils:debug_fmt( "Starting the Traces application (restart type: ~w, "
+        "start arguments: ~w, supervisor wanted: ~ts).",
+        [ RestartType, StartArgs, TraceSupervisorWanted ] ),
 
-	AggRegScope = traces_utils:get_aggregator_registration_scope(),
+    AggRegScope = traces_utils:get_aggregator_registration_scope(),
 
-	% Previously, no specific root supervisor was to launch, but:
-	%class_TraceAggregator:start().
+    % Previously, no specific root supervisor was to launch, but:
+    %class_TraceAggregator:start().
 
-	% Will go through several modules:
-	%
-	%TraceInitArgs = { TraceSupervisorWanted, AggRegName, AggRegScope },
-	TraceInitArgs = { TraceSupervisorWanted, AggRegScope },
+    % Will go through several modules:
+    %
+    %TraceInitArgs = { TraceSupervisorWanted, AggRegName, AggRegScope },
+    TraceInitArgs = { TraceSupervisorWanted, AggRegScope },
 
-	% We now create a root supervisor that has a supervisor_bridge child, which
-	% takes care of the interface to the (non-OTP) trace aggregator:
-	%
-	case traces_sup:start_link( TraceInitArgs ) of
+    % We now create a root supervisor that has a supervisor_bridge child, which
+    % takes care of the interface to the (non-OTP) trace aggregator:
+    %
+    case traces_sup:start_link( TraceInitArgs ) of
 
-		R={ ok, _RootSupervisorPid } ->
-			R;
+        R={ ok, _RootSupervisorPid } ->
+            R;
 
-		Other ->
-			trace_utils:error_fmt( "The Traces root supervisor did not start "
-								   "properly:~n  ~p.", [ Other ] ),
-			{ error, Other }
+        Other ->
+            trace_utils:error_fmt( "The Traces root supervisor did not start "
+                                   "properly:~n  ~p.", [ Other ] ),
+            { error, Other }
 
-	end.
+    end.
 
 
 
@@ -103,10 +103,10 @@ start( RestartType, StartArgs ) ->
 -spec stop( State :: term() ) -> void().
 stop( State ) ->
 
-	trace_utils:debug_fmt( "Stopping the Traces application (state: ~w).",
-						   [ State ] ),
+    trace_utils:debug_fmt( "Stopping the Traces application (state: ~w).",
+                           [ State ] ),
 
-	% Previously: (now managed by the root supervisor)
-	%class_TraceAggregator:stop(),
+    % Previously: (now managed by the root supervisor)
+    %class_TraceAggregator:stop(),
 
-	ok.
+    ok.

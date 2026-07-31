@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -53,5 +53,5 @@
 
 
 -define( notify_user( Message ),
-	?notify_mute( Message ),
-	?notify_by_speak( Message ) ).
+    ?notify_mute( Message ),
+    ?notify_by_speak( Message ) ).

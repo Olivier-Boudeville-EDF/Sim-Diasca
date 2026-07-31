@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -46,32 +46,32 @@ See the xml_utils.erl tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	test_facilities:display( "Testing the XML support." ),
+    test_facilities:display( "Testing the XML support." ),
 
-	TextToEscape = "I'm a believer that 2<3, but 4>3 & I say: \"I like it!\".",
+    TextToEscape = "I'm a believer that 2<3, but 4>3 & I say: \"I like it!\".",
 
-	EscapedText = xml_utils:to_xml_text( TextToEscape ),
+    EscapedText = xml_utils:to_xml_text( TextToEscape ),
 
-	test_facilities:display( "The escaped for XML version of text '~ts' "
-							 "is '~ts'.~n", [ TextToEscape, EscapedText ] ),
+    test_facilities:display( "The escaped for XML version of text '~ts' "
+                             "is '~ts'.~n", [ TextToEscape, EscapedText ] ),
 
 
-	TestXMLSimpleContent = [
-		myFirstTag,
-		{ mySecondTag, [ myNestedTag ] },
-		{ myThirdTag,  [ { color, "red" }, { age, 71 } ],
-		  [ "This is a text!" ] } ],
+    TestXMLSimpleContent = [
+        myFirstTag,
+        { mySecondTag, [ myNestedTag ] },
+        { myThirdTag,  [ { color, "red" }, { age, 71 } ],
+          [ "This is a text!" ] } ],
 
-	TextPrologValue = xml_utils:get_default_prolog()
-								++ "<!DOCTYPE birds SYSTEM \"birds.dtd\">",
+    TextPrologValue = xml_utils:get_default_prolog()
+                                ++ "<!DOCTYPE birds SYSTEM \"birds.dtd\">",
 
-	ResultSimpleStr = xml_utils:xml_to_string( TestXMLSimpleContent,
-											   TextPrologValue ),
+    ResultSimpleStr = xml_utils:xml_to_string( TestXMLSimpleContent,
+                                               TextPrologValue ),
 
-	test_facilities:display( "The XML content defined as:"
-		"~n  ~p~nresults, with prolog '~ts', in the following string:~n  ~ts",
-		[ TestXMLSimpleContent, TextPrologValue, ResultSimpleStr ] ),
+    test_facilities:display( "The XML content defined as:"
+        "~n  ~p~nresults, with prolog '~ts', in the following string:~n  ~ts",
+        [ TestXMLSimpleContent, TextPrologValue, ResultSimpleStr ] ),
 
-	test_facilities:stop().
+    test_facilities:stop().

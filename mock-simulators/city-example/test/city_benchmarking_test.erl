@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2025 EDF R&D
+% Copyright (C) 2012-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -93,9 +93,9 @@ defaults.
 -spec run() -> no_return().
 run() ->
 
-	{ ScaleSetting, DurationSetting } = city_benchmarking:get_case_settings(),
+    { ScaleSetting, DurationSetting } = city_benchmarking:get_case_settings(),
 
-	run_common( ScaleSetting, DurationSetting, _StopShell=true ).
+    run_common( ScaleSetting, DurationSetting, _StopShell=true ).
 
 
 
@@ -105,21 +105,21 @@ Runs a series of tests of constant scale, iterating in terms of durations.
 -spec run_constant_scale( benchmarking_scale() ) -> no_return().
 run_constant_scale( Scale ) ->
 
-	Durations = city_benchmarking:get_duration_options(),
+    Durations = city_benchmarking:get_duration_options(),
 
-	io:format( "~nRunning ~B ~p simulations, of increasing duration:~n",
-			   [ length( Durations ), Scale ] ),
+    io:format( "~nRunning ~B ~p simulations, of increasing duration:~n",
+               [ length( Durations ), Scale ] ),
 
-	[ begin
+    [ begin
 
-		io:format( "~n~n  Running a ~p simulation for a ~p duration...~n~n",
-					   [ Scale, D ] ),
+        io:format( "~n~n  Running a ~p simulation for a ~p duration...~n~n",
+                       [ Scale, D ] ),
 
-		run( Scale, D )
+        run( Scale, D )
 
-	  end || D <- Durations ],
+      end || D <- Durations ],
 
-	io:format( "~n~n All ~p simulations successfully run.~n", [ Scale ] ).
+    io:format( "~n~n All ~p simulations successfully run.~n", [ Scale ] ).
 
 
 
@@ -127,24 +127,24 @@ run_constant_scale( Scale ) ->
 Runs a series of tests of constant duration, iterating in terms of scales.
 """.
 -spec run_constant_duration( benchmarking_duration() ) ->
-									no_return().
+                                    no_return().
 run_constant_duration( Duration ) ->
 
-	Scales = city_benchmarking:get_scale_options(),
+    Scales = city_benchmarking:get_scale_options(),
 
-	io:format( "~nRunning ~B ~p simulations, of increasing scale:~n",
-			   [ length( Scales ), Duration ] ),
+    io:format( "~nRunning ~B ~p simulations, of increasing scale:~n",
+               [ length( Scales ), Duration ] ),
 
-	[ begin
+    [ begin
 
-		io:format( "~n~n  Running a ~p simulation for a ~p scale...~n~n",
-				   [ Duration, S ] ),
+        io:format( "~n~n  Running a ~p simulation for a ~p scale...~n~n",
+                   [ Duration, S ] ),
 
-		run( S, Duration )
+        run( S, Duration )
 
-	  end || S <- Scales ],
+      end || S <- Scales ],
 
-	io:format( "~n~n All ~p simulations successfully run.~n", [ Duration ] ).
+    io:format( "~n~n All ~p simulations successfully run.~n", [ Duration ] ).
 
 
 
@@ -153,173 +153,173 @@ run_constant_duration( Duration ) ->
 -spec run( benchmarking_scale(), benchmarking_duration() ) -> void().
 run( ScaleSetting, DurationSetting ) ->
 
-	city_benchmarking:check_scale_setting( ScaleSetting ),
-	city_benchmarking:check_duration_setting( DurationSetting ),
+    city_benchmarking:check_scale_setting( ScaleSetting ),
+    city_benchmarking:check_duration_setting( DurationSetting ),
 
-	run_common( ScaleSetting, DurationSetting, _StopShell=false ).
+    run_common( ScaleSetting, DurationSetting, _StopShell=false ).
 
 
 
 % Helper, common to all specifications.
 -spec run_common( benchmarking_scale(), benchmarking_duration(), boolean() ) ->
-						no_return() | void().
+                        no_return() | void().
 run_common( ScaleSetting, DurationSetting, StopShell ) ->
 
-	?case_start,
+    ?case_start,
 
-	io:format( "Running the City-example benchmarking case v.~ts, "
-		"with scale '~ts' and duration '~ts'.~n",
-		[ text_utils:version_to_string( ?city_example_version ),
-		  ScaleSetting, DurationSetting ] ),
+    io:format( "Running the City-example benchmarking case v.~ts, "
+        "with scale '~ts' and duration '~ts'.~n",
+        [ text_utils:version_to_string( ?city_example_version ),
+          ScaleSetting, DurationSetting ] ),
 
-	{ CityDescription, EndTimestamp={ EndDate, EndTime }, TimestepDuration } =
-	  city_benchmarking:get_benchmark_settings( ScaleSetting, DurationSetting ),
-
-
-	% Use default simulation settings (50Hz, batch reproducible):
-	SimulationSettings = #simulation_settings{
-
-		simulation_name="Sim-Diasca City-example Benchmarking Case",
-
-		tick_duration=TimestepDuration,
-
-		% We restrict the wanted results, as otherwise larger cases could
-		% exhaust the number of used file descriptors; so we keep only some
-		% probes associated to incinerators:
-		%
-		result_specification=no_output },
+    { CityDescription, EndTimestamp={ EndDate, EndTime }, TimestepDuration } =
+      city_benchmarking:get_benchmark_settings( ScaleSetting, DurationSetting ),
 
 
-	DeploymentSettings = #deployment_settings{
+    % Use default simulation settings (50Hz, batch reproducible):
+    SimulationSettings = #simulation_settings{
 
-		computing_hosts={ use_host_file_otherwise_local,
-			"sim-diasca-host-candidates-for-scale-benchmarks.txt" },
+        simulation_name="Sim-Diasca City-example Benchmarking Case",
 
-		%node_availability_tolerance = fail_on_unavailable_node,
+        tick_duration=TimestepDuration,
 
-		% We want to embed additionally this test and its specific
-		% prerequisites, defined in the Mock Simulators:
-		%
-		additional_elements_to_deploy=[ { ".", code } ],
-
-		plugin_directories=[
-			"../../../sim-diasca/src/core/src/plugins/tests/" ],
-
-		% Would alter wrongly the benchmark:
-		enable_performance_tracker=false },
+        % We restrict the wanted results, as otherwise larger cases could
+        % exhaust the number of used file descriptors; so we keep only some
+        % probes associated to incinerators:
+        %
+        result_specification=no_output },
 
 
-	% A deployment manager is created directly on the user node:
-	DeploymentManagerPid =
-		sim_diasca:init( SimulationSettings, DeploymentSettings ),
+    DeploymentSettings = #deployment_settings{
 
-	IsBatch = executable_utils:is_batch(),
+        computing_hosts={ use_host_file_otherwise_local,
+            "sim-diasca-host-candidates-for-scale-benchmarks.txt" },
 
-	GISPid = class_Actor:create_initial_actor( class_GIS,
-		[ _DataSource=none, _PrepareRendering= not IsBatch ] ),
+        %node_availability_tolerance = fail_on_unavailable_node,
 
-	CityGeneratorPid =
-		class_CityGenerator:synchronous_new_link( CityDescription, GISPid ),
+        % We want to embed additionally this test and its specific
+        % prerequisites, defined in the Mock Simulators:
+        %
+        additional_elements_to_deploy=[ { ".", code } ],
 
+        plugin_directories=[
+            "../../../sim-diasca/src/core/src/plugins/tests/" ],
 
-	CityGeneratorPid ! { generateCity, [], self() },
-	receive
-
-		{ wooper_result, city_generated } ->
-			ok
-
-	end,
-
-	% PID of the mesh created, fed yet not owned by the GIS:
-	{ RoadNetworkPid, OutputDirectory } = case IsBatch of
-
-		true ->
-			{ undefined, undefined };
-
-		false ->
-
-			% This is a rather special case: the GIS owns a Mesh (which is not a
-			% result producer), and directly asking it to generate a rendering
-			% would lead to create a PNG in the current directory (in /tmp) that
-			% will be removed as soon as the simulation is finished, thus
-			% disappearing from the viewer.
-			%
-			% Creating directly the rendering in the result directory is not a
-			% solution either, as it has not yet been created, and must be so by
-			% the result manager.
-			%
-			% So the solution has been to render the road network only if
-			% requested (PrepareRendering), then at diasca 2 (i.e. once all
-			% rendered elements have been initialised), in the simulation
-			% temporary directory. Then, only if the simulation has succeeded,
-			% the rendering is moved to result directory, and then displayed.
-			%
-			GISPid ! { getRoadNetworkPid, [], self() },
-			RoadNetPid = test_receive(),
-
-			DeploymentManagerPid ! { getResultManager, [], self() },
-			ResultManagerPid = test_receive(),
-
-			ResultManagerPid ! { getResultDirectory, [], self() },
-			OutputDir = test_receive(),
-
-			{ RoadNetPid, OutputDir }
-
-	end,
-
-	DeploymentManagerPid ! { getRootTimeManager, [], self() },
-	RootTimeManagerPid = test_receive(),
-
-	RootTimeManagerPid ! { setFinalSimulationTimestamp, [ EndDate, EndTime ] },
-
-	?test_info_fmt( "Starting simulation, for a stop at ending timestamp ~ts.",
-					[ time_utils:get_textual_timestamp( EndTimestamp ) ] ),
-
-	% Generator not needed anymore here:
-	CityGeneratorPid ! delete,
-
-	GISPid ! traceContent,
+        % Would alter wrongly the benchmark:
+        enable_performance_tracker=false },
 
 
-	RootTimeManagerPid ! { start, self() },
+    % A deployment manager is created directly on the user node:
+    DeploymentManagerPid =
+        sim_diasca:init( SimulationSettings, DeploymentSettings ),
 
-	?test_info( "Waiting for the simulation to end, "
-				"since having been declared as a simulation listener." ),
+    IsBatch = executable_utils:is_batch(),
 
-	receive
+    GISPid = class_Actor:create_initial_actor( class_GIS,
+        [ _DataSource=none, _PrepareRendering= not IsBatch ] ),
 
-		simulation_stopped ->
-			?test_info( "Simulation stopped spontaneously, "
-						"specified stop tick must have been reached." )
+    CityGeneratorPid =
+        class_CityGenerator:synchronous_new_link( CityDescription, GISPid ),
 
-	end,
 
-	GISPid ! delete,
+    CityGeneratorPid ! { generateCity, [], self() },
+    receive
 
-	IsBatch orelse
+        { wooper_result, city_generated } ->
+            ok
+
+    end,
+
+    % PID of the mesh created, fed yet not owned by the GIS:
+    { RoadNetworkPid, OutputDirectory } = case IsBatch of
+
+        true ->
+            { undefined, undefined };
+
+        false ->
+
+            % This is a rather special case: the GIS owns a Mesh (which is not a
+            % result producer), and directly asking it to generate a rendering
+            % would lead to create a PNG in the current directory (in /tmp) that
+            % will be removed as soon as the simulation is finished, thus
+            % disappearing from the viewer.
+            %
+            % Creating directly the rendering in the result directory is not a
+            % solution either, as it has not yet been created, and must be so by
+            % the result manager.
+            %
+            % So the solution has been to render the road network only if
+            % requested (PrepareRendering), then at diasca 2 (i.e. once all
+            % rendered elements have been initialised), in the simulation
+            % temporary directory. Then, only if the simulation has succeeded,
+            % the rendering is moved to result directory, and then displayed.
+            %
+            GISPid ! { getRoadNetworkPid, [], self() },
+            RoadNetPid = test_receive(),
+
+            DeploymentManagerPid ! { getResultManager, [], self() },
+            ResultManagerPid = test_receive(),
+
+            ResultManagerPid ! { getResultDirectory, [], self() },
+            OutputDir = test_receive(),
+
+            { RoadNetPid, OutputDir }
+
+    end,
+
+    DeploymentManagerPid ! { getRootTimeManager, [], self() },
+    RootTimeManagerPid = test_receive(),
+
+    RootTimeManagerPid ! { setFinalSimulationTimestamp, [ EndDate, EndTime ] },
+
+    ?test_info_fmt( "Starting simulation, for a stop at ending timestamp ~ts.",
+                    [ time_utils:get_textual_timestamp( EndTimestamp ) ] ),
+
+    % Generator not needed anymore here:
+    CityGeneratorPid ! delete,
+
+    GISPid ! traceContent,
+
+
+    RootTimeManagerPid ! { start, self() },
+
+    ?test_info( "Waiting for the simulation to end, "
+                "since having been declared as a simulation listener." ),
+
+    receive
+
+        simulation_stopped ->
+            ?test_info( "Simulation stopped spontaneously, "
+                        "specified stop tick must have been reached." )
+
+    end,
+
+    GISPid ! delete,
+
+    IsBatch orelse
         begin
 
-			RoadNetworkPid !
-				{ displayRenderingIn, [ OutputDirectory ], self() },
+            RoadNetworkPid !
+                { displayRenderingIn, [ OutputDirectory ], self() },
 
-			test_receive( rendering_displayed )
+            test_receive( rendering_displayed )
 
         end,
 
 
-	?test_info( "Browsing the report results, if in batch mode." ),
-	class_ResultManager:browse_reports(),
+    ?test_info( "Browsing the report results, if in batch mode." ),
+    class_ResultManager:browse_reports(),
 
-	sim_diasca:shutdown(),
+    sim_diasca:shutdown(),
 
-	case StopShell of
+    case StopShell of
 
-		true ->
-			% Stopping the VM:
-			?case_stop;
+        true ->
+            % Stopping the VM:
+            ?case_stop;
 
-		false ->
-			% Stays on shell:
-			?case_stop_on_shell
+        false ->
+            % Stays on shell:
+            ?case_stop_on_shell
 
-	end.
+    end.

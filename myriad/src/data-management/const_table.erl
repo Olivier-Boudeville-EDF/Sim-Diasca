@@ -1,4 +1,4 @@
-% Copyright (C) 2015-2025 Olivier Boudeville
+% Copyright (C) 2015-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -153,39 +153,39 @@ operation remains fully in-memory.
 -spec generate_in_memory( module_name(), entries() ) -> void().
 generate_in_memory( ModuleName, Entries ) ->
 
-	cond_utils:if_defined( myriad_debug_code_generation,
-		trace_utils:debug_fmt( "Generating pseudo-module '~ts' from following "
-			"entries:~n~ts",
-			[ ModuleName, list_table:to_string( Entries ) ] ) ),
+    cond_utils:if_defined( myriad_debug_code_generation,
+        trace_utils:debug_fmt( "Generating pseudo-module '~ts' from following "
+            "entries:~n~ts",
+            [ ModuleName, list_table:to_string( Entries ) ] ) ),
 
-	% Just a name here, not designating any actual file:
-	ModulePseudoFilename = get_generated_beam_filename_for( ModuleName ),
+    % Just a name here, not designating any actual file:
+    ModulePseudoFilename = get_generated_beam_filename_for( ModuleName ),
 
-	Forms = generate_forms( ModuleName, Entries ),
-	%trace_utils:debug_fmt( "Generated forms:~p", [ Forms ] ),
+    Forms = generate_forms( ModuleName, Entries ),
+    %trace_utils:debug_fmt( "Generated forms:~p", [ Forms ] ),
 
-	% Not wanting an actual file:
-	CompileOpts = [ binary | meta_utils:get_compile_base_opts() ],
+    % Not wanting an actual file:
+    CompileOpts = [ binary | meta_utils:get_compile_base_opts() ],
 
-	BinaryObjectCode = case compile:forms( Forms, CompileOpts ) of
+    BinaryObjectCode = case compile:forms( Forms, CompileOpts ) of
 
-		% Matches the module name:
-		{ ok, ModuleName, Binary } ->
-			Binary;
+        % Matches the module name:
+        { ok, ModuleName, Binary } ->
+            Binary;
 
-		Error ->
-			throw( { module_generation_failed, ModuleName, Error } )
+        Error ->
+            throw( { module_generation_failed, ModuleName, Error } )
 
-	end,
+    end,
 
-	code:load_binary( ModuleName, ModulePseudoFilename, BinaryObjectCode ).
+    code:load_binary( ModuleName, ModulePseudoFilename, BinaryObjectCode ).
 
-	% Contains for example '{foobar,"const_table_generated_foobar.beam"}':
-	%
-	%trace_utils:debug_fmt( "Loaded modules:~n~p", [ code:all_loaded() ] ),
+    % Contains for example '{foobar,"const_table_generated_foobar.beam"}':
+    %
+    %trace_utils:debug_fmt( "Loaded modules:~n~p", [ code:all_loaded() ] ),
 
-	% We loaded this new module also as otherwise any previous various version
-	% of it would still be used instead.
+    % We loaded this new module also as otherwise any previous various version
+    % of it would still be used instead.
 
 
 
@@ -199,8 +199,8 @@ Returns the generated filename (not path), for any further reference.
 """.
 -spec generate_in_file( module_name(), entries() ) -> file_name().
 generate_in_file( ModuleName, Entries ) ->
-	generate_in_file( ModuleName, Entries,
-					  file_utils:get_current_directory() ).
+    generate_in_file( ModuleName, Entries,
+                      file_utils:get_current_directory() ).
 
 
 
@@ -217,47 +217,47 @@ The resulting module is not loaded by this function.
 Returns the generated filename (not path), for any further reference.
 """.
 -spec generate_in_file( module_name(), entries(), any_directory_path() ) ->
-														file_name().
+                                                        file_name().
 generate_in_file( ModuleName, Entries, TargetDir ) ->
 
-	file_utils:is_existing_directory_or_link( TargetDir ) orelse
-		throw( { non_existing_output_directory, TargetDir } ),
+    file_utils:is_existing_directory_or_link( TargetDir ) orelse
+        throw( { non_existing_output_directory, TargetDir } ),
 
-	ModuleFilename = get_generated_beam_filename_for( ModuleName ),
+    ModuleFilename = get_generated_beam_filename_for( ModuleName ),
 
-	cond_utils:if_defined( myriad_debug_code_generation,
-		trace_utils:debug_fmt( "Generating module '~ts' in file '~ts', in the "
-			"'~ts' directory, for ~ts.", [ ModuleName, ModuleFilename,
-				TargetDir, list_table:to_string( Entries ) ] ) ),
+    cond_utils:if_defined( myriad_debug_code_generation,
+        trace_utils:debug_fmt( "Generating module '~ts' in file '~ts', in the "
+            "'~ts' directory, for ~ts.", [ ModuleName, ModuleFilename,
+                TargetDir, list_table:to_string( Entries ) ] ) ),
 
-	Forms = generate_forms( ModuleName, Entries ),
-	%trace_utils:debug_fmt( "Generated forms:~p", [ Forms ] ),
+    Forms = generate_forms( ModuleName, Entries ),
+    %trace_utils:debug_fmt( "Generated forms:~p", [ Forms ] ),
 
-	CompileOpts =
-		[ { outdir, TargetDir } | meta_utils:get_compile_base_opts() ],
+    CompileOpts =
+        [ { outdir, TargetDir } | meta_utils:get_compile_base_opts() ],
 
-	BinaryObjectCode = case compile:forms( Forms, CompileOpts ) of
+    BinaryObjectCode = case compile:forms( Forms, CompileOpts ) of
 
-		% Matches the module name; apparently 'binary' is implicit and thus no
-		% file is written:
-		%
-		{ ok, ModuleName, Binary } ->
-			Binary;
+        % Matches the module name; apparently 'binary' is implicit and thus no
+        % file is written:
+        %
+        { ok, ModuleName, Binary } ->
+            Binary;
 
-		Error ->
-			throw( { module_generation_failed, ModuleName, Error } )
+        Error ->
+            throw( { module_generation_failed, ModuleName, Error } )
 
-	end,
+    end,
 
-	% So we do it by ourselves:
-	TargetFilePath = file_utils:join( TargetDir, ModuleFilename ),
-	file_utils:write_whole( TargetFilePath, BinaryObjectCode ),
+    % So we do it by ourselves:
+    TargetFilePath = file_utils:join( TargetDir, ModuleFilename ),
+    file_utils:write_whole( TargetFilePath, BinaryObjectCode ),
 
-	cond_utils:if_defined( myriad_check_code_generation,
-		file_utils:is_existing_file( TargetFilePath ) orelse
-			throw( { no_module_file_generated, TargetFilePath } ) ),
+    cond_utils:if_defined( myriad_check_code_generation,
+        file_utils:is_existing_file( TargetFilePath ) orelse
+            throw( { no_module_file_generated, TargetFilePath } ) ),
 
-	ModuleFilename.
+    ModuleFilename.
 
 
 
@@ -271,51 +271,51 @@ Returns a filename corresponding to the specified BEAM module to be generated.
 -spec get_generated_beam_filename_for( module_name() ) -> file_name().
 get_generated_beam_filename_for( ModName ) ->
 
-	% Clearer, but longer, and anyway the runtime will expect ModName, not
-	% another atom:
-	%
-	%"const_table_generated_" ++ code_utils:get_beam_filename( ModName ).
-	code_utils:get_beam_filename( ModName ).
+    % Clearer, but longer, and anyway the runtime will expect ModName, not
+    % another atom:
+    %
+    %"const_table_generated_" ++ code_utils:get_beam_filename( ModName ).
+    code_utils:get_beam_filename( ModName ).
 
 
 
 % Generates the forms corresponding to the specified entries and module.
 generate_forms( ModuleName, Entries ) ->
 
-	Line = 0,
+    Line = 0,
 
-	% We prefer defining the entries in their specified order; preferably ends
-	% with end of file:
-	%
-	% (refer to https://www.erlang.org/doc/apps/erts/absform.html)
-	%
-	FunForms = generate_fun_forms( lists:reverse( Entries ), Line,
-								   _Acc=[ { eof, Line } ] ),
+    % We prefer defining the entries in their specified order; preferably ends
+    % with end of file:
+    %
+    % (refer to https://www.erlang.org/doc/apps/erts/absform.html)
+    %
+    FunForms = generate_fun_forms( lists:reverse( Entries ), Line,
+                                   _Acc=[ { eof, Line } ] ),
 
-	[ { attribute, Line, module, ModuleName } | FunForms ].
+    [ { attribute, Line, module, ModuleName } | FunForms ].
 
 
 
 % Generates the forms corresponding to 'foo() -> 42.0':
 generate_fun_forms( _Entries=[], _Line, AccForms ) ->
-	AccForms;
+    AccForms;
 
 
 generate_fun_forms( _Entries=[ { K, V } | T ], Line, AccForms )
-												when is_atom( K ) ->
+                                                when is_atom( K ) ->
 
-	% We have here to generate a function K/0 returning a constant V (e.g.
-	% V=42.0):
+    % We have here to generate a function K/0 returning a constant V (e.g.
+    % V=42.0):
 
-	% For example returns '{float,0,42.0}' (as a term):
-	ASTForV = ast_utils:term_to_form( V ),
+    % For example returns '{float,0,42.0}' (as a term):
+    ASTForV = ast_utils:term_to_form( V ),
 
-	FunForm = { function, Line, K, _Arity=0,
-				[ { clause, Line, _PatternSeq=[], _GuardSeq=[],
-					_Body=[ ASTForV ] } ] },
+    FunForm = { function, Line, K, _Arity=0,
+                [ { clause, Line, _PatternSeq=[], _GuardSeq=[],
+                    _Body=[ ASTForV ] } ] },
 
-	generate_fun_forms( T,  Line, [ FunForm | AccForms ] );
+    generate_fun_forms( T,  Line, [ FunForm | AccForms ] );
 
 
 generate_fun_forms( _Entries=[ { K, _V } | _T ], _Line, _AccForms ) ->
-	throw( { non_atom_key, K } ).
+    throw( { non_atom_key, K } ).

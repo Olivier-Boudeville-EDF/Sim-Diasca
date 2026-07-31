@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -42,71 +42,71 @@ See the class_Identifiable module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	test_facilities:display( "Creating a test Identifiable." ),
+    test_facilities:display( "Creating a test Identifiable." ),
 
-	% We use here sortable identifiers:
-	FirstIdentifier = id_utils:get_initial_sortable_id(),
+    % We use here sortable identifiers:
+    FirstIdentifier = id_utils:get_initial_sortable_id(),
 
-	FirstIdentifiable = class_Identifiable:new_link( FirstIdentifier ),
+    FirstIdentifiable = class_Identifiable:new_link( FirstIdentifier ),
 
-	FirstIdentifiable ! { getIdentifier, [], self() },
+    FirstIdentifiable ! { getIdentifier, [], self() },
 
-	% Check:
-	FirstIdentifier = receive
+    % Check:
+    FirstIdentifier = receive
 
-		{ wooper_result, FirstId } ->
-			FirstId
+        { wooper_result, FirstId } ->
+            FirstId
 
-	end,
+    end,
 
-	test_facilities:display( "Correct identifier returned: '~ts'.",
-		[ id_utils:sortable_id_to_string( FirstIdentifier ) ] ),
-
-
-	SecondIdentifier = id_utils:get_next_sortable_id( FirstIdentifier ),
-
-	FirstIdentifiable ! { setIdentifier, [ SecondIdentifier ] },
-
-	FirstIdentifiable ! { getIdentifier, [], self() },
-
-	% Check:
-	SecondIdentifier = receive
-
-		{ wooper_result, SecondId } ->
-			SecondId
-
-	end,
-
-	test_facilities:display( "Correct new identifier returned: '~ts'.",
-		[ id_utils:sortable_id_to_string( SecondIdentifier ) ] ),
+    test_facilities:display( "Correct identifier returned: '~ts'.",
+        [ id_utils:sortable_id_to_string( FirstIdentifier ) ] ),
 
 
-	ThirdIdentifier =
-		id_utils:get_sortable_id_between( FirstIdentifier, SecondIdentifier ),
+    SecondIdentifier = id_utils:get_next_sortable_id( FirstIdentifier ),
 
-	SecondIdentifiable = class_Identifiable:new_link( ThirdIdentifier ),
+    FirstIdentifiable ! { setIdentifier, [ SecondIdentifier ] },
+
+    FirstIdentifiable ! { getIdentifier, [], self() },
+
+    % Check:
+    SecondIdentifier = receive
+
+        { wooper_result, SecondId } ->
+            SecondId
+
+    end,
+
+    test_facilities:display( "Correct new identifier returned: '~ts'.",
+        [ id_utils:sortable_id_to_string( SecondIdentifier ) ] ),
 
 
-	FirstIdentifiable ! { compareWith, [ SecondIdentifiable ], self() },
+    ThirdIdentifier =
+        id_utils:get_sortable_id_between( FirstIdentifier, SecondIdentifier ),
 
-	receive
+    SecondIdentifiable = class_Identifiable:new_link( ThirdIdentifier ),
 
-		{ wooper_result, false } ->
-			ok;
 
-		{ wooper_result, true } ->
-			throw( { incorrect_id_comparison, FirstIdentifiable,
-					 SecondIdentifiable } )
+    FirstIdentifiable ! { compareWith, [ SecondIdentifiable ], self() },
 
-	end,
+    receive
 
-	true = class_Identifiable:compare( FirstIdentifiable, FirstIdentifiable ),
-	true = class_Identifiable:compare( SecondIdentifiable, SecondIdentifiable ),
-	false = class_Identifiable:compare( FirstIdentifiable, SecondIdentifiable ),
+        { wooper_result, false } ->
+            ok;
 
-	wooper:delete_synchronously_instances(
-		[ FirstIdentifiable, SecondIdentifiable ] ),
+        { wooper_result, true } ->
+            throw( { incorrect_id_comparison, FirstIdentifiable,
+                     SecondIdentifiable } )
 
-	test_facilities:stop().
+    end,
+
+    true = class_Identifiable:compare( FirstIdentifiable, FirstIdentifiable ),
+    true = class_Identifiable:compare( SecondIdentifiable, SecondIdentifiable ),
+    false = class_Identifiable:compare( FirstIdentifiable, SecondIdentifiable ),
+
+    wooper:delete_synchronously_instances(
+        [ FirstIdentifiable, SecondIdentifiable ] ),
+
+    test_facilities:stop().

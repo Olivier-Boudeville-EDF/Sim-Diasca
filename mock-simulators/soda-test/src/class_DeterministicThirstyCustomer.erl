@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -25,7 +25,7 @@
 
 
 -define( class_description,
-		 "Class modelling a deterministic thirsty customer." ).
+         "Class modelling a deterministic thirsty customer." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -61,30 +61,30 @@ ticks.
 % The class-specific attributes of a deterministic thirsty customer are:
 -define( class_attributes, [
 
-	{ known_machine_pid, machine_pid(),
-	  "the PID of the soda-vending machine that this customer knows" },
+    { known_machine_pid, machine_pid(),
+      "the PID of the soda-vending machine that this customer knows" },
 
-	{ can_cost, option( amount() ), "the cost of a can from this machine (as a "
-	  "floating-point number of euros)" },
+    { can_cost, option( amount() ), "the cost of a can from this machine (as a "
+      "floating-point number of euros)" },
 
-	{ repletion_duration, option( tick_offset() ),
-	  "the duration before, once having drunk, this customer will be thirsty "
-	  "again" },
+    { repletion_duration, option( tick_offset() ),
+      "the duration before, once having drunk, this customer will be thirsty "
+      "again" },
 
-	{ next_thirsty_tick, tick_offset(),
-	  "the next tick offset at which this customer will be thirsty again" },
+    { next_thirsty_tick, tick_offset(),
+      "the next tick offset at which this customer will be thirsty again" },
 
-	{ current_money, amount(),
-	  "the (floating-point) number of euros this customer has in pocket" },
+    { current_money, amount(),
+      "the (floating-point) number of euros this customer has in pocket" },
 
-	{ transaction_in_progress, boolean(),
-	  "tells whether a transaction with its machine is in progress" } ] ).
+    { transaction_in_progress, boolean(),
+      "tells whether a transaction with its machine is in progress" } ] ).
 
 
 
 % Must be included before class_TraceEmitter header:
 -define( trace_emitter_categorization,
-		 "Soda-test.DeterministicThirstyCustomer" ).
+         "Soda-test.DeterministicThirstyCustomer" ).
 
 
 % Allows to use macros for trace sending:
@@ -118,30 +118,30 @@ anymore
 - InitialBudget is the amount of money this actor has in his pocket initially
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 class_Actor:name(), machine_pid(), duration(), amount() ) ->
-						wooper:state().
+                 class_Actor:name(), machine_pid(), duration(), amount() ) ->
+                        wooper:state().
 construct( State, ActorSettings, CustomerName, KnownMachinePid,
-		   RepletionDuration, InitialBudget ) ->
+           RepletionDuration, InitialBudget ) ->
 
-	ActorState = class_Actor:construct( State, ActorSettings,
-										?trace_categorize(CustomerName) ),
+    ActorState = class_Actor:construct( State, ActorSettings,
+                                        ?trace_categorize(CustomerName) ),
 
-	?send_info_fmt( ActorState,
-		"Creating a deterministic thirsty customer named '~ts', "
-		"having initially ~.2f euro(s), knowing the following vending machine: "
-		"~w and being thirsty ~B minutes after having drunk.",
-		[ CustomerName, InitialBudget, KnownMachinePid, RepletionDuration ] ),
+    ?send_info_fmt( ActorState,
+        "Creating a deterministic thirsty customer named '~ts', "
+        "having initially ~.2f euro(s), knowing the following vending machine: "
+        "~w and being thirsty ~B minutes after having drunk.",
+        [ CustomerName, InitialBudget, KnownMachinePid, RepletionDuration ] ),
 
-	% From minutes to ticks:
-	TickRepletionDuration = class_Actor:convert_seconds_to_ticks(
-		60*RepletionDuration, ActorState ),
+    % From minutes to ticks:
+    TickRepletionDuration = class_Actor:convert_seconds_to_ticks(
+        60*RepletionDuration, ActorState ),
 
-	setAttributes( ActorState, [ { known_machine_pid, KnownMachinePid },
-								 { can_cost, undefined },
-								 { repletion_duration, TickRepletionDuration },
-								 { next_thirsty_tick, undefined },
-								 { current_money, InitialBudget },
-								 { transaction_in_progress, false } ] ).
+    setAttributes( ActorState, [ { known_machine_pid, KnownMachinePid },
+                                 { can_cost, undefined },
+                                 { repletion_duration, TickRepletionDuration },
+                                 { next_thirsty_tick, undefined },
+                                 { current_money, InitialBudget },
+                                 { transaction_in_progress, false } ] ).
 
 
 
@@ -149,14 +149,14 @@ construct( State, ActorSettings, CustomerName, KnownMachinePid,
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
-	% Class-specific actions:
+    % Class-specific actions:
 
-	?notice_fmt( "Deleting deterministic thirsty customer named '~ts', "
-		"who had finally ~.2f euros left in pocket.",
-		[ ?getAttr(name), ?getAttr(current_money) ] ),
+    ?notice_fmt( "Deleting deterministic thirsty customer named '~ts', "
+        "who had finally ~.2f euros left in pocket.",
+        [ ?getAttr(name), ?getAttr(current_money) ] ),
 
-	% Then allow chaining:
-	State.
+    % Then allow chaining:
+    State.
 
 
 
@@ -173,12 +173,12 @@ destruct( State ) ->
                                             actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
-	?debug( "Just deciding at first diasca to schedule our next "
-			"spontaneous tick." ),
+    ?debug( "Just deciding at first diasca to schedule our next "
+            "spontaneous tick." ),
 
-	ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),
+    ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),
 
-	actor:return_state( ScheduledState ).
+    actor:return_state( ScheduledState ).
 
 
 
@@ -186,26 +186,26 @@ onFirstDiasca( State, _SendingActorPid ) ->
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
-	NewState = case ?getAttr(can_cost) of
+    NewState = case ?getAttr(can_cost) of
 
-		undefined ->
-			request_cost( State );
+        undefined ->
+            request_cost( State );
 
-		% Could happen if the vending machine answered after a delay:
-		requested ->
-			?notice( "Price quote from the machine being requested." ),
+        % Could happen if the vending machine answered after a delay:
+        requested ->
+            ?notice( "Price quote from the machine being requested." ),
 
-			% We already know we will be scheduled next, to know then the cost
-			% of a can; nothing to do here, just wait:
-			%
-			State;
+            % We already know we will be scheduled next, to know then the cost
+            % of a can; nothing to do here, just wait:
+            %
+            State;
 
-		_ ->
-			manage_thirst( State )
+        _ ->
+            manage_thirst( State )
 
-	end,
+    end,
 
-	wooper:return_state( NewState ).
+    wooper:return_state( NewState ).
 
 
 
@@ -214,19 +214,19 @@ actSpontaneous( State ) ->
                                                 actor_oneway_return().
 setCanCost( State, CanCost, MachinePid ) ->
 
-	?debug_fmt( "The vending machine answered that a can costs ~w euros.",
-				[ CanCost ] ),
+    ?debug_fmt( "The vending machine answered that a can costs ~w euros.",
+                [ CanCost ] ),
 
-	% Sanity checks:
-	MachinePid = ?getAttr(known_machine_pid),
-	requested = ?getAttr(can_cost),
+    % Sanity checks:
+    MachinePid = ?getAttr(known_machine_pid),
+    requested = ?getAttr(can_cost),
 
-	% Now, we are able to enter the thirsty/not thirsty loop, starting as if not
-	% thirsty at all:
-	%
-	ThirstyState = set_next_thirsty_tick( State ),
+    % Now, we are able to enter the thirsty/not thirsty loop, starting as if not
+    % thirsty at all:
+    %
+    ThirstyState = set_next_thirsty_tick( State ),
 
-	actor:return_state( setAttribute( ThirstyState, can_cost, CanCost ) ).
+    actor:return_state( setAttribute( ThirstyState, can_cost, CanCost ) ).
 
 
 
@@ -236,22 +236,22 @@ Called by the machine in return to a orderSoda/3 call, when a can was available.
 -spec getCan( wooper:state(), sending_actor_pid() ) -> actor_oneway_return().
 getCan( State, _SendingMachinePid ) ->
 
-	% To test the proper simulation teardown should an actor fail:
-	%basic_utils:crash(),
+    % To test the proper simulation teardown should an actor fail:
+    %basic_utils:crash(),
 
-	% To test how a method taking a longer duration is reported:
-	%timer:sleep( 5 * 60 * 1000 ),
-	%basic_utils:freeze(),
+    % To test how a method taking a longer duration is reported:
+    %timer:sleep( 5 * 60 * 1000 ),
+    %basic_utils:freeze(),
 
-	?notice( "Received a can, drank it, no more thirsty for a while." ),
+    ?notice( "Received a can, drank it, no more thirsty for a while." ),
 
-	MoneyState = subtractFromAttribute( State, current_money,
-										?getAttr(can_cost) ),
+    MoneyState = subtractFromAttribute( State, current_money,
+                                        ?getAttr(can_cost) ),
 
-	FinishState = setAttribute( MoneyState, transaction_in_progress, false ),
+    FinishState = setAttribute( MoneyState, transaction_in_progress, false ),
 
-	% Plan the next thirsty moment:
-	actor:return_state( set_next_thirsty_tick( FinishState ) ).
+    % Plan the next thirsty moment:
+    actor:return_state( set_next_thirsty_tick( FinishState ) ).
 
 
 
@@ -262,10 +262,10 @@ Called whenever a can was requested to a machine, whereas none is available.
                                             actor_oneway_return().
 onNoCanAvailable( State, _SendingMachinePid ) ->
 
-	?notice( "Could not have soda, the machine had no can left." ),
+    ?notice( "Could not have soda, the machine had no can left." ),
 
-	% Will retry next:
-	actor:return_state( setAttribute( State, transaction_in_progress, false ) ).
+    % Will retry next:
+    actor:return_state( setAttribute( State, transaction_in_progress, false ) ).
 
 
 
@@ -277,11 +277,11 @@ Called whenever the customer requested a new can but actually cannot afford it
                                             actor_oneway_return().
 onNotEnoughMoney( State, MachinePid ) ->
 
-	?error_fmt( "Still having ~.2f euros but unable to buy a can from ~w that "
-		"should cost ~.2f euros, this soda vending machine is a crook.",
-		[ ?getAttr(current_money), MachinePid, ?getAttr(can_cost) ] ),
+    ?error_fmt( "Still having ~.2f euros but unable to buy a can from ~w that "
+        "should cost ~.2f euros, this soda vending machine is a crook.",
+        [ ?getAttr(current_money), MachinePid, ?getAttr(can_cost) ] ),
 
-	actor:return_state( setAttribute( State, transaction_in_progress, false ) ).
+    actor:return_state( setAttribute( State, transaction_in_progress, false ) ).
 
 
 
@@ -297,11 +297,11 @@ Triggers back a `setCanCost/3` call.
 -spec request_cost( wooper:state() ) -> wooper:state().
 request_cost( State ) ->
 
-	?notice( "Investigating how much a soda costs; requesting the machine." ),
+    ?notice( "Investigating how much a soda costs; requesting the machine." ),
 
-	% Expect our setCanCost/3 oneway to be called back by the vending machine:
-	class_Actor:send_actor_message( ?getAttr(known_machine_pid), getCanCost,
-		setAttribute( State, can_cost, requested ) ).
+    % Expect our setCanCost/3 oneway to be called back by the vending machine:
+    class_Actor:send_actor_message( ?getAttr(known_machine_pid), getCanCost,
+        setAttribute( State, can_cost, requested ) ).
 
 
 
@@ -309,70 +309,70 @@ request_cost( State ) ->
 -spec manage_thirst( wooper:state() ) -> wooper:state().
 manage_thirst( State ) ->
 
-	case is_thirsty( State ) of
+    case is_thirsty( State ) of
 
-		true ->
-			case ?getAttr(transaction_in_progress) of
+        true ->
+            case ?getAttr(transaction_in_progress) of
 
-				true ->
-					% Do nothing until it is over, just wait:
-					?debug( "Cost transaction in progress, waiting..."),
-					State;
+                true ->
+                    % Do nothing until it is over, just wait:
+                    ?debug( "Cost transaction in progress, waiting..."),
+                    State;
 
-				false ->
-					% Here we need to drink, let's try to do so by ordering a
-					% soda:
-					%
-					% (we specify our budget, but the machine has the final
-					% word)
-					%
-					Budget = ?getAttr(current_money),
-					CanCost = ?getAttr(can_cost),
+                false ->
+                    % Here we need to drink, let's try to do so by ordering a
+                    % soda:
+                    %
+                    % (we specify our budget, but the machine has the final
+                    % word)
+                    %
+                    Budget = ?getAttr(current_money),
+                    CanCost = ?getAttr(can_cost),
 
-					case CanCost of
+                    case CanCost of
 
-						Cost when Cost > Budget ->
+                        Cost when Cost > Budget ->
 
-							?notice_fmt( "Thirsty, but not having enough money:"
-								" a can costs ~.2f euros, whereas having only "
-								"~.2f euro(s).", [ CanCost, Budget ] ),
+                            ?notice_fmt( "Thirsty, but not having enough money:"
+                                " a can costs ~.2f euros, whereas having only "
+                                "~.2f euro(s).", [ CanCost, Budget ] ),
 
-							% No scheduling planned here, implies being passive
-							% from now on:
-							%
-							State;
+                            % No scheduling planned here, implies being passive
+                            % from now on:
+                            %
+                            State;
 
 
-						_ ->
-							% We should be able to afford the can; instead of
-							% disclosing its budget to the machine, a customer
-							% could just order a can based on its (known by
-							% design) exact cost:
+                        _ ->
+                            % We should be able to afford the can; instead of
+                            % disclosing its budget to the machine, a customer
+                            % could just order a can based on its (known by
+                            % design) exact cost:
 
-							?notice_fmt(
-								"Thirsty and having enough money (~.2f euros), "
-								"trying to buy a can.", [ Budget ] ),
+                            ?notice_fmt(
+                                "Thirsty and having enough money (~.2f euros), "
+                                "trying to buy a can.", [ Budget ] ),
 
-							class_Actor:send_actor_message(
-								?getAttr(known_machine_pid),
-								{ orderSoda, Budget },
-								setAttribute( State, transaction_in_progress,
-											  true ) )
+                            class_Actor:send_actor_message(
+                                ?getAttr(known_machine_pid),
+                                { orderSoda, Budget },
+                                setAttribute( State, transaction_in_progress,
+                                              true ) )
 
-					end
+                    end
 
-			end;
+            end;
 
-		false ->
+        false ->
 
-			%?notice( "Feeling fine, not thirsty currently." ),
+            %?notice( "Feeling fine, not thirsty currently." ),
 
-			% We could jump directly to the moment this customer will be thirsty
-			% again:
-			%
-			executeOneway( State, scheduleNextSpontaneousTick )
+            % We could jump directly to the moment this customer will be thirsty
+            % again:
+            %
+            executeOneway( State, scheduleNextSpontaneousTick )
 
-	end.
+    end.
 
 
 
@@ -380,17 +380,17 @@ manage_thirst( State ) ->
 -spec is_thirsty( wooper:state() ) -> boolean().
 is_thirsty( State ) ->
 
-	CurrentTick = class_Actor:get_current_tick_offset( State ),
+    CurrentTick = class_Actor:get_current_tick_offset( State ),
 
-	case ?getAttr(next_thirsty_tick) of
+    case ?getAttr(next_thirsty_tick) of
 
-		ThirstTick when CurrentTick >= ThirstTick ->
-			true;
+        ThirstTick when CurrentTick >= ThirstTick ->
+            true;
 
-		_ ->
-			false
+        _ ->
+            false
 
-	end.
+    end.
 
 
 
@@ -398,14 +398,14 @@ is_thirsty( State ) ->
 -spec set_next_thirsty_tick( wooper:state() ) -> wooper:state().
 set_next_thirsty_tick( State ) ->
 
-	DurationInTicks = ?getAttr(repletion_duration),
+    DurationInTicks = ?getAttr(repletion_duration),
 
-	NextThirstyTick = class_Actor:get_current_tick_offset( State )
-		+ DurationInTicks,
+    NextThirstyTick = class_Actor:get_current_tick_offset( State )
+        + DurationInTicks,
 
-	ThirstyState = setAttribute( State, next_thirsty_tick, NextThirstyTick ),
+    ThirstyState = setAttribute( State, next_thirsty_tick, NextThirstyTick ),
 
-	?info_fmt( "Determined that will be thirsty again in ~B ticks.",
-			   [ DurationInTicks ] ),
+    ?info_fmt( "Determined that will be thirsty again in ~B ticks.",
+               [ DurationInTicks ] ),
 
-	executeOneway( ThirstyState, scheduleNextSpontaneousTick ).
+    executeOneway( ThirstyState, scheduleNextSpontaneousTick ).

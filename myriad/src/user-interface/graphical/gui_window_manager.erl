@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -40,13 +40,13 @@ More generally offers global, application-wide features.
 The name of a window, typically designating its role (e.g. 'top_frame').
 """.
 -type window_name() :: atom().
- 
+
 
 -export_type([ window_name/0 ]).
 
 
 -export([ is_maximised/0, maximize/0, set_title/1,
-		  reset_opengl_video_mode/2, quit/0 ]).
+          reset_opengl_video_mode/2, quit/0 ]).
 
 -compile( { inline, [ get_env/1 ] } ).
 
@@ -67,14 +67,14 @@ Tells whether the application - that is its top-level window - is maximised.
 """.
 -spec is_maximised() -> boolean().
 is_maximised() ->
-	gui:is_maximised( get_env( top_level_window ) ).
+    gui:is_maximised( get_env( top_level_window ) ).
 
 
 
 -doc "Maximises or restores the application - that is its top-level window.".
 -spec maximize() -> void().
 maximize() ->
-	gui:maximize( get_env( top_level_window ) ).
+    gui:maximize( get_env( top_level_window ) ).
 
 
 
@@ -83,7 +83,7 @@ Sets the title of the application - that is the one of its top-level window.
 """.
 -spec set_title( title() ) -> void().
 set_title( Title ) ->
-	gui:set_title( get_env( top_level_window ), Title ).
+    gui:set_title( get_env( top_level_window ), Title ).
 
 
 
@@ -94,18 +94,18 @@ Apparently needed by Mac OS.
 """.
 -spec reset_opengl_video_mode( width(), height() ) -> void().
 reset_opengl_video_mode( _Width, _Height ) ->
-	[ GLCanvas, GLContext ] = get_env( [ gl_canvas, gl_context ] ),
-	gui:set_focus( GLCanvas ),
-	gui_opengl:set_context( GLCanvas, GLContext).
+    [ GLCanvas, GLContext ] = get_env( [ gl_canvas, gl_context ] ),
+    gui:set_focus( GLCanvas ),
+    gui_opengl:set_context( GLCanvas, GLContext).
 
 
 
 -doc "Quits the application.".
 -spec quit() -> void().
 quit() ->
-	TopWindow = get_env( top_level_window  ),
-	gui:destruct_window( TopWindow ),
-	gui:stop().
+    TopWindow = get_env( top_level_window  ),
+    gui:destruct_window( TopWindow ),
+    gui:stop().
 
 
 
@@ -116,4 +116,4 @@ Returns the value associated to the specified key in the MyriadGUI environment.
 """.
 -spec get_env( environment:key() ) -> term().
 get_env( Key ) ->
-	environment:get( Key, _Designator=?gui_env_reg_name ).
+    environment:get( Key, _Designator=?gui_env_reg_name ).

@@ -1,4 +1,3 @@
-
 .. _services:
 
 ----------------------------------------
@@ -34,4 +33,3 @@ In future versions of this document, following topics will be discussed:
 Even if this document does not constitute an exhaustive walk-through, each of them is detailed in turn below.
 
 The next level of detail is either to browse the `Myriad API documentation <api-doc/index.html>`_ or simply to peer at the referenced `source files <https://github.com/Olivier-Boudeville/Ceylan-Myriad>`_, as they include many implementation notes, comments and typing information.
-

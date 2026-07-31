@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -90,12 +90,12 @@ It should be destructed thanks to destruct_bitmap/1, not destruct/1.
 
 
 -export_type([ button/0, button_ref/0, toggle_button/0, bitmap_button/0,
-			   any_button/0 ]).
+               any_button/0 ]).
 
 
 -doc "An option for the creation of a button.".
 -type button_option() ::
-	{ 'label', label() }
+    { 'label', label() }
   | { 'style', [ button_style() ] }
   | { 'position', point() }
   | { 'size', dimensions() }.
@@ -107,7 +107,7 @@ A style element of a button, see
 <http://docs.wxwidgets.org/stable/classwx_button.html>.
 """.
 -type button_style() ::
-	'left_justified'
+    'left_justified'
   | 'right_justified'
   | 'top_justified'
   | 'bottom_justified'
@@ -118,7 +118,7 @@ A style element of a button, see
 
 -doc "The identifiers of the buttons with icons added by MyriadGUI.".
 -type myriadgui_button_id() ::
-	'left_chevron_green_button' | 'right_chevron_green_button'
+    'left_chevron_green_button' | 'right_chevron_green_button'
   | 'up_chevron_green_button' | 'down_chevron_green_button'.
 
 
@@ -127,10 +127,10 @@ A style element of a button, see
 
 
 -export([ create/2, create/3, create/4, create/6,
-		  create_multiple/2,
-		  create_toggle/3, create_toggle/4,
-		  create_bitmap/3,
-		  set_label/2, destruct/1, destruct_toggle/1, destruct_bitmap/1 ]).
+          create_multiple/2,
+          create_toggle/3, create_toggle/4,
+          create_bitmap/3,
+          set_label/2, destruct/1, destruct_toggle/1, destruct_bitmap/1 ]).
 
 
 % Internal use:
@@ -199,14 +199,14 @@ A style element of a button, see
 -spec create( label(), parent() ) -> button().
 create( Label, Parent ) ->
 
-	Id = ?gui_any_id,
+    Id = ?gui_any_id,
 
-	Options = [ { label, Label } ],
+    Options = [ { label, Label } ],
 
-	%trace_utils:info_fmt( "Button options (for any ID): ~p.",
-	%                      [ Id, Options ] ),
+    %trace_utils:info_fmt( "Button options (for any ID): ~p.",
+    %                      [ Id, Options ] ),
 
-	wxButton:new( Parent, Id, Options ).
+    wxButton:new( Parent, Id, Options ).
 
 
 
@@ -214,16 +214,16 @@ create( Label, Parent ) ->
 -spec create( label(), id(), parent() ) -> button().
 create( Label, Id, Parent ) ->
 
-	Options = [ { label, Label } ],
+    Options = [ { label, Label } ],
 
-	BackendId = gui_id:declare_any_id( Id ),
+    BackendId = gui_id:declare_any_id( Id ),
 
-	cond_utils:if_defined( myriad_debug_gui_buttons,
-		trace_utils:debug_fmt( "Button options for ~ts (backend ~ts): ~p.",
-			[ gui_id:id_to_string( Id ), gui_id:id_to_string( BackendId ),
-			  Options ] ) ),
+    cond_utils:if_defined( myriad_debug_gui_buttons,
+        trace_utils:debug_fmt( "Button options for ~ts (backend ~ts): ~p.",
+            [ gui_id:id_to_string( Id ), gui_id:id_to_string( BackendId ),
+              Options ] ) ),
 
-	wxButton:new( Parent, BackendId, Options ).
+    wxButton:new( Parent, BackendId, Options ).
 
 
 
@@ -234,12 +234,12 @@ parent.
 No 'label' option is to be specified among the options.
 """.
 -spec create( label(), id(), maybe_list( button_option() ), parent() ) ->
-											button().
+                                            button().
 create( Label, Id, Opts, Parent ) ->
 
-	WxOpts = [ { label, Label } | to_wx_button_opts( Opts ) ],
+    WxOpts = [ { label, Label } | to_wx_button_opts( Opts ) ],
 
-	wxButton:new( Parent, gui_id:declare_any_id( Id ), WxOpts ).
+    wxButton:new( Parent, gui_id:declare_any_id( Id ), WxOpts ).
 
 
 
@@ -260,45 +260,45 @@ MyriadGUI icon).
 % a MyriadGUI will return a bitmap_button():
 %
 -spec create( label(), position(), size(), [ button_style() ], id(),
-			  parent() ) -> any_button().
+              parent() ) -> any_button().
 create( Label, Position, Size, Styles, Id, Parent ) ->
 
-	Options = [ { label, Label }, gui_wx_backend:to_wx_position( Position ),
-				gui_wx_backend:to_wx_size( Size ),
-				{ style, button_styles_to_bitmask( Styles ) } ],
+    Options = [ { label, Label }, gui_wx_backend:to_wx_position( Position ),
+                gui_wx_backend:to_wx_size( Size ),
+                { style, button_styles_to_bitmask( Styles ) } ],
 
-	case is_myriadgui_identifier( Id ) of
+    case is_myriadgui_identifier( Id ) of
 
-		true ->
-			% Here we have to emulate a stock button with one of our icons:
+        true ->
+            % Here we have to emulate a stock button with one of our icons:
 
-			ResDir = resource:get_builtin_directory(),
+            ResDir = resource:get_builtin_directory(),
 
-			IconPath = file_utils:join( ResDir, get_icon_filename_for( Id ) ),
+            IconPath = file_utils:join( ResDir, get_icon_filename_for( Id ) ),
 
-			cond_utils:if_defined( myriad_debug_gui_buttons,
-				trace_utils:debug_fmt( "For MyriadGUI button labelled '~ts' "
-					"(~ts), icon path: '~ts'. Options: ~n ~p.",
-					[ Label, gui_id:id_to_string( Id ), IconPath, Options ] ) ),
+            cond_utils:if_defined( myriad_debug_gui_buttons,
+                trace_utils:debug_fmt( "For MyriadGUI button labelled '~ts' "
+                    "(~ts), icon path: '~ts'. Options: ~n ~p.",
+                    [ Label, gui_id:id_to_string( Id ), IconPath, Options ] ) ),
 
-			IconBmp = gui_bitmap:create_from( IconPath ),
+            IconBmp = gui_bitmap:create_from( IconPath ),
 
-			% Identifier declared there:
-			create_bitmap( IconBmp, Id, Parent );
+            % Identifier declared there:
+            create_bitmap( IconBmp, Id, Parent );
 
 
-		false ->
-			BackendId = gui_id:declare_any_id( Id ),
+        false ->
+            BackendId = gui_id:declare_any_id( Id ),
 
-			cond_utils:if_defined( myriad_debug_gui_buttons,
-				trace_utils:debug_fmt( "For stock button labelled '~ts' "
-					"(~ts), got ~ts. Options: ~n ~p.",
-					[ Label, gui_id:id_to_string( Id ),
-					  gui_id:id_to_string( BackendId ), Options ] ) ),
+            cond_utils:if_defined( myriad_debug_gui_buttons,
+                trace_utils:debug_fmt( "For stock button labelled '~ts' "
+                    "(~ts), got ~ts. Options: ~n ~p.",
+                    [ Label, gui_id:id_to_string( Id ),
+                      gui_id:id_to_string( BackendId ), Options ] ) ),
 
-			wxButton:new( Parent, BackendId, Options )
+            wxButton:new( Parent, BackendId, Options )
 
-	end.
+    end.
 
 
 
@@ -308,16 +308,16 @@ Creates (labelled) buttons, with their (single, common) parent specified.
 -spec create_multiple( [ label() ], parent() ) -> [ button() ].
 % Not merged with create/2, as would not be clear enough.
 create_multiple( Labels, Parent ) ->
-	create_multiple_helper( Labels, Parent, _Acc=[] ).
+    create_multiple_helper( Labels, Parent, _Acc=[] ).
 
 
 % (helper)
 create_multiple_helper( _Labels=[], _Parent, Acc ) ->
-	lists:reverse( Acc );
+    lists:reverse( Acc );
 
 create_multiple_helper( [ Label | T ], Parent, Acc ) ->
-	NewButton = create( Label, Parent ),
-	create_multiple_helper( T, Parent, [ NewButton | Acc ] ).
+    NewButton = create( Label, Parent ),
+    create_multiple_helper( T, Parent, [ NewButton | Acc ] ).
 
 
 
@@ -326,7 +326,7 @@ Creates a (labelled) toggle button with the specified identifier and parent.
 """.
 -spec create_toggle( label(), id(), parent() ) -> toggle_button().
 create_toggle( Label, Id, Parent ) ->
-	wxToggleButton:new( Parent, gui_id:declare_any_id( Id ), Label ).
+    wxToggleButton:new( Parent, gui_id:declare_any_id( Id ), Label ).
 
 
 
@@ -337,10 +337,10 @@ parent.
 No 'label' option is to be specified among the options.
 """.
 -spec create_toggle( label(), id(), maybe_list( button_option() ), parent() ) ->
-											toggle_button().
+                                            toggle_button().
 create_toggle( Label, Id, Opts, Parent ) ->
-	wxToggleButton:new( Parent, gui_id:declare_any_id( Id ), Label,
-						to_wx_button_opts( Opts ) ).
+    wxToggleButton:new( Parent, gui_id:declare_any_id( Id ), Label,
+                        to_wx_button_opts( Opts ) ).
 
 
 
@@ -354,20 +354,20 @@ afterwards.
 """.
 -spec create_bitmap( bitmap(), id(), parent() ) -> bitmap_button().
 create_bitmap( Bitmap, Id, Parent ) ->
-	% The button does not take the ownership of the bitmap:
-	B = wxBitmapButton:new( Parent, gui_id:declare_any_id( Id ), Bitmap ),
+    % The button does not take the ownership of the bitmap:
+    B = wxBitmapButton:new( Parent, gui_id:declare_any_id( Id ), Bitmap ),
 
-	% Would still return a functional button:
-	%gui_bitmap:destruct( Bitmap ),
+    % Would still return a functional button:
+    %gui_bitmap:destruct( Bitmap ),
 
-	B.
+    B.
 
 
 
 -doc "Sets the label of the specified button.".
 -spec set_label( button(), label() ) -> void().
 set_label( Button, Label ) ->
-	wxButton:setLabel( Button, Label ).
+    wxButton:setLabel( Button, Label ).
 
 
 
@@ -379,24 +379,24 @@ Apparently is able to deallocate bitmap_button() instances as well.
 -spec destruct( button() ) -> void().
 destruct( Button ) ->
 
-	cond_utils:if_defined( myriad_debug_gui_buttons,
-		trace_utils:debug_fmt( "Destructing basic button '~p'.", [ Button ] ) ),
+    cond_utils:if_defined( myriad_debug_gui_buttons,
+        trace_utils:debug_fmt( "Destructing basic button '~p'.", [ Button ] ) ),
 
-	wxButton:destroy( Button ).
+    wxButton:destroy( Button ).
 
 
 
 -doc "Destructs the specified toggle button.".
 -spec destruct_toggle( toggle_button() ) -> void().
 destruct_toggle( Button ) ->
-	wxToggleButton:destroy( Button ).
+    wxToggleButton:destroy( Button ).
 
 
 
 -doc "Destructs the specified bitmap button.".
 -spec destruct_bitmap( bitmap_button() ) -> void().
 destruct_bitmap( Button ) ->
-	wxBitmapButton:destroy( Button ).
+    wxBitmapButton:destroy( Button ).
 
 
 
@@ -407,31 +407,31 @@ destruct_bitmap( Button ) ->
 -doc "Returns a list of all known MyriadGUI standard button identifiers.".
 -spec get_myriadgui_identifiers() -> [ myriadgui_button_id() ].
 get_myriadgui_identifiers() ->
-	[ left_chevron_green_button, right_chevron_green_button,
-	  up_chevron_green_button, down_chevron_green_button,
+    [ left_chevron_green_button, right_chevron_green_button,
+      up_chevron_green_button, down_chevron_green_button,
 
-	  left_double_chevron_green_button, right_double_chevron_green_button,
-	  up_double_chevron_green_button, down_double_chevron_green_button,
+      left_double_chevron_green_button, right_double_chevron_green_button,
+      up_double_chevron_green_button, down_double_chevron_green_button,
 
-	  left_arrow_green_button, right_arrow_green_button,
-	  up_arrow_green_button, down_arrow_green_button,
+      left_arrow_green_button, right_arrow_green_button,
+      up_arrow_green_button, down_arrow_green_button,
 
-	  left_arrow_red_button, right_arrow_red_button,
-	  up_arrow_red_button, down_arrow_red_button,
+      left_arrow_red_button, right_arrow_red_button,
+      up_arrow_red_button, down_arrow_red_button,
 
-	  left_arrow_black_button, right_arrow_black_button,
-	  up_arrow_black_button, down_arrow_black_button,
+      left_arrow_black_button, right_arrow_black_button,
+      up_arrow_black_button, down_arrow_black_button,
 
-	  move_blue_button, move_black_button,
-	  rotate_black_button, rotate_ccw_blue_button, rotate_cw_blue_button,
+      move_blue_button, move_black_button,
+      rotate_black_button, rotate_ccw_blue_button, rotate_cw_blue_button,
 
-	  scale_black_button,
+      scale_black_button,
 
-	  jump_to_black_button, outbound_black_button, inbound_black_button,
-	  orthographic_black_button, perspective_black_button,
-	  add_bookmark_black_button, go_to_bookmark_black_button,
+      jump_to_black_button, outbound_black_button, inbound_black_button,
+      orthographic_black_button, perspective_black_button,
+      add_bookmark_black_button, go_to_bookmark_black_button,
 
-	  prompt_black_button ].
+      prompt_black_button ].
 
 
 
@@ -441,7 +441,7 @@ MyriadGUI one.
 """.
 -spec is_myriadgui_identifier( button_id() ) -> boolean().
 is_myriadgui_identifier( Id ) ->
-	lists:member( Id, get_myriadgui_identifiers() ).
+    lists:member( Id, get_myriadgui_identifiers() ).
 
 
 
@@ -454,42 +454,42 @@ For example, for an 'left_chevron_green_button' argument, may return
 """.
 -spec get_icon_filename_for( myriadgui_button_id() ) -> filename().
 get_icon_filename_for( Id ) ->
-	IdStr = text_utils:atom_to_string( Id ),
-	Elems = text_utils:split_per_element( IdStr, _Separators=[ $_ ] ),
+    IdStr = text_utils:atom_to_string( Id ),
+    Elems = text_utils:split_per_element( IdStr, _Separators=[ $_ ] ),
 
-	% With a check:
-	{ "button", FirstElems } = list_utils:extract_last_element( Elems ),
+    % With a check:
+    { "button", FirstElems } = list_utils:extract_last_element( Elems ),
 
-	DashStr = text_utils:join( _Sep=$-, FirstElems ),
+    DashStr = text_utils:join( _Sep=$-, FirstElems ),
 
-	% Now relying on symlinks to select the default size:
-	%text_utils:format( "~ts-~B.png", [ DashStr, ?button_icon_size ] ).
-	DashStr ++ ".png".
+    % Now relying on symlinks to select the default size:
+    %text_utils:format( "~ts-~B.png", [ DashStr, ?button_icon_size ] ).
+    DashStr ++ ".png".
 
 
 
 -doc "Converts the specified button options into wx-specific ones.".
 -spec to_wx_button_opts( maybe_list( button_option() ) ) -> list().
 to_wx_button_opts( ButtonOpts ) when is_list( ButtonOpts ) ->
-	[ to_wx_button_opt( BO ) || BO <- ButtonOpts ];
+    [ to_wx_button_opt( BO ) || BO <- ButtonOpts ];
 
 to_wx_button_opts( ButtonOpt ) ->
-	to_wx_button_opts( [ ButtonOpt ] ).
+    to_wx_button_opts( [ ButtonOpt ] ).
 
 
 -doc "Converts the specified button option into the wx-specific one.".
 -spec to_wx_button_opt( button_option() ) -> tuple().
 to_wx_button_opt( ButtonOpt={ label, _Label } ) ->
-	ButtonOpt;
+    ButtonOpt;
 
 to_wx_button_opt( _ButtonOpt={ style, ButtonStyle } ) ->
-	{ style, button_styles_to_bitmask( ButtonStyle ) };
+    { style, button_styles_to_bitmask( ButtonStyle ) };
 
 to_wx_button_opt( _ButtonOpt={ position, Pos } ) ->
-	{ pos, Pos };
+    { pos, Pos };
 
 to_wx_button_opt( _ButtonOpt={ size, Size } ) ->
-	{ sz, Size }.
+    { sz, Size }.
 
 % validator not supported apparently.
 
@@ -503,8 +503,8 @@ wx-specific bit mask.
 """.
 -spec button_styles_to_bitmask( [ button_style() ] ) -> bit_mask().
 button_styles_to_bitmask( Styles ) ->
-	lists:foldl( fun( S, Acc ) ->
-					gui_generated:get_second_for_button_style( S ) bor Acc
-				 end,
-				 _InitialAcc=0,
-				 _List=Styles ).
+    lists:foldl( fun( S, Acc ) ->
+                    gui_generated:get_second_for_button_style( S ) bor Acc
+                 end,
+                 _InitialAcc=0,
+                 _List=Styles ).

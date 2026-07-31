@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 Olivier Boudeville
+% Copyright (C) 2016-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -132,13 +132,13 @@ are related (output edge).
 
 
 -export_type([ iri/0, string_iri/0, any_iri/0,
-			   literal/0, subject/0, predicate/0, object/0, triple/0,
-			   content/0, vocabulary/0, user_vocabulary/0 ]).
+               literal/0, subject/0, predicate/0, object/0, triple/0,
+               content/0, vocabulary/0, user_vocabulary/0 ]).
 
 
 -export([ is_iri/1, is_literal/1, is_subject/1, is_predicate/1, is_object/1,
-		  evaluate_statement/3, implies/2,
-		  vocabulary_to_string/1, vocabulary_to_string/2 ]).
+          evaluate_statement/3, implies/2,
+          vocabulary_to_string/1, vocabulary_to_string/2 ]).
 
 
 
@@ -152,48 +152,48 @@ are related (output edge).
 -doc "Tells whether the specified term is an IRI.".
 -spec is_iri( term() ) -> boolean().
 is_iri( Term ) ->
-	text_utils:is_bin_string( Term ).
+    text_utils:is_bin_string( Term ).
 
 
 
 -doc "Tells whether the specified term is a (RDF) literal.".
 -spec is_literal( term() ) -> boolean().
 is_literal( _Term ) ->
-	%text_utils:is_bin_string( Term ).
-	% May not even be a text?
-	true.
+    %text_utils:is_bin_string( Term ).
+    % May not even be a text?
+    true.
 
 
 
 -doc "Tells whether the specified term is a RDF subject.".
 -spec is_subject( term() ) -> boolean().
 is_subject( Term ) ->
-	is_iri( Term ).
+    is_iri( Term ).
 
 
 
 -doc "Tells whether the specified term is a RDF predicate.".
 -spec is_predicate( term() ) -> boolean().
 is_predicate( Term ) ->
-	is_iri( Term ).
+    is_iri( Term ).
 
 
 
 -doc "Tells whether the specified term is a RDF object.".
 -spec is_object( term() ) -> boolean().
 is_object( Term ) ->
-	is_iri( Term ) orelse is_literal( Term ).
+    is_iri( Term ) orelse is_literal( Term ).
 
 
 
 -doc "Evaluates the specified statement, and returns whether it holds.".
 -spec evaluate_statement( subject(), predicate(), object() ) -> boolean().
 evaluate_statement( _Subject, _Predicate= <<"is_a">>, _Object ) ->
-	% Not implemented yet:
-	true;
+    % Not implemented yet:
+    true;
 
 evaluate_statement( _Subject, Predicate, _Object ) ->
-	throw( { cannot_evaluate_rdf_statement, Predicate } ).
+    throw( { cannot_evaluate_rdf_statement, Predicate } ).
 
 
 
@@ -203,14 +203,14 @@ the first properties imply that the second ones are met.
 """.
 -spec implies( vocabulary(), vocabulary() ) -> boolean().
 implies( FirstVocabulary, SecondVocabulary ) ->
-	set_utils:is_subset( SecondVocabulary, FirstVocabulary ).
+    set_utils:is_subset( SecondVocabulary, FirstVocabulary ).
 
 
 
 -doc "Returns a textual representation of the specified vocabulary.".
 -spec vocabulary_to_string( vocabulary() ) -> ustring().
 vocabulary_to_string( Vocabulary ) ->
-	vocabulary_to_string( Vocabulary, _IndentationLevel=0 ).
+    vocabulary_to_string( Vocabulary, _IndentationLevel=0 ).
 
 
 
@@ -219,24 +219,24 @@ Returns a textual representation of the specified vocabulary, with the specified
 indentation level.
 """.
 -spec vocabulary_to_string( vocabulary(), text_utils:indentation_level() ) ->
-									ustring().
+                                    ustring().
 vocabulary_to_string( Vocabulary, IndentationLevel ) ->
 
-	case set_utils:to_list( Vocabulary ) of
+    case set_utils:to_list( Vocabulary ) of
 
-		[] ->
-			"an empty vocabulary";
+        [] ->
+            "an empty vocabulary";
 
-		[ Elem ] ->
-			text_utils:format( "a vocabulary comprising a single term, '~ts'",
-							   [ Elem ] );
+        [ Elem ] ->
+            text_utils:format( "a vocabulary comprising a single term, '~ts'",
+                               [ Elem ] );
 
-		SemList ->
+        SemList ->
 
-			SemString = text_utils:binaries_to_string( SemList,
-													   IndentationLevel ),
+            SemString = text_utils:binaries_to_string( SemList,
+                                                       IndentationLevel ),
 
-			text_utils:format( "a vocabulary comprising ~B terms: ~ts",
-							   [ length( SemList ), SemString ] )
+            text_utils:format( "a vocabulary comprising ~B terms: ~ts",
+                               [ length( SemList ), SemString ] )
 
-	end.
+    end.

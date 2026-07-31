@@ -1,4 +1,4 @@
-% Copyright (C) 2024-2025 Olivier Boudeville
+% Copyright (C) 2024-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -53,40 +53,40 @@ Defines how a mesh shall be rendered.
 """.
 -type rendering_info() ::
 
-	% No rendering info at all:
-	'none'
+    % No rendering info at all:
+    'none'
 
-	% Wireframe only; a single color for all edges:
+    % Wireframe only; a single color for all edges:
   | { 'wireframe', RGBEdgeColor :: color_by_decimal(),
-	  AreHiddenFacesRemoved :: boolean() }
+      AreHiddenFacesRemoved :: boolean() }
 
-	% Each element of the FaceColors list (third element of the triplet below)
-	% corresponds to the element of the same rank in the 'faces' field of the
-	% mesh, knowing that the type of these elements depends on FaceGranularity
-	% (second element of the triplet):
-	%
-	%  - if this face coloring granularity is per_vertex, then a color is
-	%  assigned to each of the vertex indice of each face, in a corresponding
-	%  tuple; for example if a face F is defined in 'faces' at rank Rf as {V1Id,
-	%  V2Id, V3Id, V4Id}, then in ElementColors there will be, at rank Rf,
-	%  {Col1, Col2, Col3, Col4}, each color (Colk :: color_by_decimal())
-	%  applying to the vertex specified at the same position (VkId)
-	%
-	%  - if this face coloring granularity is per_face, then a color is assigned
-	%  to each of the faces; for example if a face F is defined in 'faces' at
-	%  rank Rf as {V1Id, V2Id, V3Id, V4Id}, then in ElementColors, there will
-	%  be, at rank Rf, Col :: color_by_decimal(), which will apply to this face
-	%  as a whole (hence to all its vertices)
-	%
-	% (these are solid colors, with no transparency here; RGB as triplets of
-	% integers - not in [0.0,1.0])
-	%
+    % Each element of the FaceColors list (third element of the triplet below)
+    % corresponds to the element of the same rank in the 'faces' field of the
+    % mesh, knowing that the type of these elements depends on FaceGranularity
+    % (second element of the triplet):
+    %
+    %  - if this face coloring granularity is per_vertex, then a color is
+    %  assigned to each of the vertex indice of each face, in a corresponding
+    %  tuple; for example if a face F is defined in 'faces' at rank Rf as {V1Id,
+    %  V2Id, V3Id, V4Id}, then in ElementColors there will be, at rank Rf,
+    %  {Col1, Col2, Col3, Col4}, each color (Colk :: color_by_decimal())
+    %  applying to the vertex specified at the same position (VkId)
+    %
+    %  - if this face coloring granularity is per_face, then a color is assigned
+    %  to each of the faces; for example if a face F is defined in 'faces' at
+    %  rank Rf as {V1Id, V2Id, V3Id, V4Id}, then in ElementColors, there will
+    %  be, at rank Rf, Col :: color_by_decimal(), which will apply to this face
+    %  as a whole (hence to all its vertices)
+    %
+    % (these are solid colors, with no transparency here; RGB as triplets of
+    % integers - not in [0.0,1.0])
+    %
   | { 'colored', FaceGranularity :: face_granularity(),
-	  % A list of either colors or tuples of colors:
-	  FaceColors :: [ tuploid( color_by_decimal() ) ] }
+      % A list of either colors or tuples of colors:
+      FaceColors :: [ tuploid( color_by_decimal() ) ] }
 
-	% We wanted initially to support (single) per-face textures.
-	% Texture information for the face of the same index in their list:
+    % We wanted initially to support (single) per-face textures.
+    % Texture information for the face of the same index in their list:
   %| { 'textured', [ texture_face_info() ] }.
 
   % Using now a single texture atlas per mesh (rather than one or more textures
@@ -101,8 +101,8 @@ Defines how a mesh shall be rendered.
   % (VkId)
   %
   | { 'textured', texture_spec_id(),
-	  % Always a list of tuples of (at least) texture coordinates:
-	  TextureFaceInfoList :: [ texture_face_info() ] }.
+      % Always a list of tuples of (at least) texture coordinates:
+      TextureFaceInfoList :: [ texture_face_info() ] }.
 
 
 % For the related mesh-related rendering records:
@@ -155,8 +155,8 @@ A render-related element, typically in a list, associated to a vertex or a face.
 
 
 -export_type([ rendering_info/0, rendering_state/0,
-			   face_granularity/0, texture_face_info/0,
-			   render_element/0 ]).
+               face_granularity/0, texture_face_info/0,
+               render_element/0 ]).
 
 
 
@@ -164,13 +164,13 @@ A render-related element, typically in a list, associated to a vertex or a face.
 
 -export([ canonicalise_rendering_info/2, tessellate_rendering_info/2,
 
-		  initialise_for_opengl/2, initialise_for_opengl/3,
-		  render_as_opengl/1, cleanup_for_opengl/1,
+          initialise_for_opengl/2, initialise_for_opengl/3,
+          render_as_opengl/1, cleanup_for_opengl/1,
 
-		  color_to_decimal_tuples/1, decimal_to_render_color_tuples/1,
+          color_to_decimal_tuples/1, decimal_to_render_color_tuples/1,
 
-		  rendering_info_to_string/1, rendering_info_to_compact_string/1,
-		  rendering_state_to_string/1 ]).
+          rendering_info_to_string/1, rendering_info_to_compact_string/1,
+          rendering_state_to_string/1 ]).
 
 
 % Type shorthands:
@@ -248,88 +248,88 @@ Note that, should faces be to checked, they are expected to have already been
 checked.
 """.
 -spec canonicalise_rendering_info( term(), [ indexed_face() ] ) ->
-										rendering_info().
+                                        rendering_info().
 canonicalise_rendering_info( RenderInfo=none, _Faces ) ->
-	RenderInfo;
+    RenderInfo;
 
 
 canonicalise_rendering_info(
-		RenderInfo={ wireframe, RGBEdgeColor, AreHiddenFacesRemoved },
-		_Faces ) ->
-	cond_utils:if_defined( myriad_check_mesh,
-		begin
-			gui_color:check_color_by_decimal( RGBEdgeColor ),
-			type_utils:check_boolean( AreHiddenFacesRemoved ),
-			basic_utils:ignore_unused( [ RGBEdgeColor, AreHiddenFacesRemoved ] )
-		end	),
-	RenderInfo;
+        RenderInfo={ wireframe, RGBEdgeColor, AreHiddenFacesRemoved },
+        _Faces ) ->
+    cond_utils:if_defined( myriad_check_mesh,
+        begin
+            gui_color:check_color_by_decimal( RGBEdgeColor ),
+            type_utils:check_boolean( AreHiddenFacesRemoved ),
+            basic_utils:ignore_unused( [ RGBEdgeColor, AreHiddenFacesRemoved ] )
+        end ),
+    RenderInfo;
 
 
 canonicalise_rendering_info(
-		RenderInfo={ colored, FaceGranularity, FaceColorElems }, Faces ) ->
+        RenderInfo={ colored, FaceGranularity, FaceColorElems }, Faces ) ->
 
-	FaceCount = length( Faces ),
+    FaceCount = length( Faces ),
 
-	% Check currently always activated:
-	case length( FaceColorElems ) of
+    % Check currently always activated:
+    case length( FaceColorElems ) of
 
-		FaceCount ->
-			ok;
+        FaceCount ->
+            ok;
 
-		FaceColorElemCount ->
-			throw( { face_color_element_counts_mismatch, FaceCount,
-					 FaceColorElemCount } )
+        FaceColorElemCount ->
+            throw( { face_color_element_counts_mismatch, FaceCount,
+                     FaceColorElemCount } )
 
-	end,
+    end,
 
-	cond_utils:if_defined( myriad_check_mesh,
-		case FaceGranularity of
+    cond_utils:if_defined( myriad_check_mesh,
+        case FaceGranularity of
 
-			per_vertex ->
-				% Checks that a color corresponds to each vertex identifier
-				% (faces already checked that are of homogeneous size):
-				%
-				FaceVCount = size( hd( Faces ) ),
-				[ begin
-					basic_utils:assert_equal( FaceVCount, size( ColTuple ) ),
-					[ gui_color:check_color_by_decimal( C )
-						|| C <- tuple_to_list( ColTuple ) ]
-				  end || ColTuple <- FaceColorElems ];
+            per_vertex ->
+                % Checks that a color corresponds to each vertex identifier
+                % (faces already checked that are of homogeneous size):
+                %
+                FaceVCount = size( hd( Faces ) ),
+                [ begin
+                    basic_utils:assert_equal( FaceVCount, size( ColTuple ) ),
+                    [ gui_color:check_color_by_decimal( C )
+                        || C <- tuple_to_list( ColTuple ) ]
+                  end || ColTuple <- FaceColorElems ];
 
-			per_face ->
-				[ gui_color:check_color_by_decimal( C ) || C <- FaceColorElems ]
+            per_face ->
+                [ gui_color:check_color_by_decimal( C ) || C <- FaceColorElems ]
 
-		end ),
+        end ),
 
-	RenderInfo;
+    RenderInfo;
 
 
 canonicalise_rendering_info(
-		RenderInfo={ textured, TexSpecId, TexFaceInfos }, Faces ) ->
+        RenderInfo={ textured, TexSpecId, TexFaceInfos }, Faces ) ->
 
-	mesh:check_indice( TexSpecId ),
+    mesh:check_indice( TexSpecId ),
 
-	FaceCount = length( Faces ),
+    FaceCount = length( Faces ),
 
-	% Check currently always activated:
-	case length( TexFaceInfos ) of
+    % Check currently always activated:
+    case length( TexFaceInfos ) of
 
-		FaceCount ->
-			ok;
+        FaceCount ->
+            ok;
 
-		FaceTexFaceInfoCount ->
-			throw( { face_texture_information_counts_mismatch, FaceCount,
-					 FaceTexFaceInfoCount } )
+        FaceTexFaceInfoCount ->
+            throw( { face_texture_information_counts_mismatch, FaceCount,
+                     FaceTexFaceInfoCount } )
 
-	end,
+    end,
 
-	[ check_texture_face_info( TFI ) || TFI <- TexFaceInfos ],
+    [ check_texture_face_info( TFI ) || TFI <- TexFaceInfos ],
 
-	RenderInfo;
+    RenderInfo;
 
 
 canonicalise_rendering_info( Other, _Faces ) ->
-	throw( { invalid_mesh_rendering_information, Other } ).
+    throw( { invalid_mesh_rendering_information, Other } ).
 
 
 
@@ -339,8 +339,8 @@ returns it.
 """.
 -spec check_texture_face_info( term() ) -> texture_face_info().
 check_texture_face_info( T ) when is_tuple( T ) ->
-	[ gui_texture:check_texture_coordinate_pair( P )
-		|| P <- tuple_to_list( T ) ].
+    [ gui_texture:check_texture_coordinate_pair( P )
+        || P <- tuple_to_list( T ) ].
 
 
 
@@ -349,30 +349,30 @@ Returns a rendering information deriving from the specified one, suitable for
 triangle-based rendering.
 """.
 -spec tessellate_rendering_info( face_type(), rendering_info() ) ->
-										rendering_info().
+                                        rendering_info().
 tessellate_rendering_info( _OrigFaceType, RenderInfo=none ) ->
-	RenderInfo;
+    RenderInfo;
 
 tessellate_rendering_info( _OrigFaceType=quad,
-		RenderInfo={ wireframe, _EdgeColor, _AreHiddenFacesRemoved } ) ->
-	RenderInfo;
+        RenderInfo={ wireframe, _EdgeColor, _AreHiddenFacesRemoved } ) ->
+    RenderInfo;
 
 tessellate_rendering_info( _OrigFaceType=quad,
-		_RenderInfo={ colored, _FaceGranularity=per_vertex,
-					  QuadVtxColors } ) ->
-	% A Q1-Q2-Q3-Q4 quad becoming two Q1-Q2-Q3 and Q3-Q4-Q1 triangles:
-	TrigVtxColors = adapt_texture_face_infos( QuadVtxColors ),
-	{ colored, per_vertex, TrigVtxColors };
+        _RenderInfo={ colored, _FaceGranularity=per_vertex,
+                      QuadVtxColors } ) ->
+    % A Q1-Q2-Q3-Q4 quad becoming two Q1-Q2-Q3 and Q3-Q4-Q1 triangles:
+    TrigVtxColors = adapt_texture_face_infos( QuadVtxColors ),
+    { colored, per_vertex, TrigVtxColors };
 
 tessellate_rendering_info( _OrigFaceType=quad,
-		_RenderInfo={ colored, _FaceGranularity=per_face, ElemColors } ) ->
-	% Each quad becoming two triangles of the same color:
-	{ colored, per_face, list_utils:repeat_elements( ElemColors, _Count=2 ) };
+        _RenderInfo={ colored, _FaceGranularity=per_face, ElemColors } ) ->
+    % Each quad becoming two triangles of the same color:
+    { colored, per_face, list_utils:repeat_elements( ElemColors, _Count=2 ) };
 
 tessellate_rendering_info( _OrigFaceType=quad,
-		_RenderInfo={ textured, TexSpecId, TexFaceInfos } ) ->
-	TrigTexFaceInfos = adapt_texture_face_infos( TexFaceInfos ),
-	{ textured, TexSpecId, TrigTexFaceInfos }.
+        _RenderInfo={ textured, TexSpecId, TexFaceInfos } ) ->
+    TrigTexFaceInfos = adapt_texture_face_infos( TexFaceInfos ),
+    { textured, TexSpecId, TrigTexFaceInfos }.
 
 
 
@@ -381,35 +381,35 @@ Adapts from quad to triangle the specified list of texture face information
 elements.
 """.
 adapt_texture_face_infos( TexFaceInfos ) ->
-	% Early, twice-as-small reversing:
-	adapt_texture_face_infos( lists:reverse( TexFaceInfos ), _Acc=[] ).
+    % Early, twice-as-small reversing:
+    adapt_texture_face_infos( lists:reverse( TexFaceInfos ), _Acc=[] ).
 
 
 % (helper)
 adapt_texture_face_infos( _RevTexFaceInfos=[], Acc ) ->
-	% Reversing already done:
-	Acc;
+    % Reversing already done:
+    Acc;
 
 %adapt_texture_face_infos( _RevTexFaceInfos=[ { TexId,
-	%   _UVPoints={ UV1Coords, UV2Coords, UV3Coords, UV4Coords } } | T ],
-	%               Acc ) ->
-	% % Anticipate Acc reversal, even if without impact; same order as the
-	% % vertices of the triangulated faces (in triangulate/2):
-	% %
-	% NewAcc = [ { TexId, { UV3Coords, UV4Coords, UV1Coords } },
-	%            { TexId, { UV1Coords, UV2Coords, UV3Coords } } | Acc ],
+    %   _UVPoints={ UV1Coords, UV2Coords, UV3Coords, UV4Coords } } | T ],
+    %               Acc ) ->
+    % % Anticipate Acc reversal, even if without impact; same order as the
+    % % vertices of the triangulated faces (in triangulate/2):
+    % %
+    % NewAcc = [ { TexId, { UV3Coords, UV4Coords, UV1Coords } },
+    %            { TexId, { UV1Coords, UV2Coords, UV3Coords } } | Acc ],
 
-	% adapt_texture_face_infos( T, NewAcc ).
+    % adapt_texture_face_infos( T, NewAcc ).
 
 adapt_texture_face_infos( _RevTexFaceInfos=_UVPoints=
-		[ { UV1Coords, UV2Coords, UV3Coords, UV4Coords } | T ], Acc ) ->
-	% Returns triangle faces; same order as the original vertices and the ones
-	% of the triangulated faces (in mesh:triangulate/2):
-	%
-	NewAcc = [ { UV1Coords, UV2Coords, UV3Coords },
-			   { UV3Coords, UV4Coords, UV1Coords } | Acc ],
+        [ { UV1Coords, UV2Coords, UV3Coords, UV4Coords } | T ], Acc ) ->
+    % Returns triangle faces; same order as the original vertices and the ones
+    % of the triangulated faces (in mesh:triangulate/2):
+    %
+    NewAcc = [ { UV1Coords, UV2Coords, UV3Coords },
+               { UV3Coords, UV4Coords, UV1Coords } | Acc ],
 
-	adapt_texture_face_infos( T, NewAcc ).
+    adapt_texture_face_infos( T, NewAcc ).
 
 
 
@@ -426,9 +426,9 @@ possibly a created texture cache.
 No specific cache used or returned.
 """.
 -spec initialise_for_opengl( maybe_list( mesh() ), program_id() ) ->
-			{ maybe_list( mesh() ), option( texture_cache() ) }.
+            { maybe_list( mesh() ), option( texture_cache() ) }.
 initialise_for_opengl( Mesh, ProgramId ) ->
-	initialise_for_opengl( Mesh, ProgramId, _MaybeTextureCache=undefined ).
+    initialise_for_opengl( Mesh, ProgramId, _MaybeTextureCache=undefined ).
 
 
 -doc """
@@ -438,356 +438,356 @@ and returns the updated mesh(es) (if multiple meshes are specified, in their
 original order), together with possibly a created or updated texture cache.
 """.
 -spec initialise_for_opengl( maybe_list( mesh() ), program_id(),
-							 option( texture_cache() ) ) ->
-			{ maybe_list( mesh() ), option( texture_cache() ) }.
+                             option( texture_cache() ) ) ->
+            { maybe_list( mesh() ), option( texture_cache() ) }.
 % Only a subset of the combinations supported currently; first, if no rendering
 % requested:
 %
 initialise_for_opengl( Mesh=#mesh{
-								rendering_info=none %, rendering_state=undefined
-								 },
-					   _ProgramId, MaybeTextureCache ) ->
-	{ Mesh, MaybeTextureCache };
+                                rendering_info=none %, rendering_state=undefined
+                                 },
+                       _ProgramId, MaybeTextureCache ) ->
+    { Mesh, MaybeTextureCache };
 
 % For triangle faces in wireframe mode:
 initialise_for_opengl( Mesh=#mesh{
-		vertices=AllVertices,
-		face_type=triangle,
-		faces=IndexedFaces,
-		% Normals currently ignored (useful for lighting only):
-		%normal_type=per_{vertex,face},
-		%normals=MaybeNormals,
-		rendering_info={ wireframe, RGBEdgeColor, _AreHiddenFacesRemoved },
-		rendering_state=undefined }, ProgramId, MaybeTextureCache ) ->
+        vertices=AllVertices,
+        face_type=triangle,
+        faces=IndexedFaces,
+        % Normals currently ignored (useful for lighting only):
+        %normal_type=per_{vertex,face},
+        %normals=MaybeNormals,
+        rendering_info={ wireframe, RGBEdgeColor, _AreHiddenFacesRemoved },
+        rendering_state=undefined }, ProgramId, MaybeTextureCache ) ->
 
-	% Mostly the same as for the next case (triangle faces and solid colors),
-	% see it for details; only rendering will differ:
+    % Mostly the same as for the next case (triangle faces and solid colors),
+    % see it for details; only rendering will differ:
 
-	cond_utils:if_defined( myriad_debug_mesh,
-		trace_utils:debug_fmt( "Initialising for OpenGL "
-			"(triangle faces, wireframe) ~ts.", [ mesh:to_string( Mesh ) ] ) ),
+    cond_utils:if_defined( myriad_debug_mesh,
+        trace_utils:debug_fmt( "Initialising for OpenGL "
+            "(triangle faces, wireframe) ~ts.", [ mesh:to_string( Mesh ) ] ) ),
 
-	FloatEdgeColor = gui_color:decimal_to_render( RGBEdgeColor ),
+    FloatEdgeColor = gui_color:decimal_to_render( RGBEdgeColor ),
 
-	MeshVAOId = gui_shader:set_new_vao(),
+    MeshVAOId = gui_shader:set_new_vao(),
 
-	% One color per face:
-	FloatFaceColors = list_utils:duplicate( _Elem=FloatEdgeColor,
-											_Count=length( IndexedFaces ) ),
+    % One color per face:
+    FloatFaceColors = list_utils:duplicate( _Elem=FloatEdgeColor,
+                                            _Count=length( IndexedFaces ) ),
 
-	{ AttrSeries, CompoundCount } = prepare_vattrs_per_face( IndexedFaces,
-		_SingleVAList=[ FloatFaceColors ], AllVertices, _FaceVCount=3 ),
+    { AttrSeries, CompoundCount } = prepare_vattrs_per_face( IndexedFaces,
+        _SingleVAList=[ FloatFaceColors ], AllVertices, _FaceVCount=3 ),
 
-	% vtx3_rgb layout: in the buffer, first write a vertex, at the conventional
-	% index location for vertices, then a color, at their dedicated location as
-	% well:
-	%
-	VAIs = [ ?myriad_gui_input_vertex_vai, ?myriad_gui_input_color_vai ],
+    % vtx3_rgb layout: in the buffer, first write a vertex, at the conventional
+    % index location for vertices, then a color, at their dedicated location as
+    % well:
+    %
+    VAIs = [ ?myriad_gui_input_vertex_vai, ?myriad_gui_input_color_vai ],
 
-	MeshVBOId = gui_shader:assign_new_vbo_from_attribute_series_with(
-		AttrSeries, VAIs ),
+    MeshVBOId = gui_shader:assign_new_vbo_from_attribute_series_with(
+        AttrSeries, VAIs ),
 
-	MeshEBOId = gui_shader:assign_indices_to_new_ebo(
-		_FaceIndices=lists:seq( _From=1, _To=CompoundCount ) ),
+    MeshEBOId = gui_shader:assign_indices_to_new_ebo(
+        _FaceIndices=lists:seq( _From=1, _To=CompoundCount ) ),
 
-	gui_shader:unset_current_vao(),
+    gui_shader:unset_current_vao(),
 
-	RenderState = #rendering_state{ program_id=ProgramId,
-									vao_id=MeshVAOId,
-									vbo_id=MeshVBOId,
-									vbo_layout=vtx3_rgb,
-									compound_count=CompoundCount,
-									ebo_id=MeshEBOId },
+    RenderState = #rendering_state{ program_id=ProgramId,
+                                    vao_id=MeshVAOId,
+                                    vbo_id=MeshVBOId,
+                                    vbo_layout=vtx3_rgb,
+                                    compound_count=CompoundCount,
+                                    ebo_id=MeshEBOId },
 
-	{ Mesh#mesh{ rendering_state=RenderState }, MaybeTextureCache };
+    { Mesh#mesh{ rendering_state=RenderState }, MaybeTextureCache };
 
 
 % For triangle faces and solid, per-face colors:
 initialise_for_opengl( Mesh=#mesh{
-		vertices=AllVertices,
-		face_type=triangle,
-		faces=IndexedFaces,
-		% Normals currently ignored (useful for lighting only):
-		%normal_type=per_{vertex,face},
-		%normals=MaybeNormals,
-		rendering_info={ colored, per_face, FaceColors },
-		rendering_state=undefined }, ProgramId, MaybeTextureCache ) ->
+        vertices=AllVertices,
+        face_type=triangle,
+        faces=IndexedFaces,
+        % Normals currently ignored (useful for lighting only):
+        %normal_type=per_{vertex,face},
+        %normals=MaybeNormals,
+        rendering_info={ colored, per_face, FaceColors },
+        rendering_state=undefined }, ProgramId, MaybeTextureCache ) ->
 
-	cond_utils:if_defined( myriad_debug_mesh,
-		trace_utils:debug_fmt( "Initialising for OpenGL ~ts.",
-			"(triangle faces, per-face color) ~ts.",
-			[ mesh:to_string( Mesh ) ] ) ),
+    cond_utils:if_defined( myriad_debug_mesh,
+        trace_utils:debug_fmt( "Initialising for OpenGL ~ts.",
+            "(triangle faces, per-face color) ~ts.",
+            [ mesh:to_string( Mesh ) ] ) ),
 
-	% Sanity check for input data (to be commented-out as already checked when
-	% canonicalised):
+    % Sanity check for input data (to be commented-out as already checked when
+    % canonicalised):
 
-	FaceCount = length( IndexedFaces ),
-	FaceColorCount = length( FaceColors ),
+    FaceCount = length( IndexedFaces ),
+    FaceColorCount = length( FaceColors ),
 
-	FaceCount =:= FaceColorCount orelse
-		throw( { mismatching_face_data, FaceCount, FaceColorCount } ),
+    FaceCount =:= FaceColorCount orelse
+        throw( { mismatching_face_data, FaceCount, FaceColorCount } ),
 
 
-	% Creates the VAO context we need for the upcoming VBO (vertices, possibly
-	% normals - at least currently ignored - and no texture coordinates, just a
-	% per-face color) and EBO (for indices in the VBO); we target a rendering in
-	% terms of GL_TRIANGLES (no strip, fan, etc.) and will rely on the vtx3_rgb
-	% VBO layout.
-	%
-	MeshVAOId = gui_shader:set_new_vao(),
+    % Creates the VAO context we need for the upcoming VBO (vertices, possibly
+    % normals - at least currently ignored - and no texture coordinates, just a
+    % per-face color) and EBO (for indices in the VBO); we target a rendering in
+    % terms of GL_TRIANGLES (no strip, fan, etc.) and will rely on the vtx3_rgb
+    % VBO layout.
+    %
+    MeshVAOId = gui_shader:set_new_vao(),
 
-	% OpenGL could have been requested to normalise the data by itself instead:
-	FloatFaceColors = gui_color:decimal_to_render( FaceColors ),
+    % OpenGL could have been requested to normalise the data by itself instead:
+    FloatFaceColors = gui_color:decimal_to_render( FaceColors ),
 
-	% We use an EBO, yet duplication will be needed, as a given vertex is
-	% expected to pertain to multiple faces, each with its own (normal and)
-	% color.
-	%
-	% We will iterate on faces to prepare the corresponding vertex attribute
-	% compounds, so for the target VBO content we build adequate series of
-	% vertex attributes. Here, with a triangle face_type, we have, per-face, 3
-	% vertices and one color, so:
-	%
-	{ AttrSeries, CompoundCount } = prepare_vattrs_per_face( IndexedFaces,
-		_SingleVAList=[ FloatFaceColors ], AllVertices, _FaceVCount=3 ),
+    % We use an EBO, yet duplication will be needed, as a given vertex is
+    % expected to pertain to multiple faces, each with its own (normal and)
+    % color.
+    %
+    % We will iterate on faces to prepare the corresponding vertex attribute
+    % compounds, so for the target VBO content we build adequate series of
+    % vertex attributes. Here, with a triangle face_type, we have, per-face, 3
+    % vertices and one color, so:
+    %
+    { AttrSeries, CompoundCount } = prepare_vattrs_per_face( IndexedFaces,
+        _SingleVAList=[ FloatFaceColors ], AllVertices, _FaceVCount=3 ),
 
-	% vtx3_rgb layout: in the buffer, first write a vertex, at the conventional
-	% index location for vertices, then a color, at their dedicated location as
-	% well:
-	%
-	VAIs = [ ?myriad_gui_input_vertex_vai, ?myriad_gui_input_color_vai ],
+    % vtx3_rgb layout: in the buffer, first write a vertex, at the conventional
+    % index location for vertices, then a color, at their dedicated location as
+    % well:
+    %
+    VAIs = [ ?myriad_gui_input_vertex_vai, ?myriad_gui_input_color_vai ],
 
-	% Creates a VBO from these two series, by merging them.
-	%
-	% We start at vertex attribute index #0 in this VAO; as there are two
-	% series, the vertex attribute indices will be 0 and 1:
-	%
-	% (vertex attributes are automatically declared)
-	%
-	MeshVBOId = gui_shader:assign_new_vbo_from_attribute_series_with(
-		AttrSeries, VAIs ),
+    % Creates a VBO from these two series, by merging them.
+    %
+    % We start at vertex attribute index #0 in this VAO; as there are two
+    % series, the vertex attribute indices will be 0 and 1:
+    %
+    % (vertex attributes are automatically declared)
+    %
+    MeshVBOId = gui_shader:assign_new_vbo_from_attribute_series_with(
+        AttrSeries, VAIs ),
 
-	% By design we just iterate over our pre-duplicated VBO; as a plain list of
-	% indices (for example not a list of triplets of indices), still in CCW
-	% order:
-	%
-	MeshEBOId = gui_shader:assign_indices_to_new_ebo(
-		_FaceIndices=lists:seq( _From=1, _To=CompoundCount ) ),
+    % By design we just iterate over our pre-duplicated VBO; as a plain list of
+    % indices (for example not a list of triplets of indices), still in CCW
+    % order:
+    %
+    MeshEBOId = gui_shader:assign_indices_to_new_ebo(
+        _FaceIndices=lists:seq( _From=1, _To=CompoundCount ) ),
 
-	% As the (single, here) VBO and the EBO were created whereas this VAO was
-	% active, they are tracked by this VAO, which will rebind them automatically
-	% the next time it will be itself bound:
-	%
-	gui_shader:unset_current_vao(),
+    % As the (single, here) VBO and the EBO were created whereas this VAO was
+    % active, they are tracked by this VAO, which will rebind them automatically
+    % the next time it will be itself bound:
+    %
+    gui_shader:unset_current_vao(),
 
-	RenderState = #rendering_state{ program_id=ProgramId,
-									vao_id=MeshVAOId,
-									vbo_id=MeshVBOId,
-									vbo_layout=vtx3_rgb,
-									compound_count=CompoundCount,
-									ebo_id=MeshEBOId },
+    RenderState = #rendering_state{ program_id=ProgramId,
+                                    vao_id=MeshVAOId,
+                                    vbo_id=MeshVBOId,
+                                    vbo_layout=vtx3_rgb,
+                                    compound_count=CompoundCount,
+                                    ebo_id=MeshEBOId },
 
-	{ Mesh#mesh{ rendering_state=RenderState }, MaybeTextureCache };
+    { Mesh#mesh{ rendering_state=RenderState }, MaybeTextureCache };
 
 
 % For triangle faces and solid, per-vertex colors for each face:
 initialise_for_opengl( Mesh=#mesh{
-		vertices=AllVertices,
-		face_type=triangle,
-		faces=IndexedFaces,
-		% Normals currently ignored (useful for lighting only):
-		%normal_type=per_{vertex,face},
-		%normals=MaybeNormals,
-		rendering_info={ colored, per_vertex, PerFaceVertexColors },
-		rendering_state=undefined }, ProgramId, MaybeTextureCache ) ->
+        vertices=AllVertices,
+        face_type=triangle,
+        faces=IndexedFaces,
+        % Normals currently ignored (useful for lighting only):
+        %normal_type=per_{vertex,face},
+        %normals=MaybeNormals,
+        rendering_info={ colored, per_vertex, PerFaceVertexColors },
+        rendering_state=undefined }, ProgramId, MaybeTextureCache ) ->
 
-	cond_utils:if_defined( myriad_debug_mesh,
-		trace_utils:debug_fmt( "Initialising for OpenGL ~ts.",
-			"(triangle faces, per-vertex color) ~ts.",
-			[ mesh:to_string( Mesh ) ] ) ),
+    cond_utils:if_defined( myriad_debug_mesh,
+        trace_utils:debug_fmt( "Initialising for OpenGL ~ts.",
+            "(triangle faces, per-vertex color) ~ts.",
+            [ mesh:to_string( Mesh ) ] ) ),
 
-	% Creates the VAO context we need for the upcoming VBO (vertices, possibly
-	% normals - at least currently ignored - and no texture coordinates, just a
-	% per-vertex color) and EBO (for indices in the VBO); we target a rendering
-	% in terms of GL_TRIANGLES (no strip, fan, etc.) and will rely on the
-	% vtx3_rgb VBO layout.
-	%
-	MeshVAOId = gui_shader:set_new_vao(),
+    % Creates the VAO context we need for the upcoming VBO (vertices, possibly
+    % normals - at least currently ignored - and no texture coordinates, just a
+    % per-vertex color) and EBO (for indices in the VBO); we target a rendering
+    % in terms of GL_TRIANGLES (no strip, fan, etc.) and will rely on the
+    % vtx3_rgb VBO layout.
+    %
+    MeshVAOId = gui_shader:set_new_vao(),
 
-	% OpenGL could have been requested to normalise the data by itself instead:
-	FloatVertexColors = decimal_to_render_color_tuples( PerFaceVertexColors ),
+    % OpenGL could have been requested to normalise the data by itself instead:
+    FloatVertexColors = decimal_to_render_color_tuples( PerFaceVertexColors ),
 
-	% We use an EBO, yet duplication will be needed, as a given vertex is
-	% expected to pertain to multiple faces, each with its own (normal and)
-	% color.
-	%
-	% We will iterate on faces to prepare the corresponding vertex attribute
-	% compounds, so for the target VBO content we build adequate series of
-	% vertex attributes. Here, with a triangle face_type, we have, per-face, 3
-	% vertices and three colors, so:
-	%
-	{ AttrSeries, CompoundCount } = prepare_vattrs_per_vertex( IndexedFaces,
-		_SingleVAList=[ FloatVertexColors ], AllVertices, _FaceVCount=3 ),
+    % We use an EBO, yet duplication will be needed, as a given vertex is
+    % expected to pertain to multiple faces, each with its own (normal and)
+    % color.
+    %
+    % We will iterate on faces to prepare the corresponding vertex attribute
+    % compounds, so for the target VBO content we build adequate series of
+    % vertex attributes. Here, with a triangle face_type, we have, per-face, 3
+    % vertices and three colors, so:
+    %
+    { AttrSeries, CompoundCount } = prepare_vattrs_per_vertex( IndexedFaces,
+        _SingleVAList=[ FloatVertexColors ], AllVertices, _FaceVCount=3 ),
 
-	% vtx3_rgb layout: in the buffer, first write a vertex, at the conventional
-	% index location for vertices, then a color, at their dedicated location as
-	% well:
-	%
-	VAIs = [ ?myriad_gui_input_vertex_vai, ?myriad_gui_input_color_vai ],
+    % vtx3_rgb layout: in the buffer, first write a vertex, at the conventional
+    % index location for vertices, then a color, at their dedicated location as
+    % well:
+    %
+    VAIs = [ ?myriad_gui_input_vertex_vai, ?myriad_gui_input_color_vai ],
 
-	% Creates a VBO from these two series, by merging them.
-	%
-	% We start at vertex attribute index #0 in this VAO; as there are two
-	% series, the vertex attribute indices will be 0 and 1:
-	%
-	% (vertex attributes are automatically declared)
-	%
-	MeshVBOId = gui_shader:assign_new_vbo_from_attribute_series_with(
-		AttrSeries, VAIs ),
+    % Creates a VBO from these two series, by merging them.
+    %
+    % We start at vertex attribute index #0 in this VAO; as there are two
+    % series, the vertex attribute indices will be 0 and 1:
+    %
+    % (vertex attributes are automatically declared)
+    %
+    MeshVBOId = gui_shader:assign_new_vbo_from_attribute_series_with(
+        AttrSeries, VAIs ),
 
-	% By design we just iterate over our pre-duplicated VBO; as a plain list of
-	% indices (for example not a list of triplets of indices), still in CCW
-	% order:
-	%
-	MeshEBOId = gui_shader:assign_indices_to_new_ebo(
-		_FaceIndices=lists:seq( _From=1, _To=CompoundCount ) ),
+    % By design we just iterate over our pre-duplicated VBO; as a plain list of
+    % indices (for example not a list of triplets of indices), still in CCW
+    % order:
+    %
+    MeshEBOId = gui_shader:assign_indices_to_new_ebo(
+        _FaceIndices=lists:seq( _From=1, _To=CompoundCount ) ),
 
-	% As the (single, here) VBO and the EBO were created whereas this VAO was
-	% active, they are tracked by this VAO, which will rebind them automatically
-	% the next time it will be itself bound:
-	%
-	gui_shader:unset_current_vao(),
+    % As the (single, here) VBO and the EBO were created whereas this VAO was
+    % active, they are tracked by this VAO, which will rebind them automatically
+    % the next time it will be itself bound:
+    %
+    gui_shader:unset_current_vao(),
 
-	RenderState = #rendering_state{ program_id=ProgramId,
-									vao_id=MeshVAOId,
-									vbo_id=MeshVBOId,
-									vbo_layout=vtx3_rgb,
-									compound_count=CompoundCount,
-									ebo_id=MeshEBOId },
+    RenderState = #rendering_state{ program_id=ProgramId,
+                                    vao_id=MeshVAOId,
+                                    vbo_id=MeshVBOId,
+                                    vbo_layout=vtx3_rgb,
+                                    compound_count=CompoundCount,
+                                    ebo_id=MeshEBOId },
 
-	{ Mesh#mesh{ rendering_state=RenderState }, MaybeTextureCache };
+    { Mesh#mesh{ rendering_state=RenderState }, MaybeTextureCache };
 
 
 % For triangle faces and textured version:
 initialise_for_opengl( Mesh=#mesh{
-		vertices=Vertices,
-		face_type=triangle,
-		faces=IndexedFaces,
-		% Normals currently ignored (useful for lighting only):
-		%normal_type=per_{vertex,face},
-		%normals=MaybeNormals,
-		rendering_info={ textured, TexSpecId, TexFaceInfos },
-		rendering_state=undefined }, ProgramId, MaybeTextureCache ) ->
+        vertices=Vertices,
+        face_type=triangle,
+        faces=IndexedFaces,
+        % Normals currently ignored (useful for lighting only):
+        %normal_type=per_{vertex,face},
+        %normals=MaybeNormals,
+        rendering_info={ textured, TexSpecId, TexFaceInfos },
+        rendering_state=undefined }, ProgramId, MaybeTextureCache ) ->
 
-	cond_utils:if_defined( myriad_debug_mesh,
-		trace_utils:debug_fmt( "Initialising for OpenGL ~ts.",
-			"(triangle, textured faces) ~ts.", [ mesh:to_string( Mesh ) ] ) ),
+    cond_utils:if_defined( myriad_debug_mesh,
+        trace_utils:debug_fmt( "Initialising for OpenGL ~ts.",
+            "(triangle, textured faces) ~ts.", [ mesh:to_string( Mesh ) ] ) ),
 
-	% Sanity check for input data:
-	FaceCount = length( IndexedFaces ),
-	TexCount = length( TexFaceInfos ),
+    % Sanity check for input data:
+    FaceCount = length( IndexedFaces ),
+    TexCount = length( TexFaceInfos ),
 
-	FaceCount =:= TexCount orelse
-		throw( { mismatching_face_data, FaceCount, TexCount } ),
+    FaceCount =:= TexCount orelse
+        throw( { mismatching_face_data, FaceCount, TexCount } ),
 
-	TexCache = case MaybeTextureCache of
+    TexCache = case MaybeTextureCache of
 
-		undefined ->
-			gui_texture:create_cache();
+        undefined ->
+            gui_texture:create_cache();
 
-		TCache ->
-			TCache
+        TCache ->
+            TCache
 
-	end,
+    end,
 
-	% Creates the VAO context we need for the upcoming VBO (vertices, possibly
-	% normals - at least currently ignored - and texture coordinates, no
-	% per-face or per-vertex color) and EBO (for indices in the VBO); we target
-	% a rendering in terms of GL_TRIANGLES (no strip, fan, etc.) and will rely
-	% on the vtx3_uv VBO layout.
-	%
-	MeshVAOId = gui_shader:set_new_vao(),
+    % Creates the VAO context we need for the upcoming VBO (vertices, possibly
+    % normals - at least currently ignored - and texture coordinates, no
+    % per-face or per-vertex color) and EBO (for indices in the VBO); we target
+    % a rendering in terms of GL_TRIANGLES (no strip, fan, etc.) and will rely
+    % on the vtx3_uv VBO layout.
+    %
+    MeshVAOId = gui_shader:set_new_vao(),
 
-	{ Texture, NewTexCache } = gui_texture:get_texture( TexSpecId, TexCache ),
+    { Texture, NewTexCache } = gui_texture:get_texture( TexSpecId, TexCache ),
 
-	% To have correct texture coordinates in spite of padding:
-	%{ ActualTexCoordss, NewTexCache } =
-	%   recalibrate_tex_coords_for( TexFaceInfos, TexSpecId, TexCache ),
-	FullTexCoords = recalibrate_tex_coords_for( TexFaceInfos, Texture ),
+    % To have correct texture coordinates in spite of padding:
+    %{ ActualTexCoordss, NewTexCache } =
+    %   recalibrate_tex_coords_for( TexFaceInfos, TexSpecId, TexCache ),
+    FullTexCoords = recalibrate_tex_coords_for( TexFaceInfos, Texture ),
 
-	% We use an EBO, yet duplication will be needed, as a given vertex is
-	% expected to pertain to multiple faces, each with its own (normal and)
-	% texture coordinates.
-	%
-	% We will iterate on faces to prepare the corresponding vertex attribute
-	% compounds, so for the target VBO content we build adequate series of
-	% vertex attributes. Here, with a triangle face_type, we have, per-face, 3
-	% vertices and three UV coordinates, so:
-	%
-	{ AttrSeries, CompoundCount } = prepare_vattrs_per_vertex( IndexedFaces,
-		_SingleList=[ FullTexCoords ], Vertices, _FaceVCount=3 ),
+    % We use an EBO, yet duplication will be needed, as a given vertex is
+    % expected to pertain to multiple faces, each with its own (normal and)
+    % texture coordinates.
+    %
+    % We will iterate on faces to prepare the corresponding vertex attribute
+    % compounds, so for the target VBO content we build adequate series of
+    % vertex attributes. Here, with a triangle face_type, we have, per-face, 3
+    % vertices and three UV coordinates, so:
+    %
+    { AttrSeries, CompoundCount } = prepare_vattrs_per_vertex( IndexedFaces,
+        _SingleList=[ FullTexCoords ], Vertices, _FaceVCount=3 ),
 
-	%trace_utils:debug_fmt( "AttrSeries (vertex/texcoords): ~w.",
-	%                       [ AttrSeries ] ),
+    %trace_utils:debug_fmt( "AttrSeries (vertex/texcoords): ~w.",
+    %                       [ AttrSeries ] ),
 
-	% vtx3_uv layout: in the buffer, first write a vertex, at the conventional
-	% index location for vertices, then the (2D) texture coordinates, at their
-	% dedicated location as well:
-	%
-	VAIs = [ ?myriad_gui_input_vertex_vai, ?myriad_gui_input_texcoord_vai ],
+    % vtx3_uv layout: in the buffer, first write a vertex, at the conventional
+    % index location for vertices, then the (2D) texture coordinates, at their
+    % dedicated location as well:
+    %
+    VAIs = [ ?myriad_gui_input_vertex_vai, ?myriad_gui_input_texcoord_vai ],
 
-	% Creates a VBO from these two series, by merging them.
-	%
-	% We start at vertex attribute index #0 in this VAO; as there are two
-	% series, the vertex attribute indices will be 0 and 1:
-	%
-	MeshVBOId = gui_shader:assign_new_vbo_from_attribute_series_with(
-		AttrSeries, VAIs ),
+    % Creates a VBO from these two series, by merging them.
+    %
+    % We start at vertex attribute index #0 in this VAO; as there are two
+    % series, the vertex attribute indices will be 0 and 1:
+    %
+    MeshVBOId = gui_shader:assign_new_vbo_from_attribute_series_with(
+        AttrSeries, VAIs ),
 
-	ElemCount = array:size( Vertices ),
+    ElemCount = array:size( Vertices ),
 
-	% As a plain list of indices (not for example a list of triplets of
-	% indices), preferably in CCW order:
-	%
-	MeshEBOId = gui_shader:assign_indices_to_new_ebo(
-		_FaceIndices=lists:seq( _From=1, _To=ElemCount ) ),
+    % As a plain list of indices (not for example a list of triplets of
+    % indices), preferably in CCW order:
+    %
+    MeshEBOId = gui_shader:assign_indices_to_new_ebo(
+        _FaceIndices=lists:seq( _From=1, _To=ElemCount ) ),
 
-	% As the (single, here) VBO and the EBO were created whereas this VAO was
-	% active, they are tracked by this VAO, which will rebind them automatically
-	% the next time it will be itself bound:
-	%
-	gui_shader:unset_current_vao(),
+    % As the (single, here) VBO and the EBO were created whereas this VAO was
+    % active, they are tracked by this VAO, which will rebind them automatically
+    % the next time it will be itself bound:
+    %
+    gui_shader:unset_current_vao(),
 
-	RenderState = #rendering_state{ program_id=ProgramId,
-									vao_id=MeshVAOId,
-									vbo_id=MeshVBOId,
-									vbo_layout=vtx3_uv,
-									compound_count=CompoundCount,
-									ebo_id=MeshEBOId },
+    RenderState = #rendering_state{ program_id=ProgramId,
+                                    vao_id=MeshVAOId,
+                                    vbo_id=MeshVBOId,
+                                    vbo_layout=vtx3_uv,
+                                    compound_count=CompoundCount,
+                                    ebo_id=MeshEBOId },
 
-	{ Mesh#mesh{ rendering_state=RenderState }, NewTexCache };
+    { Mesh#mesh{ rendering_state=RenderState }, NewTexCache };
 
 
 % For all kinds of quads:
 initialise_for_opengl( QuadMesh=#mesh{ face_type=quad }, ProgramId,
-					   MaybeTextureCache ) ->
-	TrigMesh = mesh:tessellate( QuadMesh ),
-	initialise_for_opengl( TrigMesh, ProgramId, MaybeTextureCache );
+                       MaybeTextureCache ) ->
+    TrigMesh = mesh:tessellate( QuadMesh ),
+    initialise_for_opengl( TrigMesh, ProgramId, MaybeTextureCache );
 
 
 % Multiple meshes now:
 initialise_for_opengl( Meshes=[], _ProgramId, MaybeTextureCache ) ->
-	{ Meshes, MaybeTextureCache };
+    { Meshes, MaybeTextureCache };
 
 initialise_for_opengl( _Meshes=[ M | T ], ProgramId, MaybeTextureCache ) ->
 
-	{ NewM, NewMTexCache } =
-		initialise_for_opengl( M, ProgramId, MaybeTextureCache ),
+    { NewM, NewMTexCache } =
+        initialise_for_opengl( M, ProgramId, MaybeTextureCache ),
 
-	{ NewT, NewTTexCache } =
-		initialise_for_opengl( T, ProgramId, NewMTexCache ),
+    { NewT, NewTTexCache } =
+        initialise_for_opengl( T, ProgramId, NewMTexCache ),
 
-	{ [ NewM | NewT ], NewTTexCache }.
+    { [ NewM | NewT ], NewTTexCache }.
 
 
 
@@ -796,16 +796,16 @@ Returns the tuples whose elements are RGB colors that correspond to the color
 elements of the specified tuples.
 """.
 -spec color_to_decimal_tuples( [ tuple( color() ) ] ) ->
-								[ tuple( color_by_decimal() ) ].
+                                [ tuple( color_by_decimal() ) ].
 color_to_decimal_tuples( TuplesOfColors ) ->
-	[ begin
+    [ begin
 
-		RGBColors =
-			[ gui_color:get_color( C ) || C <- tuple_to_list( ColorTuple ) ],
+        RGBColors =
+            [ gui_color:get_color( C ) || C <- tuple_to_list( ColorTuple ) ],
 
-		list_to_tuple( RGBColors )
+        list_to_tuple( RGBColors )
 
-	  end || ColorTuple <- TuplesOfColors ].
+      end || ColorTuple <- TuplesOfColors ].
 
 
 
@@ -814,13 +814,13 @@ Returns tuples whose elements are render colors, based on the specified ones
  whose elements are RGB colors.
 """.
 -spec decimal_to_render_color_tuples( [ tuple( color_by_decimal() ) ] ) ->
-										[ tuple( render_rgb_color() ) ].
+                                        [ tuple( render_rgb_color() ) ].
 decimal_to_render_color_tuples( TuplesOfRGBColors ) ->
-	[ begin
-		RenderColors =
-			gui_color:decimal_to_render( tuple_to_list( ColorTuple ) ),
-		list_to_tuple( RenderColors )
-	  end || ColorTuple <- TuplesOfRGBColors ].
+    [ begin
+        RenderColors =
+            gui_color:decimal_to_render( tuple_to_list( ColorTuple ) ),
+        list_to_tuple( RenderColors )
+      end || ColorTuple <- TuplesOfRGBColors ].
 
 
 
@@ -829,17 +829,17 @@ Recalibrates the texture coordinates for each face: returns a corresponding,
 single, overall list of updated tuples of texture coordinates.
 """.
 -spec recalibrate_tex_coords_for( [ texture_face_info() ], texture() ) ->
-												tuple( uv_point() ).
+                                                tuple( uv_point() ).
 % Avoiding useless reversings with body-recursion:
 recalibrate_tex_coords_for( _TexFaceInfos=[], _Texture ) ->
-	[];
+    [];
 
 recalibrate_tex_coords_for( _TexFaceInfos=[ TupleOfUVPoints | T ], Texture ) ->
-	RecalTupleOfUVPoints = list_to_tuple(
-		gui_texture:recalibrate_coordinates_for(
-			tuple_to_list( TupleOfUVPoints ), Texture ) ),
+    RecalTupleOfUVPoints = list_to_tuple(
+        gui_texture:recalibrate_coordinates_for(
+            tuple_to_list( TupleOfUVPoints ), Texture ) ),
 
-	[ RecalTupleOfUVPoints | recalibrate_tex_coords_for( T, Texture ) ].
+    [ RecalTupleOfUVPoints | recalibrate_tex_coords_for( T, Texture ) ].
 
 
 % (helper)
@@ -898,58 +898,58 @@ the second element of each of the lists in Elementss will correspond to the
 compound for V2, it will be for example Col2 :: color_by_decimal().
 
 -spec prepare_vattrs_per_vertex( [ indexed_face() ], [ [ render_element() ] ],
-								 [ vertex3() ], vertex_count() ) ->
-			{ [ vertex_attribute_series() ], compound_count() }.
+                                 [ vertex3() ], vertex_count() ) ->
+            { [ vertex_attribute_series() ], compound_count() }.
 """.
 prepare_vattrs_per_vertex( IndexedFaces, Elementss, AllVertices, FaceVCount ) ->
 
-	FaceCount = length( IndexedFaces ),
+    FaceCount = length( IndexedFaces ),
 
-	trace_utils:debug_fmt( "Preparing vertex attribute compounds "
-		"with ~B extra elements per vertex: the ~B faces are ~w, "
-		"the elements to associate are:~n ~w.",
-		[ length( Elementss ), FaceCount, IndexedFaces, Elementss ] ),
+    trace_utils:debug_fmt( "Preparing vertex attribute compounds "
+        "with ~B extra elements per vertex: the ~B faces are ~w, "
+        "the elements to associate are:~n ~w.",
+        [ length( Elementss ), FaceCount, IndexedFaces, Elementss ] ),
 
-	% Expected to be uniform (cf. face_type):
-	ActualFaceVCount = size( _Sample=hd( IndexedFaces ) ),
-	ActualFaceVCount =:= FaceVCount orelse
-		throw( { incorrect_per_face_vertex_count, FaceVCount,
-				 ActualFaceVCount } ),
+    % Expected to be uniform (cf. face_type):
+    ActualFaceVCount = size( _Sample=hd( IndexedFaces ) ),
+    ActualFaceVCount =:= FaceVCount orelse
+        throw( { incorrect_per_face_vertex_count, FaceVCount,
+                 ActualFaceVCount } ),
 
-	% Each element must correspond to an indexed face (tuple of the same size):
-	check_element_structures( Elementss, FaceVCount, _ElemListCount=1 ),
+    % Each element must correspond to an indexed face (tuple of the same size):
+    check_element_structures( Elementss, FaceVCount, _ElemListCount=1 ),
 
-	% In terms of multiplicities: an element (e.g. a color tuple) must be
-	% defined for each vertex referenced by each face:
-	%
-	case list_utils:check_same_length( Elementss ) of
+    % In terms of multiplicities: an element (e.g. a color tuple) must be
+    % defined for each vertex referenced by each face:
+    %
+    case list_utils:check_same_length( Elementss ) of
 
-		FaceCount ->
-			ok;
+        FaceCount ->
+            ok;
 
-		OtherElemCount ->
-			% Here all element lists have the same length, but it does not
-			% correspond to the compound count:
-			%
-			throw( { face_element_counts_mismatch, FaceCount, OtherElemCount } )
+        OtherElemCount ->
+            % Here all element lists have the same length, but it does not
+            % correspond to the compound count:
+            %
+            throw( { face_element_counts_mismatch, FaceCount, OtherElemCount } )
 
-	end,
+    end,
 
-	% Same sublist order, each of them is reversed, like IndexedFaces will be:
-	RevElemss = [ lists:reverse( Es ) || Es <- Elementss ],
+    % Same sublist order, each of them is reversed, like IndexedFaces will be:
+    RevElemss = [ lists:reverse( Es ) || Es <- Elementss ],
 
-	InitToStoreElemsAcc =
-		list_utils:duplicate( _InitTerm=[], _Count=length( Elementss ) ),
+    InitToStoreElemsAcc =
+        list_utils:duplicate( _InitTerm=[], _Count=length( Elementss ) ),
 
-	% Preserving face order in the returned lists (at least clearer that way;
-	% possibly helping keeping in sync with any EBO prebuilt indices); and
-	% reversing better done earlier than later, after duplications
-	% (cheaper/simpler); CompoundCount is the resulting number of vertex
-	% attribute compounds:
-	%
-	prepare_vattrs( _FaceGranularity=per_vertex, lists:reverse( IndexedFaces ),
-		RevElemss, AllVertices, _ToStoreVtxAcc=[], InitToStoreElemsAcc,
-		FaceVCount, _CompoundCount=0 ).
+    % Preserving face order in the returned lists (at least clearer that way;
+    % possibly helping keeping in sync with any EBO prebuilt indices); and
+    % reversing better done earlier than later, after duplications
+    % (cheaper/simpler); CompoundCount is the resulting number of vertex
+    % attribute compounds:
+    %
+    prepare_vattrs( _FaceGranularity=per_vertex, lists:reverse( IndexedFaces ),
+        RevElemss, AllVertices, _ToStoreVtxAcc=[], InitToStoreElemsAcc,
+        FaceVCount, _CompoundCount=0 ).
 
 
 
@@ -957,24 +957,24 @@ prepare_vattrs_per_vertex( IndexedFaces, Elementss, AllVertices, FaceVCount ) ->
 % that all elements of a list respect the same structure as its head).
 %
 check_element_structures( _Elementss=[], _FaceVCount, _ElemListCount ) ->
-	ok;
+    ok;
 
 % The head of current list is correct here (tail supposed alike):
 check_element_structures( _Elementss=[ _EList=[ HE | _TE ] | T ], FaceVCount,
-						  ElemListCount )
-		when is_tuple( HE ) andalso size( HE ) =:= FaceVCount ->
-	check_element_structures( T, FaceVCount, ElemListCount+1 );
+                          ElemListCount )
+        when is_tuple( HE ) andalso size( HE ) =:= FaceVCount ->
+    check_element_structures( T, FaceVCount, ElemListCount+1 );
 
 % Tuple found, but of different size:
 check_element_structures( _Elementss=[ _EList=[ HE | _TE ] | _T ], FaceVCount,
-						  ElemListCount ) when is_tuple( HE ) ->
-	throw( { incorrect_vattr_tuple_size, { got, size( HE ), HE },
-		{ expected, FaceVCount }, { vattr_list_count, ElemListCount } } );
+                          ElemListCount ) when is_tuple( HE ) ->
+    throw( { incorrect_vattr_tuple_size, { got, size( HE ), HE },
+        { expected, FaceVCount }, { vattr_list_count, ElemListCount } } );
 
 % Not even a tuple:
  check_element_structures( _Elementss=[ _EList=[ HE | _TE ] | _T ], _FaceVCount,
-						   ElemListCount ) ->
-	throw( { invalid_vattr_type, HE, { vattr_list_count, ElemListCount } } ).
+                           ElemListCount ) ->
+    throw( { invalid_vattr_type, HE, { vattr_list_count, ElemListCount } } ).
 
 
 
@@ -1003,50 +1003,50 @@ constraint could be relaxed), and is to be rendered with a given set of elements
 same rank as this face.
 """.
 -spec prepare_vattrs_per_face( [ indexed_face() ], [ [ render_element() ] ],
-							   [ vertex3() ], vertex_count() ) ->
-			{ [ vertex_attribute_series() ], compound_count() }.
+                               [ vertex3() ], vertex_count() ) ->
+            { [ vertex_attribute_series() ], compound_count() }.
 prepare_vattrs_per_face( IndexedFaces, Elementss, AllVertices, FaceVCount ) ->
 
-	FaceCount = length( IndexedFaces ),
+    FaceCount = length( IndexedFaces ),
 
-	trace_utils:debug_fmt( "Preparing vertex attributes with ~B elements "
-		"per face: the ~B faces are ~w, the elements to associate are:~n ~w.",
-		[ length( Elementss ), FaceCount, IndexedFaces, Elementss ] ),
+    trace_utils:debug_fmt( "Preparing vertex attributes with ~B elements "
+        "per face: the ~B faces are ~w, the elements to associate are:~n ~w.",
+        [ length( Elementss ), FaceCount, IndexedFaces, Elementss ] ),
 
-	% Expected to be uniform (cf. face_type):
-	ActualFaceVCount = size( _Sample=hd( IndexedFaces ) ),
-	ActualFaceVCount =:= FaceVCount orelse
-		throw( { incorrect_per_face_vertex_count, FaceVCount,
-				 ActualFaceVCount } ),
+    % Expected to be uniform (cf. face_type):
+    ActualFaceVCount = size( _Sample=hd( IndexedFaces ) ),
+    ActualFaceVCount =:= FaceVCount orelse
+        throw( { incorrect_per_face_vertex_count, FaceVCount,
+                 ActualFaceVCount } ),
 
-	case list_utils:check_same_length( Elementss ) of
+    case list_utils:check_same_length( Elementss ) of
 
-		FaceCount ->
-			ok;
+        FaceCount ->
+            ok;
 
-		OtherElemCount ->
-			% Here all element lists have the same length, but it does not
-			% correspond to the face count:
-			%
-			throw( { face_element_counts_mismatch, FaceCount, OtherElemCount } )
+        OtherElemCount ->
+            % Here all element lists have the same length, but it does not
+            % correspond to the face count:
+            %
+            throw( { face_element_counts_mismatch, FaceCount, OtherElemCount } )
 
-	end,
+    end,
 
-	% Same sublist order, each of them is reversed, like IndexedFaces will be:
-	RevElemss = [ lists:reverse( Es ) || Es <- Elementss ],
+    % Same sublist order, each of them is reversed, like IndexedFaces will be:
+    RevElemss = [ lists:reverse( Es ) || Es <- Elementss ],
 
-	InitToStoreElemsAcc =
-		list_utils:duplicate( _InitTerm=[],	_Count=length( Elementss ) ),
+    InitToStoreElemsAcc =
+        list_utils:duplicate( _InitTerm=[], _Count=length( Elementss ) ),
 
-	% Preserving face order in the returned lists (at least clearer that way;
-	% possibly helping keeping in sync with any EBO prebuilt indices); and
-	% reversing better done earlier than later, after duplications
-	% (cheaper/simpler); CompoundCount is the resulting number of vertex
-	% attribute compounds:
-	%
-	prepare_vattrs( _FaceGranularity=per_face, lists:reverse( IndexedFaces ),
-		RevElemss, AllVertices, _ToStoreVtxAcc=[], InitToStoreElemsAcc,
-		FaceVCount, _CompoundCount=0 ).
+    % Preserving face order in the returned lists (at least clearer that way;
+    % possibly helping keeping in sync with any EBO prebuilt indices); and
+    % reversing better done earlier than later, after duplications
+    % (cheaper/simpler); CompoundCount is the resulting number of vertex
+    % attribute compounds:
+    %
+    prepare_vattrs( _FaceGranularity=per_face, lists:reverse( IndexedFaces ),
+        RevElemss, AllVertices, _ToStoreVtxAcc=[], InitToStoreElemsAcc,
+        FaceVCount, _CompoundCount=0 ).
 
 
 
@@ -1054,50 +1054,50 @@ prepare_vattrs_per_face( IndexedFaces, Elementss, AllVertices, FaceVCount ) ->
 %
 % By design, all lists in RevElemss are empty as well:
 prepare_vattrs( _FaceGranularity, _RevIndexedFaces=[], RevElemss, _AllVertices,
-		ToStoreVtxAcc, ToStoreElemsAcc, _FaceVCount, CompoundCount ) ->
+        ToStoreVtxAcc, ToStoreElemsAcc, _FaceVCount, CompoundCount ) ->
 
-	% cond_utils:assert/3 not relevant here:
-	cond_utils:if_defined( myriad_debug_shaders,
-		basic_utils:assert_equal( [], list_utils:flatten_once( RevElemss ) ),
-		basic_utils:ignore_unused( RevElemss ) ),
+    % cond_utils:assert/3 not relevant here:
+    cond_utils:if_defined( myriad_debug_shaders,
+        basic_utils:assert_equal( [], list_utils:flatten_once( RevElemss ) ),
+        basic_utils:ignore_unused( RevElemss ) ),
 
-	% No reversing must be done:
-	{ [ ToStoreVtxAcc | ToStoreElemsAcc ], CompoundCount };
+    % No reversing must be done:
+    { [ ToStoreVtxAcc | ToStoreElemsAcc ], CompoundCount };
 
 
 prepare_vattrs( FaceGranularity, _RevIndexedFaces=[ VIdTuple | TIndexedFaces ],
-		RevElemss, AllVertices, ToStoreVtxAcc, ToStoreElemsAcc, FaceVCount,
-		CompoundCount ) ->
+        RevElemss, AllVertices, ToStoreVtxAcc, ToStoreElemsAcc, FaceVCount,
+        CompoundCount ) ->
 
-	% First, for each face, take care of the referenced vertices:
-	FaceVIds = tuple_to_list( VIdTuple ),
+    % First, for each face, take care of the referenced vertices:
+    FaceVIds = tuple_to_list( VIdTuple ),
 
-	FaceVs = mesh:get_vertices_from_ids( FaceVIds, AllVertices ),
-	NewToStoreVtxAcc = FaceVs ++ ToStoreVtxAcc,
+    FaceVs = mesh:get_vertices_from_ids( FaceVIds, AllVertices ),
+    NewToStoreVtxAcc = FaceVs ++ ToStoreVtxAcc,
 
-	% Chops all tuple heads for this face (elements already checked for sizes):
-	{ FaceHeadElems, FaceTailElems } =
-		list_utils:split_heads_tails( RevElemss ),
+    % Chops all tuple heads for this face (elements already checked for sizes):
+    { FaceHeadElems, FaceTailElems } =
+        list_utils:split_heads_tails( RevElemss ),
 
-	ToAppendLists = case FaceGranularity of
+    ToAppendLists = case FaceGranularity of
 
-		per_vertex ->
-			[ tuple_to_list( ElemTuple ) || ElemTuple <- FaceHeadElems ];
+        per_vertex ->
+            [ tuple_to_list( ElemTuple ) || ElemTuple <- FaceHeadElems ];
 
-		per_face ->
-			[ list_utils:duplicate( Elem, _Count=FaceVCount )
-											|| Elem <- FaceHeadElems ]
+        per_face ->
+            [ list_utils:duplicate( Elem, _Count=FaceVCount )
+                                            || Elem <- FaceHeadElems ]
 
-	end,
+    end,
 
 
-	% Adds these first element to be stored:
-	NewToStoreElemsAcc =
-		list_utils:concatenate_per_rank( ToAppendLists, ToStoreElemsAcc ),
+    % Adds these first element to be stored:
+    NewToStoreElemsAcc =
+        list_utils:concatenate_per_rank( ToAppendLists, ToStoreElemsAcc ),
 
-	prepare_vattrs( FaceGranularity, TIndexedFaces, FaceTailElems, AllVertices,
-		NewToStoreVtxAcc, NewToStoreElemsAcc, FaceVCount,
-		CompoundCount+FaceVCount ).
+    prepare_vattrs( FaceGranularity, TIndexedFaces, FaceTailElems, AllVertices,
+        NewToStoreVtxAcc, NewToStoreElemsAcc, FaceVCount,
+        CompoundCount+FaceVCount ).
 
 
 
@@ -1110,13 +1110,13 @@ current OpenGL context.
 """.
 -spec render_as_opengl( mesh() ) -> void().
 render_as_opengl( #mesh{ rendering_info=none } ) ->
-	%trace_utils:debug( "(mesh: nothing to render)" );
-	ok;
+    %trace_utils:debug( "(mesh: nothing to render)" );
+    ok;
 
 % Both information and state are needed:
 render_as_opengl( #mesh{ rendering_state=undefined } ) ->
-	%trace_utils:debug( "Mesh does not have a rendering state." );
-	ok;
+    %trace_utils:debug( "Mesh does not have a rendering state." );
+    ok;
 
 
 % For the textured case:
@@ -1124,96 +1124,96 @@ render_as_opengl( #mesh{ rendering_state=undefined } ) ->
 % (see the clause for non-textured cases for further details)
 %
 render_as_opengl( _M=#mesh{ %rendering_info={ textured, _TexSpecId,
-							%                 _TexFaceInfo },
-							rendering_state=#rendering_state{
-								program_id=ProgramId,
-								vao_id=VAOId,
-								vbo_layout=vtx3_uv,
-								compound_count=CompoundCount } } ) ->
+                            %                 _TexFaceInfo },
+                            rendering_state=#rendering_state{
+                                program_id=ProgramId,
+                                vao_id=VAOId,
+                                vbo_layout=vtx3_uv,
+                                compound_count=CompoundCount } } ) ->
 
-	%trace_utils:debug_fmt( "Rendering ~ts.", [ mesh:to_string( M ) ] ),
+    %trace_utils:debug_fmt( "Rendering ~ts.", [ mesh:to_string( M ) ] ),
 
-	gui_opengl:set_polygon_raster_mode( _FacingMode=front_facing,
-										_RasterMode=raster_filled ),
+    gui_opengl:set_polygon_raster_mode( _FacingMode=front_facing,
+                                        _RasterMode=raster_filled ),
 
-	gui_shader:set_vbo_layout( _VBOLayout=vtx3_uv, ProgramId ),
+    gui_shader:set_vbo_layout( _VBOLayout=vtx3_uv, ProgramId ),
 
-	% Sets the VBO and the vertex attributes:
-	gui_shader:set_current_vao_from_id( VAOId ),
+    % Sets the VBO and the vertex attributes:
+    gui_shader:set_current_vao_from_id( VAOId ),
 
-	% No need to assign the texture sampler of our base fragment shader to a
-	% given unit, it has been done once for us in
-	% gui_shader:deploy_base_program/0. So when we bind a texture, it is bound
-	% through a relevant texture unit.
+    % No need to assign the texture sampler of our base fragment shader to a
+    % given unit, it has been done once for us in
+    % gui_shader:deploy_base_program/0. So when we bind a texture, it is bound
+    % through a relevant texture unit.
 
-	gui_shader:render_from_enabled_vbos( _PrimType=?GL_TRIANGLES,
-										 CompoundCount ),
+    gui_shader:render_from_enabled_vbos( _PrimType=?GL_TRIANGLES,
+                                         CompoundCount ),
 
-	gui_shader:unset_current_vao();
+    gui_shader:unset_current_vao();
 
 % For non-textured cases:
 render_as_opengl( _M=#mesh{ rendering_info=RenderingInfoTuple,
-							rendering_state=#rendering_state{
-								program_id=ProgramId,
-								vao_id=VAOId,
-								vbo_layout=VBOLayout,
-								compound_count=CompoundCount } } ) ->
+                            rendering_state=#rendering_state{
+                                program_id=ProgramId,
+                                vao_id=VAOId,
+                                vbo_layout=VBOLayout,
+                                compound_count=CompoundCount } } ) ->
 
-	%trace_utils:debug_fmt( "Rendering ~ts.", [ mesh:to_string( M ) ] ),
+    %trace_utils:debug_fmt( "Rendering ~ts.", [ mesh:to_string( M ) ] ),
 
-	% We rely on our shader program; operations that must be performed at each
-	% rendering:
+    % We rely on our shader program; operations that must be performed at each
+    % rendering:
 
-	% In all cases (even for wireframe - not ?GL_LINES):
-	PrimType = ?GL_TRIANGLES,
+    % In all cases (even for wireframe - not ?GL_LINES):
+    PrimType = ?GL_TRIANGLES,
 
-	% For wireframe rendering_info, use:
+    % For wireframe rendering_info, use:
 
-	case RenderingInfoTuple of
+    case RenderingInfoTuple of
 
-		{ wireframe, _RGBEdgeColor, AreHiddenFacesRemoved } ->
-			RasterMode = raster_as_lines,
-			%RasterMode = raster_filled,
-			case AreHiddenFacesRemoved of
+        { wireframe, _RGBEdgeColor, AreHiddenFacesRemoved } ->
+            RasterMode = raster_as_lines,
+            %RasterMode = raster_filled,
+            case AreHiddenFacesRemoved of
 
-				true ->
-					gui_opengl:set_polygon_raster_mode(
-						_FacingMode=front_facing, RasterMode );
+                true ->
+                    gui_opengl:set_polygon_raster_mode(
+                        _FacingMode=front_facing, RasterMode );
 
-				false ->
-					gui_opengl:set_polygon_raster_mode(
-						_FacingMode=front_and_back_facing, RasterMode )
+                false ->
+                    gui_opengl:set_polygon_raster_mode(
+                        _FacingMode=front_and_back_facing, RasterMode )
 
-			end;
+            end;
 
-		% Enforces/restores relevant settings:
-		_ ->
-			gui_opengl:set_polygon_raster_mode( _FacingMode=front_facing,
-												_RasterMode=raster_filled )
+        % Enforces/restores relevant settings:
+        _ ->
+            gui_opengl:set_polygon_raster_mode( _FacingMode=front_facing,
+                                                _RasterMode=raster_filled )
 
-	end,
+    end,
 
-	gui_shader:set_vbo_layout( VBOLayout, ProgramId ),
+    gui_shader:set_vbo_layout( VBOLayout, ProgramId ),
 
-	% Sets the VBO and the vertex attributes:
-	gui_shader:set_current_vao_from_id( VAOId ),
+    % Sets the VBO and the vertex attributes:
+    gui_shader:set_current_vao_from_id( VAOId ),
 
-	% So these three calls would be useless:
-	%gui_shader:set_current_vbo_from_id( VBOId ),
-	%gui_shader:enable_vertex_attribute( ... ),
-	%gui_shader:set_current_ebo_from_id( EBOId ),
+    % So these three calls would be useless:
+    %gui_shader:set_current_vbo_from_id( VBOId ),
+    %gui_shader:enable_vertex_attribute( ... ),
+    %gui_shader:set_current_ebo_from_id( EBOId ),
 
-	% Draws our splendid mesh (based on VertexCount vertex elements, starting at
-	% index 0), using the currently active shaders, vertex attribute
-	% configuration and with the VBO's vertex data (indirectly bound via the
-	% VAO):
-	%
-	gui_shader:render_from_enabled_vbos( PrimType, CompoundCount ),
+    % Draws our splendid mesh (based on VertexCount vertex elements, starting at
+    % index 0), using the currently active shaders, vertex attribute
+    % configuration and with the VBO's vertex data (indirectly bound via the
+    % VAO):
+    %
+    gui_shader:render_from_enabled_vbos( PrimType, CompoundCount ),
 
-	gui_shader:unset_current_vao().
+    gui_shader:unset_current_vao().
 
-	% Useless, as reset at each rendering through VAOs:
-	%gui_shader:disable_vertex_attribute( ... ),
+    % Useless, as reset at each rendering through VAOs:
+    %gui_shader:disable_vertex_attribute( ... ),
 
 
 
@@ -1226,18 +1226,18 @@ cleanup_for_opengl( Mesh=#mesh{ rendering_state=undefined } ) ->
    Mesh;
 
 cleanup_for_opengl( Mesh=#mesh{ rendering_state=#rendering_state{
-													vao_id=VAOId,
-													vbo_id=VBOId,
-													ebo_id=EBOId } } ) ->
+                                                    vao_id=VAOId,
+                                                    vbo_id=VBOId,
+                                                    ebo_id=EBOId } } ) ->
 
-	cond_utils:if_defined( myriad_debug_mesh,
-		trace_utils:debug( "Cleaning up mesh regarding OpenGL." ) ),
+    cond_utils:if_defined( myriad_debug_mesh,
+        trace_utils:debug( "Cleaning up mesh regarding OpenGL." ) ),
 
-	gui_shader:delete_ebo( EBOId ),
-	gui_shader:delete_vbo( VBOId ),
-	gui_shader:delete_vao( VAOId ),
+    gui_shader:delete_ebo( EBOId ),
+    gui_shader:delete_vbo( VBOId ),
+    gui_shader:delete_vao( VAOId ),
 
-	Mesh#mesh{ rendering_state=undefined }.
+    Mesh#mesh{ rendering_state=undefined }.
 
 
 
@@ -1247,33 +1247,33 @@ information.
 """.
 -spec rendering_info_to_string( rendering_info() ) -> ustring().
 rendering_info_to_string( _RI=none ) ->
-	"no rendering set";
+    "no rendering set";
 
 rendering_info_to_string( _RI={ wireframe, RGBEdgeColor,
-								AreHiddenFacesRemoved } ) ->
-	text_utils:format( "wireframe rendering (with edge color ~ts and ~ts)",
-		[ gui_color:to_string( RGBEdgeColor ),
-		  case AreHiddenFacesRemoved of
-				true -> "";
-				false -> "no "
-		  end ++ "hidden-face removal" ] );
+                                AreHiddenFacesRemoved } ) ->
+    text_utils:format( "wireframe rendering (with edge color ~ts and ~ts)",
+        [ gui_color:to_string( RGBEdgeColor ),
+          case AreHiddenFacesRemoved of
+                true -> "";
+                false -> "no "
+          end ++ "hidden-face removal" ] );
 
 rendering_info_to_string(
-		_RI={ colored, _FaceGranularity=per_vertex, Colors } ) ->
-	text_utils:format( "per-vertex color rendering based on ~B faces: ~w",
-					   [ length( Colors ), Colors ] );
+        _RI={ colored, _FaceGranularity=per_vertex, Colors } ) ->
+    text_utils:format( "per-vertex color rendering based on ~B faces: ~w",
+                       [ length( Colors ), Colors ] );
 
 rendering_info_to_string(
-		_RI={ colored, _FaceGranularity=per_face, Colors } ) ->
-	text_utils:format( "per-face color rendering based on ~B colors: ~w",
-					   [ length( Colors ), Colors ] );
+        _RI={ colored, _FaceGranularity=per_face, Colors } ) ->
+    text_utils:format( "per-face color rendering based on ~B colors: ~w",
+                       [ length( Colors ), Colors ] );
 
 %rendering_info_to_string( _RI={ textured, TexInfos } ) ->
 %   text_utils:format( "rendering based on ~B texture information",
 %                      [ length( TexInfos ) ] ).
 rendering_info_to_string( _RI={ textured, TexSpecId, TexCoords } ) ->
-	text_utils:format( "rendering based on ~B texture coordinates relative "
-		"to texture specification #~B", [ length( TexCoords ), TexSpecId ] ).
+    text_utils:format( "rendering based on ~B texture coordinates relative "
+        "to texture specification #~B", [ length( TexCoords ), TexSpecId ] ).
 
 
 
@@ -1282,29 +1282,29 @@ Returns a compact textual description of the specified rendering information.
 """.
 -spec rendering_info_to_compact_string( rendering_info() ) -> ustring().
 rendering_info_to_compact_string( _RI=none ) ->
-	"no rendering set";
+    "no rendering set";
 
 rendering_info_to_compact_string(
-						_RI={ wireframe, _AreHiddenFacesRemoved=true } ) ->
-	"culled wireframe rendering";
+                        _RI={ wireframe, _AreHiddenFacesRemoved=true } ) ->
+    "culled wireframe rendering";
 
 rendering_info_to_compact_string(
-						_RI={ wireframe, _AreHiddenFacesRemoved=false } ) ->
-	"unculled wireframe rendering";
+                        _RI={ wireframe, _AreHiddenFacesRemoved=false } ) ->
+    "unculled wireframe rendering";
 
 rendering_info_to_compact_string(
-		_RI={ colored, FaceColoringGranularity, Colors } ) ->
-	text_utils:format( "~ts rendering based on ~B colors: ~w",
-		[ face_granularity_to_string( FaceColoringGranularity ),
-		  length( Colors ), Colors ] );
+        _RI={ colored, FaceColoringGranularity, Colors } ) ->
+    text_utils:format( "~ts rendering based on ~B colors: ~w",
+        [ face_granularity_to_string( FaceColoringGranularity ),
+          length( Colors ), Colors ] );
 
 %rendering_info_to_compact_string( _RI={ textured, _TextureInfo } ) ->
 %   "textured rendering".
 
 rendering_info_to_compact_string(
-		_RI={ textured, TexSpecInfo, _TextureInfo } ) ->
-	text_utils:format( "rendering based on texture whose specification "
-					   "identifier is #~B", [ TexSpecInfo ] ).
+        _RI={ textured, TexSpecInfo, _TextureInfo } ) ->
+    text_utils:format( "rendering based on texture whose specification "
+                       "identifier is #~B", [ TexSpecInfo ] ).
 
 
 
@@ -1313,15 +1313,15 @@ Returns a textual description of the specified mesh rendering state.
 """.
 -spec rendering_state_to_string( rendering_state() ) -> ustring().
 rendering_state_to_string( #rendering_state{ program_id=ProgramId,
-											 vao_id=VAOId,
-											 vbo_id=VBOId,
-											 vbo_layout=VBOLayout,
-											 compound_count=CompoundCount,
-											 ebo_id=EBOId } ) ->
-	text_utils:format( "OpenGL rendering state in GLSL program #~B is VAO #~B, "
-		"VBO #~B with a ~ts layout (~B vertex attribute compounds), "
-		"and EBO #~B",
-		[ ProgramId, VAOId, VBOId, VBOLayout, CompoundCount, EBOId ] ).
+                                             vao_id=VAOId,
+                                             vbo_id=VBOId,
+                                             vbo_layout=VBOLayout,
+                                             compound_count=CompoundCount,
+                                             ebo_id=EBOId } ) ->
+    text_utils:format( "OpenGL rendering state in GLSL program #~B is VAO #~B, "
+        "VBO #~B with a ~ts layout (~B vertex attribute compounds), "
+        "and EBO #~B",
+        [ ProgramId, VAOId, VBOId, VBOLayout, CompoundCount, EBOId ] ).
 
 
 
@@ -1330,7 +1330,7 @@ Returns a textual description of the specified face granularity.
 """.
 -spec face_granularity_to_string( face_granularity() ) -> ustring().
 face_granularity_to_string( _FG=per_vertex ) ->
-	"per-vertex";
+    "per-vertex";
 
 face_granularity_to_string( _FG=per_face ) ->
-	"per-face".
+    "per-face".

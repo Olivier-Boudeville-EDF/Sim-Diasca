@@ -23,7 +23,7 @@ Sim-Diasca Modeller Guide
 
 
 
-:raw-html:`<div class="banner"><p><em>Sim-Diasca Modeller Guide</em> <a href="https://olivier-boudeville-edf.github.io/Sim-Diasca/">browse latest</a> <a href="Sim-Diasca-modeller-guide-english.pdf">get PDF</a> <a href="#sim_diasca_top">go to top</a> <a href="#sim_diasca_toc">go to toc</a> <a href="#sim_diasca_bottom">go to bottom</a> <a href="https://github.com/Olivier-Boudeville-EDF/Sim-Diasca">go to project</a> <a href="mailto:olivier(dot)boudeville(at)edf(dot)fr?subject=[Sim-Diasca]%20Remark%20about%20the%20modeller%20guide">email us</a></p></div>`
+:raw-html:`<div class="banner"><p><em>Sim-Diasca Modeller Guide</em> <a href="https://edf-lab.github.io/Sim-Diasca/">browse latest</a> <a href="Sim-Diasca-modeller-guide-english.pdf">get PDF</a> <a href="#sim_diasca_top">go to top</a> <a href="#sim_diasca_toc">go to toc</a> <a href="#sim_diasca_bottom">go to bottom</a> <a href="https://github.com/EDF-Lab/Sim-Diasca">go to project</a> <a href="mailto:olivier(dot)boudeville(at)edf(dot)fr?subject=[Sim-Diasca]%20Remark%20about%20the%20modeller%20guide">email us</a></p></div>`
 
 
 
@@ -287,7 +287,7 @@ Still in the ``deployment_settings`` record, other parameters can be set (e.g. `
 
 	DeploymentSettings = #deployment_settings{
 		computing_hosts = {use_host_file_otherwise_local,
-					       "sim-diasca-host-candidates.etf"},
+						   "sim-diasca-host-candidates.etf"},
 		additional_elements_to_deploy = [ {".",code} ]
 	}
 

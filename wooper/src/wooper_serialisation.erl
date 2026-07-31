@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2025 Olivier Boudeville
+% Copyright (C) 2012-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -39,20 +39,20 @@ times.
 
 -export([ serialise_instances/1,
 
-		  load_instances/1, load_instances/3,
-		  load_link_instances/1, load_link_instances/3,
+          load_instances/1, load_instances/3,
+          load_link_instances/1, load_link_instances/3,
 
-		  synchronous_load_instances/1, synchronous_load_instances/3,
-		  synchronous_load_link_instances/1, synchronous_load_link_instances/3
-		]).
+          synchronous_load_instances/1, synchronous_load_instances/3,
+          synchronous_load_link_instances/1, synchronous_load_link_instances/3
+        ]).
 
 
 
 % Serialisation helpers, to better implement hooks:
 -export([ handle_private_processes/2, mute_attributes/2,
-		  check_attributes_equal/3, replace_attribute/3, replace_attributes/3,
-		  merge_list_for/3, merge_lists_for/3,
-		  instance_record_to_string/1 ]).
+          check_attributes_equal/3, replace_attribute/3, replace_attributes/3,
+          merge_list_for/3, merge_lists_for/3,
+          instance_record_to_string/1 ]).
 
 
 % Term transformers:
@@ -110,8 +110,8 @@ serialisations, in no specific order (as usually it does not matter).
 """.
 -spec serialise_instances( [ instance_pid() ] ) -> serialisation().
 serialise_instances( InstPids ) ->
-	serialise_instances( InstPids, _MaybeEntryTransformer=undefined,
-						 _UserData=undefined ).
+    serialise_instances( InstPids, _MaybeEntryTransformer=undefined,
+                         _UserData=undefined ).
 
 
 
@@ -125,22 +125,22 @@ Note that all these serialisations will use exactly the (same) specified user
 data, and that any updated version of it they would return will be ignored.
 """.
 -spec serialise_instances( [ instance_pid() ], option( entry_transformer() ),
-						   user_data() ) -> serialisation().
+                           user_data() ) -> serialisation().
 serialise_instances( InstPids, MaybeEntryTransformer, UserData ) ->
 
-	% Getting a list of {Serialisation, UpdatedUserData, InstPid} triplets:
-	SerialTriplets = wooper:obtain_results_for_requests( serialise,
-		[ MaybeEntryTransformer, UserData ], InstPids ),
+    % Getting a list of {Serialisation, UpdatedUserData, InstPid} triplets:
+    SerialTriplets = wooper:obtain_results_for_requests( serialise,
+        [ MaybeEntryTransformer, UserData ], InstPids ),
 
-	%trace_utils:debug_fmt( "Serialisation of the ~B instances of PIDs ~w "
-	%   "returned:~n ~p", [ length( InstPids ), InstPids, SerialTriplets ] ),
+    %trace_utils:debug_fmt( "Serialisation of the ~B instances of PIDs ~w "
+    %   "returned:~n ~p", [ length( InstPids ), InstPids, SerialTriplets ] ),
 
-	Serials = [ S || { S, _UpdatedUserData, _InstPid } <- SerialTriplets ],
+    Serials = [ S || { S, _UpdatedUserData, _InstPid } <- SerialTriplets ],
 
-	% So the concatenation of (serialisation, binary) terms, not an overall
-	% term:
-	%
-	text_utils:bin_concatenate( Serials ).
+    % So the concatenation of (serialisation, binary) terms, not an overall
+    % term:
+    %
+    text_utils:bin_concatenate( Serials ).
 
 
 
@@ -160,8 +160,8 @@ Created instances will not be linked to the calling process.
 """.
 -spec load_instances( serialisation() ) -> [ instance_pid() ].
 load_instances( Serialisation ) ->
-	load_instances( Serialisation, _MaybeEntryTransformer=undefined,
-					_UserData=undefined ).
+    load_instances( Serialisation, _MaybeEntryTransformer=undefined,
+                    _UserData=undefined ).
 
 
 
@@ -179,17 +179,17 @@ any updated version of it they would return will be ignored.
 Created instances will not be linked to the calling process.
 """.
 -spec load_instances( serialisation(), option( entry_transformer() ),
-					  user_data() ) -> [ instance_pid() ].
+                      user_data() ) -> [ instance_pid() ].
 load_instances( Serialisation, MaybeEntryTransformer, UserData ) ->
 
-	% The reading of the serialisation is sequential by nature (this overall
-	% binary must be chopped chunk by chunk), yet the creations deriving from it
-	% may be concurrent:
-	%
-	% (clearer than a fold)
-	%
-	load_instances_helper( Serialisation, MaybeEntryTransformer, UserData,
-						   _DoLink=false, _AccPids=[] ).
+    % The reading of the serialisation is sequential by nature (this overall
+    % binary must be chopped chunk by chunk), yet the creations deriving from it
+    % may be concurrent:
+    %
+    % (clearer than a fold)
+    %
+    load_instances_helper( Serialisation, MaybeEntryTransformer, UserData,
+                           _DoLink=false, _AccPids=[] ).
 
 
 
@@ -205,8 +205,8 @@ Created instances will be linked to the calling process.
 """.
 -spec load_link_instances( serialisation() ) -> [ instance_pid() ].
 load_link_instances( Serialisation ) ->
-	load_instances( Serialisation, _MaybeEntryTransformer=undefined,
-					_UserData=undefined ).
+    load_instances( Serialisation, _MaybeEntryTransformer=undefined,
+                    _UserData=undefined ).
 
 
 
@@ -224,56 +224,56 @@ any updated version of it they would return will be ignored.
 Created instances will be linked to the calling process.
 """.
 -spec load_link_instances( serialisation(), option( entry_transformer() ),
-						   user_data() ) -> [ instance_pid() ].
+                           user_data() ) -> [ instance_pid() ].
 load_link_instances( Serialisation, MaybeEntryTransformer, UserData ) ->
 
-	% The reading of the serialisation is sequential by nature (this overall
-	% binary must be chopped chunk by chunk), yet the creations deriving from it
-	% may be concurrent:
-	%
-	% (clearer than a fold)
-	%
-	load_instances_helper( Serialisation, MaybeEntryTransformer, UserData,
-						   _DoLink=true, _AccPids=[] ).
+    % The reading of the serialisation is sequential by nature (this overall
+    % binary must be chopped chunk by chunk), yet the creations deriving from it
+    % may be concurrent:
+    %
+    % (clearer than a fold)
+    %
+    load_instances_helper( Serialisation, MaybeEntryTransformer, UserData,
+                           _DoLink=true, _AccPids=[] ).
 
 
 
 % (helper)
 load_instances_helper( _Serial= <<>>, _MaybeEntryTransformer, _UserData,
-					   _DoLink, AccPids ) ->
+                       _DoLink, AccPids ) ->
 
-	%trace_utils:debug_fmt( "Returning ~B instance PIDs: ~w",
-	%                       [ length( AccPids ), AccPids ] ),
+    %trace_utils:debug_fmt( "Returning ~B instance PIDs: ~w",
+    %                       [ length( AccPids ), AccPids ] ),
 
-	AccPids;
+    AccPids;
 
 load_instances_helper( Serial, MaybeEntryTransformer, UserData, DoLink,
-					   AccPids ) ->
+                       AccPids ) ->
 
-	% DeserialisedTerm is expected to be an instance record:
-	{ DeserialisedTerm, UsedCount } = binary_to_term( Serial, [ used ] ),
+    % DeserialisedTerm is expected to be an instance record:
+    { DeserialisedTerm, UsedCount } = binary_to_term( Serial, [ used ] ),
 
-	% Go concurrent ASAP:
+    % Go concurrent ASAP:
 
-	EmbodyFun = fun() ->
-		class_Serialisable:embody( DeserialisedTerm, MaybeEntryTransformer,
-								   UserData, _ListenerPid=undefined )
-				end,
+    EmbodyFun = fun() ->
+        class_Serialisable:embody( DeserialisedTerm, MaybeEntryTransformer,
+                                   UserData, _ListenerPid=undefined )
+                end,
 
-	InstPid = case DoLink of
+    InstPid = case DoLink of
 
-		true ->
-			?myriad_spawn_link( EmbodyFun );
+        true ->
+            ?myriad_spawn_link( EmbodyFun );
 
-		false ->
-			?myriad_spawn( EmbodyFun )
+        false ->
+            ?myriad_spawn( EmbodyFun )
 
-	end,
+    end,
 
-	{ _ReadSerial, RemainingSerial } = split_binary( Serial, UsedCount ),
+    { _ReadSerial, RemainingSerial } = split_binary( Serial, UsedCount ),
 
-	load_instances_helper( RemainingSerial, MaybeEntryTransformer, UserData,
-						   DoLink, [ InstPid | AccPids ] ).
+    load_instances_helper( RemainingSerial, MaybeEntryTransformer, UserData,
+                           DoLink, [ InstPid | AccPids ] ).
 
 
 
@@ -294,8 +294,8 @@ Created instances will not be linked to the calling process.
 """.
 -spec synchronous_load_instances( serialisation() ) -> [ load_info() ].
 synchronous_load_instances( Serialisation ) ->
-	synchronous_load_instances( Serialisation, _MaybeEntryTransformer=undefined,
-								_UserData=undefined ).
+    synchronous_load_instances( Serialisation, _MaybeEntryTransformer=undefined,
+                                _UserData=undefined ).
 
 
 
@@ -311,17 +311,17 @@ created processes report that they are up and running.
 Created instances will not be linked to the calling process.
 """.
 -spec synchronous_load_instances( serialisation(),
-	option( entry_transformer() ), user_data() ) -> [ load_info() ].
+    option( entry_transformer() ), user_data() ) -> [ load_info() ].
 synchronous_load_instances( Serialisation, MaybeEntryTransformer, UserData ) ->
 
-	% The reading of the serialisation is sequential by nature (this overall
-	% binary must be chopped chunk by chunk), yet the creations deriving from it
-	% may be concurrent:
-	%
-	% (clearer than a fold)
-	%
-	sync_load_instances_helper( Serialisation, MaybeEntryTransformer, UserData,
-								_DoLink=false, self(), _AccPids=[] ).
+    % The reading of the serialisation is sequential by nature (this overall
+    % binary must be chopped chunk by chunk), yet the creations deriving from it
+    % may be concurrent:
+    %
+    % (clearer than a fold)
+    %
+    sync_load_instances_helper( Serialisation, MaybeEntryTransformer, UserData,
+                                _DoLink=false, self(), _AccPids=[] ).
 
 
 
@@ -338,8 +338,8 @@ Created instances will be linked to the calling process.
 """.
 -spec synchronous_load_link_instances( serialisation() ) -> [ load_info() ].
 synchronous_load_link_instances( Serialisation ) ->
-	synchronous_load_link_instances( Serialisation,
-		_MaybeEntryTransformer=undefined, _UserData=undefined ).
+    synchronous_load_link_instances( Serialisation,
+        _MaybeEntryTransformer=undefined, _UserData=undefined ).
 
 
 
@@ -355,63 +355,63 @@ processes report that they are up and running.
 Created instances will be linked to the calling process.
 """.
 -spec synchronous_load_link_instances( serialisation(),
-			option( entry_transformer() ), user_data() ) -> [ load_info() ].
+            option( entry_transformer() ), user_data() ) -> [ load_info() ].
 synchronous_load_link_instances( Serialisation, MaybeEntryTransformer,
-								 UserData ) ->
+                                 UserData ) ->
 
-	% The reading of the serialisation is sequential by nature (this overall
-	% binary must be chopped chunk by chunk), yet the creations deriving from it
-	% may be concurrent:
-	%
-	% (clearer than a fold)
-	%
-	sync_load_instances_helper( Serialisation, MaybeEntryTransformer,
-		UserData, _DoLink=true, self(), _AccPids=[] ).
+    % The reading of the serialisation is sequential by nature (this overall
+    % binary must be chopped chunk by chunk), yet the creations deriving from it
+    % may be concurrent:
+    %
+    % (clearer than a fold)
+    %
+    sync_load_instances_helper( Serialisation, MaybeEntryTransformer,
+        UserData, _DoLink=true, self(), _AccPids=[] ).
 
 
 
 
 % (helper)
 sync_load_instances_helper( _Serial= <<>>, _MaybeEntryTransformer, _UserData,
-							_DoLink, _Self, AccPids ) ->
+                            _DoLink, _Self, AccPids ) ->
 
-	LoadInfos = [ receive
-					{ onDeserialisation, LoadInfo } ->
-						  LoadInfo
-				  end || _Pid <- AccPids ],
+    LoadInfos = [ receive
+                    { onDeserialisation, LoadInfo } ->
+                          LoadInfo
+                  end || _Pid <- AccPids ],
 
-	trace_utils:debug_fmt( "Returning ~B loading information: ~w",
-						   [ length( LoadInfos ), LoadInfos ] ),
+    trace_utils:debug_fmt( "Returning ~B loading information: ~w",
+                           [ length( LoadInfos ), LoadInfos ] ),
 
-	LoadInfos;
+    LoadInfos;
 
 sync_load_instances_helper( Serial, MaybeEntryTransformer, UserData, DoLink,
-							Self, AccPids ) ->
+                            Self, AccPids ) ->
 
-	% DeserialisedTerm is expected to be an instance record:
-	{ DeserialisedTerm, UsedCount } = binary_to_term( Serial, [ used ] ),
+    % DeserialisedTerm is expected to be an instance record:
+    { DeserialisedTerm, UsedCount } = binary_to_term( Serial, [ used ] ),
 
-	% Go concurrent ASAP:
+    % Go concurrent ASAP:
 
-	EmbodyFun = fun() ->
-		class_Serialisable:embody( DeserialisedTerm, MaybeEntryTransformer,
-								   UserData, _ListenerPid=Self )
-				end,
+    EmbodyFun = fun() ->
+        class_Serialisable:embody( DeserialisedTerm, MaybeEntryTransformer,
+                                   UserData, _ListenerPid=Self )
+                end,
 
-	InstPid = case DoLink of
+    InstPid = case DoLink of
 
-		true ->
-			?myriad_spawn_link( EmbodyFun );
+        true ->
+            ?myriad_spawn_link( EmbodyFun );
 
-		false ->
-			?myriad_spawn( EmbodyFun )
+        false ->
+            ?myriad_spawn( EmbodyFun )
 
-	end,
+    end,
 
-	{ _ReadSerial, RemainingSerial } = split_binary( Serial, UsedCount ),
+    { _ReadSerial, RemainingSerial } = split_binary( Serial, UsedCount ),
 
-	sync_load_instances_helper( RemainingSerial, MaybeEntryTransformer,
-								UserData, DoLink, Self, [ InstPid | AccPids ] ).
+    sync_load_instances_helper( RemainingSerial, MaybeEntryTransformer,
+                                UserData, DoLink, Self, [ InstPid | AccPids ] ).
 
 
 
@@ -436,31 +436,31 @@ PIDs remain when serialising.
 (helper)
 """.
 -spec handle_private_processes( [ attribute_name() ], wooper:state() ) ->
-										wooper:state().
+                                        wooper:state().
 handle_private_processes( PrivateAttributeNames, State ) ->
 
-	lists:foldl(
-		fun( PrivateAttrName, AccState ) ->
+    lists:foldl(
+        fun( PrivateAttrName, AccState ) ->
 
-			NewValue = case getAttribute( AccState, PrivateAttrName ) of
+            NewValue = case getAttribute( AccState, PrivateAttrName ) of
 
-				undefined ->
-					undefined;
+                undefined ->
+                    undefined;
 
-				Pid when is_pid( Pid ) ->
+                Pid when is_pid( Pid ) ->
 
-					% We just hide these PIDs on the serialised form: after
-					% serialisation, the live state will still reference them.
-					%
-					?process_restoration_marker
+                    % We just hide these PIDs on the serialised form: after
+                    % serialisation, the live state will still reference them.
+                    %
+                    ?process_restoration_marker
 
-			end,
+            end,
 
-			setAttribute( AccState, PrivateAttrName, NewValue )
+            setAttribute( AccState, PrivateAttrName, NewValue )
 
-		end,
-		_Acc0=State,
-		_List=PrivateAttributeNames ).
+        end,
+        _Acc0=State,
+        _List=PrivateAttributeNames ).
 
 
 
@@ -477,32 +477,32 @@ relevant, useful information.
 -spec mute_attributes( [ attribute_name() ], wooper:state() ) -> wooper:state().
 mute_attributes( AttributeNames, State ) ->
 
-	lists:foldl(
-		fun( AttrName, AccState ) ->
+    lists:foldl(
+        fun( AttrName, AccState ) ->
 
-			case hasAttribute( AccState, AttrName ) of
+            case hasAttribute( AccState, AttrName ) of
 
-				true ->
-					case getAttribute( AccState, AttrName ) of
+                true ->
+                    case getAttribute( AccState, AttrName ) of
 
-						undefined ->
-							% Let it as is:
-							AccState;
+                        undefined ->
+                            % Let it as is:
+                            AccState;
 
-						_ ->
-							setAttribute( AccState, AttrName,
-										  ?term_restoration_marker )
+                        _ ->
+                            setAttribute( AccState, AttrName,
+                                          ?term_restoration_marker )
 
-					end;
+                    end;
 
-				false ->
-					throw( { unknown_attribute, AttrName, AccState } )
+                false ->
+                    throw( { unknown_attribute, AttrName, AccState } )
 
-			end
+            end
 
-		end,
-		_Acc0=State,
-		_List=AttributeNames ).
+        end,
+        _Acc0=State,
+        _List=AttributeNames ).
 
 
 
@@ -513,27 +513,27 @@ and in the specified entries, otherwise throws an exception.
 (helper)
 """.
 -spec check_attributes_equal( [ attribute_name() ], [ attribute_entry() ],
-							  wooper:state() ) -> void().
+                              wooper:state() ) -> void().
 check_attributes_equal( _AttributeNames=[], _AttributeEntries, _State ) ->
-	ok;
+    ok;
 
 check_attributes_equal( _AttributeNames=[ AttributeName | T ], AttributeEntries,
-						State ) ->
+                        State ) ->
 
-	{ AttributeValue, RemainingEntries } =
-		option_list:extract( _K=AttributeName, AttributeEntries ),
+    { AttributeValue, RemainingEntries } =
+        option_list:extract( _K=AttributeName, AttributeEntries ),
 
-	case ?getAttr(AttributeName) of
+    case ?getAttr(AttributeName) of
 
-		% Matching as expected:
-		AttributeValue ->
-			check_attributes_equal( T, RemainingEntries, State );
+        % Matching as expected:
+        AttributeValue ->
+            check_attributes_equal( T, RemainingEntries, State );
 
-		OtherValue ->
-			throw( { attribute_value_mismatch, AttributeName,
-					 { OtherValue, AttributeValue } } )
+        OtherValue ->
+            throw( { attribute_value_mismatch, AttributeName,
+                     { OtherValue, AttributeValue } } )
 
-	end.
+    end.
 
 
 
@@ -546,23 +546,23 @@ Returns the remaining entries and a corresponding updated state.
 (helper)
 """.
 -spec replace_attribute( attribute_name(), [ attribute_entry() ],
-				wooper:state() ) -> { [ attribute_entry() ], wooper:state() }.
+                wooper:state() ) -> { [ attribute_entry() ], wooper:state() }.
 replace_attribute( AttributeName, AttributeEntries, State ) ->
 
-	case hasAttribute( State, AttributeName ) of
+    case hasAttribute( State, AttributeName ) of
 
-		true ->
-			{ ToSetValue, RemainingEntries } =
-				option_list:extract( _K=AttributeName, AttributeEntries ),
+        true ->
+            { ToSetValue, RemainingEntries } =
+                option_list:extract( _K=AttributeName, AttributeEntries ),
 
-			NewState = setAttribute( State, AttributeName, ToSetValue ),
+            NewState = setAttribute( State, AttributeName, ToSetValue ),
 
-			{ RemainingEntries, NewState };
+            { RemainingEntries, NewState };
 
-		false ->
-			throw( { unknown_attribute, AttributeName, State } )
+        false ->
+            throw( { unknown_attribute, AttributeName, State } )
 
-	end.
+    end.
 
 
 
@@ -575,15 +575,15 @@ Returns the remaining entries and a corresponding updated state.
 (helper)
 """.
 -spec replace_attributes( [ attribute_name() ], [ attribute_entry() ],
-				wooper:state() ) -> { [ attribute_entry() ], wooper:state() }.
+                wooper:state() ) -> { [ attribute_entry() ], wooper:state() }.
 replace_attributes( AttributeNames, AttributeEntries, State ) ->
 
-	lists:foldl(
-		fun( AttrName, { AccEntries, AccState } ) ->
-			replace_attribute( AttrName, AccEntries, AccState )
-		end,
-		_Acc0={ AttributeEntries, State },
-		_List=AttributeNames ).
+    lists:foldl(
+        fun( AttrName, { AccEntries, AccState } ) ->
+            replace_attribute( AttrName, AccEntries, AccState )
+        end,
+        _Acc0={ AttributeEntries, State },
+        _List=AttributeNames ).
 
 
 
@@ -596,28 +596,28 @@ name.
 Returns the remaining entries, and an updated state.
 """.
 -spec merge_list_for( attribute_name(), [ attribute_entry() ],
-			wooper:state() ) -> { [ attribute_entry() ], wooper:state() }.
+            wooper:state() ) -> { [ attribute_entry() ], wooper:state() }.
 merge_list_for( AttributeName, AttributeEntries, State ) ->
 
-	{ ToMergeValue, RemainingEntries } =
-		option_list:extract( _K=AttributeName, AttributeEntries ),
+    { ToMergeValue, RemainingEntries } =
+        option_list:extract( _K=AttributeName, AttributeEntries ),
 
-	InitialValue = ?getAttr(AttributeName),
+    InitialValue = ?getAttr(AttributeName),
 
-	MergedValue = case ToMergeValue of
+    MergedValue = case ToMergeValue of
 
-		PlainList when is_list( PlainList ) ->
-			InitialValue ++ PlainList;
+        PlainList when is_list( PlainList ) ->
+            InitialValue ++ PlainList;
 
-		% We suppose it is a set (that cannot match a list):
-		Set ->
-			set_utils:union( InitialValue, Set )
+        % We suppose it is a set (that cannot match a list):
+        Set ->
+            set_utils:union( InitialValue, Set )
 
-	end,
+    end,
 
-	MergedState = setAttribute( State, AttributeName, MergedValue ),
+    MergedState = setAttribute( State, AttributeName, MergedValue ),
 
-	{ RemainingEntries, MergedState }.
+    { RemainingEntries, MergedState }.
 
 
 
@@ -630,42 +630,42 @@ same attribute name.
 Returns the remaining entries, and an updated state.
 """.
 -spec merge_lists_for( [ attribute_name() ], [ attribute_entry() ],
-			wooper:state() ) -> { [ attribute_entry() ], wooper:state() }.
+            wooper:state() ) -> { [ attribute_entry() ], wooper:state() }.
 merge_lists_for( AttributeNames, AttributeEntries, State ) ->
 
-	lists:foldl(
-		fun( AttrName, { AccEntries, AccState } ) ->
-			merge_list_for( AttrName, AccEntries, AccState )
-		end,
-		_Acc0={ AttributeEntries, State },
-		_List=AttributeNames ).
+    lists:foldl(
+        fun( AttrName, { AccEntries, AccState } ) ->
+            merge_list_for( AttrName, AccEntries, AccState )
+        end,
+        _Acc0={ AttributeEntries, State },
+        _List=AttributeNames ).
 
 
 
 -doc "Returns a textual description of the specified instance record.".
 -spec instance_record_to_string( instance_record() ) -> ustring().
 instance_record_to_string( #wooper_serialisation_instance_record{
-		class_name=Classname,
-		attributes=AttrEntries,
-		extra_data=MaybeExtraData } ) ->
+        class_name=Classname,
+        attributes=AttrEntries,
+        extra_data=MaybeExtraData } ) ->
 
-	AttrStrs = [ text_utils:format( "attribute '~ts' of value ~p",
-					[ K, V ] ) || { K, V } <- AttrEntries ],
+    AttrStrs = [ text_utils:format( "attribute '~ts' of value ~p",
+                    [ K, V ] ) || { K, V } <- AttrEntries ],
 
-	ExtraStr = case MaybeExtraData of
+    ExtraStr = case MaybeExtraData of
 
-		undefined ->
-			"no extra data";
+        undefined ->
+            "no extra data";
 
-		ExtraData ->
-			text_utils:format( "extra data ~p", [ ExtraData ] )
+        ExtraData ->
+            text_utils:format( "extra data ~p", [ ExtraData ] )
 
-	end,
+    end,
 
-	text_utils:format( "serialisation record for an instance of ~ts, "
-		"with ~ts and ~B entries: ~ts",
-		[ Classname, ExtraStr, length( AttrEntries ),
-		  text_utils:strings_to_string( lists:sort( AttrStrs ) ) ] ).
+    text_utils:format( "serialisation record for an instance of ~ts, "
+        "with ~ts and ~B entries: ~ts",
+        [ Classname, ExtraStr, length( AttrEntries ),
+          text_utils:strings_to_string( lists:sort( AttrStrs ) ) ] ).
 
 
 
@@ -682,16 +682,16 @@ that the entries to serialise are legit.
 """.
 -spec check_no_transient( term(), user_data() ) -> term_transformer().
 check_no_transient( T, UserData ) ->
-	case type_utils:is_transient( T ) of
+    case type_utils:is_transient( T ) of
 
-		true ->
-			throw( { transient_term_found, T, type_utils:get_type_of( T ),
-					 UserData } );
+        true ->
+            throw( { transient_term_found, T, type_utils:get_type_of( T ),
+                     UserData } );
 
-		false ->
-			{ T, UserData }
+        false ->
+            { T, UserData }
 
-	end.
+    end.
 
 
 

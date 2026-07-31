@@ -32,19 +32,32 @@ set -e
 
 # General settings
 
-# Debian 12 currently:
-os_base_image="debian:bookworm"
+# Debian 13 currently:
+os_base_image="debian:trixie"
+#os_base_image="debian:bookworm" # 12
+
 
 # If using a public repository:
 #os_image="${os_base_image}"
 
 
-# If using an internal registry (possibly not defined; possibly including a port
-# number, like in 'nexus.foobar.org:5012'):
+# If using an internal, public, possibly organisation-specialised, registry
+# (possibly not defined; possibly including a port number, like in
+# 'nexus.foobar.org:5139'):
 #
-internal_repository="${SIM_DIASCA_BASE_DOCKER_REGISTRY}"
+# (expected to be defined in one's environment)
+#
+base_public_repository="${DOCKER_INTERNAL_PUBLIC_SPECIALISED_REGISTRY}"
 
-os_image="${internal_repository}${os_base_image}"
+
+# If using an internal, private registry (possibly not defined; possibly
+# including a port number, like in 'nexus.foobar.org:5139'):
+# (expected to be defined in one's environment)
+#
+sd_internal_repository="${SIM_DIASCA_BASE_DOCKER_REGISTRY}"
+
+
+os_image="${base_public_repository}${os_base_image}"
 
 
 # The directory-like structure in which all Sim-Diasca are declared:
@@ -206,19 +219,19 @@ case $image_type in
 		;;
 
 	2)
-		parent_image="${internal_repository}${sd_group}/base-runtime:${sd_tag}"
+		parent_image="${sd_internal_repository}${sd_group}/base-runtime:${sd_tag}"
 		echo "Preparing a Sim-Diasca Docker image for documentation generation, deriving from image '${parent_image}'...."
 		;;
 
 	3)
-		parent_image="${internal_repository}${sd_group}/documentation-generation:${sd_tag}"
+		parent_image="${sd_internal_repository}${sd_group}/documentation-generation:${sd_tag}"
 		prepare_logmx=0
 		prepare_extra_env=0
 		echo "Preparing a Sim-Diasca Docker image for development, deriving from image '${parent_image}'...."
 	   ;;
 
 	*)
-		echo "Unexpected image type ($image_type)."
+		echo "Unexpected image type ('${image_type}')."
 		exit 25
 		;;
 
@@ -304,7 +317,7 @@ if [ $prepare_sd -eq 0 ]; then
 	if [ ! -d "${sd_clone_root}" ]; then
 
 		# The default Git is the public one:
-		SIM_DIASCA_GIT="https://github.com/Olivier-Boudeville-EDF/Sim-Diasca.git"
+		SIM_DIASCA_GIT="https://github.com/edf-lab/Sim-Diasca.git"
 
 		# SIM_DIASCA_INTERNAL_GIT to be found in one's environment:
 		if [ -n "${SIM_DIASCA_INTERNAL_GIT}" ]; then
@@ -400,8 +413,11 @@ if [ $prepare_extra_env -eq 0 ]; then
 	# VM_INTERNAL_EXTRA_PACKAGES possibly defined in environment:
 	sed -i "s|EXTRA_PACKAGES_TAG|${VM_INTERNAL_EXTRA_PACKAGES}|g" "${dockerfile}"
 
-	# Convenient as well:
-	/bin/cp -f ~/.bashrc ~/.bashrc.basics ~/.bashrc.Linux ~/.bashrc.final . 2>/dev/null || true
+	# Convenient as well (includes ~/.bashrc.local, which is relevant, as done
+	# from a similar, headless VM; includes also organisation-contextual
+	# information, thus the generated image shall not be publicly released):
+	#
+	/bin/cp -f ~/.bashrc ~/.bashrc.* . 2>/dev/null || true
 
 fi
 

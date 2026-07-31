@@ -1,4 +1,3 @@
-
 The operating system is supposed here to be GNU/Linux [#]_ (32 or, most probably, 64 bits):
 
 :raw-html:`<center><img src="xkcd-cautionary.png" id="responsive-image-medium"></img></center>`
@@ -1330,7 +1329,7 @@ If you have information more detailed or more recent than those presented in thi
 Support
 =======
 
-Bugs, questions, remarks, patches, requests for enhancements, etc. regarding the installation procedure are to be reported to the `project interface <https://github.com/Olivier-Boudeville-EDF/Sim-Diasca>`_ (typically `issues <https://github.com/Olivier-Boudeville-EDF/Sim-Diasca/issues>`_) or directly at the email address mentioned at the beginning of this document.
+Bugs, questions, remarks, patches, requests for enhancements, etc. regarding the installation procedure are to be reported to the `project interface <https://github.com/edf-lab/Sim-Diasca>`_ (typically `issues <https://github.com/edf-lab/Sim-Diasca/issues>`_) or directly at the email address mentioned at the beginning of this document.
 
 
 

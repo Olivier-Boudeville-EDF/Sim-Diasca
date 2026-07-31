@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2025 Olivier Boudeville
+% Copyright (C) 2018-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -39,43 +39,43 @@ This module allows to test the management of **passive instances**.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	% Allows to support both OTP conventions and ad hoc, automatic ones:
-	wooper_utils:start_for_test(),
+    % Allows to support both OTP conventions and ad hoc, automatic ones:
+    wooper_utils:start_for_test(),
 
-	test_facilities:display( "Running passive instance test." ),
+    test_facilities:display( "Running passive instance test." ),
 
-	TestInstance = class_ChildTestClass:new_passive( _Age=74, _Gender=male ),
+    TestInstance = class_ChildTestClass:new_passive( _Age=74, _Gender=male ),
 
-	test_facilities:display( "Instance created, calling first request." ),
+    test_facilities:display( "Instance created, calling first request." ),
 
-	{ FirstReqTestInstance, "Bob" } =
-		wooper:execute_request( TestInstance, getName ),
+    { FirstReqTestInstance, "Bob" } =
+        wooper:execute_request( TestInstance, getName ),
 
 
-	test_facilities:display( "Calling first oneway." ),
+    test_facilities:display( "Calling first oneway." ),
 
-	NewName = "John",
+    NewName = "John",
 
-	FirstOnwTestInstance =
-		wooper:execute_oneway( FirstReqTestInstance, setName, [ NewName ] ),
+    FirstOnwTestInstance =
+        wooper:execute_oneway( FirstReqTestInstance, setName, [ NewName ] ),
 
-	test_facilities:display( "Calling second request." ),
+    test_facilities:display( "Calling second request." ),
 
-	{ SecondReqTestInstance, NewName } =
-		wooper:execute_request( FirstOnwTestInstance, getName ),
+    { SecondReqTestInstance, NewName } =
+        wooper:execute_request( FirstOnwTestInstance, getName ),
 
-	A = 1,
-	B = 5,
-	Expected = A + B + 10,
+    A = 1,
+    B = 5,
+    Expected = A + B + 10,
 
-	test_facilities:display( "Calling static method." ),
+    test_facilities:display( "Calling static method." ),
 
-	Expected = class_ChildTestClass:get_static_info( A, B ),
+    Expected = class_ChildTestClass:get_static_info( A, B ),
 
-	wooper:delete_passive( SecondReqTestInstance ),
+    wooper:delete_passive( SecondReqTestInstance ),
 
-	test_facilities:display( "Test success." ),
+    test_facilities:display( "Test success." ),
 
-	test_facilities:stop().
+    test_facilities:stop().

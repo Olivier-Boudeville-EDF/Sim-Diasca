@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2025 Olivier Boudeville
+% Copyright (C) 2012-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %

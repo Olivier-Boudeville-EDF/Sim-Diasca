@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -56,50 +56,50 @@ and whether we are checking scan codes.
 -spec run_test_gui() -> void().
 run_test_gui() ->
 
-	test_facilities:display(
-		"~nStarting the actual keyboard test of MyriadGUI, from ~w. ",
-		[ self() ] ),
+    test_facilities:display(
+        "~nStarting the actual keyboard test of MyriadGUI, from ~w. ",
+        [ self() ] ),
 
-	trace_utils:notice( "An empty, resizable test frame shall appear; pressing "
-		"keys while this frame has the focus should display the corresponding "
-		"generated keyboard events." ),
+    trace_utils:notice( "An empty, resizable test frame shall appear; pressing "
+        "keys while this frame has the focus should display the corresponding "
+        "generated keyboard events." ),
 
-	gui:start(),
+    gui:start(),
 
-	TestFrame = gui_frame:create( "This is the single and only test frame, "
-								  "for keyboard testing" ),
+    TestFrame = gui_frame:create( "This is the single and only test frame, "
+                                  "for keyboard testing" ),
 
-	gui:subscribe_to_events( { onWindowClosed, TestFrame } ),
+    gui:subscribe_to_events( { onWindowClosed, TestFrame } ),
 
 
-	% A frame cannot handle key events, so we create a panel within it:
-	TestPanel = gui_panel:create( _Parent=TestFrame ),
+    % A frame cannot handle key events, so we create a panel within it:
+    TestPanel = gui_panel:create( _Parent=TestFrame ),
 
-	% Set to true to focus (only) on the scan codes:
-	CheckScanCode = false,
-	%CheckScanCode = true,
+    % Set to true to focus (only) on the scan codes:
+    CheckScanCode = false,
+    %CheckScanCode = true,
 
-	EventTypes = [ onWindowClosed |
-		case CheckScanCode of
+    EventTypes = [ onWindowClosed |
+        case CheckScanCode of
 
-			true ->
-				[ onKeyPressed ];
+            true ->
+                [ onKeyPressed ];
 
-			false ->
-				[ onKeyPressed, onKeyReleased, onCharEntered ]
+            false ->
+                [ onKeyPressed, onKeyReleased, onCharEntered ]
 
-		end ],
+        end ],
 
-	gui:subscribe_to_events( { EventTypes, TestPanel } ),
+    gui:subscribe_to_events( { EventTypes, TestPanel } ),
 
-	% Focus needed to receive events:
-	gui_widget:set_focus( TestPanel ),
+    % Focus needed to receive events:
+    gui_widget:set_focus( TestPanel ),
 
-	trace_utils:notice( "Please close the frame to end this test." ),
+    trace_utils:notice( "Please close the frame to end this test." ),
 
-	gui_frame:show( TestFrame ),
+    gui_frame:show( TestFrame ),
 
-	test_main_loop( { TestFrame, CheckScanCode } ).
+    test_main_loop( { TestFrame, CheckScanCode } ).
 
 
 
@@ -110,41 +110,41 @@ corresponding to the frame that shall be closed to stop the test.
 -spec test_main_loop( my_test_state() ) -> no_return().
 test_main_loop( TestState={ TestFrame, CheckScanCode } ) ->
 
-	receive
+    receive
 
-		{ onCharEntered, [ _TestFrame, _TestFrameId, EventContext ] } ->
-			interpret_event_context( EventContext, CheckScanCode ),
-			test_main_loop( TestState );
-
-
-		{ onKeyPressed, [ _TestFrame, _TestFrameId, EventContext ] } ->
-			interpret_event_context( EventContext, CheckScanCode ),
-			test_main_loop( TestState );
+        { onCharEntered, [ _TestFrame, _TestFrameId, EventContext ] } ->
+            interpret_event_context( EventContext, CheckScanCode ),
+            test_main_loop( TestState );
 
 
-		{ onKeyReleased, [ _TestFrame, _TestFrameId, EventContext ] } ->
-			interpret_event_context( EventContext, CheckScanCode ),
-			test_main_loop( TestState );
+        { onKeyPressed, [ _TestFrame, _TestFrameId, EventContext ] } ->
+            interpret_event_context( EventContext, CheckScanCode ),
+            test_main_loop( TestState );
 
 
-		{ onWindowClosed, [ _TestFrame, _TestFrameId, EventContext ] } ->
-			trace_utils:info_fmt( "Test frame '~ts' closed (~ts).",
-				[ gui:object_to_string( TestFrame ),
-				  gui_event:context_to_string( EventContext ) ] ),
-
-			gui_frame:destruct( TestFrame ),
-
-			trace_utils:info( "Test frame closed, test success." ),
-
-			gui:stop();
+        { onKeyReleased, [ _TestFrame, _TestFrameId, EventContext ] } ->
+            interpret_event_context( EventContext, CheckScanCode ),
+            test_main_loop( TestState );
 
 
-		Other ->
-			trace_utils:warning_fmt( "Test main loop ignored following "
-									 "message: ~p.", [ Other ] ),
-			test_main_loop( TestState )
+        { onWindowClosed, [ _TestFrame, _TestFrameId, EventContext ] } ->
+            trace_utils:info_fmt( "Test frame '~ts' closed (~ts).",
+                [ gui:object_to_string( TestFrame ),
+                  gui_event:context_to_string( EventContext ) ] ),
 
-	end.
+            gui_frame:destruct( TestFrame ),
+
+            trace_utils:info( "Test frame closed, test success." ),
+
+            gui:stop();
+
+
+        Other ->
+            trace_utils:warning_fmt( "Test main loop ignored following "
+                                     "message: ~p.", [ Other ] ),
+            test_main_loop( TestState )
+
+    end.
 
 
 
@@ -152,31 +152,31 @@ test_main_loop( TestState={ TestFrame, CheckScanCode } ) ->
 -spec interpret_event_context( event_context(), boolean() ) -> void().
 interpret_event_context( EventContext, _CheckScanCode=true ) ->
 
-	MaybeUChar = gui_keyboard:event_context_to_maybe_uchar( EventContext ),
-	Keycode = gui_keyboard:event_context_to_keycode( EventContext ),
-	Scancode = gui_keyboard:event_context_to_scancode( EventContext ),
+    MaybeUChar = gui_keyboard:event_context_to_maybe_uchar( EventContext ),
+    Keycode = gui_keyboard:event_context_to_keycode( EventContext ),
+    Scancode = gui_keyboard:event_context_to_scancode( EventContext ),
 
-	%trace_utils:debug_fmt( "Maybe unicode char=~w, Keycode=~w, Scancode=~w.",
-	%                       [ MaybeUChar, Keycode, Scancode ] ),
+    %trace_utils:debug_fmt( "Maybe unicode char=~w, Keycode=~w, Scancode=~w.",
+    %                       [ MaybeUChar, Keycode, Scancode ] ),
 
-	case MaybeUChar of
+    case MaybeUChar of
 
-		undefined ->
-			trace_utils:info_fmt( "keycode ~B, scancode ~B",
-								  [ Keycode, Scancode ] );
+        undefined ->
+            trace_utils:info_fmt( "keycode ~B, scancode ~B",
+                                  [ Keycode, Scancode ] );
 
-		UChar ->
-			trace_utils:info_fmt(
-				"Unicode character '~ts' of scancode ~B (keycode ~B).",
-				[ [ UChar ], Scancode, Keycode ] )
+        UChar ->
+            trace_utils:info_fmt(
+                "Unicode character '~ts' of scancode ~B (keycode ~B).",
+                [ [ UChar ], Scancode, Keycode ] )
 
-	end;
+    end;
 
 
 interpret_event_context( EventContext, _CheckScanCode=false ) ->
-	WxKeyEvent = gui_keyboard:get_backend_event( EventContext ),
-	trace_utils:info_fmt( "Received ~ts.~n",
-						  [ gui_keyboard:key_event_to_string( WxKeyEvent ) ] ).
+    WxKeyEvent = gui_keyboard:get_backend_event( EventContext ),
+    trace_utils:info_fmt( "Received ~ts.~n",
+                          [ gui_keyboard:key_event_to_string( WxKeyEvent ) ] ).
 
 
 
@@ -184,17 +184,17 @@ interpret_event_context( EventContext, _CheckScanCode=false ) ->
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	case executable_utils:is_batch() of
+    case executable_utils:is_batch() of
 
-		true ->
-			test_facilities:display( "(not running the MyriadGUI keyboard "
-									 "test, being in batch mode)" );
+        true ->
+            test_facilities:display( "(not running the MyriadGUI keyboard "
+                                     "test, being in batch mode)" );
 
-		false ->
-			run_test_gui()
+        false ->
+            run_test_gui()
 
-	end,
+    end,
 
-	test_facilities:stop().
+    test_facilities:stop().

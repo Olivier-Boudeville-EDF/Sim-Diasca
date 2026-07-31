@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -24,7 +24,7 @@
 -moduledoc """
 Unit tests for the **Graphable** class implementation.
 
-See the class_Graphable module.
+See the `class_Graphable` module.
 """.
 
 
@@ -38,31 +38,31 @@ See the class_Graphable module.
 -spec run() -> no_return().
 run() ->
 
-	?test_start,
+    ?test_start,
 
-	?test_info( "Creating a test Graphable." ),
+    ?test_info( "Creating a test Graphable." ),
 
-	MyGraphable =
-		class_Graphable:new_link( [ { label, "hello" }, { color, red } ] ),
-
-
-	MyGraphable ! { getNodeName, [], self() },
-	NodeName = test_receive(),
-
-	?test_notice_fmt( "Node name: ~ts.", [ NodeName ] ),
+    MyGraphable =
+        class_Graphable:new_link( [ { label, "hello" }, { color, red } ] ),
 
 
-	MyGraphable ! { getLabel, [], self() },
-	Label = test_receive(),
+    MyGraphable ! { getNodeName, [], self() },
+    NodeName = test_receive(),
 
-	?test_notice_fmt( "Label: ~ts.", [ Label ] ),
+    ?test_notice_fmt( "Node name: ~ts.", [ NodeName ] ),
 
 
-	MyGraphable ! { getGraphInformation, [], self() },
-	{ _OtherNodeName, Infos } = test_receive(),
+    MyGraphable ! { getLabel, [], self() },
+    Label = test_receive(),
 
-	?test_notice_fmt( "Graph information: ~p.", [ Infos ] ),
+    ?test_notice_fmt( "Label: ~ts.", [ Label ] ),
 
-	wooper:delete_synchronously_instance( MyGraphable ),
 
-	?test_stop.
+    MyGraphable ! { getGraphInformation, [], self() },
+    { _OtherNodeName, Infos } = test_receive(),
+
+    ?test_notice_fmt( "Graph information: ~p.", [ Infos ] ),
+
+    wooper:delete_synchronously_instance( MyGraphable ),
+
+    ?test_stop.

@@ -34,7 +34,7 @@ Note that:
    - the 'dev' user is a sudoer, so you have all the rights
    - only the content of /home/dev is guaranteed to be preserved between runs of 'docker-compose up' command
 
-See also the Sim-Diasca public site, at https://github.com/Olivier-Boudeville-EDF/Sim-Diasca.
+See also the Sim-Diasca public site, at https://github.com/edf-lab/Sim-Diasca.
 
 Enjoy!
 

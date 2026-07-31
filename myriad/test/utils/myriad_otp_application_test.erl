@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2025 Olivier Boudeville
+% Copyright (C) 2019-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -42,22 +42,22 @@ that).
 % Actual test:
 test_myriad_application( OrderedAppNames ) ->
 
-	test_facilities:display( "Starting the Myriad OTP library application." ),
-	otp_utils:start_applications( OrderedAppNames ),
+    test_facilities:display( "Starting the Myriad OTP library application." ),
+    otp_utils:start_applications( OrderedAppNames ),
 
 
-	test_facilities:display( "Myriad version: ~p.",
-		[ system_utils:get_application_version( myriad ) ] ),
+    test_facilities:display( "Myriad version: ~p.",
+        [ system_utils:get_application_version( myriad ) ] ),
 
-	test_facilities:display( "Current user name: '~ts'.",
-							 [ system_utils:get_user_name() ] ),
+    test_facilities:display( "Current user name: '~ts'.",
+                             [ system_utils:get_user_name() ] ),
 
-	% Including Myriad:
-	test_facilities:display( "Stopping all user applications." ),
-	otp_utils:stop_user_applications( OrderedAppNames ),
+    % Including Myriad:
+    test_facilities:display( "Stopping all user applications." ),
+    otp_utils:stop_user_applications( OrderedAppNames ),
 
-	test_facilities:display(
-		"Successful end of test of the Myriad OTP application." ).
+    test_facilities:display(
+        "Successful end of test of the Myriad OTP application." ).
 
 
 
@@ -68,20 +68,20 @@ test_myriad_application( OrderedAppNames ) ->
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	% Build root directory from which prerequisite sibling applications may be
-	% found:
-	%
-	BuildRootDir = file_utils:join( "..", ".." ),
+    % Build root directory from which prerequisite sibling applications may be
+    % found:
+    %
+    BuildRootDir = file_utils:join( "..", ".." ),
 
-	% No dependency specified in this test, yet they are managed:
-	OrderedAppNames =
-		otp_utils:prepare_for_execution( _ThisAppName=myriad, BuildRootDir ),
+    % No dependency specified in this test, yet they are managed:
+    OrderedAppNames =
+        otp_utils:prepare_for_execution( _ThisAppName=myriad, BuildRootDir ),
 
-	trace_utils:notice_fmt( "Resulting applications to start, in order: ~w.",
-							[ OrderedAppNames ] ),
+    trace_utils:notice_fmt( "Resulting applications to start, in order: ~w.",
+                            [ OrderedAppNames ] ),
 
-	test_myriad_application( OrderedAppNames ),
+    test_myriad_application( OrderedAppNames ),
 
-	test_facilities:stop().
+    test_facilities:stop().

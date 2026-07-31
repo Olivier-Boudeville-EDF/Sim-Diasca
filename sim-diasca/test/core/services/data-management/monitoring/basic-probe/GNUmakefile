@@ -18,7 +18,7 @@ clean: clean-local
 
 
 clean-local:
-	-@/bin/rm -f Basic_Test_probe.*  Zone_Test_probe.*
+	-@/bin/rm -f basic-test-probe.*  zone-test-probe.* test-facility-probe.*
 
 
 

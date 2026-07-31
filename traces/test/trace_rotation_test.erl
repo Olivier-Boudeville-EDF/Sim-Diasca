@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -40,46 +40,46 @@ Unit tests for the **rotation** of the trace file.
 -spec run() -> no_return().
 run() ->
 
-	?test_start,
+    ?test_start,
 
-	?test_debug( "Hello Traces, preparing to rotate!" ),
+    ?test_debug( "Hello Traces, preparing to rotate!" ),
 
-	TraceAggPid = class_TraceAggregator:get_aggregator(),
+    TraceAggPid = class_TraceAggregator:get_aggregator(),
 
-	% Disable threshold:
-	TraceAggPid ! { setMinimumTraceFileSizeForRotation, [ 0 ] },
+    % Disable threshold:
+    TraceAggPid ! { setMinimumTraceFileSizeForRotation, [ 0 ] },
 
-	% Otherwise the trace file might still be empty for upcoming rotation:
-	TraceAggPid ! { sync, [], self() },
-	receive
+    % Otherwise the trace file might still be empty for upcoming rotation:
+    TraceAggPid ! { sync, [], self() },
+    receive
 
-		{ wooper_result, trace_aggregator_synchronised } ->
-			ok
+        { wooper_result, trace_aggregator_synchronised } ->
+            ok
 
-	end,
+    end,
 
-	% Calling the request version:
-	TraceAggPid ! { rotateTraceFileSync, [], self() },
+    % Calling the request version:
+    TraceAggPid ! { rotateTraceFileSync, [], self() },
 
-	?test_info( "Waiting for the acknowledgement of trace rotation." ),
+    ?test_info( "Waiting for the acknowledgement of trace rotation." ),
 
-	BinFilePath = receive
+    BinFilePath = receive
 
-		{ wooper_result, { trace_file_rotated, BinRotatedFilePath } } ->
-			?test_info_fmt( "Trace rotation acknowledged, result in '~ts'.",
-							[ BinRotatedFilePath ] ),
-			BinRotatedFilePath;
+        { wooper_result, { trace_file_rotated, BinRotatedFilePath } } ->
+            ?test_info_fmt( "Trace rotation acknowledged, result in '~ts'.",
+                            [ BinRotatedFilePath ] ),
+            BinRotatedFilePath;
 
-		{ wooper_result, Other } ->
-			?test_error_fmt( "Received ~p.", [ Other ] )
+        { wooper_result, Other } ->
+            ?test_error_fmt( "Received ~p.", [ Other ] )
 
-	end,
+    end,
 
-	?test_debug_fmt( "Removing any '~ts'.", [ BinFilePath ] ),
+    ?test_debug_fmt( "Removing any '~ts'.", [ BinFilePath ] ),
 
-	% Probably not existing because of past rotation:
-	file_utils:remove_file_if_existing( BinFilePath ),
+    % Probably not existing because of past rotation:
+    file_utils:remove_file_if_existing( BinFilePath ),
 
-	?test_debug_fmt( "End of test for ~ts.", [ ?MODULE ] ),
+    ?test_debug_fmt( "End of test for ~ts.", [ ?MODULE ] ),
 
-	?test_stop.
+    ?test_stop.

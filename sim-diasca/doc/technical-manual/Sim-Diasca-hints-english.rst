@@ -22,7 +22,7 @@ Common Pitfalls
 - **no message shall be sent, directly or not, from the constructor of an actor**; worst could be a ``oneway`` one (it is asynchronous, hence prone to race conditions); ``requests``, despite their synchronous nature, shall not be used either, as no creation order among the initial actors shall be assumed (there is no guarantee that the targeted actor is already responsive - which may block the sender; e.g. if the sending actor is read in batch from an initialisation file, while the targeted actor will be created in a later batch); even ``actor messages`` shall not be used, as initial actors are not synchronised before the simulation start; as a result:
 
 .. Note::
-	Only actor messages shall be exchanged, and the first place for it to happen in the life cycle of an actor in its ``class_Actor:onFirstDiasca/2`` actor oneway. As a bonus, it is also the guarantee that an actor will behave the same whether it is an initial one or it is created in the course of the simulation.
+    Only actor messages shall be exchanged, and the first place for it to happen in the life cycle of an actor in its ``class_Actor:onFirstDiasca/2`` actor oneway. As a bonus, it is also the guarantee that an actor will behave the same whether it is an initial one or it is created in the course of the simulation.
 
 - communication between actors should *only* rely on the exchange of actor messages (no basic WOOPER method invocation or direct Erlang message sending allowed)
 
@@ -43,7 +43,7 @@ Common Pitfalls
 
 .. [#] Counting diascas may, though, be of interest in very specific cases, typically when a created actor is to centralise / aggregate a population of other actors of undetermined size, including zero (no aggregated actor at all).
 
-	   Then the best option is for the aggregating actor to wait for the diasca after the one at which it would have received their notification (it shall not be forgotten that an actor message sent at D is processed by its recipient at D+1). Then this actor can know for sure whether any actor is to be aggregated, and how many / whom.
+       Then the best option is for the aggregating actor to wait for the diasca after the one at which it would have received their notification (it shall not be forgotten that an actor message sent at D is processed by its recipient at D+1). Then this actor can know for sure whether any actor is to be aggregated, and how many / whom.
 
 
 
@@ -150,7 +150,7 @@ They are actually strings, that can be properly displayed by pasting them in an 
 .. code:: erlang
 
  1> [84,104,105,115,32,105,115,32,97,32,115,116,114,105,110,103,46].
-	"This is a string."
+    "This is a string."
 
 - knowing that the simulation engine relies on reproducible AAI, no special effort is made so that PID are themselves reproducible; moreover, notably in a distributed context, reproducibility of PID *cannot* be ensured at all (e.g. two actors may create another actor each during the same tick); however, to investigate the mode of operation of the engine, it is convenient, as least for the first few simulation phases, to try to reduce the PID variability from a run to another, so that the same agent (e.g. the load balancer) always bears the same PID; the simultaneous launching of the LogMX interface tends to make the first PID change a lot (e.g. ``<x.52.0>``, then ``<x.58.0>``, then``<x.56.0>``, etc.); to reduce this trend, one should preferably run the simulation in batch mode: PID will then be a lot less changing; for example: ``make my_case_run CMD_LINE_OPT="--batch"``
 

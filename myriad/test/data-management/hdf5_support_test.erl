@@ -1,4 +1,4 @@
-% Copyright (C) 2015-2025 Olivier Boudeville
+% Copyright (C) 2015-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -49,85 +49,85 @@ This test mimicks lower-level raw_hdf5_test.erl.
 % Creates and fills a test HDF5 file, returns {BindingDatatype, Dimensions}.
 create_test_file( HDFFilename, DatasetName, Data ) ->
 
-	test_facilities:display( "Creating an HDF5 file named '~ts'.",
-							 [ HDFFilename ] ),
+    test_facilities:display( "Creating an HDF5 file named '~ts'.",
+                             [ HDFFilename ] ),
 
-	% For a test, better determining it at runtime than hardcoding:
-	{ BindingDatatype, Dimensions } = hdf5_support:check_data( Data ),
+    % For a test, better determining it at runtime than hardcoding:
+    { BindingDatatype, Dimensions } = hdf5_support:check_data( Data ),
 
-	test_facilities:display( "Specified data is ~p, i.e. dimensions ~p "
-		"of type ~p.", [ Data, Dimensions, BindingDatatype ] ),
+    test_facilities:display( "Specified data is ~p, i.e. dimensions ~p "
+        "of type ~p.", [ Data, Dimensions, BindingDatatype ] ),
 
-	Datatype = hdf5_support:create_datatype( BindingDatatype ),
+    Datatype = hdf5_support:create_datatype( BindingDatatype ),
 
-	DatatypeClass = hdf5_support:get_datatype_class( Datatype ),
+    DatatypeClass = hdf5_support:get_datatype_class( Datatype ),
 
-	ByteOrder = hdf5_support:get_byte_order( Datatype ),
+    ByteOrder = hdf5_support:get_byte_order( Datatype ),
 
-	DataSize = hdf5_support:get_size( Datatype ),
+    DataSize = hdf5_support:get_size( Datatype ),
 
-	test_facilities:display( "Created a datatype, of class: ~p, byte order: ~p,"
-		" size: ~B bytes.", [ DatatypeClass, ByteOrder, DataSize ] ),
-
-
-	% Up to 20 triplets:
-	FirstDataspace = hdf5_support:create_dataspace( Dimensions ),
-
-	%FirstDataspace = hdf5_support:create_dataspace( _Dims={ 3, 20 } ),
-
-	% We can have to process mono-dimensional data as well:
-	%FirstDataspace = hdf5_support:create_dataspace( _Dims=10 ),
-
-	Rank = hdf5_support:get_rank( FirstDataspace ),
-
-	DimExtensions = hdf5_support:get_dimension_extensions( FirstDataspace ),
-
-	test_facilities:display( "Created a dataspace of rank ~B and "
-		"dimension extensions ~p.", [ Rank, DimExtensions ] ),
-
-	DatasetCreationList =
-		hdf5_support:create_property_list_for( dataset_creation ),
+    test_facilities:display( "Created a datatype, of class: ~p, byte order: ~p,"
+        " size: ~B bytes.", [ DatatypeClass, ByteOrder, DataSize ] ),
 
 
-	% Prior tests may have left it:
-	file_utils:remove_file_if_existing( HDFFilename ),
+    % Up to 20 triplets:
+    FirstDataspace = hdf5_support:create_dataspace( Dimensions ),
 
-	TestFile = hdf5_support:create_file( HDFFilename ),
+    %FirstDataspace = hdf5_support:create_dataspace( _Dims={ 3, 20 } ),
 
-	test_facilities:display( "Creating a dataset named '~ts'.",
-							 [ DatasetName ] ),
+    % We can have to process mono-dimensional data as well:
+    %FirstDataspace = hdf5_support:create_dataspace( _Dims=10 ),
 
-	Dataset = hdf5_support:create_dataset( DatasetName, Datatype,
-						FirstDataspace, DatasetCreationList, TestFile ),
+    Rank = hdf5_support:get_rank( FirstDataspace ),
 
-	test_facilities:display( "Allocation status of the newly created dataset: "
-		"~ts; size: ~B bytes.",
-		[ hdf5_support:get_allocation_status( Dataset ),
-		  hdf5_support:get_storage_size( Dataset ) ] ),
+    DimExtensions = hdf5_support:get_dimension_extensions( FirstDataspace ),
 
-	test_facilities:display( "Writing following data into this "
-							 "empty dataset: ~p", [ Data ] ),
+    test_facilities:display( "Created a dataspace of rank ~B and "
+        "dimension extensions ~p.", [ Rank, DimExtensions ] ),
 
-	hdf5_support:write( Data, Dataset ),
+    DatasetCreationList =
+        hdf5_support:create_property_list_for( dataset_creation ),
 
-	test_facilities:display( "Allocation status of the dataset once filled: "
-		"~ts; size: ~B bytes.",
-		[ hdf5_support:get_allocation_status( Dataset ),
-		  hdf5_support:get_storage_size( Dataset ) ] ),
 
-	% Closing in reverse order:
+    % Prior tests may have left it:
+    file_utils:remove_file_if_existing( HDFFilename ),
 
-	hdf5_support:close_dataset( Dataset ),
+    TestFile = hdf5_support:create_file( HDFFilename ),
 
-	hdf5_support:close_file( TestFile ),
+    test_facilities:display( "Creating a dataset named '~ts'.",
+                             [ DatasetName ] ),
 
-	hdf5_support:close_property_list( DatasetCreationList ),
+    Dataset = hdf5_support:create_dataset( DatasetName, Datatype,
+                        FirstDataspace, DatasetCreationList, TestFile ),
 
-	hdf5_support:close_dataspace( FirstDataspace ),
+    test_facilities:display( "Allocation status of the newly created dataset: "
+        "~ts; size: ~B bytes.",
+        [ hdf5_support:get_allocation_status( Dataset ),
+          hdf5_support:get_storage_size( Dataset ) ] ),
 
-	hdf5_support:close_datatype( Datatype ),
+    test_facilities:display( "Writing following data into this "
+                             "empty dataset: ~p", [ Data ] ),
 
-	{ BindingDatatype, Dimensions }.
+    hdf5_support:write( Data, Dataset ),
+
+    test_facilities:display( "Allocation status of the dataset once filled: "
+        "~ts; size: ~B bytes.",
+        [ hdf5_support:get_allocation_status( Dataset ),
+          hdf5_support:get_storage_size( Dataset ) ] ),
+
+    % Closing in reverse order:
+
+    hdf5_support:close_dataset( Dataset ),
+
+    hdf5_support:close_file( TestFile ),
+
+    hdf5_support:close_property_list( DatasetCreationList ),
+
+    hdf5_support:close_dataspace( FirstDataspace ),
+
+    hdf5_support:close_datatype( Datatype ),
+
+    { BindingDatatype, Dimensions }.
 
 
 
@@ -135,90 +135,90 @@ create_test_file( HDFFilename, DatasetName, Data ) ->
 % Checks that the specified file and dataset have the expected content.
 %
 check_test_file( HDFFilename, DatasetName, ExpectedData, BindingDatatype,
-				 Dimensions ) ->
+                 Dimensions ) ->
 
-	test_facilities:display( "Reading now an HDF5 file named '~ts'.",
-							 [ HDFFilename ] ),
+    test_facilities:display( "Reading now an HDF5 file named '~ts'.",
+                             [ HDFFilename ] ),
 
-	test_facilities:display( "Reading a dataset named '~ts'.",
-							 [ DatasetName ] ),
+    test_facilities:display( "Reading a dataset named '~ts'.",
+                             [ DatasetName ] ),
 
-	TestFile = hdf5_support:open_file( HDFFilename ),
+    TestFile = hdf5_support:open_file( HDFFilename ),
 
-	TupleSize = case Dimensions of
+    TupleSize = case Dimensions of
 
-		{ _TupleCount, TupleElemSize } ->
-			TupleElemSize;
+        { _TupleCount, TupleElemSize } ->
+            TupleElemSize;
 
-		_ ->
-			1
+        _ ->
+            1
 
-	end,
+    end,
 
-	ReadData = hdf5_support:read( DatasetName, BindingDatatype, TupleSize,
-								  TestFile ),
+    ReadData = hdf5_support:read( DatasetName, BindingDatatype, TupleSize,
+                                  TestFile ),
 
-	test_facilities:display( "Read following data: ~p.", [ ReadData ] ),
-
-
-	ExpectedData = ReadData,
-
-	test_facilities:display( "Got ultimately what had to be written, i.e.: ~p",
-							 [ ExpectedData ] ),
+    test_facilities:display( "Read following data: ~p.", [ ReadData ] ),
 
 
-	hdf5_support:close_file( TestFile ).
+    ExpectedData = ReadData,
+
+    test_facilities:display( "Got ultimately what had to be written, i.e.: ~p",
+                             [ ExpectedData ] ),
+
+
+    hdf5_support:close_file( TestFile ).
 
 
 
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	test_facilities:display( "Starting HDF5 support." ),
-	hdf5_support:start(),
+    test_facilities:display( "Starting HDF5 support." ),
+    hdf5_support:start(),
 
-	test_facilities:display( "We will first write to a new HDF5 file, "
-							 "then read from it." ),
-
-
-	% Preparing all elements necessary for the dataset creation:
-
-	HDFFilename = "hdf5_support_test.hdf5",
-
-	DatasetName = "/my-dataset",
+    test_facilities:display( "We will first write to a new HDF5 file, "
+                             "then read from it." ),
 
 
-	IntMonoDimData = [ 1, 2, 3, 4, 5 ],
-	FloatMonoDimData = [ 11.4, nan, 13.4, inf, 15.4 ],
+    % Preparing all elements necessary for the dataset creation:
 
-	IntTwoDimData = [ {1,3,4}, {2,5,5}, {3,6,6}, {4,7,6}, {5,7,7}, {6,8,7},
-					  {7,9,10}, {8,9,11}, {9,7,12} ],
+    HDFFilename = "hdf5_support_test.hdf5",
 
-	FloatTwoDimData = [ {nan,3.7,4.7},  {2.7,5.7,5.7},  {3.7,6.7,6.7},
-						{4.7,inf,6.7},  {5.7,7.7,7.7},  {6.7,8.7,7.7},
-						{7.7,9.7,10.7}, {8.7,9.7,nan}, {9.7,7.7,12.7} ],
+    DatasetName = "/my-dataset",
 
 
-	DataTests = [ IntMonoDimData, FloatMonoDimData,
-				  IntTwoDimData, FloatTwoDimData ],
+    IntMonoDimData = [ 1, 2, 3, 4, 5 ],
+    FloatMonoDimData = [ 11.4, nan, 13.4, inf, 15.4 ],
 
-	[ begin
+    IntTwoDimData = [ {1,3,4}, {2,5,5}, {3,6,6}, {4,7,6}, {5,7,7}, {6,8,7},
+                      {7,9,10}, {8,9,11}, {9,7,12} ],
 
-		  test_facilities:display( "~nTesting for data ~p.", [ Data ] ),
+    FloatTwoDimData = [ {nan,3.7,4.7},  {2.7,5.7,5.7},  {3.7,6.7,6.7},
+                        {4.7,inf,6.7},  {5.7,7.7,7.7},  {6.7,8.7,7.7},
+                        {7.7,9.7,10.7}, {8.7,9.7,nan}, {9.7,7.7,12.7} ],
 
-		  { BindingDatatype, Dimensions } =
-			  create_test_file( HDFFilename, DatasetName, Data ),
 
-		  check_test_file( HDFFilename, DatasetName, Data, BindingDatatype,
-						   Dimensions )
+    DataTests = [ IntMonoDimData, FloatMonoDimData,
+                  IntTwoDimData, FloatTwoDimData ],
 
-	  end || Data <- DataTests ],
+    [ begin
 
-	test_facilities:display( "Stopping HDF5 support." ),
-	hdf5_support:stop(),
+          test_facilities:display( "~nTesting for data ~p.", [ Data ] ),
 
-	file_utils:remove_file( HDFFilename ),
+          { BindingDatatype, Dimensions } =
+              create_test_file( HDFFilename, DatasetName, Data ),
 
-	test_facilities:stop().
+          check_test_file( HDFFilename, DatasetName, Data, BindingDatatype,
+                           Dimensions )
+
+      end || Data <- DataTests ],
+
+    test_facilities:display( "Stopping HDF5 support." ),
+    hdf5_support:stop(),
+
+    file_utils:remove_file( HDFFilename ),
+
+    test_facilities:stop().

@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -43,126 +43,126 @@ See the bijective_table.erl tested module.
 -spec test_repositories() -> void().
 test_repositories() ->
 
-	test_facilities:display( "Testing resource repositories." ),
+    test_facilities:display( "Testing resource repositories." ),
 
-	EmptyRef = resource:create_repository( _RootDir="." ),
+    EmptyRef = resource:create_repository( _RootDir="." ),
 
-	test_facilities:display( "Initial anchored repository: ~ts.",
-							 [ resource:repository_to_string( EmptyRef ) ] ),
+    test_facilities:display( "Initial anchored repository: ~ts.",
+                             [ resource:repository_to_string( EmptyRef ) ] ),
 
-	TestFileId = "resource_test.erl",
+    TestFileId = "resource_test.erl",
 
-	false = resource:has( TestFileId, EmptyRef ),
+    false = resource:has( TestFileId, EmptyRef ),
 
-	{ TestFileRsc, FirstRef } = resource:get( TestFileId, EmptyRef ),
+    { TestFileRsc, FirstRef } = resource:get( TestFileId, EmptyRef ),
 
-	test_facilities:display( "Read for '~ts': ~p",
-							 [ TestFileId, TestFileRsc ] ),
+    test_facilities:display( "Read for '~ts': ~p",
+                             [ TestFileId, TestFileRsc ] ),
 
-	test_facilities:display( "First non-empty repository: ~ts.",
-							 [ resource:repository_to_string( FirstRef ) ] ),
+    test_facilities:display( "First non-empty repository: ~ts.",
+                             [ resource:repository_to_string( FirstRef ) ] ),
 
-	true = resource:has( TestFileId, FirstRef ),
+    true = resource:has( TestFileId, FirstRef ),
 
-	test_facilities:display( "Path of '~ts' is '~ts'.",
-		[ TestFileId, resource:get_path( TestFileId, FirstRef ) ] ),
-
-
-	TestLogId = 'my_resource_id',
-
-	false = resource:has( TestLogId, FirstRef ),
-
-	SecondRef = resource:register( TestLogId, 42.0, FirstRef ),
-
-	test_facilities:display( "Second non-empty repository: ~ts.",
-							 [ resource:repository_to_string( SecondRef ) ] ),
-
-	true = resource:has( TestLogId, SecondRef ),
+    test_facilities:display( "Path of '~ts' is '~ts'.",
+        [ TestFileId, resource:get_path( TestFileId, FirstRef ) ] ),
 
 
-	ThirdRef = resource:remove( TestFileId, SecondRef ),
+    TestLogId = 'my_resource_id',
 
-	test_facilities:display( "Third non-empty repository: ~ts.",
-							 [ resource:repository_to_string( ThirdRef ) ] ),
+    false = resource:has( TestLogId, FirstRef ),
 
-	false = resource:has( TestFileId, ThirdRef ),
+    SecondRef = resource:register( TestLogId, 42.0, FirstRef ),
+
+    test_facilities:display( "Second non-empty repository: ~ts.",
+                             [ resource:repository_to_string( SecondRef ) ] ),
+
+    true = resource:has( TestLogId, SecondRef ),
 
 
-	InitialNonAnchoredRef = resource:create_repository(),
+    ThirdRef = resource:remove( TestFileId, SecondRef ),
 
-	test_facilities:display( "Initial non-anchored repository: ~ts.",
-		[ resource:repository_to_string( InitialNonAnchoredRef ) ] ),
+    test_facilities:display( "Third non-empty repository: ~ts.",
+                             [ resource:repository_to_string( ThirdRef ) ] ),
 
-	false = resource:has( TestFileId, InitialNonAnchoredRef ),
+    false = resource:has( TestFileId, ThirdRef ),
 
-	{ TestFileRsc, FirstNonAncRef } =
-		resource:get( TestFileId, InitialNonAnchoredRef ),
 
-	true = resource:has( TestFileId, FirstNonAncRef ),
+    InitialNonAnchoredRef = resource:create_repository(),
 
-	test_facilities:display( "Final non-anchored repository: ~ts.",
-		[ resource:repository_to_string( FirstNonAncRef ) ] ).
+    test_facilities:display( "Initial non-anchored repository: ~ts.",
+        [ resource:repository_to_string( InitialNonAnchoredRef ) ] ),
+
+    false = resource:has( TestFileId, InitialNonAnchoredRef ),
+
+    { TestFileRsc, FirstNonAncRef } =
+        resource:get( TestFileId, InitialNonAnchoredRef ),
+
+    true = resource:has( TestFileId, FirstNonAncRef ),
+
+    test_facilities:display( "Final non-anchored repository: ~ts.",
+        [ resource:repository_to_string( FirstNonAncRef ) ] ).
 
 
 
 -spec test_servers() -> void().
 test_servers() ->
 
-	test_facilities:display( "Testing resource servers." ),
+    test_facilities:display( "Testing resource servers." ),
 
-	RootDir = ".",
+    RootDir = ".",
 
-	RscSrvPid = resource:create_linked_server( RootDir ),
+    RscSrvPid = resource:create_linked_server( RootDir ),
 
-	test_facilities:display( "Created resource server ~w based on "
-							 "directory '~ts'.", [ RscSrvPid, RootDir ] ),
+    test_facilities:display( "Created resource server ~w based on "
+                             "directory '~ts'.", [ RscSrvPid, RootDir ] ),
 
-	TestFileId = "resource_test.erl",
+    TestFileId = "resource_test.erl",
 
-	false = resource:has( TestFileId, RscSrvPid ),
+    false = resource:has( TestFileId, RscSrvPid ),
 
-	TestFileRsc = resource:get( TestFileId, RscSrvPid ),
+    TestFileRsc = resource:get( TestFileId, RscSrvPid ),
 
-	%test_facilities:display( "Read for '~ts': ~p",
-	%                         [ TestFileId, TestFileRsc ] ),
-
-
-	true = resource:has( TestFileId, RscSrvPid ),
-
-	test_facilities:display( "Path of '~ts' is '~ts'.",
-		[ TestFileId, resource:get_path( TestFileId, RscSrvPid ) ] ),
+    %test_facilities:display( "Read for '~ts': ~p",
+    %                         [ TestFileId, TestFileRsc ] ),
 
 
-	TestLogId = 'my_resource_id',
+    true = resource:has( TestFileId, RscSrvPid ),
 
-	false = resource:has( TestLogId, RscSrvPid ),
-
-	resource:register( TestLogId, 42.0, RscSrvPid ),
-
-	true = resource:has( TestLogId, RscSrvPid ),
-
-	resource:remove( TestFileId, RscSrvPid ),
-
-	false = resource:has( TestFileId, RscSrvPid ),
+    test_facilities:display( "Path of '~ts' is '~ts'.",
+        [ TestFileId, resource:get_path( TestFileId, RscSrvPid ) ] ),
 
 
-	NonAnchoredRscSrvPid = resource:create_linked_server(),
+    TestLogId = 'my_resource_id',
 
-	false = resource:has( TestFileId, NonAnchoredRscSrvPid ),
+    false = resource:has( TestLogId, RscSrvPid ),
 
-	TestFileRsc = resource:get( TestFileId, NonAnchoredRscSrvPid ),
+    resource:register( TestLogId, 42.0, RscSrvPid ),
 
-	true = resource:has( TestFileId, NonAnchoredRscSrvPid ).
+    true = resource:has( TestLogId, RscSrvPid ),
+
+    resource:remove( TestFileId, RscSrvPid ),
+
+    false = resource:has( TestFileId, RscSrvPid ),
+
+
+    NonAnchoredRscSrvPid = resource:create_linked_server(),
+
+    false = resource:has( TestFileId, NonAnchoredRscSrvPid ),
+
+    TestFileRsc = resource:get( TestFileId, NonAnchoredRscSrvPid ),
+
+    true = resource:has( TestFileId, NonAnchoredRscSrvPid ).
 
 
 
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	test_repositories(),
+    test_repositories(),
 
-	test_servers(),
+    test_servers(),
 
-	test_facilities:stop().
+    test_facilities:stop().

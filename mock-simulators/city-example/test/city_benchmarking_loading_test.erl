@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 EDF R&D
+% Copyright (C) 2014-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -92,9 +92,9 @@ defaults.
 -spec run() -> no_return().
 run() ->
 
-	{ ScaleSetting, DurationSetting } = city_benchmarking:get_case_settings(),
+    { ScaleSetting, DurationSetting } = city_benchmarking:get_case_settings(),
 
-	run_common( ScaleSetting, DurationSetting, _StopShell=true ).
+    run_common( ScaleSetting, DurationSetting, _StopShell=true ).
 
 
 
@@ -102,143 +102,143 @@ run() ->
 -spec run( benchmarking_scale(), benchmarking_duration() ) -> no_return().
 run( ScaleSetting, DurationSetting ) ->
 
-	city_benchmarking:check_scale_setting( ScaleSetting ),
+    city_benchmarking:check_scale_setting( ScaleSetting ),
 
-	run_common( ScaleSetting, DurationSetting, _StopShell=false ).
+    run_common( ScaleSetting, DurationSetting, _StopShell=false ).
 
 
 
 % Helper, common to all specifications.
 -spec run_common( benchmarking_scale(), benchmarking_duration(), boolean() ) ->
-						no_return() | void().
+                        no_return() | void().
 run_common( ScaleSetting, DurationSetting, StopShell ) ->
 
-	?case_start,
+    ?case_start,
 
-	VersionString = text_utils:version_to_string( ?city_example_version ),
+    VersionString = text_utils:version_to_string( ?city_example_version ),
 
-	Filename = text_utils:format(
-				"city-example-instances-version-~ts-scale-~ts.init",
-				[ VersionString, ScaleSetting ] ),
+    Filename = text_utils:format(
+                "city-example-instances-version-~ts-scale-~ts.init",
+                [ VersionString, ScaleSetting ] ),
 
-	io:format( "Running a City-example simulation from an initial state "
-		"corresponding to version ~ts, with scale '~ts', to be read "
-		"from pre-generated file '~ts' and run with a '~ts' simulation "
-		"duration.~n",
-		[ VersionString, ScaleSetting, Filename, DurationSetting ] ),
+    io:format( "Running a City-example simulation from an initial state "
+        "corresponding to version ~ts, with scale '~ts', to be read "
+        "from pre-generated file '~ts' and run with a '~ts' simulation "
+        "duration.~n",
+        [ VersionString, ScaleSetting, Filename, DurationSetting ] ),
 
-	file_utils:is_existing_file_or_link( Filename ) orelse
+    file_utils:is_existing_file_or_link( Filename ) orelse
         begin
 
-			?notify_error_fmt( "Initialisation file '~ts' not found, "
-				"one may run: 'make city_benchmarking_loading_run "
-				"CMD_LINE_OPT=\"--batch --scale ~ts\"' to "
-				"generate it first.~n",
-				[ Filename, ScaleSetting ] ),
+            ?notify_error_fmt( "Initialisation file '~ts' not found, "
+                "one may run: 'make city_benchmarking_loading_run "
+                "CMD_LINE_OPT=\"--batch --scale ~ts\"' to "
+                "generate it first.~n",
+                [ Filename, ScaleSetting ] ),
 
-			throw( { initialisation_file_not_found, Filename } )
+            throw( { initialisation_file_not_found, Filename } )
 
         end,
 
-	{ _CityDescription, EndTimestamp={ EndDate, EndTime }, TimestepDuration } =
-		city_benchmarking:get_benchmark_settings( ScaleSetting,
-												  DurationSetting ),
+    { _CityDescription, EndTimestamp={ EndDate, EndTime }, TimestepDuration } =
+        city_benchmarking:get_benchmark_settings( ScaleSetting,
+                                                  DurationSetting ),
 
 
-	% Use default simulation settings (50Hz, batch reproducible):
-	SimulationSettings = #simulation_settings{
+    % Use default simulation settings (50Hz, batch reproducible):
+    SimulationSettings = #simulation_settings{
 
-		simulation_name="Sim-Diasca City-example Benchmarking Loading Case",
+        simulation_name="Sim-Diasca City-example Benchmarking Loading Case",
 
-		tick_duration=TimestepDuration,
+        tick_duration=TimestepDuration,
 
-		initialisation_files=[ Filename ],
+        initialisation_files=[ Filename ],
 
-		% We restrict the wanted results, as otherwise larger cases could
-		% exhaust the number of used file descriptors; so we keep only the
-		% probes associated to some incinerators:
-		%
-		result_specification=no_output },
-
-
-	DeploymentSettings = #deployment_settings{
-
-		computing_hosts={ use_host_file_otherwise_local,
-					   "sim-diasca-host-candidates-for-scale-benchmarks.txt" },
-
-		%node_availability_tolerance=fail_on_unavailable_node,
-
-		% We want to embed additionally this test and its specific
-		% prerequisites, defined in the Mock Simulators:
-		%
-		additional_elements_to_deploy=[ { ".", code } ],
-
-		plugin_directories=[
-					"../../../sim-diasca/src/core/src/plugins/tests/" ],
-
-		% Would alter wrongly the benchmark:
-		enable_performance_tracker=false },
+        % We restrict the wanted results, as otherwise larger cases could
+        % exhaust the number of used file descriptors; so we keep only the
+        % probes associated to some incinerators:
+        %
+        result_specification=no_output },
 
 
-	% A deployment manager is created directly on the user node:
-	DeploymentManagerPid =
-		sim_diasca:init( SimulationSettings, DeploymentSettings ),
+    DeploymentSettings = #deployment_settings{
 
-	GISPid = naming_utils:get_registered_pid_for( ?gis_name, _Scope=global ),
+        computing_hosts={ use_host_file_otherwise_local,
+                       "sim-diasca-host-candidates-for-scale-benchmarks.txt" },
+
+        %node_availability_tolerance=fail_on_unavailable_node,
+
+        % We want to embed additionally this test and its specific
+        % prerequisites, defined in the Mock Simulators:
+        %
+        additional_elements_to_deploy=[ { ".", code } ],
+
+        plugin_directories=[
+                    "../../../sim-diasca/src/core/src/plugins/tests/" ],
+
+        % Would alter wrongly the benchmark:
+        enable_performance_tracker=false },
+
+
+    % A deployment manager is created directly on the user node:
+    DeploymentManagerPid =
+        sim_diasca:init( SimulationSettings, DeploymentSettings ),
+
+    GISPid = naming_utils:get_registered_pid_for( ?gis_name, _Scope=global ),
 
     OutputDir = file_utils:get_current_directory(),
 
-	executable_utils:is_batch()
+    executable_utils:is_batch()
         orelse (GISPid ! { render, [ OutputDir ], self() }),
 
-	DeploymentManagerPid ! { getRootTimeManager, [], self() },
-	RootTimeManagerPid = test_receive(),
+    DeploymentManagerPid ! { getRootTimeManager, [], self() },
+    RootTimeManagerPid = test_receive(),
 
-	RootTimeManagerPid ! { setFinalSimulationTimestamp, [ EndDate, EndTime ] },
+    RootTimeManagerPid ! { setFinalSimulationTimestamp, [ EndDate, EndTime ] },
 
-	?test_info_fmt( "Starting simulation, for a stop at ending timestamp ~ts.",
-					[ time_utils:get_textual_timestamp( EndTimestamp ) ] ),
+    ?test_info_fmt( "Starting simulation, for a stop at ending timestamp ~ts.",
+                    [ time_utils:get_textual_timestamp( EndTimestamp ) ] ),
 
 
-	GISPid ! traceContent,
+    GISPid ! traceContent,
 
-	% Wait for render completion, otherwise instances might be already removed:
-	executable_utils:is_batch() orelse
-		receive
+    % Wait for render completion, otherwise instances might be already removed:
+    executable_utils:is_batch() orelse
+        receive
 
-			{ wooper_result, gis_rendering_done } ->
-				ok
+            { wooper_result, gis_rendering_done } ->
+                ok
 
-		end,
+        end,
 
-	RootTimeManagerPid ! { start, self() },
+    RootTimeManagerPid ! { start, self() },
 
-	?test_info( "Waiting for the simulation to end, "
-				"since having been declared as a simulation listener." ),
+    ?test_info( "Waiting for the simulation to end, "
+                "since having been declared as a simulation listener." ),
 
-	receive
+    receive
 
-		simulation_stopped ->
-			?test_info( "Simulation stopped spontaneously, "
-						"specified stop tick must have been reached." )
+        simulation_stopped ->
+            ?test_info( "Simulation stopped spontaneously, "
+                        "specified stop tick must have been reached." )
 
-	end,
+    end,
 
-	?test_info( "Browsing the report results, if in batch mode." ),
-	class_ResultManager:browse_reports(),
+    ?test_info( "Browsing the report results, if in batch mode." ),
+    class_ResultManager:browse_reports(),
 
-	GISPid ! delete,
+    GISPid ! delete,
 
-	sim_diasca:shutdown(),
+    sim_diasca:shutdown(),
 
-	case StopShell of
+    case StopShell of
 
-		true ->
-			% Stopping the VM:
-			?case_stop;
+        true ->
+            % Stopping the VM:
+            ?case_stop;
 
-		false ->
-			% Stays on shell:
-			?case_stop_on_shell
+        false ->
+            % Stays on shell:
+            ?case_stop_on_shell
 
-	end.
+    end.

@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 Olivier Boudeville
+% Copyright (C) 2016-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -47,16 +47,16 @@ See the ui.erl tested module.
 -spec test_basic_message_display() -> void().
 test_basic_message_display() ->
 
-	ui:set_settings( [ { title,
-		"This is a title about the display of a basic message." },
-					   { backtitle,
-		"This is a back-title about the display of a basic message." } ] ),
+    ui:set_settings( [ { title,
+        "This is a title about the display of a basic message." },
+                       { backtitle,
+        "This is a back-title about the display of a basic message." } ] ),
 
-	Message = "It has been a long time, dear master.",
+    Message = "It has been a long time, dear master.",
 
-	ui:display( "The UI service greets you.~n~ts", [ Message ] ),
+    ui:display( "The UI service greets you.~n~ts", [ Message ] ),
 
-	ui:unset_settings( [ title, backtitle ] ).
+    ui:unset_settings( [ title, backtitle ] ).
 
 
 
@@ -64,66 +64,66 @@ test_basic_message_display() ->
 -spec test_user_entry() -> void().
 test_user_entry() ->
 
-	ui:set_settings( [ { title,
-		"This is a title about the support of user input." },
-					   { backtitle,
-		"This is a back-title about the support of user input." } ] ),
+    ui:set_settings( [ { title,
+        "This is a title about the support of user input." },
+                       { backtitle,
+        "This is a back-title about the support of user input." } ] ),
 
-	Lower = 10,
-	Upper = 42,
+    Lower = 10,
+    Upper = 42,
 
-	Prompt = text_utils:format( "Please enter an integer between ~B and ~B "
-								"(bounds included): ", [ Lower, Upper ] ),
+    Prompt = text_utils:format( "Please enter an integer between ~B and ~B "
+                                "(bounds included): ", [ Lower, Upper ] ),
 
-	case ui:read_text_as_maybe_integer( Prompt ) of
+    case ui:read_text_as_maybe_integer( Prompt ) of
 
-		undefined ->
-			ui:display_error( "A non-empty value must be entered, "
-							  "please retry." ),
-			test_user_entry();
+        undefined ->
+            ui:display_error( "A non-empty value must be entered, "
+                              "please retry." ),
+            test_user_entry();
 
-		V when V >= Lower andalso V =< Upper ->
-			ui:display( "Congratulations, you entered a correct value: ~B",
-						[ V ] );
+        V when V >= Lower andalso V =< Upper ->
+            ui:display( "Congratulations, you entered a correct value: ~B",
+                        [ V ] );
 
-		V ->
-			ui:display_error( "Sorry, ~B is not between ~B and ~B.",
-							  [ V, Lower, Upper ] ),
-			test_user_entry()
+        V ->
+            ui:display_error( "Sorry, ~B is not between ~B and ~B.",
+                              [ V, Lower, Upper ] ),
+            test_user_entry()
 
-	end.
+    end.
 
 
 
 % The actual test:
 run_test_ui() ->
 
-	test_facilities:display( "Testing the ui services." ),
+    test_facilities:display( "Testing the ui services." ),
 
-	ui:start(),
+    ui:start(),
 
-	test_basic_message_display(),
+    test_basic_message_display(),
 
-	test_user_entry(),
+    test_user_entry(),
 
-	ui:stop().
+    ui:stop().
 
 
 
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	case executable_utils:is_batch() of
+    case executable_utils:is_batch() of
 
-		true ->
-			test_facilities:display(
-				"(not running the ui test, being in batch mode)" );
+        true ->
+            test_facilities:display(
+                "(not running the ui test, being in batch mode)" );
 
-		false ->
-			run_test_ui()
+        false ->
+            run_test_ui()
 
-	end,
+    end,
 
-	test_facilities:stop().
+    test_facilities:stop().

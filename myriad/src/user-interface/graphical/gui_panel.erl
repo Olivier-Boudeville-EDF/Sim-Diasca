@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -70,8 +70,8 @@ Options to create a panel.
 
 
 -export([ create/0, create/1, create/2, create/3, create/4, create/5, create/6,
-		  destruct/1,
-		  get_size/1 ]).
+          destruct/1,
+          get_size/1 ]).
 
 
 
@@ -79,7 +79,7 @@ Options to create a panel.
 Backend-level options to create a panel.
 """.
 -type wx_panel_option() :: gui_window:wx_window_option()
-						 | gui_wx_backend:wx_event_handler_option().
+                         | gui_wx_backend:wx_event_handler_option().
 
 
 
@@ -104,14 +104,14 @@ Backend-level options to create a panel.
 -doc "Creates a panel.".
 -spec create() -> panel().
 create() ->
-	wxPanel:new().
+    wxPanel:new().
 
 
 
 -doc "Creates a panel, associated to the specified parent.".
 -spec create( parent() ) -> panel().
 create( Parent ) ->
-	wxPanel:new( Parent ).
+    wxPanel:new( Parent ).
 
 
 
@@ -123,7 +123,7 @@ This is the most flexible way of creating a panel.
 """.
 -spec create( maybe_list( panel_options() ), parent() ) -> panel().
 create( Options, Parent ) ->
-	wxPanel:new( Parent, to_wx_panel_options( Options ) ).
+    wxPanel:new( Parent, to_wx_panel_options( Options ) ).
 
 
 
@@ -132,9 +132,9 @@ Creates a panel, associated to the specified parent and with the specified
 position and dimensions.
 """.
 -spec create( coordinate(), coordinate(), width(), height(), parent() ) ->
-											panel().
+                                            panel().
 create( X, Y, Width, Height, Parent ) ->
-	create( _Pos={ X, Y }, _Size={ Width, Height }, Parent ).
+    create( _Pos={ X, Y }, _Size={ Width, Height }, Parent ).
 
 
 
@@ -145,10 +145,10 @@ position and dimensions.
 -spec create( position(), size(), parent() ) -> panel().
 create( Position, Size, Parent ) ->
 
-	WxOpts = [ gui_wx_backend:to_wx_position( Position ),
-			   gui_wx_backend:to_wx_size( Size ) ],
+    WxOpts = [ gui_wx_backend:to_wx_position( Position ),
+               gui_wx_backend:to_wx_size( Size ) ],
 
-	wxPanel:new( Parent, WxOpts ).
+    wxPanel:new( Parent, WxOpts ).
 
 
 
@@ -159,15 +159,15 @@ position and dimensions.
 -spec create( position(), size(), panel_options(), parent() ) -> panel().
 create( Position, Size, Options, Parent ) ->
 
-	WxOpts = [ gui_wx_backend:to_wx_position( Position ),
-			   gui_wx_backend:to_wx_size( Size )
-					| to_wx_panel_options( Options ) ],
+    WxOpts = [ gui_wx_backend:to_wx_position( Position ),
+               gui_wx_backend:to_wx_size( Size )
+                    | to_wx_panel_options( Options ) ],
 
-	%trace_utils:debug_fmt( "Creating panel: parent: ~w, position: ~w, "
-	%    "size: ~w, options: ~w, full options: ~w.",
-	%    [ Parent, Position, Size, Options, WxOpts ] ),
+    %trace_utils:debug_fmt( "Creating panel: parent: ~w, position: ~w, "
+    %    "size: ~w, options: ~w, full options: ~w.",
+    %    [ Parent, Position, Size, Options, WxOpts ] ),
 
-	wxPanel:new( Parent, WxOpts ).
+    wxPanel:new( Parent, WxOpts ).
 
 
 
@@ -176,13 +176,13 @@ Creates a panel, associated to the specified parent, with the specified
 position, dimensions and options.
 """.
 -spec create( coordinate(), coordinate(), width(), height(), panel_options(),
-			  parent() ) -> panel().
+              parent() ) -> panel().
 create( X, Y, Width, Height, Options, Parent ) ->
 
-	WxOpts = [ { pos, { X, Y } }, { size, { Width, Height } }
-					| to_wx_panel_options( Options ) ],
+    WxOpts = [ { pos, { X, Y } }, { size, { Width, Height } }
+                    | to_wx_panel_options( Options ) ],
 
-	wxPanel:new( Parent, WxOpts ).
+    wxPanel:new( Parent, WxOpts ).
 
 
 
@@ -190,7 +190,7 @@ create( X, Y, Width, Height, Options, Parent ) ->
 -doc "Destructs the specified panel.".
 -spec destruct( panel() ) -> void().
 destruct( Panel ) ->
-	wxPanel:destroy( Panel ).
+    wxPanel:destroy( Panel ).
 
 
 
@@ -201,7 +201,7 @@ Defined here only for convenience (as gui_widget provides it).
 """.
 -spec get_size( panel() ) -> dimensions().
 get_size( Panel ) ->
-	wxWindow:getSize( Panel ).
+    wxWindow:getSize( Panel ).
 
 
 
@@ -212,6 +212,6 @@ wx-specific options.
 (exported helper)
 """.
 -spec to_wx_panel_options( maybe_list( panel_option() ) ) ->
-											[ wx_panel_option() ].
+                                            [ wx_panel_option() ].
 to_wx_panel_options( Options ) ->
-	gui_window:to_wx_window_options( Options ).
+    gui_window:to_wx_window_options( Options ).

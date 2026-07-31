@@ -9,4 +9,3 @@ This repository corresponds to the part of the [Ceylan project](https://github.c
 Please refer to the [Myriad official documentation](http://myriad.esperide.org), otherwise to its [mirror](http://olivier-boudeville.github.io/Ceylan-Myriad/).
 
 The 'master' branch is aimed to correspond to the current stable version of this layer.
-

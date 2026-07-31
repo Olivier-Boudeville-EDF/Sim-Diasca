@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2025 Olivier Boudeville
+% Copyright (C) 2020-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -50,42 +50,42 @@ displayed in the traces themselves.
 -spec run() -> no_return().
 run() ->
 
-	?test_start,
+    ?test_start,
 
-	case executable_utils:is_batch() of
+    case executable_utils:is_batch() of
 
-		true ->
-			?test_info( "Running in batch mode." );
+        true ->
+            ?test_info( "Running in batch mode." );
 
-		false ->
-			?test_info( "Running in interactive mode." )
+        false ->
+            ?test_info( "Running in interactive mode." )
 
-	end,
+    end,
 
-	?test_notice( "Testing the integration of the standard Erlang logs "
-		"by generating a runtime error (crash) and seeing whether it "
-		"is intercepted as expected." ),
+    ?test_notice( "Testing the integration of the standard Erlang logs "
+        "by generating a runtime error (crash) and seeing whether it "
+        "is intercepted as expected." ),
 
-	_NonCrasherPid = spawn(
-		fun() ->
-			?test_info_fmt( "Hello from non-crasher test process ~w.",
-							[ self() ] )
-		end ),
+    _NonCrasherPid = spawn(
+        fun() ->
+            ?test_info_fmt( "Hello from non-crasher test process ~w.",
+                            [ self() ] )
+        end ),
 
-	?test_warning( "The next badarith error is intentional." ),
+    ?test_warning( "The next badarith error is intentional." ),
 
-	_CrasherPid = spawn(
-		fun() ->
-			?test_notice_fmt( "Hello from crasher test process ~w.",
-							  [ self() ] ),
-			basic_utils:crash()
-		end ),
+    _CrasherPid = spawn(
+        fun() ->
+            ?test_notice_fmt( "Hello from crasher test process ~w.",
+                              [ self() ] ),
+            basic_utils:crash()
+        end ),
 
-	?test_info( "(test waiting a bit; as mentioned, the next badarith error "
-				"is intentional)" ),
+    ?test_info( "(test waiting a bit; as mentioned, the next badarith error "
+                "is intentional)" ),
 
-	timer:sleep( 2000 ),
+    timer:sleep( 2000 ),
 
-	?test_info( "(test ended successfully)" ),
+    ?test_info( "(test ended successfully)" ),
 
-	?test_stop.
+    ?test_stop.

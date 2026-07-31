@@ -1,4 +1,4 @@
-% Copyright (C) 2024-2025 Olivier Boudeville
+% Copyright (C) 2024-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -57,7 +57,7 @@ When an item is double-clicked, it emits an onItemDoubleClicked event.
 
 -doc "An option for the creation of a selection box.".
 -type select_box_option() ::
-	{ 'position', position() }
+    { 'position', position() }
   | { 'size', size() }
   | { 'style', [ select_box_style() ] }.
   % No validator.
@@ -68,14 +68,14 @@ A style element for the creation of a selection box.
 """.
 -type select_box_style() ::
 
-	% These 3 are mutually exclusive:
-	'single_selection' % Up to one item selected.
+    % These 3 are mutually exclusive:
+    'single_selection' % Up to one item selected.
   | 'multiple_selection' % Multiple items can be selected.
   | 'extendable_selection' % Multiple items can be selected, included as a
-						   % range.
+                           % range.
 
   | 'horizontal_scroll_if_needed' % Creates a horizontal scrollbar if the items
-								  % are too wide.
+                                  % are too wide.
   | 'vertical_scroll_always' % Always shows a vertical scrollbar.
   | 'vertical_scroll_if_needed' % Only creates a vertical scrollbar if needed.
   | 'vertical_no_scroll' % Never creates a vertical scrollbar.
@@ -118,14 +118,14 @@ A style element for the creation of a selection box.
 -spec create( [ item() ], parent() ) -> select_box().
 create( Items, Parent ) ->
 
-	Id = ?gui_any_id,
+    Id = ?gui_any_id,
 
-	Options = [ { choices, Items } ],
+    Options = [ { choices, Items } ],
 
-	trace_utils:info_fmt( "Selection box options (for any ID): ~p, "
-						  "with parent ~w.", [ Options, Parent ] ),
+    trace_utils:info_fmt( "Selection box options (for any ID): ~p, "
+                          "with parent ~w.", [ Options, Parent ] ),
 
-	wxListBox:new( Parent, Id, Options ).
+    wxListBox:new( Parent, Id, Options ).
 
 
 
@@ -135,20 +135,20 @@ Creates a selection box, with the specified items, identifier and parent.
 -spec create( [ item() ], id(), parent() ) -> select_box().
 create( Items, Id, Parent ) ->
 
-	Options = [ { choices, Items } ],
+    Options = [ { choices, Items } ],
 
-	BackendId = gui_id:declare_any_id( Id ),
+    BackendId = gui_id:declare_any_id( Id ),
 
-	cond_utils:if_defined( myriad_debug_gui_select_boxes,
-		trace_utils:debug_fmt( "Selection box options for ~ts "
-			"(backend ~ts): ~p.",
-			[ gui_id:id_to_string( Id ), gui_id:id_to_string( BackendId ),
-			  Options ] ) ),
+    cond_utils:if_defined( myriad_debug_gui_select_boxes,
+        trace_utils:debug_fmt( "Selection box options for ~ts "
+            "(backend ~ts): ~p.",
+            [ gui_id:id_to_string( Id ), gui_id:id_to_string( BackendId ),
+              Options ] ) ),
 
-	%trace_utils:info_fmt( "Selection box options (for any ID): ~p.",
-	%                      [ Id, Options ] ),
+    %trace_utils:info_fmt( "Selection box options (for any ID): ~p.",
+    %                      [ Id, Options ] ),
 
-	wxListBox:new( Parent, BackendId, Options ).
+    wxListBox:new( Parent, BackendId, Options ).
 
 
 
@@ -157,12 +157,12 @@ Creates a selection box, with the specified items, identifier, option(s) and
 parent.
 """.
 -spec create( [ item() ], id(), maybe_list( select_box_option() ),
-			  parent() ) -> select_box().
+              parent() ) -> select_box().
 create( Items, Id, Opts, Parent ) ->
 
-	WxOpts = [ { choices, Items } | to_wx_list_box_opts( Opts ) ],
+    WxOpts = [ { choices, Items } | to_wx_list_box_opts( Opts ) ],
 
-	wxListBox:new( Parent, gui_id:declare_any_id( Id ), WxOpts ).
+    wxListBox:new( Parent, gui_id:declare_any_id( Id ), WxOpts ).
 
 
 
@@ -172,33 +172,33 @@ Destructs the specified selection box.
 -spec destruct( select_box() ) -> void().
 destruct( SelBox ) ->
 
-	cond_utils:if_defined( myriad_debug_gui_select_boxes,
-		trace_utils:debug_fmt( "Destructing selection box '~p'.",
-							   [ SelBox ] ) ),
+    cond_utils:if_defined( myriad_debug_gui_select_boxes,
+        trace_utils:debug_fmt( "Destructing selection box '~p'.",
+                               [ SelBox ] ) ),
 
-	wxListBox:destroy( SelBox ).
+    wxListBox:destroy( SelBox ).
 
 
 
 -doc "Converts the specified selection box options into wx-specific ones.".
 -spec to_wx_list_box_opts( maybe_list( select_box_option() ) ) -> list().
 to_wx_list_box_opts( SelBoxOpts ) when is_list( SelBoxOpts ) ->
-	[ to_wx_list_box_opt( SBO ) || SBO <- SelBoxOpts ];
+    [ to_wx_list_box_opt( SBO ) || SBO <- SelBoxOpts ];
 
 to_wx_list_box_opts( SelBoxOpt ) ->
-	to_wx_list_box_opts( [ SelBoxOpt ] ).
+    to_wx_list_box_opts( [ SelBoxOpt ] ).
 
 
 -doc "Converts the specified selection box option into the wx-specific one.".
 -spec to_wx_list_box_opt( select_box_option() ) -> tuple().
 to_wx_list_box_opt( _SelBoxOpt={ position, Pos } ) ->
-	{ pos, Pos };
+    { pos, Pos };
 
 to_wx_list_box_opt( _SelBoxOpt={ size, Size } ) ->
-	{ sz, Size };
+    { sz, Size };
 
 to_wx_list_box_opt( _SelBoxOpt={ style, SelBoxStyle } ) ->
-	{ style, select_box_styles_to_bitmask( SelBoxStyle ) }.
+    { style, select_box_styles_to_bitmask( SelBoxStyle ) }.
 
 
 % No validator supported.
@@ -213,8 +213,8 @@ appropriate wx-specific bit mask.
 """.
 -spec select_box_styles_to_bitmask( [ select_box_style() ] ) -> bit_mask().
 select_box_styles_to_bitmask( Styles ) ->
-	lists:foldl( fun( S, Acc ) ->
-					gui_generated:get_second_for_select_box_style( S ) bor Acc
-				 end,
-				 _InitialAcc=0,
-				 _List=Styles ).
+    lists:foldl( fun( S, Acc ) ->
+                    gui_generated:get_second_for_select_box_style( S ) bor Acc
+                 end,
+                 _InitialAcc=0,
+                 _List=Styles ).

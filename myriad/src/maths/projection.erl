@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -47,19 +47,19 @@ Gathering of various facilities for **projection management**.
 
 -doc "Settings of any type of projection.".
 -type projection_settings() :: orthographic_settings()
-							 | perspective_settings().
+                             | perspective_settings().
 
 
 -export_type([ orthographic_settings/0, perspective_settings/0,
-			   projection_settings/0 ]).
+               projection_settings/0 ]).
 
 
 
 -export([ orthographic/1, orthographic/6, perspective/1, perspective/4,
-		  projection/1,
-		  frustum/6,
-		  get_base_orthographic_settings/0, get_base_perspective_settings/1,
-		  settings_to_string/1 ]).
+          projection/1,
+          frustum/6,
+          get_base_orthographic_settings/0, get_base_perspective_settings/1,
+          settings_to_string/1 ]).
 
 
 
@@ -110,9 +110,9 @@ settings.
 """.
 -spec orthographic( orthographic_settings() ) -> compact_matrix4().
 orthographic( #orthographic_settings{
-				left=Left, right=Right, bottom=Bottom, top=Top,
-				z_near=ZNear, z_far=ZFar } ) ->
-	orthographic( Left, Right, Bottom, Top, ZNear, ZFar ).
+                left=Left, right=Right, bottom=Bottom, top=Top,
+                z_near=ZNear, z_far=ZFar } ) ->
+    orthographic( Left, Right, Bottom, Top, ZNear, ZFar ).
 
 
 
@@ -133,30 +133,30 @@ Note that the context is a right-handed coordinate system with a clip space in
 [-1.0, 1.0].
 """.
 -spec orthographic( coordinate(), coordinate(), coordinate(), coordinate(),
-					signed_distance(), signed_distance() ) -> compact_matrix4().
+                    signed_distance(), signed_distance() ) -> compact_matrix4().
 orthographic( Left, Right, Bottom, Top, ZNear, ZFar ) ->
 
-	% References:
-	% https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml
-	% and glm:orthoRH_NO.
+    % References:
+    % https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glOrtho.xml
+    % and glm:orthoRH_NO.
 
-	Zero = 0.0,
+    Zero = 0.0,
 
-	VFactorInv =      1.0 / (Right - Left),
-	HFactorInv =      1.0 / (Top - Bottom),
-	MinusZFactorInv = 1.0 / (ZNear - ZFar),
+    VFactorInv =      1.0 / (Right - Left),
+    HFactorInv =      1.0 / (Top - Bottom),
+    MinusZFactorInv = 1.0 / (ZNear - ZFar),
 
-	M11 = 2 * VFactorInv,
-	M22 = 2 * HFactorInv,
-	M33 = 2 * MinusZFactorInv,
+    M11 = 2 * VFactorInv,
+    M22 = 2 * HFactorInv,
+    M33 = 2 * MinusZFactorInv,
 
-	Tx = - (Right + Left) * VFactorInv,
-	Ty = - (Top + Bottom) * HFactorInv,
-	Tz =   (ZNear + ZFar) * MinusZFactorInv,
+    Tx = - (Right + Left) * VFactorInv,
+    Ty = - (Top + Bottom) * HFactorInv,
+    Tz =   (ZNear + ZFar) * MinusZFactorInv,
 
-	#compact_matrix4{ m11=M11,  m12=Zero, m13=Zero, tx=Tx,
-					  m21=Zero, m22=M22,  m23=Zero, ty=Ty,
-					  m31=Zero, m32=Zero, m33=M33,  tz=Tz }.
+    #compact_matrix4{ m11=M11,  m12=Zero, m13=Zero, tx=Tx,
+                      m21=Zero, m22=M22,  m23=Zero, ty=Ty,
+                      m31=Zero, m32=Zero, m33=M33,  tz=Tz }.
 
 
 
@@ -166,9 +166,9 @@ settings.
 """.
 -spec perspective( perspective_settings() ) -> compact_matrix4().
 perspective( #perspective_settings{
-				fov_y_angle=FoVYAngle, aspect_ratio=AspectRatio,
-				z_near=ZNear, z_far=ZFar } ) ->
-	perspective( FoVYAngle, AspectRatio, ZNear, ZFar ).
+                fov_y_angle=FoVYAngle, aspect_ratio=AspectRatio,
+                z_near=ZNear, z_far=ZFar } ) ->
+    perspective( FoVYAngle, AspectRatio, ZNear, ZFar ).
 
 
 
@@ -196,34 +196,34 @@ Note that the context is a right-handed coordinate system with a clip space in
 -spec perspective( radians(), ratio(), distance(), distance() ) -> matrix4().
 perspective( FoVYAngle, AspectRatio, ZNear, ZFar ) ->
 
-	% References:
-	% https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
-	% and glm:perspectiveRH_NO (see glm/ext/matrix_clip_space.inl) and https://www.khronos.org/opengl/wiki/GluPerspective_code
+    % References:
+    % https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
+    % and glm:perspectiveRH_NO (see glm/ext/matrix_clip_space.inl) and https://www.khronos.org/opengl/wiki/GluPerspective_code
 
-	cond_utils:assert( myriad_check_linear,
-					   not math_utils:is_null( AspectRatio ) ),
+    cond_utils:assert( myriad_check_linear,
+                       not math_utils:is_null( AspectRatio ) ),
 
-	% cotan(A) = 1/tan(A)
+    % cotan(A) = 1/tan(A)
 
-	Zero = 0.0,
+    Zero = 0.0,
 
-	ZFactor = 1.0 / (ZNear - ZFar),
+    ZFactor = 1.0 / (ZNear - ZFar),
 
-	TanHalfFovyInv = 1 / math:tan( FoVYAngle / 2.0 ),
+    TanHalfFovyInv = 1 / math:tan( FoVYAngle / 2.0 ),
 
-	M11 = TanHalfFovyInv / AspectRatio,
+    M11 = TanHalfFovyInv / AspectRatio,
 
-	M22 = TanHalfFovyInv,
+    M22 = TanHalfFovyInv,
 
-	M33 = ( ZNear + ZFar ) * ZFactor,
+    M33 = ( ZNear + ZFar ) * ZFactor,
 
-	M34 = 2 * ZFar * ZNear * ZFactor,
+    M34 = 2 * ZFar * ZNear * ZFactor,
 
-	% No possible compact form:
-	#matrix4{ m11=M11,  m12=Zero, m13=Zero, m14=Zero,
-			  m21=Zero, m22=M22,  m23=Zero, m24=Zero,
-			  m31=Zero, m32=Zero, m33=M33,  m34=M34,
-			  m41=Zero, m42=Zero, m43=-1.0, m44=Zero }.
+    % No possible compact form:
+    #matrix4{ m11=M11,  m12=Zero, m13=Zero, m14=Zero,
+              m21=Zero, m22=M22,  m23=Zero, m24=Zero,
+              m31=Zero, m32=Zero, m33=M33,  m34=M34,
+              m41=Zero, m42=Zero, m43=-1.0, m44=Zero }.
 
 
 % From https://www.khronos.org/opengl/wiki/GluPerspective_code:
@@ -238,10 +238,10 @@ Returns a matrix for projection corresponding to the specified settings.
 """.
 -spec projection( projection_settings() ) -> matrix4().
 projection( Settings=#orthographic_settings{} ) ->
-	orthographic( Settings );
+    orthographic( Settings );
 
 projection( Settings=#perspective_settings{} ) ->
-	perspective( Settings ).
+    perspective( Settings ).
 
 
 
@@ -263,34 +263,34 @@ Note that the context is a right-handed coordinate system with a clip space in
 [-1.0, 1.0].
 """.
 -spec frustum( coordinate(), coordinate(), coordinate(), coordinate(),
-			   distance(), distance() ) -> matrix4().
+               distance(), distance() ) -> matrix4().
 frustum( Left, Right, Bottom, Top, ZNear, ZFar ) ->
 
-	% References:
-	% https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glFrustum.xml
-	% and glm:frustumRH_NO.
+    % References:
+    % https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glFrustum.xml
+    % and glm:frustumRH_NO.
 
-	Zero = 0.0,
+    Zero = 0.0,
 
-	VFactorInv = 1.0 / (Right - Left),
-	HFactorInv = 1.0 / (Top - Bottom),
-	MinusZFactorInv = 1.0 / (ZNear - ZFar),
-	TwoNear = 2.0 * ZNear,
+    VFactorInv = 1.0 / (Right - Left),
+    HFactorInv = 1.0 / (Top - Bottom),
+    MinusZFactorInv = 1.0 / (ZNear - ZFar),
+    TwoNear = 2.0 * ZNear,
 
-	M11 = TwoNear * VFactorInv,
-	M13 = (Right + Left) * VFactorInv,
+    M11 = TwoNear * VFactorInv,
+    M13 = (Right + Left) * VFactorInv,
 
-	M22 = TwoNear * HFactorInv,
-	M23 = (Top + Bottom) * HFactorInv,
-	M33 = (ZFar + ZNear) * MinusZFactorInv,
+    M22 = TwoNear * HFactorInv,
+    M23 = (Top + Bottom) * HFactorInv,
+    M33 = (ZFar + ZNear) * MinusZFactorInv,
 
-	M34 = TwoNear * ZFar * MinusZFactorInv,
+    M34 = TwoNear * ZFar * MinusZFactorInv,
 
-	% No possible compact form:
-	#matrix4{ m11=M11,  m12=Zero, m13=M13,  m14=Zero,
-			  m21=Zero, m22=M22,  m23=M23,  m24=Zero,
-			  m31=Zero, m32=Zero, m33=M33,  m34=M34,
-			  m41=Zero, m42=Zero, m43=-1.0, m44=Zero }.
+    % No possible compact form:
+    #matrix4{ m11=M11,  m12=Zero, m13=M13,  m14=Zero,
+              m21=Zero, m22=M22,  m23=M23,  m24=Zero,
+              m31=Zero, m32=Zero, m33=M33,  m34=M34,
+              m41=Zero, m42=Zero, m43=-1.0, m44=Zero }.
 
 
 
@@ -308,14 +308,14 @@ get_base_orthographic_settings() ->
    %   z_near=0.1,
    %   z_far=100.0 }.
 
-	% Corresponds to a default identity matrix:
-	#orthographic_settings{
-		left=-1.0,
-		right=1.0,
-		bottom=-1.0,
-		top=1.0,
-		z_near=1.0,
-		z_far=-1.0 }.
+    % Corresponds to a default identity matrix:
+    #orthographic_settings{
+        left=-1.0,
+        right=1.0,
+        bottom=-1.0,
+        top=1.0,
+        z_near=1.0,
+        z_far=-1.0 }.
 
 
 
@@ -325,11 +325,11 @@ specified aspect ratio.
 """.
 -spec get_base_perspective_settings( aspect_ratio() ) -> perspective_settings().
 get_base_perspective_settings( AspectRatio ) ->
-	#perspective_settings{
-		fov_y_angle=math_utils:degrees_to_radians( 45 ),
-		aspect_ratio=AspectRatio,
-		z_near=0.1,
-		z_far=100.0 }.
+    #perspective_settings{
+        fov_y_angle=math_utils:degrees_to_radians( 45 ),
+        aspect_ratio=AspectRatio,
+        z_near=0.1,
+        z_far=100.0 }.
 
 
 
@@ -339,18 +339,18 @@ settings.
 """.
 -spec settings_to_string( projection_settings() ) -> ustring().
 settings_to_string( #orthographic_settings{
-		left=Left, right=Right, bottom=Bottom, top=Top,
-		z_near=ZNear, z_far=ZFar } ) ->
-	text_utils:format( "orthographic projection whose left vertical "
-		"clipping plane is ~.2f, right is ~.2f, bottom is ~.2f, top is ~.2f, "
-		"while the distance to the nearer depth clipping plane is ~.2f "
-		"and ~.2f to the farther",
-		[ Left, Right, Bottom, Top, ZNear, ZFar ] );
+        left=Left, right=Right, bottom=Bottom, top=Top,
+        z_near=ZNear, z_far=ZFar } ) ->
+    text_utils:format( "orthographic projection whose left vertical "
+        "clipping plane is ~.2f, right is ~.2f, bottom is ~.2f, top is ~.2f, "
+        "while the distance to the nearer depth clipping plane is ~.2f "
+        "and ~.2f to the farther",
+        [ Left, Right, Bottom, Top, ZNear, ZFar ] );
 
 settings_to_string( #perspective_settings{
-		fov_y_angle=FoVYAngle, aspect_ratio=AspectRatio,
-		z_near=ZNear, z_far=ZFar } ) ->
-	text_utils:format( "perspective projection whose field of view "
-		"is ~.2f radians, aspect ratio is ~.2f, while the distance "
-		"to the nearer depth clipping plane is ~.2f and ~.2f to the farther",
-		[ FoVYAngle, AspectRatio, ZNear, ZFar ] ).
+        fov_y_angle=FoVYAngle, aspect_ratio=AspectRatio,
+        z_near=ZNear, z_far=ZFar } ) ->
+    text_utils:format( "perspective projection whose field of view "
+        "is ~.2f radians, aspect ratio is ~.2f, while the distance "
+        "to the nearer depth clipping plane is ~.2f and ~.2f to the farther",
+        [ FoVYAngle, AspectRatio, ZNear, ZFar ] ).

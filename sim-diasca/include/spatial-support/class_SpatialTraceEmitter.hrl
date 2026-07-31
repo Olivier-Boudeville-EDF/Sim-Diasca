@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 EDF R&D
+% Copyright (C) 2014-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -74,28 +74,28 @@
 % Taken verbatim from class_TraceEmitter.hrl:
 -define( trace_categorize( TracesInitialisationTermInternal ),
 
-	% As few variables bound, and longer variable names chosen (prefixed
-	% with 'Traces'), to avoid clashes with user-defined variables:
-	%
-	case TracesInitialisationTermInternal of
+    % As few variables bound, and longer variable names chosen (prefixed
+    % with 'Traces'), to avoid clashes with user-defined variables:
+    %
+    case TracesInitialisationTermInternal of
 
-		% Emitter categorization already set, just propagate as is to next
-		% mother class:
-		%
-		%{ _TraceName, _TraceCategorization } ->
-		{ _, _ } ->
-			 TracesInitialisationTermInternal;
+        % Emitter categorization already set, just propagate as is to next
+        % mother class:
+        %
+        %{ _TraceName, _TraceCategorization } ->
+        { _, _ } ->
+             TracesInitialisationTermInternal;
 
-		% Expecting here only a string (we are at the level of the actual,
-		% effective class), it is the place where the emitter
-		% categorisation shall be introduced:
-		%
-		%TracesStandaloneEmitterName ->
-		_ ->
-			{ TracesInitialisationTermInternal,
-			  ?trace_emitter_categorization }
+        % Expecting here only a string (we are at the level of the actual,
+        % effective class), it is the place where the emitter
+        % categorisation shall be introduced:
+        %
+        %TracesStandaloneEmitterName ->
+        _ ->
+            { TracesInitialisationTermInternal,
+              ?trace_emitter_categorization }
 
-	end ).
+    end ).
 
 
 % We moved away from the tracing_activated conditional sections the most severe
@@ -122,8 +122,8 @@
 % state.
 %
 -define( send_emergency( State, Message ),
-		 class_TraceEmitter:send_safe( emergency, State,
-			get_spatial_message( Message, State ) ) ).
+         class_TraceEmitter:send_safe( emergency, State,
+            get_spatial_message( Message, State ) ) ).
 
 
 
@@ -131,8 +131,8 @@
 % of a variable named 'State'.
 %
 -define( emergency( Message ),
-		 class_TraceEmitter:send_safe( emergency, State,
-			get_spatial_message( Message, State ) ) ).
+         class_TraceEmitter:send_safe( emergency, State,
+            get_spatial_message( Message, State ) ) ).
 
 
 
@@ -145,8 +145,8 @@
 % state.
 %
 -define( send_emergency_cat( State, Message, MessageCategorization ),
-		 class_TraceEmitter:send_safe( emergency, State,
-			get_spatial_message( Message, State ), MessageCategorization ) ).
+         class_TraceEmitter:send_safe( emergency, State,
+            get_spatial_message( Message, State ), MessageCategorization ) ).
 
 
 
@@ -154,8 +154,8 @@
 % of a variable named 'State'.
 %
 -define( emergency_cat( Message, MessageCategorization ),
-		 class_TraceEmitter:send_safe( emergency, State,
-			get_spatial_message( Message, State ), MessageCategorization ) ).
+         class_TraceEmitter:send_safe( emergency, State,
+            get_spatial_message( Message, State ), MessageCategorization ) ).
 
 
 
@@ -168,10 +168,10 @@
 % state.
 %
 -define( send_emergency_full( State, Message, MessageCategorization,
-							  SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( emergency, State,
-			get_spatial_message( Message, State ),
-			MessageCategorization, SimulationTimestamp ) ).
+                              SimulationTimestamp ),
+         class_TraceEmitter:send_safe( emergency, State,
+            get_spatial_message( Message, State ),
+            MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -179,9 +179,9 @@
 % of a variable named 'State'.
 %
 -define( emergency_full( Message, MessageCategorization, SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( emergency, State,
-			get_spatial_message( Message, State ),
-			MessageCategorization, SimulationTimestamp ) ).
+         class_TraceEmitter:send_safe( emergency, State,
+            get_spatial_message( Message, State ),
+            MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -196,8 +196,8 @@
 % state.
 %
 -define( send_emergency_fmt( State, Message, FormatValues ),
-		 class_TraceEmitter:send_safe( emergency, State, text_utils:format(
-			get_spatial_message( Message, State ), FormatValues ) ) ).
+         class_TraceEmitter:send_safe( emergency, State, text_utils:format(
+            get_spatial_message( Message, State ), FormatValues ) ) ).
 
 
 
@@ -205,8 +205,8 @@
 % of a variable named 'State'.
 %
 -define( emergency_fmt( Message, FormatValues ),
-		 class_TraceEmitter:send_safe( emergency, State, text_utils:format(
-			get_spatial_message( Message, State ), FormatValues ) ) ).
+         class_TraceEmitter:send_safe( emergency, State, text_utils:format(
+            get_spatial_message( Message, State ), FormatValues ) ) ).
 
 
 
@@ -217,10 +217,10 @@
 % state.
 %
 -define( send_emergency_fmt_cat( State, Message, FormatValues,
-								 MessageCategorization ),
-		 class_TraceEmitter:send_safe( emergency, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ), MessageCategorization ) ).
+                                 MessageCategorization ),
+         class_TraceEmitter:send_safe( emergency, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ), MessageCategorization ) ).
 
 
 
@@ -228,9 +228,9 @@
 % of a variable named 'State'.
 %
 -define( emergency_fmt_cat( Message, FormatValues, MessageCategorization ),
-		 class_TraceEmitter:send_safe( emergency, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ), MessageCategorization ) ).
+         class_TraceEmitter:send_safe( emergency, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ), MessageCategorization ) ).
 
 
 
@@ -243,11 +243,11 @@
 % state.
 %
 -define( send_emergency_fmt_full( State, Message, FormatValues,
-								  MessageCategorization, SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( emergency, State,
-				text_utils:format(
-					get_spatial_message( Message, State ), FormatValues ),
-				MessageCategorization, SimulationTimestamp ) ).
+                                  MessageCategorization, SimulationTimestamp ),
+         class_TraceEmitter:send_safe( emergency, State,
+                text_utils:format(
+                    get_spatial_message( Message, State ), FormatValues ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -255,11 +255,11 @@
 % of a variable named 'State'.
 %
 -define( emergency_fmt_full( Message, FormatValues, MessageCategorization,
-							 SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( emergency, State,
-				text_utils:format(
-					get_spatial_message( Message, State ), FormatValues ),
-				MessageCategorization, SimulationTimestamp ) ).
+                             SimulationTimestamp ),
+         class_TraceEmitter:send_safe( emergency, State,
+                text_utils:format(
+                    get_spatial_message( Message, State ), FormatValues ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -277,8 +277,8 @@
 
 % Sends a trace of 'alert' type with specified parameters and an explicit state.
 -define( send_alert( State, Message ),
-		 class_TraceEmitter:send_safe( alert, State,
-			get_spatial_message( Message, State ) ) ).
+         class_TraceEmitter:send_safe( alert, State,
+            get_spatial_message( Message, State ) ) ).
 
 
 
@@ -286,8 +286,8 @@
 % variable named 'State'.
 %
 -define( alert( Message ),
-		 class_TraceEmitter:send_safe( alert, State,
-			get_spatial_message( Message, State ) ) ).
+         class_TraceEmitter:send_safe( alert, State,
+            get_spatial_message( Message, State ) ) ).
 
 
 
@@ -298,8 +298,8 @@
 
 % Sends a trace of 'alert' type with specified parameters and an explicit state.
 -define( send_alert_cat( State, Message, MessageCategorization ),
-		 class_TraceEmitter:send_safe( alert, State,
-			get_spatial_message( Message, State ), MessageCategorization ) ).
+         class_TraceEmitter:send_safe( alert, State,
+            get_spatial_message( Message, State ), MessageCategorization ) ).
 
 
 
@@ -307,8 +307,8 @@
 % variable named 'State'.
 %
 -define( alert_cat( Message, MessageCategorization ),
-		 class_TraceEmitter:send_safe( alert, State,
-			get_spatial_message( Message, State ), MessageCategorization ) ).
+         class_TraceEmitter:send_safe( alert, State,
+            get_spatial_message( Message, State ), MessageCategorization ) ).
 
 
 
@@ -319,10 +319,10 @@
 
 % Sends a trace of 'alert' type with specified parameters and an explicit state.
 -define( send_alert_full( State, Message, MessageCategorization,
-						  SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( alert, State,
-			get_spatial_message( Message, State ),
-			MessageCategorization, SimulationTimestamp ) ).
+                          SimulationTimestamp ),
+         class_TraceEmitter:send_safe( alert, State,
+            get_spatial_message( Message, State ),
+            MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -330,9 +330,9 @@
 % variable named 'State'.
 %
 -define( alert_full( Message, MessageCategorization, SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( alert, State,
-			get_spatial_message( Message, State ), MessageCategorization,
-			SimulationTimestamp ) ).
+         class_TraceEmitter:send_safe( alert, State,
+            get_spatial_message( Message, State ), MessageCategorization,
+            SimulationTimestamp ) ).
 
 
 
@@ -345,8 +345,8 @@
 
 % Sends a trace of 'alert' type with specified parameters and an explicit state.
 -define( send_alert_fmt( State, Message, FormatValues ),
-		 class_TraceEmitter:send_safe( alert, State, text_utils:format(
-			get_spatial_message( Message, State ), FormatValues ) ) ).
+         class_TraceEmitter:send_safe( alert, State, text_utils:format(
+            get_spatial_message( Message, State ), FormatValues ) ) ).
 
 
 
@@ -354,8 +354,8 @@
 % variable named 'State'.
 %
 -define( alert_fmt( Message, FormatValues ),
-		 class_TraceEmitter:send_safe( alert, State, text_utils:format(
-			get_spatial_message( Message, State ), FormatValues ) ) ).
+         class_TraceEmitter:send_safe( alert, State, text_utils:format(
+            get_spatial_message( Message, State ), FormatValues ) ) ).
 
 
 
@@ -364,10 +364,10 @@
 
 % Sends a trace of 'alert' type with specified parameters and an explicit state.
 -define( send_alert_fmt_cat( State, Message, FormatValues,
-							 MessageCategorization ),
-		 class_TraceEmitter:send_safe( alert, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ), MessageCategorization ) ).
+                             MessageCategorization ),
+         class_TraceEmitter:send_safe( alert, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ), MessageCategorization ) ).
 
 
 
@@ -375,9 +375,9 @@
 % variable named 'State'.
 %
 -define( alert_fmt_cat( Message, FormatValues, MessageCategorization ),
-		 class_TraceEmitter:send_safe( alert, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ), MessageCategorization ) ).
+         class_TraceEmitter:send_safe( alert, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ), MessageCategorization ) ).
 
 
 
@@ -388,11 +388,11 @@
 
 % Sends a trace of 'alert' type with specified parameters and an explicit state.
 -define( send_alert_fmt_full( State, Message, FormatValues,
-							  MessageCategorization, SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( alert, State,
-				text_utils:format(
-					get_spatial_message( Message, State ), FormatValues ),
-				MessageCategorization, SimulationTimestamp )
+                              MessageCategorization, SimulationTimestamp ),
+         class_TraceEmitter:send_safe( alert, State,
+                text_utils:format(
+                    get_spatial_message( Message, State ), FormatValues ),
+                MessageCategorization, SimulationTimestamp )
 ).
 
 
@@ -401,11 +401,11 @@
 % variable named 'State'.
 %
 -define( alert_fmt_full( Message, FormatValues, MessageCategorization,
-						 SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( alert, State,
-				text_utils:format(
-					get_spatial_message( Message, State ), FormatValues ),
-				MessageCategorization, SimulationTimestamp ) ).
+                         SimulationTimestamp ),
+         class_TraceEmitter:send_safe( alert, State,
+                text_utils:format(
+                    get_spatial_message( Message, State ), FormatValues ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -425,8 +425,8 @@
 % state.
 %
 -define( send_critical( State, Message ),
-		 class_TraceEmitter:send_safe( critical, State,
-						get_spatial_message( Message, State ) ) ).
+         class_TraceEmitter:send_safe( critical, State,
+                        get_spatial_message( Message, State ) ) ).
 
 
 
@@ -434,8 +434,8 @@
 % a variable named 'State'.
 %
 -define( critical( Message ),
-		 class_TraceEmitter:send_safe( critical, State,
-						get_spatial_message( Message, State ) ) ).
+         class_TraceEmitter:send_safe( critical, State,
+                        get_spatial_message( Message, State ) ) ).
 
 
 
@@ -448,9 +448,9 @@
 % state.
 %
 -define( send_critical_cat( State, Message, MessageCategorization ),
-		 class_TraceEmitter:send_safe( critical, State,
-			get_spatial_message( Message, State ),
-			MessageCategorization ) ).
+         class_TraceEmitter:send_safe( critical, State,
+            get_spatial_message( Message, State ),
+            MessageCategorization ) ).
 
 
 
@@ -458,9 +458,9 @@
 % a variable named 'State'.
 %
 -define( critical_cat( Message, MessageCategorization ),
-		 class_TraceEmitter:send_safe( critical, State,
-			get_spatial_message( Message, State ),
-			MessageCategorization ) ).
+         class_TraceEmitter:send_safe( critical, State,
+            get_spatial_message( Message, State ),
+            MessageCategorization ) ).
 
 
 
@@ -473,10 +473,10 @@
 % state.
 %
 -define( send_critical_full( State, Message, MessageCategorization,
-						  SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( critical, State,
-				get_spatial_message( Message, State ),
-				MessageCategorization, SimulationTimestamp ) ).
+                          SimulationTimestamp ),
+         class_TraceEmitter:send_safe( critical, State,
+                get_spatial_message( Message, State ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -484,9 +484,9 @@
 % a variable named 'State'.
 %
 -define( critical_full( Message, MessageCategorization, SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( critical, State,
-				get_spatial_message( Message, State ),
-				MessageCategorization, SimulationTimestamp ) ).
+         class_TraceEmitter:send_safe( critical, State,
+                get_spatial_message( Message, State ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -501,9 +501,9 @@
 % state.
 %
 -define( send_critical_fmt( State, Message, FormatValues ),
-		 class_TraceEmitter:send_safe( critical, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ) ) ).
+         class_TraceEmitter:send_safe( critical, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ) ) ).
 
 
 
@@ -511,9 +511,9 @@
 % a variable named 'State'.
 %
 -define( critical_fmt( Message, FormatValues ),
-		 class_TraceEmitter:send_safe( critical, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ) ) ).
+         class_TraceEmitter:send_safe( critical, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ) ) ).
 
 
 
@@ -523,10 +523,10 @@
 % Sends a trace of 'critical' type with specified parameters and an explicit
 % state.
 -define( send_critical_fmt_cat( State, Message, FormatValues,
-								MessageCategorization ),
-		 class_TraceEmitter:send_safe( critical, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ), MessageCategorization ) ).
+                                MessageCategorization ),
+         class_TraceEmitter:send_safe( critical, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ), MessageCategorization ) ).
 
 
 
@@ -534,9 +534,9 @@
 % a variable named 'State'.
 %
 -define( critical_fmt_cat( Message, FormatValues, MessageCategorization ),
-		 class_TraceEmitter:send_safe( critical, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ), MessageCategorization ) ).
+         class_TraceEmitter:send_safe( critical, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ), MessageCategorization ) ).
 
 
 
@@ -549,11 +549,11 @@
 % state.
 %
 -define( send_critical_fmt_full( State, Message, FormatValues,
-							  MessageCategorization, SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( critical, State,
-				text_utils:format(
-					get_spatial_message( Message, State ), FormatValues ),
-				MessageCategorization, SimulationTimestamp ) ).
+                              MessageCategorization, SimulationTimestamp ),
+         class_TraceEmitter:send_safe( critical, State,
+                text_utils:format(
+                    get_spatial_message( Message, State ), FormatValues ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -561,11 +561,11 @@
 % a variable named 'State'.
 %
 -define( critical_fmt_full( Message, FormatValues, MessageCategorization,
-						 SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( critical, State,
-				text_utils:format(
-					get_spatial_message( Message, State ), FormatValues ),
-				MessageCategorization, SimulationTimestamp ) ).
+                         SimulationTimestamp ),
+         class_TraceEmitter:send_safe( critical, State,
+                text_utils:format(
+                    get_spatial_message( Message, State ), FormatValues ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -587,8 +587,8 @@
 
 % Sends a trace of 'error' type with specified parameters and an explicit state.
 -define( send_error( State, Message ),
-		 class_TraceEmitter:send_safe( error, State,
-						get_spatial_message( Message, State ) ) ).
+         class_TraceEmitter:send_safe( error, State,
+                        get_spatial_message( Message, State ) ) ).
 
 
 
@@ -596,8 +596,8 @@
 % variable named 'State'.
 %
 -define( error( Message ),
-		 class_TraceEmitter:send_safe( error, State,
-						get_spatial_message( Message, State ) ) ).
+         class_TraceEmitter:send_safe( error, State,
+                        get_spatial_message( Message, State ) ) ).
 
 
 
@@ -607,9 +607,9 @@
 
 % Sends a trace of 'error' type with specified parameters and an explicit state.
 -define( send_error_cat( State, Message, MessageCategorization ),
-		 class_TraceEmitter:send_safe( error, State,
-			get_spatial_message( Message, State ),
-			MessageCategorization ) ).
+         class_TraceEmitter:send_safe( error, State,
+            get_spatial_message( Message, State ),
+            MessageCategorization ) ).
 
 
 
@@ -617,8 +617,8 @@
 % variable named 'State'.
 %
 -define( error_cat( Message, MessageCategorization ),
-		 class_TraceEmitter:send_safe( error, State,
-			get_spatial_message( Message, State ), MessageCategorization ) ).
+         class_TraceEmitter:send_safe( error, State,
+            get_spatial_message( Message, State ), MessageCategorization ) ).
 
 
 
@@ -629,10 +629,10 @@
 
 % Sends a trace of 'error' type with specified parameters and an explicit state.
 -define( send_error_full( State, Message, MessageCategorization,
-						  SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( error, State,
-				get_spatial_message( Message, State ),
-				MessageCategorization, SimulationTimestamp ) ).
+                          SimulationTimestamp ),
+         class_TraceEmitter:send_safe( error, State,
+                get_spatial_message( Message, State ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -640,9 +640,9 @@
 % variable named 'State'.
 %
 -define( error_full( Message, MessageCategorization, SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( error, State,
-				get_spatial_message( Message, State ),
-				MessageCategorization, SimulationTimestamp ) ).
+         class_TraceEmitter:send_safe( error, State,
+                get_spatial_message( Message, State ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -655,9 +655,9 @@
 
 % Sends a trace of 'error' type with specified parameters and an explicit state.
 -define( send_error_fmt( State, Message, FormatValues ),
-		 class_TraceEmitter:send_safe( error, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ) ) ).
+         class_TraceEmitter:send_safe( error, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ) ) ).
 
 
 
@@ -665,9 +665,9 @@
 % variable named 'State'.
 %
 -define( error_fmt( Message, FormatValues ),
-		 class_TraceEmitter:send_safe( error, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ) ) ).
+         class_TraceEmitter:send_safe( error, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ) ) ).
 
 
 
@@ -676,10 +676,10 @@
 
 % Sends a trace of 'error' type with specified parameters and an explicit state.
 -define( send_error_fmt_cat( State, Message, FormatValues,
-							 MessageCategorization ),
-		 class_TraceEmitter:send_safe( error, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ), MessageCategorization ) ).
+                             MessageCategorization ),
+         class_TraceEmitter:send_safe( error, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ), MessageCategorization ) ).
 
 
 
@@ -687,9 +687,9 @@
 % variable named 'State'.
 %
 -define( error_fmt_cat( Message, FormatValues, MessageCategorization ),
-		 class_TraceEmitter:send_safe( error, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ), MessageCategorization ) ).
+         class_TraceEmitter:send_safe( error, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ), MessageCategorization ) ).
 
 
 
@@ -700,11 +700,11 @@
 
 % Sends a trace of 'error' type with specified parameters and an explicit state.
 -define( send_error_fmt_full( State, Message, FormatValues,
-							  MessageCategorization, SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( error, State,
-				text_utils:format(
-					get_spatial_message( Message, State ), FormatValues ),
-				MessageCategorization, SimulationTimestamp ) ).
+                              MessageCategorization, SimulationTimestamp ),
+         class_TraceEmitter:send_safe( error, State,
+                text_utils:format(
+                    get_spatial_message( Message, State ), FormatValues ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -712,11 +712,11 @@
 % variable named 'State'.
 %
 -define( error_fmt_full( Message, FormatValues, MessageCategorization,
-						 SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( error, State,
-				text_utils:format(
-					get_spatial_message( Message, State ), FormatValues ),
-				MessageCategorization, SimulationTimestamp ) ).
+                         SimulationTimestamp ),
+         class_TraceEmitter:send_safe( error, State,
+                text_utils:format(
+                    get_spatial_message( Message, State ), FormatValues ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -744,8 +744,8 @@
 % state.
 %
 -define( send_warning( State, Message ),
-		 class_TraceEmitter:send_safe( warning, State,
-						get_spatial_message( Message, State ) ) ).
+         class_TraceEmitter:send_safe( warning, State,
+                        get_spatial_message( Message, State ) ) ).
 
 
 
@@ -753,8 +753,8 @@
 % a variable named 'State'.
 %
 -define( warning( Message ),
-		 class_TraceEmitter:send_safe( warning, State,
-						get_spatial_message( Message, State ) ) ).
+         class_TraceEmitter:send_safe( warning, State,
+                        get_spatial_message( Message, State ) ) ).
 
 
 
@@ -766,9 +766,9 @@
 % state.
 %
 -define( send_warning_cat( State, Message, MessageCategorization ),
-		 class_TraceEmitter:send_safe( warning, State,
-			get_spatial_message( Message, State ),
-			MessageCategorization ) ).
+         class_TraceEmitter:send_safe( warning, State,
+            get_spatial_message( Message, State ),
+            MessageCategorization ) ).
 
 
 
@@ -776,8 +776,8 @@
 % a variable named 'State'.
 %
 -define( warning_cat( Message, MessageCategorization ),
-		 class_TraceEmitter:send_safe( warning, State,
-			get_spatial_message( Message, State ), MessageCategorization ) ).
+         class_TraceEmitter:send_safe( warning, State,
+            get_spatial_message( Message, State ), MessageCategorization ) ).
 
 
 
@@ -790,10 +790,10 @@
 % state.
 %
 -define( send_warning_full( State, Message, MessageCategorization,
-							SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( warning, State,
-				get_spatial_message( Message, State ),
-				MessageCategorization, SimulationTimestamp ) ).
+                            SimulationTimestamp ),
+         class_TraceEmitter:send_safe( warning, State,
+                get_spatial_message( Message, State ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -801,9 +801,9 @@
 % a variable named 'State'.
 %
 -define( warning_full( Message, MessageCategorization, SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( warning, State,
-				get_spatial_message( Message, State ),
-				MessageCategorization, SimulationTimestamp ) ).
+         class_TraceEmitter:send_safe( warning, State,
+                get_spatial_message( Message, State ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -818,9 +818,9 @@
 % state.
 %
 -define( send_warning_fmt( State, Message, FormatValues ),
-		 class_TraceEmitter:send_safe( warning, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ) ) ).
+         class_TraceEmitter:send_safe( warning, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ) ) ).
 
 
 
@@ -828,9 +828,9 @@
 % a variable named 'State'.
 %
 -define( warning_fmt( Message, FormatValues ),
-		 class_TraceEmitter:send_safe( warning, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ) ) ).
+         class_TraceEmitter:send_safe( warning, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ) ) ).
 
 
 
@@ -841,10 +841,10 @@
 % state.
 %
 -define( send_warning_fmt_cat( State, Message, FormatValues,
-							   MessageCategorization ),
-		 class_TraceEmitter:send_safe( warning, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ), MessageCategorization ) ).
+                               MessageCategorization ),
+         class_TraceEmitter:send_safe( warning, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ), MessageCategorization ) ).
 
 
 
@@ -852,9 +852,9 @@
 % a variable named 'State'.
 %
 -define( warning_fmt_cat( Message, FormatValues, MessageCategorization ),
-		 class_TraceEmitter:send_safe( warning, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ), MessageCategorization ) ).
+         class_TraceEmitter:send_safe( warning, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ), MessageCategorization ) ).
 
 
 
@@ -867,11 +867,11 @@
 % state.
 %
 -define( send_warning_fmt_full( State, Message, FormatValues,
-								MessageCategorization, SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( warning, State,
-				text_utils:format(
-					get_spatial_message( Message, State ), FormatValues ),
-				MessageCategorization, SimulationTimestamp ) ).
+                                MessageCategorization, SimulationTimestamp ),
+         class_TraceEmitter:send_safe( warning, State,
+                text_utils:format(
+                    get_spatial_message( Message, State ), FormatValues ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -879,11 +879,11 @@
 % a variable named 'State'.
 %
 -define( warning_fmt_full( Message, FormatValues, MessageCategorization,
-						   SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( warning, State,
-				text_utils:format(
-					get_spatial_message( Message, State ), FormatValues ),
-				MessageCategorization, SimulationTimestamp ) ).
+                           SimulationTimestamp ),
+         class_TraceEmitter:send_safe( warning, State,
+                text_utils:format(
+                    get_spatial_message( Message, State ), FormatValues ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -1002,8 +1002,8 @@
 % state.
 %
 -define( send_notice( State, Message ),
-		 class_TraceEmitter:send_safe( notice, State,
-			get_spatial_message( Message, State ) ) ).
+         class_TraceEmitter:send_safe( notice, State,
+            get_spatial_message( Message, State ) ) ).
 
 
 
@@ -1011,8 +1011,8 @@
 % variable named 'State'.
 %
 -define( notice( Message ),
-		 class_TraceEmitter:send_safe( notice, State,
-			get_spatial_message( Message, State ) ) ).
+         class_TraceEmitter:send_safe( notice, State,
+            get_spatial_message( Message, State ) ) ).
 
 
 
@@ -1025,8 +1025,8 @@
 % state.
 %
 -define( send_notice_cat( State, Message, MessageCategorization ),
-		 class_TraceEmitter:send_safe( notice, State,
-			get_spatial_message( Message, State ), MessageCategorization ) ).
+         class_TraceEmitter:send_safe( notice, State,
+            get_spatial_message( Message, State ), MessageCategorization ) ).
 
 
 
@@ -1034,8 +1034,8 @@
 % variable named 'State'.
 %
 -define( notice_cat( Message, MessageCategorization ),
-		 class_TraceEmitter:send_safe( notice, State,
-			get_spatial_message( Message, State ), MessageCategorization ) ).
+         class_TraceEmitter:send_safe( notice, State,
+            get_spatial_message( Message, State ), MessageCategorization ) ).
 
 
 
@@ -1048,10 +1048,10 @@
 % state.
 %
 -define( send_notice_full( State, Message, MessageCategorization,
-						   SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( notice, State,
-				get_spatial_message( Message, State ),
-				MessageCategorization, SimulationTimestamp ) ).
+                           SimulationTimestamp ),
+         class_TraceEmitter:send_safe( notice, State,
+                get_spatial_message( Message, State ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -1059,9 +1059,9 @@
 % variable named 'State'.
 %
 -define( notice_full( Message, MessageCategorization, SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( notice, State,
-				get_spatial_message( Message, State ),
-				MessageCategorization, SimulationTimestamp ) ).
+         class_TraceEmitter:send_safe( notice, State,
+                get_spatial_message( Message, State ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -1075,9 +1075,9 @@
 % Sends a trace of 'notice' type with specified parameters and an explicit
 % state.
 -define( send_notice_fmt( State, Message, FormatValues ),
-		 class_TraceEmitter:send_safe( notice, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ) ) ).
+         class_TraceEmitter:send_safe( notice, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ) ) ).
 
 
 
@@ -1085,9 +1085,9 @@
 % variable named 'State'.
 %
 -define( notice_fmt( Message, FormatValues ),
-		 class_TraceEmitter:send_safe( notice, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ) ) ).
+         class_TraceEmitter:send_safe( notice, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ) ) ).
 
 
 
@@ -1097,10 +1097,10 @@
 % Sends a trace of 'notice' type with specified parameters and an explicit
 % state.
 -define( send_notice_fmt_cat( State, Message, FormatValues,
-							  MessageCategorization ),
-		 class_TraceEmitter:send_safe( notice, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ), MessageCategorization ) ).
+                              MessageCategorization ),
+         class_TraceEmitter:send_safe( notice, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ), MessageCategorization ) ).
 
 
 
@@ -1108,9 +1108,9 @@
 % variable named 'State'.
 %
 -define( notice_fmt_cat( Message, FormatValues, MessageCategorization ),
-		 class_TraceEmitter:send_safe( notice, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ), MessageCategorization ) ).
+         class_TraceEmitter:send_safe( notice, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ), MessageCategorization ) ).
 
 
 
@@ -1123,11 +1123,11 @@
 % state.
 %
 -define( send_notice_fmt_full( State, Message, FormatValues,
-							  MessageCategorization, SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( notice, State,
-				text_utils:format(
-					get_spatial_message( Message, State ), FormatValues ),
-				MessageCategorization, SimulationTimestamp ) ).
+                              MessageCategorization, SimulationTimestamp ),
+         class_TraceEmitter:send_safe( notice, State,
+                text_utils:format(
+                    get_spatial_message( Message, State ), FormatValues ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -1135,11 +1135,11 @@
 % variable named 'State'.
 %
 -define( notice_fmt_full( Message, FormatValues, MessageCategorization,
-						  SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( notice, State,
-				text_utils:format(
-					get_spatial_message( Message, State ), FormatValues ),
-				MessageCategorization, SimulationTimestamp ) ).
+                          SimulationTimestamp ),
+         class_TraceEmitter:send_safe( notice, State,
+                text_utils:format(
+                    get_spatial_message( Message, State ), FormatValues ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -1159,8 +1159,8 @@
 
 % Sends a trace of 'info' type with specified parameters and an explicit state.
 -define( send_info( State, Message ),
-		 class_TraceEmitter:send_safe( info, State,
-						get_spatial_message( Message, State ) ) ).
+         class_TraceEmitter:send_safe( info, State,
+                        get_spatial_message( Message, State ) ) ).
 
 
 
@@ -1168,8 +1168,8 @@
 % variable named 'State'.
 %
 -define( info( Message ),
-		 class_TraceEmitter:send_safe( info, State,
-						get_spatial_message( Message, State ) ) ).
+         class_TraceEmitter:send_safe( info, State,
+                        get_spatial_message( Message, State ) ) ).
 
 
 
@@ -1180,8 +1180,8 @@
 
 % Sends a trace of 'info' type with specified parameters and an explicit state.
 -define( send_info_cat( State, Message, MessageCategorization ),
-		 class_TraceEmitter:send_safe( info, State,
-			get_spatial_message( Message, State ), MessageCategorization ) ).
+         class_TraceEmitter:send_safe( info, State,
+            get_spatial_message( Message, State ), MessageCategorization ) ).
 
 
 
@@ -1189,8 +1189,8 @@
 % variable named 'State'.
 %
 -define( info_cat( Message, MessageCategorization ),
-		 class_TraceEmitter:send_safe( info, State,
-			get_spatial_message( Message, State ), MessageCategorization ) ).
+         class_TraceEmitter:send_safe( info, State,
+            get_spatial_message( Message, State ), MessageCategorization ) ).
 
 
 
@@ -1201,10 +1201,10 @@
 
 % Sends a trace of 'info' type with specified parameters and an explicit state.
 -define( send_info_full( State, Message, MessageCategorization,
-						 SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( info, State,
-				get_spatial_message( Message, State ),
-				MessageCategorization, SimulationTimestamp ) ).
+                         SimulationTimestamp ),
+         class_TraceEmitter:send_safe( info, State,
+                get_spatial_message( Message, State ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -1212,9 +1212,9 @@
 % variable named 'State'.
 %
 -define( info_full( Message, MessageCategorization, SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( info, State,
-				get_spatial_message( Message, State ),
-				MessageCategorization, SimulationTimestamp ) ).
+         class_TraceEmitter:send_safe( info, State,
+                get_spatial_message( Message, State ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -1227,9 +1227,9 @@
 
 % Sends a trace of 'info' type with specified parameters and an explicit state.
 -define( send_info_fmt( State, Message, FormatValues ),
-		 class_TraceEmitter:send_safe( info, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ) ) ).
+         class_TraceEmitter:send_safe( info, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ) ) ).
 
 
 
@@ -1237,9 +1237,9 @@
 % variable named 'State'.
 %
 -define( info_fmt( Message, FormatValues ),
-		 class_TraceEmitter:send_safe( info, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ) ) ).
+         class_TraceEmitter:send_safe( info, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ) ) ).
 
 
 
@@ -1248,10 +1248,10 @@
 
 % Sends a trace of 'info' type with specified parameters and an explicit state.
 -define( send_info_fmt_cat( State, Message, FormatValues,
-							MessageCategorization ),
-		 class_TraceEmitter:send_safe( info, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							  FormatValues ), MessageCategorization ) ).
+                            MessageCategorization ),
+         class_TraceEmitter:send_safe( info, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                              FormatValues ), MessageCategorization ) ).
 
 
 
@@ -1259,9 +1259,9 @@
 % variable named 'State'.
 %
 -define( info_fmt_cat( Message, FormatValues, MessageCategorization ),
-		 class_TraceEmitter:send_safe( info, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ), MessageCategorization ) ).
+         class_TraceEmitter:send_safe( info, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ), MessageCategorization ) ).
 
 
 
@@ -1272,11 +1272,11 @@
 
 % Sends a trace of 'info' type with specified parameters and an explicit state.
 -define( send_info_fmt_full( State, Message, FormatValues,
-							 MessageCategorization, SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( info, State,
-				text_utils:format(
-					get_spatial_message( Message, State ), FormatValues ),
-				MessageCategorization, SimulationTimestamp ) ).
+                             MessageCategorization, SimulationTimestamp ),
+         class_TraceEmitter:send_safe( info, State,
+                text_utils:format(
+                    get_spatial_message( Message, State ), FormatValues ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -1284,11 +1284,11 @@
 % variable named 'State'.
 %
 -define( info_fmt_full( Message, FormatValues, MessageCategorization,
-						SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( info, State,
-				text_utils:format(
-					get_spatial_message( Message, State ), FormatValues ),
-				MessageCategorization, SimulationTimestamp ) ).
+                        SimulationTimestamp ),
+         class_TraceEmitter:send_safe( info, State,
+                text_utils:format(
+                    get_spatial_message( Message, State ), FormatValues ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -1309,8 +1309,8 @@
 
 % Sends a trace of 'debug' type with specified parameters and an explicit state.
 -define( send_debug( State, Message ),
-		 class_TraceEmitter:send_safe( debug, State,
-						get_spatial_message( Message, State ) ) ).
+         class_TraceEmitter:send_safe( debug, State,
+                        get_spatial_message( Message, State ) ) ).
 
 
 
@@ -1318,8 +1318,8 @@
 % variable named 'State'.
 %
 -define( debug( Message ),
-		 class_TraceEmitter:send_safe( debug, State,
-						get_spatial_message( Message, State ) ) ).
+         class_TraceEmitter:send_safe( debug, State,
+                        get_spatial_message( Message, State ) ) ).
 
 
 
@@ -1330,8 +1330,8 @@
 
 % Sends a trace of 'debug' type with specified parameters and an explicit state.
 -define( send_debug_cat( State, Message, MessageCategorization ),
-		 class_TraceEmitter:send_safe( debug, State,
-			get_spatial_message( Message, State ), MessageCategorization ) ).
+         class_TraceEmitter:send_safe( debug, State,
+            get_spatial_message( Message, State ), MessageCategorization ) ).
 
 
 
@@ -1339,8 +1339,8 @@
 % variable named 'State'.
 %
 -define( debug_cat( Message, MessageCategorization ),
-		 class_TraceEmitter:send_safe( debug, State,
-			get_spatial_message( Message, State ), MessageCategorization ) ).
+         class_TraceEmitter:send_safe( debug, State,
+            get_spatial_message( Message, State ), MessageCategorization ) ).
 
 
 
@@ -1351,10 +1351,10 @@
 
 % Sends a trace of 'debug' type with specified parameters and an explicit state.
 -define( send_debug_full( State, Message, MessageCategorization,
-						  SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( debug, State,
-				get_spatial_message( Message, State ),
-				MessageCategorization, SimulationTimestamp ) ).
+                          SimulationTimestamp ),
+         class_TraceEmitter:send_safe( debug, State,
+                get_spatial_message( Message, State ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -1362,9 +1362,9 @@
 % variable named 'State'.
 %
 -define( debug_full( Message, MessageCategorization, SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( debug, State,
-				get_spatial_message( Message, State ),
-				MessageCategorization, SimulationTimestamp ) ).
+         class_TraceEmitter:send_safe( debug, State,
+                get_spatial_message( Message, State ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -1377,9 +1377,9 @@
 
 % Sends a trace of 'debug' type with specified parameters and an explicit state.
 -define( send_debug_fmt( State, Message, FormatValues ),
-		 class_TraceEmitter:send_safe( debug, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ) ) ).
+         class_TraceEmitter:send_safe( debug, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ) ) ).
 
 
 
@@ -1387,9 +1387,9 @@
 % variable named 'State'.
 %
 -define( debug_fmt( Message, FormatValues ),
-		 class_TraceEmitter:send_safe( debug, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ) ) ).
+         class_TraceEmitter:send_safe( debug, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ) ) ).
 
 
 
@@ -1398,10 +1398,10 @@
 
 % Sends a trace of 'debug' type with specified parameters and an explicit state.
 -define( send_debug_fmt_cat( State, Message, FormatValues,
-							 MessageCategorization ),
-		 class_TraceEmitter:send_safe( debug, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							  FormatValues ), MessageCategorization ) ).
+                             MessageCategorization ),
+         class_TraceEmitter:send_safe( debug, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                              FormatValues ), MessageCategorization ) ).
 
 
 
@@ -1409,9 +1409,9 @@
 % variable named 'State'.
 %
 -define( debug_fmt_cat( Message, FormatValues, MessageCategorization ),
-		 class_TraceEmitter:send_safe( debug, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ), MessageCategorization ) ).
+         class_TraceEmitter:send_safe( debug, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ), MessageCategorization ) ).
 
 
 
@@ -1422,11 +1422,11 @@
 
 % Sends a trace of 'debug' type with specified parameters and an explicit state.
 -define( send_debug_fmt_full( State, Message, FormatValues,
-							  MessageCategorization, SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( debug, State,
-				text_utils:format(
-					get_spatial_message( Message, State ), FormatValues ),
-				MessageCategorization, SimulationTimestamp ) ).
+                              MessageCategorization, SimulationTimestamp ),
+         class_TraceEmitter:send_safe( debug, State,
+                text_utils:format(
+                    get_spatial_message( Message, State ), FormatValues ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -1434,11 +1434,11 @@
 % variable named 'State'.
 %
 -define( debug_fmt_full( Message, FormatValues, MessageCategorization,
-						 SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( debug, State,
-				text_utils:format(
-					get_spatial_message( Message, State ), FormatValues ),
-				MessageCategorization, SimulationTimestamp ) ).
+                         SimulationTimestamp ),
+         class_TraceEmitter:send_safe( debug, State,
+                text_utils:format(
+                    get_spatial_message( Message, State ), FormatValues ),
+                MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -1491,25 +1491,25 @@
 
 
 -define( send_notice_cat( State, Message, MessageCategorization ),
-		 trace_disabled( State, Message, MessageCategorization )
+         trace_disabled( State, Message, MessageCategorization )
 ).
 
 
 -define( notice_cat( Message, MessageCategorization ),
-		 trace_disabled( State, Message, MessageCategorization ) ).
+         trace_disabled( State, Message, MessageCategorization ) ).
 
 
 
 
 -define( send_notice_full( State, Message, MessageCategorization,
-						   SimulationTimestamp ),
-		 trace_disabled( State, Message, MessageCategorization,
-						 SimulationTimestamp ) ).
+                           SimulationTimestamp ),
+         trace_disabled( State, Message, MessageCategorization,
+                         SimulationTimestamp ) ).
 
 
 -define( notice_full( Message, MessageCategorization, SimulationTimestamp ),
-		 trace_disabled( State, Message, MessageCategorization,
-						 SimulationTimestamp ) ).
+         trace_disabled( State, Message, MessageCategorization,
+                         SimulationTimestamp ) ).
 
 
 
@@ -1520,25 +1520,25 @@
 
 
 -define( send_notice_fmt( State, Message, FormatValues ),
-		 trace_disabled( State, Message, FormatValues ) ).
+         trace_disabled( State, Message, FormatValues ) ).
 
 
 -define( notice_fmt( Message, FormatValues ),
-		 trace_disabled( State, Message, FormatValues ) ).
+         trace_disabled( State, Message, FormatValues ) ).
 
 
 
 
 
 -define( send_notice_fmt_cat( State, Message, FormatValues,
-							  MessageCategorization ),
-		 trace_disabled( State, Message, FormatValues,
-						 MessageCategorization ) ).
+                              MessageCategorization ),
+         trace_disabled( State, Message, FormatValues,
+                         MessageCategorization ) ).
 
 
 -define( notice_fmt_cat( Message, FormatValues, MessageCategorization ),
-		 trace_disabled( State, Message, FormatValues,
-						 MessageCategorization ) ).
+         trace_disabled( State, Message, FormatValues,
+                         MessageCategorization ) ).
 
 
 
@@ -1546,15 +1546,15 @@
 
 
 -define( send_notice_fmt_full( State, Message, FormatValues,
-							   MessageCategorization, SimulationTimestamp ),
-		 trace_disabled( State, Message, FormatValues,
-						 MessageCategorization, SimulationTimestamp ) ).
+                               MessageCategorization, SimulationTimestamp ),
+         trace_disabled( State, Message, FormatValues,
+                         MessageCategorization, SimulationTimestamp ) ).
 
 
 -define( notice_fmt_full( Message, FormatValues, MessageCategorization,
-						  SimulationTimestamp ),
-		 trace_disabled( State, Message, FormatValues, MessageCategorization,
-						 SimulationTimestamp ) ).
+                          SimulationTimestamp ),
+         trace_disabled( State, Message, FormatValues, MessageCategorization,
+                         SimulationTimestamp ) ).
 
 
 
@@ -1582,24 +1582,24 @@
 
 
 -define( send_info_cat( State, Message, MessageCategorization ),
-		 trace_disabled( State, Message, MessageCategorization ) ).
+         trace_disabled( State, Message, MessageCategorization ) ).
 
 
 -define( info_cat( Message, MessageCategorization ),
-		 trace_disabled( State, Message, MessageCategorization ) ).
+         trace_disabled( State, Message, MessageCategorization ) ).
 
 
 
 
 -define( send_info_full( State, Message, MessageCategorization,
-						 SimulationTimestamp ),
-		 trace_disabled( State, Message, MessageCategorization,
-						 SimulationTimestamp ) ).
+                         SimulationTimestamp ),
+         trace_disabled( State, Message, MessageCategorization,
+                         SimulationTimestamp ) ).
 
 
 -define( info_full( Message, MessageCategorization, SimulationTimestamp ),
-		 trace_disabled( State, Message, MessageCategorization,
-						 SimulationTimestamp ) ).
+         trace_disabled( State, Message, MessageCategorization,
+                         SimulationTimestamp ) ).
 
 
 
@@ -1610,23 +1610,23 @@
 
 
 -define( send_info_fmt( State, Message, FormatValues ),
-		 trace_disabled( State, Message, FormatValues ) ).
+         trace_disabled( State, Message, FormatValues ) ).
 
 
 -define( info_fmt( Message, FormatValues ),
-		trace_disabled( State, Message, FormatValues ) ).
+        trace_disabled( State, Message, FormatValues ) ).
 
 
 
 
 -define( send_info_fmt_cat( State, Message, FormatValues,
-							MessageCategorization ),
-		trace_disabled( State, Message, FormatValues, MessageCategorization ) ).
+                            MessageCategorization ),
+        trace_disabled( State, Message, FormatValues, MessageCategorization ) ).
 
 
 -define( info_fmt_cat( Message, FormatValues, MessageCategorization ),
-		 trace_disabled( State, Message, FormatValues,
-						 MessageCategorization ) ).
+         trace_disabled( State, Message, FormatValues,
+                         MessageCategorization ) ).
 
 
 
@@ -1634,15 +1634,15 @@
 
 
 -define( send_info_fmt_full( State, Message, FormatValues,
-							 MessageCategorization, SimulationTimestamp ),
-		trace_disabled( State, Message, FormatValues,
-						MessageCategorization, SimulationTimestamp ) ).
+                             MessageCategorization, SimulationTimestamp ),
+        trace_disabled( State, Message, FormatValues,
+                        MessageCategorization, SimulationTimestamp ) ).
 
 
 -define( info_fmt_full( Message, FormatValues, MessageCategorization,
-						SimulationTimestamp ),
-		 trace_disabled( State, Message, FormatValues, MessageCategorization,
-						 SimulationTimestamp ) ).
+                        SimulationTimestamp ),
+         trace_disabled( State, Message, FormatValues, MessageCategorization,
+                         SimulationTimestamp ) ).
 
 
 
@@ -1670,25 +1670,25 @@
 
 
 -define( send_debug_cat( State, Message, MessageCategorization ),
-		 trace_disabled( State, Message, MessageCategorization ) ).
+         trace_disabled( State, Message, MessageCategorization ) ).
 
 
 -define( debug_cat( Message, MessageCategorization ),
-		 trace_disabled( State, Message, MessageCategorization )
+         trace_disabled( State, Message, MessageCategorization )
 ).
 
 
 
 
 -define( send_debug_full( State, Message, MessageCategorization,
-						  SimulationTimestamp ),
-		 trace_disabled( State, Message, MessageCategorization,
-						 SimulationTimestamp ) ).
+                          SimulationTimestamp ),
+         trace_disabled( State, Message, MessageCategorization,
+                         SimulationTimestamp ) ).
 
 
 -define( debug_full( Message, MessageCategorization, SimulationTimestamp ),
-		 trace_disabled( State, Message, MessageCategorization,
-						 SimulationTimestamp ) ).
+         trace_disabled( State, Message, MessageCategorization,
+                         SimulationTimestamp ) ).
 
 
 
@@ -1698,40 +1698,40 @@
 
 
 -define( send_debug_fmt( State, Message, FormatValues ),
-		 trace_disabled( State, Message, FormatValues ) ).
+         trace_disabled( State, Message, FormatValues ) ).
 
 
 -define( debug_fmt( Message, FormatValues ),
-		 trace_disabled( State, Message, FormatValues ) ).
+         trace_disabled( State, Message, FormatValues ) ).
 
 
 
 
 
 -define( send_debug_fmt_cat( State, Message, FormatValues,
-							 MessageCategorization ),
-		 trace_disabled( State, Message, FormatValues,
-						 MessageCategorization ) ).
+                             MessageCategorization ),
+         trace_disabled( State, Message, FormatValues,
+                         MessageCategorization ) ).
 
 
 -define( debug_fmt_cat( Message, FormatValues, MessageCategorization ),
-		 trace_disabled( State, Message, FormatValues,
-						 MessageCategorization ) ).
+         trace_disabled( State, Message, FormatValues,
+                         MessageCategorization ) ).
 
 
 
 
 
 -define( send_debug_fmt_full( State, Message, FormatValues,
-							  MessageCategorization, SimulationTimestamp ),
-		 trace_disabled( State, Message, FormatValues,
-						 MessageCategorization, SimulationTimestamp ) ).
+                              MessageCategorization, SimulationTimestamp ),
+         trace_disabled( State, Message, FormatValues,
+                         MessageCategorization, SimulationTimestamp ) ).
 
 
 -define( debug_fmt_full( Message, FormatValues, MessageCategorization,
-						 SimulationTimestamp ),
-		 trace_disabled( State, Message, FormatValues, MessageCategorization,
-						 SimulationTimestamp ) ).
+                         SimulationTimestamp ),
+         trace_disabled( State, Message, FormatValues, MessageCategorization,
+                         SimulationTimestamp ) ).
 
 
 
@@ -1770,8 +1770,8 @@
 % 'State'.
 %
 -define( report( Message ),
-		 class_TraceEmitter:send_safe( info, State,
-			get_spatial_message( Message, State ) ) ).
+         class_TraceEmitter:send_safe( info, State,
+            get_spatial_message( Message, State ) ) ).
 
 
 
@@ -1779,9 +1779,9 @@
 % 'State'.
 %
 -define( report_fmt( Message, FormatValues ),
-		 class_TraceEmitter:send_safe( info, State,
-			text_utils:format( get_spatial_message( Message, State ),
-							   FormatValues ) ) ).
+         class_TraceEmitter:send_safe( info, State,
+            text_utils:format( get_spatial_message( Message, State ),
+                               FormatValues ) ) ).
 
 
 
@@ -1793,9 +1793,9 @@
 % named 'State'.
 %
 -define( report_cat( Message, MessageCategorization ),
-		 class_TraceEmitter:send_safe( info, State,
-				get_spatial_message( Message, State ),
-				MessageCategorization ) ).
+         class_TraceEmitter:send_safe( info, State,
+                get_spatial_message( Message, State ),
+                MessageCategorization ) ).
 
 
 
@@ -1803,10 +1803,10 @@
 % named 'State'.
 %
 -define( report_cat_fmt( Message, FormatValues, MessageCategorization ),
-		 class_TraceEmitter:send_safe( info, State,
-			text_utils:format(
-				get_spatial_message( Message, State ), FormatValues ),
-			MessageCategorization ) ).
+         class_TraceEmitter:send_safe( info, State,
+            text_utils:format(
+                get_spatial_message( Message, State ), FormatValues ),
+            MessageCategorization ) ).
 
 
 
@@ -1819,10 +1819,10 @@
 % implicit use of a variable named 'State'.
 %
 -define( report_full( State, Message, MessageCategorization,
-					  SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( info, State,
-			get_spatial_message( Message, State ),
-			MessageCategorization, SimulationTimestamp ) ).
+                      SimulationTimestamp ),
+         class_TraceEmitter:send_safe( info, State,
+            get_spatial_message( Message, State ),
+            MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -1830,10 +1830,10 @@
 % implicit use of a variable named 'State'.
 %
 -define( report_full_fmt( State, Message, FormatValues, MessageCategorization,
-						  SimulationTimestamp ),
-		 class_TraceEmitter:send_safe( info, State, text_utils:format(
-			get_spatial_message( Message, State ), FormatValues ),
-			MessageCategorization, SimulationTimestamp ) ).
+                          SimulationTimestamp ),
+         class_TraceEmitter:send_safe( info, State, text_utils:format(
+            get_spatial_message( Message, State ), FormatValues ),
+            MessageCategorization, SimulationTimestamp ) ).
 
 
 
@@ -1851,20 +1851,20 @@
 % (helper)
 %
 -spec get_spatial_message( text_utils:ustring(), wooper:state() ) ->
-									text_utils:ustring().
+                                    text_utils:ustring().
 get_spatial_message( Message, State ) ->
 
-	case ?getAttr(position) of
+    case ?getAttr(position) of
 
-		undefined ->
-			Message;
+        undefined ->
+            Message;
 
-		Pos ->
-			ApproxPosString = point2:to_compact_string( Pos ),
-			Message ++ text_utils:format( "~n[while located around ~ts] ",
-										  [ ApproxPosString ] )
+        Pos ->
+            ApproxPosString = point2:to_compact_string( Pos ),
+            Message ++ text_utils:format( "~n[while located around ~ts] ",
+                                          [ ApproxPosString ] )
 
-	end.
+    end.
 
 
 % Not to be reported as unused should no trace sending refer to it:
@@ -1876,31 +1876,31 @@ get_spatial_message( Message, State ) ->
 % that (counterpart) section:
 
 -compile( [ { nowarn_unused_function, [ { trace_disabled, 1 },
-										{ trace_disabled, 2 },
-										{ trace_disabled, 3 },
-										{ trace_disabled, 4 },
-										{ trace_disabled, 5 } ] } ] ).
+                                        { trace_disabled, 2 },
+                                        { trace_disabled, 3 },
+                                        { trace_disabled, 4 },
+                                        { trace_disabled, 5 } ] } ] ).
 
 
 -spec trace_disabled( any() ) -> void().
 trace_disabled( _ ) ->
-	ok.
+    ok.
 
 -spec trace_disabled( any(), any() ) -> void().
 trace_disabled( _, _ ) ->
-	ok.
+    ok.
 
 -spec trace_disabled( any(), any(), any() ) -> void().
 trace_disabled( _, _, _ ) ->
-	ok.
+    ok.
 
 -spec trace_disabled( any(), any(), any(), any() ) -> void().
 trace_disabled( _, _, _, _ ) ->
-	ok.
+    ok.
 
 -spec trace_disabled( any(), any(), any(), any(), any() ) -> void().
 trace_disabled( _, _, _, _, _ ) ->
-	ok.
+    ok.
 
 
 -endif. % class_SpatialTraceEmitter_hrl_guard

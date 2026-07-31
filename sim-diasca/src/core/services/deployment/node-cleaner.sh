@@ -57,7 +57,7 @@ fi
 user="${USER}"
 
 
-echo "Will kill all lingering Erlang nodes on '$(hostname)', if owned by ${user}, and having a node name matching '${nodename}'."
+echo "Will kill all lingering Erlang nodes on '$(hostname)', if owned by ${user} and having a node name matching '${nodename}'."
 
 
 for p in $(/bin/ps -o pid,cmd -u ${user} | grep "${nodename}" | grep beam | grep -v grep | awk '{ print $1 }'); do
@@ -107,12 +107,11 @@ fi
 # (seems to work even if -relaxed_command_check was not specified at epmd
 # creation - implicit automatic creation)
 #
+# At least in some contexts (e.g. some GNU/Linux distributions and Erlang
+# version 28.5, while using a VPN), any EPMD operation, including trying to stop
+# a node (or just listing names) will be very long (2 minutes and 15 seconds),
+# probably due to a time-out.
 #
-epmd -stop "${nodename}"
-
-res="$?"
-
-echo "epmd stopped with return code ${res}."
 
 # Killing epmd would solve the problem, but it would be a bad practise as any
 # other Erlang application running on the same node would be affected:
@@ -140,6 +139,38 @@ echo "epmd stopped with return code ${res}."
 # Rather than launching explicitly epmd (with the -relaxed_command_check
 # option), we prefer to set the ERL_EPMD_RELAXED_COMMAND_CHECK environment
 # variable beforehand (see launch-erl.sh)
+
+
+# Normal case:
+overcome_blocking_epmd=1
+
+# If EPMD is found blocking:
+#overcome_blocking_epmd=0
+
+if [ $overcome_blocking_epmd -eq 1 ]; then
+
+	epmd="$(which epmd 2>/dev/null)"
+
+	if [ ! -x "${epmd}" ]; then
+
+		echo "  Error, no epmd executable found." 1>&2
+
+		exit 50
+
+	fi
+
+	"${epmd}" -stop "${nodename}"
+	res="$?"
+	echo "epmd stopped with return code ${res}."
+
+else
+
+	echo "(warning: overcoming a supposedly-blocking EPMD by killing it rather stopping it gracefully)" 1>&2
+
+	# Alternative to 'epmd -stop' / last resort:
+	killall epmd
+
+fi
 
 
 # So that we can solely rely on the exit code:

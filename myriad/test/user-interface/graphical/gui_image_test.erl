@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -56,16 +56,16 @@ See the gui_image.erl tested module.
 
 -record( my_test_state, {
 
-	main_frame :: frame(),
+    main_frame :: frame(),
 
-	% A panel, used here as a canvas:
-	panel :: panel(),
+    % A panel, used here as a canvas:
+    panel :: panel(),
 
-	% The off-screen bitmaps where all renderings take place:
-	backbuffer :: bitmap(),
+    % The off-screen bitmaps where all renderings take place:
+    backbuffer :: bitmap(),
 
-	% The ready-to-use in-memory data corresponding to an image to be displayed:
-	image_bitmap :: bitmap() } ).
+    % The ready-to-use in-memory data corresponding to an image to be displayed:
+    image_bitmap :: bitmap() } ).
 
 
 -doc "State of the test application, kept and updated by its main loop.".
@@ -91,24 +91,24 @@ See the gui_image.erl tested module.
 -doc "Returns the path to a test image directory.".
 -spec get_test_image_directory() -> directory_path().
 get_test_image_directory() ->
-	% Points to myriad/doc; relative to this test directory:
-	file_utils:join( [ "..", "..", "..", "doc" ] ).
+    % Points to myriad/doc; relative to this test directory:
+    file_utils:join( [ "..", "..", "..", "doc" ] ).
 
 
 
 -doc "Returns the path to the main test image.".
 -spec get_test_main_image_path() -> directory_path().
 get_test_main_image_path() ->
-	ImageFilename = "myriad-title.png",
-	%ImageFilename = "myriad-minimal-enclosing-circle-test.png",
-	%ImageFilename = "gui-mockup.svg",
+    ImageFilename = "myriad-title.png",
+    %ImageFilename = "myriad-minimal-enclosing-circle-test.png",
+    %ImageFilename = "gui-mockup.svg",
 
-	% If having there a local symlink pointing to
-	% Erlang-x.y/lib/erlang/lib/wx-z/examples/demo/image.jpg:
-	%
-	%ImageFilename = "image.jpg",
+    % If having there a local symlink pointing to
+    % Erlang-x.y/lib/erlang/lib/wx-z/examples/demo/image.jpg:
+    %
+    %ImageFilename = "image.jpg",
 
-	file_utils:join( get_test_image_directory(), ImageFilename ).
+    file_utils:join( get_test_image_directory(), ImageFilename ).
 
 
 
@@ -116,115 +116,115 @@ get_test_main_image_path() ->
 -spec run_image_test() -> void().
 run_image_test() ->
 
-	ImagePath = get_test_main_image_path(),
+    ImagePath = get_test_main_image_path(),
 
-	test_facilities:display( "Starting the image test, "
-		"simply by displaying the '~ts' image in a resizable window.",
-		[ ImagePath ] ),
+    test_facilities:display( "Starting the image test, "
+        "simply by displaying the '~ts' image in a resizable window.",
+        [ ImagePath ] ),
 
-	trace_utils:notice( "A resizable frame displaying the Myriad logo shall "
-		"appear. The test will end as soon as this frame is closed." ),
+    trace_utils:notice( "A resizable frame displaying the Myriad logo shall "
+        "appear. The test will end as soon as this frame is closed." ),
 
-	gui:start(),
+    gui:start(),
 
-	MainFrame = gui_frame:create( _Title="MyriadGUI Image Test",
-								  gui_overall_test:get_main_window_size() ),
+    MainFrame = gui_frame:create( _Title="MyriadGUI Image Test",
+                                  gui_overall_test:get_main_window_size() ),
 
-	% No need to add _Opts=[{style, full_repaint_on_resize}]:
-	Panel = gui_panel:create( MainFrame ),
+    % No need to add _Opts=[{style, full_repaint_on_resize}]:
+    Panel = gui_panel:create( MainFrame ),
 
-	% The backbuffer on which panel content will be drawn:
-	BackbufferBitmap = gui_bitmap:create_empty_for( Panel ),
+    % The backbuffer on which panel content will be drawn:
+    BackbufferBitmap = gui_bitmap:create_empty_for( Panel ),
 
-	% The image bitmap, kept to regenerate the backbuffer as needed:
-	ImgBitmap = gui_bitmap:create_from( ImagePath ),
+    % The image bitmap, kept to regenerate the backbuffer as needed:
+    ImgBitmap = gui_bitmap:create_from( ImagePath ),
 
-	% Initialisation:
-	render_scene( Panel, BackbufferBitmap, ImgBitmap ),
-	StatusBar = gui_statusbar:create( MainFrame ),
+    % Initialisation:
+    render_scene( Panel, BackbufferBitmap, ImgBitmap ),
+    StatusBar = gui_statusbar:create( MainFrame ),
 
-	gui_statusbar:push_text( StatusBar, "Displaying image." ),
+    gui_statusbar:push_text( StatusBar, "Displaying image." ),
 
-	% No need to subscribe to 'onRepaintNeeded' for the panel:
-	gui:subscribe_to_events( [ { onWindowClosed, MainFrame },
-							   { onResized, Panel } ] ),
+    % No need to subscribe to 'onRepaintNeeded' for the panel:
+    gui:subscribe_to_events( [ { onWindowClosed, MainFrame },
+                               { onResized, Panel } ] ),
 
-	% Renders the GUI:
-	gui_frame:show( MainFrame ),
+    % Renders the GUI:
+    gui_frame:show( MainFrame ),
 
-	test_main_loop( #my_test_state{ main_frame=MainFrame,
-									panel=Panel,
-									backbuffer=BackbufferBitmap,
-									image_bitmap=ImgBitmap } ),
+    test_main_loop( #my_test_state{ main_frame=MainFrame,
+                                    panel=Panel,
+                                    backbuffer=BackbufferBitmap,
+                                    image_bitmap=ImgBitmap } ),
 
-	gui:stop().
+    gui:stop().
 
 
 
 -doc "The main loop of this test.".
 -spec test_main_loop( my_test_state() ) -> void().
 test_main_loop( TestState=#my_test_state{ main_frame=MainFrame,
-										  panel=Panel,
-										  backbuffer=BackbufferBitmap,
-										  image_bitmap=ImgBitmap } ) ->
+                                          panel=Panel,
+                                          backbuffer=BackbufferBitmap,
+                                          image_bitmap=ImgBitmap } ) ->
 
-	receive
+    receive
 
-		% Not subscribed to onRepaintNeeded, so never activated:
-		%{ onRepaintNeeded, [ Panel, _PanelId, _EventContext ] } ->
-		%   trace_utils:debug( "Repainting test panel." ),
-		%
-		%   % No size change, backbuffer still legit:
-		%   update_panel( Panel, BackbufferBitmap ),
-		%
-		%   %trace_utils:debug( "Test panel repainted (blit)." ),
-		%
-		%   test_main_loop( TestState );
-
-
-		{ onResized, [ Panel, _PanelId, NewSize, EventContext ] } ->
-
-			%trace_utils:debug( "Resizing test panel." ),
-
-			cond_utils:if_defined( myriad_gui_test_verbose,
-				trace_utils:notice_fmt(
-					"Test panel '~ts' resized to ~p (~ts).",
-					[ gui:object_to_string( Panel ), NewSize,
-					  gui_event:context_to_string( EventContext ) ] ),
-				basic_utils:ignore_unused( [ NewSize, EventContext ] ) ),
-
-			% We have to resize the framebuffer first:
-			NewBackbufferBitmap = gui_bitmap:create_empty( NewSize ),
-
-			render_scene( Panel, NewBackbufferBitmap, ImgBitmap ),
-
-			gui_bitmap:destruct( BackbufferBitmap ),
-
-			%trace_utils:debug( "Test panel resized (render)." ),
-
-			test_main_loop( TestState#my_test_state{
-				backbuffer=NewBackbufferBitmap } );
+        % Not subscribed to onRepaintNeeded, so never activated:
+        %{ onRepaintNeeded, [ Panel, _PanelId, _EventContext ] } ->
+        %   trace_utils:debug( "Repainting test panel." ),
+        %
+        %   % No size change, backbuffer still legit:
+        %   update_panel( Panel, BackbufferBitmap ),
+        %
+        %   %trace_utils:debug( "Test panel repainted (blit)." ),
+        %
+        %   test_main_loop( TestState );
 
 
-		{ onWindowClosed, [ MainFrame, _MainFrameId, EventContext ] } ->
+        { onResized, [ Panel, _PanelId, NewSize, EventContext ] } ->
 
-			cond_utils:if_defined( myriad_gui_test_verbose,
-				trace_utils:notice_fmt( "Test main frame ~ts has been closed "
-					"(~ts), test success.",
-					[ gui:object_to_string( MainFrame ),
-					  gui_event:context_to_string( EventContext ) ] ),
-				basic_utils:ignore_unused( EventContext ) ),
+            %trace_utils:debug( "Resizing test panel." ),
 
-			gui_frame:destruct( MainFrame );
+            cond_utils:if_defined( myriad_gui_test_verbose,
+                trace_utils:notice_fmt(
+                    "Test panel '~ts' resized to ~p (~ts).",
+                    [ gui:object_to_string( Panel ), NewSize,
+                      gui_event:context_to_string( EventContext ) ] ),
+                basic_utils:ignore_unused( [ NewSize, EventContext ] ) ),
+
+            % We have to resize the framebuffer first:
+            NewBackbufferBitmap = gui_bitmap:create_empty( NewSize ),
+
+            render_scene( Panel, NewBackbufferBitmap, ImgBitmap ),
+
+            gui_bitmap:destruct( BackbufferBitmap ),
+
+            %trace_utils:debug( "Test panel resized (render)." ),
+
+            test_main_loop( TestState#my_test_state{
+                backbuffer=NewBackbufferBitmap } );
 
 
-		Other ->
-			% Extra newline for better separation:
-			trace_utils:warning_fmt( "Test main loop ignored following "
-									 "message:~n ~p.~n", [ Other ] ),
-			test_main_loop( TestState )
+        { onWindowClosed, [ MainFrame, _MainFrameId, EventContext ] } ->
 
-	end.
+            cond_utils:if_defined( myriad_gui_test_verbose,
+                trace_utils:notice_fmt( "Test main frame ~ts has been closed "
+                    "(~ts), test success.",
+                    [ gui:object_to_string( MainFrame ),
+                      gui_event:context_to_string( EventContext ) ] ),
+                basic_utils:ignore_unused( EventContext ) ),
+
+            gui_frame:destruct( MainFrame );
+
+
+        Other ->
+            % Extra newline for better separation:
+            trace_utils:warning_fmt( "Test main loop ignored following "
+                                     "message:~n ~p.~n", [ Other ] ),
+            test_main_loop( TestState )
+
+    end.
 
 
 
@@ -234,27 +234,27 @@ the specified panel.
 """.
 render_scene( TargetPanel, BackbufferBitmap, ImageBitmap ) ->
 
-	% Updates the backbuffer with the stored image:
+    % Updates the backbuffer with the stored image:
 
-	% Locks the target surface (device context):
-	BackbufferDC = gui_bitmap:lock( BackbufferBitmap ),
+    % Locks the target surface (device context):
+    BackbufferDC = gui_bitmap:lock( BackbufferBitmap ),
 
-	gui_render:clear_device_context( BackbufferDC ),
+    gui_render:clear_device_context( BackbufferDC ),
 
-	gui_bitmap:draw( _Source=ImageBitmap, BackbufferDC, _PosInTarget={15,130} ),
+    gui_bitmap:draw( _Source=ImageBitmap, BackbufferDC, _PosInTarget={15,130} ),
 
-	% Then blits this updated backbuffer to the panel:
-	TopLeftPos = {0,0},
+    % Then blits this updated backbuffer to the panel:
+    TopLeftPos = {0,0},
 
-	TargetPanelDC = gui_widget:lock( TargetPanel ),
+    TargetPanelDC = gui_widget:lock( TargetPanel ),
 
-	gui_render:blit( _From=BackbufferDC, _FromPos=TopLeftPos,
-		_BlitArea=gui_bitmap:get_size( BackbufferBitmap ),
-		_To=TargetPanelDC, _ToPos=TopLeftPos ),
+    gui_render:blit( _From=BackbufferDC, _FromPos=TopLeftPos,
+        _BlitArea=gui_bitmap:get_size( BackbufferBitmap ),
+        _To=TargetPanelDC, _ToPos=TopLeftPos ),
 
-	gui_widget:unlock( TargetPanelDC ),
+    gui_widget:unlock( TargetPanelDC ),
 
-	gui_bitmap:unlock( BackbufferDC ).
+    gui_bitmap:unlock( BackbufferDC ).
 
 
 
@@ -263,21 +263,21 @@ Blits the current backbuffer bitmap to the specified panel once cleared.
 """.
 update_panel( TargetPanel, BackbufferBitmap ) ->
 
-	% No need to update the update the framebuffer.
+    % No need to update the update the framebuffer.
 
-	% Locks the target surface (device context):
-	BackbufferDC = gui_bitmap:lock( BackbufferBitmap ),
+    % Locks the target surface (device context):
+    BackbufferDC = gui_bitmap:lock( BackbufferBitmap ),
 
-	% Then blits this updated backbuffer to the panel:
-	TopLeftPos = {0,0},
+    % Then blits this updated backbuffer to the panel:
+    TopLeftPos = {0,0},
 
-	TargetPanelDC = gui_widget:lock( TargetPanel ),
+    TargetPanelDC = gui_widget:lock( TargetPanel ),
 
-	gui_render:blit( BackbufferDC, TopLeftPos,
-		gui_bitmap:get_size( BackbufferBitmap ), TargetPanelDC, TopLeftPos ),
+    gui_render:blit( BackbufferDC, TopLeftPos,
+        gui_bitmap:get_size( BackbufferBitmap ), TargetPanelDC, TopLeftPos ),
 
-	gui_widget:unlock( TargetPanelDC ),
-	gui_bitmap:unlock( BackbufferDC ).
+    gui_widget:unlock( TargetPanelDC ),
+    gui_bitmap:unlock( BackbufferDC ).
 
 
 
@@ -285,17 +285,17 @@ update_panel( TargetPanel, BackbufferBitmap ) ->
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	case executable_utils:is_batch() of
+    case executable_utils:is_batch() of
 
-		true ->
-			test_facilities:display(
-				"(not running the image test, being in batch mode)" );
+        true ->
+            test_facilities:display(
+                "(not running the image test, being in batch mode)" );
 
-		false ->
-			run_image_test()
+        false ->
+            run_image_test()
 
-	end,
+    end,
 
-	test_facilities:stop().
+    test_facilities:stop().

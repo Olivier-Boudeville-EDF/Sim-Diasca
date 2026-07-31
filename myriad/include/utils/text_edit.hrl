@@ -1,4 +1,4 @@
-% Copyright (C) 2024-2025 Olivier Boudeville
+% Copyright (C) 2024-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -33,52 +33,53 @@
 %
 -record( text_edit, {
 
-	% Identifier (number) of the entry being currently edited (hence that will
-	% be the "next" one).
-	%
-	% So corresponds to the number of entries already submitted (as obtained
-	% from the corresponding processor) plus one.
-	%
-	entry_id :: text_edit:entry_id(),
+    % Identifier (number) of the entry being currently edited (hence that will
+    % be the "next" one).
+    %
+    % So corresponds to the number of entries already submitted (as obtained
+    % from the corresponding processor) plus one.
+    %
+    entry_id :: text_edit:entry_id(),
 
-	% Any text before the leftmost position of the cursor:
-	prefix :: text_utils:ustring(),
+    % Any text before the leftmost position of the cursor:
+    prefix :: text_utils:ustring(),
 
-	% The number of characters of the prefix:
-	prefix_len :: text_utils:length(),
+    % The number of characters of the prefix:
+    prefix_len :: text_utils:length(),
 
-	% The characters (Unicode codepoints) that are strictly before the current
-	% cursor, in reverse order:
-	%
-	precursor_chars = [] :: [ text_utils:uchar() ],
+    % The characters (Unicode codepoints) that are strictly before the current
+    % cursor, in reverse order:
+    %
+    precursor_chars = [] :: [ text_utils:uchar() ],
 
-	% The characters (Unicode codepoints) that are at or after the current
-	% cursor (in normal order):
-	%
-	postcursor_chars = [] :: [ text_utils:uchar() ],
-
-
-	% Backup to support (one-level of) Ctrl-z in command editing:
-	prev_precursor_chars = [] :: [ text_utils:uchar() ],
-
-	% Backup to support (one-level of) Ctrl-z in command editing:
-	prev_postcursor_chars = [] :: [ text_utils:uchar() ],
+    % The characters (Unicode codepoints) that are at or after the current
+    % cursor (in normal order):
+    %
+    postcursor_chars = [] :: [ text_utils:uchar() ],
 
 
-	% Tells whether a trailing dot should be automatically added if lacking in a
-	% entry (mostly useful for shells; default: false):
-	%
-	auto_add_trailing_dot = false :: boolean(),
+    % Backup to support (one-level of) Ctrl-z in command editing:
+    prev_precursor_chars = [] :: [ text_utils:uchar() ],
 
-	% Tells whether the entry cursor should wrap around:
-	wrap_cursor = false :: boolean(),
+    % Backup to support (one-level of) Ctrl-z in command editing:
+    prev_postcursor_chars = [] :: [ text_utils:uchar() ],
 
 
-	% The identifier of any entry currently selected in their history:
-	hist_entry_id :: option( text_edit:entry_id() ),
+    % Tells whether a trailing dot should be automatically added if lacking in a
+    % entry (mostly useful for shells; default: false):
+    %
+    auto_add_trailing_dot = false :: boolean(),
 
-	% To backup the currently-edited entry while navigating in their history:
-	current_entry :: option( text_edit:entry() ),
+    % Tells whether the entry cursor should wrap around:
+    wrap_cursor = false :: boolean(),
 
-	% The PID of the underlying actual processing logic:
-	processor_pid :: text_edit:processor_pid() } ).
+
+    % The identifier of any entry currently selected in their history:
+    hist_entry_id :: option( text_edit:entry_id() ),
+
+    % To backup the currently-edited entry while navigating in their history:
+    current_entry :: option( text_edit:entry() ),
+
+    % The PID of the underlying actual processing logic:
+    % (for example the PID of a shell instance)
+    processor_pid :: text_edit:processor_pid() } ).

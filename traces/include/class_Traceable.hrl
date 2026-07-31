@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -85,53 +85,55 @@
 %                                   emitter_info().
 -define( trace_categorize( TracesInitialisationTermInternal ),
 
-	% As few variables bound as possible, and longer variable names chosen
-	% (prefixed with 'Traces'), to avoid clashes with user-defined variables:
-	%
-	case TracesInitialisationTermInternal of
+    % As few variables bound as possible, and longer variable names chosen
+    % (prefixed with 'Traces'), to avoid clashes with user-defined variables:
+    %
+    case TracesInitialisationTermInternal of
 
-		% Emitter categorization already set, just propagate as is to next
-		% mother class:
-		%
-		%{ _TraceName, _TraceCategorization } ->
-		{ _, _ } ->
-			TracesInitialisationTermInternal;
+        % Emitter categorization already set, just propagate as is to next
+        % mother class:
+        %
+        %{ _TraceName, _TraceCategorization } ->
+        { _, _ } ->
+            TracesInitialisationTermInternal;
 
-		% Expecting here only a string (we are at the level of the actual,
-		% effective class), it is the place where the emitter categorisation
-		% shall be introduced:
-		%
-		%TracesStandaloneEmitterName ->
-		_ ->
-			{ TracesInitialisationTermInternal,
-			  ?trace_emitter_categorization }
+        % Expecting here only a string (we are at the level of the actual,
+        % effective class), it is the place where the emitter categorisation
+        % shall be introduced:
+        %
+        %TracesStandaloneEmitterName ->
+        _ ->
+            { TracesInitialisationTermInternal,
+              ?trace_emitter_categorization }
 
-	end ).
+    end ).
 
 
 
-% To obtain a proper string-like name, whether a trace categorization has been
+% To obtain a proper string-like name, whether a trace categorisation has been
 % specified or not (typically useful when wanting to designate with '~ts' the
 % name of a trace emitter from its constructor, i.e. when its specified name
-% (actually, emitter_info()) may still include its trace categorization):
+% (actually, emitter_info() may still include its trace categorization):
+%
+% Note: now deprecated in favor of `class_TraceEmitter:get_trace_name/1`.
 %
 % -macrospec trace_name( emitter_name() | emitter_info() ) ->
 %                                   emitter_name().
--define( trace_name( TracesInitialisationTermForNameInternal ),
+% -define( trace_name( TracesInitialisationTermForNameInternal ),
+%
+%   % As few variables bound as possible, and longer variable names chosen
+%   % (prefixed with 'Traces'), to avoid clashes with user-defined variables:
+%   %
+%   case TracesInitialisationTermForNameInternal of
 
-	% As few variables bound as possible, and longer variable names chosen
-	% (prefixed with 'Traces'), to avoid clashes with user-defined variables:
-	%
-	case TracesInitialisationTermForNameInternal of
+%       %{ TraceName, _TraceCategorization } ->
+%       { TraceNameForNameInternal, _ } ->
+%           TraceNameForNameInternal;
 
-		%{ TraceName, _TraceCategorization } ->
-		{ TraceNameForNameInternal, _ } ->
-			TraceNameForNameInternal;
+%       TraceNameForNameInternal ->
+%           TraceNameForNameInternal
 
-		TraceNameForNameInternal ->
-			TraceNameForNameInternal
-
-	end ).
+%   end ).
 
 
 
@@ -142,7 +144,7 @@
 
 -ifndef(trace_emitter_categorization).
 
-	-define( trace_emitter_categorization, "Traceable.Uncategorized" ).
+    -define( trace_emitter_categorization, "Traceable.Uncategorized" ).
 
 -endif. % trace_emitter_categorization
 
@@ -169,7 +171,7 @@
 % state.
 %
 -define( send_emergency( State, Message ),
-		 class_Traceable:send_safe( emergency, State, Message )
+         class_Traceable:send_safe( emergency, State, Message )
 ).
 
 
@@ -178,7 +180,7 @@
 % of a variable named 'State'.
 %
 -define( emergency( Message ),
-		 class_Traceable:send_safe( emergency, State, Message )
+         class_Traceable:send_safe( emergency, State, Message )
 ).
 
 
@@ -191,8 +193,8 @@
 % state.
 %
 %-define( send_emergency_cat( State, Message, MessageCategorization ),
-%		 class_Traceable:send_safe( emergency, State, Message,
-%									MessageCategorization )
+%        class_Traceable:send_safe( emergency, State, Message,
+%                                   MessageCategorization )
 %).
 
 
@@ -201,8 +203,8 @@
 % of a variable named 'State'.
 %
 %-define( emergency_cat( Message, MessageCategorization ),
-%		 class_Traceable:send_safe( emergency, State, Message,
-%									MessageCategorization )
+%        class_Traceable:send_safe( emergency, State, Message,
+%                                   MessageCategorization )
 %).
 
 
@@ -217,9 +219,9 @@
 % state.
 %
 %-define( send_emergency_full( State, Message, MessageCategorization,
-%							  ApplicationTimestamp ),
-%		 class_Traceable:send_safe( emergency, State, Message,
-%			MessageCategorization, ApplicationTimestamp )
+%                             ApplicationTimestamp ),
+%        class_Traceable:send_safe( emergency, State, Message,
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -229,8 +231,8 @@
 %
 %-define( emergency_full( Message, MessageCategorization,
 %                         ApplicationTimestamp ),
-%		 class_Traceable:send_safe( emergency, State, Message,
-%			MessageCategorization, ApplicationTimestamp )
+%        class_Traceable:send_safe( emergency, State, Message,
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -246,8 +248,8 @@
 % parameters and an explicit state.
 %
 -define( send_emergency_fmt( State, Message, FormatValues ),
-		 class_Traceable:send_safe( emergency, State,
-			text_utils:format( Message, FormatValues ) )
+         class_Traceable:send_safe( emergency, State,
+            text_utils:format( Message, FormatValues ) )
 
 ).
 
@@ -256,8 +258,8 @@
 % state, with no console echo (message just recorded in the traces).
 %
 %-define( send_emergency_no_echo_fmt( State, Message, FormatValues ),
-%		 class_Traceable:send_synchronised( emergency, State,
-%			text_utils:format( Message, FormatValues ) )
+%        class_Traceable:send_synchronised( emergency, State,
+%           text_utils:format( Message, FormatValues ) )
 %).
 
 
@@ -266,8 +268,8 @@
 % parameters and implicit use of a variable named 'State'.
 %
 -define( emergency_fmt( Message, FormatValues ),
-		 class_Traceable:send_safe( emergency, State,
-			text_utils:format( Message, FormatValues ) )
+         class_Traceable:send_safe( emergency, State,
+            text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -276,8 +278,8 @@
 % the traces).
 %
 %-define( emergency_no_echo_fmt( Message, FormatValues ),
-%		 class_Traceable:send_synchronised( emergency, State,
-%			text_utils:format( Message, FormatValues ) )
+%        class_Traceable:send_synchronised( emergency, State,
+%           text_utils:format( Message, FormatValues ) )
 %).
 
 
@@ -290,9 +292,9 @@
 % state.
 %
 %-define( send_emergency_fmt_cat( State, Message, FormatValues,
-%								  MessageCategorization ),
-%		 class_Traceable:send_safe( emergency, State,
-%			text_utils:format( Message, FormatValues ), MessageCategorization )
+%                                 MessageCategorization ),
+%        class_Traceable:send_safe( emergency, State,
+%           text_utils:format( Message, FormatValues ), MessageCategorization )
 %).
 
 
@@ -301,8 +303,8 @@
 % of a variable named 'State'.
 %
 %-define( emergency_fmt_cat( Message, FormatValues, MessageCategorization ),
-%		 class_Traceable:send_safe( emergency, State,
-%			text_utils:format( Message, FormatValues ), MessageCategorization )
+%        class_Traceable:send_safe( emergency, State,
+%           text_utils:format( Message, FormatValues ), MessageCategorization )
 %).
 
 
@@ -316,10 +318,10 @@
 % state.
 %
 %-define( send_emergency_fmt_full( State, Message, FormatValues,
-%							MessageCategorization, ApplicationTimestamp ),
-%		 class_Traceable:send_safe( emergency, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization, ApplicationTimestamp )
+%                           MessageCategorization, ApplicationTimestamp ),
+%        class_Traceable:send_safe( emergency, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -328,10 +330,10 @@
 % of a variable named 'State'.
 %
 %-define( emergency_fmt_full( Message, FormatValues, MessageCategorization,
-%							 ApplicationTimestamp ),
-%		 class_Traceable:send_safe( emergency, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization, ApplicationTimestamp )
+%                            ApplicationTimestamp ),
+%        class_Traceable:send_safe( emergency, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -351,7 +353,7 @@
 
 % Sends a trace of 'alert' type with specified parameters and an explicit state.
 -define( send_alert( State, Message ),
-		 class_Traceable:send_safe( alert, State, Message )
+         class_Traceable:send_safe( alert, State, Message )
 ).
 
 
@@ -360,7 +362,7 @@
 % variable named 'State'.
 %
 -define( alert( Message ),
-		 class_Traceable:send_safe( alert, State, Message )
+         class_Traceable:send_safe( alert, State, Message )
 ).
 
 
@@ -372,8 +374,8 @@
 
 % Sends a trace of 'alert' type with specified parameters and an explicit state.
 %-define( send_alert_cat( State, Message, MessageCategorization ),
-%		 class_Traceable:send_safe( alert, State, Message,
-%									MessageCategorization )
+%        class_Traceable:send_safe( alert, State, Message,
+%                                   MessageCategorization )
 %).
 
 
@@ -382,8 +384,8 @@
 % variable named 'State'.
 %
 %-define( alert_cat( Message, MessageCategorization ),
-%		 class_Traceable:send_safe( alert, State, Message,
-%									MessageCategorization )
+%        class_Traceable:send_safe( alert, State, Message,
+%                                   MessageCategorization )
 %).
 
 
@@ -396,9 +398,9 @@
 
 % Sends a trace of 'alert' type with specified parameters and an explicit state.
 %-define( send_alert_full( State, Message, MessageCategorization,
-%						  ApplicationTimestamp ),
-%		 class_Traceable:send_safe( alert, State, Message,
-%			MessageCategorization, ApplicationTimestamp )
+%                         ApplicationTimestamp ),
+%        class_Traceable:send_safe( alert, State, Message,
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -407,8 +409,8 @@
 % variable named 'State'.
 %
 %-define( alert_full( Message, MessageCategorization, ApplicationTimestamp ),
-%		 class_Traceable:send_safe( alert, State, Message,
-%			MessageCategorization, ApplicationTimestamp )
+%        class_Traceable:send_safe( alert, State, Message,
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -424,8 +426,8 @@
 % parameters and an explicit state.
 %
 -define( send_alert_fmt( State, Message, FormatValues ),
-		 class_Traceable:send_safe( alert, State,
-			text_utils:format( Message, FormatValues ) )
+         class_Traceable:send_safe( alert, State,
+            text_utils:format( Message, FormatValues ) )
 
 ).
 
@@ -434,8 +436,8 @@
 % with no console echo (message just recorded in the traces).
 %
 %-define( send_alert_no_echo_fmt( State, Message, FormatValues ),
-%		 class_Traceable:send_synchronised( alert, State,
-%			text_utils:format( Message, FormatValues ) )
+%        class_Traceable:send_synchronised( alert, State,
+%           text_utils:format( Message, FormatValues ) )
 %).
 
 
@@ -444,8 +446,8 @@
 % parameters and implicit use of a variable named 'State'.
 %
 -define( alert_fmt( Message, FormatValues ),
-		 class_Traceable:send_safe( alert, State,
-			text_utils:format( Message, FormatValues ) )
+         class_Traceable:send_safe( alert, State,
+            text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -454,8 +456,8 @@
 % traces).
 %
 %-define( alert_no_echo_fmt( Message, FormatValues ),
-%		 class_Traceable:send_synchronised( alert, State,
-%			text_utils:format( Message, FormatValues ) )
+%        class_Traceable:send_synchronised( alert, State,
+%           text_utils:format( Message, FormatValues ) )
 %).
 
 
@@ -466,9 +468,9 @@
 
 % Sends a trace of 'alert' type with specified parameters and an explicit state.
 %-define( send_alert_fmt_cat( State, Message, FormatValues,
-%							 MessageCategorization ),
-%		 class_Traceable:send_safe( alert, State,
-%			text_utils:format( Message, FormatValues ), MessageCategorization )
+%                            MessageCategorization ),
+%        class_Traceable:send_safe( alert, State,
+%           text_utils:format( Message, FormatValues ), MessageCategorization )
 %).
 
 
@@ -477,8 +479,8 @@
 % variable named 'State'.
 %
 %-define( alert_fmt_cat( Message, FormatValues, MessageCategorization ),
-%		 class_Traceable:send_safe( alert, State,
-%			text_utils:format( Message, FormatValues ), MessageCategorization )
+%        class_Traceable:send_safe( alert, State,
+%           text_utils:format( Message, FormatValues ), MessageCategorization )
 %).
 
 
@@ -490,10 +492,10 @@
 
 % Sends a trace of 'alert' type with specified parameters and an explicit state.
 %-define( send_alert_fmt_full( State, Message, FormatValues,
-%							  MessageCategorization, ApplicationTimestamp ),
-%		 class_Traceable:send_safe( alert, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization, ApplicationTimestamp )
+%                             MessageCategorization, ApplicationTimestamp ),
+%        class_Traceable:send_safe( alert, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -502,10 +504,10 @@
 % variable named 'State'.
 %
 %-define( alert_fmt_full( Message, FormatValues, MessageCategorization,
-%						 ApplicationTimestamp ),
-%		 class_Traceable:send_safe( alert, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization, ApplicationTimestamp )
+%                        ApplicationTimestamp ),
+%        class_Traceable:send_safe( alert, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -526,7 +528,7 @@
 % state.
 %
 -define( send_critical( State, Message ),
-		 class_Traceable:send_safe( critical, State, Message )
+         class_Traceable:send_safe( critical, State, Message )
 ).
 
 
@@ -535,7 +537,7 @@
 % a variable named 'State'.
 %
 -define( critical( Message ),
-		 class_Traceable:send_safe( critical, State, Message )
+         class_Traceable:send_safe( critical, State, Message )
 ).
 
 
@@ -549,8 +551,8 @@
 % state.
 %
 %-define( send_critical_cat( State, Message, MessageCategorization ),
-%		 class_Traceable:send_safe( critical, State, Message,
-%									MessageCategorization )
+%        class_Traceable:send_safe( critical, State, Message,
+%                                   MessageCategorization )
 %).
 
 
@@ -559,8 +561,8 @@
 % a variable named 'State'.
 %
 %-define( critical_cat( Message, MessageCategorization ),
-%		 class_Traceable:send_safe( critical, State, Message,
-%									MessageCategorization )
+%        class_Traceable:send_safe( critical, State, Message,
+%                                   MessageCategorization )
 %).
 
 
@@ -575,9 +577,9 @@
 % state.
 %
 %-define( send_critical_full( State, Message, MessageCategorization,
-%							 ApplicationTimestamp ),
-%		 class_Traceable:send_safe( critical, State, Message,
-%			MessageCategorization, ApplicationTimestamp )
+%                            ApplicationTimestamp ),
+%        class_Traceable:send_safe( critical, State, Message,
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -586,8 +588,8 @@
 % a variable named 'State'.
 %
 %-define( critical_full( Message, MessageCategorization, ApplicationTimestamp ),
-%		 class_Traceable:send_safe( critical, State, Message,
-%			MessageCategorization, ApplicationTimestamp )
+%        class_Traceable:send_safe( critical, State, Message,
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -603,8 +605,8 @@
 % parameters and an explicit state.
 %
 -define( send_critical_fmt( State, Message, FormatValues ),
-		 class_Traceable:send_safe( critical, State,
-			text_utils:format( Message, FormatValues ) )
+         class_Traceable:send_safe( critical, State,
+            text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -612,8 +614,8 @@
 % state, with no console echo (message just recorded in the traces).
 %
 %-define( send_critical_no_echo_fmt( State, Message, FormatValues ),
-%		 class_Traceable:send_synchronised( critical, State,
-%			text_utils:format( Message, FormatValues ) )
+%        class_Traceable:send_synchronised( critical, State,
+%           text_utils:format( Message, FormatValues ) )
 %).
 
 
@@ -622,8 +624,8 @@
 % parameters and implicit use of a variable named 'State'.
 %
 -define( critical_fmt( Message, FormatValues ),
-		 class_Traceable:send_safe( critical, State,
-			text_utils:format( Message, FormatValues ) )
+         class_Traceable:send_safe( critical, State,
+            text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -632,8 +634,8 @@
 % traces).
 %
 %-define( critical_no_echo_fmt( Message, FormatValues ),
-%		 class_Traceable:send_synchronised( critical, State,
-%			text_utils:format( Message, FormatValues ) )
+%        class_Traceable:send_synchronised( critical, State,
+%           text_utils:format( Message, FormatValues ) )
 %).
 
 
@@ -646,9 +648,9 @@
 % state.
 %
 %-define( send_critical_fmt_cat( State, Message, FormatValues,
-%								MessageCategorization ),
-%		 class_Traceable:send_safe( critical, State,
-%			text_utils:format( Message, FormatValues ), MessageCategorization )
+%                               MessageCategorization ),
+%        class_Traceable:send_safe( critical, State,
+%           text_utils:format( Message, FormatValues ), MessageCategorization )
 %).
 
 
@@ -657,8 +659,8 @@
 % a variable named 'State'.
 %
 %-define( critical_fmt_cat( Message, FormatValues, MessageCategorization ),
-%		 class_Traceable:send_safe( critical, State,
-%			text_utils:format( Message, FormatValues ), MessageCategorization )
+%        class_Traceable:send_safe( critical, State,
+%           text_utils:format( Message, FormatValues ), MessageCategorization )
 %).
 
 
@@ -672,10 +674,10 @@
 % state.
 %
 %-define( send_critical_fmt_full( State, Message, FormatValues,
-%								  MessageCategorization, ApplicationTimestamp ),
-%		 class_Traceable:send_safe( critical, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization, ApplicationTimestamp )
+%                                 MessageCategorization, ApplicationTimestamp ),
+%        class_Traceable:send_safe( critical, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -684,10 +686,10 @@
 % a variable named 'State'.
 %
 %-define( critical_fmt_full( Message, FormatValues, MessageCategorization,
-%							 ApplicationTimestamp ),
-%		 class_Traceable:send_safe( critical, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization, ApplicationTimestamp )
+%                            ApplicationTimestamp ),
+%        class_Traceable:send_safe( critical, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -706,7 +708,7 @@
 
 % Sends a trace of 'error' type with specified parameters and an explicit state.
 -define( send_error( State, Message ),
-		 class_Traceable:send_safe( error, State, Message )
+         class_Traceable:send_safe( error, State, Message )
 ).
 
 
@@ -715,7 +717,7 @@
 % variable named 'State'.
 %
 -define( error( Message ),
-		 class_Traceable:send_safe( error, State, Message )
+         class_Traceable:send_safe( error, State, Message )
 ).
 
 
@@ -724,7 +726,7 @@
 % traces).
 %
 %-define( error_no_echo_fmt( Message ),
-%		 class_Traceable:send_synchronised( error, State, Message ) )
+%        class_Traceable:send_synchronised( error, State, Message ) )
 %).
 
 
@@ -734,8 +736,8 @@
 
 % Sends a trace of 'error' type with specified parameters and an explicit state.
 %-define( send_error_cat( State, Message, MessageCategorization ),
-%		 class_Traceable:send_safe( error, State,
-%			text_utils:format( Message, FormatValues ), MessageCategorization )
+%        class_Traceable:send_safe( error, State,
+%           text_utils:format( Message, FormatValues ), MessageCategorization )
 %).
 
 
@@ -744,8 +746,8 @@
 % variable named 'State'.
 %
 %-define( error_cat( Message, MessageCategorization ),
-%		 class_Traceable:send_safe( error, State, Message,
-%									MessageCategorization )
+%        class_Traceable:send_safe( error, State, Message,
+%                                   MessageCategorization )
 %).
 
 
@@ -757,9 +759,9 @@
 
 % Sends a trace of 'error' type with specified parameters and an explicit state.
 %-define( send_error_full( State, Message, MessageCategorization,
-%						   ApplicationTimestamp ),
-%		 class_Traceable:send_safe( error, State, Message,
-%			MessageCategorization, ApplicationTimestamp )
+%                          ApplicationTimestamp ),
+%        class_Traceable:send_safe( error, State, Message,
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -768,8 +770,8 @@
 % variable named 'State'.
 %
 %-define( error_full( Message, MessageCategorization, ApplicationTimestamp ),
-%		 class_Traceable:send_safe( error, State, Message,
-%			MessageCategorization, ApplicationTimestamp )
+%        class_Traceable:send_safe( error, State, Message,
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -785,8 +787,8 @@
 % parameters and an explicit state.
 %
 -define( send_error_fmt( State, Message, FormatValues ),
-		 class_Traceable:send_safe( error, State,
-			text_utils:format( Message, FormatValues ) )
+         class_Traceable:send_safe( error, State,
+            text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -795,8 +797,8 @@
 % traces).
 %
 %-define( send_error_no_echo_fmt( State, Message, FormatValues ),
-%		 class_Traceable:send_synchronised( error, State,
-%			text_utils:format( Message, FormatValues ) )
+%        class_Traceable:send_synchronised( error, State,
+%           text_utils:format( Message, FormatValues ) )
 %).
 
 
@@ -805,8 +807,8 @@
 % parameters and implicit use of a variable named 'State'.
 %
 -define( error_fmt( Message, FormatValues ),
-		 class_Traceable:send_safe( error, State,
-			text_utils:format( Message, FormatValues ) )
+         class_Traceable:send_safe( error, State,
+            text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -815,8 +817,8 @@
 % traces).
 %
 %-define( error_no_echo_fmt( Message, FormatValues ),
-%		 class_Traceable:send_synchronised( error, State,
-%			text_utils:format( Message, FormatValues ) )
+%        class_Traceable:send_synchronised( error, State,
+%           text_utils:format( Message, FormatValues ) )
 %).
 
 
@@ -827,10 +829,10 @@
 
 % Sends a trace of 'error' type with specified parameters and an explicit state.
 %-define( send_error_fmt_cat( State, Message, FormatValues,
-%							 MessageCategorization ),
-%		 class_Traceable:send_safe( error, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization )
+%                            MessageCategorization ),
+%        class_Traceable:send_safe( error, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization )
 %).
 
 
@@ -839,9 +841,9 @@
 % variable named 'State'.
 %
 %-define( error_fmt_cat( Message, FormatValues, MessageCategorization ),
-%		 class_Traceable:send_safe( error, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization )
+%        class_Traceable:send_safe( error, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization )
 %).
 
 
@@ -855,10 +857,10 @@
 
 % Sends a trace of 'error' type with specified parameters and an explicit state.
 %-define( send_error_fmt_full( State, Message, FormatValues,
-%							   MessageCategorization, ApplicationTimestamp ),
-%		 class_Traceable:send_safe( error, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization, ApplicationTimestamp )
+%                              MessageCategorization, ApplicationTimestamp ),
+%        class_Traceable:send_safe( error, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -867,10 +869,10 @@
 % variable named 'State'.
 %
 %-define( error_fmt_full( Message, FormatValues, MessageCategorization,
-%						  ApplicationTimestamp ),
-%		 class_Traceable:send_safe( error, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization, ApplicationTimestamp )
+%                         ApplicationTimestamp ),
+%        class_Traceable:send_safe( error, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -901,12 +903,12 @@
 % Unused now:
 %-define( display_warning( Message ),
 %
-%		 trace_utils:warning( Message ),
+%        trace_utils:warning( Message ),
 %
-%		 % To ensure the asynchronous sending of the trace has a chance to
-%		 % complete, possibly before the interpreter is crashed:
-%		 %
-%		 class_Traceable:await_output_completion()
+%        % To ensure the asynchronous sending of the trace has a chance to
+%        % complete, possibly before the interpreter is crashed:
+%        %
+%        class_Traceable:await_output_completion()
 %
 %).
 
@@ -914,12 +916,12 @@
 % Unused now:
 %-define( display_warning_fmt( Message, FormatValues ),
 %
-%		 trace_utils:warning_fmt( Message, FormatValues ),
+%        trace_utils:warning_fmt( Message, FormatValues ),
 %
-%		 % To ensure the asynchronous sending of the trace has a chance to
-%		 % complete, possibly before the interpreter is crashed:
-%		 %
-%		 class_Traceable:await_output_completion()
+%        % To ensure the asynchronous sending of the trace has a chance to
+%        % complete, possibly before the interpreter is crashed:
+%        %
+%        class_Traceable:await_output_completion()
 %
 %).
 
@@ -928,12 +930,12 @@
 % Alternate (default) implementation:
 
 %% -define( display_warning( Message ),
-%%	ok
+%%  ok
 %% ).
 
 
 %% -define( display_warning_fmt( Message, FormatValues ),
-%%	ok
+%%  ok
 %% ).
 
 
@@ -946,7 +948,7 @@
 % state.
 %
 -define( send_warning( State, Message ),
-		 class_Traceable:send_safe( warning, State, Message )
+         class_Traceable:send_safe( warning, State, Message )
 ).
 
 
@@ -955,7 +957,7 @@
 % a variable named 'State'.
 %
 -define( warning( Message ),
-		 class_Traceable:send_safe( warning, State, Message )
+         class_Traceable:send_safe( warning, State, Message )
 ).
 
 
@@ -971,8 +973,8 @@
 % state.
 %
 %-define( send_warning_cat( State, Message, MessageCategorization ),
-%		 class_Traceable:send_safe( warning, State, Message,
-%									MessageCategorization )
+%        class_Traceable:send_safe( warning, State, Message,
+%                                   MessageCategorization )
 %).
 
 
@@ -981,8 +983,8 @@
 % a variable named 'State'.
 %
 %-define( warning_cat( Message, MessageCategorization ),
-%		 class_Traceable:send_safe( warning, State, Message,
-%									   MessageCategorization )
+%        class_Traceable:send_safe( warning, State, Message,
+%                                      MessageCategorization )
 %).
 
 
@@ -997,9 +999,9 @@
 % state.
 %
 %-define( send_warning_full( State, Message, MessageCategorization,
-%							ApplicationTimestamp ),
-%		 class_Traceable:send_safe( warning, State, Message,
-%								  MessageCategorization, ApplicationTimestamp )
+%                           ApplicationTimestamp ),
+%        class_Traceable:send_safe( warning, State, Message,
+%                                 MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -1008,8 +1010,8 @@
 % a variable named 'State'.
 %
 %-define( warning_full( Message, MessageCategorization, ApplicationTimestamp ),
-%		 class_Traceable:send_safe( warning, State, Message,
-%			MessageCategorization, ApplicationTimestamp )
+%        class_Traceable:send_safe( warning, State, Message,
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -1030,8 +1032,8 @@
 % parameters and an explicit state.
 %
 -define( send_warning_fmt( State, Message, FormatValues ),
-		 class_Traceable:send_safe( warning, State,
-			text_utils:format( Message, FormatValues ) )
+         class_Traceable:send_safe( warning, State,
+            text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -1039,8 +1041,8 @@
 % state, with no console echo (message just recorded in the traces).
 %
 %-define( send_warning_no_echo_fmt( State, Message, FormatValues ),
-%		 class_Traceable:send_synchronised( warning, State,
-%			text_utils:format( Message, FormatValues ) )
+%        class_Traceable:send_synchronised( warning, State,
+%           text_utils:format( Message, FormatValues ) )
 %).
 
 
@@ -1049,8 +1051,8 @@
 % parameters and implicit use of a variable named 'State'.
 %
 -define( warning_fmt( Message, FormatValues ),
-		 class_Traceable:send_safe( warning, State,
-			text_utils:format( Message, FormatValues ) )
+         class_Traceable:send_safe( warning, State,
+            text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -1059,8 +1061,8 @@
 % traces).
 %
 %-define( warning_no_echo_fmt( Message, FormatValues ),
-%		 class_Traceable:send_synchronised( warning, State,
-%			text_utils:format( Message, FormatValues ) )
+%        class_Traceable:send_synchronised( warning, State,
+%           text_utils:format( Message, FormatValues ) )
 %).
 
 
@@ -1072,9 +1074,9 @@
 % state.
 %
 %-define( send_warning_fmt_cat( State, Message, FormatValues,
-%							   MessageCategorization ),
-%		 class_Traceable:send_safe( warning, State,
-%			text_utils:format( Message, FormatValues ), MessageCategorization )
+%                              MessageCategorization ),
+%        class_Traceable:send_safe( warning, State,
+%           text_utils:format( Message, FormatValues ), MessageCategorization )
 %).
 
 
@@ -1083,9 +1085,9 @@
 % a variable named 'State'.
 %
 %-define( warning_fmt_cat( Message, FormatValues, MessageCategorization ),
-%		 class_Traceable:send_safe( warning, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization )
+%        class_Traceable:send_safe( warning, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization )
 %).
 
 
@@ -1100,10 +1102,10 @@
 % state.
 %
 %-define( send_warning_fmt_full( State, Message, FormatValues,
-%								MessageCategorization, ApplicationTimestamp ),
-%		 class_Traceable:send_safe( warning, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization, ApplicationTimestamp )
+%                               MessageCategorization, ApplicationTimestamp ),
+%        class_Traceable:send_safe( warning, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -1112,10 +1114,10 @@
 % a variable named 'State'.
 %
 %-define( warning_fmt_full( Message, FormatValues, MessageCategorization,
-%						   ApplicationTimestamp ),
-%		 class_Traceable:send_safe( warning, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization, ApplicationTimestamp )
+%                          ApplicationTimestamp ),
+%        class_Traceable:send_safe( warning, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -1213,7 +1215,7 @@
 % state.
 %
 -define( send_notice( State, Message ),
-		 class_Traceable:send( notice, State, Message )
+         class_Traceable:send( notice, State, Message )
 ).
 
 
@@ -1222,7 +1224,7 @@
 % a variable named 'State'.
 %
 -define( notice( Message ),
-		 class_Traceable:send( notice, State, Message )
+         class_Traceable:send( notice, State, Message )
 ).
 
 
@@ -1236,8 +1238,8 @@
 % state.
 %
 %-define( send_notice_cat( State, Message, MessageCategorization ),
-%		 class_Traceable:send( notice, State, Message,
-%							   MessageCategorization )
+%        class_Traceable:send( notice, State, Message,
+%                              MessageCategorization )
 %).
 
 
@@ -1246,8 +1248,8 @@
 % a variable named 'State'.
 %
 %-define( notice_cat( Message, MessageCategorization ),
-%		 class_Traceable:send( notice, State, Message,
-%							   MessageCategorization )
+%        class_Traceable:send( notice, State, Message,
+%                              MessageCategorization )
 %).
 
 
@@ -1262,9 +1264,9 @@
 % state.
 %
 %-define( send_notice_full( State, Message, MessageCategorization,
-%						   ApplicationTimestamp ),
-%		 class_Traceable:send( notice, State, Message,
-%							   MessageCategorization, ApplicationTimestamp )
+%                          ApplicationTimestamp ),
+%        class_Traceable:send( notice, State, Message,
+%                              MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -1273,8 +1275,8 @@
 % a variable named 'State'.
 %
 %-define( notice_full( Message, MessageCategorization, ApplicationTimestamp ),
-%		 class_Traceable:send( notice, State, Message,
-%							   MessageCategorization, ApplicationTimestamp )
+%        class_Traceable:send( notice, State, Message,
+%                              MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -1292,8 +1294,8 @@
 % state.
 %
 -define( send_notice_fmt( State, Message, FormatValues ),
-		 class_Traceable:send( notice, State,
-							   text_utils:format( Message, FormatValues ) )
+         class_Traceable:send( notice, State,
+                               text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -1302,8 +1304,8 @@
 % variable named 'State'.
 %
 -define( notice_fmt( Message, FormatValues ),
-		 class_Traceable:send( notice, State,
-							   text_utils:format( Message, FormatValues ) )
+         class_Traceable:send( notice, State,
+                               text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -1317,10 +1319,10 @@
 % state.
 %
 %-define( send_notice_fmt_cat( State, Message, FormatValues,
-%							  MessageCategorization ),
-%		 class_Traceable:send( notice, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization )
+%                             MessageCategorization ),
+%        class_Traceable:send( notice, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization )
 %).
 
 
@@ -1328,9 +1330,9 @@
 % variable named 'State'.
 %
 %-define( notice_fmt_cat( Message, FormatValues, MessageCategorization ),
-%		 class_Traceable:send( notice, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization )
+%        class_Traceable:send( notice, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization )
 %).
 
 
@@ -1346,10 +1348,10 @@
 % state.
 %
 %-define( send_notice_fmt_full( State, Message, FormatValues,
-%							   MessageCategorization, ApplicationTimestamp ),
-%		 class_Traceable:send( notice, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization, ApplicationTimestamp )
+%                              MessageCategorization, ApplicationTimestamp ),
+%        class_Traceable:send( notice, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -1358,10 +1360,10 @@
 % variable named 'State'.
 %
 %-define( notice_fmt_full( Message, FormatValues, MessageCategorization,
-%						  ApplicationTimestamp ),
-%		 class_Traceable:send( notice, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization, ApplicationTimestamp )
+%                         ApplicationTimestamp ),
+%        class_Traceable:send( notice, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization, ApplicationTimestamp )
 % ).
 
 
@@ -1383,7 +1385,7 @@
 % state.
 %
 -define( send_info( State, Message ),
-		 class_Traceable:send( info, State, Message )
+         class_Traceable:send( info, State, Message )
 ).
 
 
@@ -1392,7 +1394,7 @@
 % a variable named 'State'.
 %
 -define( info( Message ),
-		 class_Traceable:send( info, State, Message )
+         class_Traceable:send( info, State, Message )
 ).
 
 
@@ -1406,8 +1408,8 @@
 % state.
 %
 %-define( send_info_cat( State, Message, MessageCategorization ),
-%		 class_Traceable:send( info, State, Message,
-%							   MessageCategorization )
+%        class_Traceable:send( info, State, Message,
+%                              MessageCategorization )
 %).
 
 
@@ -1416,8 +1418,8 @@
 % a variable named 'State'.
 %
 %-define( info_cat( Message, MessageCategorization ),
-%		 class_Traceable:send( info, State, Message,
-%							   MessageCategorization )
+%        class_Traceable:send( info, State, Message,
+%                              MessageCategorization )
 %).
 
 
@@ -1432,9 +1434,9 @@
 % state.
 %
 %-define( send_info_full( State, Message, MessageCategorization,
-%						 ApplicationTimestamp ),
-%		 class_Traceable:send( info, State, Message,
-%							   MessageCategorization, ApplicationTimestamp )
+%                        ApplicationTimestamp ),
+%        class_Traceable:send( info, State, Message,
+%                              MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -1443,8 +1445,8 @@
 % a variable named 'State'.
 %
 %-define( info_full( Message, MessageCategorization, ApplicationTimestamp ),
-%		 class_Traceable:send( info, State, Message,
-%							   MessageCategorization, ApplicationTimestamp )
+%        class_Traceable:send( info, State, Message,
+%                              MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -1461,8 +1463,8 @@
 % Sends a trace of 'info' type with specified parameters and an explicit state.
 %
 -define( send_info_fmt( State, Message, FormatValues ),
-		 class_Traceable:send( info, State,
-							   text_utils:format( Message, FormatValues ) )
+         class_Traceable:send( info, State,
+                               text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -1471,8 +1473,8 @@
 % variable named 'State'.
 %
 -define( info_fmt( Message, FormatValues ),
-		 class_Traceable:send( info, State,
-							   text_utils:format( Message, FormatValues ) )
+         class_Traceable:send( info, State,
+                               text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -1485,10 +1487,10 @@
 % Sends a trace of 'info' type with specified parameters and an explicit state.
 %
 %-define( send_info_fmt_cat( State, Message, FormatValues,
-%							MessageCategorization ),
-%		 class_Traceable:send( info, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization )
+%                           MessageCategorization ),
+%        class_Traceable:send( info, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization )
 %).
 
 
@@ -1496,9 +1498,9 @@
 % variable named 'State'.
 %
 %-define( info_fmt_cat( Message, FormatValues, MessageCategorization ),
-%		 class_Traceable:send( info, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization )
+%        class_Traceable:send( info, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization )
 %).
 
 
@@ -1513,10 +1515,10 @@
 % Sends a trace of 'info' type with specified parameters and an explicit state.
 %
 %-define( send_info_fmt_full( State, Message, FormatValues,
-%							 MessageCategorization, ApplicationTimestamp ),
-%		 class_Traceable:send( info, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization, ApplicationTimestamp )
+%                            MessageCategorization, ApplicationTimestamp ),
+%        class_Traceable:send( info, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -1525,10 +1527,10 @@
 % variable named 'State'.
 %
 %-define( info_fmt_full( Message, FormatValues, MessageCategorization,
-%						ApplicationTimestamp ),
-%		 class_Traceable:send( info, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization, ApplicationTimestamp )
+%                       ApplicationTimestamp ),
+%        class_Traceable:send( info, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -1550,7 +1552,7 @@
 % state.
 %
 -define( send_debug( State, Message ),
-		 class_Traceable:send( debug, State, Message )
+         class_Traceable:send( debug, State, Message )
 ).
 
 
@@ -1559,7 +1561,7 @@
 % a variable named 'State'.
 %
 -define( debug( Message ),
-		 class_Traceable:send( debug, State, Message )
+         class_Traceable:send( debug, State, Message )
 ).
 
 
@@ -1572,8 +1574,8 @@
 % state.
 %
 %-define( send_debug_cat( State, Message, MessageCategorization ),
-%		 class_Traceable:send( debug, State, Message,
-%							   MessageCategorization )
+%        class_Traceable:send( debug, State, Message,
+%                              MessageCategorization )
 %).
 
 
@@ -1582,8 +1584,8 @@
 % a variable named 'State'.
 %
 %-define( debug_cat( Message, MessageCategorization ),
-%		 class_Traceable:send( debug, State, Message,
-%							   MessageCategorization )
+%        class_Traceable:send( debug, State, Message,
+%                              MessageCategorization )
 %).
 
 
@@ -1599,9 +1601,9 @@
 % state.
 %
 -define( send_debug_full( State, Message, MessageCategorization,
-						  ApplicationTimestamp ),
-		 class_Traceable:send( debug, State, Message,
-							   MessageCategorization, ApplicationTimestamp )
+                          ApplicationTimestamp ),
+         class_Traceable:send( debug, State, Message,
+                               MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -1610,8 +1612,8 @@
 % a variable named 'State'.
 %
 %-define( debug_full( Message, MessageCategorization, ApplicationTimestamp ),
-%		 class_Traceable:send( debug, State, Message,
-%								  MessageCategorization, ApplicationTimestamp )
+%        class_Traceable:send( debug, State, Message,
+%                                 MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -1628,8 +1630,8 @@
 % state.
 %
 -define( send_debug_fmt( State, Message, FormatValues ),
-		 class_Traceable:send( debug, State,
-							   text_utils:format( Message, FormatValues ) )
+         class_Traceable:send( debug, State,
+                               text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -1638,8 +1640,8 @@
 % a variable named 'State'.
 %
 -define( debug_fmt( Message, FormatValues ),
-		 class_Traceable:send( debug, State,
-							   text_utils:format( Message, FormatValues ) )
+         class_Traceable:send( debug, State,
+                               text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -1653,10 +1655,10 @@
 % state.
 %
 %-define( send_debug_fmt_cat( State, Message, FormatValues,
-%							 MessageCategorization ),
-%		 class_Traceable:send( debug, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization )
+%                            MessageCategorization ),
+%        class_Traceable:send( debug, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization )
 %).
 
 
@@ -1664,9 +1666,9 @@
 % a variable named 'State'.
 %
 %-define( debug_fmt_cat( Message, FormatValues, MessageCategorization ),
-%		 class_Traceable:send( debug, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization )
+%        class_Traceable:send( debug, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization )
 %).
 
 
@@ -1681,10 +1683,10 @@
 % state.
 %
 -define( send_debug_fmt_full( State, Message, FormatValues,
-							  MessageCategorization, ApplicationTimestamp ),
-		 class_Traceable:send( debug, State,
-			text_utils:format( Message, FormatValues ),
-			MessageCategorization, ApplicationTimestamp )
+                              MessageCategorization, ApplicationTimestamp ),
+         class_Traceable:send( debug, State,
+            text_utils:format( Message, FormatValues ),
+            MessageCategorization, ApplicationTimestamp )
 ).
 
 
@@ -1693,10 +1695,10 @@
 % a variable named 'State'.
 %
 %-define( debug_fmt_full( Message, FormatValues, MessageCategorization,
-%						 ApplicationTimestamp ),
-%		 class_Traceable:send( debug, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization, ApplicationTimestamp )
+%                        ApplicationTimestamp ),
+%        class_Traceable:send( debug, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -1802,12 +1804,12 @@
 % Most important trace categories cannot be disabled:
 
 -define( send_notice( State, Message ),
-		 trace_disabled( State, Message )
+         trace_disabled( State, Message )
 ).
 
 
 -define( notice( Message ),
-		 trace_disabled( State, Message )
+         trace_disabled( State, Message )
 ).
 
 
@@ -1815,26 +1817,26 @@
 
 
 %-define( send_notice_cat( State, Message, MessageCategorization ),
-%		 trace_disabled( State, Message, MessageCategorization )
+%        trace_disabled( State, Message, MessageCategorization )
 %).
 
 
 %-define( notice_cat( Message, MessageCategorization ),
-%		 trace_disabled( State, Message, MessageCategorization )
+%        trace_disabled( State, Message, MessageCategorization )
 %).
 
 
 
 %-define( send_notice_full( State, Message, MessageCategorization,
-%						   ApplicationTimestamp ),
-%		 trace_disabled( State, Message, MessageCategorization,
-%						 ApplicationTimestamp )
+%                          ApplicationTimestamp ),
+%        trace_disabled( State, Message, MessageCategorization,
+%                        ApplicationTimestamp )
 %).
 
 
 %-define( notice_full( Message, MessageCategorization, ApplicationTimestamp ),
-%		 trace_disabled( State, Message, MessageCategorization,
-%						 ApplicationTimestamp )
+%        trace_disabled( State, Message, MessageCategorization,
+%                        ApplicationTimestamp )
 %).
 
 
@@ -1844,12 +1846,12 @@
 
 
 -define( send_notice_fmt( State, Message, FormatValues ),
-		 trace_disabled( State, Message, FormatValues )
+         trace_disabled( State, Message, FormatValues )
 ).
 
 
 -define( notice_fmt( Message, FormatValues ),
-		 trace_disabled( State, Message, FormatValues )
+         trace_disabled( State, Message, FormatValues )
 ).
 
 
@@ -1857,14 +1859,14 @@
 
 
 %-define( send_notice_fmt_cat( State, Message, FormatValues,
-%							  MessageCategorization ),
-%		 trace_disabled( State, Message, FormatValues,
-%						 MessageCategorization )
+%                             MessageCategorization ),
+%        trace_disabled( State, Message, FormatValues,
+%                        MessageCategorization )
 %).
 
 
 %-define( notice_fmt_cat( Message, FormatValues, MessageCategorization ),
-%		 trace_disabled( State, Message, FormatValues, MessageCategorization )
+%        trace_disabled( State, Message, FormatValues, MessageCategorization )
 %).
 
 
@@ -1873,16 +1875,16 @@
 
 
 %-define( send_notice_fmt_full( State, Message, FormatValues,
-%							   MessageCategorization, ApplicationTimestamp ),
-%		 trace_disabled( State, Message, FormatValues,
-%						 MessageCategorization, ApplicationTimestamp )
+%                              MessageCategorization, ApplicationTimestamp ),
+%        trace_disabled( State, Message, FormatValues,
+%                        MessageCategorization, ApplicationTimestamp )
 %).
 
 
 %-define( notice_fmt_full( Message, FormatValues, MessageCategorization,
-%						  ApplicationTimestamp ),
-%		 trace_disabled( State, Message, FormatValues, MessageCategorization,
-%						 ApplicationTimestamp )
+%                         ApplicationTimestamp ),
+%        trace_disabled( State, Message, FormatValues, MessageCategorization,
+%                        ApplicationTimestamp )
 %).
 
 
@@ -1901,38 +1903,38 @@
 % Most important trace categories cannot be disabled:
 
 -define( send_info( State, Message ),
-		 trace_disabled( State, Message )
+         trace_disabled( State, Message )
 ).
 
 
 -define( info( Message ),
-		 trace_disabled( State, Message )
+         trace_disabled( State, Message )
 ).
 
 
 
 
 %-define( send_info_cat( State, Message, MessageCategorization ),
-%		 trace_disabled( State, Message, MessageCategorization )
+%        trace_disabled( State, Message, MessageCategorization )
 %).
 
 
 %-define( info_cat( Message, MessageCategorization ),
-%		 trace_disabled( State, Message, MessageCategorization )
+%        trace_disabled( State, Message, MessageCategorization )
 %).
 
 
 
 %-define( send_info_full( State, Message, MessageCategorization,
-%						 ApplicationTimestamp ),
-%		 trace_disabled( State, Message, MessageCategorization,
-%						 ApplicationTimestamp )
+%                        ApplicationTimestamp ),
+%        trace_disabled( State, Message, MessageCategorization,
+%                        ApplicationTimestamp )
 %).
 
 
 %-define( info_full( Message, MessageCategorization, ApplicationTimestamp ),
-%		 trace_disabled( State, Message, MessageCategorization,
-%						 ApplicationTimestamp )
+%        trace_disabled( State, Message, MessageCategorization,
+%                        ApplicationTimestamp )
 %).
 
 
@@ -1942,25 +1944,25 @@
 
 
 -define( send_info_fmt( State, Message, FormatValues ),
-		 trace_disabled( State, Message, FormatValues )
+         trace_disabled( State, Message, FormatValues )
 ).
 
 
 -define( info_fmt( Message, FormatValues ),
-		 trace_disabled( State, Message, FormatValues )
+         trace_disabled( State, Message, FormatValues )
 ).
 
 
 
 %-define( send_info_fmt_cat( State, Message, FormatValues,
-%							MessageCategorization ),
-%		 trace_disabled( State, Message, FormatValues,
-%						 MessageCategorization )
+%                           MessageCategorization ),
+%        trace_disabled( State, Message, FormatValues,
+%                        MessageCategorization )
 %).
 
 
 %-define( info_fmt_cat( Message, FormatValues, MessageCategorization ),
-%		 trace_disabled( State, Message, FormatValues, MessageCategorization )
+%        trace_disabled( State, Message, FormatValues, MessageCategorization )
 %).
 
 
@@ -1969,16 +1971,16 @@
 
 
 %-define( send_info_fmt_full( State, Message, FormatValues,
-%							 MessageCategorization, ApplicationTimestamp ),
-%		 trace_disabled( State, Message, FormatValues,
-%						 MessageCategorization, ApplicationTimestamp )
+%                            MessageCategorization, ApplicationTimestamp ),
+%        trace_disabled( State, Message, FormatValues,
+%                        MessageCategorization, ApplicationTimestamp )
 %).
 
 
 %-define( info_fmt_full( Message, FormatValues, MessageCategorization,
-%						ApplicationTimestamp ),
-%		 trace_disabled( State, Message, FormatValues, MessageCategorization,
-%						 ApplicationTimestamp )
+%                       ApplicationTimestamp ),
+%        trace_disabled( State, Message, FormatValues, MessageCategorization,
+%                        ApplicationTimestamp )
 %).
 
 
@@ -1999,12 +2001,12 @@
 % Most important debug categories cannot be disabled:
 
 -define( send_debug( State, Message ),
-		 trace_disabled( State, Message )
+         trace_disabled( State, Message )
 ).
 
 
 -define( debug( Message ),
-		 trace_disabled( State, Message )
+         trace_disabled( State, Message )
 ).
 
 
@@ -2013,12 +2015,12 @@
 
 
 %-define( send_debug_cat( State, Message, MessageCategorization ),
-%		  trace_disabled( State, Message, MessageCategorization )
+%         trace_disabled( State, Message, MessageCategorization )
 %).
 
 
 %-define( debug_cat( Message, MessageCategorization ),
-%		  trace_disabled( State, Message, MessageCategorization )
+%         trace_disabled( State, Message, MessageCategorization )
 %).
 
 
@@ -2026,15 +2028,15 @@
 
 
 %-define( send_debug_full( State, Message, MessageCategorization,
-%						  ApplicationTimestamp ),
-%		 trace_disabled( State, Message, MessageCategorization,
-%						 ApplicationTimestamp )
+%                         ApplicationTimestamp ),
+%        trace_disabled( State, Message, MessageCategorization,
+%                        ApplicationTimestamp )
 %).
 
 
 %-define( debug_full( Message, MessageCategorization, ApplicationTimestamp ),
-%		 trace_disabled( State, Message, MessageCategorization,
-%						 ApplicationTimestamp )
+%        trace_disabled( State, Message, MessageCategorization,
+%                        ApplicationTimestamp )
 %).
 
 
@@ -2048,12 +2050,12 @@
 
 
 -define( send_debug_fmt( State, Message, FormatValues ),
-		 trace_disabled( State, Message, FormatValues )
+         trace_disabled( State, Message, FormatValues )
 ).
 
 
 -define( debug_fmt( Message, FormatValues ),
-		 trace_disabled( State, Message, FormatValues )
+         trace_disabled( State, Message, FormatValues )
 ).
 
 
@@ -2061,14 +2063,14 @@
 
 
 %-define( send_debug_fmt_cat( State, Message, FormatValues,
-%							 MessageCategorization ),
-%		 trace_disabled( State, Message, FormatValues,
-%						 MessageCategorization )
+%                            MessageCategorization ),
+%        trace_disabled( State, Message, FormatValues,
+%                        MessageCategorization )
 %).
 
 
 %-define( debug_fmt_cat( Message, FormatValues, MessageCategorization ),
-%		 trace_disabled( State, Message, FormatValues, MessageCategorization )
+%        trace_disabled( State, Message, FormatValues, MessageCategorization )
 %).
 
 
@@ -2077,16 +2079,16 @@
 
 
 %-define( send_debug_fmt_full( State, Message, FormatValues,
-%							  MessageCategorization, ApplicationTimestamp ),
-%		 trace_disabled( State, Message, FormatValues,
-%							  MessageCategorization, ApplicationTimestamp )
+%                             MessageCategorization, ApplicationTimestamp ),
+%        trace_disabled( State, Message, FormatValues,
+%                             MessageCategorization, ApplicationTimestamp )
 %).
 
 
 %-define( debug_fmt_full( Message, FormatValues, MessageCategorization,
-%						 ApplicationTimestamp ),
-%		 trace_disabled( State, Message, FormatValues, MessageCategorization,
-%						 ApplicationTimestamp )
+%                        ApplicationTimestamp ),
+%        trace_disabled( State, Message, FormatValues, MessageCategorization,
+%                        ApplicationTimestamp )
 %).
 
 
@@ -2131,10 +2133,10 @@
 % (these functions cannot be omittted or exported)
 %
 -compile( [ { nowarn_unused_function, [ { trace_disabled, 1 },
-										{ trace_disabled, 2 },
-										{ trace_disabled, 3 },
-										{ trace_disabled, 4 },
-										{ trace_disabled, 5 } ] } ] ).
+                                        { trace_disabled, 2 },
+                                        { trace_disabled, 3 },
+                                        { trace_disabled, 4 },
+                                        { trace_disabled, 5 } ] } ] ).
 
 
 % We used to attempt a forced inlining of these pseudo-functions so that they
@@ -2147,7 +2149,7 @@
 % out by the compiler.
 %
 %-compile( {inline,[ trace_disabled/1, trace_disabled/2, trace_disabled/3,
-%					 trace_disabled/4, trace_disabled/5 ] } ).
+%                    trace_disabled/4, trace_disabled/5 ] } ).
 
 
 
@@ -2156,23 +2158,23 @@
 
 -spec trace_disabled( any() ) -> void().
 trace_disabled( _ ) ->
-	ok.
+    ok.
 
 -spec trace_disabled( any(), any() ) -> void().
 trace_disabled( _, _ ) ->
-	ok.
+    ok.
 
 -spec trace_disabled( any(), any(), any() ) -> void().
 trace_disabled( _, _, _ ) ->
-	ok.
+    ok.
 
 -spec trace_disabled( any(), any(), any(), any() ) -> void().
 trace_disabled( _, _, _, _ ) ->
-	ok.
+    ok.
 
 -spec trace_disabled( any(), any(), any(), any(), any() ) -> void().
 trace_disabled( _, _, _, _, _ ) ->
-	ok.
+    ok.
 
 
 
@@ -2199,7 +2201,7 @@ trace_disabled( _, _, _, _, _ ) ->
 % 'State'.
 %
 -define( report( Message ),
-		 class_Traceable:send_safe( info, State, Message )
+         class_Traceable:send_safe( info, State, Message )
 ).
 
 
@@ -2208,8 +2210,8 @@ trace_disabled( _, _, _, _, _ ) ->
 % 'State'.
 %
 -define( report_fmt( Message, FormatValues ),
-		 class_Traceable:send_safe( info, State,
-			text_utils:format( Message, FormatValues ) )
+         class_Traceable:send_safe( info, State,
+            text_utils:format( Message, FormatValues ) )
 ).
 
 
@@ -2222,8 +2224,8 @@ trace_disabled( _, _, _, _, _ ) ->
 % named 'State'.
 %
 %-define( report_cat( Message, MessageCategorization ),
-%		  class_Traceable:send_safe( info, State, Message,
-%									 MessageCategorization )
+%         class_Traceable:send_safe( info, State, Message,
+%                                    MessageCategorization )
 %).
 
 
@@ -2232,9 +2234,9 @@ trace_disabled( _, _, _, _, _ ) ->
 % named 'State'.
 %
 %-define( report_cat_fmt( Message, FormatValues, MessageCategorization ),
-%		  class_Traceable:send_safe( info, State,
-%			 text_utils:format( Message, FormatValues ),
-%			MessageCategorization )
+%         class_Traceable:send_safe( info, State,
+%            text_utils:format( Message, FormatValues ),
+%           MessageCategorization )
 %).
 
 
@@ -2248,9 +2250,9 @@ trace_disabled( _, _, _, _, _ ) ->
 % implicit use of a variable named 'State'.
 %
 %-define( report_full( State, Message, MessageCategorization,
-%					   ApplicationTimestamp ),
-%		 class_Traceable:send_safe( info, State, Message,
-%			MessageCategorization, ApplicationTimestamp )
+%                      ApplicationTimestamp ),
+%        class_Traceable:send_safe( info, State, Message,
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -2259,10 +2261,10 @@ trace_disabled( _, _, _, _, _ ) ->
 % implicit use of a variable named 'State'.
 %
 %-define( report_full_fmt( State, Message, FormatValues, MessageCategorization,
-%						   ApplicationTimestamp ),
-%		 class_Traceable:send_safe( info, State,
-%			text_utils:format( Message, FormatValues ),
-%			MessageCategorization, ApplicationTimestamp )
+%                          ApplicationTimestamp ),
+%        class_Traceable:send_safe( info, State,
+%           text_utils:format( Message, FormatValues ),
+%           MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -2283,7 +2285,7 @@ trace_disabled( _, _, _, _, _ ) ->
 % Sends a trace of 'void' type with specified parameters and an explicit state.
 %
 -define( send_void( State, Message ),
-		 trace_disabled( State, Message )
+         trace_disabled( State, Message )
 ).
 
 
@@ -2292,7 +2294,7 @@ trace_disabled( _, _, _, _, _ ) ->
 % variable named 'State'.
 %
 -define( void( Message ),
-		 trace_disabled( State, Message )
+         trace_disabled( State, Message )
 ).
 
 
@@ -2304,7 +2306,7 @@ trace_disabled( _, _, _, _, _ ) ->
 % Sends a trace of 'void' type with specified parameters and an explicit state.
 %
 %-define( send_void_cat( State, Message, MessageCategorization ),
-%		  trace_disabled( State, Message, MessageCategorization )
+%         trace_disabled( State, Message, MessageCategorization )
 %).
 
 
@@ -2313,7 +2315,7 @@ trace_disabled( _, _, _, _, _ ) ->
 % variable named 'State'.
 %
 %-define( void_cat( Message, MessageCategorization ),
-%		  trace_disabled( State, Message, MessageCategorization )
+%         trace_disabled( State, Message, MessageCategorization )
 %).
 
 
@@ -2328,9 +2330,9 @@ trace_disabled( _, _, _, _, _ ) ->
 % Sends a trace of 'void' type with specified parameters and an explicit state.
 %
 %-define( send_void_full( State, Message, MessageCategorization,
-%						  ApplicationTimestamp ),
-%		 trace_disabled( State, Message, MessageCategorization,
-%						  ApplicationTimestamp )
+%                         ApplicationTimestamp ),
+%        trace_disabled( State, Message, MessageCategorization,
+%                         ApplicationTimestamp )
 %).
 
 
@@ -2339,8 +2341,8 @@ trace_disabled( _, _, _, _, _ ) ->
 % variable named 'State'.
 %
 %-define( void_full( Message, MessageCategorization, ApplicationTimestamp ),
-%		 trace_disabled( State, Message, MessageCategorization,
-%						 ApplicationTimestamp )
+%        trace_disabled( State, Message, MessageCategorization,
+%                        ApplicationTimestamp )
 %).
 
 
@@ -2357,7 +2359,7 @@ trace_disabled( _, _, _, _, _ ) ->
 % state.
 %
 -define( send_void_fmt( State, Message, FormatValues ),
-		 trace_disabled( State, Message, FormatValues )
+         trace_disabled( State, Message, FormatValues )
 ).
 
 
@@ -2366,7 +2368,7 @@ trace_disabled( _, _, _, _, _ ) ->
 % variable named 'State'.
 %
 -define( void_fmt( Message, FormatValues ),
-		 trace_disabled( State, Message, FormatValues )
+         trace_disabled( State, Message, FormatValues )
 ).
 
 
@@ -2380,9 +2382,9 @@ trace_disabled( _, _, _, _, _ ) ->
 % state.
 %
 %-define( send_void_fmt_cat( State, Message, FormatValues,
-%							MessageCategorization ),
-%		 trace_disabled( State, Message, FormatValues,
-%						 MessageCategorization )
+%                           MessageCategorization ),
+%        trace_disabled( State, Message, FormatValues,
+%                        MessageCategorization )
 %).
 
 
@@ -2390,8 +2392,8 @@ trace_disabled( _, _, _, _, _ ) ->
 % variable named 'State'.
 %
 %-define( void_fmt_cat( Message, FormatValues, MessageCategorization ),
-%		 trace_disabled( State, Message, FormatValues,
-%						 MessageCategorization )
+%        trace_disabled( State, Message, FormatValues,
+%                        MessageCategorization )
 %).
 
 
@@ -2406,9 +2408,9 @@ trace_disabled( _, _, _, _, _ ) ->
 % state.
 %
 %-define( send_void_fmt_full( State, Message, FormatValues,
-%							 MessageCategorization, ApplicationTimestamp ),
-%		 trace_disabled( State, Message, FormatValues,
-%						 MessageCategorization, ApplicationTimestamp )
+%                            MessageCategorization, ApplicationTimestamp ),
+%        trace_disabled( State, Message, FormatValues,
+%                        MessageCategorization, ApplicationTimestamp )
 %).
 
 
@@ -2417,9 +2419,9 @@ trace_disabled( _, _, _, _, _ ) ->
 % variable named 'State'.
 %
 %-define( void_fmt_full( Message, FormatValues, MessageCategorization,
-%						 ApplicationTimestamp ),
-%		 trace_disabled( State, Message, FormatValues, MessageCategorization,
-%						 ApplicationTimestamp )
+%                        ApplicationTimestamp ),
+%        trace_disabled( State, Message, FormatValues, MessageCategorization,
+%                        ApplicationTimestamp )
 %).
 
 

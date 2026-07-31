@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -38,18 +38,18 @@ See also: for units, the `unit_utils` module.
 -export([ g/0, c/0, h/0, e/0, m_e/0, m_p/0, m_n/0, k_b/0, sigma/0]).
 
 -compile({ inline,
-		   [ g/0, c/0, h/0, e/0, m_e/0, m_p/0, m_n/0, k_b/0, sigma/0 ] }).
+           [ g/0, c/0, h/0, e/0, m_e/0, m_p/0, m_n/0, k_b/0, sigma/0 ] }).
 
 
 % Varied functions:
 -export([ get_lorentz_factor/1,
-		  get_gravitational_acceleration/2, get_escape_velocity/2,
-		  get_schwarzschild_radius/1, get_time_factor/2 ]).
+          get_gravitational_acceleration/2, get_escape_velocity/2,
+          get_schwarzschild_radius/1, get_time_factor/2 ]).
 
 
 % Examples:
 -export([ m_earth/0, m_sun/0, m_sagittarius_a_star/0,
-		  r_earth/0, r_sun/0 ]).
+          r_earth/0, r_sun/0 ]).
 
 
 
@@ -84,8 +84,8 @@ hole, and ~1 when infinitely far from it.
 -doc "``G``, the Newtonian constant of gravitation, in N.m^2.kg^−2.".
 -spec g() -> float().
 g() ->
-	% Best available precision is low, surprisingly:
-	6.67430e-11.
+    % Best available precision is low, surprisingly:
+    6.67430e-11.
 
 
 
@@ -102,8 +102,8 @@ Approximately 300,000 kilometres per second.
 """.
 -spec c() -> meters_per_second().
 c() ->
-	% Exact:
-	299792458.0.
+    % Exact:
+    299792458.0.
 
 
 
@@ -118,7 +118,7 @@ See <https://en.wikipedia.org/wiki/Planck_constant>.
 """.
 -spec h() -> float().
 h() ->
-	6.62607015e-34.
+    6.62607015e-34.
 
 
 
@@ -132,8 +132,8 @@ See <https://en.wikipedia.org/wiki/Elementary_charge>.
 """.
 -spec e() -> float().
 e() ->
-	% In Coulomb: 1.602176634e-19.
-	1.5189e-14.
+    % In Coulomb: 1.602176634e-19.
+    1.5189e-14.
 
 
 
@@ -146,7 +146,7 @@ See <https://en.wikipedia.org/wiki/Electron_mass>.
 """.
 -spec m_e() -> kilograms().
 m_e() ->
-	9.1093837015e-31.
+    9.1093837015e-31.
 
 
 
@@ -157,7 +157,7 @@ See <https://en.wikipedia.org/wiki/Proton>.
 """.
 -spec m_p() -> kilograms().
 m_p() ->
-	1.67262192369e-27.
+    1.67262192369e-27.
 
 
 
@@ -168,7 +168,7 @@ See <https://en.wikipedia.org/wiki/Neutron>.
 """.
 -spec m_n() -> kilograms().
 m_n() ->
-	1.67492749804e-27.
+    1.67492749804e-27.
 
 
 
@@ -182,8 +182,8 @@ See <https://en.wikipedia.org/wiki/Boltzmann_constant.>
 """.
 -spec k_b() -> float().
 k_b() ->
-	% Exactly:
-	1.380649e-23.
+    % Exactly:
+    1.380649e-23.
 
 
 
@@ -198,7 +198,7 @@ See <https://en.wikipedia.org/wiki/Stefan%E2%80%93Boltzmann_law>.
 """.
 -spec sigma() -> float().
 sigma() ->
-	5.670374419e-8.
+    5.670374419e-8.
 
 
 
@@ -219,7 +219,7 @@ See <https://en.wikipedia.org/wiki/Lorentz_factor>.
 """.
 -spec get_lorentz_factor( meters_per_second() ) -> factor().
 get_lorentz_factor( S ) ->
-	math:sqrt( 1 - math_utils:square( S / c() ) ).
+    math:sqrt( 1 - math_utils:square( S / c() ) ).
 
 
 
@@ -232,9 +232,9 @@ See <https://en.wikipedia.org/wiki/Escape_velocity>.
 """.
 
 -spec get_gravitational_acceleration( meters(), kilograms() ) ->
-		  meters_per_second().
+          meters_per_second().
 get_gravitational_acceleration( Distance, Mass ) ->
-	g() * Mass / math_utils:square( Distance ).
+    g() * Mass / math_utils:square( Distance ).
 
 
 
@@ -248,7 +248,7 @@ See <https://en.wikipedia.org/wiki/Escape_velocity>.
 """.
 -spec get_escape_velocity( meters(), kilograms() ) -> meters_per_second().
 get_escape_velocity( Distance, Mass ) ->
-	math:sqrt( 2 * g() * Mass / Distance ).
+    math:sqrt( 2 * g() * Mass / Distance ).
 
 
 
@@ -260,7 +260,7 @@ See <https://en.wikipedia.org/wiki/Schwarzschild_radius>.
 """.
 -spec get_schwarzschild_radius( kilograms() ) -> meters().
 get_schwarzschild_radius( Mass ) ->
-	2 * g() * Mass / math_utils:square( c() ).
+    2 * g() * Mass / math_utils:square( c() ).
 
 
 
@@ -277,9 +277,9 @@ See
 """.
 -spec get_time_factor( meters(), kilograms() ) -> time_factor().
 get_time_factor( Distance, Mass ) ->
-	SR = get_schwarzschild_radius( Mass ) ,
-	% Distance expected to be at least SR:
-	math:sqrt( 1 - SR / Distance ).
+    SR = get_schwarzschild_radius( Mass ) ,
+    % Distance expected to be at least SR:
+    math:sqrt( 1 - SR / Distance ).
 
 
 
@@ -298,7 +298,7 @@ See <https://en.wikipedia.org/wiki/Earth_mass>.
 """.
 -spec m_earth() -> kilograms().
 m_earth() ->
-	5.9722e24.
+    5.9722e24.
 
 
 
@@ -309,7 +309,7 @@ See <https://en.wikipedia.org/wiki/Solar_mass>.
 """.
 -spec m_sun() -> kilograms().
 m_sun() ->
-	1.98847e30.
+    1.98847e30.
 
 
 
@@ -322,7 +322,7 @@ See <https://en.wikipedia.org/wiki/Sagittarius_A*>.
 """.
 -spec m_sagittarius_a_star() -> kilograms().
 m_sagittarius_a_star() ->
-	8.26e36.
+    8.26e36.
 
 
 
@@ -336,7 +336,7 @@ See <https://en.wikipedia.org/wiki/Earth_radius>.
 """.
 -spec r_earth() -> meters().
 r_earth() ->
-	6.3781e6.
+    6.3781e6.
 
 
 
@@ -347,4 +347,4 @@ See <https://en.wikipedia.org/wiki/Sun_radius>.
 """.
 -spec r_sun() -> meters().
 r_sun() ->
-	6.957e8.
+    6.957e8.

@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 Olivier Boudeville
+% Copyright (C) 2016-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -42,62 +42,62 @@ See the list_utils.erl tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	% Testing set management:
+    % Testing set management:
 
-	EmptySet = set_utils:new(),
+    EmptySet = set_utils:new(),
 
-	true = set_utils:is_empty( EmptySet ),
-	0 = set_utils:size( EmptySet ),
+    true = set_utils:is_empty( EmptySet ),
+    0 = set_utils:size( EmptySet ),
 
-	test_facilities:display( "Empty: ~ts",
-							 [ set_utils:to_string( EmptySet ) ] ),
-
-
-	Singleton = set_utils:singleton( first ),
-
-	false = set_utils:is_empty( Singleton ),
-	1 = set_utils:size( Singleton ),
-
-	test_facilities:display( "Singleton: ~ts",
-							 [ set_utils:to_string( Singleton ) ] ),
+    test_facilities:display( "Empty: ~ts",
+                             [ set_utils:to_string( EmptySet ) ] ),
 
 
-	TwoElements = set_utils:add( second, Singleton ),
+    Singleton = set_utils:singleton( first ),
 
-	false = set_utils:is_empty( TwoElements ),
-	2 = set_utils:size( TwoElements ),
+    false = set_utils:is_empty( Singleton ),
+    1 = set_utils:size( Singleton ),
 
-	test_facilities:display( "Two elements: ~ts",
-							 [ set_utils:to_string( TwoElements ) ] ),
+    test_facilities:display( "Singleton: ~ts",
+                             [ set_utils:to_string( Singleton ) ] ),
 
 
-	% Expected stable (not a real set comparison):
-	TwoElements = set_utils:add_element_list( [], TwoElements ),
+    TwoElements = set_utils:add( second, Singleton ),
 
-	FourElements = set_utils:add_element_list( [ third, fourth ], TwoElements ),
+    false = set_utils:is_empty( TwoElements ),
+    2 = set_utils:size( TwoElements ),
 
-	false = set_utils:is_empty( FourElements ),
-	4 = set_utils:size( FourElements ),
+    test_facilities:display( "Two elements: ~ts",
+                             [ set_utils:to_string( TwoElements ) ] ),
 
-	test_facilities:display( "Four elements: ~ts",
-							 [ set_utils:to_string( FourElements ) ] ),
 
-	ThreeElements = set_utils:delete_existing( third, FourElements ),
+    % Expected stable (not a real set comparison):
+    TwoElements = set_utils:add_element_list( [], TwoElements ),
 
-	false = set_utils:is_empty( ThreeElements ),
-	3 = set_utils:size( ThreeElements ),
+    FourElements = set_utils:add_element_list( [ third, fourth ], TwoElements ),
 
-	test_facilities:display( "Three elements: ~ts",
-							 [ set_utils:to_string( ThreeElements ) ] ),
+    false = set_utils:is_empty( FourElements ),
+    4 = set_utils:size( FourElements ),
 
-	OtherTwoElements = set_utils:delete_existing( first, ThreeElements ),
+    test_facilities:display( "Four elements: ~ts",
+                             [ set_utils:to_string( FourElements ) ] ),
 
-	false = set_utils:is_empty( OtherTwoElements ),
-	2 = set_utils:size( OtherTwoElements ),
+    ThreeElements = set_utils:delete_existing( third, FourElements ),
 
-	test_facilities:display( "Other two elements: ~ts",
-							 [ set_utils:to_string( OtherTwoElements ) ] ),
+    false = set_utils:is_empty( ThreeElements ),
+    3 = set_utils:size( ThreeElements ),
 
-	test_facilities:stop().
+    test_facilities:display( "Three elements: ~ts",
+                             [ set_utils:to_string( ThreeElements ) ] ),
+
+    OtherTwoElements = set_utils:delete_existing( first, ThreeElements ),
+
+    false = set_utils:is_empty( OtherTwoElements ),
+    2 = set_utils:size( OtherTwoElements ),
+
+    test_facilities:display( "Other two elements: ~ts",
+                             [ set_utils:to_string( OtherTwoElements ) ] ),
+
+    test_facilities:stop().

@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 Olivier Boudeville
+% Copyright (C) 2008-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -40,48 +40,48 @@ Basic testing of the `wooper_utils` module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	% Allows to support both OTP conventions and ad hoc, automatic ones:
-	wooper_utils:start_for_test(),
+    % Allows to support both OTP conventions and ad hoc, automatic ones:
+    wooper_utils:start_for_test(),
 
-	test_facilities:display( "The version of this currently tested WOOPER "
-		"library is ~ts (i.e. ~w).", [ wooper_utils:get_wooper_version_string(),
-									   wooper_utils:get_wooper_version() ] ),
+    test_facilities:display( "The version of this currently tested WOOPER "
+        "library is ~ts (i.e. ~w).", [ wooper_utils:get_wooper_version_string(),
+                                       wooper_utils:get_wooper_version() ] ),
 
-	FirstWOOPERClassname = 'class_BigPackage__MyPackage__MyExample',
+    FirstWOOPERClassname = 'class_BigPackage__MyPackage__MyExample',
 
-	FirstJavaFullClassname = wooper_utils:get_java_package_and_class_for(
-		FirstWOOPERClassname   ),
+    FirstJavaFullClassname = wooper_utils:get_java_package_and_class_for(
+        FirstWOOPERClassname   ),
 
-	test_facilities:display( "To the WOOPER classname '~ts' corresponds "
-		"~p, i.e. ~ts.~n",
-		[ FirstWOOPERClassname, FirstJavaFullClassname,
-		  java_utils:fully_qualified_classname_to_string(
-			FirstJavaFullClassname ) ] ),
-
-
-	SecondWOOPERClassname = 'class_MyPackage__MyExample',
-
-	SecondJavaFullClassname = wooper_utils:get_java_package_and_class_for(
-		SecondWOOPERClassname ),
-
-	test_facilities:display( "To the WOOPER classname '~ts' corresponds "
-		"~p, i.e. ~ts.~n",
-		[ SecondWOOPERClassname, SecondJavaFullClassname,
-		  java_utils:fully_qualified_classname_to_string(
-			SecondJavaFullClassname ) ] ),
+    test_facilities:display( "To the WOOPER classname '~ts' corresponds "
+        "~p, i.e. ~ts.~n",
+        [ FirstWOOPERClassname, FirstJavaFullClassname,
+          java_utils:fully_qualified_classname_to_string(
+            FirstJavaFullClassname ) ] ),
 
 
-	ThirdWOOPERClassname = 'class_MyExample',
+    SecondWOOPERClassname = 'class_MyPackage__MyExample',
 
-	ThirdJavaFullClassname = wooper_utils:get_java_package_and_class_for(
-		ThirdWOOPERClassname ),
+    SecondJavaFullClassname = wooper_utils:get_java_package_and_class_for(
+        SecondWOOPERClassname ),
 
-	test_facilities:display( "To the WOOPER classname '~ts' corresponds "
-		"~p, i.e. ~ts.~n",
-		[ ThirdWOOPERClassname, ThirdJavaFullClassname,
-		  java_utils:fully_qualified_classname_to_string(
-			ThirdJavaFullClassname ) ] ),
+    test_facilities:display( "To the WOOPER classname '~ts' corresponds "
+        "~p, i.e. ~ts.~n",
+        [ SecondWOOPERClassname, SecondJavaFullClassname,
+          java_utils:fully_qualified_classname_to_string(
+            SecondJavaFullClassname ) ] ),
 
-	test_facilities:stop().
+
+    ThirdWOOPERClassname = 'class_MyExample',
+
+    ThirdJavaFullClassname = wooper_utils:get_java_package_and_class_for(
+        ThirdWOOPERClassname ),
+
+    test_facilities:display( "To the WOOPER classname '~ts' corresponds "
+        "~p, i.e. ~ts.~n",
+        [ ThirdWOOPERClassname, ThirdJavaFullClassname,
+          java_utils:fully_qualified_classname_to_string(
+            ThirdJavaFullClassname ) ] ),
+
+    test_facilities:stop().

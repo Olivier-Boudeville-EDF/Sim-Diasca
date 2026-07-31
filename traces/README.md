@@ -10,6 +10,3 @@ This repository corresponds to the part of the [Ceylan project](https://github.c
 Please refer to the [Traces official documentation](http://traces.esperide.org), otherwise to its [mirror](http://olivier-boudeville.github.io/Ceylan-Traces/).
 
 The 'master' branch is aimed to be the current stable version of this layer.
-
-
-

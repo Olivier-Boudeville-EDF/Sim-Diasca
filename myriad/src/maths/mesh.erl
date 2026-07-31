@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -100,7 +100,7 @@ Made of the corresponding three vertices.
 Note that usually the vertex order matters (regarding culling).
 """.
 -type indexed_triangle() ::
-	{ vertex_indice(), vertex_indice(), vertex_indice() }.
+    { vertex_indice(), vertex_indice(), vertex_indice() }.
 
 
 
@@ -110,13 +110,13 @@ Made of the corresponding four vertices.
 Note that usually the vertex order matters (regarding culling).
 """.
 -type indexed_quad() ::
-	{ vertex_indice(), vertex_indice(), vertex_indice(), vertex_indice() }.
+    { vertex_indice(), vertex_indice(), vertex_indice(), vertex_indice() }.
 
 
 
 -doc "Elements that may be referenced by a mesh.".
 -type mesh_element() :: vertex3() | unit_normal3()
-					  | mesh_render:render_element().
+                      | mesh_render:render_element().
 
 
 
@@ -146,10 +146,10 @@ Note that usually the vertex order matters (regarding culling).
 
 
 -export_type([ mesh/0, indice/0, vertex_indice/0,
-			   face_type/0, indexed_face/0, face_indice/0,
-			   indexed_triangle/0, indexed_quad/0,
-			   mesh_element/0, normal_type/0,
-			   vertex_count/0, normal_count/0, edge_count/0, face_count/0 ]).
+               face_type/0, indexed_face/0, face_indice/0,
+               indexed_triangle/0, indexed_quad/0,
+               mesh_element/0, normal_type/0,
+               vertex_count/0, normal_count/0, edge_count/0, face_count/0 ]).
 
 
 % For the right_cuboid, sphere records and al:
@@ -162,22 +162,22 @@ Note that usually the vertex order matters (regarding culling).
 
 % Operations on meshes.
 -export([ tessellate/1, triangulate/1,
-		  compute_normals/1,
-		  indexed_face_to_triangle/1,
-		  indexed_faces_to_triangles/1,
+          compute_normals/1,
+          indexed_face_to_triangle/1,
+          indexed_faces_to_triangles/1,
 
-		  to_string/1, to_compact_string/1,
-		  face_type_to_string/1, normal_type_to_string/1 ]).
+          to_string/1, to_compact_string/1,
+          face_type_to_string/1, normal_type_to_string/1 ]).
 
 
 
 % Other operations, lower-level:
 -export([ set_vertices/2,
-		  compute_normal/2,
-		  get_vertex_count_for_face_type/1, get_face_type/1,
-		  check_faces/2, check_face/2, check_indice/1,
-		  get_vertex_from_id/2, get_vertices_from_ids/2,
-		  get_element_from_id/2, get_elements_from_ids/2 ]).
+          compute_normal/2,
+          get_vertex_count_for_face_type/1, get_face_type/1,
+          check_faces/2, check_face/2, check_indice/1,
+          get_vertex_from_id/2, get_vertices_from_ids/2,
+          get_element_from_id/2, get_elements_from_ids/2 ]).
 
 
 % Bounding volume related section.
@@ -226,10 +226,10 @@ the declared faces.
 """.
 -spec create( [ vertex3() ], [ indexed_face() ] ) -> mesh().
 create( _Vertices, _Faces=[] ) ->
-	throw( no_face_declared );
+    throw( no_face_declared );
 
 create( Vertices, Faces=[ F | _T ] ) ->
-	create( Vertices, get_face_type( F ), Faces, _RenderingInfo=none ).
+    create( Vertices, get_face_type( F ), Faces, _RenderingInfo=none ).
 
 
 
@@ -239,7 +239,7 @@ specific normal, rendering information or bounding volume set.
 """.
 -spec create( [ vertex3() ], face_type(), [ indexed_face() ] ) -> mesh().
 create( Vertices, FaceType, Faces ) ->
-	create( Vertices, FaceType, Faces, _RenderingInfo=none ).
+    create( Vertices, FaceType, Faces, _RenderingInfo=none ).
 
 
 
@@ -248,10 +248,10 @@ Returns a new mesh whose vertices, faces and rendering information are the
 specified ones, with no specific normal or bounding volume set.
 """.
 -spec create( [ vertex3() ], face_type(), [ indexed_face() ],
-			  rendering_info() ) -> mesh().
+              rendering_info() ) -> mesh().
 create( Vertices, FaceType, Faces, RenderingInfo ) ->
-	create( Vertices, FaceType, Faces, _AnyNormalType=per_face,
-			_MaybeNormals=undefined, RenderingInfo ).
+    create( Vertices, FaceType, Faces, _AnyNormalType=per_face,
+            _MaybeNormals=undefined, RenderingInfo ).
 
 
 
@@ -261,45 +261,45 @@ specified type; if any), rendering information are the specified ones, with no
 specific bounding volume set.
 """.
 -spec create( [ vertex3() ], face_type(), [ indexed_face() ],
-	normal_type(), option( [ unit_normal3() ] ), rendering_info() ) -> mesh().
+    normal_type(), option( [ unit_normal3() ] ), rendering_info() ) -> mesh().
 create( Vertices, FaceType, Faces, NormalType, MaybeNormals, RenderingInfo ) ->
 
-	cond_utils:if_defined( myriad_check_mesh,
-		begin
-			check_faces( Faces, get_vertex_count_for_face_type( FaceType ) ),
+    cond_utils:if_defined( myriad_check_mesh,
+        begin
+            check_faces( Faces, get_vertex_count_for_face_type( FaceType ) ),
 
-			MaybeNormals =:= undefined orelse
-				begin
-					vector3:check_unit_vectors( MaybeNormals ),
-					NormalCount = length( MaybeNormals ),
-					case NormalType of
+            MaybeNormals =:= undefined orelse
+                begin
+                    vector3:check_unit_vectors( MaybeNormals ),
+                    NormalCount = length( MaybeNormals ),
+                    case NormalType of
 
-						per_vertex ->
-							% Assuming all vertices are involved in at least a
-							% face:
-							%
-							VertexCount = array:size( Vertices ),
-							basic_utils:assert_equal( NormalCount,
-													  VertexCount );
+                        per_vertex ->
+                            % Assuming all vertices are involved in at least a
+                            % face:
+                            %
+                            VertexCount = array:size( Vertices ),
+                            basic_utils:assert_equal( NormalCount,
+                                                      VertexCount );
 
-						per_face ->
-							FaceCount = length( Faces ),
-							basic_utils:assert_equal( NormalCount,
-													  FaceCount )
+                        per_face ->
+                            FaceCount = length( Faces ),
+                            basic_utils:assert_equal( NormalCount,
+                                                      FaceCount )
 
-					end
-				end
-		end ),
+                    end
+                end
+        end ),
 
-	CanonRenderingInfo = mesh_render:canonicalise_rendering_info( RenderingInfo,
-																  Faces ),
+    CanonRenderingInfo = mesh_render:canonicalise_rendering_info( RenderingInfo,
+                                                                  Faces ),
 
-	#mesh{ vertices=array:from_list( Vertices ),
-		   face_type=FaceType,
-		   faces=Faces,
-		   normal_type=NormalType,
-		   normals=MaybeNormals,
-		   rendering_info=CanonRenderingInfo }.
+    #mesh{ vertices=array:from_list( Vertices ),
+           face_type=FaceType,
+           faces=Faces,
+           normal_type=NormalType,
+           normals=MaybeNormals,
+           rendering_info=CanonRenderingInfo }.
 
 
 
@@ -309,22 +309,22 @@ type.
 """.
 -spec get_vertex_count_for_face_type( face_type() ) -> count().
 get_vertex_count_for_face_type( _FaceType=triangle ) ->
-	3;
+    3;
 
 get_vertex_count_for_face_type( _FaceType=quad ) ->
-	4.
+    4.
 
 
 
 -doc "Returns the face type corresponding to the specified (indexed) face.".
 -spec get_face_type( indexed_face() ) -> face_type().
 get_face_type( IndexedFace ) when is_tuple( IndexedFace )
-								  andalso size( IndexedFace ) =:= 3 ->
-	triangle;
+                                  andalso size( IndexedFace ) =:= 3 ->
+    triangle;
 
 get_face_type( IndexedFace ) when is_tuple( IndexedFace )
-								  andalso size( IndexedFace ) =:= 4 ->
-	quad.
+                                  andalso size( IndexedFace ) =:= 4 ->
+    quad.
 
 
 
@@ -333,31 +333,31 @@ Checks whether the specified term is a legit list of faces, and returns it.
 """.
 -spec check_faces( term(), vertex_count() ) -> [ indexed_face() ].
 check_faces( Faces, VCount ) when is_list( Faces ) ->
-	[ check_face( F, VCount ) || F <- Faces ];
+    [ check_face( F, VCount ) || F <- Faces ];
 
 check_faces( Other, _VCount ) ->
-	throw( { invalid_faces, Other } ).
+    throw( { invalid_faces, Other } ).
 
 
 
 -doc "Checks whether the specified term is a legit face, and returns it.".
 -spec check_face( term(), vertex_count() ) -> indexed_face().
 check_face( Face, VCount )
-		when is_tuple( Face ) andalso size( Face ) =:= VCount ->
-	[ check_indice( VId ) || VId <- tuple_to_list( Face ) ];
+        when is_tuple( Face ) andalso size( Face ) =:= VCount ->
+    [ check_indice( VId ) || VId <- tuple_to_list( Face ) ];
 
 check_face( Other, _VCount ) ->
-	throw( { invalid_faces, Other } ).
+    throw( { invalid_faces, Other } ).
 
 
 
 -doc "Checks whether the specified term is a legit indice, and returns it.".
 -spec check_indice( term() ) -> indice().
 check_indice( Id ) when is_integer( Id ) andalso Id > 0 ->
-	Id;
+    Id;
 
 check_indice( Other ) ->
-	throw( { invalid_indice, Other } ).
+    throw( { invalid_indice, Other } ).
 
 
 
@@ -371,45 +371,45 @@ triangles (e.g. not quads).
 """.
 -spec tessellate( mesh() ) -> mesh().
 tessellate( Mesh=#mesh{ face_type=triangle } ) ->
-	Mesh;
+    Mesh;
 
 tessellate( Mesh=#mesh{ face_type=quad,
-						faces=QuadFaces,
-						%normal_type=NormalType,
-						%normals=MaybeQuadNormals,
-						rendering_info=QuadRendInfo } ) ->
+                        faces=QuadFaces,
+                        %normal_type=NormalType,
+                        %normals=MaybeQuadNormals,
+                        rendering_info=QuadRendInfo } ) ->
 
-	% (a list comprehension would not suffice)
-	TrigFaces = triangulate( QuadFaces ),
+    % (a list comprehension would not suffice)
+    TrigFaces = triangulate( QuadFaces ),
 
-	% MaybeTrigNormals = case MaybeQuadNormals of
+    % MaybeTrigNormals = case MaybeQuadNormals of
 
-	%	undefined ->
-	%		undefined;
+    %   undefined ->
+    %       undefined;
 
-	%	QuadNormals ->
-	%		case NormalType of
+    %   QuadNormals ->
+    %       case NormalType of
 
-	%			per_vertex ->
-	%				% TODO: convert 4 normals in 2*3 ones:
-	%				...( QuadNormals);
+    %           per_vertex ->
+    %               % TODO: convert 4 normals in 2*3 ones:
+    %               ...( QuadNormals);
 
-	%			per_face ->
-	%				% The two triangles have the same normal as their quad:
-	%				list_utils:repeat_elements( QuadNormals, _Count=2 )
+    %           per_face ->
+    %               % The two triangles have the same normal as their quad:
+    %               list_utils:repeat_elements( QuadNormals, _Count=2 )
 
-	%		end
+    %       end
 
-	% end,
-	MaybeTrigNormals = undefined,
+    % end,
+    MaybeTrigNormals = undefined,
 
-	TrigRendInfo = mesh_render:tessellate_rendering_info( _FaceType=quad,
-														  QuadRendInfo ),
+    TrigRendInfo = mesh_render:tessellate_rendering_info( _FaceType=quad,
+                                                          QuadRendInfo ),
 
-	Mesh#mesh{ face_type=triangle,
-			   faces=TrigFaces,
-			   normals=MaybeTrigNormals,
-			   rendering_info=TrigRendInfo }.
+    Mesh#mesh{ face_type=triangle,
+               faces=TrigFaces,
+               normals=MaybeTrigNormals,
+               rendering_info=TrigRendInfo }.
 
 
 
@@ -423,20 +423,20 @@ specified (quad) one.
 """.
 -spec triangulate( [ indexed_quad() ] ) -> [ indexed_triangle() ].
 triangulate( QuadFaces ) ->
-	% (a list comprehension would not suffice; reversing earlier than later is
-	% cheaper)
-	%
-	triangulate( lists:reverse( QuadFaces ), _Acc=[] ).
+    % (a list comprehension would not suffice; reversing earlier than later is
+    % cheaper)
+    %
+    triangulate( lists:reverse( QuadFaces ), _Acc=[] ).
 
 
 % (helper)
 triangulate( _RevQuadFaces=[], Acc ) ->
-	% Reversing already done:
-	Acc;
+    % Reversing already done:
+    Acc;
 
 triangulate( _RevQuadFaces=[ _QF={ V1Id, V2Id, V3Id, V4Id } | T ], Acc ) ->
-	NewAcc = [ { V1Id, V2Id, V3Id }, { V3Id, V4Id, V1Id } | Acc ],
-	triangulate( T, NewAcc ).
+    NewAcc = [ { V1Id, V2Id, V3Id }, { V3Id, V4Id, V1Id } | Acc ],
+    triangulate( T, NewAcc ).
 
 
 
@@ -447,7 +447,7 @@ No consistency checked with the other information held by this mesh.
 """.
 -spec set_vertices( [ vertex3() ], mesh() ) -> mesh().
 set_vertices( NewVertices, Mesh ) ->
-	Mesh#mesh{ vertices=array:from_list( NewVertices ) }.
+    Mesh#mesh{ vertices=array:from_list( NewVertices ) }.
 
 
 
@@ -461,9 +461,9 @@ so that the added normals are pointing outward.
 """.
 -spec compute_normals( mesh() ) -> mesh().
 compute_normals( Mesh=#mesh{ vertices=Vertices,
-							 faces=Faces }) ->
-	Normals = [ compute_normal( F, Vertices ) || F <- Faces ],
-	Mesh#mesh{ normals=Normals }.
+                             faces=Faces }) ->
+    Normals = [ compute_normal( F, Vertices ) || F <- Faces ],
+    Mesh#mesh{ normals=Normals }.
 
 
 
@@ -478,17 +478,17 @@ so that the added normals are pointing outward.
 -spec compute_normal( indexed_face(), [ vertex3() ] ) -> unit_normal3().
 compute_normal( Face, AllVertices ) ->
 
-	% For that we fetch the first three vertices of that face.
+    % For that we fetch the first three vertices of that face.
 
-	% A face being a tuple of vertex indices:
+    % A face being a tuple of vertex indices:
 
-	V1Id = element( _FirstIndex=1, Face ),
-	V2Id = element( 2, Face ),
-	V3Id = element( 3, Face ),
+    V1Id = element( _FirstIndex=1, Face ),
+    V2Id = element( 2, Face ),
+    V3Id = element( 3, Face ),
 
-	[ V1, V2, V3 ] = get_elements_from_ids( [ V1Id, V2Id, V3Id ], AllVertices ),
+    [ V1, V2, V3 ] = get_elements_from_ids( [ V1Id, V2Id, V3Id ], AllVertices ),
 
-	vector3:compute_normal( V1, V2, V3 ).
+    vector3:compute_normal( V1, V2, V3 ).
 
 
 
@@ -498,7 +498,7 @@ expected to comprise 3 vertices).
 """.
 -spec indexed_face_to_triangle( indexed_face() ) -> indexed_triangle().
 indexed_face_to_triangle( _F=[ V1, V2, V3 ] ) ->
-	_IT={ V1, V2, V3 }.
+    _IT={ V1, V2, V3 }.
 
 
 
@@ -507,9 +507,9 @@ Returns the indexed triangles corresponding to the specified indexed faces (thus
 expected to comprise 3 vertices each).
 """.
 -spec indexed_faces_to_triangles( [ indexed_face() ] ) ->
-												[ indexed_triangle() ].
+                                                [ indexed_triangle() ].
 indexed_faces_to_triangles( Faces ) ->
-	[ indexed_face_to_triangle( F ) || F <- Faces ].
+    [ indexed_face_to_triangle( F ) || F <- Faces ].
 
 
 
@@ -523,8 +523,8 @@ vertex repository.
 """.
 -spec get_vertex_from_id( indice(), vertex_repository() ) -> vertex3().
 get_vertex_from_id( Id, VRepository ) ->
-	% As array indices start at zero:
-	array:get( Id-1, VRepository ).
+    % As array indices start at zero:
+    array:get( Id-1, VRepository ).
 
 
 
@@ -533,9 +533,9 @@ Returns the vertices of the specified indices relative to the specified
 referenced vertex repository.
 """.
 -spec get_vertices_from_ids( [ indice() ], vertex_repository() ) ->
-											[ vertex3() ].
+                                            [ vertex3() ].
 get_vertices_from_ids( Ids, VRepository ) ->
-	[ get_vertex_from_id( Id, VRepository ) || Id <- Ids ].
+    [ get_vertex_from_id( Id, VRepository ) || Id <- Ids ].
 
 
 
@@ -545,7 +545,7 @@ indice relative to the specified referenced mesh elements.
 """.
 -spec get_element_from_id( indice(), [ mesh_element() ] ) -> mesh_element().
 get_element_from_id( Id, Elements ) ->
-	lists:nth( Id, Elements ).
+    lists:nth( Id, Elements ).
 
 
 
@@ -554,9 +554,9 @@ Returns the elements (typically vertices, colors, texture coordinates) of the
 specified indices) relative to the specified referenced mesh elements.
 """.
 -spec get_elements_from_ids( [ indice() ], [ mesh_element() ] ) ->
-											[ mesh_element() ].
+                                            [ mesh_element() ].
 get_elements_from_ids( Ids, Elements ) ->
-	[ get_element_from_id( Id, Elements ) || Id <- Ids ].
+    [ get_element_from_id( Id, Elements ) || Id <- Ids ].
 
 
 
@@ -567,121 +567,121 @@ get_elements_from_ids( Ids, Elements ) ->
 -doc "Returns a (rather full) textual description of the specified mesh.".
 -spec to_string( mesh() ) -> ustring().
 to_string( #mesh{ vertices=Vertices,
-				  face_type=FaceType,
-				  faces=Faces,
-				  normal_type=NormalType,
-				  normals=MaybeNormals,
-				  rendering_info=RenderingInfo,
-				  rendering_state=MaybeRenderState,
-				  bounding_volume=MaybeBoundingVolume } ) ->
+                  face_type=FaceType,
+                  faces=Faces,
+                  normal_type=NormalType,
+                  normals=MaybeNormals,
+                  rendering_info=RenderingInfo,
+                  rendering_state=MaybeRenderState,
+                  bounding_volume=MaybeBoundingVolume } ) ->
 
-	NormalStr = case MaybeNormals of
+    NormalStr = case MaybeNormals of
 
-		undefined ->
-			"no normals";
+        undefined ->
+            "no normals";
 
-		Normals ->
-			text_utils:format( "~B ~ts normals: ~w", [ length( Normals ),
-				normal_type_to_string( NormalType ), Normals ] )
+        Normals ->
+            text_utils:format( "~B ~ts normals: ~w", [ length( Normals ),
+                normal_type_to_string( NormalType ), Normals ] )
 
-	end,
+    end,
 
-	RenderStateStr = case MaybeRenderState of
+    RenderStateStr = case MaybeRenderState of
 
-		undefined ->
-			"no rendering state available";
+        undefined ->
+            "no rendering state available";
 
-		RenderState ->
-			mesh_render:rendering_state_to_string( RenderState )
+        RenderState ->
+            mesh_render:rendering_state_to_string( RenderState )
 
-	end,
+    end,
 
-	BVStr = case MaybeBoundingVolume of
+    BVStr = case MaybeBoundingVolume of
 
-		undefined ->
-			"none available";
+        undefined ->
+            "none available";
 
-		BV ->
-			bounding_volume:to_string( BV )
+        BV ->
+            bounding_volume:to_string( BV )
 
-	end,
+    end,
 
-	text_utils:format( "mesh defined by:~n"
-		" - ~B vertices: ~w~n"
-		" - ~B ~ts faces: ~w~n"
-		" - ~ts~n"
-		" - ~ts~n"
-		" - ~ts~n"
-		" - bounding volume: ~ts",
-		[ array:size( Vertices ), array:to_list( Vertices ),
-		  length( Faces ), face_type_to_string( FaceType ), Faces,
-		  NormalStr, mesh_render:rendering_info_to_string( RenderingInfo ),
-		  RenderStateStr, BVStr ] ).
+    text_utils:format( "mesh defined by:~n"
+        " - ~B vertices: ~w~n"
+        " - ~B ~ts faces: ~w~n"
+        " - ~ts~n"
+        " - ~ts~n"
+        " - ~ts~n"
+        " - bounding volume: ~ts",
+        [ array:size( Vertices ), array:to_list( Vertices ),
+          length( Faces ), face_type_to_string( FaceType ), Faces,
+          NormalStr, mesh_render:rendering_info_to_string( RenderingInfo ),
+          RenderStateStr, BVStr ] ).
 
 
 
 -doc "Returns a compact textual description of the specified mesh.".
 -spec to_compact_string( mesh() ) -> ustring().
 to_compact_string( #mesh{ vertices=Vertices,
-						  face_type=FaceType,
-						  faces=Faces,
-						  normal_type=NormalType,
-						  normals=MaybeNormals,
-						  rendering_info=RenderingInfo,
-						  rendering_state=MaybeRenderState,
-						  bounding_volume=MaybeBoundingVolume } ) ->
+                          face_type=FaceType,
+                          faces=Faces,
+                          normal_type=NormalType,
+                          normals=MaybeNormals,
+                          rendering_info=RenderingInfo,
+                          rendering_state=MaybeRenderState,
+                          bounding_volume=MaybeBoundingVolume } ) ->
 
-	NormalStr = case MaybeNormals of
+    NormalStr = case MaybeNormals of
 
-		undefined ->
-			"no";
+        undefined ->
+            "no";
 
-		Normals ->
-			text_utils:format( "~B ~ts", [ length( Normals ),
-				normal_type_to_string( NormalType ) ] )
+        Normals ->
+            text_utils:format( "~B ~ts", [ length( Normals ),
+                normal_type_to_string( NormalType ) ] )
 
-	end,
+    end,
 
-	BVStr = case MaybeBoundingVolume of
+    BVStr = case MaybeBoundingVolume of
 
-		undefined ->
-			"no bounding volume available";
+        undefined ->
+            "no bounding volume available";
 
-		BV ->
-			bounding_volume:to_string( BV )
+        BV ->
+            bounding_volume:to_string( BV )
 
-	end,
+    end,
 
-	text_utils:format( "mesh with ~B vertices, ~B ~ts faces, "
-		"~ts normals, with ~ts, ~ts and ~ts",
-		[ array:size( Vertices ), length( Faces ),
-		  face_type_to_string( FaceType ), NormalStr,
-		  mesh_render:rendering_info_to_compact_string( RenderingInfo ),
-		  case MaybeRenderState of
-				undefined -> "no";
-				_ -> "a"
-		  end ++ " rendering state",
-		  BVStr ] ).
+    text_utils:format( "mesh with ~B vertices, ~B ~ts faces, "
+        "~ts normals, with ~ts, ~ts and ~ts",
+        [ array:size( Vertices ), length( Faces ),
+          face_type_to_string( FaceType ), NormalStr,
+          mesh_render:rendering_info_to_compact_string( RenderingInfo ),
+          case MaybeRenderState of
+                undefined -> "no";
+                _ -> "a"
+          end ++ " rendering state",
+          BVStr ] ).
 
 
 
 -doc "Returns a textual description of the specified face type.".
 -spec face_type_to_string( face_type() ) -> ustring().
 face_type_to_string( triangle ) ->
-	"triangle";
+    "triangle";
 
 face_type_to_string( quad ) ->
-	"quad".
+    "quad".
 
 
 
 -doc "Returns a textual description of the specified normal type.".
 -spec normal_type_to_string( normal_type() ) -> ustring().
 normal_type_to_string( per_vertex ) ->
-	"per-vertex";
+    "per-vertex";
 
 normal_type_to_string( per_face ) ->
-	"per-face".
+    "per-face".
 
 
 

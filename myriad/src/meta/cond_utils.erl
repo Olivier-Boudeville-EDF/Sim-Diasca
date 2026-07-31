@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2025 Olivier Boudeville
+% Copyright (C) 2018-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -132,11 +132,11 @@ macros.
 
 
 -export([ get_token_table_from/1,
-		  if_debug/1, if_defined/2, if_defined/3,
-		  if_set_to/3, if_set_to/4,
-		  switch_execution_target/2,
-		  switch_set_to/2, switch_set_to/3,
-		  assert/1, assert/2, assert/3 ]).
+          if_debug/1, if_defined/2, if_defined/3,
+          if_set_to/3, if_set_to/4,
+          switch_execution_target/2,
+          switch_set_to/2, switch_set_to/3,
+          assert/1, assert/2, assert/3 ]).
 
 
 % For the table macro:
@@ -196,7 +196,7 @@ Table to establish easily whether a token has been defined and, if yes, a value
 
 
 -export_type([ token/0, expression/0, body/0, token_expr_table/0,
-			   token_table/0 ]).
+               token_table/0 ]).
 
 
 % Type shorthands:
@@ -208,67 +208,67 @@ Table to establish easily whether a token has been defined and, if yes, a value
 
 -doc "Returns the tokens declared among the compile options.".
 -spec get_token_table_from( ast_info:compile_option_table() ) ->
-									token_table().
+                                    token_table().
 get_token_table_from( OptionTable ) ->
 
-	EmptyTable = ?table:new(),
+    EmptyTable = ?table:new(),
 
-	% The 'd' compile option must correspond to the compilation defines:
-	case ?table:lookup_entry( _K='d', OptionTable ) of
+    % The 'd' compile option must correspond to the compilation defines:
+    case ?table:lookup_entry( _K='d', OptionTable ) of
 
-		% For example L=[my_test_token, {my_other_test_token,51}]:
-		{ value, L } ->
-			% Returns a filled table:
-			register_tokens( L, EmptyTable );
+        % For example L=[my_test_token, {my_other_test_token,51}]:
+        { value, L } ->
+            % Returns a filled table:
+            register_tokens( L, EmptyTable );
 
-		key_not_found ->
-			% Empty table then, no token available:
-			EmptyTable
+        key_not_found ->
+            % Empty table then, no token available:
+            EmptyTable
 
-	end.
+    end.
 
 
 % (helper)
 register_tokens( _L=[], TokenTable ) ->
-	TokenTable;
+    TokenTable;
 
 register_tokens( _L=[ { Token, Value } | T ], TokenTable )
-								when is_atom( Token ) ->
-	% Crashes if a token is defined more than once (must be abnormal):
-	NewTokenTable = ?table:add_new_entry( Token, Value, TokenTable ),
-	register_tokens( T, NewTokenTable );
+                                when is_atom( Token ) ->
+    % Crashes if a token is defined more than once (must be abnormal):
+    NewTokenTable = ?table:add_new_entry( Token, Value, TokenTable ),
+    register_tokens( T, NewTokenTable );
 
 register_tokens( _L=[ Token | T ], TokenTable ) when is_atom( Token ) ->
-	% A token without a value is associated to 'undefined':
-	NewTokenTable = ?table:add_new_entry( Token, _V=undefined, TokenTable ),
-	register_tokens( T, NewTokenTable ).
+    % A token without a value is associated to 'undefined':
+    NewTokenTable = ?table:add_new_entry( Token, _V=undefined, TokenTable ),
+    register_tokens( T, NewTokenTable ).
 
 
 
 % Example of a wrong (list-based, not block-based) transformation:
 %
 % cond_utils:if_defined( my_token, [ A = 1,
-%									 io:format( "Conditional code executed!" ),
-%									 B = A + 1 ] ),
+%                                    io:format( "Conditional code executed!" ),
+%                                    B = A + 1 ] ),
 %
 % would be by default literally translated into:
 %
 % (line numbers replaced by anonymous mute variables)
 %
 %  {call,_,
-%	  {remote,_,{atom,_,cond_utils},{atom,_,if_defined}},
-%	  [{var,_,'Token'},
-%	   {cons,_,
-%		   {match,_,{var,_,'A'},{integer,_,1}},
-%		   {cons,_,
-%			   {call,_,
-%				   {remote,_,{atom,_,io},{atom,_,format}},
-%				   [{string,_,"Conditional code executed!"}]},
-%			   {cons,_,
-%				   {match,_,
-%					   {var,_,'B'},
-%					   {op,_,'+',{var,_,'A'},{integer,_,1}}},
-%				   {nil,_}}}}]},
+%     {remote,_,{atom,_,cond_utils},{atom,_,if_defined}},
+%     [{var,_,'Token'},
+%      {cons,_,
+%          {match,_,{var,_,'A'},{integer,_,1}},
+%          {cons,_,
+%              {call,_,
+%                  {remote,_,{atom,_,io},{atom,_,format}},
+%                  [{string,_,"Conditional code executed!"}]},
+%              {cons,_,
+%                  {match,_,
+%                      {var,_,'B'},
+%                      {op,_,'+',{var,_,'A'},{integer,_,1}}},
+%                  {nil,_}}}}]},
 %
 %
 % whereas we want it to become either (should my_token be defined):
@@ -297,12 +297,12 @@ token has been defined through the command-line).
 -spec if_debug( expression() ) -> void().
 if_debug( _ExpressionIfDebug ) ->
 
-	% Would compile but would be misleading, as this code would be actually
-	% replaced and never executed:
-	%
-	%if_defined( _Token=myriad_debug_mode, ExpressionIfDebug ).
+    % Would compile but would be misleading, as this code would be actually
+    % replaced and never executed:
+    %
+    %if_defined( _Token=myriad_debug_mode, ExpressionIfDebug ).
 
-	throw( { untransformed_conditional, {if_debug,1} } ).
+    throw( { untransformed_conditional, {if_debug,1} } ).
 
 
 
@@ -334,14 +334,14 @@ report that variable 'A' is unused.
 -spec if_defined( token(), expression() ) -> void().
 if_defined( Token, _ExpressionIfDefined ) ->
 
-	% Never expected to be called, as replaced by the Myriad parse transform
-	% either by the actual expression, or by nothing at all:
-	%
-	%throw( { untransformed_conditional, {if_defined,2}, Token,
-	%         ExpressionIfDefined } ).
+    % Never expected to be called, as replaced by the Myriad parse transform
+    % either by the actual expression, or by nothing at all:
+    %
+    %throw( { untransformed_conditional, {if_defined,2}, Token,
+    %         ExpressionIfDefined } ).
 
-	% Should be sufficient thanks to the stacktrace:
-	throw( { untransformed_conditional, {if_defined,2}, Token } ).
+    % Should be sufficient thanks to the stacktrace:
+    throw( { untransformed_conditional, {if_defined,2}, Token } ).
 
 
 
@@ -358,10 +358,10 @@ See if_defined/2 for use and caveats.
 -spec if_defined( token(), expression(), expression() ) -> void().
 if_defined( Token, _ExpressionIfDefined, _ExpressionIfNotDefined ) ->
 
-	% Never expected to be called, as replaced by the Myriad parse transform
-	% by either of the actual expressions:
-	%
-	throw( { untransformed_conditional, {if_defined,3}, Token } ).
+    % Never expected to be called, as replaced by the Myriad parse transform
+    % by either of the actual expressions:
+    %
+    throw( { untransformed_conditional, {if_defined,3}, Token } ).
 
 
 
@@ -378,10 +378,10 @@ See if_defined/2 for use and caveats.
 -spec if_set_to( token(), value(), expression() ) -> void().
 if_set_to( Token, _Value, _ExpressionIfSetTo ) ->
 
-	% Never expected to be called, as replaced by the Myriad parse transform
-	% either by the actual expression, or by nothing at all:
-	%
-	throw( { untransformed_conditional, {if_set_to,3}, Token } ).
+    % Never expected to be called, as replaced by the Myriad parse transform
+    % either by the actual expression, or by nothing at all:
+    %
+    throw( { untransformed_conditional, {if_set_to,3}, Token } ).
 
 
 
@@ -399,10 +399,10 @@ See if_defined/2 for use and caveats.
 -spec if_set_to( token(), value(), expression(), expression() ) -> void().
 if_set_to( Token, _Value, _ExpressionIfMatching, _ExpressionOtherwise ) ->
 
-	% Never expected to be called, as replaced by the Myriad parse transform by
-	% either of the actual expressions:
-	%
-	throw( { untransformed_conditional, {if_set_to,4}, Token } ).
+    % Never expected to be called, as replaced by the Myriad parse transform by
+    % either of the actual expressions:
+    %
+    throw( { untransformed_conditional, {if_set_to,4}, Token } ).
 
 
 
@@ -419,13 +419,13 @@ is not defined), then the first specified expression will be inserted
 -spec switch_execution_target( expression(), expression() ) -> void().
 switch_execution_target( _ExprIfInDevMode, _ExprIfProdMode ) ->
 
-	% Would compile but would be misleading, as this code would be actually
-	% replaced and never executed:
-	%
-	%if_defined( _Token=exec_target_is_production, ExprIfInDevMode,
-	%            ExprIfProdMode ).
+    % Would compile but would be misleading, as this code would be actually
+    % replaced and never executed:
+    %
+    %if_defined( _Token=exec_target_is_production, ExprIfInDevMode,
+    %            ExprIfProdMode ).
 
-	throw( { untransformed_conditional, {switch_execution_target,2} } ).
+    throw( { untransformed_conditional, {switch_execution_target,2} } ).
 
 
 
@@ -446,10 +446,10 @@ See if_defined/2 for use and caveats.
 -spec switch_set_to( token(), token_expr_table() ) -> void().
 switch_set_to( Token, _TokenExprTable ) ->
 
-	% Never expected to be called, as replaced by the Myriad parse transform by
-	% either of the actual expressions:
-	%
-	throw( { untransformed_conditional, {switch_set_to,2}, Token } ).
+    % Never expected to be called, as replaced by the Myriad parse transform by
+    % either of the actual expressions:
+    %
+    throw( { untransformed_conditional, {switch_set_to,2}, Token } ).
 
 
 
@@ -470,10 +470,10 @@ See if_defined/2 for use and caveats.
 -spec switch_set_to( token(), token_expr_table(), value() ) -> void().
 switch_set_to( Token, _TokenExprTable, _DefaultTokenValue ) ->
 
-	% Never expected to be called, as replaced by the Myriad parse transform by
-	% either of the actual expressions:
-	%
-	throw( { untransformed_conditional, {switch_set_to,3}, Token } ).
+    % Never expected to be called, as replaced by the Myriad parse transform by
+    % either of the actual expressions:
+    %
+    throw( { untransformed_conditional, {switch_set_to,3}, Token } ).
 
 
 
@@ -489,12 +489,12 @@ in-source locations will be available).
 """.
 -spec assert( expression() ) -> void().
 assert( _Expression ) ->
-	%assert( _Token=myriad_debug_mode, Expression ).
+    %assert( _Token=myriad_debug_mode, Expression ).
 
-	% Never expected to be called, as replaced by the Myriad parse transform by
-	% a match of the actual expression:
-	%
-	throw( { untransformed_conditional, {assert,1} } ).
+    % Never expected to be called, as replaced by the Myriad parse transform by
+    % a match of the actual expression:
+    %
+    throw( { untransformed_conditional, {assert,1} } ).
 
 
 
@@ -508,10 +508,10 @@ See assert/1 for use and caveats.
 -spec assert( token(), expression() ) -> void().
 assert( Token, _Expression ) ->
 
-	% Never expected to be called, as replaced by the Myriad parse transform by
-	% a match of the actual expression:
-	%
-	throw( { untransformed_conditional, {assert,2}, Token } ).
+    % Never expected to be called, as replaced by the Myriad parse transform by
+    % a match of the actual expression:
+    %
+    throw( { untransformed_conditional, {assert,2}, Token } ).
 
 
 
@@ -531,7 +531,7 @@ See assert/1 for use and caveats.
 -spec assert( token(), value(), expression() ) -> void().
 assert( Token, _Value, _Expression ) ->
 
-	% Never expected to be called, as replaced by the Myriad parse transform by
-	% a match of the actual expression:
-	%
-	throw( { untransformed_conditional, {assert,3}, Token } ).
+    % Never expected to be called, as replaced by the Myriad parse transform by
+    % a match of the actual expression:
+    %
+    throw( { untransformed_conditional, {assert,3}, Token } ).

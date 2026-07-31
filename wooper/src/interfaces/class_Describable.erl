@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 Olivier Boudeville
+% Copyright (C) 2008-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -44,8 +44,8 @@ See class_StaticDescribable, for instances that can be described statically.
 
 
 -define( class_description,
-		 "Interface implementing the Describable trait, for all instances able "
-		 "to output their textual description." ).
+         "Interface implementing the Describable trait, for all instances able "
+         "to output their textual description." ).
 
 
 % No superclasses.
@@ -71,7 +71,7 @@ See class_StaticDescribable, for instances that can be described statically.
 
 
 -export_type([ user_description/0, description/0, any_description/0,
-			   describable_pid/0 ]).
+               describable_pid/0 ]).
 
 
 
@@ -105,7 +105,7 @@ See class_StaticDescribable, for instances that can be described statically.
 -doc "Constructs a describable instance.".
 -spec construct( wooper:state() ) -> wooper:state().
 construct( State ) ->
-	State.
+    State.
 
 
 % No destructor.
@@ -119,10 +119,10 @@ construct( State ) ->
 -spec getDescription( wooper:state() ) -> const_request_return( description() ).
 getDescription( State=#state_holder{ actual_class=Classname } ) ->
 
-	% This is a default implementation that may be kept as is:
-	BinDesc = text_utils:string_to_binary( Classname:to_string( State ) ),
+    % This is a default implementation that may be kept as is:
+    BinDesc = text_utils:string_to_binary( Classname:to_string( State ) ),
 
-	wooper:const_return_result( BinDesc ).
+    wooper:const_return_result( BinDesc ).
 
 
 
@@ -137,7 +137,7 @@ Returns a textual description of this instance.
 """.
 -spec to_string( wooper:state() ) -> ustring().
 to_string( _State ) ->
-	"Describable instance".
+    "Describable instance".
 
 
 
@@ -152,10 +152,10 @@ Tells whether the corresponding instance implements the Describable interface.
 """.
 -spec is_describable( wooper:state() ) -> boolean().
 is_describable( State ) ->
-	% We cannot rely on a specific attribute being defined or not to determine
-	% whether Describable, so:
-	%
-	lists:member( ?MODULE, wooper:get_all_superclasses( State ) ).
+    % We cannot rely on a specific attribute being defined or not to determine
+    % whether Describable, so:
+    %
+    lists:member( ?MODULE, wooper:get_all_superclasses( State ) ).
 
 
 
@@ -169,15 +169,15 @@ Describable one or not.
 """.
 -spec get_maybe_description( wooper:state() ) -> option( description() ).
 get_maybe_description( State ) ->
-	case is_describable( State ) of
+    case is_describable( State ) of
 
-		true ->
-			executeConstRequest( State, getDescription );
+        true ->
+            executeConstRequest( State, getDescription );
 
-		false ->
-			undefined
+        false ->
+            undefined
 
-	end.
+    end.
 
 
 
@@ -189,12 +189,12 @@ it implement the Describable interface.
 """.
 -spec to_maybe_string( wooper:state() ) -> option( ustring() ).
 to_maybe_string( State ) ->
-	case get_maybe_description( State ) of
+    case get_maybe_description( State ) of
 
-		undefined ->
-			undefined;
+        undefined ->
+            undefined;
 
-		Desc ->
-			text_utils:format( "whose description is: '~ts'", [ Desc ] )
+        Desc ->
+            text_utils:format( "whose description is: '~ts'", [ Desc ] )
 
-	end.
+    end.

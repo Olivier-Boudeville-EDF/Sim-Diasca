@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 Olivier Boudeville
+% Copyright (C) 2014-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -30,7 +30,7 @@
 -moduledoc """
 Unit tests for the `cipher_utils` toolbox.
 
-See the cipher_utils.erl tested module.
+See the `cipher_utils` tested module.
 """.
 
 
@@ -39,115 +39,126 @@ See the cipher_utils.erl tested module.
 -include("test_facilities.hrl").
 
 
+%-doc "Minimal test for shuffle and reciprocal_shuffle.".
+%test_shuffle() ->
+%
+%    Transforms = [ { shuffle, _Seed={ 140, 98, 250 }, _Length=7 } ],
+
+
+
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	%TransformList = [ id ],
-	%TransformList = [ id, id ],
-	%TransformList = [ { offset, 117 } ],
+    %Transforms = [ id ],
+    %Transforms = [ id, id ],
+    %Transforms = [ { offset, 117 } ],
 
-	%TransformList = [ { compress, zip } ],
-	%TransformList = [ { compress, bzip2 } ],
-	%TransformList = [ { compress, xz } ],
+    %Transforms = [ { compress, zip } ],
+    %Transforms = [ { compress, bzip2 } ],
+    %Transforms = [ { compress, xz } ],
 
-	%TransformList = [ { insert_random, _Seed={ 4, 48, 25 },
-	%                  _Range=10 } ],
+    %Transforms = [ { insert_random, _Seed={ 4, 48, 25 },
+    %                  _Range=10 } ],
 
-	%TransformList = [ delta_combine ],
+    %Transforms = [ delta_combine ],
 
-	%TransformList = [ { shuffle, _Seed={ 140, 98, 250 }, _Length=7 } ],
+    %Transforms = [ { shuffle, _Seed={ 140, 98, 250 }, _Length=7 } ],
 
-	%TransformList = [ { 'xor', _XOR="A string can be used as well" } ],
+    %Transforms = [ { 'xor', _XOR="A string can be used as well" } ],
 
-	MyMealyTable = cipher_utils:generate_mealy_table( _StateCount=500 ),
+    _MyMealyTable = cipher_utils:generate_mealy_table( _StateCount=500 ),
 
-	%TransformList = [ { mealy, _InitialState=2, MyMealyTable } ],
+    %Transforms = [ { mealy, _InitialState=2, MyMealyTable } ],
 
-	% A rather complete key (compression is better be done among the first):
-	TransformList = [ delta_combine,
-					  { compress, xz },
-					  { offset, 41 },
-					  { insert_random, _FirstInsertSeed={ 412, 1418, 2565 },
-						_FirstRange=10 },
-					  { shuffle, _ShuffleSeed={ 140, 98, 250 }, _Length=79 },
-					  { 'xor', "All human beings are born free and equal "
-						"in dignity and rights." },
-					  delta_combine,
-					  { mealy, _InitialMealyState=50, MyMealyTable },
-					  { insert_random, _SecondInsertSeed={ 432, 4118, 255 },
-						_SecondRange=11 },
-					  delta_combine ],
+    %Transforms = [ { shuffle, _ShuffleSeed={ 14, 198, 25 }, _Length=10 } ],
 
-	KeyFilename = "my-test-key-file.cipher",
+    % A rather complete key (compression is better be done among the first):
+    Transforms = [ delta_combine,
+                      %% { compress, xz },
+                      %% { offset, 41 },
+                      %% { insert_random, _FirstInsertSeed={ 412, 1418, 2565 },
+                      %%   _FirstRange=10 },
+                      { shuffle, _ShuffleSeed={ 140, 98, 250 }, _Length=79 } ], %,
+                      %% { 'xor', "All human beings are born free and equal "
+                      %%   "in dignity and rights." },
+                      %% delta_combine,
+                      %% { mealy, _InitialMealyState=50, MyMealyTable },
+                      %% { insert_random, _SecondInsertSeed={ 432, 4118, 255 },
+                      %%   _SecondRange=11 },
+                      %% delta_combine ],
 
-
-	test_facilities:display( "Generating a key from specified transform list, "
-							 "to be stored in file '~ts'.", [ KeyFilename ] ),
-
-	file_utils:is_existing_file( KeyFilename ) andalso
-		begin
-			% Otherwise generation will halt on error:
-			test_facilities:display( "(removing previously existing "
-									 "key file '~ts')~n", [ KeyFilename ] ),
-			file_utils:remove_file( KeyFilename )
-		end,
-
-	cipher_utils:generate_key( KeyFilename, TransformList ),
-
-	SourceFilename = "my-content-file",
-
-	% Add some content:
-	file_utils:copy_file( "GNUmakefile", SourceFilename ),
-
-	OriginalContent = file_utils:read_whole( SourceFilename ),
-
-	EncryptedFilename = SourceFilename ++ ".encrypted",
-
-	test_facilities:display( "Encrypting '~ts' into '~ts', "
-		"using key file '~ts'.",
-		[ SourceFilename, EncryptedFilename, KeyFilename ] ),
-
-	file_utils:is_existing_file( EncryptedFilename ) andalso
-		begin
-			% Otherwise generation will halt on error:
-			test_facilities:display( "(removing previously existing target "
-				"encrypted file '~ts')~n", [ EncryptedFilename ] ),
-			file_utils:remove_file( EncryptedFilename )
-		end,
-
-	cipher_utils:encrypt( SourceFilename, EncryptedFilename, KeyFilename ),
+    KeyFilename = "my-test-key-file.cipher",
 
 
-	DecryptedFilename = SourceFilename ++ ".decrypted",
+    test_facilities:display( "Generating a key from specified transform list, "
+                             "to be stored in file '~ts'.", [ KeyFilename ] ),
 
-	test_facilities:display( "Decrypting '~ts' into '~ts', using the same key.",
-							 [ EncryptedFilename, DecryptedFilename ] ),
+    file_utils:is_existing_file( KeyFilename ) andalso
+        begin
+            % Otherwise generation will halt on error:
+            test_facilities:display( "(removing previously existing "
+                                     "key file '~ts')~n", [ KeyFilename ] ),
+            file_utils:remove_file( KeyFilename )
+        end,
 
-	file_utils:is_existing_file( DecryptedFilename ) andalso
-		begin
-			% Otherwise generation will halt on error:
-			test_facilities:display( "(removing previously existing target "
-				"decrypted file '~ts')~n", [ DecryptedFilename ] ),
-			file_utils:remove_file( DecryptedFilename )
-		end,
+    cipher_utils:write_key_file( KeyFilename, Transforms ),
 
-	cipher_utils:decrypt( EncryptedFilename, DecryptedFilename, KeyFilename ),
+    SourceFilename = "my-content-file",
 
-	FinalContent = file_utils:read_whole( DecryptedFilename ),
+    % Use some content:
 
-	case OriginalContent =:= FinalContent of
+    file_utils:copy_file( _ContentFilename="GNUmakefile", SourceFilename ),
+    %file_utils:write_whole( SourceFilename, _Content= <<1,2,3,4,5,6,7,8>> ),
 
-		true ->
-			test_facilities:display( "Original file and decrypted one match." );
+    OriginalContent = file_utils:read_whole( SourceFilename ),
 
-		false ->
-			throw( decrypted_content_differs )
+    EncryptedFilename = SourceFilename ++ ".encrypted",
 
-	end,
+    test_facilities:display( "Encrypting '~ts' into '~ts', "
+        "using key file '~ts'.",
+        [ SourceFilename, EncryptedFilename, KeyFilename ] ),
 
-	file_utils:remove_files( [ KeyFilename, EncryptedFilename,
-							   DecryptedFilename, SourceFilename ] ),
+    file_utils:is_existing_file( EncryptedFilename ) andalso
+        begin
+            % Otherwise generation will halt on error:
+            test_facilities:display( "(removing previously existing target "
+                "encrypted file '~ts')~n", [ EncryptedFilename ] ),
+            file_utils:remove_file( EncryptedFilename )
+        end,
 
-	test_facilities:stop().
+    cipher_utils:encrypt( SourceFilename, EncryptedFilename, KeyFilename ),
+
+
+    DecryptedFilename = SourceFilename ++ ".decrypted",
+
+    test_facilities:display( "Decrypting '~ts' into '~ts', using the same key.",
+                             [ EncryptedFilename, DecryptedFilename ] ),
+
+    file_utils:is_existing_file( DecryptedFilename ) andalso
+        begin
+            % Otherwise generation will halt on error:
+            test_facilities:display( "(removing previously existing target "
+                "decrypted file '~ts')~n", [ DecryptedFilename ] ),
+            file_utils:remove_file( DecryptedFilename )
+        end,
+
+    cipher_utils:decrypt( EncryptedFilename, DecryptedFilename, KeyFilename ),
+
+    FinalContent = file_utils:read_whole( DecryptedFilename ),
+
+    case OriginalContent =:= FinalContent of
+
+        true ->
+            test_facilities:display( "Original file and decrypted one match." );
+
+        false ->
+            throw( decrypted_content_differs )
+
+    end,
+
+    file_utils:remove_files( [ KeyFilename, EncryptedFilename,
+                               DecryptedFilename, SourceFilename ] ),
+
+    test_facilities:stop().

@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 EDF R&D
+% Copyright (C) 2016-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -28,11 +28,11 @@ values produces by the associated dataflow.
 
 
 -define( class_description,
-		 "The experiment exit point is a singleton instance in charge of being "
-		 "the (logical) stopping point that terminates the evaluation of the "
-		 "registered dataflows, possibly at each timestep; technically it is "
-		 "run first (spontaneously), and once done triggers the experiment "
-		 "entry point for the next evaluation step." ).
+         "The experiment exit point is a singleton instance in charge of being "
+         "the (logical) stopping point that terminates the evaluation of the "
+         "registered dataflows, possibly at each timestep; technically it is "
+         "run first (spontaneously), and once done triggers the experiment "
+         "entry point for the next evaluation step." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -55,19 +55,19 @@ values produces by the associated dataflow.
 % Attributes that are specific to an experiment exit point are:
 -define( class_attributes, [
 
-	{ entry_point_pid, experiment_entry_point_pid(), "the PID of the entry "
-	  "point that this exit point will trigger" },
+    { entry_point_pid, experiment_entry_point_pid(), "the PID of the entry "
+      "point that this exit point will trigger" },
 
-	{ experiment_manager_pid, experiment_manager_pid(),
-	  "the PID of the experiment manager" },
+    { experiment_manager_pid, experiment_manager_pid(),
+      "the PID of the experiment manager" },
 
-	{ world_manager_pid, world_manager_pid(), "the PID of the world manager" },
+    { world_manager_pid, world_manager_pid(), "the PID of the world manager" },
 
-	{ dataflows, [ dataflow_pid() ], "a list of the dataflow instances known "
-	  "by this experiment manager" },
+    { dataflows, [ dataflow_pid() ], "a list of the dataflow instances known "
+      "by this experiment manager" },
 
-	{ phase, class_ExperimentManager:phase(), "tells at which step of its "
-	  "behaviour this exit point is" } ] ).
+    { phase, class_ExperimentManager:phase(), "tells at which step of its "
+      "behaviour this exit point is" } ] ).
 
 
 
@@ -116,38 +116,38 @@ actor, as assigned by the load balancer
 - WorldManagerPid is the PID of the world manager
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-		[ dataflow_pid() ], experiment_entry_point_pid(),
-		experiment_manager_pid(), world_manager_pid() ) -> wooper:state().
+        [ dataflow_pid() ], experiment_entry_point_pid(),
+        experiment_manager_pid(), world_manager_pid() ) -> wooper:state().
 construct( State, ActorSettings, Dataflows, ExperimentEntryPointPid,
-		   ExperimentManagerPid, WorldManagerPid ) ->
+           ExperimentManagerPid, WorldManagerPid ) ->
 
-	% Auto-subscribing:
-	RegistrationMessage = { registerExperimentExitPoint, [], self() },
+    % Auto-subscribing:
+    RegistrationMessage = { registerExperimentExitPoint, [], self() },
 
-	ExperimentManagerPid ! RegistrationMessage,
-	WorldManagerPid ! RegistrationMessage,
+    ExperimentManagerPid ! RegistrationMessage,
+    WorldManagerPid ! RegistrationMessage,
 
-	% First the direct mother class:
-	ActorState = class_Actor:construct( State, ActorSettings,
-		?trace_categorize("ExperimentExitPoint") ),
+    % First the direct mother class:
+    ActorState = class_Actor:construct( State, ActorSettings,
+        ?trace_categorize("ExperimentExitPoint") ),
 
-	% Then the class-specific actions:
-	FinalState = setAttributes( ActorState, [
-		{ entry_point_pid, ExperimentEntryPointPid },
-		{ experiment_manager_pid, ExperimentManagerPid },
-		{ world_manager_pid, WorldManagerPid },
-		{ dataflows, Dataflows },
-		{ phase, initialisation } ] ),
+    % Then the class-specific actions:
+    FinalState = setAttributes( ActorState, [
+        { entry_point_pid, ExperimentEntryPointPid },
+        { experiment_manager_pid, ExperimentManagerPid },
+        { world_manager_pid, WorldManagerPid },
+        { dataflows, Dataflows },
+        { phase, initialisation } ] ),
 
-	%?send_info( FinalState, "Registering now." ),
+    %?send_info( FinalState, "Registering now." ),
 
-	% From both registerExperimentExitPoint requests:
-	wooper:wait_for_request_acknowledgements( _Count=2,
-		_AckAtom=experiment_exit_point_registered ),
+    % From both registerExperimentExitPoint requests:
+    wooper:wait_for_request_acknowledgements( _Count=2,
+        _AckAtom=experiment_exit_point_registered ),
 
-	%?send_info( FinalState, "Registered, and initialised." ),
+    %?send_info( FinalState, "Registered, and initialised." ),
 
-	FinalState.
+    FinalState.
 
 
 
@@ -160,42 +160,42 @@ Callback executed on the first diasca of existence of this exit point.
 -spec onFirstDiasca( wooper:state(), pid() ) -> actor_oneway_return().
 onFirstDiasca( State, _CallerPid ) ->
 
-	?debug_fmt( "Created ~ts.", [ to_string( State ) ] ),
+    ?debug_fmt( "Created ~ts.", [ to_string( State ) ] ),
 
-	% Before we start the actual dataflow evaluation (based on actSpontaneous/1
-	% and typically the injection of events), there may have been initial blocks
-	% that have been created (and linked) yet that are still suspended.
-	%
-	% They shall be explicitly resumed, otherwise, typically from a programmatic
-	% case, no scheduling would happen at the first tick, and either the
-	% simulation would terminate or jump at any next planned tick, which would
-	% then detect that there are suspended blocks that should have been resumed,
-	% but have not.
+    % Before we start the actual dataflow evaluation (based on actSpontaneous/1
+    % and typically the injection of events), there may have been initial blocks
+    % that have been created (and linked) yet that are still suspended.
+    %
+    % They shall be explicitly resumed, otherwise, typically from a programmatic
+    % case, no scheduling would happen at the first tick, and either the
+    % simulation would terminate or jump at any next planned tick, which would
+    % then detect that there are suspended blocks that should have been resumed,
+    % but have not.
 
-	% So we first resume these suspended blocks, and once any resulting
-	% evaluation will be over, we will start for real and act spontaneously.
-	%
-	% However, at this very first diasca, initial blocks (notably dataflow
-	% objects) are also in the process of registering themselves (from their
-	% onFirstDiasca/2 oneway) to their dataflow.
-	%
-	% This exit point should thus initiate the dataflow evaluation by sending to
-	% the known dataflows a resume order only at the next diasca (as otherwise
-	% the dataflows would receive at the same, next diasca, both the
-	% registrations of the dataflow objects and the request to resume the
-	% currently known ones), so that all initial blocks (and not only those that
-	% happened to be registered by dataflows before this resume order) are
-	% actually taken into account for that resume.
-	% So:
+    % So we first resume these suspended blocks, and once any resulting
+    % evaluation will be over, we will start for real and act spontaneously.
+    %
+    % However, at this very first diasca, initial blocks (notably dataflow
+    % objects) are also in the process of registering themselves (from their
+    % onFirstDiasca/2 oneway) to their dataflow.
+    %
+    % This exit point should thus initiate the dataflow evaluation by sending to
+    % the known dataflows a resume order only at the next diasca (as otherwise
+    % the dataflows would receive at the same, next diasca, both the
+    % registrations of the dataflow objects and the request to resume the
+    % currently known ones), so that all initial blocks (and not only those that
+    % happened to be registered by dataflows before this resume order) are
+    % actually taken into account for that resume.
+    % So:
 
 
-	% Plan to resume initial blocks at next diasca by auto-scheduling this exit
-	% point:
-	%
-	AutoSentState = class_Actor:send_actor_message( self(),
-		initiateDataflowEvaluation, State ),
+    % Plan to resume initial blocks at next diasca by auto-scheduling this exit
+    % point:
+    %
+    AutoSentState = class_Actor:send_actor_message( self(),
+        initiateDataflowEvaluation, State ),
 
-	actor:return_state( AutoSentState ).
+    actor:return_state( AutoSentState ).
 
 
 
@@ -204,21 +204,21 @@ Initiates the evaluation of the known dataflows, supposing all initial blocks
 have already registered themselves to their respective dataflows.
 """.
 -spec initiateDataflowEvaluation( wooper:state(), sending_actor_pid() ) ->
-										actor_oneway_return().
+                                        actor_oneway_return().
 initiateDataflowEvaluation( State, _SendingActorPid ) ->
 
-	?debug( "Initiating dataflow evaluation." ),
+    ?debug( "Initiating dataflow evaluation." ),
 
-	Dataflows = ?getAttr(dataflows),
+    Dataflows = ?getAttr(dataflows),
 
-	% Wake up known dataflows:
-	SentState = class_Actor:send_actor_messages( Dataflows,
-												 resumeSuspendedBlocks, State ),
+    % Wake up known dataflows:
+    SentState = class_Actor:send_actor_messages( Dataflows,
+                                                 resumeSuspendedBlocks, State ),
 
-	% And operate as well, notably to plan next actions:
-	ActState = executeOneway( SentState, actSpontaneous ),
+    % And operate as well, notably to plan next actions:
+    ActState = executeOneway( SentState, actSpontaneous ),
 
-	actor:return_state( ActState ).
+    actor:return_state( ActState ).
 
 
 
@@ -226,47 +226,47 @@ initiateDataflowEvaluation( State, _SendingActorPid ) ->
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
-	Phase = ?getAttr(phase),
+    Phase = ?getAttr(phase),
 
-	?debug_fmt( "Acting spontaneously, in ~ts phase, on behalf of (any) "
-				"previous one.", [ Phase ] ),
+    ?debug_fmt( "Acting spontaneously, in ~ts phase, on behalf of (any) "
+                "previous one.", [ Phase ] ),
 
-	FinalState = case Phase of
+    FinalState = case Phase of
 
-		initialisation ->
-			EntryPointPid = ?getAttr(entry_point_pid),
+        initialisation ->
+            EntryPointPid = ?getAttr(entry_point_pid),
 
-			?notice_fmt( "Initialisation over; performing first trigger "
-						 "of entry point ~p.", [ EntryPointPid ] ),
+            ?notice_fmt( "Initialisation over; performing first trigger "
+                         "of entry point ~p.", [ EntryPointPid ] ),
 
-			SentState = class_Actor:send_actor_message( EntryPointPid,
-				startExperimentTick, State ),
+            SentState = class_Actor:send_actor_message( EntryPointPid,
+                startExperimentTick, State ),
 
-			NextState = executeOneway( SentState,
-									   scheduleNextSpontaneousTick ),
+            NextState = executeOneway( SentState,
+                                       scheduleNextSpontaneousTick ),
 
-			setAttribute( NextState, phase, simulation );
+            setAttribute( NextState, phase, simulation );
 
-		simulation ->
-			EntryPointPid = ?getAttr(entry_point_pid),
+        simulation ->
+            EntryPointPid = ?getAttr(entry_point_pid),
 
-			%?debug_fmt( "Normal trigger of entry point ~p.",
-			%            [ EntryPointPid ] ),
+            %?debug_fmt( "Normal trigger of entry point ~p.",
+            %            [ EntryPointPid ] ),
 
-			SentState = class_Actor:send_actor_message( EntryPointPid,
-				startExperimentTick, State ),
+            SentState = class_Actor:send_actor_message( EntryPointPid,
+                startExperimentTick, State ),
 
-			executeOneway( SentState, scheduleNextSpontaneousTick );
+            executeOneway( SentState, scheduleNextSpontaneousTick );
 
 
-		termination ->
-			?info( "Termination reached, no more trigger of entry "
-					"point nor additional scheduling." ),
-			State
+        termination ->
+            ?info( "Termination reached, no more trigger of entry "
+                    "point nor additional scheduling." ),
+            State
 
-	end,
+    end,
 
-	wooper:return_state( FinalState ).
+    wooper:return_state( FinalState ).
 
 
 
@@ -278,18 +278,18 @@ Note: usually this is determined internally.
 -spec declareExperimentTermination( wooper:state() ) -> oneway_return().
 declareExperimentTermination( State ) ->
 
-	NewState = case ?getAttr(phase) of
+    NewState = case ?getAttr(phase) of
 
-		termination ->
-			throw( already_terminated );
+        termination ->
+            throw( already_terminated );
 
-		_ ->
-			?info( "Experiment terminating now." ),
-			setAttribute( State, phase, termination )
+        _ ->
+            ?info( "Experiment terminating now." ),
+            setAttribute( State, phase, termination )
 
-	end,
+    end,
 
-	wooper:return_state( NewState ).
+    wooper:return_state( NewState ).
 
 
 
@@ -302,24 +302,24 @@ declareExperimentTermination( State ) ->
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
-	DataflowString = case ?getAttr(dataflows) of
+    DataflowString = case ?getAttr(dataflows) of
 
-		[] ->
-			"not referencing any dataflow";
+        [] ->
+            "not referencing any dataflow";
 
-		[ Dataflow ] ->
-			text_utils:format( "referencing a single dataflow instance: ~p",
-							   [ Dataflow ] );
+        [ Dataflow ] ->
+            text_utils:format( "referencing a single dataflow instance: ~p",
+                               [ Dataflow ] );
 
-		Dataflows ->
-			text_utils:format( "referencing ~B dataflow instances: ~p",
-							   [ length( Dataflows ), Dataflows ] )
+        Dataflows ->
+            text_utils:format( "referencing ~B dataflow instances: ~p",
+                               [ length( Dataflows ), Dataflows ] )
 
-	end,
+    end,
 
-	text_utils:format( "Experiment exit point in ~ts phase referencing "
-		"its entry point counterpart ~p, associated to the experiment "
-		"manager ~w, to the world manager ~w and ~ts",
-		[ ?getAttr(phase), ?getAttr(entry_point_pid),
-		  ?getAttr(experiment_manager_pid), ?getAttr(world_manager_pid),
-		  DataflowString ] ).
+    text_utils:format( "Experiment exit point in ~ts phase referencing "
+        "its entry point counterpart ~p, associated to the experiment "
+        "manager ~w, to the world manager ~w and ~ts",
+        [ ?getAttr(phase), ?getAttr(entry_point_pid),
+          ?getAttr(experiment_manager_pid), ?getAttr(world_manager_pid),
+          DataflowString ] ).

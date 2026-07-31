@@ -1,4 +1,4 @@
-% Copyright (C) 2024-2025 Olivier Boudeville
+% Copyright (C) 2024-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -53,31 +53,31 @@ Here the main loop just has to remember the frame whose closing is awaited for.
 -spec run_gui_test() -> void().
 run_gui_test() ->
 
-	test_facilities:display( "~nStarting the text editor test." ),
+    test_facilities:display( "~nStarting the text editor test." ),
 
-	gui:start(),
+    gui:start(),
 
-	Frame = gui_frame:create(
-		"This is the overall frame for text editor testing", 
-		_Size={ 1024, 768 } ),
-
-
+    Frame = gui_frame:create(
+        "This is the overall frame for text editor testing",
+        _Size={ 1024, 768 } ),
 
 
-	% Rich text for Windows, harmless elsewhere:
-	TextEditorStyle = [ process_enter_key, multiline, rich_text_v2 ],
 
-	Editor = gui_text_editor:create(
-		_Opts=[ { text, "This is the initial text" },
-				{ style, TextEditorStyle } ],
-		_ParentWin=Frame ),
 
-	gui:subscribe_to_events( [ { onEnterPressed, Editor },
-							   { onWindowClosed, Frame } ] ),
+    % Rich text for Windows, harmless elsewhere:
+    TextEditorStyle = [ process_enter_key, multiline, rich_text_v2 ],
 
-	gui_frame:show( Frame ),
+    Editor = gui_text_editor:create(
+        _Opts=[ { text, "This is the initial text" },
+                { style, TextEditorStyle } ],
+        _ParentWin=Frame ),
 
-	test_main_loop( _InitialState={ Frame, Editor } ).
+    gui:subscribe_to_events( [ { onEnterPressed, Editor },
+                               { onWindowClosed, Frame } ] ),
+
+    gui_frame:show( Frame ),
+
+    test_main_loop( _InitialState={ Frame, Editor } ).
 
 
 
@@ -89,27 +89,27 @@ corresponding to the frame that shall be closed to stop the test
 -spec test_main_loop( my_test_state() ) -> no_return().
 test_main_loop( State={ Frame, Editor } ) ->
 
-	trace_utils:info( "Test main loop running..." ),
+    trace_utils:info( "Test main loop running..." ),
 
-	receive
+    receive
 
-		{ onEnterPressed, [ Editor, _EditorId, NewText, _EventContext ] } ->
-			trace_utils:info_fmt(
-				"Text obtained after Enter was pressed: '~ts'.",
-				[ NewText ] ),
-			test_main_loop( State );
+        { onEnterPressed, [ Editor, _EditorId, NewText, _EventContext ] } ->
+            trace_utils:info_fmt(
+                "Text obtained after Enter was pressed: '~ts'.",
+                [ NewText ] ),
+            test_main_loop( State );
 
-		{ onWindowClosed, [ Frame, _FrameId, _EventContext ] } ->
-			trace_utils:info( "Main frame has been closed; test success." ),
-			gui_frame:destruct( Frame ),
-			gui:stop();
+        { onWindowClosed, [ Frame, _FrameId, _EventContext ] } ->
+            trace_utils:info( "Main frame has been closed; test success." ),
+            gui_frame:destruct( Frame ),
+            gui:stop();
 
-		Other ->
-			trace_utils:warning_fmt( "Test main loop ignored following "
-									 "message:~n ~p.", [ Other ] ),
-			test_main_loop( State )
+        Other ->
+            trace_utils:warning_fmt( "Test main loop ignored following "
+                                     "message:~n ~p.", [ Other ] ),
+            test_main_loop( State )
 
-	end.
+    end.
 
 
 
@@ -117,17 +117,17 @@ test_main_loop( State={ Frame, Editor } ) ->
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	case executable_utils:is_batch() of
+    case executable_utils:is_batch() of
 
-		true ->
-			test_facilities:display(
-				"(not running the MyriadGUI test, being in batch mode)" );
+        true ->
+            test_facilities:display(
+                "(not running the MyriadGUI test, being in batch mode)" );
 
-		false ->
-			run_gui_test()
+        false ->
+            run_gui_test()
 
-	end,
+    end,
 
-	test_facilities:stop().
+    test_facilities:stop().

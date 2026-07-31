@@ -1,4 +1,4 @@
-% Copyright (C) 2024-2025 Olivier Boudeville
+% Copyright (C) 2024-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -31,58 +31,58 @@
 -record( camera, {
 
 
-	% The origin of the viewpoint corresponding to this camera, in world space:
-	%
-	% (generally designated as P={Px,Py,Pz})
-	%
-	position :: point3:point3(),
+    % The origin of the viewpoint corresponding to this camera, in world space:
+    %
+    % (generally designated as P={Px,Py,Pz})
+    %
+    position :: point3:point3(),
 
 
-	% The target position at which this camera is pointing at, in world space:
-	%
-	% (generally designated as T={Tx,Ty,Tz}; stored in order to be able to move
-	% the camera whereas pointing at the same target)
-	%
-	target :: point3:point3(),
+    % The target position at which this camera is pointing at, in world space:
+    %
+    % (generally designated as T={Tx,Ty,Tz}; stored in order to be able to move
+    % the camera whereas pointing at the same target)
+    %
+    target :: point3:point3(),
 
 
-	% The actual direction at which this camera points, in world space, from its
-	% position to its target, as a unit vector computed by look_at/3 (thus a
-	% value to be read, not set).
-	%
-	% (this direction will thus correspond to the -Z axis of the local
-	% coordinate system of this camera)
-	%
-	aim :: vector3:unit_vector3(),
+    % The actual direction at which this camera points, in world space, from its
+    % position to its target, as a unit vector computed by look_at/3 (thus a
+    % value to be read, not set).
+    %
+    % (this direction will thus correspond to the -Z axis of the local
+    % coordinate system of this camera)
+    %
+    aim :: vector3:unit_vector3(),
 
 
-	% The direction, in world space, of the upper part of this camera, as a unit
-	% vector computed by look_at/3 (thus a value to be read, not set).
-	%
-	% (this direction will thus correspond to the +Y axis of the local
-	% coordinate system of this camera)
-	%
-	up :: vector3:unit_vector3(),
+    % The direction, in world space, of the upper part of this camera, as a unit
+    % vector computed by look_at/3 (thus a value to be read, not set).
+    %
+    % (this direction will thus correspond to the +Y axis of the local
+    % coordinate system of this camera)
+    %
+    up :: vector3:unit_vector3(),
 
 
-	% The direction, in world space, of the leftmost part of this camera, as a
-	% unit vector computed by look_at/3 (thus a value to be read, not set).
-	%
-	% (this direction will thus correspond to the +X axis of the local
-	% coordinate system of this camera)
-	%
-	left :: vector3:unit_vector3(),
+    % The direction, in world space, of the leftmost part of this camera, as a
+    % unit vector computed by look_at/3 (thus a value to be read, not set).
+    %
+    % (this direction will thus correspond to the +X axis of the local
+    % coordinate system of this camera)
+    %
+    left :: vector3:unit_vector3(),
 
 
-	% The view transformation, based on the current camera settings, between its
-	% coordinate system and another one - generally the world one.
-	%
-	% More precisely, its reference matrix4 is Pcw, the transition one from
-	% camera to world, and Pwc, its inverse - generally the most useful one - is
-	% the transition matrix4 from world to camera space.
-	%
-	% As a consequence, any change in the previous camera fields should result
-	% in invalidating this one (i.e. setting it to 'undefined'), so that it gets
-	% recomputed whenever needed (refer to look_at/3 for that).
-	%
-	view_transf4 :: camera:view_transform4() } ).
+    % The view transformation, based on the current camera settings, between its
+    % coordinate system and another one - generally the world one.
+    %
+    % More precisely, its reference matrix4 is Pcw, the transition one from
+    % camera to world, and Pwc, its inverse - generally the most useful one - is
+    % the transition matrix4 from world to camera space.
+    %
+    % As a consequence, any change in the previous camera fields should result
+    % in invalidating this one (i.e. setting it to 'undefined'), so that it gets
+    % recomputed whenever needed (refer to look_at/3 for that).
+    %
+    view_transf4 :: camera:view_transform4() } ).

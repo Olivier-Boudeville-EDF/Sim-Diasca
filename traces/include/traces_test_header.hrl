@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2025 Olivier Boudeville
+% Copyright (C) 2011-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -52,61 +52,61 @@
 
 
 -define( test_emergency( Message ),
-		 class_TraceEmitter:send_standalone_safe( emergency, Message )
+         class_TraceEmitter:send_standalone_safe( emergency, Message )
 ).
 
 
 -define( test_emergency_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( emergency,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( emergency,
+            text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
 
 -define( test_alert( Message ),
-		 class_TraceEmitter:send_standalone_safe( alert, Message )
+         class_TraceEmitter:send_standalone_safe( alert, Message )
 ).
 
 
 -define( test_alert_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( alert,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( alert,
+            text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
 
 -define( test_critical( Message ),
-		 class_TraceEmitter:send_standalone_safe( critical, Message )
+         class_TraceEmitter:send_standalone_safe( critical, Message )
 ).
 
 
 -define( test_critical_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( critical,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( critical,
+            text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
 
 -define( test_error( Message ),
-		 class_TraceEmitter:send_standalone_safe( error, Message )
+         class_TraceEmitter:send_standalone_safe( error, Message )
 ).
 
 
 -define( test_error_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( error,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( error,
+            text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
 
 -define( test_warning( Message ),
-		 class_TraceEmitter:send_standalone_safe( warning, Message )
+         class_TraceEmitter:send_standalone_safe( warning, Message )
 ).
 
 
 -define( test_warning_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( warning,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( warning,
+            text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
@@ -118,38 +118,38 @@
 
 
 -define( test_notice( Message ),
-		 class_TraceEmitter:send_standalone_safe( notice, Message )
+         class_TraceEmitter:send_standalone_safe( notice, Message )
 ).
 
 
 -define( test_notice_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( notice,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( notice,
+            text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
 
 -define( test_info( Message ),
-		 class_TraceEmitter:send_standalone_safe( info, Message )
+         class_TraceEmitter:send_standalone_safe( info, Message )
 
 ).
 
 
 -define( test_info_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( info,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( info,
+            text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
 
 -define( test_debug( Message ),
-		 class_TraceEmitter:send_standalone_safe( debug, Message )
+         class_TraceEmitter:send_standalone_safe( debug, Message )
 ).
 
 
 -define( test_debug_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( debug,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( debug,
+            text_utils:format( MessageFormat, FormatValues ) )
 ).
 
 
@@ -169,7 +169,7 @@
 
 
 -define( test_notice_fmt( Message, FormatValues ),
-		 test_trace_disabled( Message, FormatValues ) ).
+         test_trace_disabled( Message, FormatValues ) ).
 
 
 
@@ -177,7 +177,7 @@
 
 
 -define( test_info_fmt( Message, FormatValues ),
-		 test_trace_disabled( Message, FormatValues ) ).
+         test_trace_disabled( Message, FormatValues ) ).
 
 
 
@@ -185,7 +185,7 @@
 
 
 -define( test_debug_fmt( Message, FormatValues ),
-		 test_trace_disabled( Message, FormatValues ) ).
+         test_trace_disabled( Message, FormatValues ) ).
 
 
 
@@ -198,4 +198,4 @@
 -define( test_void( Message ), test_trace_disabled( Message ) ).
 
 -define( test_void_fmt( Message, FormatValues ),
-		 test_trace_disabled( Message, FormatValues ) ).
+         test_trace_disabled( Message, FormatValues ) ).

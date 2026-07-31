@@ -2,7 +2,7 @@ SIM_DIASCA_TOP = ../../../../..
 
 
 .PHONY: all test-web test-web-batch test-web-interactive \
-		pre-test clean clean-probes
+		pre-test clean clean-probes clean-mnesia
 
 
 # Needed for example because result_management_test.erl relies on the
@@ -30,12 +30,16 @@ pre-test: clean-probes
 	-@killall /usr/bin/node java 1>/dev/null 2>&1 || true
 
 
-clean: clean-probes
+clean: clean-probes clean-mnesia
 
 
 clean-probes:
 	@echo "   Cleaning web probes"
 	-@/bin/rm -f web-probe-*.html
+
+
+clean-mnesia:
+	-@/bin/rm -f MnesiaCore.*
 
 
 include $(SIM_DIASCA_TOP)/GNUmakesettings.inc

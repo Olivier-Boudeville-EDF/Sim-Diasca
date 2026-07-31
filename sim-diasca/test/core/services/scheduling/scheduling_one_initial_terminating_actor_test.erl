@@ -39,91 +39,91 @@ specified user duration, since having no more actor to schedule.
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+    ?case_start,
 
 
-	% Default simulation settings (50Hz, batch reproducible) are used, except
-	% for the name:
-	SimulationSettings = #simulation_settings{
-		simulation_name="Scheduling one initial terminating actor test" },
+    % Default simulation settings (50Hz, batch reproducible) are used, except
+    % for the name:
+    SimulationSettings = #simulation_settings{
+        simulation_name="Scheduling one initial terminating actor test" },
 
 
-	% Default deployment settings (unavailable nodes allowed, on-the-fly
-	% generation of the deployment package requested), but computing hosts are
-	% specified (to be updated depending on your environment):
-	% (note that localhost is implied)
-	%
-	DeploymentSettings = #deployment_settings{
+    % Default deployment settings (unavailable nodes allowed, on-the-fly
+    % generation of the deployment package requested), but computing hosts are
+    % specified (to be updated depending on your environment):
+    % (note that localhost is implied)
+    %
+    DeploymentSettings = #deployment_settings{
 
-		computing_hosts=
-			{ use_host_file_otherwise_local, "sim-diasca-host-candidates.etf" }
+        computing_hosts=
+            { use_host_file_otherwise_local, "sim-diasca-host-candidates.etf" }
 
-	},
-
-
-	% Default load balancing settings (round-robin placement heuristic):
-	LoadBalancingSettings = #load_balancing_settings{},
+    },
 
 
-	?test_notice_fmt( "This test will deploy a distributed simulation "
-		"based on computing hosts specified as ~p.",
-		[ DeploymentSettings#deployment_settings.computing_hosts ] ),
+    % Default load balancing settings (round-robin placement heuristic):
+    LoadBalancingSettings = #load_balancing_settings{},
 
 
-	% Directly created on the user node:
-	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-		DeploymentSettings, LoadBalancingSettings ),
-
-	?test_info( "Deployment manager created." ),
-
-	% No need to retrieve explicitly the load balancer, to create initial
-	% actors.
-
-	?test_info( "Requesting the creation of a first initial test actor." ),
-
-	ActorPid = class_Actor:create_initial_actor( class_TestActor,
-		[ _Name="First erratic test actor",
-		  _SchedulingSettings={ erratic, 7 },
-		  _CreationSettings=no_creation,
-		  _TerminationTickOffset=80 ] ),
+    ?test_notice_fmt( "This test will deploy a distributed simulation "
+        "based on computing hosts specified as ~p.",
+        [ DeploymentSettings#deployment_settings.computing_hosts ] ),
 
 
-	ActorPid ! { getAAI, [], self() },
-	Id = test_receive(),
+    % Directly created on the user node:
+    DeploymentManagerPid = sim_diasca:init( SimulationSettings,
+        DeploymentSettings, LoadBalancingSettings ),
 
-	?test_notice_fmt( "The actor identifier for that actor is ~w.", [ Id ] ),
+    ?test_info( "Deployment manager created." ),
 
-	DeploymentManagerPid ! { getRootTimeManager, [], self() },
-	RootTimeManagerPid = test_receive(),
+    % No need to retrieve explicitly the load balancer, to create initial
+    % actors.
 
-	?test_info( "Starting simulation." ),
-	RootTimeManagerPid ! { start, [ _StopTick=120, self() ] },
+    ?test_info( "Requesting the creation of a first initial test actor." ),
 
-
-	?test_info( "Requesting textual timings (first)." ),
-
-	RootTimeManagerPid ! { getTextualTimings, [], self() },
-	FirstTimingString = test_receive(),
-
-	?test_notice_fmt( "Received first time: ~ts.", [ FirstTimingString ] ),
+    ActorPid = class_Actor:create_initial_actor( class_TestActor,
+        [ _Name="First erratic test actor",
+          _SchedulingSettings={ erratic, 7 },
+          _CreationSettings=no_creation,
+          _TerminationTickOffset=80 ] ),
 
 
-	% Waits until simulation is finished:
-	receive
+    ActorPid ! { getAAI, [], self() },
+    Id = test_receive(),
 
-		simulation_stopped ->
-			?test_info( "Simulation stopped spontaneously." )
+    ?test_notice_fmt( "The actor identifier for that actor is ~w.", [ Id ] ),
 
-	end,
+    DeploymentManagerPid ! { getRootTimeManager, [], self() },
+    RootTimeManagerPid = test_receive(),
+
+    ?test_info( "Starting simulation." ),
+    RootTimeManagerPid ! { start, [ _StopTick=120, self() ] },
 
 
-	?test_info( "Requesting textual timings (second)." ),
+    ?test_info( "Requesting textual timings (first)." ),
 
-	RootTimeManagerPid ! { getTextualTimings, [], self() },
-	SecondTimingString = test_receive(),
+    RootTimeManagerPid ! { getTextualTimings, [], self() },
+    FirstTimingString = test_receive(),
 
-	?test_notice_fmt( "Received second time: ~ts.", [ SecondTimingString ] ),
+    ?test_notice_fmt( "Received first time: ~ts.", [ FirstTimingString ] ),
 
-	sim_diasca:shutdown(),
 
-	?case_stop.
+    % Waits until simulation is finished:
+    receive
+
+        simulation_stopped ->
+            ?test_info( "Simulation stopped spontaneously." )
+
+    end,
+
+
+    ?test_info( "Requesting textual timings (second)." ),
+
+    RootTimeManagerPid ! { getTextualTimings, [], self() },
+    SecondTimingString = test_receive(),
+
+    ?test_notice_fmt( "Received second time: ~ts.", [ SecondTimingString ] ),
+
+    sim_diasca:shutdown(),
+
+    ?case_stop.

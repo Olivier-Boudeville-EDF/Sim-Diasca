@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 EDF R&D
+% Copyright (C) 2016-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -43,8 +43,8 @@ A record gathering all the binding managers of the various languages involved.
 
 % Exports of helpers:
 -export([ get_binding_manager/1, get_binding_manager/2,
-		  get_binding_manager_class/1, set_binding_managers_record/1,
-		  check_implementation_language/2 ]).
+          get_binding_manager_class/1, set_binding_managers_record/1,
+          check_implementation_language/2 ]).
 
 
 % For sending traces:
@@ -72,13 +72,13 @@ A record gathering all the binding managers of the various languages involved.
 -spec get_binding_manager( language() ) -> binding_manager_pid().
 get_binding_manager( Language ) ->
 
-	% Gets the class corresponding to the binding manager associated with the
-	% target language:
-	%
-	BindingManagerClass = get_binding_manager_class( Language ),
+    % Gets the class corresponding to the binding manager associated with the
+    % target language:
+    %
+    BindingManagerClass = get_binding_manager_class( Language ),
 
-	% Returns the PID of this (uniquely) instantiated and registered manager:
-	BindingManagerClass:get_registered_manager().
+    % Returns the PID of this (uniquely) instantiated and registered manager:
+    BindingManagerClass:get_registered_manager().
 
 
 
@@ -87,19 +87,19 @@ Returns the binding manager associated to the specified bound language, based on
 a binding manager record.
 """.
 -spec get_binding_manager( language(), binding_managers() ) ->
-									binding_manager_pid().
+                                    binding_manager_pid().
 get_binding_manager( _Lang=python, BindingManagers ) ->
-	BindingManagers#binding_managers.python_binding_manager;
+    BindingManagers#binding_managers.python_binding_manager;
 
 get_binding_manager( _Lang=java, BindingManagers ) ->
-	BindingManagers#binding_managers.java_binding_manager;
+    BindingManagers#binding_managers.java_binding_manager;
 
 get_binding_manager( UnknownLanguage, _BindingManagers )
                                 when is_atom( UnknownLanguage ) ->
-	throw( { unsupported_binding_language, UnknownLanguage } );
+    throw( { unsupported_binding_language, UnknownLanguage } );
 
 get_binding_manager( InvalidLanguageSpec, _BindingManagers ) ->
-	throw( { invalid_language_binding_spec, InvalidLanguageSpec } ).
+    throw( { invalid_language_binding_spec, InvalidLanguageSpec } ).
 
 
 
@@ -109,16 +109,16 @@ specified bound language.
 """.
 -spec get_binding_manager_class( language() ) -> classname().
 get_binding_manager_class( _Lang=python ) ->
-	class_PythonBindingManager;
+    class_PythonBindingManager;
 
 get_binding_manager_class( _Lang=java ) ->
-	class_JavaBindingManager;
+    class_JavaBindingManager;
 
 get_binding_manager_class( UnknownLanguage ) when is_atom( UnknownLanguage ) ->
-	throw( { unsupported_binding_language, UnknownLanguage } );
+    throw( { unsupported_binding_language, UnknownLanguage } );
 
 get_binding_manager_class( InvalidLanguageSpec ) ->
-	throw( { invalid_language_binding_spec, InvalidLanguageSpec } ).
+    throw( { invalid_language_binding_spec, InvalidLanguageSpec } ).
 
 
 
@@ -126,50 +126,50 @@ get_binding_manager_class( InvalidLanguageSpec ) ->
 Generates the binding manager record, federating all known binding languages.
 """.
 -spec set_binding_managers_record(
-		[ { language(), binding_manager_pid() } ] ) -> binding_managers().
+        [ { language(), binding_manager_pid() } ] ) -> binding_managers().
 set_binding_managers_record( _BindingManagerPairs=[] ) ->
-	% All managers default to 'none':
-	%trace_utils:debug( "No binding manager declared." ),
-	#binding_managers{};
+    % All managers default to 'none':
+    %trace_utils:debug( "No binding manager declared." ),
+    #binding_managers{};
 
 set_binding_managers_record( BindingManagerPairs )
-						when is_list( BindingManagerPairs ) ->
+                        when is_list( BindingManagerPairs ) ->
 
-	%trace_utils:debug_fmt( "Following binding manager pairs declared: ~p.",
-	%                       [ BindingManagerPairs ] ),
+    %trace_utils:debug_fmt( "Following binding manager pairs declared: ~p.",
+    %                       [ BindingManagerPairs ] ),
 
-	% Also ensures uniqueness:
-	BindingsTable = table:new( BindingManagerPairs ),
+    % Also ensures uniqueness:
+    BindingsTable = table:new( BindingManagerPairs ),
 
-	% Check that each language was mentioned no more than once:
-	LangCount = table:size( BindingsTable ),
+    % Check that each language was mentioned no more than once:
+    LangCount = table:size( BindingsTable ),
 
-	length( BindingManagerPairs ) =:= LangCount orelse
-		throw( { multiple_binding_declarations, BindingManagerPairs } ),
+    length( BindingManagerPairs ) =:= LangCount orelse
+        throw( { multiple_binding_declarations, BindingManagerPairs } ),
 
-	PythonBindingManagerPid =
-			case table:lookup_entry( python, BindingsTable ) of
+    PythonBindingManagerPid =
+            case table:lookup_entry( python, BindingsTable ) of
 
-		key_not_found ->
-			none;
+        key_not_found ->
+            none;
 
-		{ value, PyManPid } ->
-			PyManPid
+        { value, PyManPid } ->
+            PyManPid
 
-	end,
+    end,
 
-	JavaBindingManagerPid = case table:lookup_entry( java, BindingsTable ) of
+    JavaBindingManagerPid = case table:lookup_entry( java, BindingsTable ) of
 
-		key_not_found ->
-			none;
+        key_not_found ->
+            none;
 
-		{ value, JaManPid } ->
-			JaManPid
+        { value, JaManPid } ->
+            JaManPid
 
-	end,
+    end,
 
-	#binding_managers{ python_binding_manager=PythonBindingManagerPid,
-					   java_binding_manager=JavaBindingManagerPid }.
+    #binding_managers{ python_binding_manager=PythonBindingManagerPid,
+                       java_binding_manager=JavaBindingManagerPid }.
 
 
 
@@ -184,35 +184,35 @@ binding_managers record.
 (helper)
 """.
 -spec check_implementation_language(
-		[ classname() | { classname(), language() } ],
-		binding_managers() ) -> void().
+        [ classname() | { classname(), language() } ],
+        binding_managers() ) -> void().
 check_implementation_language( _Specs=[], _BindingManagers ) ->
-	ok;
+    ok;
 
 check_implementation_language( [ _Spec={ _Class, erlang } | MoreSpecs ],
-							   BindingManagers ) ->
-	check_implementation_language( MoreSpecs, BindingManagers );
+                               BindingManagers ) ->
+    check_implementation_language( MoreSpecs, BindingManagers );
 
 check_implementation_language( [ _Spec={ _Class, Language } | MoreSpecs ],
-							   BindingManagers ) ->
+                               BindingManagers ) ->
 
-	%trace_utils:debug_fmt( "Looking for language '~ts' through ~p.",
-	%                       [ Language, BindingManagers ] ),
+    %trace_utils:debug_fmt( "Looking for language '~ts' through ~p.",
+    %                       [ Language, BindingManagers ] ),
 
-	case get_binding_manager( Language, BindingManagers ) of
+    case get_binding_manager( Language, BindingManagers ) of
 
-		none ->
-			throw( { binding_manager_not_activated_for_language, Language } );
+        none ->
+            throw( { binding_manager_not_activated_for_language, Language } );
 
-		Pid when is_pid( Pid ) ->
-			check_implementation_language( MoreSpecs, BindingManagers );
+        Pid when is_pid( Pid ) ->
+            check_implementation_language( MoreSpecs, BindingManagers );
 
-		NotPid ->
-			throw( { binding_manager_is_not_pid, Language, NotPid } )
+        NotPid ->
+            throw( { binding_manager_is_not_pid, Language, NotPid } )
 
-	end;
+    end;
 
 % Erlang implied here:
 check_implementation_language( [ _Spec=Class | MoreSpecs ], BindingManagers ) ->
-	check_implementation_language( [ { Class, erlang } | MoreSpecs ],
-								   BindingManagers ).
+    check_implementation_language( [ { Class, erlang } | MoreSpecs ],
+                                   BindingManagers ).

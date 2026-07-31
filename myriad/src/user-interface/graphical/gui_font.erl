@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -67,7 +67,7 @@ of relying on the point size of a font, using the actual extent of a target text
 
 -doc "A font family.".
 -type font_family() :: 'default_font_family' | 'decorative' | 'roman'
-					 | 'script' | 'swiss' | 'modern' | 'teletype'.
+                     | 'script' | 'swiss' | 'modern' | 'teletype'.
 
 
 
@@ -78,8 +78,8 @@ of relying on the point size of a font, using the actual extent of a target text
 
 -doc "A font weight".
 -type font_weight() :: 'thin' | 'extra_light' | 'light' | 'normal' | 'medium'
-					 | 'semi_bold' | 'bold' | 'extra_bold' | 'heavy'
-					 | 'extra_heavy'.
+                     | 'semi_bold' | 'bold' | 'extra_bold' | 'heavy'
+                     | 'extra_heavy'.
 
 
 
@@ -90,8 +90,8 @@ of relying on the point size of a font, using the actual extent of a target text
 
 -doc "A font option.".
 -type font_option() :: { 'underline', boolean() }
-					 | { 'face_name', any_string() }
-					 | { 'encoding', text_encoding() }.
+                     | { 'face_name', any_string() }
+                     | { 'encoding', text_encoding() }.
 
 
 
@@ -122,18 +122,18 @@ A precise text extent.
 Useful for example so that texts are rendered at the same height.
 """.
 -type precise_text_extent() ::
-	{ width(), height(), descent(), external_leading() }.
+    { width(), height(), descent(), external_leading() }.
 
 
 -export_type([ font/0, font_size/0, point_size/0, font_family/0, font_style/0,
-			   font_weight/0, text_encoding/0, font_option/0, font_data/0,
-			   descent/0, external_leading/0, precise_text_extent/0 ]).
+               font_weight/0, text_encoding/0, font_option/0, font_data/0,
+               descent/0, external_leading/0, precise_text_extent/0 ]).
 
 
 % Font-related instance-level operations.
 -export([ create/1, create/2, create/3, create/4, create/5, destruct/1,
-		  get_platform_dependent_description/1, get_user_friendly_description/1,
-		  is_fixed_width/1, get_text_extent/2, get_precise_text_extent/2 ]).
+          get_platform_dependent_description/1, get_user_friendly_description/1,
+          is_fixed_width/1, get_text_extent/2, get_precise_text_extent/2 ]).
 
 
 % General font information.
@@ -184,7 +184,7 @@ appearance of rendered texts from now on.
 """.
 -spec create( font_size() | point_size() ) -> font().
 create( FontSize ) ->
-	create( FontSize, _FontFamily=default_font_family ).
+    create( FontSize, _FontFamily=default_font_family ).
 
 
 
@@ -194,7 +194,7 @@ appearance of rendered texts from now on.
 """.
 -spec create( font_size() | point_size(), font_family() ) -> font().
 create( FontSize, FontFamily ) ->
-	create( FontSize, FontFamily, _FontStyle=normal ).
+    create( FontSize, FontFamily, _FontStyle=normal ).
 
 
 
@@ -203,9 +203,9 @@ Creates a font object from specified requirements, to determine the appearance
 of rendered text.
 """.
 -spec create( font_size() | point_size(), font_family(), font_style() ) ->
-											font().
+                                            font().
 create( FontSize, FontFamily, FontStyle ) ->
-	create( FontSize, FontFamily, FontStyle, _FontWeight=normal ).
+    create( FontSize, FontFamily, FontStyle, _FontWeight=normal ).
 
 
 
@@ -214,9 +214,9 @@ Creates a font object from specified requirements, to determine the appearance
 of rendered text.
 """.
 -spec create( font_size() | point_size(), font_family(), font_style(),
-			  font_weight() ) -> font().
+              font_weight() ) -> font().
 create( FontSize, FontFamily, FontStyle, FontWeight ) ->
-	create( FontSize, FontFamily, FontStyle, FontWeight, _FontOpts=[] ).
+    create( FontSize, FontFamily, FontStyle, FontWeight, _FontOpts=[] ).
 
 
 
@@ -225,36 +225,36 @@ Creates a font object from specified requirements, to determine the appearance
 of rendered text.
 """.
 -spec create( font_size() | point_size(), font_family(), font_style(),
-			  font_weight(), [ font_option() ] ) -> font().
+              font_weight(), [ font_option() ] ) -> font().
 create( FontSize, FontFamily, FontStyle, FontWeight, FontOpts ) ->
 
-	cond_utils:if_defined( myriad_debug_gui_font, trace_utils:debug_fmt(
-		"Creating a font of family '~ts', of size ~w, "
-		"~ts style, ~ts weight and options ~p.",
-		[ FontFamily, FontSize, FontStyle, FontWeight, FontOpts ] ) ),
+    cond_utils:if_defined( myriad_debug_gui_font, trace_utils:debug_fmt(
+        "Creating a font of family '~ts', of size ~w, "
+        "~ts style, ~ts weight and options ~p.",
+        [ FontFamily, FontSize, FontStyle, FontWeight, FontOpts ] ) ),
 
-	WxFontFamily = to_wx_font_family( FontFamily ),
+    WxFontFamily = to_wx_font_family( FontFamily ),
 
-	WxFontStyle = to_wx_font_style( FontStyle ),
+    WxFontStyle = to_wx_font_style( FontStyle ),
 
-	WxFontWeight = to_wx_font_weight( FontWeight ),
+    WxFontWeight = to_wx_font_weight( FontWeight ),
 
-	WxFontOpts = to_wx_font_options( FontOpts ),
+    WxFontOpts = to_wx_font_options( FontOpts ),
 
-	Font = wxFont:new( FontSize, WxFontFamily, WxFontStyle, WxFontWeight,
-					   WxFontOpts ),
+    Font = wxFont:new( FontSize, WxFontFamily, WxFontStyle, WxFontWeight,
+                       WxFontOpts ),
 
-	cond_utils:if_defined( myriad_debug_gui_memory,
-						   true = wxFont:isOk( Font ) ),
+    cond_utils:if_defined( myriad_debug_gui_memory,
+                           true = wxFont:isOk( Font ) ),
 
-	Font.
+    Font.
 
 
 
 -doc "Destructs the specified font.".
 -spec destruct( font() ) -> void().
 destruct( Font ) ->
-	wxFont:destroy( Font ).
+    wxFont:destroy( Font ).
 
 
 
@@ -265,7 +265,7 @@ For example, "Sans 10".
 """.
 -spec get_platform_dependent_description( font() ) -> ustring().
 get_platform_dependent_description( Font ) ->
-	wxFont:getNativeFontInfoDesc( Font ).
+    wxFont:getNativeFontInfoDesc( Font ).
 
 
 
@@ -276,14 +276,14 @@ For example, "Sans 10".
 """.
 -spec get_user_friendly_description( font() ) -> ustring().
 get_user_friendly_description( Font ) ->
-	wxFont:getNativeFontInfoUserDesc( Font ).
+    wxFont:getNativeFontInfoUserDesc( Font ).
 
 
 
 -doc "Tells whether the specified font is fixed-width.".
 -spec is_fixed_width( font() ) -> boolean().
 is_fixed_width( Font ) ->
-	wxFont:isFixedWidth( Font ).
+    wxFont:isFixedWidth( Font ).
 
 
 -doc """
@@ -297,30 +297,30 @@ the descent.
 -spec get_text_extent( ustring(), font() ) -> dimensions().
 get_text_extent( Text, Font ) ->
 
-	cond_utils:if_defined( myriad_debug_gui_font, trace_utils:debug_fmt(
-		"Getting extent of text '~ts' for font ~p.", [ Text, Font ] ) ),
+    cond_utils:if_defined( myriad_debug_gui_font, trace_utils:debug_fmt(
+        "Getting extent of text '~ts' for font ~p.", [ Text, Font ] ) ),
 
-	% We have to create dummy bitmap and device contexts in order to determine
-	% these dimensions:
+    % We have to create dummy bitmap and device contexts in order to determine
+    % these dimensions:
 
-	TmpBmp = wxBitmap:new( _W=200, _H=200 ),
+    TmpBmp = wxBitmap:new( _W=200, _H=200 ),
 
-	cond_utils:if_defined( myriad_debug_gui_memory,
-						   true = wxBitmap:isOk( TmpBmp ) ),
+    cond_utils:if_defined( myriad_debug_gui_memory,
+                           true = wxBitmap:isOk( TmpBmp ) ),
 
-	TmpDC = wxMemoryDC:new( TmpBmp ),
+    TmpDC = wxMemoryDC:new( TmpBmp ),
 
-	cond_utils:if_defined( myriad_debug_gui_memory, true = wxDC:isOk( TmpDC ) ),
+    cond_utils:if_defined( myriad_debug_gui_memory, true = wxDC:isOk( TmpDC ) ),
 
-	wxMemoryDC:setFont( TmpDC, Font ),
+    wxMemoryDC:setFont( TmpDC, Font ),
 
-	Dims = wxDC:getTextExtent( TmpDC, Text ),
+    Dims = wxDC:getTextExtent( TmpDC, Text ),
 
-	wxMemoryDC:destroy( TmpDC ),
+    wxMemoryDC:destroy( TmpDC ),
 
-	wxBitmap:destroy( TmpBmp ),
+    wxBitmap:destroy( TmpBmp ),
 
-	Dims.
+    Dims.
 
 
 
@@ -331,33 +331,33 @@ text with the specified font.
 -spec get_precise_text_extent( ustring(), font() ) -> precise_text_extent().
 get_precise_text_extent( Text, Font ) ->
 
-	cond_utils:if_defined( myriad_debug_gui_font, trace_utils:debug_fmt(
-		"Getting precise extent of text '~ts' for font ~p.", [ Text, Font ] ) ),
+    cond_utils:if_defined( myriad_debug_gui_font, trace_utils:debug_fmt(
+        "Getting precise extent of text '~ts' for font ~p.", [ Text, Font ] ) ),
 
-	% We have to create dummy bitmap and device contexts in order to determine
-	% these information:
+    % We have to create dummy bitmap and device contexts in order to determine
+    % these information:
 
-	TmpBmp = wxBitmap:new( _W=200, _H=200 ),
+    TmpBmp = wxBitmap:new( _W=200, _H=200 ),
 
-	cond_utils:if_defined( myriad_debug_gui_memory,
-						   true = wxBitmap:isOk( TmpBmp ) ),
+    cond_utils:if_defined( myriad_debug_gui_memory,
+                           true = wxBitmap:isOk( TmpBmp ) ),
 
-	TmpDC = wxMemoryDC:new( TmpBmp ),
+    TmpDC = wxMemoryDC:new( TmpBmp ),
 
-	cond_utils:if_defined( myriad_debug_gui_memory, true = wxDC:isOk( TmpDC ) ),
+    cond_utils:if_defined( myriad_debug_gui_memory, true = wxDC:isOk( TmpDC ) ),
 
-	wxMemoryDC:setFont( TmpDC, Font ),
+    wxMemoryDC:setFont( TmpDC, Font ),
 
-	% The option (and return type) is the difference with a mere
-	% get_text_extent/2:
-	%
-	PExtent = wxDC:getTextExtent( TmpDC, Text, _Opts=[ { theFont, Font } ] ),
+    % The option (and return type) is the difference with a mere
+    % get_text_extent/2:
+    %
+    PExtent = wxDC:getTextExtent( TmpDC, Text, _Opts=[ { theFont, Font } ] ),
 
-	wxMemoryDC:destroy( TmpDC ),
+    wxMemoryDC:destroy( TmpDC ),
 
-	wxBitmap:destroy( TmpBmp ),
+    wxBitmap:destroy( TmpBmp ),
 
-	PExtent.
+    PExtent.
 
 
 
@@ -367,22 +367,22 @@ get_precise_text_extent( Text, Font ) ->
 -doc "Returns a list of the base font families.".
 -spec list_families() -> [ font_family() ].
 list_families() ->
-	[ default_font_family, decorative, roman, script, swiss, modern, teletype ].
+    [ default_font_family, decorative, roman, script, swiss, modern, teletype ].
 
 
 
 -doc "Returns a list of the supported font styles.".
 -spec list_styles() -> [ font_style() ].
 list_styles() ->
-	[ normal, italic, slant ].
+    [ normal, italic, slant ].
 
 
 
 -doc "Returns a list of the supported font weights.".
 -spec list_weights() -> [ font_weight() ].
 list_weights() ->
-	[ thin, extra_light, light, normal, medium, semi_bold, bold, extra_bold,
-	  heavy , extra_heavy ].
+    [ thin, extra_light, light, normal, medium, semi_bold, bold, extra_bold,
+      heavy , extra_heavy ].
 
 
 
@@ -395,101 +395,101 @@ list_weights() ->
 -doc "Converts the specified font family into a wx one.".
 -spec to_wx_font_family( font_family() ) -> wx_font_family().
 to_wx_font_family( default_font_family ) ->
-	?wxFONTFAMILY_DEFAULT;
+    ?wxFONTFAMILY_DEFAULT;
 
 to_wx_font_family( decorative ) ->
-	?wxFONTFAMILY_DECORATIVE;
+    ?wxFONTFAMILY_DECORATIVE;
 
 to_wx_font_family( roman ) ->
-	?wxFONTFAMILY_ROMAN;
+    ?wxFONTFAMILY_ROMAN;
 
 to_wx_font_family( script ) ->
-	?wxFONTFAMILY_SCRIPT;
+    ?wxFONTFAMILY_SCRIPT;
 
 to_wx_font_family( swiss ) ->
-	?wxFONTFAMILY_SWISS;
+    ?wxFONTFAMILY_SWISS;
 
 to_wx_font_family( modern ) ->
-	?wxFONTFAMILY_MODERN;
+    ?wxFONTFAMILY_MODERN;
 
 to_wx_font_family( teletype ) ->
-	?wxFONTFAMILY_TELETYPE;
+    ?wxFONTFAMILY_TELETYPE;
 
 to_wx_font_family( Other ) ->
-	throw( { unknown_font_family, Other } ).
+    throw( { unknown_font_family, Other } ).
 
 
 
 -doc "Converts the specified font style into a wx one.".
 -spec to_wx_font_style( font_style() ) -> wx_font_style().
 to_wx_font_style( normal ) ->
-	?wxFONTSTYLE_NORMAL;
+    ?wxFONTSTYLE_NORMAL;
 
 to_wx_font_style( italic ) ->
-	?wxFONTSTYLE_ITALIC;
+    ?wxFONTSTYLE_ITALIC;
 
 to_wx_font_style( slant ) ->
-	?wxFONTSTYLE_SLANT;
+    ?wxFONTSTYLE_SLANT;
 
 to_wx_font_style( Other ) ->
-	throw( { unknown_font_style, Other } ).
+    throw( { unknown_font_style, Other } ).
 
 
 
 -doc "Converts the specified font weight into a wx one.".
 -spec to_wx_font_weight( font_weight() ) -> wx_font_weight().
 to_wx_font_weight( thin ) ->
-	?wxFONTWEIGHT_THIN;
+    ?wxFONTWEIGHT_THIN;
 
 to_wx_font_weight( extra_light ) ->
-	?wxFONTWEIGHT_EXTRALIGHT;
+    ?wxFONTWEIGHT_EXTRALIGHT;
 
 to_wx_font_weight( light ) ->
-	?wxFONTWEIGHT_LIGHT;
+    ?wxFONTWEIGHT_LIGHT;
 
 to_wx_font_weight( normal ) ->
-	?wxFONTWEIGHT_NORMAL;
+    ?wxFONTWEIGHT_NORMAL;
 
 to_wx_font_weight( medium ) ->
-	?wxFONTWEIGHT_MEDIUM;
+    ?wxFONTWEIGHT_MEDIUM;
 
 to_wx_font_weight( semi_bold ) ->
-	?wxFONTWEIGHT_SEMIBOLD;
+    ?wxFONTWEIGHT_SEMIBOLD;
 
 to_wx_font_weight( bold ) ->
-	?wxFONTWEIGHT_BOLD;
+    ?wxFONTWEIGHT_BOLD;
 
 to_wx_font_weight( extra_bold ) ->
-	?wxFONTWEIGHT_EXTRABOLD;
+    ?wxFONTWEIGHT_EXTRABOLD;
 
 to_wx_font_weight( heavy ) ->
-	?wxFONTWEIGHT_HEAVY;
+    ?wxFONTWEIGHT_HEAVY;
 
 to_wx_font_weight( extra_heavy ) ->
-	?wxFONTWEIGHT_EXTRAHEAVY;
+    ?wxFONTWEIGHT_EXTRAHEAVY;
 
 to_wx_font_weight( Other ) ->
-	throw( { unknown_font_weight, Other } ).
+    throw( { unknown_font_weight, Other } ).
 
 
 
 -doc "Converts the specified font options into wx ones.".
 -spec to_wx_font_options( [ font_option() ] ) -> [ wx_font_option() ].
 to_wx_font_options( FontOpts ) ->
-	[ to_wx_font_option( FO ) || FO <- FontOpts ].
+    [ to_wx_font_option( FO ) || FO <- FontOpts ].
 
 
 
 -doc "Converts the specified font option into a wx one.".
 -spec to_wx_font_option( font_option() ) -> wx_font_option().
 to_wx_font_option( FontOpt={ underline, _Bool } ) ->
-	FontOpt;
+    FontOpt;
 
 to_wx_font_option( _FontOpt={ face_name, FaceName } ) ->
-	{ faceName, FaceName };
+    { faceName, FaceName };
 
 to_wx_font_option( FontOpt={ encoding, _Enum } ) ->
-	FontOpt;
+    FontOpt;
 
 to_wx_font_option( OtherFontOpt ) ->
-	throw( { unsupported_font_option, OtherFontOpt } ).
+    throw( { unsupported_font_option, OtherFontOpt } ).

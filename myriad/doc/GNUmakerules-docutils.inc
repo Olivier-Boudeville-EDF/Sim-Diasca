@@ -36,11 +36,11 @@ NOTE_COLOR := '\#ffffe0'
 
 # Image section.
 
-#IMG_VIEWER := $(which xv)
-#IMG_VIEWER := $$(which eog)
-IMG_VIEWER := $$(which xdg-open)
+#IMG_VIEWER := $$(which xv 2>/dev/null)
+#IMG_VIEWER := $$(which eog 2>/dev/null)
+IMG_VIEWER := $$(which xdg-open 2>/dev/null)
 
-IMAGE_MAGICK := $$(which convert)
+IMAGE_MAGICK := $$(which convert 2>/dev/null)
 
 
 # Not all python scripts generate images:
@@ -109,8 +109,8 @@ DATA_PROCESSOR_OPTS = --silent --no-gui
 # Dot must found directly from the environment, since it is needed by
 # both the Make system and the Erlang application.
 #
-# DOT := $$(PATH=$(DOT_ROOT)/bin:$$PATH which dot)
-DOT := $$(which dot)
+# DOT := $$(PATH=$(DOT_ROOT)/bin:$$PATH which dot 2>/dev/null)
+DOT := $$(which dot 2>/dev/null)
 
 
 # No more '-Gcharset=latin1'; using UTF-8 now.

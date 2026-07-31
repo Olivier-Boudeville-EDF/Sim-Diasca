@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -32,7 +32,7 @@
 % Returns an updated state.
 %
 -define( setFsmAttribute( FsmState, AttributeName, AttributeValue ),
-	table:add_entry( AttributeName, AttributeValue, FsmState )
+    table:add_entry( AttributeName, AttributeValue, FsmState )
 ).
 
 
@@ -44,15 +44,15 @@
 % See also: getAttr/1.
 %
 -define( getFsmAttribute( FsmState, AttributeName ),
-	case table:lookup_entry( AttributeName, FsmState ) of
+    case table:lookup_entry( AttributeName, FsmState ) of
 
-		key_not_found ->
-			attribute_not_found ;
+        key_not_found ->
+            attribute_not_found ;
 
-		Other ->
-			Other
+        Other ->
+            Other
 
-	end
+    end
 ).
 
 
@@ -65,4 +65,4 @@
 % states should be used. See the getAttribute/2 macro.
 %
 -define( getFsmAttr( AttributeName ),
-		 ?getFsmAttribute( FsmState, AttributeName ) ).
+         ?getFsmAttribute( FsmState, AttributeName ) ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -40,29 +40,29 @@
 % Information regarding an OpenGL texture.
 -record( texture, {
 
-	% The identifier (OpenGL "name") of that texture.
-	id :: gui_texture:texture_id(),
+    % The identifier (OpenGL "name") of that texture.
+    id :: gui_texture:texture_id(),
 
 
-	% The pixel width of this texture:
-	width :: gui:length(),
+    % The pixel width of this texture:
+    width :: gui:length(),
 
-	% The pixel height of this texture:
-	height :: gui:length(),
-
-
-	% The minimum abscissa of this texture relatively to its color buffer.
-	min_x :: gui_opengl:length_factor(),
-
-	% The minimum ordinate of this texture relatively to its color buffer.
-	min_y :: gui_opengl:length_factor(),
+    % The pixel height of this texture:
+    height :: gui:length(),
 
 
-	% The maximum abscissa of this texture relatively to its color buffer.
-	max_x :: gui_opengl:length_factor(),
+    % The minimum abscissa of this texture relatively to its color buffer.
+    min_x :: gui_opengl:length_factor(),
 
-	% The maximum ordinate of this texture relatively to its color buffer.
-	max_y :: gui_opengl:length_factor() } ).
+    % The minimum ordinate of this texture relatively to its color buffer.
+    min_y :: gui_opengl:length_factor(),
+
+
+    % The maximum abscissa of this texture relatively to its color buffer.
+    max_x :: gui_opengl:length_factor(),
+
+    % The maximum ordinate of this texture relatively to its color buffer.
+    max_y :: gui_opengl:length_factor() } ).
 
 
 
@@ -72,11 +72,11 @@
 %
 -record( texture_cache, {
 
-	% All information known based on texture specifications:
-	texture_table :: gui_texture:texture_table(),
+    % All information known based on texture specifications:
+    texture_table :: gui_texture:texture_table(),
 
-	% The identifier that will be assigned to the next texture spec:
-	next_spec_id :: basic_utils:count() } ).
+    % The identifier that will be assigned to the next texture spec:
+    next_spec_id :: basic_utils:count() } ).
 
 
 -endif. % myriad_gui_texture_hrl_guard

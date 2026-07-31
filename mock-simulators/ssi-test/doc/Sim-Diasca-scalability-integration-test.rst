@@ -37,7 +37,7 @@ The requirements, design and implementation as well as the user guide of this te
 :raw-latex:`\pagebreak`
 
 .. contents:: Table of Contents
-	:depth: 2
+    :depth: 2
 
 .. section-numbering::
 

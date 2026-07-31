@@ -42,9 +42,9 @@
 % @doc Entry point of this escript.
 main( ArgList ) ->
 
-	% First, enable all possible helper code (hence to be done first of all):
-	_MyriadRootDir = update_code_path_for_myriad(),
+    % First, enable all possible helper code (hence to be done first of all):
+    _MyriadRootDir = update_code_path_for_myriad(),
 
-	ArgTable = script_utils:get_arguments( ArgList ),
+    ArgTable = script_utils:get_arguments( ArgList ),
 
-	password_generation:main( ArgTable ).
+    password_generation:main( ArgTable ).

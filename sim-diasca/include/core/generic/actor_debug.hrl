@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2025 EDF R&D
+% Copyright (C) 2018-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -30,7 +30,7 @@
  -define( display_trace( S ), trace_utils:info( "[SD] " ++ S ) ).
 
  -define( display_trace( S, F ),
-		  trace_utils:info_fmt( "[SD] " ++ S, F ) ).
+          trace_utils:info_fmt( "[SD] " ++ S, F ) ).
 
 
 -else. % enable_sim_diasca_traces
@@ -39,10 +39,10 @@
  % To avoid variables being reported as unused depending on the mode:
 
  -define( display_trace( S ),
-		  basic_utils:ignore_unused( { sim_diasca_trace_disabled, S } ) ).
+          basic_utils:ignore_unused( { sim_diasca_trace_disabled, S } ) ).
 
  -define( display_trace( S, F ),
-		  basic_utils:ignore_unused( { sim_diasca_trace_disabled, S, F } ) ).
+          basic_utils:ignore_unused( { sim_diasca_trace_disabled, S, F } ) ).
 
 
 -endif. % enable_sim_diasca_traces

@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2025 Olivier Boudeville
+% Copyright (C) 2011-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -44,9 +44,9 @@ build targets and all other elements support them correctly.
 -spec exec() -> no_return().
 exec() ->
 
-	?app_start,
+    ?app_start,
 
-	?notify_info( "This is one of the simplest trace-enabled "
-				  "applications possible!" ),
+    ?notify_info( "This is one of the simplest trace-enabled "
+                  "applications possible!" ),
 
-	?app_stop.
+    ?app_stop.

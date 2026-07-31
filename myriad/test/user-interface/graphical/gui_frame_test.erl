@@ -1,4 +1,4 @@
-% Copyright (C) 2013-2025 Olivier Boudeville
+% Copyright (C) 2013-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -55,40 +55,40 @@ Here the main loop just has to remember the frame whose closing is awaited for.
 -spec run_gui_test() -> void().
 run_gui_test() ->
 
-	test_facilities:display( "~nStarting the actual simple MyriadGUI test, "
-							 "from ~w.", [ self() ] ),
+    test_facilities:display( "~nStarting the actual simple MyriadGUI test, "
+                             "from ~w.", [ self() ] ),
 
-	trace_utils:notice( "Please close the fourth frame to end this test "
-		"(note that most frames may be one of top of the others)." ),
+    trace_utils:notice( "Please close the fourth frame to end this test "
+        "(note that most frames may be one of top of the others)." ),
 
-	% We used to choose here to carry around the GUI state, whereas in general
-	% it is not necessary at all.
+    % We used to choose here to carry around the GUI state, whereas in general
+    % it is not necessary at all.
 
-	gui:start(),
+    gui:start(),
 
-	%gui:set_debug_level( [ calls, life_cycle ] ),
+    %gui:set_debug_level( [ calls, life_cycle ] ),
 
-	FirstFrame = gui_frame:create( "This is the first frame",
-								   _Id=my_test_first_frame, _Parent=undefined ),
+    FirstFrame = gui_frame:create( "This is the first frame",
+                                   _Id=my_test_first_frame, _Parent=undefined ),
 
-	SecondFrame = gui_frame:create( "This is the second frame" ),
+    SecondFrame = gui_frame:create( "This is the second frame" ),
 
-	ThirdFrame = gui_frame:create( "This is the third frame",
-		_Position={ 50, 10 }, _Size={ 150, 200 }, _Style=[ default ] ),
+    ThirdFrame = gui_frame:create( "This is the third frame",
+        _Position={ 50, 10 }, _Size={ 150, 200 }, _Style=[ default ] ),
 
-	FourthFrame = gui_frame:create( "This is the fourth frame" ),
+    FourthFrame = gui_frame:create( "This is the fourth frame" ),
 
 
-	Frames = [ FirstFrame, SecondFrame, ThirdFrame, FourthFrame ],
+    Frames = [ FirstFrame, SecondFrame, ThirdFrame, FourthFrame ],
 
-	gui_frame:show( Frames ),
+    gui_frame:show( Frames ),
 
-	% As a result, closing the third frame will not be known from here:
-	TrackedFrames = [ FirstFrame, SecondFrame, FourthFrame ],
+    % As a result, closing the third frame will not be known from here:
+    TrackedFrames = [ FirstFrame, SecondFrame, FourthFrame ],
 
-	gui:subscribe_to_events( { onWindowClosed, TrackedFrames } ),
+    gui:subscribe_to_events( { onWindowClosed, TrackedFrames } ),
 
-	test_main_loop( FourthFrame ).
+    test_main_loop( FourthFrame ).
 
 
 
@@ -100,36 +100,36 @@ corresponding to the frame that shall be closed to stop the test
 -spec test_main_loop( my_test_state() ) -> no_return().
 test_main_loop( CloseFrame ) ->
 
-	trace_utils:info( "Test main loop running..." ),
+    trace_utils:info( "Test main loop running..." ),
 
-	receive
+    receive
 
-		{ onWindowClosed, [ CloseFrame, _FrameId, EventContext ] } ->
-			trace_utils:info_fmt( "The closing frame ~ts has been, well, "
-				"closed (~ts); test success.",
-				[ gui:object_to_string( CloseFrame ),
-				  gui_event:context_to_string( EventContext ) ] ),
+        { onWindowClosed, [ CloseFrame, _FrameId, EventContext ] } ->
+            trace_utils:info_fmt( "The closing frame ~ts has been, well, "
+                "closed (~ts); test success.",
+                [ gui:object_to_string( CloseFrame ),
+                  gui_event:context_to_string( EventContext ) ] ),
 
-			gui_frame:destruct( CloseFrame ),
+            gui_frame:destruct( CloseFrame ),
 
-			gui:stop();
-
-
-		{ onWindowClosed, [ AnyFrame, AnyFrameId, EventContext ] } ->
-			trace_utils:info_fmt( "Frame ~ts (id: ~w) closed (~ts).",
-				[ gui:object_to_string( AnyFrame ), AnyFrameId,
-				  gui_event:context_to_string( EventContext ) ] ),
-
-			gui_frame:destruct( AnyFrame ),
-			test_main_loop( CloseFrame );
+            gui:stop();
 
 
-		Other ->
-			trace_utils:warning_fmt( "Test main loop ignored following "
-									 "message: ~p.", [ Other ] ),
-			test_main_loop( CloseFrame )
+        { onWindowClosed, [ AnyFrame, AnyFrameId, EventContext ] } ->
+            trace_utils:info_fmt( "Frame ~ts (id: ~w) closed (~ts).",
+                [ gui:object_to_string( AnyFrame ), AnyFrameId,
+                  gui_event:context_to_string( EventContext ) ] ),
 
-	end.
+            gui_frame:destruct( AnyFrame ),
+            test_main_loop( CloseFrame );
+
+
+        Other ->
+            trace_utils:warning_fmt( "Test main loop ignored following "
+                                     "message: ~p.", [ Other ] ),
+            test_main_loop( CloseFrame )
+
+    end.
 
 
 
@@ -137,17 +137,17 @@ test_main_loop( CloseFrame ) ->
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	case executable_utils:is_batch() of
+    case executable_utils:is_batch() of
 
-		true ->
-			test_facilities:display(
-				"(not running the MyriadGUI test, being in batch mode)" );
+        true ->
+            test_facilities:display(
+                "(not running the MyriadGUI test, being in batch mode)" );
 
-		false ->
-			run_gui_test()
+        false ->
+            run_gui_test()
 
-	end,
+    end,
 
-	test_facilities:stop().
+    test_facilities:stop().

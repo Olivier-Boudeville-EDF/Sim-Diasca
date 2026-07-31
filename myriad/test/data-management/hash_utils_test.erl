@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -49,22 +49,22 @@ See the hash_utils.erl tested module.
 -spec test_file_hashing( hash_algorithm(), binary(), binary_hash() ) -> void().
 test_file_hashing( HashAlg, ContentToHash, ContentHashBin ) ->
 
-	FileToHash = "hash_utils_test-file-to-hash.txt",
+    FileToHash = "hash_utils_test-file-to-hash.txt",
 
-	test_facilities:display( "Testing the hashing of file '~ts', "
-		"of content '~ts', with algorithm '~ts'.",
-		[ FileToHash, ContentToHash, HashAlg ] ),
+    test_facilities:display( "Testing the hashing of file '~ts', "
+        "of content '~ts', with algorithm '~ts'.",
+        [ FileToHash, ContentToHash, HashAlg ] ),
 
-	% Any already-existing file at that path will be silently overwritten:
-	file_utils:write_whole( FileToHash, ContentToHash ),
+    % Any already-existing file at that path will be silently overwritten:
+    file_utils:write_whole( FileToHash, ContentToHash ),
 
-	% Match:
-	ContentHashBin = hash_utils:get_file_hash( FileToHash, HashAlg ),
+    % Match:
+    ContentHashBin = hash_utils:get_file_hash( FileToHash, HashAlg ),
 
-	test_facilities:display( "Correct hash (~w) found for file.",
-							 [ ContentHashBin ] ),
+    test_facilities:display( "Correct hash (~w) found for file.",
+                             [ ContentHashBin ] ),
 
-	file_utils:remove_file( FileToHash ).
+    file_utils:remove_file( FileToHash ).
 
 
 
@@ -72,20 +72,20 @@ test_file_hashing( HashAlg, ContentToHash, ContentHashBin ) ->
 -spec test_term_hashing( hash_algorithm(), binary(), binary_hash() ) -> void().
 test_term_hashing( HashAlg, ContentToHash, ContentHashBin ) ->
 
-	test_facilities:display( "Testing the hashing of term '~ts', "
-		"with algorithm '~ts'.", [ ContentToHash, HashAlg ] ),
+    test_facilities:display( "Testing the hashing of term '~ts', "
+        "with algorithm '~ts'.", [ ContentToHash, HashAlg ] ),
 
-	97427884 = hash_utils:get_insecure_hash( ContentToHash ),
+    97427884 = hash_utils:get_insecure_hash( ContentToHash ),
 
-	hash_utils:start_crypto_hashing(),
+    hash_utils:start_crypto_hashing(),
 
-	% Match:
-	ContentHashBin = hash_utils:get_hash( ContentToHash, HashAlg ),
+    % Match:
+    ContentHashBin = hash_utils:get_hash( ContentToHash, HashAlg ),
 
-	test_facilities:display( "Correct hash (~w) found for term.",
-							 [ ContentHashBin ] ),
+    test_facilities:display( "Correct hash (~w) found for term.",
+                             [ ContentHashBin ] ),
 
-	hash_utils:stop_crypto_hashing().
+    hash_utils:stop_crypto_hashing().
 
 
 
@@ -93,31 +93,31 @@ test_term_hashing( HashAlg, ContentToHash, ContentHashBin ) ->
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	HashAlg = sha2_224,
+    HashAlg = sha2_224,
 
-	ContentToHash = <<"I am a content that will be hashed for testing.">>,
+    ContentToHash = <<"I am a content that will be hashed for testing.">>,
 
-	% For example obtained from: 'printf "I am a content that will be hashed for
-	% testing." | sha224sum' as a third tool after the crypto module and
-	% OpenSSL; from hexadecimal to binary:
-	%
-	ContentHashStr = "c2518b23da6f71f744e25477fd05dcf3a9e6b63cc77b21199867ada9",
-	ContentHashBin = text_utils:hexastring_to_binary( ContentHashStr ),
+    % For example obtained from: 'printf "I am a content that will be hashed for
+    % testing." | sha224sum' as a third tool after the crypto module and
+    % OpenSSL; from hexadecimal to binary:
+    %
+    ContentHashStr = "c2518b23da6f71f744e25477fd05dcf3a9e6b63cc77b21199867ada9",
+    ContentHashBin = text_utils:hexastring_to_binary( ContentHashStr ),
 
-	ByteSize = size( ContentHashBin ),
+    ByteSize = size( ContentHashBin ),
 
-	test_facilities:display( "Testing the hashing service, based on "
-		"algorithm '~ts' (~B-bit hashes, i.e. ~B bytes), by hashing the "
-		"following content: '~ts'. The corresponding, expected (hexadecimal) "
-		"hash is then '~ts' (as a binary: ~w).",
-		[ HashAlg, ByteSize * 8, ByteSize, ContentToHash, ContentHashStr,
-		  ContentHashBin ] ),
+    test_facilities:display( "Testing the hashing service, based on "
+        "algorithm '~ts' (~B-bit hashes, i.e. ~B bytes), by hashing the "
+        "following content: '~ts'. The corresponding, expected (hexadecimal) "
+        "hash is then '~ts' (as a binary: ~w).",
+        [ HashAlg, ByteSize * 8, ByteSize, ContentToHash, ContentHashStr,
+          ContentHashBin ] ),
 
 
-	test_file_hashing( HashAlg, ContentToHash, ContentHashBin ),
+    test_file_hashing( HashAlg, ContentToHash, ContentHashBin ),
 
-	test_term_hashing( HashAlg, ContentToHash, ContentHashBin ),
+    test_term_hashing( HashAlg, ContentToHash, ContentHashBin ),
 
-	test_facilities:stop().
+    test_facilities:stop().

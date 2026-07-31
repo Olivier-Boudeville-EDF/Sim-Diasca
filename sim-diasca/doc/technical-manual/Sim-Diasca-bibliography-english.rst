@@ -12,7 +12,7 @@ In terms of multi-agent systems and distributed simulations, we spotted the foll
 
 - `Sim94, A concurrent simulator for plan-driven troops <http://citeseer.ist.psu.edu/carlson95sim.html>`_ (1995), by Bjorn Carlson
 
-.. comment: 404 - `Sim94, Design Patterns for Simulations in Erlang/OTP <http://ftp.csd.uu.se/pub/papers/masters-theses/0178-ekstrom.pdf>`_, by Ulf Ekström`_
+.. comment: 404 - `Sim94, Design Patterns for Simulations in Erlang/OTP <http://ftp.csd.uu.se/pub/papers/masters-theses/0178-ekstrom.pdf>`_, by Ulf EkstrÃ¶m`_
 
 - `An Evaluation of Conservative Protocols for Bulk-Synchronous Parallel Discrete-Event Simulation <http://citeseer.ist.psu.edu/706010.html>`_, by  Mauricio Marin
 
@@ -21,8 +21,8 @@ Some books are relevant as well:
 
 - *Parallel and Distributed Simulation Systems*, author: Richard M. Fujimoto, publisher: Wiley-Interscience, ISBN: ``978-0471183839``
 
-- *Modélisation et simulation à base d'agents*, authors: Jean-Pierre Treuil, Alexis Drogoul and Jean-Daniel Zucker, editor: Dunod, ISBN: ``978-2-10-050216-5``
+- *ModÃ©lisation et simulation Ã  base d'agents*, authors: Jean-Pierre Treuil, Alexis Drogoul and Jean-Daniel Zucker, editor: Dunod, ISBN: ``978-2-10-050216-5``
 
-- *Modélisation et simulation d'écosystèmes, des modèles déterministes aux simulations à événements discrets*, authors: Patrick Coquillard and David R.C. Hill, editor: Masson, ISBN: ``2-225-85363-0``
+- *ModÃ©lisation et simulation d'Ã©cosystÃ¨mes, des modÃ¨les dÃ©terministes aux simulations Ã  Ã©vÃ©nements discrets*, authors: Patrick Coquillard and David R.C. Hill, editor: Masson, ISBN: ``2-225-85363-0``
 
-- *Modélisation stochastique et simulation*, authors: Bernard Bercu and Djalil Chafaï, editor: Dunod, ISBN: ``978-2-10-051379-6``
+- *ModÃ©lisation stochastique et simulation*, authors: Bernard Bercu and Djalil ChafaÃ¯, editor: Dunod, ISBN: ``978-2-10-051379-6``

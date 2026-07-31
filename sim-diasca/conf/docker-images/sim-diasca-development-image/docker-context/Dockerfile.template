@@ -43,9 +43,9 @@ FROM PARENT_IMAGE_TAG
 
 # Defines:
 
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
 
 #ENV ERL_PORT_BASE=${SOFTWARE_BASE}/ErlPort
 #ENV ERL_PORT_GIT=https://github.com/hdima/erlport.git
@@ -140,14 +140,14 @@ COPY CeylanTraceParser.class ${LOGMX_INSTALL}/parsers/classes/ceylan/parser/
 #	echo 'eval "$(pyenv init -)"' >> ${SD_ENV_FILE}; \
 #	echo 'eval "$(pyenv virtualenv-init -)"' >> ${SD_ENV_FILE}
 
-#ENV PATH /home/dev/.pyenv/bin:${PATH}
+#ENV PATH=/home/dev/.pyenv/bin:${PATH}
 
 #RUN ${SD_ENV_FILE}; \
 #	pyenv install 3.5.2; \
 #	pyenv global 3.5.2 ;
 
 
-CMD xfce4-terminal
+CMD ["xfce4-terminal"]
 
 RUN echo "Sim-Diasca Docker image for development successfully created!"
 RUN echo " - user: ${SD_USER_NAME} (sudoer)"

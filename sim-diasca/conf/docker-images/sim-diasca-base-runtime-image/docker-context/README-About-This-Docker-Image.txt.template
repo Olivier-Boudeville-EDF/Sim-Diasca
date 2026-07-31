@@ -12,6 +12,6 @@ The main related settings have been registered in ~/sim-diasca-environment.sh,
 a file meant to be sourced - not executed - by one's shell; the local ~/.bashrc
 is already set up to source it, when run interactively.
 
-See also the Sim-Diasca public site, at https://github.com/Olivier-Boudeville-EDF/Sim-Diasca.
+See also the Sim-Diasca public site, at https://github.com/edf-lab/Sim-Diasca.
 
 Enjoy!

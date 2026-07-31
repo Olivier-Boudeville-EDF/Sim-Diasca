@@ -1,4 +1,4 @@
-% Copyright (C) 2017-2025 Olivier Boudeville
+% Copyright (C) 2017-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -242,11 +242,11 @@ Refer to <https://erlang.org/doc/man/wxEvtHandler.html>.
 See the corresponding gui:event_subscription_option().
 """.
 -type wx_event_handler_option() :: { 'id', integer() }
-								 | { 'lastId', integer() }
-								 | { 'skip', boolean() }
-								 | 'callback'
-								 | { 'callback', function() }
-								 | { 'userData', term() }.
+                                 | { 'lastId', integer() }
+                                 | { 'skip', boolean() }
+                                 | 'callback'
+                                 | { 'callback', function() }
+                                 | { 'userData', term() }.
 
 
 -doc """
@@ -266,7 +266,7 @@ Precisely:
 Refer to wxGLCanvas: <https://www.erlang.org/doc/man/wxglcanvas#new-2>.
 """.
 -type wx_device_context_attribute() ::
-		{ 'attribList', integer() } | other_wx_device_context_attribute().
+        { 'attribList', integer() } | other_wx_device_context_attribute().
 
 
 -doc "A wxWidgets enumerated value.".
@@ -285,11 +285,11 @@ Visual attributes of an OpenGL canvas (not rendering context attributes).
 
 
 -export_type([ wx_native_object_type/0, wx_opt_pair/0,
-			   wx_event_handler_option/0,
-			   other_wx_device_context_attribute/0,
-			   wx_device_context_attribute/0, wx_enum/0,
-			   wx_direction/0, wx_orientation/0,
-			   wx_art_id/0, wx_gl_attributes/0 ]).
+               wx_event_handler_option/0,
+               other_wx_device_context_attribute/0,
+               wx_device_context_attribute/0, wx_enum/0,
+               wx_direction/0, wx_orientation/0,
+               wx_art_id/0, wx_gl_attributes/0 ]).
 
 
 % Preferably no '-export_type' here to avoid leakage of backend conventions.
@@ -306,15 +306,15 @@ Visual attributes of an OpenGL canvas (not rendering context attributes).
 % the gui_generated module, obtained from gui_constants.erl.
 %
 -export([ to_wx_object_type/1,
-		  to_wx_connect_options/3,
-		  to_wx_debug_level/1,
+          to_wx_connect_options/3,
+          to_wx_debug_level/1,
 
-		  to_wx_id/1, to_wx_parent/1, to_wx_position/1, to_wx_size/1,
-		  to_wx_direction/1, to_wx_orientation/1,
-		  wx_id_to_window/1, wx_id_to_string/1,
+          to_wx_id/1, to_wx_parent/1, to_wx_position/1, to_wx_size/1,
+          to_wx_direction/1, to_wx_orientation/1,
+          wx_id_to_window/1, wx_id_to_string/1,
 
-		  to_wx_device_context_attributes/1, are_gl_attributes_supported/1,
-		  get_msaa_attributes/0 ]).
+          to_wx_device_context_attributes/1, are_gl_attributes_supported/1,
+          get_msaa_attributes/0 ]).
 
 % For event management:
 -export([ connect/2, connect/3, connect/4, disconnect/1, disconnect/2 ]).
@@ -387,8 +387,8 @@ Visual attributes of an OpenGL canvas (not rendering context attributes).
 -doc "Returns the build-time version of wx (wxWidgets).".
 -spec get_wx_version() -> basic_utils:four_digit_version().
 get_wx_version() ->
-	{ ?wxMAJOR_VERSION, ?wxMINOR_VERSION, ?wxRELEASE_NUMBER,
-	  ?wxSUBRELEASE_NUMBER }.
+    { ?wxMAJOR_VERSION, ?wxMINOR_VERSION, ?wxRELEASE_NUMBER,
+      ?wxSUBRELEASE_NUMBER }.
 
 
 
@@ -398,14 +398,14 @@ get_wx_version() ->
 -doc "Converts a MyriadGUI type of object into a wx one.".
 -spec to_wx_object_type( myriad_object_type() ) -> wx_object_type().
 to_wx_object_type( MyrObjType ) ->
-	gui_generated:get_second_for_object_type( MyrObjType ).
+    gui_generated:get_second_for_object_type( MyrObjType ).
 
 
 
 -doc "Converts a wx type of object into a MyriadGUI one.".
 -spec from_wx_object_type( wx_object_type() ) -> myriad_object_type().
 from_wx_object_type( WxObjectType ) ->
-	gui_generated:get_first_for_object_type( WxObjectType ).
+    gui_generated:get_first_for_object_type( WxObjectType ).
 
 
 
@@ -419,11 +419,11 @@ As wxEvent() = wx:wx_object() = #wx_ref{}, for example
 % Only in wxe.hrl:
 %is_wx_event( E ) when is_record( E, wx_ref ) ->
 is_wx_event( _E={ wx_ref, _RefCount, _EventType, _State } ) ->
-	% Supposedly:
-	true;
+    % Supposedly:
+    true;
 
 is_wx_event( _ ) ->
-	false.
+    false.
 
 
 
@@ -436,13 +436,13 @@ Converts the debug level from MyriadGUI to the one of wx.
 (helper)
 """.
 to_wx_debug_level( _DebugLevel=none ) ->
-	none;
+    none;
 
 to_wx_debug_level( _DebugLevel=calls ) ->
-	trace;
+    trace;
 
 to_wx_debug_level( _DebugLevel=life_cycle ) ->
-	driver.
+    driver.
 
 
 
@@ -453,10 +453,10 @@ Converts the specified MyriadGUI identifier in a wx-specific widget identifier.
 """.
 -spec to_wx_id( option( myriad_instance_id() ) ) -> wx_id().
 to_wx_id( undefined ) ->
-	?gui_any_id;
+    ?gui_any_id;
 
 to_wx_id( Other ) ->
-	Other.
+    Other.
 
 
 
@@ -468,10 +468,10 @@ identifier.
 """.
 -spec to_wx_parent( option( parent() ) ) -> gui_object().
 to_wx_parent( undefined ) ->
-	?no_parent;
+    ?no_parent;
 
 to_wx_parent( Other ) ->
-	Other.
+    Other.
 
 
 
@@ -483,10 +483,10 @@ defaults).
 """.
 -spec to_wx_position( position() ) -> wx_position().
 to_wx_position( _Position=auto ) ->
-	{ pos, ?wx_default_position };
+    { pos, ?wx_default_position };
 
 to_wx_position( Position ) ->
-	{ pos, Position }.
+    { pos, Position }.
 
 
 
@@ -497,11 +497,11 @@ Converts the specified MyriadGUI size in a wx-specific size (with defaults).
 """.
 -spec to_wx_size( sizing() ) -> wx_size().
 to_wx_size( _Size=auto ) ->
-	{ size, ?wx_default_size };
+    { size, ?wx_default_size };
 
 %to_wx_size( Size={ _X, _Y } ) ->
 to_wx_size( Size ) ->
-	{ size, Size }.
+    { size, Size }.
 
 
 
@@ -512,7 +512,7 @@ Converts to backend direction.
 """.
 -spec to_wx_direction( direction() ) -> wx_direction().
 to_wx_direction( Direction ) ->
-	gui_generated:get_second_for_direction( Direction ).
+    gui_generated:get_second_for_direction( Direction ).
 
 
 
@@ -523,7 +523,7 @@ Converts to backend orientation.
 """.
 -spec to_wx_orientation( orientation() ) -> wx_orientation().
 to_wx_orientation( Orientation ) ->
-	gui_generated:get_second_for_orientation( Orientation ).
+    gui_generated:get_second_for_orientation( Orientation ).
 
 
 
@@ -531,53 +531,53 @@ to_wx_orientation( Orientation ) ->
 Converts the specified MyriadGUI device context attributes to wx conventions.
 """.
 -spec to_wx_device_context_attributes( [ device_context_attribute() ] ) ->
-											[ wx_device_context_attribute() ].
+                                            [ wx_device_context_attribute() ].
 to_wx_device_context_attributes( Attrs ) ->
-	to_wx_device_context_attributes( Attrs, _Acc=[] ).
+    to_wx_device_context_attributes( Attrs, _Acc=[] ).
 
 
 % (helper)
 %
 % Adding in a reverse form:
 to_wx_device_context_attributes( _Attrs=[], Acc ) ->
-	lists:reverse( [ 0 | Acc ] );
+    lists:reverse( [ 0 | Acc ] );
 
 to_wx_device_context_attributes( _Attrs=[ rgba | T ], Acc ) ->
-	to_wx_device_context_attributes( T, [ ?WX_GL_RGBA | Acc ] );
+    to_wx_device_context_attributes( T, [ ?WX_GL_RGBA | Acc ] );
 
 % Not existing:
 %to_wx_device_context_attributes( _Attrs=[ bgra | T ], Acc ) ->
 %   to_wx_device_context_attributes( T, [ ?WX_GL_BGRA | Acc ] );
 
 to_wx_device_context_attributes( _Attrs=[ double_buffer | T ], Acc ) ->
-	to_wx_device_context_attributes( T, [ ?WX_GL_DOUBLEBUFFER | Acc ] );
+    to_wx_device_context_attributes( T, [ ?WX_GL_DOUBLEBUFFER | Acc ] );
 
 to_wx_device_context_attributes( _Attrs=[ { min_red_size, S } | T ], Acc ) ->
-	to_wx_device_context_attributes( T, [ S, ?WX_GL_MIN_RED | Acc ] );
+    to_wx_device_context_attributes( T, [ S, ?WX_GL_MIN_RED | Acc ] );
 
 to_wx_device_context_attributes( _Attrs=[ { min_green_size, S } | T ],
-								 Acc ) ->
-	to_wx_device_context_attributes( T, [ S, ?WX_GL_MIN_GREEN | Acc ] );
+                                 Acc ) ->
+    to_wx_device_context_attributes( T, [ S, ?WX_GL_MIN_GREEN | Acc ] );
 
 to_wx_device_context_attributes( _Attrs=[ { min_blue_size, S } | T ], Acc ) ->
-	to_wx_device_context_attributes( T, [ S, ?WX_GL_MIN_BLUE | Acc ] );
+    to_wx_device_context_attributes( T, [ S, ?WX_GL_MIN_BLUE | Acc ] );
 
 to_wx_device_context_attributes( _Attrs=[ { depth_buffer_size, S } | T ],
-								 Acc ) ->
-	to_wx_device_context_attributes( T, [ S, ?WX_GL_DEPTH_SIZE | Acc ] );
+                                 Acc ) ->
+    to_wx_device_context_attributes( T, [ S, ?WX_GL_DEPTH_SIZE | Acc ] );
 
 to_wx_device_context_attributes( _Attrs=[ msaa | T ], Acc ) ->
-	% Directly as listed elements, not as a nested list:
-	to_wx_device_context_attributes( T, get_msaa_attributes() ++ Acc );
+    % Directly as listed elements, not as a nested list:
+    to_wx_device_context_attributes( T, get_msaa_attributes() ++ Acc );
 
 to_wx_device_context_attributes( _Attrs=[ use_core_profile | T ], Acc ) ->
-	to_wx_device_context_attributes( T, [ ?WX_GL_CORE_PROFILE | Acc ] );
+    to_wx_device_context_attributes( T, [ ?WX_GL_CORE_PROFILE | Acc ] );
 
 to_wx_device_context_attributes( _Attrs=[ debug_context | T ], Acc ) ->
-	to_wx_device_context_attributes( T, [ ?WX_GL_DEBUG | Acc ] );
+    to_wx_device_context_attributes( T, [ ?WX_GL_DEBUG | Acc ] );
 
 to_wx_device_context_attributes( _Attrs=[ Other | _T ], _Acc ) ->
-	throw( { unsupported_device_context_attribute, Other } ).
+    throw( { unsupported_device_context_attribute, Other } ).
 
 
 
@@ -589,17 +589,17 @@ Returns whether an OpenGL canvas having the specified attributes is available.
 -spec are_gl_attributes_supported( wx_gl_attributes() ) -> boolean().
 are_gl_attributes_supported( Attrs ) ->
 
-	try
+    try
 
-		wxGLCanvas:isDisplaySupported( Attrs )
+        wxGLCanvas:isDisplaySupported( Attrs )
 
-	catch _ExceptionType:Reason:_Stacktrace ->
-		trace_utils:error_fmt( "Could not determine whether OpenGL canvas "
-			"attributes ~w are available (reason: ~p), supposing not.",
-			[ Attrs, Reason ] ),
-		false
+    catch _ExceptionType:Reason:_Stacktrace ->
+        trace_utils:error_fmt( "Could not determine whether OpenGL canvas "
+            "attributes ~w are available (reason: ~p), supposing not.",
+            [ Attrs, Reason ] ),
+        false
 
-	end.
+    end.
 
 
 
@@ -609,15 +609,15 @@ Returns our default attribute settings for MSAA (Multisample anti-aliasing).
 -spec get_msaa_attributes() -> wx_gl_attributes().
 get_msaa_attributes() ->
 
-	% To enable MSAA:
-	MultisamplingSupport = 1,
+    % To enable MSAA:
+    MultisamplingSupport = 1,
 
-	% For 2x2 antialiasing supersampling on most graphics cards:
-	Supersampling = 4,
+    % For 2x2 antialiasing supersampling on most graphics cards:
+    Supersampling = 4,
 
-	% At least wxWidgets-3.0 required:
-	[ ?WX_GL_SAMPLE_BUFFERS, MultisamplingSupport,
-	  ?WX_GL_SAMPLES, Supersampling, 0 ].
+    % At least wxWidgets-3.0 required:
+    [ ?WX_GL_SAMPLE_BUFFERS, MultisamplingSupport,
+      ?WX_GL_SAMPLES, Supersampling, 0 ].
 
 
 
@@ -642,7 +642,7 @@ Returns the widget corresponding to the specified wx identifier.
 """.
 -spec wx_id_to_window( wx_id() ) -> window().
 wx_id_to_window( Id ) ->
-	wxWindow:findWindowById( Id ).
+    wxWindow:findWindowById( Id ).
 
 
 
@@ -651,13 +651,13 @@ Returns a textual representation of the specified GUI object wx identifier.
 """.
 -spec wx_id_to_string( wx_id() ) -> ustring().
 wx_id_to_string( _Id=undefined ) ->
-	"no id defined";
+    "no id defined";
 
 wx_id_to_string( _Id=?gui_any_id ) ->
-	"'any id' defined";
+    "'any id' defined";
 
 wx_id_to_string( Id ) ->
-	text_utils:format( "ID #~B", [ Id ] ).
+    text_utils:format( "ID #~B", [ Id ] ).
 
 
 
@@ -677,12 +677,12 @@ Only useful for context-less calls; the versions of that function specifying a
 -spec connect( event_source(), maybe_list( event_type() ) ) -> void().
 connect( EventSource, EventTypeOrTypes ) ->
 
-	% Here no trap set specified, trying to secure it:
-	GUIEnvPid = gui:get_environment_server(),
+    % Here no trap set specified, trying to secure it:
+    GUIEnvPid = gui:get_environment_server(),
 
-	TrapSet = environment:get( trap_set, GUIEnvPid ),
+    TrapSet = environment:get( trap_set, GUIEnvPid ),
 
-	connect( EventSource, EventTypeOrTypes, TrapSet ).
+    connect( EventSource, EventTypeOrTypes, TrapSet ).
 
 
 
@@ -702,9 +702,9 @@ Note:
  - only useful internally or when bypassing the default main loop
 """.
 -spec connect( event_source(), maybe_list( event_type() ), trap_set() ) ->
-						void().
+                        void().
 connect( EventSource, EventTypeOrTypes, TrapSet ) ->
-	connect( EventSource, EventTypeOrTypes, _Options=[], TrapSet ).
+    connect( EventSource, EventTypeOrTypes, _Options=[], TrapSet ).
 
 
 
@@ -719,33 +719,33 @@ The {trap,propagate}_event options (or the corresponding
 Refer to connect/3 for all details.
 """.
 -spec connect( event_source(), maybe_list( event_type() ),
-		[ event_subscription_option() ], trap_set() ) -> void().
+        [ event_subscription_option() ], trap_set() ) -> void().
 % Was not used apparently:
 %connect( #canvas_state{ panel=Panel }, EventTypeOrTypes, Options, TrapSet ) ->
 %   connect( Panel, EventTypeOrTypes, Options, TrapSet );
 
 connect( SourceGUIObject, EventTypes, Options, TrapSet )
-						when is_list( EventTypes ) ->
+                        when is_list( EventTypes ) ->
 
-	%trace_utils:debug_fmt( "Connecting ~p for event types ~w with options ~p.",
-	%                       [ SourceGUIObject, EventTypes, Options ] ),
+    %trace_utils:debug_fmt( "Connecting ~p for event types ~w with options ~p.",
+    %                       [ SourceGUIObject, EventTypes, Options ] ),
 
-	[ connect( SourceGUIObject, ET, Options, TrapSet ) || ET <- EventTypes ];
+    [ connect( SourceGUIObject, ET, Options, TrapSet ) || ET <- EventTypes ];
 
 connect( SourceGUIObject, EventType, Options, TrapSet ) ->
 
-	% Events to be processed through messages, not callbacks:
-	WxEventType = gui_event:to_wx_event_type( EventType ),
+    % Events to be processed through messages, not callbacks:
+    WxEventType = gui_event:to_wx_event_type( EventType ),
 
-	WxConnOpts = to_wx_connect_options( Options, EventType, TrapSet ),
+    WxConnOpts = to_wx_connect_options( Options, EventType, TrapSet ),
 
-	cond_utils:if_defined( myriad_debug_gui_events,
-		trace_utils:debug_fmt( " - connecting event source '~ts' to ~w "
-			"for ~p (i.e. ~p), with options ~p, resulting in backend ones: ~w.",
-			[ gui:object_to_string( SourceGUIObject ), self(), EventType,
-			  WxEventType, Options, WxConnOpts ] ) ),
+    cond_utils:if_defined( myriad_debug_gui_events,
+        trace_utils:debug_fmt( " - connecting event source '~ts' to ~w "
+            "for ~p (i.e. ~p), with options ~p, resulting in backend ones: ~w.",
+            [ gui:object_to_string( SourceGUIObject ), self(), EventType,
+              WxEventType, Options, WxConnOpts ] ) ),
 
-	wxEvtHandler:connect( SourceGUIObject, WxEventType, WxConnOpts ).
+    wxEvtHandler:connect( SourceGUIObject, WxEventType, WxConnOpts ).
 
 
 
@@ -756,86 +756,86 @@ The corresponding event type must be specified in order to apply per-type
 defaults.
 """.
 -spec to_wx_connect_options( [ event_subscription_option() ], event_type(),
-							 trap_set() ) -> [ wx_event_handler_option() ].
+                             trap_set() ) -> [ wx_event_handler_option() ].
 to_wx_connect_options( Opts, EventType, TrapSet ) ->
-	to_wx_connect_options( Opts, EventType, TrapSet,
-						   _PropagationSetting=undefined, _Acc=[] ).
+    to_wx_connect_options( Opts, EventType, TrapSet,
+                           _PropagationSetting=undefined, _Acc=[] ).
 
 
 % (helper)
 -spec to_wx_connect_options( [ event_subscription_option() ], event_type(),
-	trap_set(), option( 'propagate' | 'trap' ), event_type() ) ->
-		[ wx_event_handler_option() ].
+    trap_set(), option( 'propagate' | 'trap' ), event_type() ) ->
+        [ wx_event_handler_option() ].
 % End of recursion, propagation explicitly requested by the user:
 to_wx_connect_options( _Opts=[], _EventType, _TrapSet,
-					   _PropagationSetting=propagate, Acc ) ->
-	%[ _Propagate={ skip, true } | Acc ];
-	[ Acc ];
+                       _PropagationSetting=propagate, Acc ) ->
+    %[ _Propagate={ skip, true } | Acc ];
+    [ Acc ];
 
 % End of recursion, propagation explicitly denied by the user:
 to_wx_connect_options( _Opts=[], _EventType, _TrapSet,
-					   _PropagationSetting=trap, Acc ) ->
-	% As skip=False is the default:
-	%[ _Trap={ skip, false } | Acc ];
-	Acc;
+                       _PropagationSetting=trap, Acc ) ->
+    % As skip=False is the default:
+    %[ _Trap={ skip, false } | Acc ];
+    Acc;
 
 % End of recursion, no user-defined propagation setting, applying thus per-type
 % defaults:
 %
 to_wx_connect_options( _Opts=[], EventType, TrapSet,
-					   _PropagationSetting=undefined, Acc ) ->
+                       _PropagationSetting=undefined, Acc ) ->
 
-	case set_utils:member( EventType, TrapSet ) of
+    case set_utils:member( EventType, TrapSet ) of
 
-		true ->
-			% As skip=False is the default:
-			%[ _Trap={ skip, false } | Acc ];
-			Acc;
+        true ->
+            % As skip=False is the default:
+            %[ _Trap={ skip, false } | Acc ];
+            Acc;
 
-		false ->
-			%[ _Propagate={ skip, true } | Acc ]
-			Acc
+        false ->
+            %[ _Propagate={ skip, true } | Acc ]
+            Acc
 
-	end;
+    end;
 
 to_wx_connect_options( _Opts=[ P={ id, _I } | T ], EventType, TrapSet,
-					   PropagationSetting, Acc ) ->
-	to_wx_connect_options( T, EventType, TrapSet, PropagationSetting,
-						   [ P | Acc ] );
+                       PropagationSetting, Acc ) ->
+    to_wx_connect_options( T, EventType, TrapSet, PropagationSetting,
+                           [ P | Acc ] );
 
 to_wx_connect_options( _Opts=[ { last_id, I } | T ], EventType, TrapSet,
-					   PropagationSetting, Acc ) ->
-	to_wx_connect_options( T, EventType, TrapSet, PropagationSetting,
-						   [ { lastId, I } | Acc ] );
+                       PropagationSetting, Acc ) ->
+    to_wx_connect_options( T, EventType, TrapSet, PropagationSetting,
+                           [ { lastId, I } | Acc ] );
 
 to_wx_connect_options( _Opts=[ trap_event | T ], EventType, TrapSet,
-					   _PropagationSetting, Acc ) ->
-	to_wx_connect_options( T, EventType, TrapSet,
-						   _ForcedPropagationSetting=trap, Acc );
+                       _PropagationSetting, Acc ) ->
+    to_wx_connect_options( T, EventType, TrapSet,
+                           _ForcedPropagationSetting=trap, Acc );
 
 to_wx_connect_options( _Opts=[ propagate_event | T ], EventType, TrapSet,
-					   _PropagationSetting, Acc ) ->
-	to_wx_connect_options( T, EventType, TrapSet,
-						   _ForcedPropagationSetting=propagate, Acc );
+                       _PropagationSetting, Acc ) ->
+    to_wx_connect_options( T, EventType, TrapSet,
+                           _ForcedPropagationSetting=propagate, Acc );
 
 to_wx_connect_options( _Opts=[ callback | T ], EventType, TrapSet,
-					   PropagationSetting, Acc ) ->
-	to_wx_connect_options( T, EventType, TrapSet, PropagationSetting,
-						   [ callback | Acc ] );
+                       PropagationSetting, Acc ) ->
+    to_wx_connect_options( T, EventType, TrapSet, PropagationSetting,
+                           [ callback | Acc ] );
 
 to_wx_connect_options( _Opts=[ P={ callback, _F } | T ], EventType, TrapSet,
-					   PropagationSetting, Acc ) ->
-	to_wx_connect_options( T, EventType, TrapSet, PropagationSetting,
-						   [ P | Acc ] );
+                       PropagationSetting, Acc ) ->
+    to_wx_connect_options( T, EventType, TrapSet, PropagationSetting,
+                           [ P | Acc ] );
 
 to_wx_connect_options( _Opts=[ { user_data, D } | T ], EventType, TrapSet,
-					   PropagationSetting, Acc ) ->
-	to_wx_connect_options( T, EventType, TrapSet, PropagationSetting,
-						   [ { userData, D } | Acc ] );
+                       PropagationSetting, Acc ) ->
+    to_wx_connect_options( T, EventType, TrapSet, PropagationSetting,
+                           [ { userData, D } | Acc ] );
 
 to_wx_connect_options( _Opts=[ Other | _T ], _EventType, _TrapSet,
-					   _PropagationSetting, _Acc ) ->
-	throw( { invalid_event_subscription_option, Other } ).
+                       _PropagationSetting, _Acc ) ->
+    throw( { invalid_event_subscription_option, Other } ).
 
 
 
@@ -847,15 +847,15 @@ operation went well.
 """.
 -spec disconnect( event_source() ) -> boolean().
 disconnect( _SourceObject=#canvas_state{ panel=Panel } ) ->
-	disconnect( Panel );
+    disconnect( Panel );
 
 disconnect( SourceObject ) ->
 
-	cond_utils:if_defined( myriad_debug_gui_events,
-		trace_utils:debug_fmt( " - disconnecting event source '~ts' from ~w.",
-			[ gui:object_to_string( SourceObject ), self() ] ) ),
+    cond_utils:if_defined( myriad_debug_gui_events,
+        trace_utils:debug_fmt( " - disconnecting event source '~ts' from ~w.",
+            [ gui:object_to_string( SourceObject ), self() ] ) ),
 
-	wxEvtHandler:disconnect( SourceObject ).
+    wxEvtHandler:disconnect( SourceObject ).
 
 
 
@@ -868,20 +868,20 @@ operation went well.
 """.
 -spec disconnect( event_source(), maybe_list( event_type() ) ) -> boolean().
 disconnect( SourceObject, EventTypes ) when is_list( EventTypes ) ->
-	[ disconnect( SourceObject, ET ) || ET <- EventTypes ];
+    [ disconnect( SourceObject, ET ) || ET <- EventTypes ];
 
 % Single event type now:
 disconnect( #canvas_state{ panel=Panel }, EventType ) ->
-	disconnect( Panel, EventType );
+    disconnect( Panel, EventType );
 
 disconnect( SourceObject, EventType ) ->
 
-	WxEventType = gui_event:to_wx_event_type( EventType ),
+    WxEventType = gui_event:to_wx_event_type( EventType ),
 
-	cond_utils:if_defined( myriad_debug_gui_events,
-		trace_utils:debug_fmt( " - disconnecting event source '~ts' from ~w "
-			"for ~p (i.e. ~p).",
-			[ gui:object_to_string( SourceObject ), self(), EventType,
-			  WxEventType ] ) ),
+    cond_utils:if_defined( myriad_debug_gui_events,
+        trace_utils:debug_fmt( " - disconnecting event source '~ts' from ~w "
+            "for ~p (i.e. ~p).",
+            [ gui:object_to_string( SourceObject ), self(), EventType,
+              WxEventType ] ) ),
 
-	wxEvtHandler:disconnect( SourceObject, WxEventType ).
+    wxEvtHandler:disconnect( SourceObject, WxEventType ).

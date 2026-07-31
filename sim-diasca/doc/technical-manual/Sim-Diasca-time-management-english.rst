@@ -190,7 +190,7 @@ Cons:
 
 
 
-Approach D:	use an *optimistic* event-driven approach
+Approach D: use an *optimistic* event-driven approach
 -----------------------------------------------------
 
 For each model instance (actor), simulation time will advance carelessly, i.e. disregarding the fact that other model instances might not have reached that point in time yet.
@@ -260,7 +260,7 @@ Of course the time management service may then be able to perform "time-warp", i
 However Sim-Diasca introduces a still finer, more flexible time management, as any scheduled tick will be automatically split by the engine in the minimal series of logical moments (named *diascas*) that is necessary to sort out causality [#]_. This also allow for arbitrarily complex interactions while not inducing any time biases. And the point is that, inside a diasca, the engine is able to evaluate all scheduled model instances concurrently (in a parallel, possibly distributed way), and efficiently.
 
 .. [#] A simulation timestamp can be represented as a ``(tick,diasca)`` pair: when a new tick T is scheduled, it will start at diasca zero, and the current diasca will be incremented as interactions are chained.
-	   More precisely, if the current timestamp is ``(T,D)`` and a then scheduled actor A1 performs an interaction, i.e. sends an inter-actor message M (a method, possibly with parameters) to an actor A2, then M will be sent by A1 and received by A2 during ``(T,D)``, yet A2 will process M (once automatically reordered with the other received messages, if any) only at ``(T,D+1)``, ensuring causality is met (effects happening strictly after their causes). A2, when executing the method corresponding to M, will be free to send in turn any number of actor messages to any actors; as soon as at least one message has been sent by one actor, ``(T,D+2)`` will be scheduled, and so on until no actor has a message to send. It will then be the last diasca for this tick ``T``, and, if not terminated, the simulation will schedule the next tick according to the overall agenda, i.e. the next simulation timestamp will be  ``(T',0)``, with ``T' > T``.
+       More precisely, if the current timestamp is ``(T,D)`` and a then scheduled actor A1 performs an interaction, i.e. sends an inter-actor message M (a method, possibly with parameters) to an actor A2, then M will be sent by A1 and received by A2 during ``(T,D)``, yet A2 will process M (once automatically reordered with the other received messages, if any) only at ``(T,D+1)``, ensuring causality is met (effects happening strictly after their causes). A2, when executing the method corresponding to M, will be free to send in turn any number of actor messages to any actors; as soon as at least one message has been sent by one actor, ``(T,D+2)`` will be scheduled, and so on until no actor has a message to send. It will then be the last diasca for this tick ``T``, and, if not terminated, the simulation will schedule the next tick according to the overall agenda, i.e. the next simulation timestamp will be  ``(T',0)``, with ``T' > T``.
 
 
 
@@ -603,10 +603,10 @@ Otherwise, for example a model could specify a short duration that, if run with 
 
   case CurrentTick of
 
-	ActionTick ->
+    ActionTick ->
 
-		do_action();
-		...
+        do_action();
+        ...
 
 
 However ``CurrentTick`` would be 148 or higher, never matching ``ActionTick=147``, thus the corresponding action would never be triggered.

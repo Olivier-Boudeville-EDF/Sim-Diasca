@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 Olivier Boudeville
+% Copyright (C) 2014-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -43,60 +43,60 @@ See the ast_generation.erl tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	AtomList = [ a, b, c ],
+    AtomList = [ a, b, c ],
 
-	AtomListForm = ast_generation:atoms_to_form( AtomList ),
+    AtomListForm = ast_generation:atoms_to_form( AtomList ),
 
-	FileGenLoc = ast_utils:get_generated_code_location(),
+    FileGenLoc = ast_utils:get_generated_code_location(),
 
-	case AtomListForm of
+    case AtomListForm of
 
-		{cons, FileGenLoc, {atom,FileGenLoc,a},
-		 {cons, FileGenLoc, {atom,FileGenLoc,b},
-		  {cons, FileGenLoc, {atom,FileGenLoc,c},
-		   { nil,FileGenLoc } } } } ->
-			ok;
+        {cons, FileGenLoc, {atom,FileGenLoc,a},
+         {cons, FileGenLoc, {atom,FileGenLoc,b},
+          {cons, FileGenLoc, {atom,FileGenLoc,c},
+           { nil,FileGenLoc } } } } ->
+            ok;
 
-		AtomUnexpectedForm ->
-			throw( { unexpected_form_for_atoms, AtomList, AtomUnexpectedForm } )
+        AtomUnexpectedForm ->
+            throw( { unexpected_form_for_atoms, AtomList, AtomUnexpectedForm } )
 
-	end,
+    end,
 
-	test_facilities:display( "The form version of ~p is:~n~p",
-							 [ AtomList, AtomListForm ] ),
+    test_facilities:display( "The form version of ~p is:~n~p",
+                             [ AtomList, AtomListForm ] ),
 
-	% Check:
-	AtomList = ast_generation:form_to_atoms( AtomListForm ),
-
-
-	ParamCount = 4,
-
-	HeaderParams = ast_generation:get_header_params( ParamCount ),
-
-	test_facilities:display( "Testing ~B-parameter generation: ~p.",
-							 [ ParamCount, HeaderParams ] ),
+    % Check:
+    AtomList = ast_generation:form_to_atoms( AtomListForm ),
 
 
-	VarCount = 2,
+    ParamCount = 4,
 
-	Vars = ast_generation:enumerated_variables_to_form( VarCount ),
+    HeaderParams = ast_generation:get_header_params( ParamCount ),
 
-	test_facilities:display( "Listing ~B variables:~n~p", [ VarCount, Vars ] ),
+    test_facilities:display( "Testing ~B-parameter generation: ~p.",
+                             [ ParamCount, HeaderParams ] ),
 
-	% Check:
-	case Vars of
 
-		{cons, FileGenLoc, {var,FileGenLoc,'Myriad_Param_1'},
-		 {cons, FileGenLoc, {var,FileGenLoc,'Myriad_Param_2'},
-		  {nil,FileGenLoc}}} ->
-			ok;
+    VarCount = 2,
 
-		VarsUnexpectedForm ->
-			throw( { unexpected_form_for_variables, VarCount,
-					 VarsUnexpectedForm } )
+    Vars = ast_generation:enumerated_variables_to_form( VarCount ),
 
-	end,
+    test_facilities:display( "Listing ~B variables:~n~p", [ VarCount, Vars ] ),
 
-	test_facilities:stop().
+    % Check:
+    case Vars of
+
+        {cons, FileGenLoc, {var,FileGenLoc,'Myriad_Param_1'},
+         {cons, FileGenLoc, {var,FileGenLoc,'Myriad_Param_2'},
+          {nil,FileGenLoc}}} ->
+            ok;
+
+        VarsUnexpectedForm ->
+            throw( { unexpected_form_for_variables, VarCount,
+                     VarsUnexpectedForm } )
+
+    end,
+
+    test_facilities:stop().

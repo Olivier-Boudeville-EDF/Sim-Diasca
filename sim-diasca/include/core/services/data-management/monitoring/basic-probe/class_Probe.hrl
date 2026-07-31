@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -20,39 +20,80 @@
 % Creation date: 2008.
 
 
-% Describes management (not rendering) options that apply to (basic) probes:
+% Exactly like the class_TraceEmitter:trace_categorize/1 macro, excepts that
+% manages the probe options as well:
+%
+% (macro, thus binding no variable)
+-define( probe_trace_categorize( ProbeTracesInitialisationTermInternal ),
+
+    case ProbeTracesInitialisationTermInternal of
+
+        % Here categorization is already specified:
+        % {TraceName, TraceCategorization}, ProbeOpts} ->
+        { { _, _ }, _ } ->
+            ProbeTracesInitialisationTermInternal;
+
+        % We have here {TraceName, ProbeOpts}, where ProbeOpts is a
+        % probe_options record; thus, with the probe_options record tag, a
+        % 6-tuple:
+        %
+        { _, { probe_options, _, _, _, _, _ } } ->
+            % So returning {{TraceName, ?trace_emitter_categorization},
+            % ProbeOpts}:
+            { { element( 1, ProbeTracesInitialisationTermInternal ),
+                 ?trace_emitter_categorization },
+                element( 2, ProbeTracesInitialisationTermInternal ) };
+
+        % We must have here {_TraceName, TraceCategorization}, left as is:
+        P={ _, _ } ->
+            P;
+
+        % Expecting just TracesStandaloneEmitterName:
+        _ ->
+            { ProbeTracesInitialisationTermInternal,
+              ?trace_emitter_categorization }
+
+    end ).
+
+
+
+% Describes management (not rendering) options that apply to (basic) probes.
+%
+% Note that, if changing the number of fields of this record, the
+% probe_trace_categorize/1 macro above shall be modified accordingly.
+%
 -record( probe_options, {
 
-	% If true, the gnuplot command file will be written at probe start-up, thus
-	% preventing the taking into account of any subsequent change in the
-	% rendering parameters, but remaining available even if the simulation was
-	% to be interrupted.
-	%
-	create_command_file_initially = false :: boolean(),
+    % If true, the gnuplot command file will be written at probe start-up, thus
+    % preventing the taking into account of any subsequent change in the
+    % rendering parameters, but remaining available even if the simulation was
+    % to be interrupted.
+    %
+    create_command_file_initially = false :: boolean(),
 
 
-	% If true, received sample data will be stored in memory instead of being
-	% directly written to disk (default: false, as the memory footprint might
-	% become then very significant).
-	%
-	deferred_data_writes = false :: boolean(),
+    % If true, received sample data will be stored in memory instead of being
+    % directly written to disk (default: false, as the memory footprint might
+    % become then very significant).
+    %
+    deferred_data_writes = false :: boolean(),
 
 
-	% If true, this probe will register itself to the result manager, and be
-	% driven by it.
-	%
-	register_as_tracked_producer = true :: boolean(),
+    % If true, this probe will register itself to the result manager, and be
+    % driven by it.
+    %
+    register_as_tracked_producer = true :: boolean(),
 
 
-	% Specifies the directory in which the files related to this probe
-	% (e.g. *.p, *.data, *.png) should be written.
-	%
-	probe_directory = undefined :: option( file_utils:directory_name() ),
+    % Specifies the directory in which the files related to this probe
+    % (e.g. *.p, *.data, *.png) should be written.
+    %
+    probe_directory = undefined :: option( file_utils:directory_name() ),
 
 
-	% Allows to disable from the very start, at construction-time, the support
-	% for probe rendering, typically to bypass the lookup and version check of
-	% gnuplot (which may exhaust the number of opened file descriptors, should
-	% many probes be created)
-	%
-	rendering_enabled = true :: boolean() } ).
+    % Allows to disable from the very start, at construction-time, the support
+    % for probe rendering, typically to bypass the lookup and version check of
+    % gnuplot (which may exhaust the number of opened file descriptors, should
+    % many probes be created)
+    %
+    rendering_enabled = true :: boolean() } ).

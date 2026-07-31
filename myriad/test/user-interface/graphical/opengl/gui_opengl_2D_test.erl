@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -66,19 +66,19 @@ normalised coordinates (in [0.0,1.0]), i.e. NDC.
 %
 -record( my_gui_state, {
 
-	% The main frame of this test:
-	main_frame :: frame(),
+    % The main frame of this test:
+    main_frame :: frame(),
 
-	% The OpenGL canvas on which rendering will be done:
-	canvas :: gl_canvas(),
+    % The OpenGL canvas on which rendering will be done:
+    canvas :: gl_canvas(),
 
-	% The OpenGL context being used:
-	context :: gl_context(),
+    % The OpenGL context being used:
+    context :: gl_context(),
 
-	% Here just a boolean; in more complex cases, would be a maybe OpenGL state
-	% (e.g. to store the loaded textures):
-	%
-	opengl_initialised = false :: boolean() } ).
+    % Here just a boolean; in more complex cases, would be a maybe OpenGL state
+    % (e.g. to store the loaded textures):
+    %
+    opengl_initialised = false :: boolean() } ).
 
 
 -doc "Test-specific overall GUI state.".
@@ -102,25 +102,25 @@ normalised coordinates (in [0.0,1.0]), i.e. NDC.
 -spec run_actual_test() -> void().
 run_actual_test() ->
 
-	test_facilities:display( "This test will display a white upright triangle "
-		"on a black background with a line-rendered 'FUN' label "
-		"(with red, green and blue characters), and will adjust to screen "
-		"resizes (the triangle will be scaled with the viewport, "
-		"whereas the text will remain fixed size)." ),
+    test_facilities:display( "This test will display a white upright triangle "
+        "on a black background with a line-rendered 'FUN' label "
+        "(with red, green and blue characters), and will adjust to screen "
+        "resizes (the triangle will be scaled with the viewport, "
+        "whereas the text will remain fixed size)." ),
 
-	gui:start(),
+    gui:start(),
 
-	% Could be batched (see gui:batch/1) to be more effective:
-	InitialGUIState = init_test_gui(),
+    % Could be batched (see gui:batch/1) to be more effective:
+    InitialGUIState = init_test_gui(),
 
-	gui_frame:show( InitialGUIState#my_gui_state.main_frame ),
+    gui_frame:show( InitialGUIState#my_gui_state.main_frame ),
 
-	% OpenGL will be initialised only when the corresponding frame will be ready
-	% (that is once first reported as resized):
-	%
-	gui_main_loop( InitialGUIState ),
+    % OpenGL will be initialised only when the corresponding frame will be ready
+    % (that is once first reported as resized):
+    %
+    gui_main_loop( InitialGUIState ),
 
-	gui:stop().
+    gui:stop().
 
 
 
@@ -134,26 +134,26 @@ displayed.
 -spec init_test_gui() -> my_gui_state().
 init_test_gui() ->
 
-	MainFrame =
-		gui_frame:create( "MyriadGUI OpenGL 2D Test", _Size={ 500, 250 } ),
+    MainFrame =
+        gui_frame:create( "MyriadGUI OpenGL 2D Test", _Size={ 500, 250 } ),
 
-	% Using default GL attributes:
-	GLCanvas = gui_opengl:create_canvas( _Parent=MainFrame ),
+    % Using default GL attributes:
+    GLCanvas = gui_opengl:create_canvas( _Parent=MainFrame ),
 
-	% Created, yet not bound yet (must wait for the main frame to be shown):
-	GLContext = gui_opengl:create_context( GLCanvas ),
+    % Created, yet not bound yet (must wait for the main frame to be shown):
+    GLContext = gui_opengl:create_context( GLCanvas ),
 
-	gui:subscribe_to_events( { [ onResized, onShown, onWindowClosed ],
-							   MainFrame } ),
+    gui:subscribe_to_events( { [ onResized, onShown, onWindowClosed ],
+                               MainFrame } ),
 
-	% Needed as well, otherwise if that frame is moved out of the screen or if
-	% another window overlaps, the OpenGL canvas gets garbled and thus must be
-	% redrawn:
-	%
-	gui:subscribe_to_events( { onRepaintNeeded, GLCanvas } ),
+    % Needed as well, otherwise if that frame is moved out of the screen or if
+    % another window overlaps, the OpenGL canvas gets garbled and thus must be
+    % redrawn:
+    %
+    gui:subscribe_to_events( { onRepaintNeeded, GLCanvas } ),
 
-	% No OpenGL state yet (GL context cannot be set as current yet):
-	#my_gui_state{ main_frame=MainFrame, canvas=GLCanvas, context=GLContext }.
+    % No OpenGL state yet (GL context cannot be set as current yet):
+    #my_gui_state{ main_frame=MainFrame, canvas=GLCanvas, context=GLContext }.
 
 
 
@@ -163,96 +163,96 @@ The main loop of this test, driven by the receiving of MyriadGUI messages.
 -spec gui_main_loop( my_gui_state() ) -> void().
 gui_main_loop( GUIState ) ->
 
-	%trace_utils:debug( "Main loop." ),
+    %trace_utils:debug( "Main loop." ),
 
-	% Matching the least-often received messages last:
-	receive
+    % Matching the least-often received messages last:
+    receive
 
-		{ onRepaintNeeded, [ GLCanvas, _GLCanvasId, _EventContext ] } ->
+        { onRepaintNeeded, [ GLCanvas, _GLCanvasId, _EventContext ] } ->
 
-			%trace_utils:debug_fmt( "Repaint needed for OpenGL canvas ~w.",
-			%                       [ GLCanvas ] ),
+            %trace_utils:debug_fmt( "Repaint needed for OpenGL canvas ~w.",
+            %                       [ GLCanvas ] ),
 
-			RepaintedGUIState = case GUIState#my_gui_state.opengl_initialised of
+            RepaintedGUIState = case GUIState#my_gui_state.opengl_initialised of
 
-				true ->
-					gui_widget:enable_repaint( GLCanvas ),
-					% Simpler than storing these at each resize:
-					{ CanvasWidth, CanvasHeight } =
-						gui_widget:get_size( GLCanvas ),
-					render( CanvasWidth, CanvasHeight ),
-					gui_opengl:swap_buffers( GLCanvas ),
-					GUIState;
+                true ->
+                    gui_widget:enable_repaint( GLCanvas ),
+                    % Simpler than storing these at each resize:
+                    { CanvasWidth, CanvasHeight } =
+                        gui_widget:get_size( GLCanvas ),
+                    render( CanvasWidth, CanvasHeight ),
+                    gui_opengl:swap_buffers( GLCanvas ),
+                    GUIState;
 
-				% Not ready yet:
-				false ->
-					trace_utils:debug(
-						"To be repainted, yet no OpenGL state yet." ),
-					GUIState
+                % Not ready yet:
+                false ->
+                    trace_utils:debug(
+                        "To be repainted, yet no OpenGL state yet." ),
+                    GUIState
 
-			end,
-			gui_main_loop( RepaintedGUIState );
-
-
-		% For a window, the first resizing event happens immediately before its
-		% onShown one:
-		%
-		{ onResized, [ _ParentWindow, _ParentWindowId, _NewParentSize,
-					   _EventContext ] } ->
-
-			%trace_utils:debug_fmt( "Resizing of the parent window "
-			%   "(main frame) to ~w detected.", [ NewParentSize ] ),
-
-			ResizedGUIState = case GUIState#my_gui_state.opengl_initialised of
-
-				true ->
-					on_main_frame_resized( GUIState );
-
-				% Not ready yet:
-				false ->
-					trace_utils:debug( "Resized, yet no OpenGL state yet." ),
-					GUIState
-
-			end,
-
-			gui_main_loop( ResizedGUIState );
+            end,
+            gui_main_loop( RepaintedGUIState );
 
 
-		% The most suitable first location to initialise OpenGL, as making a GL
-		% context current requires a shown window:
-		%
-		{ onShown, [ ParentWindow, _ParentWindowId, _EventContext ] } ->
+        % For a window, the first resizing event happens immediately before its
+        % onShown one:
+        %
+        { onResized, [ _ParentWindow, _ParentWindowId, _NewParentSize,
+                       _EventContext ] } ->
 
-			trace_utils:debug_fmt( "Parent window (main frame) just shown "
-				"(initial size of ~w).",
-				[ gui_widget:get_size( ParentWindow ) ] ),
+            %trace_utils:debug_fmt( "Resizing of the parent window "
+            %   "(main frame) to ~w detected.", [ NewParentSize ] ),
 
-			% Done once for all:
-			InitGUIState = initialise_opengl( GUIState ),
+            ResizedGUIState = case GUIState#my_gui_state.opengl_initialised of
 
-			gui_main_loop( InitGUIState );
+                true ->
+                    on_main_frame_resized( GUIState );
 
+                % Not ready yet:
+                false ->
+                    trace_utils:debug( "Resized, yet no OpenGL state yet." ),
+                    GUIState
 
-		{ onWindowClosed,
-				[ _ParentWindow=MainFrame, _ParentWindowId, _EventContext ] } ->
-			trace_utils:info( "Main frame closed, test success." ),
+            end,
 
-			% Very final check, while there is still an OpenGL context:
-			gui_opengl:check_error(),
-
-			% No more recursing:
-			gui_frame:destruct( MainFrame );
+            gui_main_loop( ResizedGUIState );
 
 
-		OtherEvent ->
-			trace_utils:warning_fmt( "Test ignored following event:~n ~p",
-									 [ OtherEvent ] ),
+        % The most suitable first location to initialise OpenGL, as making a GL
+        % context current requires a shown window:
+        %
+        { onShown, [ ParentWindow, _ParentWindowId, _EventContext ] } ->
 
-			gui_main_loop( GUIState )
+            trace_utils:debug_fmt( "Parent window (main frame) just shown "
+                "(initial size of ~w).",
+                [ gui_widget:get_size( ParentWindow ) ] ),
 
-	% No 'after': no spontaneous action taken here, in the absence of events.
+            % Done once for all:
+            InitGUIState = initialise_opengl( GUIState ),
 
-	end.
+            gui_main_loop( InitGUIState );
+
+
+        { onWindowClosed,
+                [ _ParentWindow=MainFrame, _ParentWindowId, _EventContext ] } ->
+            trace_utils:info( "Main frame closed, test success." ),
+
+            % Very final check, while there is still an OpenGL context:
+            gui_opengl:check_error(),
+
+            % No more recursing:
+            gui_frame:destruct( MainFrame );
+
+
+        OtherEvent ->
+            trace_utils:warning_fmt( "Test ignored following event:~n ~p",
+                                     [ OtherEvent ] ),
+
+            gui_main_loop( GUIState )
+
+    % No 'after': no spontaneous action taken here, in the absence of events.
+
+    end.
 
 
 
@@ -262,32 +262,32 @@ OpenGL context is available.
 """.
 -spec initialise_opengl( my_gui_state() ) -> my_gui_state().
 initialise_opengl( GUIState=#my_gui_state{ canvas=GLCanvas,
-										   context=GLContext,
-										   % Check:
-										   opengl_initialised=false } ) ->
+                                           context=GLContext,
+                                           % Check:
+                                           opengl_initialised=false } ) ->
 
-	% Initial size of canvas is typically 20x20 pixels:
-	trace_utils:debug_fmt( "Initialising OpenGL (whereas canvas is of initial "
-						   "size ~w).", [ gui_widget:get_size( GLCanvas ) ] ),
+    % Initial size of canvas is typically 20x20 pixels:
+    trace_utils:debug_fmt( "Initialising OpenGL (whereas canvas is of initial "
+                           "size ~w).", [ gui_widget:get_size( GLCanvas ) ] ),
 
-	% So done only once:
-	gui_opengl:set_context_on_shown( GLCanvas, GLContext ),
+    % So done only once:
+    gui_opengl:set_context_on_shown( GLCanvas, GLContext ),
 
-	% These settings will not change afterwards here (set once for all):
+    % These settings will not change afterwards here (set once for all):
 
-	% Clears in black:
-	gl:clearColor( 0.0, 0.0, 0.0, 0.0 ),
+    % Clears in black:
+    gl:clearColor( 0.0, 0.0, 0.0, 0.0 ),
 
 
-	%trace_utils:debug_fmt( "Managing a resize of the main frame to ~w.",
-	%                       [ gui:get_size( MainFrame ) ] ),
+    %trace_utils:debug_fmt( "Managing a resize of the main frame to ~w.",
+    %                       [ gui:get_size( MainFrame ) ] ),
 
-	InitGUIState = GUIState#my_gui_state{ opengl_initialised=true },
+    InitGUIState = GUIState#my_gui_state{ opengl_initialised=true },
 
-	% As the initial onResized was triggered whereas no OpenGL state was
-	% already available:
-	%
-	on_main_frame_resized( InitGUIState ).
+    % As the initial onResized was triggered whereas no OpenGL state was
+    % already available:
+    %
+    on_main_frame_resized( InitGUIState ).
 
 
 
@@ -299,58 +299,58 @@ OpenGL context expected here to have already been set.
 -spec on_main_frame_resized( my_gui_state() ) -> my_gui_state().
 on_main_frame_resized( GUIState=#my_gui_state{ canvas=GLCanvas } ) ->
 
-	% Maximises the canvas in the main frame:
-	{ CanvasWidth, CanvasHeight } = gui_widget:maximise_in_parent( GLCanvas ),
+    % Maximises the canvas in the main frame:
+    { CanvasWidth, CanvasHeight } = gui_widget:maximise_in_parent( GLCanvas ),
 
-	%trace_utils:debug_fmt( "New client canvas size: {~B,~B}.",
-	%                       [ CanvasWidth, CanvasHeight ] ),
+    %trace_utils:debug_fmt( "New client canvas size: {~B,~B}.",
+    %                       [ CanvasWidth, CanvasHeight ] ),
 
-	% Lower-left corner and size of the viewport in the current canvas:
-	gl:viewport( 0, 0, CanvasWidth, CanvasHeight ),
+    % Lower-left corner and size of the viewport in the current canvas:
+    gl:viewport( 0, 0, CanvasWidth, CanvasHeight ),
 
-	% Apparently, at least on a test setting, a race condition (discovered
-	% thanks to the commenting-out of a debug trace) seems to exist between the
-	% moment when the canvas is resized and the one when a new OpenGL rendering
-	% is triggered afterwards; the cause is probably that maximising involves an
-	% (Erlang) asynchronous message to be sent from this user process and to be
-	% received and applied by the process of the target window, whereas a GL
-	% (NIF-based) operation is immediate; without a sufficient delay, the
-	% rendering will thus take place according to the former (e.g. minimised)
-	% canvas size, not according to the one that was expected to be already
-	% resized.
-	%
-	% (actually returns {CanvasWidth, CanvasHeight})
-	%
-	gui_widget:sync( GLCanvas ),
+    % Apparently, at least on a test setting, a race condition (discovered
+    % thanks to the commenting-out of a debug trace) seems to exist between the
+    % moment when the canvas is resized and the one when a new OpenGL rendering
+    % is triggered afterwards; the cause is probably that maximising involves an
+    % (Erlang) asynchronous message to be sent from this user process and to be
+    % received and applied by the process of the target window, whereas a GL
+    % (NIF-based) operation is immediate; without a sufficient delay, the
+    % rendering will thus take place according to the former (e.g. minimised)
+    % canvas size, not according to the one that was expected to be already
+    % resized.
+    %
+    % (actually returns {CanvasWidth, CanvasHeight})
+    %
+    gui_widget:sync( GLCanvas ),
 
-	% Multiplies the current modelview matrix by an orthographic matrix, a
-	% perspective matrix that produces a parallel projection based on 6 clipping
-	% planes.
-	%
-	% Here coordinates are absolute (based on the size of the viewport - not
-	% normalised in [0.0,1.0]), thus resizing the frame implies updating the
-	% orthographic projection.
+    % Multiplies the current modelview matrix by an orthographic matrix, a
+    % perspective matrix that produces a parallel projection based on 6 clipping
+    % planes.
+    %
+    % Here coordinates are absolute (based on the size of the viewport - not
+    % normalised in [0.0,1.0]), thus resizing the frame implies updating the
+    % orthographic projection.
 
-	gl:matrixMode( ?GL_PROJECTION ),
-	gl:loadIdentity(),
+    gl:matrixMode( ?GL_PROJECTION ),
+    gl:loadIdentity(),
 
-	% Like glu:ortho2D/4:
-	gl:ortho( _Left=0.0, _Right=float( CanvasWidth ),
-			  _Bottom=float( CanvasHeight ), _Top=0.0, _Near=-1.0, _Far=1.0 ),
+    % Like glu:ortho2D/4:
+    gl:ortho( _Left=0.0, _Right=float( CanvasWidth ),
+              _Bottom=float( CanvasHeight ), _Top=0.0, _Near=-1.0, _Far=1.0 ),
 
-	% Any OpenGL reset to be done because of the resizing should take place
-	% here.
-	%
-	% Using here normalised coordinates (in [0.0,1.0]), so no need to update the
-	% orthographic projection.
+    % Any OpenGL reset to be done because of the resizing should take place
+    % here.
+    %
+    % Using here normalised coordinates (in [0.0,1.0]), so no need to update the
+    % orthographic projection.
 
-	render( CanvasWidth, CanvasHeight ),
+    render( CanvasWidth, CanvasHeight ),
 
-	% Includes a gl:flush/0:
-	gui_opengl:swap_buffers( GLCanvas ),
+    % Includes a gl:flush/0:
+    gui_opengl:swap_buffers( GLCanvas ),
 
-	% Const here:
-	GUIState.
+    % Const here:
+    GUIState.
 
 
 
@@ -362,101 +362,101 @@ In this simple case, no specific OpenGL state is needed to pass around.
 -spec render( width(), height() ) -> void().
 render( Width, Height ) ->
 
-	%trace_utils:debug_fmt( "Rendering now for size {~B,~B}.",
-	%                       [ Width, Height ] ),
+    %trace_utils:debug_fmt( "Rendering now for size {~B,~B}.",
+    %                       [ Width, Height ] ),
 
-	gl:clear( ?GL_COLOR_BUFFER_BIT ),
+    gl:clear( ?GL_COLOR_BUFFER_BIT ),
 
-	% A white right-angled rectangle in the Z=0 plane (in a black background),
-	% whose right angle is at the center of the viewport/frame, and which faces
-	% the top-right frame corner:
-	%
-	% (using MyriadGUI 2D coordinate system)
+    % A white right-angled rectangle in the Z=0 plane (in a black background),
+    % whose right angle is at the center of the viewport/frame, and which faces
+    % the top-right frame corner:
+    %
+    % (using MyriadGUI 2D coordinate system)
 
-	% Draws in white:
-	gl:color3f( 1.0, 1.0, 1.0 ),
+    % Draws in white:
+    gl:color3f( 1.0, 1.0, 1.0 ),
 
-	MidWidth = Width div 2,
-	MidHeight = Height div 2,
+    MidWidth = Width div 2,
+    MidHeight = Height div 2,
 
-	% CCW order:
-	gl:'begin'( ?GL_TRIANGLES ),
+    % CCW order:
+    gl:'begin'( ?GL_TRIANGLES ),
 
-		gl:vertex2i( MidWidth, 0 ),
+        gl:vertex2i( MidWidth, 0 ),
 
-		% Going towards the bottom of the screen:
-		gl:vertex2i( MidWidth, MidHeight ),
+        % Going towards the bottom of the screen:
+        gl:vertex2i( MidWidth, MidHeight ),
 
-		% Going right:
-		gl:vertex2i( Width, MidHeight ),
+        % Going right:
+        gl:vertex2i( Width, MidHeight ),
 
-	gl:'end'(),
+    gl:'end'(),
 
-	% A fix-width blue "F" character:
+    % A fix-width blue "F" character:
 
-	% Draws in red now:
-	gl:color3f( 1.0, 0.0, 0.0 ),
+    % Draws in red now:
+    gl:color3f( 1.0, 0.0, 0.0 ),
 
-	XOffset = 10,
-	YOffset = 100,
+    XOffset = 10,
+    YOffset = 100,
 
-	CharWidth = 20,
-	CharHeight = 35,
+    CharWidth = 20,
+    CharHeight = 35,
 
-	% All "F" except its small intermediate horizontal bar, starting from its
-	% lowest part:
-	%
-	gl:'begin'( ?GL_LINE_STRIP ),
-		gl:vertex2i( XOffset, YOffset + CharHeight ),
-		gl:vertex2i( XOffset, YOffset ),
-		gl:vertex2i( XOffset + CharWidth, YOffset ),
-	gl:'end'(),
+    % All "F" except its small intermediate horizontal bar, starting from its
+    % lowest part:
+    %
+    gl:'begin'( ?GL_LINE_STRIP ),
+        gl:vertex2i( XOffset, YOffset + CharHeight ),
+        gl:vertex2i( XOffset, YOffset ),
+        gl:vertex2i( XOffset + CharWidth, YOffset ),
+    gl:'end'(),
 
-	% Finally its small intermediate horizontal bar:
-	gl:'begin'( ?GL_LINES ),
+    % Finally its small intermediate horizontal bar:
+    gl:'begin'( ?GL_LINES ),
 
-		% Mid-height:
-		YBar = YOffset + CharHeight div 2,
+        % Mid-height:
+        YBar = YOffset + CharHeight div 2,
 
-		gl:vertex2i( XOffset, YBar ),
+        gl:vertex2i( XOffset, YBar ),
 
-		% A little shorter than the top part:
-		gl:vertex2i( XOffset + 15, YBar ),
+        % A little shorter than the top part:
+        gl:vertex2i( XOffset + 15, YBar ),
 
-	gl:'end'(),
-
-
-	% Draws "U" in green now:
-	gl:color3f( 0.0, 1.0, 0.0 ),
-
-	XInterletterOffset = 30,
-
-	gl:'begin'( ?GL_LINE_STRIP ),
-		gl:vertex2i( XOffset+XInterletterOffset, YOffset ),
-		gl:vertex2i( XOffset+XInterletterOffset, YOffset + CharHeight ),
-		gl:vertex2i( XOffset+XInterletterOffset+CharWidth,
-					 YOffset+CharHeight ),
-		gl:vertex2i( XOffset+XInterletterOffset+CharWidth, YOffset ),
-	gl:'end'(),
-
-	% Draws "N" in green now:
-	gl:color3f( 0.0, 0.0, 1.0 ),
-
-	gl:'begin'( ?GL_LINE_STRIP ),
-		gl:vertex2i( XOffset+2*XInterletterOffset, YOffset + CharHeight ),
-		gl:vertex2i( XOffset+2*XInterletterOffset, YOffset ),
-		gl:vertex2i( XOffset+2*XInterletterOffset+CharWidth,
-					 YOffset + CharHeight  ),
-		gl:vertex2i( XOffset+2*XInterletterOffset+CharWidth, YOffset ),
-	gl:'end'(),
+    gl:'end'(),
 
 
-	% Not swapping buffers here, as would involve GLCanvas, whereas this
-	% function is meant to remain pure OpenGL.
-	%
-	% gl:flush/0 done when swapping buffers.
+    % Draws "U" in green now:
+    gl:color3f( 0.0, 1.0, 0.0 ),
 
-	ok.
+    XInterletterOffset = 30,
+
+    gl:'begin'( ?GL_LINE_STRIP ),
+        gl:vertex2i( XOffset+XInterletterOffset, YOffset ),
+        gl:vertex2i( XOffset+XInterletterOffset, YOffset + CharHeight ),
+        gl:vertex2i( XOffset+XInterletterOffset+CharWidth,
+                     YOffset+CharHeight ),
+        gl:vertex2i( XOffset+XInterletterOffset+CharWidth, YOffset ),
+    gl:'end'(),
+
+    % Draws "N" in green now:
+    gl:color3f( 0.0, 0.0, 1.0 ),
+
+    gl:'begin'( ?GL_LINE_STRIP ),
+        gl:vertex2i( XOffset+2*XInterletterOffset, YOffset + CharHeight ),
+        gl:vertex2i( XOffset+2*XInterletterOffset, YOffset ),
+        gl:vertex2i( XOffset+2*XInterletterOffset+CharWidth,
+                     YOffset + CharHeight  ),
+        gl:vertex2i( XOffset+2*XInterletterOffset+CharWidth, YOffset ),
+    gl:'end'(),
+
+
+    % Not swapping buffers here, as would involve GLCanvas, whereas this
+    % function is meant to remain pure OpenGL.
+    %
+    % gl:flush/0 done when swapping buffers.
+
+    ok.
 
 
 
@@ -464,9 +464,9 @@ render( Width, Height ) ->
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	gui_opengl_for_testing:can_be_run(
-		"the test of OpenGL 2D support" ) =:= yes andalso run_actual_test(),
+    gui_opengl_for_testing:can_be_run(
+        "the test of OpenGL 2D support" ) =:= yes andalso run_actual_test(),
 
-	test_facilities:stop().
+    test_facilities:stop().

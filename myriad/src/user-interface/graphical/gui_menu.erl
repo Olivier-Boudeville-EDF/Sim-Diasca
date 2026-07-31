@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -93,11 +93,11 @@ Use ampersand to denote a shortcut/accelerator character, e.g. `"&File"` or
 
 -doc "A kind of menu item.".
 -type menu_item_kind() :: 'normal'    % Basic menu item
-						| 'check'     % Menu item that can be checked/toggled
-						| 'radio'     % Menu item with a radio element
-						| 'separator' % Separator between menu items
-						| 'dropdown'. % A normal menu item with a dropdown arrow
-									  % next to it.
+                        | 'check'     % Menu item that can be checked/toggled
+                        | 'radio'     % Menu item with a radio element
+                        | 'separator' % Separator between menu items
+                        | 'dropdown'. % A normal menu item with a dropdown arrow
+                                      % next to it.
 
 
 
@@ -120,96 +120,96 @@ See also gui_constants:get_menu_item_id_topic_spec/0.
 The atoms listed here are reserved name identifiers, as 'undefined' is.
 """.
 -type standard_menu_item_name_id() ::
-	  'new_menu_item'
-	| 'open_menu_item'
-	| 'close_menu_item'
-	| 'save_menu_item'
-	| 'save_as_menu_item'
-	| 'revert_to_saved_menu_item'
-	| 'undelete_menu_item'
-	| 'print_menu_item'
+      'new_menu_item'
+    | 'open_menu_item'
+    | 'close_menu_item'
+    | 'save_menu_item'
+    | 'save_as_menu_item'
+    | 'revert_to_saved_menu_item'
+    | 'undelete_menu_item'
+    | 'print_menu_item'
 
-	% Print preview:
-	| 'preview_menu_item'
+    % Print preview:
+    | 'preview_menu_item'
 
-	| 'revert_menu_item'
-	| 'edit_menu_item'
-	| 'file_menu_item'
-	| 'properties_menu_item'
-	| 'cut_menu_item'
-	| 'copy_menu_item'
-	| 'paste_menu_item'
-	| 'delete_menu_item'
-	| 'clear_menu_item'
-	| 'find_menu_item'
-	| 'select_all_menu_item'
+    | 'revert_menu_item'
+    | 'edit_menu_item'
+    | 'file_menu_item'
+    | 'properties_menu_item'
+    | 'cut_menu_item'
+    | 'copy_menu_item'
+    | 'paste_menu_item'
+    | 'delete_menu_item'
+    | 'clear_menu_item'
+    | 'find_menu_item'
+    | 'select_all_menu_item'
 
-	% Find and replace:
-	| 'replace_menu_item'
+    % Find and replace:
+    | 'replace_menu_item'
 
-	| 'replace_all_menu_item'
-	| 'clear_menu_item'
-	| 'ok_menu_item'
-	| 'cancel_menu_item'
-	| 'apply_menu_item'
-	| 'yes_menu_item'
-	| 'no_menu_item'
-	| 'add_menu_item'
-	| 'remove_menu_item'
-	| 'convert_menu_item'
-	| 'execute_menu_item'
-	| 'home_menu_item'
-	| 'refresh_menu_item'
-	| 'stop_menu_item'
-	| 'index_menu_item'
-	| 'select_color_menu_item'
-	| 'select_font_menu_item'
-	| 'forward_menu_item'
-	| 'backward_menu_item'
-	| 'up_menu_item'
-	| 'down_menu_item'
-	| 'top_menu_item'
-	| 'bottom_menu_item'
-	| 'first_menu_item'
-	| 'last_menu_item'
-	| 'jump_to_menu_item'
-	| 'info_menu_item'
+    | 'replace_all_menu_item'
+    | 'clear_menu_item'
+    | 'ok_menu_item'
+    | 'cancel_menu_item'
+    | 'apply_menu_item'
+    | 'yes_menu_item'
+    | 'no_menu_item'
+    | 'add_menu_item'
+    | 'remove_menu_item'
+    | 'convert_menu_item'
+    | 'execute_menu_item'
+    | 'home_menu_item'
+    | 'refresh_menu_item'
+    | 'stop_menu_item'
+    | 'index_menu_item'
+    | 'select_color_menu_item'
+    | 'select_font_menu_item'
+    | 'forward_menu_item'
+    | 'backward_menu_item'
+    | 'up_menu_item'
+    | 'down_menu_item'
+    | 'top_menu_item'
+    | 'bottom_menu_item'
+    | 'first_menu_item'
+    | 'last_menu_item'
+    | 'jump_to_menu_item'
+    | 'info_menu_item'
 
-	| 'zoom_factor_one'
-	| 'zoom_factor_fit'
-	| 'zoom_factor_in'
-	| 'zoom_factor_out'
+    | 'zoom_factor_one'
+    | 'zoom_factor_fit'
+    | 'zoom_factor_in'
+    | 'zoom_factor_out'
 
-	| 'undo_menu_item'
-	| 'redo_menu_item'
-	| 'help_menu_item'
-	| 'preferences_menu_item'
-	| 'about_menu_item'
-	| 'floppy_menu_item'
-	| 'hard_disk_menu_item'
-	| 'network_menu_item'
+    | 'undo_menu_item'
+    | 'redo_menu_item'
+    | 'help_menu_item'
+    | 'preferences_menu_item'
+    | 'about_menu_item'
+    | 'floppy_menu_item'
+    | 'hard_disk_menu_item'
+    | 'network_menu_item'
 
-	| 'bold_menu_item'
-	| 'cdrom_menu_item'
-	| 'indent_menu_item'
-	| 'italic_menu_item'
+    | 'bold_menu_item'
+    | 'cdrom_menu_item'
+    | 'indent_menu_item'
+    | 'italic_menu_item'
 
-	| 'justify_center_menu_item'
-	| 'justify_fill_menu_item'
-	| 'justify_left_menu_item'
-	| 'justify_right_menu_item'
+    | 'justify_center_menu_item'
+    | 'justify_fill_menu_item'
+    | 'justify_left_menu_item'
+    | 'justify_right_menu_item'
 
-	| 'sort_ascending_menu_item'
-	| 'sort_descending_menu_item'
+    | 'sort_ascending_menu_item'
+    | 'sort_descending_menu_item'
 
-	| 'spell_check_menu_item'
+    | 'spell_check_menu_item'
 
-	| 'strikethrough_menu_item'
+    | 'strikethrough_menu_item'
 
-	| 'underline_menu_item'
-	| 'unindent_menu_item'
+    | 'underline_menu_item'
+    | 'unindent_menu_item'
 
-	| 'exit_menu_item'.
+    | 'exit_menu_item'.
 
 
 
@@ -235,9 +235,9 @@ When a frame goes fullscreen, any menu bar it has is hidden.
 
 
 -export_type([ menu/0, menu_option/0, menu_style/0,  menu_item/0, menu_title/0,
-			   menu_label/0, menu_item_label/0, menu_item_kind/0,
-			   menu_item_status/0, standard_menu_item_name_id/0, menu_item_id/0,
-			   menu_bar/0 ]).
+               menu_label/0, menu_item_label/0, menu_item_kind/0,
+               menu_item_status/0, standard_menu_item_name_id/0, menu_item_id/0,
+               menu_bar/0 ]).
 
 
 
@@ -247,13 +247,13 @@ When a frame goes fullscreen, any menu bar it has is hidden.
 
 % Functions related to menus in general.
 -export([ get_standard_item_names/0, add_item/2, add_item/3, append_item/2,
-		  append_submenu/4, append_submenu/5,
-		  add_checkable_item/2, add_checkable_item/3, add_checkable_item/4,
-		  set_checkable_item/3,
-		  add_radio_item/3, add_radio_item/4,
-		  add_separator/1, set_item_status/3,
-		  remove_menu_item/2,
-		  get_item_count/1, get_item_height/0, get_height/1 ]).
+          append_submenu/4, append_submenu/5,
+          add_checkable_item/2, add_checkable_item/3, add_checkable_item/4,
+          set_checkable_item/3,
+          add_radio_item/3, add_radio_item/4,
+          add_separator/1, set_item_status/3,
+          remove_menu_item/2,
+          get_item_count/1, get_item_height/0, get_height/1 ]).
 
 
 % Functions for menu bars.
@@ -266,7 +266,7 @@ When a frame goes fullscreen, any menu bar it has is hidden.
 
 % Exported helpers:
 -export([ to_wx_menu_item_id/1, to_new_wx_menu_item_id/1,
-		  to_wx_menu_item_kind/1 ]).
+          to_wx_menu_item_kind/1 ]).
 
 
 
@@ -302,7 +302,7 @@ This is the most recommended and useful function to create a menu.
 """.
 -spec create() -> menu().
 create() ->
-	wxMenu:new().
+    wxMenu:new().
 
 
 
@@ -313,12 +313,12 @@ or to be used as a popup menu.
 
 -spec create( maybe_list( menu_option() ) ) -> menu().
 create( MaybeOptions ) ->
-	WxOpts = to_wx_menu_options( MaybeOptions ),
+    WxOpts = to_wx_menu_options( MaybeOptions ),
 
-	%trace_utils:debug_fmt( "Creating a menu with options ~p.",
-	%                       [ WxOpts ] ),
+    %trace_utils:debug_fmt( "Creating a menu with options ~p.",
+    %                       [ WxOpts ] ),
 
-	wxMenu:new( WxOpts ).
+    wxMenu:new( WxOpts ).
 
 
 
@@ -328,19 +328,19 @@ menu bar, or to be used as a popup menu.
 """.
 -spec create( title(), maybe_list( menu_option() ) ) -> menu().
 create( Title, MaybeOptions ) ->
-	WxOpts = to_wx_menu_options( MaybeOptions ),
+    WxOpts = to_wx_menu_options( MaybeOptions ),
 
-	%trace_utils:debug_fmt( "Creating a menu '~ts' with options ~p.",
-	%                       [ Title, WxOpts ] ),
+    %trace_utils:debug_fmt( "Creating a menu '~ts' with options ~p.",
+    %                       [ Title, WxOpts ] ),
 
-	wxMenu:new( Title, WxOpts ).
+    wxMenu:new( Title, WxOpts ).
 
 
 
 -doc "Destructs the specified menu.".
 -spec destruct( menu() ) -> void().
 destruct( Menu ) ->
-	wxMenu:destroy( Menu ).
+    wxMenu:destroy( Menu ).
 
 
 
@@ -351,13 +351,13 @@ destruct( Menu ) ->
 -doc "Returns a list of the names of the standard menu item identifiers.".
 -spec get_standard_item_names() -> [ name_id() ].
 get_standard_item_names() ->
-	% Must correspond to standard_menu_item_name_id() (could be obtained from
-	% standard buttons as well):
-	%
-	{ menu_item_id, MenuItemEntries, _ElemLookup } =
-		gui_constants:get_menu_item_id_topic_spec(),
+    % Must correspond to standard_menu_item_name_id() (could be obtained from
+    % standard buttons as well):
+    %
+    { menu_item_id, MenuItemEntries, _ElemLookup } =
+        gui_constants:get_menu_item_id_topic_spec(),
 
-	pair:firsts( MenuItemEntries ).
+    pair:firsts( MenuItemEntries ).
 
 
 
@@ -367,7 +367,7 @@ and returns that menu item.
 """.
 -spec add_item( menu(), menu_item_label() ) -> menu_item().
 add_item( Menu, MenuItemLabel ) ->
-	add_item( Menu, _MenuItemId=undefined, MenuItemLabel ).
+    add_item( Menu, _MenuItemId=undefined, MenuItemLabel ).
 
 
 
@@ -382,23 +382,23 @@ label can/should be specified, in which case it will be automatically set
 -spec add_item( menu(), menu_item_id(), menu_item_label() ) -> menu_item().
 % Now applies to all sorts of identifiers:
 add_item( Menu, MenuItemId, MenuItemLabel ) -> %when is_integer( MenuItemId ) ->
-	wxMenu:append( Menu, gui_id:declare_any_id( MenuItemId ), MenuItemLabel ).
+    wxMenu:append( Menu, gui_id:declare_any_id( MenuItemId ), MenuItemLabel ).
 
 %add_item( Menu, MenuItemId, MenuItemLabel ) when is_atom( MenuItemId ) ->
-	% We must not declare a standard name identifier (as it already is):
-	% BackendId = case lists:member( MenuItemId, get_standard_item_names() ) of
+    % We must not declare a standard name identifier (as it already is):
+    % BackendId = case lists:member( MenuItemId, get_standard_item_names() ) of
 
-	%	true ->
-	%		gui_id:resolve_any_id( MenuItemId );
+    %   true ->
+    %       gui_id:resolve_any_id( MenuItemId );
 
-	%	false ->
-	%		gui_id:declare_any_id( MenuItemId )
+    %   false ->
+    %       gui_id:declare_any_id( MenuItemId )
 
-	% end,
+    % end,
 
-	% Now not predeclared anymore, was a bad idea:
-%	BackendId = gui_id:declare_any_id( MenuItemId ),
-%	wxMenu:append( Menu, BackendId, MenuItemLabel ).
+    % Now not predeclared anymore, was a bad idea:
+%   BackendId = gui_id:declare_any_id( MenuItemId ),
+%   wxMenu:append( Menu, BackendId, MenuItemLabel ).
 
 
 
@@ -408,7 +408,7 @@ specified menu, and returns a possibly updated version of that menu item.
 """.
 -spec append_item( menu(), menu_item() ) -> menu_item().
 append_item( Menu, MenuItem ) ->
-	wxMenu:append( Menu, MenuItem ).
+    wxMenu:append( Menu, MenuItem ).
 
 
 
@@ -421,11 +421,11 @@ label can/should be specified, in which case it will be automatically set
 (e.g. as "Help").
 """.
 -spec append_submenu( menu(), menu_item_id(), menu_item_label(), menu() ) ->
-													menu_item().
+                                                    menu_item().
 append_submenu( Menu, MenuItemId, MenuItemLabel, SubMenu ) ->
-	% Not gui_id:resolve_any_id( MenuItemId ):
-	wxMenu:append( Menu, gui_id:declare_any_id( MenuItemId ), MenuItemLabel,
-				   SubMenu ).
+    % Not gui_id:resolve_any_id( MenuItemId ):
+    wxMenu:append( Menu, gui_id:declare_any_id( MenuItemId ), MenuItemLabel,
+                   SubMenu ).
 
 
 
@@ -438,10 +438,10 @@ label can/should be specified, in which case it will be automatically set
 (e.g. as "Help").
 """.
 -spec append_submenu( menu(), menu_item_id(), menu_item_label(), menu(),
-					  help_info() ) -> menu_item().
+                      help_info() ) -> menu_item().
 append_submenu( Menu, MenuItemId, MenuItemLabel, SubMenu, HelpInfoStr ) ->
-	wxMenu:append( Menu, gui_id:declare_any_id( MenuItemId ), MenuItemLabel,
-				   SubMenu, [ { help, HelpInfoStr } ] ).
+    wxMenu:append( Menu, gui_id:declare_any_id( MenuItemId ), MenuItemLabel,
+                   SubMenu, [ { help, HelpInfoStr } ] ).
 
 
 
@@ -451,7 +451,7 @@ adds it to the specified menu, and returns that menu item.
 """.
 -spec add_checkable_item( menu(), menu_item_label() ) -> menu_item().
 add_checkable_item( Menu, MenuItemLabel ) ->
-	add_checkable_item( Menu, _MenuItemId=undefined, MenuItemLabel ).
+    add_checkable_item( Menu, _MenuItemId=undefined, MenuItemLabel ).
 
 
 
@@ -464,10 +464,10 @@ label can/should be specified, in which case it will be automatically set
 (e.g. as "Help").
 """.
 -spec add_checkable_item( menu(), menu_item_id(), menu_item_label() ) ->
-													menu_item().
+                                                    menu_item().
 add_checkable_item( Menu, MenuItemId, MenuItemLabel ) ->
-	wxMenu:appendCheckItem( Menu, gui_id:declare_any_id( MenuItemId ),
-							MenuItemLabel ).
+    wxMenu:appendCheckItem( Menu, gui_id:declare_any_id( MenuItemId ),
+                            MenuItemLabel ).
 
 
 
@@ -481,10 +481,10 @@ label can/should be specified, in which case it will be automatically set
 (e.g. as "Help").
 """.
 -spec add_checkable_item( menu(), menu_item_id(), menu_item_label(),
-						  help_info() ) -> menu_item().
+                          help_info() ) -> menu_item().
 add_checkable_item( Menu, MenuItemId, MenuItemLabel, HelpInfoStr ) ->
-	wxMenu:appendCheckItem( Menu, gui_id:declare_any_id( MenuItemId ),
-							MenuItemLabel, [ { help, HelpInfoStr } ] ).
+    wxMenu:appendCheckItem( Menu, gui_id:declare_any_id( MenuItemId ),
+                            MenuItemLabel, [ { help, HelpInfoStr } ] ).
 
 
 -doc """
@@ -493,7 +493,7 @@ its menu item reference).
 """.
 -spec set_checkable_item( menu(), menu_item_id(), boolean() ) -> void().
 set_checkable_item( Menu, MenuItemId, SetAsChecked ) ->
-	wxMenu:check( Menu, gui_id:resolve_any_id( MenuItemId ), SetAsChecked ).
+    wxMenu:check( Menu, gui_id:resolve_any_id( MenuItemId ), SetAsChecked ).
 
 
 
@@ -508,10 +508,10 @@ label can/should be specified, in which case it will be automatically set
 (e.g. as "Help").
 """.
 -spec add_radio_item( menu(), menu_item_id(), menu_item_label() ) ->
-													menu_item().
+                                                    menu_item().
 add_radio_item( Menu, MenuItemId, MenuItemLabel ) ->
-	wxMenu:appendRadioItem( Menu, gui_id:resolve_any_id( MenuItemId ),
-							MenuItemLabel ).
+    wxMenu:appendRadioItem( Menu, gui_id:resolve_any_id( MenuItemId ),
+                            MenuItemLabel ).
 
 
 
@@ -524,28 +524,28 @@ label can/should be specified, in which case it will be automatically set
 (e.g. as "Help").
 """.
 -spec add_radio_item( menu(), menu_item_id(), menu_item_label(),
-					  help_info() ) -> menu_item().
+                      help_info() ) -> menu_item().
 add_radio_item( Menu, MenuItemId, MenuItemLabel, HelpInfoStr ) ->
-	wxMenu:appendRadioItem( Menu, gui_id:resolve_any_id( MenuItemId ),
-							MenuItemLabel, [ { help, HelpInfoStr } ] ).
+    wxMenu:appendRadioItem( Menu, gui_id:resolve_any_id( MenuItemId ),
+                            MenuItemLabel, [ { help, HelpInfoStr } ] ).
 
 
 
 -doc "Adds a separator to the specified menu, and returns that separator.".
 -spec add_separator( menu() ) -> menu_item().
 add_separator( Menu ) ->
-	wxMenu:appendSeparator( Menu ).
+    wxMenu:appendSeparator( Menu ).
 
 
 
 -doc "Sets the enabled/disabled status of the specified menu item.".
 -spec set_item_status( menu(), menu_item_id(), menu_item_status() ) ->
-														void().
+                                                        void().
 set_item_status( Menu, MenuItemId, _NewEnableStatus=enabled ) ->
-	wxMenu:enable( Menu, gui_id:resolve_any_id( MenuItemId ), _Check=true );
+    wxMenu:enable( Menu, gui_id:resolve_any_id( MenuItemId ), _Check=true );
 
 set_item_status( Menu, MenuItemId, _NewEnableStatus=disabled ) ->
-	wxMenu:enable( Menu, gui_id:resolve_any_id( MenuItemId ), _Check=false ).
+    wxMenu:enable( Menu, gui_id:resolve_any_id( MenuItemId ), _Check=false ).
 
 
 
@@ -556,7 +556,7 @@ If the item is a submenu, it is removed yet not deallocated.
 """.
 -spec remove_menu_item( menu(), menu_item_id() ) -> void().
 remove_menu_item( Menu, MenuItemId ) ->
-	wxMenu:delete( Menu, gui_id:resolve_any_id( MenuItemId ) ).
+    wxMenu:delete( Menu, gui_id:resolve_any_id( MenuItemId ) ).
 
 
 
@@ -565,14 +565,14 @@ Returns the number of items in the menu.
 """.
 -spec get_item_count( menu() ) -> height().
 get_item_count( Menu ) ->
-	wxMenu:getMenuItemCount( Menu ).
+    wxMenu:getMenuItemCount( Menu ).
 
 
 -doc "Returns the total height of any entry in a menu.".
 -spec get_item_height() -> height().
 get_item_height() ->
-	% See get_height/1:
-	27.
+    % See get_height/1:
+    27.
 
 
 -doc """
@@ -582,17 +582,17 @@ Currently only a (rather good) estimate.
 """.
 -spec get_height( menu() ) -> height().
 get_height( Menu ) ->
-	% For height h and number of items n, let h = a.n + b
-	% a = (h2-h1)/(n2-n1)
-	% For example, for n=4 items, h=115 pixels (measured on GTK).
-	%
-	% For n1=1, h1=34; for n2=15, h2=412.
-	% So a = (412-34)/14 = 27
-	% b = h - a.n = 412 - 27*15 = 7
+    % For height h and number of items n, let h = a.n + b
+    % a = (h2-h1)/(n2-n1)
+    % For example, for n=4 items, h=115 pixels (measured on GTK).
+    %
+    % For n1=1, h1=34; for n2=15, h2=412.
+    % So a = (412-34)/14 = 27
+    % b = h - a.n = 412 - 27*15 = 7
 
-	N = wxMenu:getMenuItemCount( Menu ),
+    N = wxMenu:getMenuItemCount( Menu ),
 
-	N*get_item_height() + 7.
+    N*get_item_height() + 7.
 
 
 
@@ -602,23 +602,23 @@ get_height( Menu ) ->
 -doc "Creates an empty menu bar, not yet specifically associated to a window.".
 -spec create_bar() -> menu_bar().
 create_bar() ->
-	wxMenuBar:new().
+    wxMenuBar:new().
 
 
 
 -doc "Creates an empty menu bar, associated to the specified window.".
 -spec create_bar( window() ) -> menu_bar().
 create_bar( Window ) ->
-	MenuBar = wxMenuBar:new(),
-	gui_frame:set_menu_bar( Window, MenuBar ),
-	MenuBar.
+    MenuBar = wxMenuBar:new(),
+    gui_frame:set_menu_bar( Window, MenuBar ),
+    MenuBar.
 
 
 
 -doc "Adds the specified menu to the specified menu bar.".
 -spec add_menu( menu_bar(), menu(), title() ) -> void().
 add_menu( MenuBar, Menu, MenuTitle ) ->
-	true = wxMenuBar:append( MenuBar, Menu, MenuTitle ).
+    true = wxMenuBar:append( MenuBar, Menu, MenuTitle ).
 
 
 
@@ -629,8 +629,8 @@ Note: to be deprecated soon; use gui_frame:set_menu_bar/2 instead.
 """.
 -spec set_menu_bar( menu_bar(), window() ) -> void().
 set_menu_bar( MenuBar, Window ) ->
-	% More logical that way:
-	gui_frame:set_menu_bar( Window, MenuBar ).
+    % More logical that way:
+    gui_frame:set_menu_bar( Window, MenuBar ).
 
 
 
@@ -647,10 +647,10 @@ Typically called on receiving of a onMouseRightButtonReleased event.
 """.
 -spec activate_as_popup( menu(), widget() ) -> void().
 activate_as_popup( Menu, Widget ) ->
-	% Probably more logical to place it in gui_widget.
+    % Probably more logical to place it in gui_widget.
 
-	% Meaning of returned boolean unclear:
-	wxWindow:popupMenu( Widget, Menu ).
+    % Meaning of returned boolean unclear:
+    wxWindow:popupMenu( Widget, Menu ).
 
 
 -doc """
@@ -660,10 +660,10 @@ Typically called on receiving of a onMouseRightButtonReleased event.
 """.
 -spec activate_as_popup( menu(), widget(), point() ) -> void().
 activate_as_popup( Menu, Widget, Pos ) ->
-	% Probably more logical to place it in gui_widget.
+    % Probably more logical to place it in gui_widget.
 
-	% Meaning of returned boolean unclear:
-	wxWindow:popupMenu( Widget, Menu, [ { pos, Pos } ] ).
+    % Meaning of returned boolean unclear:
+    wxWindow:popupMenu( Widget, Menu, [ { pos, Pos } ] ).
 
 
 
@@ -673,15 +673,15 @@ activate_as_popup( Menu, Widget, Pos ) ->
 -doc "Converts the specified menu option(s) into wx-specific ones.".
 -spec to_wx_menu_options( maybe_list( menu_option() ) ) -> list().
 to_wx_menu_options( Options ) when is_list( Options ) ->
-	[ to_wx_menu_option( O ) || O <- Options ];
+    [ to_wx_menu_option( O ) || O <- Options ];
 
 to_wx_menu_options( Opt ) ->
-	to_wx_menu_options( [ Opt ] ).
+    to_wx_menu_options( [ Opt ] ).
 
 
 % (helper)
 to_wx_menu_option( Opt=detachable ) ->
-	{ style, menu_styles_to_bitmask( _MenuStyle=Opt ) }.
+    { style, menu_styles_to_bitmask( _MenuStyle=Opt ) }.
 
 
 
@@ -693,19 +693,19 @@ into a wx-specific one.
 -spec to_wx_menu_item_id( menu_item_id() ) -> wx_id().
 to_wx_menu_item_id( MenuItemId ) ->
 
-	%trace_utils:debug_fmt( "Testing availability: ~ts",
-	%   [ code_utils:study_function_availability( gui_generated,
-	%       get_maybe_second_for_menu_item_id, 1 ) ] ),
+    %trace_utils:debug_fmt( "Testing availability: ~ts",
+    %   [ code_utils:study_function_availability( gui_generated,
+    %       get_maybe_second_for_menu_item_id, 1 ) ] ),
 
-	case gui_generated:get_maybe_second_for_menu_item_id( MenuItemId ) of
+    case gui_generated:get_maybe_second_for_menu_item_id( MenuItemId ) of
 
-		undefined ->
-			gui_id:resolve_id( MenuItemId );
+        undefined ->
+            gui_id:resolve_id( MenuItemId );
 
-		WxId ->
-			WxId
+        WxId ->
+            WxId
 
-	end.
+    end.
 
 
 
@@ -715,23 +715,23 @@ one.
 """.
 -spec to_new_wx_menu_item_id( menu_item_id() ) -> wx_id().
 to_new_wx_menu_item_id( MenuItemId ) ->
-	case gui_generated:get_maybe_second_for_menu_item_id( MenuItemId ) of
+    case gui_generated:get_maybe_second_for_menu_item_id( MenuItemId ) of
 
-		undefined ->
-			gui_id:declare_id( MenuItemId );
+        undefined ->
+            gui_id:declare_id( MenuItemId );
 
-		WxId ->
-			WxId
+        WxId ->
+            WxId
 
-	end.
+    end.
 
 
 
 -doc "Converts the specified kind of menu identifier into a wx-specific one.".
 -spec to_wx_menu_item_kind( menu_item_kind() ) -> wx_enum().
 to_wx_menu_item_kind( Kind ) ->
-	% Same:
-	gui_generated:get_second_for_menu_item_kind( Kind ).
+    % Same:
+    gui_generated:get_second_for_menu_item_kind( Kind ).
 
 
 
@@ -743,8 +743,8 @@ wx-specific bit mask.
 """.
 -spec menu_styles_to_bitmask( [ menu_style() ] ) -> bit_mask().
 menu_styles_to_bitmask( Styles ) ->
-	lists:foldl( fun( S, Acc ) ->
-					gui_generated:get_second_for_menu_style( S ) bor Acc
-				 end,
-				 _InitialAcc=0,
-				 _List=Styles ).
+    lists:foldl( fun( S, Acc ) ->
+                    gui_generated:get_second_for_menu_style( S ) bor Acc
+                 end,
+                 _InitialAcc=0,
+                 _List=Styles ).

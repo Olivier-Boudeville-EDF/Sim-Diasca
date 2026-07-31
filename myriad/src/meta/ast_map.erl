@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2025 Olivier Boudeville
+% Copyright (C) 2018-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -47,37 +47,37 @@ See [http://erlang.org/doc/apps/erts/absform.html] for more information.
 
 -doc "Map association.".
 -type ast_map_association() ::
-		ast_map_association( ast_element(), ast_element() ).
+        ast_map_association( ast_element(), ast_element() ).
 
 
 
 -doc "Map association.".
 -type ast_map_association( KeyType, ValueType ) ::
-		{ map_field_association_type(), file_loc(), KeyType, ValueType }.
+        { map_field_association_type(), file_loc(), KeyType, ValueType }.
 
 
 
 -doc "AST form corresponding to a map creation.".
 -type ast_map_creation_form() ::
-		ast_map_creation_form( ast_element(), ast_element() ).
+        ast_map_creation_form( ast_element(), ast_element() ).
 
 
 
 -doc "AST map creation form.".
 -type ast_map_creation_form( KeyType, ValueType ) ::
-		{ 'map', file_loc(), [ ast_map_association( KeyType, ValueType ) ] }.
+        { 'map', file_loc(), [ ast_map_association( KeyType, ValueType ) ] }.
 
 
 
 -doc "AST form corresponding to a map update.".
 -type ast_map_update_form() ::
-		ast_map_update_form( ast_element(), ast_element() ).
+        ast_map_update_form( ast_element(), ast_element() ).
 
 
 -doc "AST map update form.".
 -type ast_map_update_form( KeyType, ValueType ) ::
-		{ 'map', file_loc(), ast_map( KeyType, ValueType ),
-		  [ ast_map_association( KeyType, ValueType ) ] }.
+        { 'map', file_loc(), ast_map( KeyType, ValueType ),
+          [ ast_map_association( KeyType, ValueType ) ] }.
 
 
 
@@ -86,15 +86,15 @@ See [http://erlang.org/doc/apps/erts/absform.html] for more information.
 
 
 -export_type([ ast_map/2, map_field_association_type/0,
-			   ast_map_association/0, ast_map_association/2,
-			   ast_map_creation_form/0, ast_map_creation_form/2,
-			   ast_map_update_form/0, ast_map_update_form/2,
-			   ast_map_form/0 ]).
+               ast_map_association/0, ast_map_association/2,
+               ast_map_creation_form/0, ast_map_creation_form/2,
+               ast_map_update_form/0, ast_map_update_form/2,
+               ast_map_form/0 ]).
 
 
 
 -export([ transform_map_associations/2, transform_map_associations/3,
-		  transform_map_association/3 ]).
+          transform_map_association/3 ]).
 
 
 % Type shorthands:
@@ -119,10 +119,10 @@ Note: context-insensitive function, considering that any kind of expression can
 be found for the association keys and values.
 """.
 -spec transform_map_associations( [ ast_map_association() ],
-		ast_transforms() ) -> { [ ast_map_association() ], ast_transforms() }.
+        ast_transforms() ) -> { [ ast_map_association() ], ast_transforms() }.
 transform_map_associations( Associations, Transforms ) ?rec_guard ->
-	transform_map_associations( Associations, Transforms,
-								fun ast_expression:transform_expression/2 ).
+    transform_map_associations( Associations, Transforms,
+                                fun ast_expression:transform_expression/2 ).
 
 
 
@@ -133,17 +133,17 @@ transformations (that depends on the context; for example if being in a guard,
 in an expression).
 """.
 -spec transform_map_associations( [ ast_map_association() ], ast_transforms(),
-		ast_transform:transform_fun() ) ->
-							{ [ ast_map_association() ], ast_transforms() }.
+        ast_transform:transform_fun() ) ->
+                            { [ ast_map_association() ], ast_transforms() }.
 transform_map_associations( Associations, Transforms,
-							TransformFun ) ?rec_guard ->
+                            TransformFun ) ?rec_guard ->
 
-	% Closure, to capture TransformFun:
-	ActualFun = fun( A, AccTransforms ) ->
-					transform_map_association( A, AccTransforms, TransformFun )
-				end,
+    % Closure, to capture TransformFun:
+    ActualFun = fun( A, AccTransforms ) ->
+                    transform_map_association( A, AccTransforms, TransformFun )
+                end,
 
-	lists:mapfoldl( ActualFun, _Acc0=Transforms, _List=Associations ).
+    lists:mapfoldl( ActualFun, _Acc0=Transforms, _List=Associations ).
 
 
 
@@ -153,23 +153,23 @@ Transforms specified map association involved in a map operation.
 An association A is one of the following:
 
  - if A is an association `K => V`, then
-	  `Rep(A) = {map_field_assoc, FILE_LOC, Rep(K), Rep(V)}`.
+      `Rep(A) = {map_field_assoc, FILE_LOC, Rep(K), Rep(V)}`.
 
  - if A is an association `K := V`, then
-	  `Rep(A) = {map_field_exact, FILE_LOC, Rep(K), Rep(V)}`.
+      `Rep(A) = {map_field_exact, FILE_LOC, Rep(K), Rep(V)}`.
 """.
 -spec transform_map_association( ast_map_association(), ast_transforms(),
-		ast_transform:transform_fun() ) ->
-				{ ast_map_association(), ast_transforms() }.
+        ast_transform:transform_fun() ) ->
+                { ast_map_association(), ast_transforms() }.
 transform_map_association( { MapAssocType, FileLoc, ASTKey, ASTValue },
-						   Transforms, TransformFun )
-		when ( MapAssocType =:= 'map_field_assoc'
-			orelse MapAssocType =:= 'map_field_exact' ) ?andalso_rec_guard ->
+                           Transforms, TransformFun )
+        when ( MapAssocType =:= 'map_field_assoc'
+            orelse MapAssocType =:= 'map_field_exact' ) ?andalso_rec_guard ->
 
-	{ NewASTKey, KeyTransforms } = TransformFun( ASTKey, Transforms ),
+    { NewASTKey, KeyTransforms } = TransformFun( ASTKey, Transforms ),
 
-	{ NewASTValue, ValueTransforms } = TransformFun( ASTValue, KeyTransforms ),
+    { NewASTValue, ValueTransforms } = TransformFun( ASTValue, KeyTransforms ),
 
-	Assoc = { MapAssocType, FileLoc, NewASTKey, NewASTValue },
+    Assoc = { MapAssocType, FileLoc, NewASTKey, NewASTValue },
 
-	{ Assoc, ValueTransforms }.
+    { Assoc, ValueTransforms }.

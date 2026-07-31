@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -37,11 +37,11 @@
 %
 -record( raw_bitmap, {
 
-	dimensions :: gui:dimensions(),
-	% The dimensions of that raw bitmap.
+    dimensions :: gui:dimensions(),
+    % The dimensions of that raw bitmap.
 
-	pixels :: binary()
-	% The actual content of that raw bitmap.
+    pixels :: binary()
+    % The actual content of that raw bitmap.
 
 } ).
 

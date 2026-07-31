@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 EDF R&D
+% Copyright (C) 2016-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -78,11 +78,11 @@ Note: trace messages received while this request is processed are managed as
 well.
 """.
 -spec execute_request( python_utils:interpreter_pid(), title(), body(),
-					   emitter_info() | wooper:state() ) -> result().
+                       emitter_info() | wooper:state() ) -> result().
 execute_request( InterpreterPid, MessageTitle, MessageBody,
-				 TraceInfoOrState ) ->
-	python_utils:send_oneway( InterpreterPid, MessageTitle, MessageBody ),
-	handle_request_results( InterpreterPid, MessageTitle, TraceInfoOrState ).
+                 TraceInfoOrState ) ->
+    python_utils:send_oneway( InterpreterPid, MessageTitle, MessageBody ),
+    handle_request_results( InterpreterPid, MessageTitle, TraceInfoOrState ).
 
 
 
@@ -93,19 +93,19 @@ Hence this function is only relevant for requests that do not rely on the state
 of a particular interpreter (e.g. static methods only).
 """.
 -spec execute_request_locally( title(), body(),
-							   emitter_info() | wooper:state() ) -> result().
+                               emitter_info() | wooper:state() ) -> result().
 execute_request_locally( MessageTitle, MessageBody, TraceInfoOrState ) ->
 
-	% Gets the PID of the global instance managing Python interpreters:
-	PythonManager = class_PythonBindingManager:get_registered_manager(),
+    % Gets the PID of the global instance managing Python interpreters:
+    PythonManager = class_PythonBindingManager:get_registered_manager(),
 
-	% Selects one of the active interpreters:
-	InterpreterPid = class_PythonBindingManager:get_interpreter(
-					   PythonManager ),
+    % Selects one of the active interpreters:
+    InterpreterPid = class_PythonBindingManager:get_interpreter(
+                       PythonManager ),
 
-	% Executes a classical request in the selected interpreter:
-	execute_request( InterpreterPid, MessageTitle, MessageBody,
-					 TraceInfoOrState ).
+    % Executes a classical request in the selected interpreter:
+    execute_request( InterpreterPid, MessageTitle, MessageBody,
+                     TraceInfoOrState ).
 
 
 
@@ -118,116 +118,116 @@ Stops as soon as the request is successfully completed, or an error message is
 received, or an exception has been raised in the interpreter.
 """.
 -spec handle_request_results( python_utils:interpreter_pid(), title(),
-							  emitter_info() | wooper:state() ) -> result().
+                              emitter_info() | wooper:state() ) -> result().
 handle_request_results( InterpreterPid, MessageTitle,
-		TraceEmitterInfo={ TraceEmitterName, TraceEmitterCategorization } ) ->
+        TraceEmitterInfo={ TraceEmitterName, TraceEmitterCategorization } ) ->
 
-	case python_utils:wait_for_request_result( InterpreterPid, MessageTitle ) of
+    case python_utils:wait_for_request_result( InterpreterPid, MessageTitle ) of
 
-		{ request_completed, ReceivedData } ->
-			ReceivedData;
-
-
-		{ trace_emitted, debug, TraceFormattedMessage } ->
-
-			?notify_debug_named( TraceFormattedMessage, TraceEmitterName,
-								 TraceEmitterCategorization ),
-
-			handle_request_results( InterpreterPid, MessageTitle,
-									TraceEmitterInfo );
+        { request_completed, ReceivedData } ->
+            ReceivedData;
 
 
-		{ trace_emitted, info, TraceFormattedMessage } ->
+        { trace_emitted, debug, TraceFormattedMessage } ->
 
-			?notify_info_named( TraceFormattedMessage, TraceEmitterName,
-								TraceEmitterCategorization ),
+            ?notify_debug_named( TraceFormattedMessage, TraceEmitterName,
+                                 TraceEmitterCategorization ),
 
-			handle_request_results( InterpreterPid, MessageTitle,
-									TraceEmitterInfo );
-
-
-		{ trace_emitted, notice, TraceFormattedMessage } ->
-
-			?notify_notice_named( TraceFormattedMessage, TraceEmitterName,
-								TraceEmitterCategorization ),
-
-			handle_request_results( InterpreterPid, MessageTitle,
-									TraceEmitterInfo );
+            handle_request_results( InterpreterPid, MessageTitle,
+                                    TraceEmitterInfo );
 
 
-		{ trace_emitted, warning, TraceFormattedMessage } ->
+        { trace_emitted, info, TraceFormattedMessage } ->
 
-			?notify_warning_named( TraceFormattedMessage, TraceEmitterName,
-								   TraceEmitterCategorization ),
+            ?notify_info_named( TraceFormattedMessage, TraceEmitterName,
+                                TraceEmitterCategorization ),
 
-			handle_request_results( InterpreterPid, MessageTitle,
-									TraceEmitterInfo );
-
-
-		{ trace_emitted, error, TraceFormattedMessage } ->
-
-			?notify_error_named( TraceFormattedMessage, TraceEmitterName,
-								 TraceEmitterCategorization ),
-
-			class_PythonBindingManager:get_registered_manager() ! delete,
-
-			throw( { python_error_raised, TraceFormattedMessage } );
+            handle_request_results( InterpreterPid, MessageTitle,
+                                    TraceEmitterInfo );
 
 
-		{ trace_emitted, critical, TraceFormattedMessage } ->
+        { trace_emitted, notice, TraceFormattedMessage } ->
 
-			?notify_critical_named( TraceFormattedMessage, TraceEmitterName,
-									TraceEmitterCategorization ),
+            ?notify_notice_named( TraceFormattedMessage, TraceEmitterName,
+                                TraceEmitterCategorization ),
 
-			class_PythonBindingManager:get_registered_manager() ! delete,
-
-			throw( { python_critical_raised, TraceFormattedMessage } );
-
-
-		{ trace_emitted, alert, TraceFormattedMessage } ->
-
-			?notify_alert_named( TraceFormattedMessage, TraceEmitterName,
-								 TraceEmitterCategorization ),
-
-			class_PythonBindingManager:get_registered_manager() ! delete,
-
-			throw( { python_alert_raised, TraceFormattedMessage } );
+            handle_request_results( InterpreterPid, MessageTitle,
+                                    TraceEmitterInfo );
 
 
-		{ trace_emitted, emergency, TraceFormattedMessage } ->
+        { trace_emitted, warning, TraceFormattedMessage } ->
 
-			?notify_emergency_named( TraceFormattedMessage, TraceEmitterName,
-									 TraceEmitterCategorization ),
+            ?notify_warning_named( TraceFormattedMessage, TraceEmitterName,
+                                   TraceEmitterCategorization ),
 
-			class_PythonBindingManager:get_registered_manager() ! delete,
-
-			throw( { python_emergency_raised, TraceFormattedMessage } );
-
-
-		{ trace_emitted, OtherTraceType, TraceFormattedMessage } ->
-
-			Message = text_utils:format( "Invalid trace received from Python: "
-				"the trace type '~p' is not known; "
-				"the original trace message is:~n~n'~ts'.",
-				[ OtherTraceType, TraceFormattedMessage ] ),
-
-			?notify_warning_named( Message, TraceEmitterName,
-								   TraceEmitterCategorization ),
-
-			handle_request_results( InterpreterPid, MessageTitle,
-									TraceEmitterInfo );
+            handle_request_results( InterpreterPid, MessageTitle,
+                                    TraceEmitterInfo );
 
 
-		{ exception_raised, ExceptionType, ExceptionFormattedMessage } ->
+        { trace_emitted, error, TraceFormattedMessage } ->
 
-			?notify_error_named( ExceptionFormattedMessage, TraceEmitterName,
-								 TraceEmitterCategorization ),
+            ?notify_error_named( TraceFormattedMessage, TraceEmitterName,
+                                 TraceEmitterCategorization ),
 
-			class_PythonBindingManager:get_registered_manager() ! delete,
+            class_PythonBindingManager:get_registered_manager() ! delete,
 
-			throw( { python_exception_raised, ExceptionType } )
+            throw( { python_error_raised, TraceFormattedMessage } );
 
-	end;
+
+        { trace_emitted, critical, TraceFormattedMessage } ->
+
+            ?notify_critical_named( TraceFormattedMessage, TraceEmitterName,
+                                    TraceEmitterCategorization ),
+
+            class_PythonBindingManager:get_registered_manager() ! delete,
+
+            throw( { python_critical_raised, TraceFormattedMessage } );
+
+
+        { trace_emitted, alert, TraceFormattedMessage } ->
+
+            ?notify_alert_named( TraceFormattedMessage, TraceEmitterName,
+                                 TraceEmitterCategorization ),
+
+            class_PythonBindingManager:get_registered_manager() ! delete,
+
+            throw( { python_alert_raised, TraceFormattedMessage } );
+
+
+        { trace_emitted, emergency, TraceFormattedMessage } ->
+
+            ?notify_emergency_named( TraceFormattedMessage, TraceEmitterName,
+                                     TraceEmitterCategorization ),
+
+            class_PythonBindingManager:get_registered_manager() ! delete,
+
+            throw( { python_emergency_raised, TraceFormattedMessage } );
+
+
+        { trace_emitted, OtherTraceType, TraceFormattedMessage } ->
+
+            Message = text_utils:format( "Invalid trace received from Python: "
+                "the trace type '~p' is not known; "
+                "the original trace message is:~n~n'~ts'.",
+                [ OtherTraceType, TraceFormattedMessage ] ),
+
+            ?notify_warning_named( Message, TraceEmitterName,
+                                   TraceEmitterCategorization ),
+
+            handle_request_results( InterpreterPid, MessageTitle,
+                                    TraceEmitterInfo );
+
+
+        { exception_raised, ExceptionType, ExceptionFormattedMessage } ->
+
+            ?notify_error_named( ExceptionFormattedMessage, TraceEmitterName,
+                                 TraceEmitterCategorization ),
+
+            class_PythonBindingManager:get_registered_manager() ! delete,
+
+            throw( { python_exception_raised, ExceptionType } )
+
+    end;
 
 
 % Here the third element is a state, not a emitter_info():
@@ -235,98 +235,98 @@ handle_request_results( InterpreterPid, MessageTitle, State )
   % Would require to include the .hrl: when is_record( State, state_holder ) ->
   when is_tuple( State ) ->
 
-	case python_utils:wait_for_request_result( InterpreterPid,
-											   MessageTitle ) of
+    case python_utils:wait_for_request_result( InterpreterPid,
+                                               MessageTitle ) of
 
-		{ request_completed, ReceivedData } ->
-			ReceivedData;
-
-
-		{ trace_emitted, debug, TraceFormattedMessage } ->
-
-			?debug( TraceFormattedMessage ),
-
-			handle_request_results( InterpreterPid, MessageTitle, State );
+        { request_completed, ReceivedData } ->
+            ReceivedData;
 
 
-		{ trace_emitted, info, TraceFormattedMessage } ->
+        { trace_emitted, debug, TraceFormattedMessage } ->
 
-			?info( TraceFormattedMessage ),
+            ?debug( TraceFormattedMessage ),
 
-			handle_request_results( InterpreterPid, MessageTitle, State );
-
-
-		{ trace_emitted, notice, TraceFormattedMessage } ->
-
-			?notice( TraceFormattedMessage ),
-
-			handle_request_results( InterpreterPid, MessageTitle, State );
+            handle_request_results( InterpreterPid, MessageTitle, State );
 
 
-		{ trace_emitted, warning, TraceFormattedMessage } ->
+        { trace_emitted, info, TraceFormattedMessage } ->
 
-			?warning( TraceFormattedMessage ),
+            ?info( TraceFormattedMessage ),
 
-			handle_request_results( InterpreterPid, MessageTitle, State );
-
-
-		{ trace_emitted, error, TraceFormattedMessage } ->
-
-			?error( TraceFormattedMessage ),
-
-			class_PythonBindingManager:get_registered_manager() ! delete,
-
-			throw( { python_error_raised, TraceFormattedMessage } );
+            handle_request_results( InterpreterPid, MessageTitle, State );
 
 
-		{ trace_emitted, critical, TraceFormattedMessage } ->
+        { trace_emitted, notice, TraceFormattedMessage } ->
 
-			?error( TraceFormattedMessage ),
+            ?notice( TraceFormattedMessage ),
 
-			class_PythonBindingManager:get_registered_manager() ! delete,
-
-			throw( { python_critical_raised, TraceFormattedMessage } );
+            handle_request_results( InterpreterPid, MessageTitle, State );
 
 
-		{ trace_emitted, alert, TraceFormattedMessage } ->
+        { trace_emitted, warning, TraceFormattedMessage } ->
 
-			?error( TraceFormattedMessage ),
+            ?warning( TraceFormattedMessage ),
 
-			class_PythonBindingManager:get_registered_manager() ! delete,
-
-			throw( { python_alert_raised, TraceFormattedMessage } );
+            handle_request_results( InterpreterPid, MessageTitle, State );
 
 
-		{ trace_emitted, emergency, TraceFormattedMessage } ->
+        { trace_emitted, error, TraceFormattedMessage } ->
 
-			?error( TraceFormattedMessage ),
+            ?error( TraceFormattedMessage ),
 
-			class_PythonBindingManager:get_registered_manager() ! delete,
+            class_PythonBindingManager:get_registered_manager() ! delete,
 
-			throw( { python_emergency_raised, TraceFormattedMessage } );
-
-
-		{ trace_emitted, OtherTraceType, TraceFormattedMessage } ->
-
-			?warning_fmt( "Invalid trace received from Python: the trace type "
-				"'~p' is not known; the original trace message is:~n~n'~ts'.",
-				[ OtherTraceType, TraceFormattedMessage ] ),
-
-			handle_request_results( InterpreterPid, MessageTitle, State );
+            throw( { python_error_raised, TraceFormattedMessage } );
 
 
-		{ exception_raised, ExceptionType, ExceptionFormattedMessage } ->
+        { trace_emitted, critical, TraceFormattedMessage } ->
 
-			?error( ExceptionFormattedMessage ),
+            ?error( TraceFormattedMessage ),
 
-			class_PythonBindingManager:get_registered_manager() ! delete,
+            class_PythonBindingManager:get_registered_manager() ! delete,
 
-			throw( { python_exception_raised, ExceptionType } )
+            throw( { python_critical_raised, TraceFormattedMessage } );
 
-	end;
+
+        { trace_emitted, alert, TraceFormattedMessage } ->
+
+            ?error( TraceFormattedMessage ),
+
+            class_PythonBindingManager:get_registered_manager() ! delete,
+
+            throw( { python_alert_raised, TraceFormattedMessage } );
+
+
+        { trace_emitted, emergency, TraceFormattedMessage } ->
+
+            ?error( TraceFormattedMessage ),
+
+            class_PythonBindingManager:get_registered_manager() ! delete,
+
+            throw( { python_emergency_raised, TraceFormattedMessage } );
+
+
+        { trace_emitted, OtherTraceType, TraceFormattedMessage } ->
+
+            ?warning_fmt( "Invalid trace received from Python: the trace type "
+                "'~p' is not known; the original trace message is:~n~n'~ts'.",
+                [ OtherTraceType, TraceFormattedMessage ] ),
+
+            handle_request_results( InterpreterPid, MessageTitle, State );
+
+
+        { exception_raised, ExceptionType, ExceptionFormattedMessage } ->
+
+            ?error( ExceptionFormattedMessage ),
+
+            class_PythonBindingManager:get_registered_manager() ! delete,
+
+            throw( { python_exception_raised, ExceptionType } )
+
+    end;
 
 handle_request_results( _InterpreterPid, MessageTitle, TraceTerm ) ->
-	trace_utils:error_fmt( "Invalid trace term when handling the '~p' Python "
-						   "call: '~p'.", [ MessageTitle, TraceTerm ] ),
+    trace_utils:error_fmt( "Invalid trace term when handling the '~p' Python "
+                           "call: '~p'.", [ MessageTitle, TraceTerm ] ),
 
-	throw( { invalid_trace_term, TraceTerm } ).
+    throw( { invalid_trace_term, TraceTerm } ).

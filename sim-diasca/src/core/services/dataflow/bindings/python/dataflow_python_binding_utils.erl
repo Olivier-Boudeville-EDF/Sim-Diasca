@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 EDF R&D
+% Copyright (C) 2016-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -45,4 +45,4 @@ unit type.
 """.
 -spec get_erlang_unit_type() -> dataflow_unit_type().
 get_erlang_unit_type() ->
-	class_DataflowPythonProcessingUnit.
+    class_DataflowPythonProcessingUnit.

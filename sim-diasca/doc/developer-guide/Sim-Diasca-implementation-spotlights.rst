@@ -43,7 +43,7 @@ As for the (per-host) **computing nodes**, they will be launched each from their
 .. code::
 
  Sim-Diasca-<name of the test or case>-<user name>-<simulation instance
-	identifier>-computing-node-on-<hostname>
+    identifier>-computing-node-on-<hostname>
 
 The same example, running on host ``volt``, will thus result in a computing node to be created under the name:
 
@@ -80,7 +80,7 @@ As a result, such a platform may run a simulation case with:
 .. code:: bash
 
  $ make my_foobar_case
-	 CMD_LINE_OPT="--batch --simulation-instance-id 117"
+     CMD_LINE_OPT="--batch --simulation-instance-id 117"
 
 Then the specified SII will be used instead of the one that would be determined internally, at runtime, notably to designate:
 

@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -51,8 +51,8 @@ it explicitly, for clarity reasons.
 
 
 -define( class_description,
-		 "Interface to be implemented by all instances supporting the Trace "
-		 "API, that is are able to emit some kind of traces." ).
+         "Interface to be implemented by all instances supporting the Trace "
+         "API, that is are able to emit some kind of traces." ).
 
 
 % No superclasses.
@@ -121,13 +121,13 @@ state that is already the one of a trace emitter).
 -spec construct( wooper:state() ) -> wooper:state().
 construct( State ) ->
 
-	% No-op: all actual operations decide directly which trace emission they
-	% should perform, not relying on any trait-specific attribute.
-	%
-	% So even calling this constructor or deriving from this class is actually
-	% optional (but recommended, as clearer).
+    % No-op: all actual operations decide directly which trace emission they
+    % should perform, not relying on any trait-specific attribute.
+    %
+    % So even calling this constructor or deriving from this class is actually
+    % optional (but recommended, as clearer).
 
-	State.
+    State.
 
 
 % No specific destructor needed.
@@ -163,16 +163,16 @@ Message is a plain string.
 """.
 -spec send( trace_severity(), wooper:state(), message() ) -> void().
 send( Severity, State, Message ) ->
-	% Switching to the best option:
-	case hasAttribute( State, ?trace_emitter_characteristic_attr ) of
+    % Switching to the best option:
+    case hasAttribute( State, ?trace_emitter_characteristic_attr ) of
 
-		true ->
-			class_TraceEmitter:send( Severity, State, Message );
+        true ->
+            class_TraceEmitter:send( Severity, State, Message );
 
-		false ->
-			trace_bridge:send( Severity, Message )
+        false ->
+            trace_bridge:send( Severity, Message )
 
-	end.
+    end.
 
 
 
@@ -186,16 +186,16 @@ Message is a plain string.
 """.
 -spec send_safe( trace_severity(), wooper:state(), message() ) -> void().
 send_safe( Severity, State, Message ) ->
-	% Switching to the best option:
-	case hasAttribute( State, ?trace_emitter_characteristic_attr ) of
+    % Switching to the best option:
+    case hasAttribute( State, ?trace_emitter_characteristic_attr ) of
 
-		true ->
-			class_TraceEmitter:send_safe( Severity, State, Message );
+        true ->
+            class_TraceEmitter:send_safe( Severity, State, Message );
 
-		false ->
-			trace_bridge:send( Severity, Message )
+        false ->
+            trace_bridge:send( Severity, Message )
 
-	end.
+    end.
 
 
 
@@ -211,21 +211,21 @@ it implement the Traceable interface.
 """.
 -spec to_maybe_string( wooper:state() ) -> option( ustring() ).
 to_maybe_string( State ) ->
-	case ?getMaybeAttr(name) of
+    case ?getMaybeAttr(name) of
 
-		undefined ->
-			undefined;
+        undefined ->
+            undefined;
 
-		Name ->
-			case ?getMaybeAttr(trace_emitter_categorization) of
+        Name ->
+            case ?getMaybeAttr(trace_emitter_categorization) of
 
-				undefined ->
-					text_utils:format( "named '~ts'", [ Name ] );
+                undefined ->
+                    text_utils:format( "named '~ts'", [ Name ] );
 
-				EmitterCateg ->
-					text_utils:format( "named '~ts', categorized as ~ts",
-									   [ Name, EmitterCateg ] )
+                EmitterCateg ->
+                    text_utils:format( "named '~ts', categorized as ~ts",
+                                       [ Name, EmitterCateg ] )
 
-			end
+            end
 
-	end.
+    end.

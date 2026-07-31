@@ -1,4 +1,4 @@
-% Copyright (C) 2013-2025 Olivier Boudeville
+% Copyright (C) 2013-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -30,10 +30,10 @@
 -moduledoc """
 Gathering of various convenient **SMS-related** facilities.
 
-They rely mostly on a web gateway for that. See <http://mobile.esperide.org> for
+They rely mostly on a web gateway for that. See [http://mobile.esperide.org] for
 one based typically on 3G devices.
 
-See sms_utils_test.erl for testing.
+See `sms_utils_test.erl` for testing.
 """.
 
 
@@ -60,29 +60,35 @@ See sms_utils_test.erl for testing.
 
 % A typical returned header by the verysms service is:
 
-	 %% [{"cache-control",
-	 %%   "no-store, no-cache, must-revalidate, post-check=0, pre-check=0"},
-	 %%  {"connection","Keep-Alive"},
-	 %%  {"date","Mon, 28 Oct 2013 15:18:24 GMT"},
-	 %%  {"pragma","no-cache"},
-	 %%  {"server",
-	 %%   "Apache/2.2.20 (Unix) mod_ssl/2.2.20 OpenSSL/0.9.8o"},
-	 %%  {"vary","Accept-Encoding,User-Agent"},
-	 %%  {"content-length","2"},
-	 %%  {"content-type","text/html"},
-	 %%  {"expires","Thu, 19 Nov 1981 08:52:00 GMT"},
-	 %%  {"x-powered-by","PHP/5.2.13-pl1-gentoo"},
-	 %%  {"set-cookie",
-	 %%   "PHPSESSID=9adc709f872cc44f1f4abc1c4931914b; path=/"},
-	 %%  {"keep-alive","timeout=15, max=100"}],
+     %% [{"cache-control",
+     %%   "no-store, no-cache, must-revalidate, post-check=0, pre-check=0"},
+     %%  {"connection","Keep-Alive"},
+     %%  {"date","Mon, 28 Oct 2013 15:18:24 GMT"},
+     %%  {"pragma","no-cache"},
+     %%  {"server",
+     %%   "Apache/2.2.20 (Unix) mod_ssl/2.2.20 OpenSSL/0.9.8o"},
+     %%  {"vary","Accept-Encoding,User-Agent"},
+     %%  {"content-length","2"},
+     %%  {"content-type","text/html"},
+     %%  {"expires","Thu, 19 Nov 1981 08:52:00 GMT"},
+     %%  {"x-powered-by","PHP/5.2.13-pl1-gentoo"},
+     %%  {"set-cookie",
+     %%   "PHPSESSID=9adc709f872cc44f1f4abc1c4931914b; path=/"},
+     %%  {"keep-alive","timeout=15, max=100"}],
 
 
 
 
 % Sending-related functions:
--export([ create_sms/3, create_sms/4, send/2, send/7,
-		  update_credits/1,
-		  account_to_string/1, sms_to_string/1 ]).
+-export([ create_sms/3, create_sms/4, send/2, send/7 ]).
+
+
+% General functions:
+-export([ check_phone_number/1 ]).
+
+
+% Other functions:
+-export([ update_credits/1, account_to_string/1, sms_to_string/1 ]).
 
 
 
@@ -96,8 +102,8 @@ See sms_utils_test.erl for testing.
 
 -doc "Service class of a SMS being sent.".
 -type service_class() ::
-	% Only sensible for the 'verysms' provider:
-	'eco' | 'pro'.
+    % Only sensible for the 'verysms' provider:
+    'eco' | 'pro'.
 
 
 
@@ -107,10 +113,24 @@ See sms_utils_test.erl for testing.
 
 
 -doc """
-A phone number, preferably international, preferably with no whitespaces (e.g.
-"+330616XXXXXX").
+A phone number (mobile or not), preferably international, preferably with no
+whitespaces (e.g. `"+330616XXXXXX"`), as a plain string.
 """.
 -type phone_number() :: ustring().
+
+
+-doc """
+A phone number (mobile or not), preferably international, preferably with no
+whitespaces (e.g. `<<"+330616XXXXXX">>`), as a binary string.
+""".
+-type bin_phone_number() :: bin_string().
+
+
+-doc """
+A phone number (mobile or not), preferably international, preferably with no
+whitespaces (e.g. `<<"+330616XXXXXX">>`), as any string.
+""".
+-type any_phone_number() :: any_string().
 
 
 
@@ -134,7 +154,7 @@ actually SMS always shown as sent by the number "38200".
 -doc """
 """.
 -type failure_reason() ::
-	{ 'invalid_content', ustring() }
+    { 'invalid_content', ustring() }
   | { 'invalid_phone_number', ustring() }
   |   'credits_exhausted'
   |   'insufficient_credits'
@@ -162,19 +182,19 @@ actually SMS always shown as sent by the number "38200".
 % Describes a SMS account at a provider:
 -record( sms_account, {
 
-	provider :: provider(),
+    provider :: provider(),
 
-	user_name :: system_utils:user_name(),
+    user_name :: system_utils:user_name(),
 
-	password :: system_utils:password(),
+    password :: system_utils:password(),
 
-	default_class :: service_class(),
+    default_class :: service_class(),
 
-	credits :: credits(),
+    credits :: credits(),
 
-	sent_count :: count(),
+    sent_count :: count(),
 
-	sent_success_count :: count() } ).
+    sent_success_count :: count() } ).
 
 
 -doc "Describes a SMS account at a provider.".
@@ -185,14 +205,14 @@ actually SMS always shown as sent by the number "38200".
 % Describes a SMS.
 -record( sms, {
 
-	message :: message(),
+    message :: message(),
 
-	recipient :: recipient(),
+    recipient :: recipient(),
 
-	sender_description :: sender_description(),
+    sender_description :: sender_description(),
 
-	% Default account service class to be used, if not specified here:
-	service_class :: option( service_class() ) } ).
+    % Default account service class to be used, if not specified here:
+    service_class :: option( service_class() ) } ).
 
 
 -doc "Describes a SMS account.".
@@ -200,9 +220,10 @@ actually SMS always shown as sent by the number "38200".
 
 
 
--export_type([ provider/0, credits/0, sms_account/0, message/0, phone_number/0,
-			   recipient/0, sender_description/0, service_class/0, sms/0,
-			   sending_outcome/0 ]).
+-export_type([ provider/0, credits/0, sms_account/0, message/0,
+               phone_number/0, bin_phone_number/0, any_phone_number/0,
+               recipient/0, sender_description/0, service_class/0, sms/0,
+               sending_outcome/0 ]).
 
 
 % Type shorthands:
@@ -210,53 +231,55 @@ actually SMS always shown as sent by the number "38200".
 -type count() :: basic_utils:count().
 
 -type ustring() :: text_utils:ustring().
+-type bin_string() :: text_utils:bin_string().
+-type any_string() :: text_utils:any_string().
 
 
 
 -doc """
-Creates a SMS record instance from specified information, the service class
+Creates a SMS record instance from the specified information, the service class
 being not defined, so that the default class of the account will prevail.
 """.
 -spec create_sms( message(), recipient(), sender_description() ) -> sms().
 create_sms( Message, Recipient, SenderDescription ) when is_list( Message )
-			andalso is_list( Recipient ) andalso is_list( SenderDescription ) ->
-	create_sms( Message, Recipient, SenderDescription,
-				_ServiceClass=undefined ).
+            andalso is_list( Recipient ) andalso is_list( SenderDescription ) ->
+    create_sms( Message, Recipient, SenderDescription,
+                _ServiceClass=undefined ).
 
 
 
--doc "Creates a SMS record instance from specified information.".
+-doc "Creates a SMS record instance from the specified information.".
 -spec create_sms( message(), recipient(), sender_description(),
-				  option( service_class() ) ) -> sms().
+                  option( service_class() ) ) -> sms().
 create_sms( Message, Recipient, SenderDescription, ServiceClass )
-		when is_list( Message ) andalso is_list( Recipient )
-			 andalso is_list( SenderDescription )
-			 andalso is_atom( ServiceClass ) ->
+        when is_list( Message ) andalso is_list( Recipient )
+             andalso is_list( SenderDescription )
+             andalso is_atom( ServiceClass ) ->
 
-	%trace_utils:debug_fmt( "created '~ts' ~B.",
-	%                       [ Message, length( Message ) ] ),
+    %trace_utils:debug_fmt( "created '~ts' ~B.",
+    %                       [ Message, length( Message ) ] ),
 
-	% More checking should be done:
+    % More checking should be done:
 
-	% Disabled, as there are 3 sizes: the number of Unicode characters, the
-	% number of bytes once encoded in an URL, and the number of bytes once
-	% encoded for SMS. Not sure which rule to apply.
+    % Disabled, as there are 3 sizes: the number of Unicode characters, the
+    % number of bytes once encoded in an URL, and the number of bytes once
+    % encoded for SMS. Not sure which rule to apply.
 
-	% case length( web_utils:encode_element_as_url( Message ) ) of
+    % case length( web_utils:encode_element_as_url( Message ) ) of
 
-	%%  L when L > 160 ->
-	%%      % In bytes, not characters:
-	%%      throw( { message_too_long, L, Message } );
+    %%  L when L > 160 ->
+    %%      % In bytes, not characters:
+    %%      throw( { message_too_long, L, Message } );
 
-	%%  _ ->
-	%%      ok
+    %%  _ ->
+    %%      ok
 
-	%% end,
+    %% end,
 
-	#sms{ message=Message,
-		  recipient=Recipient,
-		  sender_description=SenderDescription,
-		  service_class=ServiceClass }.
+    #sms{ message=Message,
+          recipient=Recipient,
+          sender_description=SenderDescription,
+          service_class=ServiceClass }.
 
 
 
@@ -264,89 +287,89 @@ create_sms( Message, Recipient, SenderDescription, ServiceClass )
 % Sending-related functions.
 
 
--doc "Sends specified SMS, using specified account.".
+-doc "Sends the specified SMS, using the specified account.".
 -spec send( sms(), sms_account() ) -> { sending_outcome(), sms_account() }.
 send( #sms{ message=Message, recipient=Recipient,
-			sender_description=SenderDescription, service_class=ServiceClass },
-	  Account=#sms_account{ provider=Provider,
-							user_name=UserName, password=Password,
-							default_class=DefaultClass, credits=Credits,
-							sent_count=SentCount, sent_success_count=Successes
-						  } ) ->
+            sender_description=SenderDescription, service_class=ServiceClass },
+      Account=#sms_account{
+          provider=Provider,
+          user_name=UserName, password=Password,
+          default_class=DefaultClass, credits=Credits,
+          sent_count=SentCount, sent_success_count=Successes } ) ->
 
-	% From a user perspective, to a technical one:
+    % From a user perspective, to a technical one:
 
-	% If the SMS does not specify a class, use the default from account:
-	ActualServiceClass = case ServiceClass of
+    % If the SMS does not specify a class, use the default from account:
+    ActualServiceClass = case ServiceClass of
 
-		undefined ->
-			DefaultClass;
+        undefined ->
+            DefaultClass;
 
-		C ->
-			C
+        C ->
+            C
 
-	end,
+    end,
 
-	Outcome = send( Provider, ActualServiceClass, UserName, Password, Message,
-					Recipient, SenderDescription ),
+    Outcome = send( Provider, ActualServiceClass, UserName, Password, Message,
+                    Recipient, SenderDescription ),
 
 
-	{ NewCredits, NewSuccesses } = case Outcome of
+    { NewCredits, NewSuccesses } = case Outcome of
 
-		success ->
-			NewC = Credits - get_credit_cost( Provider, ActualServiceClass ),
-			NewS = Successes+1,
-			{ NewC, NewS };
+        success ->
+            NewC = Credits - get_credit_cost( Provider, ActualServiceClass ),
+            NewS = Successes+1,
+            { NewC, NewS };
 
-		_Failure ->
-			{ Credits, Successes }
+        _Failure ->
+            { Credits, Successes }
 
-	end,
+    end,
 
-	{ Outcome, Account#sms_account{ credits=NewCredits,
-									sent_count=SentCount + 1,
-									sent_success_count=NewSuccesses } }.
+    { Outcome, Account#sms_account{ credits=NewCredits,
+                                    sent_count=SentCount + 1,
+                                    sent_success_count=NewSuccesses } }.
 
 
 
 -doc """
-Sends specified SMS, using most detailed (explicit) settings.
+Sends the specified SMS, using most detailed (explicit) settings.
 
 (base, only actual sending function)
 """.
 -spec send( provider(), service_class(), system_utils:user_name(),
-			system_utils:password(), message(), recipient(),
-			sender_description() ) -> sending_outcome().
+            system_utils:password(), message(), recipient(),
+            sender_description() ) -> sending_outcome().
 send( _Provider=verysms, _ServiceClass=eco, Username, Password, Message,
-	  Recipient, SenderDescription ) ->
+      Recipient, SenderDescription ) ->
 
-	% In eco mode, no specific sender can be specified (will be "random" mobile
-	% numbers).
+    % In eco mode, no specific sender can be specified (will be "random" mobile
+    % numbers).
 
-	check_recipient( Recipient ),
+    check_recipient( Recipient ),
 
-	% Might be started multiple times:
-	inets:start(),
+    % Might be started multiple times:
+    inets:start(),
 
-	EcoURL = "http://www.verysms.fr/api_sendsms.php",
+    EcoURL = "http://www.verysms.fr/api_sendsms.php",
 
-	JsonString = json_utils:to_json( #{
-		<<"user">> => Username,
-		<<"pass">> => Password,
-		<<"dest">> => Recipient,
-		<<"flash">> => "",
-		<<"type">> => "",
-		<<"url">> => "",
-		<<"msg">> => Message,
-		<<"origine">> => SenderDescription } ),
+    JsonString = json_utils:to_json( #{
+        <<"user">> => Username,
+        <<"pass">> => Password,
+        <<"dest">> => Recipient,
+        <<"flash">> => "",
+        <<"type">> => "",
+        <<"url">> => "",
+        <<"msg">> => Message,
+        <<"origine">> => SenderDescription } ),
 
-	% For this provider, web_utils:escape_as_html_content/1 must be used instead
-	% of web_utils:encode_as_url/1:
-	%
-	Request = { EcoURL, _Headers=[], _ContentType=get_mime_type(),
-				_Body=JsonString },
+    % For this provider, web_utils:escape_as_html_content/1 must be used instead
+    % of web_utils:encode_as_url/1:
+    %
+    Request = { EcoURL, _Headers=[], _ContentType=get_mime_type(),
+                _Body=JsonString },
 
-	execute_request( Request, Username, Password, Recipient );
+    execute_request( Request, Username, Password, Recipient );
 
 
 %% send( Provider=verysms, ServiceClass=eco, Username, Password, Message,
@@ -356,115 +379,140 @@ send( _Provider=verysms, _ServiceClass=eco, Username, Password, Message,
 %%  throw( { no_sender_description_supported, { Provider, ServiceClass } } );
 
 send( _Provider=verysms, _ServiceClass=pro, Username, Password, Message,
-	  Recipient, SenderDescription ) ->
+      Recipient, SenderDescription ) ->
 
-	check_recipient( Recipient ),
+    check_recipient( Recipient ),
 
-	% Might be started multiple times:
-	inets:start(),
+    % Might be started multiple times:
+    inets:start(),
 
-	ProURL = "http://www.verysms.fr/api_sendsmspro.php",
+    ProURL = "http://www.verysms.fr/api_sendsmspro.php",
 
-	JsonString = json_utils:to_json( #{
-		<<"user">> => Username,
-		<<"pass">> => Password,
-		<<"dest">> => Recipient,
-		<<"flash">> => "",
-		<<"type">> => "",
-		<<"url">> => "",
-		<<"msg">> => Message,
-		<<"senderID">> => SenderDescription,
-		<<"origine">> => "ceylan",
-		<<"idSending">> => "1" } ),
+    JsonString = json_utils:to_json( #{
+        <<"user">> => Username,
+        <<"pass">> => Password,
+        <<"dest">> => Recipient,
+        <<"flash">> => "",
+        <<"type">> => "",
+        <<"url">> => "",
+        <<"msg">> => Message,
+        <<"senderID">> => SenderDescription,
+        <<"origine">> => "ceylan",
+        <<"idSending">> => "1" } ),
 
-	% For this provider, web_utils:escape_as_html_content/1 must be used instead
-	% of web_utils:encode_as_url/1:
-	%
-	Request = { ProURL, _Headers=[], _ContentType=get_mime_type(),
-				_Body=JsonString },
+    % For this provider, web_utils:escape_as_html_content/1 must be used instead
+    % of web_utils:encode_as_url/1:
+    %
+    Request = { ProURL, _Headers=[], _ContentType=get_mime_type(),
+                _Body=JsonString },
 
-	% In pro mode, if no sender description is specified, will be "38200":
-	%% JsonString = case SenderDescription of
+    % In pro mode, if no sender description is specified, will be "38200":
+    %% JsonString = case SenderDescription of
 
-	%%	[] ->
-	%%		List;
+    %%  [] ->
+    %%      List;
 
-	%%	Desc ->
-	%%		[ { "senderID", Desc } | List ]
+    %%  Desc ->
+    %%      [ { "senderID", Desc } | List ]
 
-	%%		  end;
+    %%        end;
 
-	execute_request( Request, Username, Password, Recipient );
+    execute_request( Request, Username, Password, Recipient );
 
 
 send( Provider=verysms, ServiceClass, _Username, _Password, _Message,
-	  _Recipient, _SenderDescription ) ->
+      _Recipient, _SenderDescription ) ->
 
-	throw( { invalid_service_class, ServiceClass, Provider } );
+    throw( { invalid_service_class, ServiceClass, Provider } );
 
 
 send( Provider, _ServiceClass, _Username, _Password, _Message, _Recipient,
-	  _SenderDescription ) ->
+      _SenderDescription ) ->
 
-	throw( { unsupported_sms_provider, Provider } ).
+    throw( { unsupported_sms_provider, Provider } ).
+
+
+
+-doc """
+Checks that the specified term is a string-based phone number
+(`phone_number/0`), and returns its binary form, otherwise throws an exception.
+""".
+-spec check_phone_number( term() ) -> bin_phone_number().
+% Of course a regex could be used.
+check_phone_number( Str=[ $+ | Digits ] ) ->
+
+    text_utils:are_digits( Digits ) orelse
+        throw( { invalid_phone_number, not_digits_after_plus, Str } ),
+
+    text_utils:string_to_binary( Str );
+
+check_phone_number( Digits ) when is_list( Digits ) ->
+
+    text_utils:are_digits( Digits ) orelse
+        throw( { invalid_phone_number, not_digits, Digits } ),
+
+    text_utils:string_to_binary( Digits );
+
+check_phone_number( Other ) ->
+    throw( { invalid_phone_number, not_string, Other } ).
 
 
 
 -doc """
 Returns the specified SMS account, whose credit count has been updated, telling
 whether the actual, provider-obtained count corresponds to the recorded one
-('matching') or not ('overwritten'), in which case the actual one replaces the
+(`matching`) or not (`overwritten`), in which case the actual one replaces the
 recorded one.
 
-If the operation failed, returns 'failed' with an unchanged account.
+If the operation failed, returns `failed` with an unchanged account.
 """.
 -spec update_credits( sms_account() ) ->
-				{ 'matching' | 'overwritten' | 'failed', sms_account() }.
+                { 'matching' | 'overwritten' | 'failed', sms_account() }.
 update_credits( Account=#sms_account{ credits=Credits } ) ->
 
-	case get_credits_for( Account ) of
+    case get_credits_for( Account ) of
 
-		undefined ->
-			{ failed, Account };
+        undefined ->
+            { failed, Account };
 
-		Credits ->
-			{ matching, Account };
+        Credits ->
+            { matching, Account };
 
-		ActualCredits ->
-			{ overwritten, Account#sms_account{ credits=ActualCredits } }
+        ActualCredits ->
+            { overwritten, Account#sms_account{ credits=ActualCredits } }
 
-	end.
+    end.
 
 
 
 -doc "Returns a textual description of the specified SMS account.".
 -spec account_to_string( sms_account() ) -> ustring().
 account_to_string( #sms_account{ provider=Provider, user_name=Username,
-								 password=Password, default_class=DefaultClass,
-								 credits=Credits, sent_count=SentCount,
-								 sent_success_count=SentSuccessCount } ) ->
+                                 password=Password, default_class=DefaultClass,
+                                 credits=Credits, sent_count=SentCount,
+                                 sent_success_count=SentSuccessCount } ) ->
 
-	text_utils:format( "SMS account on provider '~ts': user name is '~ts', "
-		"password is '~ts', relying on default sending class '~ts', "
-		"with stored credits: ~p; ~B success sendings over a total of ~B",
-		[ Provider, Username, Password, DefaultClass, Credits,
-		  SentSuccessCount, SentCount ] ).
+    text_utils:format( "SMS account on provider '~ts': user name is '~ts', "
+        "password is '~ts', relying on default sending class '~ts', "
+        "with stored credits: ~p; ~B success sendings over a total of ~B",
+        [ Provider, Username, Password, DefaultClass, Credits,
+          SentSuccessCount, SentCount ] ).
 
 
 
 -doc "Returns a textual description of the specified SMS.".
 -spec sms_to_string( sms() ) -> ustring().
 sms_to_string( #sms{ message=Message, recipient=Recipient,
-					 sender_description=SenderDesc,
-					 service_class=ServiceClass } ) ->
+                     sender_description=SenderDesc,
+                     service_class=ServiceClass } ) ->
 
-	% Encoding (e.g. of accentuated characters) changes the byte size:
-	Len = length( Message ),
+    % Encoding (e.g. of accentuated characters) changes the byte size:
+    Len = length( Message ),
 
-	text_utils:format( "SMS whose message is '~ts' (character length: "
-		"~B bytes), sent to recipient number '~ts' from sender '~p' "
-		"with service class ~p",
-		[ Message, Len, Recipient, SenderDesc, ServiceClass ] ).
+    text_utils:format( "SMS whose message is '~ts' (character length: "
+        "~B bytes), sent to recipient number '~ts' from sender '~p' "
+        "with service class ~p",
+        [ Message, Len, Recipient, SenderDesc, ServiceClass ] ).
 
 
 
@@ -474,151 +522,147 @@ sms_to_string( #sms{ message=Message, recipient=Recipient,
 -doc "Checks the specified recipient number.".
 % A regex with the re module could be used:
 check_recipient( Recipient ) ->
-	check_recipient( Recipient, Recipient ).
+    check_recipient( Recipient, Recipient ).
 
 
 % (helper)
 check_recipient( _Remaining=[], _Recipient ) ->
-	ok;
+    ok;
 
 check_recipient( _Remaining=[ C | T ], Recipient ) ->
-	case text_utils:is_figure( C ) of
+    case text_utils:is_figure( C ) of
 
-		true ->
-			check_recipient( T, Recipient );
+        true ->
+            check_recipient( T, Recipient );
 
-		false ->
-			throw( { invalid_recipient, Recipient, C } )
+        false ->
+            throw( { invalid_recipient, Recipient, C } )
 
-	end.
+    end.
 
 
 
 -doc "Returns the MIME type to be used here.".
 get_mime_type() ->
-	"application/x-www-form-urlencoded".
+    "application/x-www-form-urlencoded".
 
 
 
 -doc """
 Returns the current number of credits for the specified account, as reported by
-the provider, or 'undefined' if the operation failed.
+the provider, or `undefined` if the operation failed.
 """.
 -spec get_credits_for( sms_account() ) -> credits().
 get_credits_for( _Account=#sms_account{ provider=verysms, user_name=Username,
-										password=Password } ) ->
+                                        password=Password } ) ->
 
-	% Might be started multiple times:
-	inets:start(),
+    % Might be started multiple times:
+    inets:start(),
 
-	CreditURL = "http://www.verysms.fr/credit.php",
+    CreditURL = "http://www.verysms.fr/credit.php",
 
-	JsonString = json_utils:to_json( #{
-		<<"user">> => Username,
-		<<"pass">> => Password } ),
+    JsonString = json_utils:to_json( #{
+        <<"user">> => Username,
+        <<"pass">> => Password } ),
 
-	Request = { CreditURL, _ReqHeaders=[], _ContentType=get_mime_type(),
-				_ReqBody=JsonString },
+    Request = { CreditURL, _ReqHeaders=[], _ContentType=get_mime_type(),
+                _ReqBody=JsonString },
 
-	case httpc:request( _Method=post, Request, _HTTPOptions=[], _Options=[] ) of
+    case httpc:request( _Method=post, Request, _HTTPOptions=[], _Options=[] ) of
 
-		% HTTPVersion below: typically equal to "HTTP/1.1";
+        % HTTPVersion below: typically equal to "HTTP/1.1";
 
-		{ ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
-				_Body="CREDIT OUT" } } ->
-			0;
+        { ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
+                _Body="CREDIT OUT" } } ->
+            0;
 
-		{ ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
-				_Body="CREDIT " ++ RemainingCredit } } ->
-			try
+        { ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
+                _Body="CREDIT " ++ RemainingCredit } } ->
+            try
 
-				text_utils:string_to_integer( RemainingCredit )
+                text_utils:string_to_integer( RemainingCredit )
 
-			catch
+            catch
 
-				throw:_ ->
-					undefined
+                throw:_ ->
+                    undefined
 
-			end;
+            end;
 
-		{ ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
-				_Body="KO" } } ->
-			undefined;
+        { ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
+                _Body="KO" } } ->
+            undefined;
 
-		{ ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
-				_Body="USER INVALID" } } ->
-			undefined;
+        { ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
+                _Body="USER INVALID" } } ->
+            undefined;
 
-		{ ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
-				_Body="PASS INVALID" } } ->
-			undefined;
+        { ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
+                _Body="PASS INVALID" } } ->
+            undefined;
 
-		{ ok, { _StatusLine, _Headers, _Body } } ->
-			undefined;
+        { ok, { _StatusLine, _Headers, _Body } } ->
+            undefined;
 
-		{ error, _Reason } ->
-			undefined
+        { error, _Reason } ->
+            undefined
 
-	end.
+    end.
 
 
 
--doc """
-Executes the specified HTTP request.
-
-(helper)
-""".
+-doc "Executes the specified HTTP request.".
 execute_request( Request, Username, Password, Recipient ) ->
 
-	% Note: should use web_utils now.
+    % Note: should use web_utils now.
 
-	%trace_utils:debug_fmt( "Request: '~p'.",  [ Request ] ),
+    %trace_utils:debug_fmt( "Request: '~p'.",  [ Request ] ),
 
-	% We strongly prefer POST over GET (safer, stricter):
-	case httpc:request( _Method=post, Request, _HTTPOptions=[], _Options=[] ) of
+    % We strongly prefer POST over GET (safer, stricter):
+    case httpc:request( _Method=post, Request, _HTTPOptions=[], _Options=[] ) of
 
-		% HTTPVersion below: typically equal to "HTTP/1.1";
-		% Body: "OK 5" if 5 credits are remaining (we do not care here);
-		%
-		{ ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
-				_Body="OK " ++ _RemainingCredit } } ->
-			success;
+        % HTTPVersion below: typically equal to "HTTP/1.1";
+        % Body: "OK 5" if 5 credits are remaining (we do not care here);
+        %
+        { ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
+                _Body="OK " ++ _RemainingCredit } } ->
+            success;
 
-		{ ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
-				_Body="KO" } } ->
-			{ invalid_content, "Invalid SMS body, not sent" };
+        { ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
+                _Body="KO" } } ->
+            { invalid_content, "Invalid SMS body, not sent" };
 
-		{ ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
-				_Body="BAD NUMBER" } } ->
-			{ invalid_phone_number, Recipient };
+        { ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
+                _Body="BAD NUMBER" } } ->
+            { invalid_phone_number, Recipient };
 
-		{ ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
-				_Body="CREDIT OUT" } } ->
-			credits_exhausted;
+        { ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
+                _Body="CREDIT OUT" } } ->
+            credits_exhausted;
 
-		{ ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
-				_Body="CREDIT NOT ENOUGH" } } ->
-			insufficient_credits;
+        { ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
+                _Body="CREDIT NOT ENOUGH" } } ->
+            insufficient_credits;
 
-		{ ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
-				_Body="USER INVALID" } } ->
-			{ invalid_user, Username };
+        { ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
+                _Body="USER INVALID" } } ->
+            { invalid_user, Username };
 
-		{ ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
-				_Body="PASS INVALID" } } ->
-			{ invalid_password, Password };
+        { ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
+                _Body="PASS INVALID" } } ->
+            { invalid_password, Password };
 
-		{ ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
-				Body } } ->
-			{ invalid_content, Body };
+        { ok, { _StatusLine={ _HTTPVersion, 200, "OK" }, _Headers,
+                Body } } ->
+            { invalid_content, Body };
 
-		{ ok, Res={ _StatusLine, _Headers, _Body } } ->
-			{ invalid_request, Res };
+        { ok, Res={ _StatusLine, _Headers, _Body } } ->
+            { invalid_request, Res };
 
-		{ error, Reason } ->
-			{ request_failed, Reason }
+        { error, Reason } ->
+            { request_failed, Reason }
 
-	end.
+    end.
 
 
 
@@ -627,7 +671,7 @@ Returns the cost in credits of sending one SMS of the specified service class
 from the specified provider.
 """.
 get_credit_cost( _Provider=verysms, _ServiceClass=eco ) ->
-	5;
+    5;
 
 get_credit_cost( _Provider=verysms, _ServiceClass=pro ) ->
-	10.
+    10.

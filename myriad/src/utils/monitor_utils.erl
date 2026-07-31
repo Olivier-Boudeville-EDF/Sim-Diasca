@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -58,7 +58,7 @@ See `monitor_utils_test.erl` for the corresponding test.
 
 -doc "Designates a registered Erlang process.".
 -type registered_process_identifier() ::
-		registered_name() | { registered_name(), node() }.
+        registered_name() | { registered_name(), node() }.
 
 
 % (not exported yet by the 'erlang' module)
@@ -75,7 +75,7 @@ See `monitor_utils_test.erl` for the corresponding test.
 
 -doc "An actual element being monitored.".
 -type monitored_element() :: monitored_process() | monitored_port()
-						   | monitored_clock().
+                           | monitored_clock().
 
 
 
@@ -100,13 +100,13 @@ resides)
 
 -doc "Options to monitor a node.".
 -type monitor_node_option() :: { 'node_type', net_utils:node_type() }
-							 | 'nodedown_reason'.
+                             | 'nodedown_reason'.
 
 
 -export_type([ monitor_reference/0, monitored_element_type/0,
-			   monitored_process/0, monitored_port/0, monitored_clock/0,
-			   monitored_element/0, monitor_info/0, monitor_node_info/0,
-			   monitor_node_option/0 ]).
+               monitored_process/0, monitored_port/0, monitored_clock/0,
+               monitored_element/0, monitor_info/0, monitor_node_info/0,
+               monitor_node_option/0 ]).
 
 
 -export([ monitor_nodes/1, monitor_nodes/2 ]).
@@ -126,7 +126,7 @@ See `net_kernel:monitor_nodes/2` for more information.
 """.
 -spec monitor_nodes( boolean() ) -> void().
 monitor_nodes( DoStartNewSubscription ) ->
-	monitor_nodes( DoStartNewSubscription, _Options=[] ).
+    monitor_nodes( DoStartNewSubscription, _Options=[] ).
 
 
 
@@ -138,13 +138,13 @@ See `net_kernel:monitor_nodes/2` for more information.
 -spec monitor_nodes( boolean(), [ monitor_node_option() ] ) -> void().
 monitor_nodes( DoStartNewSubscription, Options ) ->
 
-	case net_kernel:monitor_nodes( DoStartNewSubscription, Options ) of
+    case net_kernel:monitor_nodes( DoStartNewSubscription, Options ) of
 
-		ok ->
-			ok;
+        ok ->
+            ok;
 
-		Error ->
-			throw( { node_monitoring_failed, Error, DoStartNewSubscription,
-					 Options } )
+        Error ->
+            throw( { node_monitoring_failed, Error, DoStartNewSubscription,
+                     Options } )
 
-	end.
+    end.

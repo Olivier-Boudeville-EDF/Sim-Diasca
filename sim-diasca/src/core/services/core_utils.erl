@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -28,8 +28,8 @@ test/simulation cases**.
 
 
 -export([ get_case_arguments/0, get_title/0, wait_ready/0,
-		  suspend_simulation_until_enter_pressed/1,
-		  draw_item_from/2, draw_items_from/3 ]).
+          suspend_simulation_until_enter_pressed/1,
+          draw_item_from/2, draw_items_from/3 ]).
 
 
 
@@ -60,18 +60,18 @@ Allows to remove all engine-specific options besides the Erlang ones.
 -spec get_case_arguments() -> cmd_line_utils:argument_table().
 get_case_arguments() ->
 
-	AllArgs = cmd_line_utils:get_argument_table(),
+    AllArgs = cmd_line_utils:get_argument_table(),
 
-	KeysToIgnore = [ ?myriad_verbatim_key, ?trace_batch_key,
-					 ?engine_arg_root_key, ?engine_arg_version_key ],
+    KeysToIgnore = [ ?myriad_verbatim_key, ?trace_batch_key,
+                     ?engine_arg_root_key, ?engine_arg_version_key ],
 
-	% Not using cmd_line_utils:argument_table_to_string/1 to avoid the
-	% interpretation of argument names:
-	%
-	%trace_utils:debug_fmt( "Got, regarding arguments, ~p, whereas keys to "
-	%                       "ignore are ~p.", [ AllArgs, KeysToIgnore ] ),
+    % Not using cmd_line_utils:argument_table_to_string/1 to avoid the
+    % interpretation of argument names:
+    %
+    %trace_utils:debug_fmt( "Got, regarding arguments, ~p, whereas keys to "
+    %                       "ignore are ~p.", [ AllArgs, KeysToIgnore ] ),
 
-	list_table:remove_entries( KeysToIgnore, AllArgs ).
+    list_table:remove_entries( KeysToIgnore, AllArgs ).
 
 
 
@@ -79,19 +79,19 @@ get_case_arguments() ->
 -spec get_title() -> ustring().
 get_title() ->
 
-	case cmd_line_utils:get_command_arguments_for_option(
+    case cmd_line_utils:get_command_arguments_for_option(
             ?engine_arg_version_key ) of
 
-		undefined ->
-			"Sim-Diasca distributed branch (unspecified version)";
+        undefined ->
+            "Sim-Diasca distributed branch (unspecified version)";
 
-		[ [ VersionString ] ] ->
-			"Sim-Diasca distributed branch (v" ++ VersionString ++ ")";
+        [ [ VersionString ] ] ->
+            "Sim-Diasca distributed branch (v" ++ VersionString ++ ")";
 
-		OtherArg ->
-			throw( { invalid_engine_version, OtherArg } )
+        OtherArg ->
+            throw( { invalid_engine_version, OtherArg } )
 
-	end.
+    end.
 
 
 
@@ -99,18 +99,18 @@ get_title() ->
 -spec wait_ready() -> void().
 wait_ready() ->
 
-	receive
+    receive
 
-		{ actorMessage, [ _ATick, notifyReady, ActorPid ] } ->
+        { actorMessage, [ _ATick, notifyReady, ActorPid ] } ->
 
-			?notify_debug_fmt( "Actor ~w ready.", [ ActorPid ] ),
+            ?notify_debug_fmt( "Actor ~w ready.", [ ActorPid ] ),
 
-			% Acknowledges the actor message, otherwise the actor will be
-			% frozen:
-			%
-			ActorPid ! { acknowledgeMessage, self() }
+            % Acknowledges the actor message, otherwise the actor will be
+            % frozen:
+            %
+            ActorPid ! { acknowledgeMessage, self() }
 
-	end.
+    end.
 
 
 
@@ -118,24 +118,24 @@ wait_ready() ->
 -spec suspend_simulation_until_enter_pressed( time_manager_pid() ) -> void().
 suspend_simulation_until_enter_pressed( TimeManagerPid ) ->
 
-	case executable_utils:is_batch() of
+    case executable_utils:is_batch() of
 
-		true ->
-			nothing_done;
+        true ->
+            nothing_done;
 
-		false ->
+        false ->
 
-			%trace_utils:debug("Requesting the simulation to be suspended."),
-			TimeManagerPid ! suspend,
+            %trace_utils:debug("Requesting the simulation to be suspended."),
+            TimeManagerPid ! suspend,
 
-			io:get_line( "Simulation requested to be suspended, "
-						 "press Enter to resume it." ),
+            io:get_line( "Simulation requested to be suspended, "
+                         "press Enter to resume it." ),
 
-			TimeManagerPid ! resume,
+            TimeManagerPid ! resume,
 
-			io:format( "Simulation requested to be resumed.~n" )
+            io:format( "Simulation requested to be resumed.~n" )
 
-	end.
+    end.
 
 
 
@@ -153,20 +153,20 @@ Note: this function is mostly deprecated, as now stochastic values can generally
 -spec draw_item_from( [ T ], random_manager_pid() ) -> { T, [ T ] }.
 draw_item_from( DrawableList, RandomManagerPid ) when DrawableList =/= [] ->
 
-	% getUniformValue returns a number in 1..N:
-	RandomManagerPid ! { getUniformValue, length( DrawableList ), self() },
+    % getUniformValue returns a number in 1..N:
+    RandomManagerPid ! { getUniformValue, length( DrawableList ), self() },
 
-	DrawnPosition = receive
+    DrawnPosition = receive
 
-		{ wooper_result, { uniform_value, Value } } ->
-			Value
+        { wooper_result, { uniform_value, Value } } ->
+            Value
 
-	end,
+    end,
 
-	% No item should be drawn twice:
-	DrawnItem = lists:nth( DrawnPosition, DrawableList ),
+    % No item should be drawn twice:
+    DrawnItem = lists:nth( DrawnPosition, DrawableList ),
 
-	{ DrawnItem, lists:delete( DrawnItem, DrawableList ) }.
+    { DrawnItem, lists:delete( DrawnItem, DrawableList ) }.
 
 
 
@@ -181,22 +181,22 @@ Note: this function is mostly deprecated, as now stochastic values can generally
 (e.g. for actors) be obtained without direct exchange with a random manager).
 """.
 -spec draw_items_from( [ T ], count(), random_manager_pid() ) ->
-								'too_many_drawn_items' | { [ T ], [ T ] }.
+                                'too_many_drawn_items' | { [ T ], [ T ] }.
 draw_items_from( DrawableList, ItemCount, RandomManagerPid ) ->
-	draw_items_from( DrawableList, ItemCount, RandomManagerPid, _Acc=[] ).
+    draw_items_from( DrawableList, ItemCount, RandomManagerPid, _Acc=[] ).
 
 
 % (helper)
 draw_items_from( DrawableList, 0, _RandomManagerPid, Acc ) ->
-	{ Acc, DrawableList };
+    { Acc, DrawableList };
 
 draw_items_from( _DrawableList=[], _ItemCount, _RandomManagerPid, _Acc ) ->
-	too_many_drawn_items;
+    too_many_drawn_items;
 
 draw_items_from( DrawableList, ItemCount, RandomManagerPid, Acc ) ->
 
-	{ DrawnItem, RemainingList } =
-		draw_item_from( DrawableList, RandomManagerPid ),
+    { DrawnItem, RemainingList } =
+        draw_item_from( DrawableList, RandomManagerPid ),
 
-	draw_items_from( RemainingList, ItemCount - 1, RandomManagerPid,
-					 [ DrawnItem | Acc ] ).
+    draw_items_from( RemainingList, ItemCount - 1, RandomManagerPid,
+                     [ DrawnItem | Acc ] ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -74,156 +74,154 @@
 -define( data_extension, "dat" ).
 
 
-% The settings governing a given plot.
+% The lower-level settings governing a given plot.
 %
 % The underlying conventions are the gnuplot ones.
 %
 -record( plot_settings, {
 
-	% The (mandatory) name of this plot, whence for example the corresponding
-	% file names will be derived.
-	%
-	name :: plot_utils:bin_plot_name(),
+    % The (mandatory) name of this plot, whence for example the corresponding
+    % file names will be derived.
+    %
+    name :: plot_utils:bin_plot_name(),
 
 
-	% The title, if any, to display on this plot.
-	title :: option( ui:bin_title() ),
+    % The title, if any, to display on this plot.
+    title :: option( ui:bin_title() ),
 
-	% Key (legend) options:
-	key_options :: option( plot_utils:key_options() ),
-
-
-	% Label for the abscissa axis (as a binary):
-	x_label :: option( plot_utils:label_text() ),
-
-	% Label for the ordinate axis (as a binary):
-	y_label :: option( plot_utils:label_text() ),
+    % Key (legend) options:
+    key_options :: option( plot_utils:key_options() ),
 
 
-	% Settings for tick layout along the abscissa axis:
-	x_tick :: option( plot_utils:tick_option() ),
+    % Label for the abscissa axis (as a binary):
+    x_label :: option( plot_utils:label_text() ),
 
-	% Settings for tick layout along the ordinate axis:
-	y_tick :: option( plot_utils:tick_option() ),
-
-
-	% Abscissa range (pair of {MaybeMinX,MaybeMaxX} integers, or 'undefined'),
-	% knowing that such a range can be open, if either of the bounds is not
-	% specified (e.g. resulting in a "[5:]" range):
-	%
-	x_range :: option(
-		{ option( gui:coordinate() ), option( gui:coordinate() ) } ),
-
-	% Ordinate range (pair of {MaybeMinY,MaybeMaxY} integers, or 'undefined'),
-	% knowing that such a range can be open, if either of the bounds is not
-	% specified (e.g. resulting in a "[5:]" range):
-	%
-	y_range :: option(
-		{ option( gui:coordinate() ), option( gui:coordinate() ) } ),
+    % Label for the ordinate axis (as a binary):
+    y_label :: option( plot_utils:label_text() ),
 
 
-	% Fine control of the major (labeled) ticks on the abscissa axis.
-	x_ticks :: option( plot_utils:ticks_option() ),
+    % Settings for the tick layout along the abscissa axis:
+    x_tick :: option( plot_utils:tick_option() ),
+
+    % Settings for the tick layout along the ordinate axis:
+    y_tick :: option( plot_utils:tick_option() ),
 
 
-	% Tells whether the abscissa axis gathers timestamps.
-	is_timestamped = false :: boolean(),
+    % Abscissa range (pair of {MaybeMinX,MaybeMaxX}, or 'undefined'), knowing
+    % that such a range can be open, if either of the bounds is not specified
+    % (e.g. resulting in a "[5:]" range):
+    %
+    x_range :: option( { option( number() ), option( number() ) } ),
 
-	% The display time format to use if the x axis is a timestamped one:
-	x_ticks_timestamp_time_format ::
-		option( plot_utils:timestamp_time_format() ),
-
-
-	% Fine control of the major (labeled) ticks on the ordinate axis.
-	y_ticks :: option( plot_utils:ticks_option() ),
-
-
-	% Defines how graphs should be rendered:
-	%
-	% (our default is linespoints, in order to add - compared to mere lines - a
-	% graphical symbol on top of each data point)
-	%
-	plot_style = 'linespoints' :: plot_utils:plot_style(),
+    % Ordinate range (pair of {MaybeMinY,MaybeMaxY}, or 'undefined'), knowing
+    % that such a range can be open, if either of the bounds is not specified
+    % (e.g. resulting in a "[5:]" range):
+    %
+    y_range :: option( { option( number() ), option( number() ) } ),
 
 
-	% Defines the size of each point; 'set pointsize 2' means the point size is
-	% twice the default size.
-	%
-	point_size = 1 :: non_neg_integer(),
+    % Fine control of the major (labeled) ticks on the abscissa axis.
+    x_ticks :: option( plot_utils:ticks_option() ),
 
 
-	% Defines how areas like histograms should be filled:
-	fill_style = 'empty' :: plot_utils:fill_style(),
+    % Tells whether the abscissa axis gathers timestamps.
+    is_timestamped = false :: boolean(),
+
+    % The display time format to use if the abscissa axis is a timestamped one:
+    x_ticks_timestamp_time_format ::
+        option( plot_utils:timestamp_time_format() ),
 
 
-	% Defines the width of the canvas, i.e. the actual width, in pixels, of the
-	% corresponding plot:
-	%
-	canvas_width = ?default_canvas_width :: gui:width(),
-
-	% Defines the height of the canvas, i.e. the actual height, in pixels, of
-	% the corresponding plot:
-	%
-	canvas_height = ?default_canvas_height :: gui:height(),
+    % Fine control of the major (labeled) ticks on the ordinate axis.
+    y_ticks :: option( plot_utils:ticks_option() ),
 
 
-	% The image format for plot rendering (for the generated plot files):
-	%
-	% (default could be 'svg' some day; the rendering is quite close, yet the
-	% file sizes are at least twice as large)
-	%
-	image_format = 'png' :: gui_image:image_format(),
+    % Defines how graphs should be rendered:
+    %
+    % (our default is linespoints, in order to add - compared to mere lines - a
+    % graphical symbol on top of each data point)
+    %
+    plot_style = 'linespoints' :: plot_utils:plot_style(),
 
 
-	% Lists the arbitrary labels that may be defined over the plot rendering:
-	labels = [] :: [ plot_utils:plot_label() ],
-
-	% Lists extra defines that shall be added verbatim to the command file (near
-	% its top):
-	%
-	extra_defines = [] :: [ text_utils:bin_string() ],
+    % Defines the size of each point; 'set pointsize 2' means the point size is
+    % twice the default size.
+    %
+    point_size = 1 :: number(),
 
 
-	% Extra information about data, used to enrich (including for in-file
-	% comments) data to be plotted, for example to specify the origin of data,
-	% measurement time, source, author, accuracy, version, any specific number
-	% of points to be plotted, etc.
-	%
-	meta_data = [] :: plot_utils:plot_meta_data(),
-
-	% The directory (if any; otherwise the current working directory will be
-	% used) in which the plot is to be generated.
-	%
-	plot_directory :: option( file_utils:bin_directory_name() ),
-
-	% The filename (if any; otherwise it will be generated) to the plot that is
-	% to be generated.
-	%
-	plot_filename :: option( file_utils:bin_file_name() ),
+    % Defines how areas like histograms should be filled:
+    fill_style = 'empty' :: plot_utils:fill_style(),
 
 
-	% Internals:
+    % Defines the width of the canvas, i.e. the actual width, in pixels, of the
+    % corresponding plot:
+    %
+    canvas_width = ?default_canvas_width :: gui:width(),
 
-	% An ordered list of {CurveIndex, BinCurveName, BinPlotSuffix} triplets,
-	% with CurveIndex keeping track of the order according to which the curves
-	% were declared and fed (so that, prior to generating a report, curves can
-	% be reordered while being still associated to their values), and with curve
-	% names being binaries; the order in this list dictates the actual rendering
-	% order of curves that will be performed.
-	%
-	curve_entries = [] :: [ plot_utils:curve_entry() ],
-
-
-	% A list of definitions of zones, between two curves in a 2D plot:
-	zone_entries = [] :: [ plot_utils:zone_entry() ],
+    % Defines the height of the canvas, i.e. the actual height, in pixels, of
+    % the corresponding plot:
+    %
+    canvas_height = ?default_canvas_height :: gui:height(),
 
 
-	% A precomputed format string (if any) used to write new samples.
-	%
-	% How a data row shall be formatted when writing a data file, should a
-	% specific format be wanted:
-	%
-	row_format_string :: option( text_utils:format_bin_string() ) } ).
+    % The image format for plot rendering (for the generated plot files):
+    %
+    % (default could be 'svg' some day; the rendering is quite close, yet the
+    % file sizes are at least twice as large)
+    %
+    image_format = 'png' :: gui_image:image_format(),
+
+
+    % Defines the arbitrary labels that may be defined over the plot rendering:
+    labels = [] :: [ plot_utils:plot_label() ],
+
+    % Lists extra defines that shall be added verbatim, uncommented to the
+    % command file (near its top):
+    %
+    extra_defines = [] :: [ text_utils:bin_string() ],
+
+
+    % Extra information about data, used to enrich (including for in-file
+    % comments) data to be plotted, for example to specify the origin of data,
+    % measurement time, source, author, accuracy, version, any specific number
+    % of points to be plotted, etc.
+    %
+    meta_data = [] :: plot_utils:plot_meta_data(),
+
+    % The directory (if any; otherwise the current working directory will be
+    % used) in which the plot is to be generated.
+    %
+    plot_directory :: option( file_utils:bin_directory_name() ),
+
+    % The filename (if any; otherwise it will be generated) of the plot that is
+    % to be generated.
+    %
+    plot_filename :: option( file_utils:bin_file_name() ),
+
+
+    % Internals:
+
+    % An ordered list of {CurveIndex, BinCurveName, BinPlotSuffix} triplets,
+    % with CurveIndex keeping track of the order according to which the curves
+    % were declared and fed (so that, prior to generating a report, curves can
+    % be reordered while being still associated to their values), and with curve
+    % names being binaries; the order in this list dictates the actual rendering
+    % order of curves that will be performed.
+    %
+    curve_entries = [] :: [ plot_utils:curve_entry() ],
+
+
+    % A list of definitions of zones, between two curves in a 2D plot:
+    zone_entries = [] :: [ plot_utils:zone_entry() ],
+
+
+    % A precomputed format string (if any) used to write new samples.
+    %
+    % How a data row shall be formatted when writing a data file, should a
+    % specific format be wanted:
+    %
+    row_format_string :: option( text_utils:format_bin_string() ) } ).
 
 
 
@@ -231,23 +229,23 @@
 % Fully defines a label on a plot:
 -record( plot_label, {
 
-	% Actual text of the label:
-	text :: plot_utils:label_text(),
+    % Actual text of the label:
+    text :: plot_utils:label_text(),
 
-	% 2D coordinates of the label on the plot:
-	location :: plot_utils:label_location(),
+    % 2D coordinates of the label on the plot:
+    location :: plot_utils:label_location(),
 
-	% Specific color (if any) for the text:
-	color = 'black' :: option( plot_utils:label_color() ),
+    % Specific color (if any) for the text:
+    color = 'black' :: option( plot_utils:label_color() ),
 
-	% Justification (if any) of the text based onto the location for the label:
-	justification :: option( plot_utils:label_justification() ),
+    % Justification (if any) of the text based onto the location for the label:
+    justification :: option( plot_utils:label_justification() ),
 
-	% The label may be rendered with an angle from the abscissa axis:
-	%
-	% (by default no rotation applied)
-	%
-	orientation = 'upright' :: option( plot_utils:label_orientation() ),
+    % The label may be rendered with an angle from the abscissa axis:
+    %
+    % (by default no rotation applied)
+    %
+    orientation = 'upright' :: option( plot_utils:label_orientation() ),
 
-	% Tells whether a point shall be rendered at the label location:
-	point :: option( plot_utils:point_style_spec() ) } ).
+    % Tells whether any point shall be rendered at the label location:
+    point_type :: option( plot_utils:point_style() ) } ).

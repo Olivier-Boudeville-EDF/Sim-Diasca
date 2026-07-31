@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -40,31 +40,34 @@ determine whether a given function is exported).
 
 
 -export([ get_code_for/1, get_md5_for_loaded_module/1,
-		  get_md5_for_stored_module/1, is_loaded_module_same_on_filesystem/1,
-		  deploy_modules/2, deploy_modules/3,
-		  resolve_code_path/1,
-		  declare_beam_directory/1, declare_beam_directory/2,
-		  declare_beam_directories/1, declare_beam_directories/2,
-		  remove_beam_directory/1, remove_beam_directory_if_set/1,
-		  get_beam_dirs_for/1, get_beam_dirs_for_myriad/0,
-		  declare_beam_dirs_for/1, declare_beam_dirs_for_myriad/0,
-		  get_code_path/0, get_code_path_as_string/0,
-		  code_path_to_string/0, code_path_to_string/1,
-		  list_beams_in_path/0, get_beam_filename/1, is_beam_in_path/1,
-		  get_source_filename/1,
-		  find_module_source/1,
-		  ensure_compiled/1, ensure_compiled/2, ensure_compiled/3,
-		  recompile/1, recompile/2, recompile/3, recompile/4,
-		  get_erlang_root_path/0,
-		  get_stacktrace/0, get_stacktrace/1,
-		  interpret_stacktrace/0,
-		  interpret_stacktrace/1,
-		  interpret_stacktrace/2,
-		  interpret_shortened_stacktrace/1,
-		  display_stacktrace/0,
-		  interpret_error/2, interpret_undef_exception/3,
-		  stack_info_to_string/1,
-		  study_function_availability/3 ]).
+          get_md5_for_stored_module/1, is_loaded_module_same_on_filesystem/1,
+          deploy_modules/2, deploy_modules/3,
+          resolve_code_path/1,
+          declare_beam_directory/1, declare_beam_directory/2,
+          declare_beam_directories/1, declare_beam_directories/2,
+          remove_beam_directory/1, remove_beam_directory_if_set/1,
+          get_beam_dirs_for/1, get_beam_dirs_for_myriad/0,
+          declare_beam_dirs_for/1, declare_beam_dirs_for_myriad/0,
+          get_code_path/0, get_code_path_as_string/0,
+          code_path_to_string/0, code_path_to_string/1,
+          get_beams_in_path/0, list_beams_in_path/0, interpret_beams_in_path/0,
+          get_beam_filename/1, is_beam_in_path/1,
+          get_source_filename/1,
+          find_module_source/1,
+          ensure_compiled/1, ensure_compiled/2, ensure_compiled/3,
+          recompile/1, recompile/2, recompile/3, recompile/4,
+          get_erlang_root_path/0,
+          get_stacktrace/0, get_stacktrace/1,
+          get_error_report_output_ellipsings/0,
+          interpret_stacktrace/0, interpret_stacktrace_for_error_output/0,
+          interpret_stacktrace/1,
+          interpret_stacktrace/2, interpret_stacktrace_for_error_output/2,
+          interpret_truncated_stacktrace/1,
+          interpret_arguments/2, arguments_to_string/1,
+          display_stacktrace/0,
+          interpret_error/2, interpret_undef_exception/3,
+          stack_info_to_string/1,
+          study_function_availability/3 ]).
 
 
 
@@ -93,13 +96,13 @@ The last element of a stack item.
 For example `[{file,file_path()}, {line, meta_utils:line()}]`.
 """.
 -type stack_info() :: map_hashtable:map_hashtable( atom(), term() )
-					| list_table:list_table( atom(), term() ).
+                    | list_table:list_table( atom(), term() ).
 
 
 
 -doc "An element of a stack trace.".
 -type stack_item() ::
-	{ module_name(), function_name(), arity(), stack_info() }.
+    { module_name(), function_name(), arity(), stack_info() }.
 
 
 
@@ -133,9 +136,20 @@ module.
 -type define() :: define_name() | { define_name(), define_value() }.
 
 
+-doc """
+A pair of stacktrace descriptions for error reporting, regarding the standard
+output and the file output (if any).
+
+See `basic_utils:report_error_on_file/1` to write `MaybeFileOutputStackStr` if
+it is not `undefined`.
+""".
+-type stacktrace_error_output() :: { StdOutputStackStr :: ustring(),
+        MaybeFileOutputStackStr :: option( ustring() ) }.
+
+
 -export_type([ code_path/0, resolvable_code_path/0, code_path_position/0,
-			   stack_info/0, stack_item/0, stack_trace/0, error_map/0,
-			   define_name/0, define_value/0, define/0 ]).
+               stack_info/0, stack_item/0, stack_trace/0, error_map/0,
+               define_name/0, define_value/0, define/0 ]).
 
 
 
@@ -146,6 +160,12 @@ module.
 -define( beam_extension, ".beam" ).
 
 
+% These ellipsing thresholds apply per stack item (not per stacktrace):
+
+-define( standard_error_output_ellipse_len, 5000 ).
+-define( file_error_output_ellipse_len, 50000 ).
+
+
 % For the file_info record:
 -include_lib("kernel/include/file.hrl").
 
@@ -154,12 +174,14 @@ module.
 
 -type module_name() :: basic_utils:module_name().
 -type function_name() :: basic_utils:function_name().
+-type argument() :: basic_utils:argument().
 -type count() :: basic_utils:count().
 -type base_status() :: basic_utils:base_status().
 -type error_reason() :: basic_utils:error_reason().
 -type error_term() :: basic_utils:error_term().
 
 -type ustring() :: text_utils:ustring().
+-type length() :: text_utils:length().
 
 -type directory_path() :: file_utils:directory_path().
 -type any_directory_path() :: file_utils:any_directory_path().
@@ -190,30 +212,30 @@ an atom, or throws an exception.
 -spec get_code_for( module_name() ) -> { binary(), file_path() }.
 get_code_for( ModuleName ) ->
 
-	%trace_utils:debug_fmt( "Getting code for module '~ts', "
-	%   "from current working directory '~ts'.",
-	%   [ ModuleName, file_utils:get_current_directory() ] ),
+    %trace_utils:debug_fmt( "Getting code for module '~ts', "
+    %   "from current working directory '~ts'.",
+    %   [ ModuleName, file_utils:get_current_directory() ] ),
 
-	case code:get_object_code( ModuleName ) of
+    case code:get_object_code( ModuleName ) of
 
-		{ ModuleName, ModuleBinary, ModuleFilename } ->
-			{ ModuleBinary, ModuleFilename };
+        { ModuleName, ModuleBinary, ModuleFilename } ->
+            { ModuleBinary, ModuleFilename };
 
-		error ->
+        error ->
 
-			FoundBeams = list_beams_in_path(),
+            FoundBeams = list_beams_in_path(),
 
-			ModString= text_utils:atoms_to_string( FoundBeams ),
+            ModString= text_utils:atoms_to_string( FoundBeams ),
 
-			trace_utils:error_fmt( "Unable to find object code for '~ts' "
-				"on '~ts', knowing that the current directory is ~ts and "
-				"the ~ts~n The corresponding found BEAM files are: ~ts",
-				[ ModuleName, node(), file_utils:get_current_directory(),
-				  get_code_path_as_string(), ModString ] ),
+            trace_utils:error_fmt( "Unable to find object code for '~ts' "
+                "on '~ts', knowing that the current directory is ~ts and "
+                "the ~ts~n The corresponding found BEAM files are: ~ts",
+                [ ModuleName, node(), file_utils:get_current_directory(),
+                  get_code_path_as_string(), ModString ] ),
 
-			throw( { module_code_lookup_failed, ModuleName } )
+            throw( { module_code_lookup_failed, ModuleName } )
 
-	end.
+    end.
 
 
 
@@ -224,7 +246,7 @@ Otherwise returns a undefined function exception (`ModuleName:module_info/1`).
 """.
 -spec get_md5_for_loaded_module( module_name() ) -> md5_sum().
 get_md5_for_loaded_module( ModuleName ) ->
-	ModuleName:module_info( md5 ).
+    ModuleName:module_info( md5 ).
 
 
 
@@ -234,10 +256,10 @@ path) module.
 """.
 -spec get_md5_for_stored_module( module_name() ) -> md5_sum().
 get_md5_for_stored_module( ModuleName ) ->
-	{ BinCode, _ModuleFilename } = get_code_for( ModuleName ),
-	{ ok, { ModuleName, MD5SumBin } } = beam_lib:md5( BinCode ),
-	% Now using binaries: binary_to_integer( MD5SumBin, _Base=16 ).
-	MD5SumBin.
+    { BinCode, _ModuleFilename } = get_code_for( ModuleName ),
+    { ok, { ModuleName, MD5SumBin } } = beam_lib:md5( BinCode ),
+    % Now using binaries: binary_to_integer( MD5SumBin, _Base=16 ).
+    MD5SumBin.
 
 
 
@@ -247,10 +269,10 @@ found through the code path.
 """.
 -spec is_loaded_module_same_on_filesystem( module_name() ) -> boolean().
 is_loaded_module_same_on_filesystem( ModuleName ) ->
-	LoadedMD5 = get_md5_for_loaded_module( ModuleName ),
-	StoredMD5 = get_md5_for_stored_module( ModuleName ),
-	%io:format( "Loaded MD5: ~p~nStored MD5: ~p~n", [ LoadedMD5, StoredMD5 ] ),
-	LoadedMD5 == StoredMD5.
+    LoadedMD5 = get_md5_for_loaded_module( ModuleName ),
+    StoredMD5 = get_md5_for_stored_module( ModuleName ),
+    %io:format( "Loaded MD5: ~p~nStored MD5: ~p~n", [ LoadedMD5, StoredMD5 ] ),
+    LoadedMD5 == StoredMD5.
 
 
 
@@ -260,7 +282,7 @@ code path (of course preserving path order).
 """.
 -spec resolve_code_path( resolvable_code_path() ) -> code_path().
 resolve_code_path( AnyCodePaths ) ->
-	[ file_utils:resolve_any_path( P ) || P <- AnyCodePaths ].
+    [ file_utils:resolve_any_path( P ) || P <- AnyCodePaths ].
 
 
 
@@ -281,7 +303,7 @@ and at least one of the remote target hosts (e.g. ERTS 5.5.2 vs 5.8.2).
 """.
 -spec deploy_modules( [ module() ], [ atom_node_name() ] ) -> void().
 deploy_modules( Modules, Nodes ) ->
-	deploy_modules( Modules, Nodes, _Timeout=?rpc_timeout ).
+    deploy_modules( Modules, Nodes, _Timeout=?rpc_timeout ).
 
 
 
@@ -298,101 +320,101 @@ be caused by a version mistmatch between the Erlang environments in the source
 and at least one of the remote target hosts (e.g. ERTS 5.5.2 vs 5.8.2).
 """.
 -spec deploy_modules( [ module() ], [ atom_node_name() ], time_out() ) ->
-							void().
+                            void().
 deploy_modules( Modules, Nodes, Timeout ) ->
 
-	% At least until the next version to come after R14B02, there was a possible
-	% race condition here, as, on an a just-launched (local) node, the rpc
-	% server could start to serve requests (e.g. load_binary ones for
-	% file_utils) whereas the code server was not registered yet (as
-	% code_server), resulting in following type of error:
-	%
-	% {badrpc,{'EXIT',{badarg,[{code_server,call,2},
-	% {rpc,'-handle_call_call/6-fun-0-',5}]}}}
-	%
-	% So here we should poll until the code_server can be found registered on
-	% each of the remote nodes:
-	%
-	naming_utils:wait_for_remote_local_registrations_of( code_server, Nodes ),
+    % At least until the next version to come after R14B02, there was a possible
+    % race condition here, as, on an a just-launched (local) node, the rpc
+    % server could start to serve requests (e.g. load_binary ones for
+    % file_utils) whereas the code server was not registered yet (as
+    % code_server), resulting in following type of error:
+    %
+    % {badrpc,{'EXIT',{badarg,[{code_server,call,2},
+    % {rpc,'-handle_call_call/6-fun-0-',5}]}}}
+    %
+    % So here we should poll until the code_server can be found registered on
+    % each of the remote nodes:
+    %
+    naming_utils:wait_for_remote_local_registrations_of( code_server, Nodes ),
 
-	%trace_utils:debug_fmt( "Getting code for modules ~p, on ~ts, "
-	%   "whereas code path (evaluated from ~ts) is:~n  ~p",
-	%   [ Modules, node(), file_utils:get_current_directory(),
-	%     code:get_path() ] ),
+    %trace_utils:debug_fmt( "Getting code for modules ~p, on ~ts, "
+    %   "whereas code path (evaluated from ~ts) is:~n  ~p",
+    %   [ Modules, node(), file_utils:get_current_directory(),
+    %     code:get_path() ] ),
 
-	% Then for each module in turn, contact each and every node, in parallel:
-	[ deploy_module( M, get_code_for( M ), Nodes, Timeout ) || M <- Modules ].
+    % Then for each module in turn, contact each and every node, in parallel:
+    [ deploy_module( M, get_code_for( M ), Nodes, Timeout ) || M <- Modules ].
 
 
 
 % (helper function)
 -spec deploy_module( module(), { binary(), file_path() }, [ atom_node_name() ],
-					 time_out() ) -> void().
+                     time_out() ) -> void().
 deploy_module( ModuleName, { ModuleBinary, ModuleFilename }, Nodes, Timeout ) ->
 
-	%trace_utils:debug_fmt( "Deploying module '~ts' (filename '~ts') "
-	%   "'on nodes ~p with time-out ~p.",
-	%   [ ModuleName, ModuleFilename, Nodes, Timeout ] ),
+    %trace_utils:debug_fmt( "Deploying module '~ts' (filename '~ts') "
+    %   "'on nodes ~p with time-out ~p.",
+    %   [ ModuleName, ModuleFilename, Nodes, Timeout ] ),
 
-	{ ResList, BadNodes } = rpc:multicall( Nodes, code, load_binary,
-		[ ModuleName, ModuleFilename, ModuleBinary ], Timeout ),
+    { ResList, BadNodes } = rpc:multicall( Nodes, code, load_binary,
+        [ ModuleName, ModuleFilename, ModuleBinary ], Timeout ),
 
-	%trace_utils:debug_fmt( "ResList = ~p, BadNodes = ~p~n",
-	%                       [ ResList, BadNodes ] ),
+    %trace_utils:debug_fmt( "ResList = ~p, BadNodes = ~p~n",
+    %                       [ ResList, BadNodes ] ),
 
-	ReportedErrors = [ E || E <- ResList, E =/= { module, ModuleName } ],
-	%trace_utils:debug_fmt( "Reported errors: ~p~n", [ ReportedErrors ] ),
+    ReportedErrors = [ E || E <- ResList, E =/= { module, ModuleName } ],
+    %trace_utils:debug_fmt( "Reported errors: ~p~n", [ ReportedErrors ] ),
 
-	case BadNodes of
+    case BadNodes of
 
-		[] ->
-			case ReportedErrors of
+        [] ->
+            case ReportedErrors of
 
-				[] ->
-					%trace_utils:debug_fmt( "Module '~ts' successfully "
-					%    "deployed on ~p.~n", [ ModuleName, Nodes ] ),
-					ok;
+                [] ->
+                    %trace_utils:debug_fmt( "Module '~ts' successfully "
+                    %    "deployed on ~p.~n", [ ModuleName, Nodes ] ),
+                    ok;
 
-				_ ->
-					% Preferring returning the full list, rather than
-					% ReportedErrors:
-					%
-					throw( { module_deployment_failed, ModuleName, ResList } )
+                _ ->
+                    % Preferring returning the full list, rather than
+                    % ReportedErrors:
+                    %
+                    throw( { module_deployment_failed, ModuleName, ResList } )
 
-			end;
+            end;
 
-		_ ->
-			throw( { module_deployment_failed, ModuleName,
-						{ ResList, BadNodes } } )
+        _ ->
+            throw( { module_deployment_failed, ModuleName,
+                        { ResList, BadNodes } } )
 
-	end.
+    end.
 
-	% Optionally, do some checking:
-	% Check = [ { N, rpc:call( N, code, is_loaded, [ ModuleName ] ) }
-	%   || N <- Nodes ],
+    % Optionally, do some checking:
+    % Check = [ { N, rpc:call( N, code, is_loaded, [ ModuleName ] ) }
+    %   || N <- Nodes ],
 
-	% % Performs two tasks, error selection and badrpc removal:
-	% RPCErrors = [ {N,Reason} || { N, {badrpc,Reason} } <- Check ],
-	% LoadFailingNodes = [ N || { N, false } <- Check ],
-	% case RPCErrors of
+    % % Performs two tasks, error selection and badrpc removal:
+    % RPCErrors = [ {N,Reason} || { N, {badrpc,Reason} } <- Check ],
+    % LoadFailingNodes = [ N || { N, false } <- Check ],
+    % case RPCErrors of
 
-	%	[] ->
+    %   [] ->
 
-	%		case LoadFailingNodes of
+    %       case LoadFailingNodes of
 
-	%			[] ->
-	%				ok;
+    %           [] ->
+    %               ok;
 
-	%			_ ->
-	%				throw( { deploy_module_checking_failed, LoadFailingNodes } )
+    %           _ ->
+    %               throw( { deploy_module_checking_failed, LoadFailingNodes } )
 
-	%		end;
+    %       end;
 
-	%	_ ->
-	%		throw( { deploy_module_checking_error, RPCErrors, LoadFailingNodes }
-	% )
+    %   _ ->
+    %       throw( { deploy_module_checking_error, RPCErrors, LoadFailingNodes }
+    % )
 
-	% end.
+    % end.
 
 
 
@@ -408,7 +430,7 @@ Throws an exception if the directory does not exist.
 """.
 -spec declare_beam_directory( any_directory_path() ) -> void().
 declare_beam_directory( Dir ) ->
-	declare_beam_directory( Dir, first_position ).
+    declare_beam_directory( Dir, first_position ).
 
 
 
@@ -428,34 +450,34 @@ first
 Throws an exception if the directory does not exist.
 """.
 -spec declare_beam_directory( any_directory_path(), code_path_position() ) ->
-									void().
+                                    void().
 declare_beam_directory( Dir, first_position ) ->
 
-	cond_utils:if_defined( myriad_debug_code_path,
-		trace_utils:debug_fmt( "Declaring in first position BEAM directory "
-			"'~ts' in VM code path.", [ Dir ] ) ),
+    cond_utils:if_defined( myriad_debug_code_path,
+        trace_utils:debug_fmt( "Declaring in first position BEAM directory "
+            "'~ts' in VM code path.", [ Dir ] ) ),
 
-	% Plain string needed:
-	DirStr = text_utils:ensure_string( Dir ),
+    % Plain string needed:
+    DirStr = text_utils:ensure_string( Dir ),
 
-	% No need to check directory for existence, code:add_patha/1 will do it:
-	code:add_patha( DirStr ) =:= true orelse
-		%{ error, bad_directory } ->
-		throw( { non_existing_beam_directory, DirStr } );
+    % No need to check directory for existence, code:add_patha/1 will do it:
+    code:add_patha( DirStr ) =:= true orelse
+        %{ error, bad_directory } ->
+        throw( { non_existing_beam_directory, DirStr } );
 
 declare_beam_directory( Dir, last_position ) ->
 
-	cond_utils:if_defined( myriad_debug_code_path,
-		trace_utils:debug_fmt( "Declaring in last position BEAM directory "
-			"'~ts' in VM code path.", [ Dir ] ) ),
+    cond_utils:if_defined( myriad_debug_code_path,
+        trace_utils:debug_fmt( "Declaring in last position BEAM directory "
+            "'~ts' in VM code path.", [ Dir ] ) ),
 
-	% Plain string needed:
-	DirStr = text_utils:ensure_string( Dir ),
+    % Plain string needed:
+    DirStr = text_utils:ensure_string( Dir ),
 
-	% No need to check directory for existence, code:add_pathz/1 will do it:
-	code:add_pathz( DirStr ) =:= true orelse
-		%{ error, bad_directory } ->of
-		throw( { non_existing_beam_directory, DirStr } ).
+    % No need to check directory for existence, code:add_pathz/1 will do it:
+    code:add_pathz( DirStr ) =:= true orelse
+        %{ error, bad_directory } ->of
+        throw( { non_existing_beam_directory, DirStr } ).
 
 
 
@@ -467,7 +489,7 @@ Throws an exception if at least one of the directories does not exist.
 """.
 -spec declare_beam_directories( code_path() ) -> void().
 declare_beam_directories( Dirs ) ->
-	declare_beam_directories( Dirs, _Pos=first_position ).
+    declare_beam_directories( Dirs, _Pos=first_position ).
 
 
 
@@ -481,47 +503,47 @@ Throws an exception if at least one of the directories does not exist.
 -spec declare_beam_directories( code_path(), code_path_position() ) -> void().
 declare_beam_directories( Dirs, _Pos=first_position ) ->
 
-	cond_utils:if_defined( myriad_debug_code_path,
-		trace_utils:debug_fmt( "Declaring in first position BEAM directories "
-			"~ts in VM code path.",
-			[ text_utils:strings_to_listed_string( Dirs ) ] ) ),
+    cond_utils:if_defined( myriad_debug_code_path,
+        trace_utils:debug_fmt( "Declaring in first position BEAM directories "
+            "~ts in VM code path.",
+            [ text_utils:strings_to_listed_string( Dirs ) ] ) ),
 
-	% As code:add_pathsa/1 does not report non-existing directories:
-	check_beam_dirs( Dirs ),
+    % As code:add_pathsa/1 does not report non-existing directories:
+    check_beam_dirs( Dirs ),
 
-	code:add_pathsa( Dirs );
+    code:add_pathsa( Dirs );
 
 
 declare_beam_directories( Dirs, last_position ) ->
 
-	cond_utils:if_defined( myriad_debug_code_path,
-		trace_utils:debug_fmt( "Declaring in last position BEAM directories "
-			"~ts in VM code path.",
-			[ text_utils:strings_to_listed_string( Dirs ) ] ) ),
+    cond_utils:if_defined( myriad_debug_code_path,
+        trace_utils:debug_fmt( "Declaring in last position BEAM directories "
+            "~ts in VM code path.",
+            [ text_utils:strings_to_listed_string( Dirs ) ] ) ),
 
-	% As code:add_pathsz/1 does not report non-existing directories:
-	check_beam_dirs( Dirs ),
+    % As code:add_pathsz/1 does not report non-existing directories:
+    check_beam_dirs( Dirs ),
 
-	code:add_pathsz( Dirs ).
+    code:add_pathsz( Dirs ).
 
 
 
 -doc "Checks that the specified directories exists.".
 check_beam_dirs( _Dirs=[] ) ->
-	ok;
+    ok;
 
 check_beam_dirs( _Dirs=[ D | T ] ) ->
 
-	% We allow symlinks (e.g. for ~/Software/X/X-current-install):
-	case file_utils:is_existing_directory_or_link( D ) of
+    % We allow symlinks (e.g. for ~/Software/X/X-current-install):
+    case file_utils:is_existing_directory_or_link( D ) of
 
-		true ->
-			check_beam_dirs( T );
+        true ->
+            check_beam_dirs( T );
 
-		false ->
-			throw( { non_existing_beam_directory, D } )
+        false ->
+            throw( { non_existing_beam_directory, D } )
 
-	end.
+    end.
 
 
 
@@ -533,25 +555,25 @@ Throws an exception if the operation failed, including if it was not already
 set.
 """.
 -spec remove_beam_directory(
-		directory_path() | otp_utils:application_name() ) -> void().
+        directory_path() | otp_utils:application_name() ) -> void().
 remove_beam_directory( NameOrDir ) ->
 
-	cond_utils:if_defined( myriad_debug_code_path,
-		trace_utils:debug_fmt( "Removing directory designated by '~ts' "
-							   "from VM code path.", [ NameOrDir ] ) ),
+    cond_utils:if_defined( myriad_debug_code_path,
+        trace_utils:debug_fmt( "Removing directory designated by '~ts' "
+                               "from VM code path.", [ NameOrDir ] ) ),
 
-	case code:del_path( NameOrDir ) of
+    case code:del_path( NameOrDir ) of
 
-		true ->
-			ok;
+        true ->
+            ok;
 
-		false ->
-			throw( { directory_not_found_in_code_path, NameOrDir } );
+        false ->
+            throw( { directory_not_found_in_code_path, NameOrDir } );
 
-		{ error, bad_name }  ->
-			throw( { invalid_app_name_for_code_path_removal, NameOrDir } )
+        { error, bad_name }  ->
+            throw( { invalid_app_name_for_code_path_removal, NameOrDir } )
 
-	end.
+    end.
 
 
 
@@ -563,25 +585,25 @@ already set (otherwise does nothing).
 Throws an exception if the operation failed otherwise.
 """.
 -spec remove_beam_directory_if_set(
-			directory_path() | otp_utils:application_name() ) -> void().
+            directory_path() | otp_utils:application_name() ) -> void().
 remove_beam_directory_if_set( NameOrDir ) ->
 
-	cond_utils:if_defined( myriad_debug_code_path,
-		trace_utils:debug_fmt( "Removing directory designated by '~ts' "
-							   "from VM code path (if set).", [ NameOrDir ] ) ),
+    cond_utils:if_defined( myriad_debug_code_path,
+        trace_utils:debug_fmt( "Removing directory designated by '~ts' "
+                               "from VM code path (if set).", [ NameOrDir ] ) ),
 
-	case code:del_path( NameOrDir ) of
+    case code:del_path( NameOrDir ) of
 
-		true ->
-			ok;
+        true ->
+            ok;
 
-		false ->
-			ok;
+        false ->
+            ok;
 
-		{ error, bad_name }  ->
-			throw( { invalid_app_name_for_code_path_removal, NameOrDir } )
+        { error, bad_name }  ->
+            throw( { invalid_app_name_for_code_path_removal, NameOrDir } )
 
-	end.
+    end.
 
 
 
@@ -604,36 +626,36 @@ For example `get_beam_dirs_for("CEYLAN_MYRIAD")`.
 -spec get_beam_dirs_for( env_variable_name() ) -> code_path().
 get_beam_dirs_for( VariableName ) ->
 
-	case os:getenv( VariableName ) of
+    case os:getenv( VariableName ) of
 
-		false ->
-			throw( { env_variable_not_set, VariableName } );
+        false ->
+            throw( { env_variable_not_set, VariableName } );
 
-		BaseDir ->
-			case file:read_link_info( BaseDir ) of
+        BaseDir ->
+            case file:read_link_info( BaseDir ) of
 
-				{ ok, #file_info{ type=directory } } ->
-					ok;
+                { ok, #file_info{ type=directory } } ->
+                    ok;
 
-				{ ok, #file_info{ type=symlink } } ->
-					ok;
+                { ok, #file_info{ type=symlink } } ->
+                    ok;
 
-				{ ok , #file_info{ type=OtherType } } ->
-					throw( { invalid_filesystem_entry, OtherType, BaseDir } );
+                { ok , #file_info{ type=OtherType } } ->
+                    throw( { invalid_filesystem_entry, OtherType, BaseDir } );
 
-				{ error, E } ->
-					throw( { directory_lookup_error, E, BaseDir } )
+                { error, E } ->
+                    throw( { directory_lookup_error, E, BaseDir } )
 
-			end,
+            end,
 
-			Command = io_lib:format(
-				"cd ~ts && make list-beam-dirs 2>/dev/null", [ BaseDir ] ),
+            Command = io_lib:format(
+                "cd ~ts && make list-beam-dirs 2>/dev/null", [ BaseDir ] ),
 
-			Dirs = string:tokens( os:cmd( Command ), _Sep="\n" ),
-			%io:format( "Dirs:~n~p", [ Dirs ] )
-			Dirs
+            Dirs = string:tokens( os:cmd( Command ), _Sep="\n" ),
+            %io:format( "Dirs:~n~p", [ Dirs ] )
+            Dirs
 
-	end.
+    end.
 
 
 
@@ -655,8 +677,8 @@ itself can be made available with that module.
 """.
 -spec get_beam_dirs_for_myriad() -> code_path().
 get_beam_dirs_for_myriad() ->
-	% Expected to be set by convention in the environment:
-	get_beam_dirs_for( "CEYLAN_MYRIAD" ).
+    % Expected to be set by convention in the environment:
+    get_beam_dirs_for( "CEYLAN_MYRIAD" ).
 
 
 
@@ -670,7 +692,7 @@ are added at the end of the code path.
 """.
 -spec declare_beam_dirs_for( env_variable_name() ) -> void().
 declare_beam_dirs_for( VariableName ) ->
-	code:add_pathsz( get_beam_dirs_for( VariableName ) ).
+    code:add_pathsz( get_beam_dirs_for( VariableName ) ).
 
 
 
@@ -688,7 +710,7 @@ added at the end of the code path
 """.
 -spec declare_beam_dirs_for_myriad() -> void().
 declare_beam_dirs_for_myriad() ->
-	code:add_pathsz( get_beam_dirs_for_myriad() ).
+    code:add_pathsz( get_beam_dirs_for_myriad() ).
 
 
 
@@ -702,10 +724,10 @@ actual lookup order through these directories is most probably different.
 -spec get_code_path() -> code_path().
 get_code_path() ->
 
-	NormalisedPaths =
-		[ file_utils:normalise_path( P ) || P <- code:get_path() ],
+    NormalisedPaths =
+        [ file_utils:normalise_path( P ) || P <- code:get_path() ],
 
-	lists:sort( list_utils:uniquify( NormalisedPaths ) ).
+    lists:sort( list_utils:uniquify( NormalisedPaths ) ).
 
 
 
@@ -719,8 +741,8 @@ different.
 """.
 -spec get_code_path_as_string() -> ustring().
 get_code_path_as_string() ->
-	text_utils:format( "current code path (in alphabetical order) is: ~ts",
-		[ text_utils:strings_to_string( get_code_path() ) ] ).
+    text_utils:format( "current code path (in alphabetical order) is: ~ts",
+        [ text_utils:strings_to_string( get_code_path() ) ] ).
 
 
 
@@ -733,30 +755,49 @@ actual lookup order through these directories is most probably different.
 """.
 -spec code_path_to_string() -> ustring().
 code_path_to_string() ->
-	code_path_to_string( get_code_path() ).
+    code_path_to_string( get_code_path() ).
 
 
 
 -doc "Returns a textual description of the specified code path.".
 -spec code_path_to_string( code_path() ) -> ustring().
 code_path_to_string( _CodePath=[] ) ->
-	% Initial space intended for caller-side consistency:
-	"empty code path";
+    % Initial space intended for caller-side consistency:
+    "empty code path";
 
 code_path_to_string( CodePath ) ->
-	%trace_utils:debug_fmt( "Raw code path:~n ~p", [ CodePath ] ),
+    %trace_utils:debug_fmt( "Raw code path:~n ~p", [ CodePath ] ),
 
-	% Should an empty path possibly happen, would be unclear, so:
-	%FilteredCodePath = [ P || P <- CodePath, P =/= "" ],
-	%text_utils:strings_to_enumerated_string( FilteredCodePath ).
+    % Should an empty path possibly happen, would be unclear, so:
+    %FilteredCodePath = [ P || P <- CodePath, P =/= "" ],
+    %text_utils:strings_to_enumerated_string( FilteredCodePath ).
 
-	text_utils:strings_to_enumerated_string( CodePath ).
+    text_utils:strings_to_enumerated_string( CodePath ).
 
 
 
 -doc """
-Lists (in alphabetical order) all modules that exist in the current code path,
-based on the BEAM files found.
+Returns a list of the (unordered, possibly with duplicates) names of all modules
+that exist in the current code path, based on the BEAM files found.
+
+Note that the sorting is more convenient for inspection yet implies that, should
+a BEAM file be listed more than once (then being available in multiple paths),
+the actual version that would be selected by the VM cannot be determined. See
+`is_beam_in_path/1` for that.
+""".
+-spec get_beams_in_path() -> [ module_name() ].
+get_beams_in_path() ->
+    % Directly inspired from:
+    % http://alind.io/post/5664209650/all-erlang-modules-in-the-code-path
+
+    [ list_to_atom( filename:basename( File, ?beam_extension ) )
+      || Path <- code:get_path(),
+         File <- filelib:wildcard( "*.beam", Path ) ].
+
+
+-doc """
+Lists (in alphabetical order, possibly with duplicates) the names of all modules
+that exist in the current code path, based on the BEAM files found.
 
 Note that the sorting is more convenient for inspection yet implies that, should
 a BEAM file be listed more than once (then being available in multiple paths),
@@ -765,15 +806,38 @@ the actual version that would be selected by the VM cannot be determined. See
 """.
 -spec list_beams_in_path() -> [ module_name() ].
 list_beams_in_path() ->
+    lists:sort( get_beams_in_path() ).
 
-	% Directly inspired from:
-	% http://alind.io/post/5664209650/all-erlang-modules-in-the-code-path
 
-	Files = [ list_to_atom( filename:basename( File, ?beam_extension ) )
-				|| Path <- code:get_path(),
-				   File <- filelib:wildcard( "*.beam", Path ) ],
+-doc """
+Returns a description / interpretation of any colliding BEAM files found in the
+code path, together with an (unordered, possibly with duplicates) list of the
+name of the corresponding modules.
+""".
+-spec interpret_beams_in_path() -> { option( ustring() ), [ module_name() ] }.
+interpret_beams_in_path() ->
+    AllBeams = get_beams_in_path(),
+    MaybeStr = case list_utils:get_duplicates( AllBeams ) of
 
-	lists:sort( Files ).
+        [] ->
+            undefined;
+
+        _DupPair=[ { ModName, Count } ]  ->
+            text_utils:format(
+                "the ~ts module is present ~ts in the code path",
+                [ ModName, text_utils:repetition_to_string( Count ) ] );
+
+        DupPairs ->
+            text_utils:format(
+                "~B modules are present multiple times in the code path: ~ts",
+                [ length( DupPairs ), text_utils:strings_to_listed_string(
+                    [ text_utils:format( "~ts for ~ts",
+                        [ text_utils:repetition_to_string( Count ), ModName ] )
+                            || { ModName, Count } <- DupPairs ] ) ] )
+
+    end,
+
+    { MaybeStr, AllBeams }.
 
 
 
@@ -782,8 +846,8 @@ Returns the filename of the BEAM file corresponding to the specified module.
 """.
 -spec get_beam_filename( module_name() ) -> file_name().
 get_beam_filename( ModuleName ) when is_atom( ModuleName ) ->
-	ModuleNameString = text_utils:atom_to_string( ModuleName ),
-	ModuleNameString ++ ?beam_extension.
+    ModuleNameString = text_utils:atom_to_string( ModuleName ),
+    ModuleNameString ++ ?beam_extension.
 
 
 
@@ -805,37 +869,37 @@ availability of a given MFA.
 -spec is_beam_in_path( module_name() ) -> 'not_found' | [ file_path() ].
 is_beam_in_path( ModuleName ) when is_atom( ModuleName ) ->
 
-	ModuleFilename = text_utils:atom_to_string( ModuleName ) ++ ?beam_extension,
+    ModuleFilename = text_utils:atom_to_string( ModuleName ) ++ ?beam_extension,
 
-	%trace_utils:info_fmt( "Paths for module filename '~ts':~n  ~p",
-	%                      [ ModuleFilename, code:get_path() ] ),
+    %trace_utils:info_fmt( "Paths for module filename '~ts':~n  ~p",
+    %                      [ ModuleFilename, code:get_path() ] ),
 
-	% We have to ensure that all paths are absolute and normalised, so that we
-	% can eliminate any duplicates among them (otherwise some module files could
-	% be erroneously reported as being themselves duplicated):
+    % We have to ensure that all paths are absolute and normalised, so that we
+    % can eliminate any duplicates among them (otherwise some module files could
+    % be erroneously reported as being themselves duplicated):
 
-	CurDirPath = file_utils:get_current_directory(),
+    CurDirPath = file_utils:get_current_directory(),
 
-	% Includes normalisation:
-	VetPaths = list_utils:uniquify( [ file_utils:ensure_path_is_absolute(
-		file_utils:join( P, ModuleFilename ), _BasePath=CurDirPath )
-										|| P <- code:get_path() ] ),
+    % Includes normalisation:
+    VetPaths = list_utils:uniquify( [ file_utils:ensure_path_is_absolute(
+        file_utils:join( P, ModuleFilename ), _BasePath=CurDirPath )
+                                        || P <- code:get_path() ] ),
 
-	ExistingFilePaths =
-		[ P || P <- VetPaths, file_utils:is_existing_file_or_link( P ) ],
+    ExistingFilePaths =
+        [ P || P <- VetPaths, file_utils:is_existing_file_or_link( P ) ],
 
-	case ExistingFilePaths of
+    case ExistingFilePaths of
 
-		[] ->
-			not_found;
+        [] ->
+            not_found;
 
-		Paths ->
-			Paths
+        Paths ->
+            Paths
 
-	end;
+    end;
 
 is_beam_in_path( Other ) ->
-	throw( { non_atom_module_name, Other } ).
+    throw( { non_atom_module_name, Other } ).
 
 
 
@@ -845,8 +909,8 @@ module.
 """.
 -spec get_source_filename( module_name() ) -> file_name().
 get_source_filename( ModuleName ) when is_atom( ModuleName ) ->
-	ModuleNameString = text_utils:atom_to_string( ModuleName ),
-	ModuleNameString ++ ?erl_extension.
+    ModuleNameString = text_utils:atom_to_string( ModuleName ),
+    ModuleNameString ++ ?erl_extension.
 
 
 
@@ -858,36 +922,36 @@ Useful to be able to compile it.
 -spec find_module_source( module_name() ) -> fallible( file_path() ).
 find_module_source( ModuleName ) ->
 
-	SrcFilename = get_source_filename( ModuleName ),
+    SrcFilename = get_source_filename( ModuleName ),
 
-	MaybeSrcPaths = [
-		begin
-			SrcPath = file_utils:join( P, SrcFilename ),
-			case file_utils:is_existing_file_or_link( SrcPath ) of
+    MaybeSrcPaths = [
+        begin
+            SrcPath = file_utils:join( P, SrcFilename ),
+            case file_utils:is_existing_file_or_link( SrcPath ) of
 
-				true ->
-					SrcPath;
+                true ->
+                    SrcPath;
 
-				false ->
-					undefined
+                false ->
+                    undefined
 
-			end
+            end
 
-		end || P <- code:get_path() ],
+        end || P <- code:get_path() ],
 
 
-	case [ P || P <- MaybeSrcPaths, P =/= undefined ] of
+    case [ P || P <- MaybeSrcPaths, P =/= undefined ] of
 
-		[ SingleSrcPath ] ->
-			{ ok, SingleSrcPath };
+        [ SingleSrcPath ] ->
+            { ok, SingleSrcPath };
 
-		[] ->
-			{ error, { source_file_not_found, SrcFilename } };
+        [] ->
+            { error, { source_file_not_found, SrcFilename } };
 
-		MultipleSrcPaths ->
-			{ error, { multiple_source_files_found, MultipleSrcPaths } }
+        MultipleSrcPaths ->
+            { error, { multiple_source_files_found, MultipleSrcPaths } }
 
-	end.
+    end.
 
 
 
@@ -901,12 +965,12 @@ considers it should.
 -spec ensure_compiled( module_name() ) -> base_status().
 ensure_compiled( ModuleName ) ->
 
-	% Works whether or not a corresponding BEAM file exists:
-	{ ok, ModSrcPath } = find_module_source( ModuleName ),
+    % Works whether or not a corresponding BEAM file exists:
+    { ok, ModSrcPath } = find_module_source( ModuleName ),
 
-	BaseDir = file_utils:get_base_path( ModSrcPath ),
+    BaseDir = file_utils:get_base_path( ModSrcPath ),
 
-	ensure_compiled( ModuleName, BaseDir ).
+    ensure_compiled( ModuleName, BaseDir ).
 
 
 
@@ -919,7 +983,7 @@ iff the build system considers it should.
 """.
 -spec ensure_compiled( module_name(), directory_path() ) -> base_status().
 ensure_compiled( ModuleName, BaseDir ) ->
-	ensure_compiled( ModuleName, BaseDir, _Defines=[] ).
+    ensure_compiled( ModuleName, BaseDir, _Defines=[] ).
 
 
 
@@ -931,47 +995,47 @@ Will compile the specified module in that directory, with the specified defines,
 iff the build system considers it should.
 """.
 -spec ensure_compiled( module_name(), directory_path(), [ define() ] ) ->
-										base_status().
+                                        base_status().
 ensure_compiled( ModuleName, BaseDir, Defines ) ->
 
-	BEAMFilename = get_beam_filename( ModuleName ),
+    BEAMFilename = get_beam_filename( ModuleName ),
 
-	MakeExecPath = executable_utils:get_make_path(),
+    MakeExecPath = executable_utils:get_make_path(),
 
-	% We could use the -C/--directory but, in order to better emulate the usual
-	% context, we change directory by ourselves for this execution (only):
-	%
-	% (-s: silent)
-	%
-	Args = [ "-s", BEAMFilename ] ++ make_options_for( Defines ),
+    % We could use the -C/--directory but, in order to better emulate the usual
+    % context, we change directory by ourselves for this execution (only):
+    %
+    % (-s: silent)
+    %
+    Args = [ "-s", BEAMFilename ] ++ make_options_for( Defines ),
 
-	case system_utils:run_executable( MakeExecPath, Args,
-			system_utils:get_standard_environment(),
-			_WorkingDir=BaseDir ) of
+    case system_utils:run_executable( MakeExecPath, Args,
+            system_utils:get_standard_environment(),
+            _WorkingDir=BaseDir ) of
 
-		{ _ReturnCode=0, _Output="" } ->
-			%trace_utils:debug_fmt( "Module '~ts' successfully "
-			%   "recompiled, with no specific output.",
-			%    ModuleName ] ),
-			ok;
+        { _ReturnCode=0, _Output="" } ->
+            %trace_utils:debug_fmt( "Module '~ts' successfully "
+            %   "recompiled, with no specific output.",
+            %    ModuleName ] ),
+            ok;
 
-		{ _ReturnCode=0, _Output } ->
-			% Generally just the base build message like:
-			% "   Compiling standard module foobar.beam".
-			%
-			%trace_utils:warning_fmt( "Module '~ts' successfully "
-			%   "recompiled, with output: '~ts'.",
-			%   [ ModuleName, Output ] ),
-			ok;
+        { _ReturnCode=0, _Output } ->
+            % Generally just the base build message like:
+            % "   Compiling standard module foobar.beam".
+            %
+            %trace_utils:warning_fmt( "Module '~ts' successfully "
+            %   "recompiled, with output: '~ts'.",
+            %   [ ModuleName, Output ] ),
+            ok;
 
-		{ ErrorCode, Output } ->
-			trace_utils:error_fmt( "Failed to recompile module '~ts': "
-				"error code ~B, output: '~ts'.",
-				[ ModuleName, ErrorCode, Output ] ),
-			{ error,
-			  { module_recompilation_failed, ModuleName, Output } }
+        { ErrorCode, Output } ->
+            trace_utils:error_fmt( "Failed to recompile module '~ts': "
+                "error code ~B, output: '~ts'.",
+                [ ModuleName, ErrorCode, Output ] ),
+            { error,
+              { module_recompilation_failed, ModuleName, Output } }
 
-	end.
+    end.
 
 
 
@@ -988,7 +1052,7 @@ most flexible and robust option.
 """.
 -spec recompile( module_name() ) -> base_status().
 recompile( ModuleName ) ->
-	recompile( ModuleName, _ForceRecompilation=true ).
+    recompile( ModuleName, _ForceRecompilation=true ).
 
 
 
@@ -1005,7 +1069,7 @@ most flexible and robust option.
 """.
 -spec recompile( module_name(), boolean() ) -> base_status().
 recompile( ModuleName, ForceRecompilation ) ->
-	recompile( ModuleName, ForceRecompilation, _Defines=[] ).
+    recompile( ModuleName, ForceRecompilation, _Defines=[] ).
 
 
 
@@ -1026,24 +1090,24 @@ most flexible and robust option.
 -spec recompile( module_name(), boolean(), [ define() ] ) -> base_status().
 recompile( ModuleName, ForceRecompilation, Defines ) ->
 
-	% compile:file/2, the 'make' module, 'erl -compile' or 'erlc' could be used
-	% instead, but then plenty of options would have to be taken into account.
+    % compile:file/2, the 'make' module, 'erl -compile' or 'erlc' could be used
+    % instead, but then plenty of options would have to be taken into account.
 
-	%trace_utils:debug_fmt( "Compiling module name '~ts'.", [ ModuleName ] ),
+    %trace_utils:debug_fmt( "Compiling module name '~ts'.", [ ModuleName ] ),
 
-	case is_beam_in_path( ModuleName ) of
+    case is_beam_in_path( ModuleName ) of
 
-		not_found ->
-			{ error, { module_not_found, ModuleName } };
+        not_found ->
+            { error, { module_not_found, ModuleName } };
 
-		[ SinglePath ] ->
-			BaseDir = file_utils:get_base_path( SinglePath ),
-			recompile( ModuleName, BaseDir, ForceRecompilation, Defines );
+        [ SinglePath ] ->
+            BaseDir = file_utils:get_base_path( SinglePath ),
+            recompile( ModuleName, BaseDir, ForceRecompilation, Defines );
 
-		MultiplePaths ->
-			{ error, { multiple_modules_found, ModuleName, MultiplePaths } }
+        MultiplePaths ->
+            { error, { multiple_modules_found, ModuleName, MultiplePaths } }
 
-	end.
+    end.
 
 
 
@@ -1062,14 +1126,14 @@ Relies on Myriad's build system, rules and parametrisation, that we deem is the
 most flexible and robust option.
 """.
 -spec recompile( module_name(), directory_path(), boolean(), [ define() ] ) ->
-									base_status().
+                                    base_status().
 recompile( ModuleName, BaseDir, ForceRecompilation, Defines ) ->
 
-	BeamPath = file_utils:join( BaseDir, get_beam_filename( ModuleName ) ),
+    BeamPath = file_utils:join( BaseDir, get_beam_filename( ModuleName ) ),
 
-	ForceRecompilation andalso file_utils:remove_file_if_existing( BeamPath ),
+    ForceRecompilation andalso file_utils:remove_file_if_existing( BeamPath ),
 
-	ensure_compiled( ModuleName, BaseDir, Defines ).
+    ensure_compiled( ModuleName, BaseDir, Defines ).
 
 
 
@@ -1088,29 +1152,29 @@ Returning for example `["ERLANG_COMPILER_EXTRA_OPTS='-Dfoo -Dbar=1'"]`.
 """.
 -spec make_options_for( [ define() ] ) -> [ ustring() ].
 make_options_for( _Defines=[] ) ->
-	% Let defaults apply, rather than discarding them with
-	% ERLANG_COMPILER_EXTRA_OPTS="":
-	%
-	[];
+    % Let defaults apply, rather than discarding them with
+    % ERLANG_COMPILER_EXTRA_OPTS="":
+    %
+    [];
 
 make_options_for( Defines ) ->
-	make_options_for( Defines, _Acc=[] ).
+    make_options_for( Defines, _Acc=[] ).
 
 
 make_options_for( _Defines=[], Acc ) ->
-	% Preferring to respect define order:
-	[ "ERLANG_COMPILER_EXTRA_OPTS='"
-		++ list_utils:flatten_once( lists:reverse( Acc ) ) ++ "'" ];
+    % Preferring to respect define order:
+    [ "ERLANG_COMPILER_EXTRA_OPTS='"
+        ++ list_utils:flatten_once( lists:reverse( Acc ) ) ++ "'" ];
 
 make_options_for( _Defines=[ { DefineNameStr, DefineValueStr } | T ], Acc ) ->
 
-	DefStr = text_utils:format( "-D~ts=~ts",
-								[ DefineNameStr, DefineValueStr ] ),
+    DefStr = text_utils:format( "-D~ts=~ts",
+                                [ DefineNameStr, DefineValueStr ] ),
 
-	make_options_for( T, [ DefStr | Acc ] );
+    make_options_for( T, [ DefStr | Acc ] );
 
 make_options_for( _Defines=[ DefineNameStr | T ], Acc ) ->
-	make_options_for( T, [ "-D" ++ DefineNameStr | Acc ] ).
+    make_options_for( T, [ "-D" ++ DefineNameStr | Acc ] ).
 
 
 
@@ -1133,7 +1197,7 @@ A replacement for the deprecated `erlang:get_stacktrace/0`.
 """.
 -spec get_stacktrace() -> stack_trace().
 get_stacktrace() ->
-	get_stacktrace( _SkipLastElemCount=0 ).
+    get_stacktrace( _SkipLastElemCount=0 ).
 
 
 
@@ -1144,141 +1208,360 @@ relevant stacktrace).
 """.
 -spec get_stacktrace( count() ) -> stack_trace().
 get_stacktrace( SkipLastElemCount ) ->
-	try
+    try
 
-		throw( generate_stacktrace )
+        throw( generate_stacktrace )
 
-	catch throw:generate_stacktrace:Stacktrace ->
+    catch throw:generate_stacktrace:Stacktrace ->
 
-		%trace_utils:debug_fmt( "Got stacktrace: ~p", [ Stacktrace ] ),
+        %trace_utils:debug_fmt( "Got stacktrace: ~p", [ Stacktrace ] ),
 
-		% To remove the initial call to code_utils:get_stacktrace/0, by design
-		% at the top of the stack:
-		%
-		list_utils:remove_first_elements( Stacktrace, SkipLastElemCount+1 )
+        % To remove the initial call to code_utils:get_stacktrace/0, by design
+        % at the top of the stack:
+        %
+        list_utils:remove_first_elements( Stacktrace, SkipLastElemCount+1 )
 
-	end.
+    end.
+
+
+
+-doc "Returns any ellipsing maximum length, for console and file output.".
+-spec get_error_report_output_ellipsings() ->
+        { StdErrorOutputEllipseLen :: option( length() ),
+          FileErrorOutputChoice ::  'false' % (none used)
+                                  | 'undefined' % (non-ellipsed)
+                                  | EllipseLen :: count() }.
+get_error_report_output_ellipsings() ->
+    case basic_utils:get_error_report_output() of
+
+        standard_full ->
+            { undefined, false };
+
+        standard_ellipsed ->
+            { ?standard_error_output_ellipse_len, false };
+
+        standard_ellipsed_file_full ->
+            { ?standard_error_output_ellipse_len, undefined };
+
+        standard_and_file_ellipsed ->
+           { ?standard_error_output_ellipse_len,
+             ?file_error_output_ellipse_len }
+
+    end.
 
 
 
 -doc """
-Returns a "smart" textual representation of the current stacktrace.
+Returns (without crashing the program) a "smart" textual representation of the
+current stacktrace.
 """.
 -spec interpret_stacktrace() -> ustring().
 interpret_stacktrace() ->
 
-	% We do not want to include interpret_stacktrace/0 in the stack:
-	Stacktrace = get_stacktrace( _SkipLastElemCount=1 ),
+    % We do not want to include interpret_stacktrace/0 in the stack:
+    Stacktrace = get_stacktrace( _SkipLastElemCount=1 ),
 
-	interpret_stacktrace( Stacktrace ).
+    interpret_stacktrace( Stacktrace ).
+
+
+-doc """
+Returns (without crashing the program), regarding standard output and file
+output, a textual representation of the current stacktrace, crafted according to
+the current global Myriad setting regarding error output (see
+`basic_utils:error_report_output/0`).
+""".
+-spec interpret_stacktrace_for_error_output() -> stacktrace_error_output().
+interpret_stacktrace_for_error_output() ->
+
+    % We do not want to include interpret_stacktrace/0 in the stack:
+    Stacktrace = get_stacktrace( _SkipLastElemCount=1 ),
+
+    interpret_stacktrace_for_error_output( Stacktrace,
+                                           _MaybeErrorTerm=undefined ).
 
 
 
 -doc """
 Returns a "smart" textual representation of the specified stacktrace.
+
+Applies the current Myriad setting in terms of general error reporting (see
+`basic_utils:error_report_output/0`).
 """.
 -spec interpret_stacktrace( stack_trace() ) -> ustring().
 interpret_stacktrace( Stacktrace ) ->
-	interpret_stacktrace( Stacktrace, _ErrorTerm=undefined ).
+    interpret_stacktrace( Stacktrace, _MaybeErrorTerm=undefined ).
 
 
 
 -doc """
 Returns a "smart", complete textual description of the specified error
-stacktrace, including any argument-level analysis of the failure, listing just
-the filename of the corresponding source files (no full path wanted).
+stacktrace (possibly with a corresponding error term specified, then to
+interpret as well), including any argument-level analysis of the failure,
+listing just the filename of the corresponding source files (no full path
+wanted).
 """.
 -spec interpret_stacktrace( stack_trace(), option( error_term() ) ) ->
-										ustring().
+                                        ustring().
 interpret_stacktrace( Stacktrace, MaybeErrorTerm ) ->
-	interpret_stacktrace( Stacktrace, MaybeErrorTerm, _FullPathsWanted=false ).
+    interpret_stacktrace( Stacktrace, MaybeErrorTerm, _FullPathsWanted=false,
+                          _MaybeAtEllipseLen=1000 ).
+
+
+
+-doc """
+Returns, regarding standard output and file output, a "smart" textual
+description of the specified error stacktrace (possibly with a corresponding
+error term specified, then to interpret as well), including any argument-level
+analysis of the failure, listing just the filename of the corresponding source
+files (no full path wanted).
+
+Applies the current Myriad setting in terms of general error reporting (see
+`basic_utils:error_report_output/0`).
+""".
+-spec interpret_stacktrace_for_error_output( stack_trace(),
+        option( error_term() ) ) -> stacktrace_error_output().
+interpret_stacktrace_for_error_output( Stacktrace, MaybeErrorTerm ) ->
+
+    % FileChoice ::
+    %   'false' (none used) | 'undefined' (non-ellipsed) | EllipseLen
+
+    { MaybeStdOutputEllipseLen, FileChoice } =
+        get_error_report_output_ellipsings(),
+
+    %trace_utils:debug_fmt( "For stack: StdOutput = ~p, FileChoice = ~p.",
+    %                       [ MaybeStdOutputEllipseLen, FileChoice ] ),
+
+    StdOutputStr = interpret_stacktrace( Stacktrace, MaybeErrorTerm,
+        _FullPathsWanted=false, MaybeStdOutputEllipseLen ),
+
+    MaybeFileOutputStr = case FileChoice of
+
+        false ->
+            undefined;
+
+        undefined ->
+            % Possibly already obtained:
+            case MaybeStdOutputEllipseLen of
+
+                undefined ->
+                    StdOutputStr;
+
+                _ ->
+                    interpret_stacktrace( Stacktrace, MaybeErrorTerm,
+                        _FullPathsW=false,
+                        _MaybeStdOutputEllipseLen=undefined )
+
+            end;
+
+        FileEllipseLen ->
+            interpret_stacktrace( Stacktrace, MaybeErrorTerm,
+                                  _FullP=false, FileEllipseLen )
+
+    end,
+
+    { StdOutputStr, MaybeFileOutputStr }.
 
 
 
 -doc """
 Returns a "smart", complete textual description of the specified error
-stacktrace, including any argument-level analysis of the failure, listing either
-the full path of the corresponding source files, or just their filename.
+stacktrace (possibly with a corresponding error term specified, then to
+interpret as well), including any argument-level analysis of the failure,
+listing either the full path of the corresponding source files, or just their
+filename, with stack items that are either full or ellipsed after the specified
+length.
 """.
 -spec interpret_stacktrace( stack_trace(), option( error_term() ),
-							boolean() ) -> ustring().
+                            boolean(), option( length() ) ) -> ustring().
 % At least one stack item expected:
 interpret_stacktrace( Stacktrace=[ FirstStackItem | OtherStackItems ],
-					  MaybeErrorTerm, FullPathsWanted ) ->
+                      MaybeErrorTerm, FullPathsWanted, MaybeEllipseAtLen ) ->
 
-	% Use any error diagnosis regarding top-level stack item:
-	ErrorStr = interpret_stack_item( FirstStackItem, FullPathsWanted )
-		++ case MaybeErrorTerm of
+    % Use any error diagnosis regarding top-level stack item:
+    ErrorStr = interpret_stack_item( FirstStackItem, FullPathsWanted,
+                                     MaybeEllipseAtLen )
+        ++ case MaybeErrorTerm of
 
-			undefined ->
-				"";
+            undefined ->
+                "";
 
-			ErrorTerm ->
-				interpret_error( ErrorTerm, Stacktrace )
+            ErrorTerm ->
+                interpret_error( ErrorTerm, Stacktrace )
 
-		   end,
+           end,
 
-	OtherItemStrs = [ interpret_stack_item( I, FullPathsWanted )
-							|| I <- OtherStackItems ],
+    OtherItemStrs =
+        [ interpret_stack_item( I, FullPathsWanted, MaybeEllipseAtLen )
+                                        || I <- OtherStackItems ],
 
-	StringItems = [ ErrorStr | OtherItemStrs ],
+    StringItems = [ ErrorStr | OtherItemStrs ],
 
-	text_utils:strings_to_enumerated_string( StringItems ).
+    text_utils:strings_to_enumerated_string( StringItems ).
 
 
 
 -doc """
 Returns a "smart" textual representation of the current stacktrace, once
-specified extra depth has been skipped (not counting this call).
+specified extra stack depth has been skipped (not counting this call).
 
-Removing the specified number of last calls allows to skip unwanted
-error-reporting functions and to return only a relevant stacktrace.
+Removing the specified number of last calls allows skipping unwanted
+error-reporting functions, and to return a more relevant stacktrace.
 """.
--spec interpret_shortened_stacktrace( basic_utils:count() ) -> ustring().
-interpret_shortened_stacktrace( SkipLastElemCount ) ->
-	interpret_stacktrace( get_stacktrace( SkipLastElemCount ) ).
+-spec interpret_truncated_stacktrace( count() ) -> ustring().
+interpret_truncated_stacktrace( SkipLastElemCount ) ->
+    interpret_stacktrace( get_stacktrace( SkipLastElemCount ) ).
 
 
 
-% Helper:
+% (helper)
+%
+% Here just an arity (no arguments):
 interpret_stack_item( { Module, Function, Arity, StackInfo },
-					  FullPathsWanted ) when is_integer( Arity ) ->
-	text_utils:format( "~ts:~ts/~B~ts", [ Module, Function, Arity,
-		get_location_from( StackInfo, FullPathsWanted ) ] );
+        FullPathsWanted, _MaybeEllipseAtLen ) when is_integer( Arity ) ->
+    text_utils:format( "~ts:~ts/~B~ts", [ Module, Function, Arity,
+        get_location_from( StackInfo, FullPathsWanted ) ] );
 
 % Here we have not a raw arity, but the list of actual arguments (thus a lot
 % more informative):
 %
-interpret_stack_item( { Module, Function, Args, StackInfo }, FullPathsWanted )
-									when is_list( Args ) ->
+interpret_stack_item( { Module, Function, Args, StackInfo }, FullPathsWanted,
+                      MaybeEllipseAtLen ) when is_list( Args ) ->
 
-	ArgStr = text_utils:format( "~p", [ Args ] ),
+    %trace_utils:debug_fmt( "interpret_stack_item: MaybeEllipseAtLen = ~p.",
+    %                       [ MaybeEllipseAtLen ] ),
 
-	% Any '~' in arguments must be escaped, otherwise next format will fail:
-	EscapedArgStr = string:replace( _In=ArgStr, _SearchPattern="~",
-									_Replacement="\~", _Where=all ),
+    % We will ellipse globally at MaybeEllipseAtLen, but we preventively ellipse
+    % each argument at a fraction of it:
+    %
+    ArgStrs = interpret_arguments( Args, MaybeEllipseAtLen ),
 
-	% Based on actual characters:
-	FullArgStr = case length( ArgStr ) > 50 of
+    ArgCount = length( Args ),
 
-		true ->
-			"~n  ";
+    % As FullArgStr must be interpreted, not used verbatim:
+    FormatStr = "~ts:~ts/~B" ++ text_utils:escape_for_format_string(
+        format_arg_interpretations( ArgCount, ArgStrs ) ) ++ "~ts",
 
-		false ->
-			" "
+    FormatValues = [ Module, Function, ArgCount,
+                     get_location_from( StackInfo, FullPathsWanted ) ],
 
-				 end ++ EscapedArgStr,
+    case MaybeEllipseAtLen of
 
-	% As FullArgStr must be interpreted, not used verbatim:
-	text_utils:format(
-		"~ts:~ts/~B called with the following list of arguments:"
-			++ FullArgStr ++ "~ts",
-		[ Module, Function, length( Args ),
-		  get_location_from( StackInfo, FullPathsWanted ) ] );
+        undefined ->
+            text_utils:format( FormatStr, FormatValues );
+
+        MaxLen ->
+            text_utils:format_ellipsed( FormatStr, FormatValues, MaxLen )
+
+    end;
 
 % Never fail:
-interpret_stack_item( I, _FullPathsWanted ) ->
-	text_utils:format( "~p (error: unexpected stack item)", [ I ] ).
+interpret_stack_item( I, _FullPathsWanted, _MaybeEllipseAtLen=undefined ) ->
+    text_utils:format( "~p (error: unexpected stack item)", [ I ] );
+
+interpret_stack_item( I, _FullPathsWanted, EllipseAtLen ) ->
+    text_utils:format_ellipsed( "~p (error: unexpected stack item)", [ I ],
+                                EllipseAtLen ).
+
+
+
+-doc "Returns an interpretation of each of the specified function arguments.".
+-spec interpret_arguments( [ argument() ], option( length() ) ) ->
+                                            [ ustring() ].
+interpret_arguments( Args, MaybeEllipseAtLen=undefined ) ->
+    [ interpret_argument( Arg, MaybeEllipseAtLen ) || Arg <- Args ];
+
+interpret_arguments( _Args=[ Arg ], EllipseAtLen ) ->
+    % With a single argument, full length allowed:
+    [ interpret_argument( Arg, EllipseAtLen ) ];
+
+interpret_arguments( Args, EllipseAtLen ) ->
+
+    % Up to 3 "very long arguments" before parent ellipsing:
+    ArgEllipseAtLen = EllipseAtLen div 3,
+
+    [ interpret_argument( Arg, ArgEllipseAtLen ) || Arg <- Args ].
+
+
+
+-doc "Returns an interpretation of the specified function argument.".
+-spec interpret_argument( argument(), option( length() ) ) -> ustring().
+interpret_argument( Arg, MaybeEllipseAtLen ) ->
+
+    %trace_utils:debug_fmt( "interpret_argument: '~ts'.", [ Arg ] ),
+
+    ArgDescStr = text_utils:term_to_string( Arg ),
+
+    NewlineStr = basic_utils:if_else( length( ArgDescStr ) > 50, _True="\n",
+                                      "" ),
+
+    ArgStr = text_utils:term_to_string( Arg ),
+
+    RawArgStr = text_utils:format( "~ts: ~ts~ts",
+        [ describe_argument( Arg ), NewlineStr, ArgStr ] ),
+
+    case MaybeEllipseAtLen of
+
+        undefined ->
+            RawArgStr;
+
+        EllipseAtLen ->
+            text_utils:ellipse( RawArgStr, EllipseAtLen )
+
+    end.
+
+
+-doc "Describes the specified argument in terms of type, if possible.".
+-spec describe_argument( term() ) -> ustring().
+describe_argument( Arg ) ->
+    case type_utils:describe_type_of( Arg ) of
+
+        undefined ->
+            "";
+
+        Desc ->
+            text_utils:format( " (~ts)", [ Desc ] )
+
+    end.
+
+
+-doc "Formats the specified argument interpretations.".
+-spec format_arg_interpretations( count(), [ ustring() ] ) -> ustring().
+format_arg_interpretations( _ArgCount=0, _ArgStrs ) ->
+    "";
+
+format_arg_interpretations( _ArgCount=1, _ArgStrs=[ ArgStr ] ) ->
+    text_utils:format( " called with (single) argument~ts",
+                       [ ArgStr ] );
+
+format_arg_interpretations( _ArgCount, ArgStrs ) ->
+    % Needless repetition of arity:
+    %text_utils:format( " called with the following ~B arguments:~n ~ts",
+    %    [ ArgCount, arguments_to_string( ArgStrs ) ] ).
+    text_utils:format( " called with the following arguments:~n ~ts",
+                       [ arguments_to_string( ArgStrs ) ] ).
+
+
+% Special-cased compared to text_utils:strings_to_enumerated_string/3; indented
+% relative to the parent item:
+%
+-spec arguments_to_string( [ ustring() ] ) -> ustring().
+arguments_to_string( ArgStrs ) ->
+
+    { _FinalCount, ReversedStrs } = lists:foldl(
+        fun( String, _Acc={ Count, Strs } ) ->
+
+            NewStrs = [ text_utils:format( "~n      * argument #~B~ts~n",
+                [ Count, String ] ) | Strs ],
+
+            { Count+1, NewStrs }
+
+        end,
+        _Acc0={ 1, [] },
+        _List=ArgStrs ),
+
+    OrderedStrs = lists:reverse( ReversedStrs ),
+
+    lists:flatten( OrderedStrs ).
 
 
 
@@ -1288,68 +1571,68 @@ error information.
 """.
 -spec get_location_from( stack_info(), boolean() ) -> ustring().
 get_location_from( StackInfo, FullPathsWanted )
-									when is_map( StackInfo ) ->
-	get_location_from( map_hashtable:enumerate( StackInfo ), FullPathsWanted );
+                                    when is_map( StackInfo ) ->
+    get_location_from( map_hashtable:enumerate( StackInfo ), FullPathsWanted );
 
 get_location_from( StackInfo, FullPathsWanted ) ->
 
-	%trace_utils:debug_fmt( "get_location_from: StackInfo is ~p",
-	%   [ StackInfo ] ).
+    %trace_utils:debug_fmt( "get_location_from: StackInfo is ~p",
+    %   [ StackInfo ] ).
 
-	% Not wanted here (succeeds even if key not found):
-	NoErrInfo = list_table:remove_entry( error_info, StackInfo ),
+    % Not wanted here (succeeds even if key not found):
+    NoErrInfo = list_table:remove_entry( error_info, StackInfo ),
 
-	{ MaybeFilePath, FileLessInfo } =
-		case list_table:extract_entry_with_default( file, undefined,
-													NoErrInfo ) of
+    { MaybeFilePath, FileLessInfo } =
+        case list_table:extract_entry_with_default( file, undefined,
+                                                    NoErrInfo ) of
 
-			P={ undefined, _SInfo } ->
-				P;
+            P={ undefined, _SInfo } ->
+                P;
 
-			{ SetFilePath, SInfo } ->
-				Path = case FullPathsWanted of
+            { SetFilePath, SInfo } ->
+                Path = case FullPathsWanted of
 
-					true ->
-						file_utils:normalise_path( SetFilePath );
+                    true ->
+                        file_utils:normalise_path( SetFilePath );
 
-					false ->
-						filename:basename( SetFilePath )
+                    false ->
+                        filename:basename( SetFilePath )
 
-				end,
-				{ Path, SInfo }
+                end,
+                { Path, SInfo }
 
-		end,
+        end,
 
-	{ MaybeLine, LineLessInfo } =
-		list_table:extract_entry_with_default( line, undefined, FileLessInfo ),
+    { MaybeLine, LineLessInfo } =
+        list_table:extract_entry_with_default( line, undefined, FileLessInfo ),
 
-	ExtraStr = case LineLessInfo of
+    ExtraStr = case LineLessInfo of
 
-		[] ->
-			"";
+        [] ->
+            "";
 
-		_ ->
-			text_utils:format( " (warning: following stack information was "
-							   "ignored: ~p)", [ LineLessInfo ] )
+        _ ->
+            text_utils:format( " (warning: following stack information was "
+                               "ignored: ~p)", [ LineLessInfo ] )
 
-	end,
+    end,
 
-	case { MaybeFilePath, MaybeLine } of
+    case { MaybeFilePath, MaybeLine } of
 
-		{ undefined, undefined } ->
-			text_utils:format( "~ts", [ ExtraStr ] );
+        { undefined, undefined } ->
+            text_utils:format( "~ts", [ ExtraStr ] );
 
-		{ FilePath, undefined } ->
-			text_utils:format( "   [defined in ~ts]", [ FilePath ] );
+        { FilePath, undefined } ->
+            text_utils:format( "   [defined in ~ts]", [ FilePath ] );
 
-		{ undefined, Line } ->
-			text_utils:format( "   [defined at line ~B]", [ Line ] );
+        { undefined, Line } ->
+            text_utils:format( "   [defined at line ~B]", [ Line ] );
 
-		{ FilePath, Line } ->
-			text_utils:format( "   [defined in ~ts (line ~B)]",
-							   [ FilePath, Line ] )
+        { FilePath, Line } ->
+            text_utils:format( "   [defined in ~ts (line ~B)]",
+                               [ FilePath, Line ] )
 
-	end.
+    end.
 
 
 
@@ -1357,64 +1640,64 @@ get_location_from( StackInfo, FullPathsWanted ) ->
 -spec display_stacktrace() -> void().
 display_stacktrace() ->
 
-	% We do not want to include display_stacktrace/0 in the stack:
-	Stacktrace = get_stacktrace( _SkipLastElemCount=1 ),
-	trace_utils:info_fmt( "Current stacktrace is (latest calls first): ~ts~n",
-						  [ interpret_stacktrace( Stacktrace ) ] ).
+    % We do not want to include display_stacktrace/0 in the stack:
+    Stacktrace = get_stacktrace( _SkipLastElemCount=1 ),
+    trace_utils:info_fmt( "Current stacktrace is (latest calls first): ~ts~n",
+                          [ interpret_stacktrace( Stacktrace ) ] ).
 
 
 
 -doc "Interprets the specified error.".
 -spec interpret_error( error_term(), stack_trace() ) -> ustring().
 interpret_error( ErrorTerm, Stacktrace=[
-		_StackInfo={ _Module, _Function, _Arguments, InfoListTable } | _ ] ) ->
+        _StackInfo={ _Module, _Function, _Arguments, InfoListTable } | _ ] ) ->
 
-	%trace_utils:debug_fmt( "interpret_error: Reason=~p, Stacktrace=~n ~p",
-	%                       [ ErrorTerm, Stacktrace ] ),
+    %trace_utils:debug_fmt( "interpret_error: Reason=~p, Stacktrace=~n ~p",
+    %                       [ ErrorTerm, Stacktrace ] ),
 
-	case list_table:lookup_entry( error_info, InfoListTable ) of
+    case list_table:lookup_entry( error_info, InfoListTable ) of
 
-		{ value, ErrorInfoMap } ->
-			case map_hashtable:lookup_entry( module, ErrorInfoMap ) of
+        { value, ErrorInfoMap } ->
+            case map_hashtable:lookup_entry( module, ErrorInfoMap ) of
 
-				% Typically erl_erts_errors for BIFs:
-				{ value, ErrorInfoModule } ->
-					% Possibly erl_erts_errors;
-					%trace_utils:debug_fmt( "Error info module: '~ts'.",
-					%                       [ ErrorInfoModule ] ),
-					DiagnoseMap =
-						ErrorInfoModule:format_error( ErrorTerm, Stacktrace ),
-					error_map_to_string( DiagnoseMap, ErrorTerm );
+                % Typically erl_erts_errors for BIFs:
+                { value, ErrorInfoModule } ->
+                    % Possibly erl_erts_errors;
+                    %trace_utils:debug_fmt( "Error info module: '~ts'.",
+                    %                       [ ErrorInfoModule ] ),
+                    DiagnoseMap =
+                        ErrorInfoModule:format_error( ErrorTerm, Stacktrace ),
+                    error_map_to_string( DiagnoseMap, ErrorTerm );
 
-				key_not_found ->
-					"(no module set for error_info) "
-						++ stack_info_to_string( InfoListTable )
+                key_not_found ->
+                    "(no module set for error_info) "
+                        ++ stack_info_to_string( InfoListTable )
 
-			end;
+            end;
 
-		key_not_found ->
-			% No extra information lies here:
-			%"(no error_info set) " ++ stack_info_to_string( StackInfo )
-			""
+        key_not_found ->
+            % No extra information lies here:
+            %"(no error_info set) " ++ stack_info_to_string( StackInfo )
+            ""
 
-	end.
+    end.
 
 
 
 -doc "Returns a textual description of the specified stack information.".
 -spec stack_info_to_string( stack_info() ) -> ustring().
 stack_info_to_string( [ { file, Filename }, { line, Line } ] ) ->
-	text_utils:format( "in file ~ts, at line ~B", [ Filename, Line ] );
+    text_utils:format( "in file ~ts, at line ~B", [ Filename, Line ] );
 
 % Catch-all:
 stack_info_to_string( StackInfo ) ->
 
-	% We could look up here also any error_info entry, yet any error module
-	% found there would require to have its format_error/2 function be called
-	% with the error reason and the full stacktrace, both of which are
-	% unavailable in this context.
+    % We could look up here also any error_info entry, yet any error module
+    % found there would require to have its format_error/2 function be called
+    % with the error reason and the full stacktrace, both of which are
+    % unavailable in this context.
 
-	text_utils:format( "~p", [ StackInfo ] ).
+    text_utils:format( "~p", [ StackInfo ] ).
 
 
 
@@ -1422,134 +1705,141 @@ stack_info_to_string( StackInfo ) ->
 -spec error_map_to_string( error_map(), error_reason() ) -> ustring().
 error_map_to_string( ErrorMap, Reason ) ->
 
-	%trace_utils:debug_fmt( "ErrorMap=~p, Reason=~p.", [ ErrorMap, Reason ] ),
+    %trace_utils:debug_fmt( "ErrorMap=~p, Reason=~p.", [ ErrorMap, Reason ] ),
 
-	case lists:sort( map_hashtable:enumerate( ErrorMap ) ) of
+    case lists:sort( map_hashtable:enumerate( ErrorMap ) ) of
 
-		[] ->
-			% This may happen (e.g. if executing <<"hello">> ++ [world]):
-			%text_utils:format( "~ts (whereas no error listed - abnormal)",
-			%                   [ error_reason_to_string( Reason ) ] );
-			error_reason_to_string( Reason );
+        [] ->
+            % This may happen (e.g. if executing <<"hello">> ++ [world]):
+            %text_utils:format( "~ts (whereas no error listed - abnormal)",
+            %                   [ error_reason_to_string( Reason ) ] );
+            error_reason_to_string( Reason );
 
-		% Special case as with the next one two ':' in the same sentence would
-		% be used:
-		%
-		[ { N, Diag } ] ->
-			text_utils:format( "~ts due to invalid argument #~B: ~ts",
-							   [ error_reason_to_string( Reason ), N, Diag ] );
+        % Special case as with the next one two ':' in the same sentence would
+        % be used:
+        %
+        [ { N, Diag } ] ->
+            text_utils:format( "~ts due to invalid argument #~B: ~ts",
+                               [ error_reason_to_string( Reason ), N, Diag ] );
 
-		NumberedErrors ->
-			ErrorStrs = [ text_utils:format( "invalid argument #~B: ~ts",
-							[ N, Diag ] ) || { N, Diag } <- NumberedErrors ],
+        NumberedErrors ->
+            ErrorStrs = [ text_utils:format( "invalid argument #~B: ~ts",
+                            [ N, Diag ] ) || { N, Diag } <- NumberedErrors ],
 
-			text_utils:format( "~ts due to: ~ts",
-				[ error_reason_to_string( Reason ),
-				  text_utils:strings_to_string( ErrorStrs, _IndentLevel=1 ) ] )
+            text_utils:format( "~ts due to: ~ts",
+                [ error_reason_to_string( Reason ),
+                  text_utils:strings_to_string( ErrorStrs, _IndentLevel=1 ) ] )
 
-	end.
+    end.
 
 
 
 -doc "Returns a textual description of the specified error reason.".
 -spec error_reason_to_string( error_reason() ) -> ustring().
 error_reason_to_string( Reason ) ->
-	text_utils:format( " that failed with ~p", [ Reason ] ).
+    text_utils:format( " that failed with ~p", [ Reason ] ).
 
 
 
 -doc "Interprets an `undef` exception, typically after it has been raised.".
 -spec interpret_undef_exception( module_name(), function_name(), arity() ) ->
-										ustring().
+                                        ustring().
 interpret_undef_exception( ModuleName, FunctionName, Arity ) ->
 
-	%trace_utils:debug_fmt( "Interpreting undef for ~p:~p/~p.",
-	%                       [ ModuleName, FunctionName, Arity ] ),
+    % Note that:
+    %  - in many cases, reporting also the stacktrace *is* of interest
+    %  - the returned string must not end with a dot; the caller may add it if
+    %  wanted
 
-	case is_beam_in_path( ModuleName ) of
+    %trace_utils:debug_fmt( "Interpreting undef for ~p:~p/~p.",
+    %                       [ ModuleName, FunctionName, Arity ] ),
 
-		not_found ->
-			text_utils:format( "no module '~ts' found in code path, "
-				"which explains why its ~ts/~B function is reported "
-				"as being undefined; ~ts",
-				[ ModuleName, FunctionName, Arity,
-				  get_code_path_as_string() ] );
+    case is_beam_in_path( ModuleName ) of
+
+        not_found ->
+            text_utils:format( "no module '~ts' found in code path, "
+                "which explains why its ~ts/~B function is reported "
+                "as being undefined; ~ts",
+                [ ModuleName, FunctionName, Arity,
+                  get_code_path_as_string() ] );
 
 
-		ModulePath ->
+        ModulePath ->
 
-			case meta_utils:get_arities_for( ModuleName,
-											 FunctionName ) of
+            case meta_utils:get_arities_for( ModuleName,
+                                             FunctionName ) of
 
-				[] ->
-					text_utils:format( "module '~ts' found in code path "
-						"(as '~ts'), yet it does not export a '~ts' function "
-						"(for any arity)",
-						[ ModuleName, ModulePath, FunctionName ] );
+                [] ->
+                    % No trailing dot wanted:
+                    text_utils:format( "module '~ts' found in code path "
+                        "(as '~ts'), yet it does not export a '~ts' function, "
+                        "for any arity",
+                        [ ModuleName, ModulePath, FunctionName ] );
 
-				Arities ->
-					interpret_arities( ModuleName, FunctionName, Arity,
-									   Arities, ModulePath )
+                Arities ->
+                    interpret_arities( ModuleName, FunctionName, Arity,
+                                       Arities, ModulePath )
 
-			end
+            end
 
-	end.
+    end.
 
 
 % (helper)
 interpret_arities( ModuleName, FunctionName, Arity, Arities, ModulePath ) ->
 
-	case lists:member( Arity, Arities ) of
+    case lists:member( Arity, Arities ) of
 
-		true ->
-			% Should never happen?
-			text_utils:format( "module '~ts' found in code path (as '~ts'), "
-				"and it exports the ~ts/~B function indeed",
-				[ ModuleName, ModulePath, FunctionName, Arity ] );
+        true ->
+            % Should never happen?
+            text_utils:format( "module '~ts' found in code path (as '~ts'), "
+                "and it exports the ~ts/~B function indeed",
+                [ ModuleName, ModulePath, FunctionName, Arity ] );
 
-		false ->
-			ArStr = case Arities of
+        false ->
+            ArStr = case Arities of
 
-				[ A ] ->
-					case A - Arity of
+                [ A ] ->
+                    case A - Arity of
 
-						_SingleLacking=1 ->
-							text_utils:format( "arity ~B (only), the call "
-								"may lack one argument", [ A ] );
+                        _SingleLacking=1 ->
+                            text_utils:format( "arity ~B (only), the call "
+                                "may lack one argument", [ A ] );
 
-						MoreLacking when MoreLacking > 1 ->
-							text_utils:format( "arity ~B (only), the call "
-								"may lack ~B arguments", [ A, MoreLacking ] );
+                        MoreLacking when MoreLacking > 1 ->
+                            text_utils:format( "arity ~B (only), the call "
+                                "may lack ~B arguments", [ A, MoreLacking ] );
 
-						_SingleExtra=-1 ->
-							text_utils:format( "arity ~B (only), the call "
-								"may have one extra argument", [ A ] );
+                        _SingleExtra=-1 ->
+                            text_utils:format( "arity ~B (only), the call "
+                                "may have one extra argument", [ A ] );
 
-						MoreExtra when MoreExtra < -1 ->
-							text_utils:format( "arity ~B (only), the call "
-								"may have ~B extra arguments",
-								[ A, -MoreExtra ] )
+                        MoreExtra when MoreExtra < -1 ->
+                            text_utils:format( "arity ~B (only), the call "
+                                "may have ~B extra arguments",
+                                [ A, -MoreExtra ] )
 
-					end;
+                    end;
 
-				_ ->
-					Ars = [ text_utils:integer_to_string( I )
-								|| I <- lists:sort( Arities ) ],
+                _ ->
+                    Ars = [ text_utils:integer_to_string( I )
+                                || I <- lists:sort( Arities ) ],
 
-					ArsStr = text_utils:strings_to_listed_string( Ars ),
+                    ArsStr = text_utils:strings_to_listed_string( Ars ),
 
-					text_utils:format( "other arities (i.e. ~ts), "
-						"maybe the call to that function was made "
-						"with a wrong number of parameters", [ ArsStr ] )
+                    text_utils:format( "other arities (i.e. ~ts), "
+                        "maybe the call to that function was made "
+                        "with a wrong number of parameters", [ ArsStr ] )
 
-			end,
+            end,
 
-			text_utils:format( "module '~ts' found in code path (as '~ts'), "
-				"yet it does not export a ~ts/~B function; as it exports "
-				"this function for ~ts.",
-				[ ModuleName, ModulePath, FunctionName, Arity, ArStr ] )
+            % No trailing dot wanted (extra information may have to be added):
+            text_utils:format( "module '~ts' found in code path (as '~ts'), "
+                "yet it does not export a ~ts/~B function; as it exports "
+                "this function for ~ts",
+                [ ModuleName, ModulePath, FunctionName, Arity, ArStr ] )
 
-	end.
+    end.
 
 
 
@@ -1558,49 +1848,49 @@ Reports whether the specified function is available, and if not returns details
 in order to facilitate any diagnosis.
 """.
 -spec study_function_availability( module_name(), function_name(), arity() ) ->
-										ustring().
+                                        ustring().
 study_function_availability( ModuleName, FunctionName, Arity ) ->
 
-	case is_beam_in_path( ModuleName ) of
+    case is_beam_in_path( ModuleName ) of
 
-		not_found ->
-			text_utils:format( "no module '~ts' found in code path "
-				"(its ~ts/~B function therefore cannot be called); ~ts",
-				[ ModuleName, FunctionName, Arity,
-				  get_code_path_as_string() ] );
+        not_found ->
+            text_utils:format( "no module '~ts' found in code path "
+                "(its ~ts/~B function therefore cannot be called); ~ts",
+                [ ModuleName, FunctionName, Arity,
+                  get_code_path_as_string() ] );
 
 
-		ModulePath ->
+        ModulePath ->
 
-			case meta_utils:get_arities_for( ModuleName,
-											 FunctionName ) of
+            case meta_utils:get_arities_for( ModuleName,
+                                             FunctionName ) of
 
-				[] ->
-					case meta_utils:list_exported_functions( ModuleName ) of
+                [] ->
+                    case meta_utils:list_exported_functions( ModuleName ) of
 
-						[] ->
-							text_utils:format( "module '~ts' found in code path"
-								" (as '~ts'), yet it does not export any "
-								"function", [ ModuleName, ModulePath ] );
+                        [] ->
+                            text_utils:format( "module '~ts' found in code path"
+                                " (as '~ts'), yet it does not export any "
+                                "function", [ ModuleName, ModulePath ] );
 
-						FunPairs ->
-							FunDescStr = text_utils:strings_to_string( [
-								text_utils:format( "~ts/~B", [ FName, FArity ] )
-									|| { FName, FArity } <- FunPairs ] ),
+                        FunPairs ->
+                            FunDescStr = text_utils:strings_to_string( [
+                                text_utils:format( "~ts/~B", [ FName, FArity ] )
+                                    || { FName, FArity } <- FunPairs ] ),
 
-							text_utils:format( "module '~ts' found in code path"
-								" (as '~ts'), yet it does not export a '~ts' "
-								"function (for any arity); it exports only "
-								"the following ~B functions: ~ts",
-								[ ModuleName, ModulePath, FunctionName,
-								  length( FunPairs ), FunDescStr ] )
+                            text_utils:format( "module '~ts' found in code path"
+                                " (as '~ts'), yet it does not export a '~ts' "
+                                "function (for any arity); it exports only "
+                                "the following ~B functions: ~ts",
+                                [ ModuleName, ModulePath, FunctionName,
+                                  length( FunPairs ), FunDescStr ] )
 
-					end;
+                    end;
 
-				Arities ->
-					interpret_arities( ModuleName, FunctionName, Arity,
-									   Arities, ModulePath )
+                Arities ->
+                    interpret_arities( ModuleName, FunctionName, Arity,
+                                       Arities, ModulePath )
 
-			end
+            end
 
-	end.
+    end.

@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -51,69 +51,69 @@ enable/disable Protobuff support and/or backend ones.
 
 test_protobuf() ->
 
-	% See thus "myriad_example.proto" and the generated "myriad_example.[eh]rl"
-	% files:
-	%
-	SpecName = myriad_example,
+    % See thus "myriad_example.proto" and the generated "myriad_example.[eh]rl"
+    % files:
+    %
+    SpecName = myriad_example,
 
-	test_facilities:display( "Generating Protobuf messages from the "
-							 "'~ts' specification.", [ SpecName ] ),
+    test_facilities:display( "Generating Protobuf messages from the "
+                             "'~ts' specification.", [ SpecName ] ),
 
-	BlankMessage = #myriad_protobuf_test_person{},
+    BlankMessage = #myriad_protobuf_test_person{},
 
-	test_facilities:display( "Blank message of the "
-		"myriad_protobuf_test_person type: ~p", [ BlankMessage ] ),
+    test_facilities:display( "Blank message of the "
+        "myriad_protobuf_test_person type: ~p", [ BlankMessage ] ),
 
-	Name = <<"James Pond">>,
-	EmailAddress = <<"james@mi6.org">>,
+    Name = <<"James Pond">>,
+    EmailAddress = <<"james@mi6.org">>,
 
-	TargetMessage = BlankMessage#myriad_protobuf_test_person{
-						name=Name, id=7, email=EmailAddress },
+    TargetMessage = BlankMessage#myriad_protobuf_test_person{
+                        name=Name, id=7, email=EmailAddress },
 
-	TermSize = system_utils:get_size( TargetMessage ),
+    TermSize = system_utils:get_size( TargetMessage ),
 
-	% Note that depending on the settings (see -preserve-unknown-fields),
-	% additional information may be stored:
-	%
-	MinSize = lists:sum( [ system_utils:get_size( T )
-		|| T <- [ myriad_protobuf_test_person, Name, 7, EmailAddress ] ] ),
+    % Note that depending on the settings (see -preserve-unknown-fields),
+    % additional information may be stored:
+    %
+    MinSize = lists:sum( [ system_utils:get_size( T )
+        || T <- [ myriad_protobuf_test_person, Name, 7, EmailAddress ] ] ),
 
-	test_facilities:display( "Set message: ~p, whose overall size is ~ts, "
-		"its elements being of total size of ~ts.",
-		[ TargetMessage, system_utils:interpret_byte_size( TermSize ),
-		  system_utils:interpret_byte_size( MinSize ) ] ),
+    test_facilities:display( "Set message: ~p, whose overall size is ~ts, "
+        "its elements being of total size of ~ts.",
+        [ TargetMessage, system_utils:interpret_byte_size( TermSize ),
+          system_utils:interpret_byte_size( MinSize ) ] ),
 
-	EncodedBin = protobuf_support:encode( SpecName, TargetMessage ),
+    EncodedBin = protobuf_support:encode( SpecName, TargetMessage ),
 
-	EncodedBinSize = system_utils:get_size( EncodedBin ),
+    EncodedBinSize = system_utils:get_size( EncodedBin ),
 
-	% Actually negative:
-	Overhead = EncodedBinSize - TermSize,
+    % Actually negative:
+    Overhead = EncodedBinSize - TermSize,
 
-	% As this serialised form is more compact:
-	test_facilities:display( "Serialisation for this message: ~p "
-		"whose size is ~ts, for a gain (size decrease) of ~ts.",
-		[ EncodedBin, system_utils:interpret_byte_size( EncodedBinSize ),
-		  system_utils:interpret_byte_size( -Overhead ) ] ),
+    % As this serialised form is more compact:
+    test_facilities:display( "Serialisation for this message: ~p "
+        "whose size is ~ts, for a gain (size decrease) of ~ts.",
+        [ EncodedBin, system_utils:interpret_byte_size( EncodedBinSize ),
+          system_utils:interpret_byte_size( -Overhead ) ] ),
 
-	DecodedMessage = protobuf_support:decode( SpecName,
-		_MsgType=myriad_protobuf_test_person, EncodedBin ),
+    DecodedMessage = protobuf_support:decode( SpecName,
+        _MsgType=myriad_protobuf_test_person, EncodedBin ),
 
-	DecodedTermSize = system_utils:get_size( DecodedMessage ),
+    DecodedTermSize = system_utils:get_size( DecodedMessage ),
 
-	test_facilities:display( "Deserialised message: ~p, "
-		"whose overall size is ~ts", [ DecodedMessage,
-			system_utils:interpret_byte_size( DecodedTermSize ) ] ),
+    test_facilities:display( "Deserialised message: ~p, "
+        "whose overall size is ~ts", [ DecodedMessage,
+            system_utils:interpret_byte_size( DecodedTermSize ) ] ),
 
-	DecodedMessage = TargetMessage.
+    DecodedMessage = TargetMessage.
 
 
 -else. % myriad_uses_protobuf
 
 
 test_protobuf() ->
-	test_facilities:display( "No Protocol Buffer support enabled "
-		"(see USE_PROTOBUF in GNUmakevars.inc), hence no test thereof." ).
+    test_facilities:display( "No Protocol Buffer support enabled "
+        "(see USE_PROTOBUF in GNUmakevars.inc), hence no test thereof." ).
 
 
 -endif. % myriad_uses_protobuf
@@ -122,8 +122,8 @@ test_protobuf() ->
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	test_protobuf(),
+    test_protobuf(),
 
-	test_facilities:stop().
+    test_facilities:stop().

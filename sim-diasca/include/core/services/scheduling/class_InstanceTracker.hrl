@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -38,16 +38,16 @@
 %
 -record( actor_info, {
 
-	% The actual class name of this instance:
-	classname :: wooper:classname(),
+    % The actual class name of this instance:
+    classname :: wooper:classname(),
 
 
-	% The name of this instance, as a (maybe) binary:
-	name :: option( text_utils:bin_string() ),
+    % The name of this instance, as a (maybe) binary:
+    name :: option( text_utils:bin_string() ),
 
 
-	% The AAI of this instance:
-	aai :: class_Actor:aai() } ).
+    % The AAI of this instance:
+    aai :: class_Actor:aai() } ).
 
 
 

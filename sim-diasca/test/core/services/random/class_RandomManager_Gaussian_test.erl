@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -44,190 +44,190 @@ See the class_RandomManager.erl module.
 
 show_gaussian( RandomManagerPid ) ->
 
-	Mu = 40,
-	Sigma = 1.2,
+    Mu = 40,
+    Sigma = 1.2,
 
-	?test_debug_fmt( "Requesting a gaussian random value "
-		"with settings: mean = ~p, standard deviation = ~p.", [ Mu, Sigma ] ),
+    ?test_debug_fmt( "Requesting a gaussian random value "
+        "with settings: mean = ~p, standard deviation = ~p.", [ Mu, Sigma ] ),
 
-	RandomManagerPid ! { getGaussianValue, [ Mu, Sigma ], self() },
+    RandomManagerPid ! { getGaussianValue, [ Mu, Sigma ], self() },
 
-	receive
+    receive
 
-		{ wooper_result, { gaussian_value, Value } } ->
-			?test_debug_fmt(
-				"Received gaussian random value: ~p.", [ Value ] )
+        { wooper_result, { gaussian_value, Value } } ->
+            ?test_debug_fmt(
+                "Received gaussian random value: ~p.", [ Value ] )
 
-	end.
+    end.
 
 
 
 show_gaussian( RandomManagerPid, Mu, Sigma ) ->
 
-	?test_debug_fmt( "Requesting a gaussian random value "
-		"with mean = ~p, standard deviation = ~p.", [ Mu, Sigma ] ),
+    ?test_debug_fmt( "Requesting a gaussian random value "
+        "with mean = ~p, standard deviation = ~p.", [ Mu, Sigma ] ),
 
-	RandomManagerPid ! { getGaussianValue, [ Mu, Sigma ], self() },
+    RandomManagerPid ! { getGaussianValue, [ Mu, Sigma ], self() },
 
-	receive
+    receive
 
-		{ wooper_result, { gaussian_value, Value } } ->
-			?test_debug_fmt(
-				"Received gaussian random value: ~p.", [ Value ] )
+        { wooper_result, { gaussian_value, Value } } ->
+            ?test_debug_fmt(
+                "Received gaussian random value: ~p.", [ Value ] )
 
-	end.
+    end.
 
 
 
 draw_gaussian_values( _Count=0, Table, _Mu, _Sigma, _RandomManagerPid ) ->
-	Table;
+    Table;
 
 draw_gaussian_values( Count, Table, Mu, Sigma, RandomManagerPid ) ->
-	RandomManagerPid ! { getPositiveIntegerGaussianValue, [ Mu, Sigma ],
-						 self() },
+    RandomManagerPid ! { getPositiveIntegerGaussianValue, [ Mu, Sigma ],
+                         self() },
 
-	% Wanting a random value in ]1, ?table_span]:
-	receive
+    % Wanting a random value in ]1, ?table_span]:
+    receive
 
-		{ wooper_result, { positive_integer_gaussian_value, Value } }
-				when Value > ?table_span orelse Value == 0 ->
-			draw_gaussian_values( Count, Table, Mu, Sigma, RandomManagerPid );
+        { wooper_result, { positive_integer_gaussian_value, Value } }
+                when Value > ?table_span orelse Value == 0 ->
+            draw_gaussian_values( Count, Table, Mu, Sigma, RandomManagerPid );
 
-		{ wooper_result, { positive_integer_gaussian_value, Value } } ->
-			NewCount = element( Value, Table ) + 1,
-			draw_gaussian_values( Count-1, setelement( Value, Table, NewCount ),
-				Mu, Sigma, RandomManagerPid )
+        { wooper_result, { positive_integer_gaussian_value, Value } } ->
+            NewCount = element( Value, Table ) + 1,
+            draw_gaussian_values( Count-1, setelement( Value, Table, NewCount ),
+                Mu, Sigma, RandomManagerPid )
 
-	end.
+    end.
 
 
 
 
 -doc "At index V there is the number of times V has been drawn.".
 make_table( Size ) ->
-	erlang:make_tuple( Size, 0 ).
+    erlang:make_tuple( Size, 0 ).
 
 
 send_tables( FirstTable, SecondTable, ThirdTable, FourthTable, FifthTable,
-			 ProbePid ) ->
-	send_tables( FirstTable, SecondTable, ThirdTable, FourthTable, FifthTable,
-				 ProbePid, _Count=1 ).
+             ProbePid ) ->
+    send_tables( FirstTable, SecondTable, ThirdTable, FourthTable, FifthTable,
+                 ProbePid, _Count=1 ).
 
 
 send_tables( _FirstTable, _SecondTable, _ThirdTable, _FourthTable, _FifthTable,
-			 _ProbePid, _Count=?table_span+1 ) ->
-	ok;
+             _ProbePid, _Count=?table_span+1 ) ->
+    ok;
 
 send_tables( FirstTable, SecondTable, ThirdTable, FourthTable, FifthTable,
-			 ProbePid, Count ) ->
+             ProbePid, Count ) ->
 
-	ProbePid ! { setData, [ Count, { element( Count, FirstTable ),
-		element( Count, SecondTable ),  element( Count, ThirdTable ),
-		element( Count, FourthTable ), element( Count, FifthTable ) } ] },
+    ProbePid ! { setData, [ Count, { element( Count, FirstTable ),
+        element( Count, SecondTable ),  element( Count, ThirdTable ),
+        element( Count, FourthTable ), element( Count, FifthTable ) } ] },
 
-	send_tables( FirstTable, SecondTable, ThirdTable, FourthTable, FifthTable,
-				 ProbePid, Count+1 ).
+    send_tables( FirstTable, SecondTable, ThirdTable, FourthTable, FifthTable,
+                 ProbePid, Count+1 ).
 
 
 
 compute_mean( Table ) ->
-	List = tuple_to_list( Table ),
+    List = tuple_to_list( Table ),
 
-	% Multiply the number of draws by the drawn value:
-	% (hope the sum is not zero! Starting at index 1)
-	%
-	compute_mean( List, 1, 0 ) / compute_sum( List, 0 ).
+    % Multiply the number of draws by the drawn value:
+    % (hope the sum is not zero! Starting at index 1)
+    %
+    compute_mean( List, 1, 0 ) / compute_sum( List, 0 ).
 
 
 -doc "Counts the sum of draws.".
 compute_sum( [], Count ) ->
-	Count;
+    Count;
 
 compute_sum( [ H | T ], Count ) ->
-	compute_sum( T, Count + H ).
+    compute_sum( T, Count + H ).
 
 
 % Counts the mean of draws.
 compute_mean( [], _Index, Acc ) ->
-	Acc;
+    Acc;
 
 compute_mean( [ H | T ], Index, Acc ) ->
-	compute_mean( T, Index+1, Acc + H * Index ).
+    compute_mean( T, Index+1, Acc + H * Index ).
 
 
 
 test_gaussian_random( RandomManagerPid, Mu, Sigma ) ->
 
-	?test_info( "Requesting gaussian random values (first)." ),
+    ?test_info( "Requesting gaussian random values (first)." ),
 
-	show_gaussian( RandomManagerPid ),
-	show_gaussian( RandomManagerPid ),
-	show_gaussian( RandomManagerPid ),
-	show_gaussian( RandomManagerPid ),
-	show_gaussian( RandomManagerPid ),
+    show_gaussian( RandomManagerPid ),
+    show_gaussian( RandomManagerPid ),
+    show_gaussian( RandomManagerPid ),
+    show_gaussian( RandomManagerPid ),
+    show_gaussian( RandomManagerPid ),
 
-	?test_info( "Requesting gaussian random values (second)." ),
+    ?test_info( "Requesting gaussian random values (second)." ),
 
-	show_gaussian( RandomManagerPid, Mu, Sigma ),
-	show_gaussian( RandomManagerPid, Mu, Sigma ),
-	show_gaussian( RandomManagerPid, Mu, Sigma ),
-	show_gaussian( RandomManagerPid, Mu, Sigma ),
-	show_gaussian( RandomManagerPid, Mu, Sigma ),
+    show_gaussian( RandomManagerPid, Mu, Sigma ),
+    show_gaussian( RandomManagerPid, Mu, Sigma ),
+    show_gaussian( RandomManagerPid, Mu, Sigma ),
+    show_gaussian( RandomManagerPid, Mu, Sigma ),
+    show_gaussian( RandomManagerPid, Mu, Sigma ),
 
-	?test_info( "Computing and displaying the full actual "
-				"gaussian distribution." ),
+    ?test_info( "Computing and displaying the full actual "
+                "gaussian distribution." ),
 
-	?test_warning( "As a large number of samples will be computed, the "
-				   "operation may take some time." ),
+    ?test_warning( "As a large number of samples will be computed, the "
+                   "operation may take some time." ),
 
-	Values = make_table( ?table_span ),
+    Values = make_table( ?table_span ),
 
-	FirstGaussianTable = draw_gaussian_values( 500, Values, Mu, Sigma,
-											   RandomManagerPid ),
+    FirstGaussianTable = draw_gaussian_values( 500, Values, Mu, Sigma,
+                                               RandomManagerPid ),
 
-	%trace_utils:debug_fmt( "Gaussian table = ~p", [ FirstGaussianTable ] ),
+    %trace_utils:debug_fmt( "Gaussian table = ~p", [ FirstGaussianTable ] ),
 
-	SecondGaussianTable = draw_gaussian_values( 5000-500, FirstGaussianTable,
-												Mu, Sigma, RandomManagerPid ),
+    SecondGaussianTable = draw_gaussian_values( 5000-500, FirstGaussianTable,
+                                                Mu, Sigma, RandomManagerPid ),
 
-	ThirdGaussianTable = draw_gaussian_values( 50000-5000, SecondGaussianTable,
-											   Mu, Sigma, RandomManagerPid ),
+    ThirdGaussianTable = draw_gaussian_values( 50000-5000, SecondGaussianTable,
+                                               Mu, Sigma, RandomManagerPid ),
 
-	FourthGaussianTable = draw_gaussian_values( 500000-50000,
-		ThirdGaussianTable, Mu, Sigma, RandomManagerPid ),
+    FourthGaussianTable = draw_gaussian_values( 500000-50000,
+        ThirdGaussianTable, Mu, Sigma, RandomManagerPid ),
 
-	FifthGaussianTable = draw_gaussian_values( 5000000-500000,
-		FourthGaussianTable, Mu, Sigma, RandomManagerPid ),
+    FifthGaussianTable = draw_gaussian_values( 5000000-500000,
+        FourthGaussianTable, Mu, Sigma, RandomManagerPid ),
 
-	Mean = compute_mean( FifthGaussianTable ),
+    Mean = compute_mean( FifthGaussianTable ),
 
-	?test_notice_fmt( "Mean of this full actual Gaussian distribution is ~p.",
-					  [ Mean ] ),
+    ?test_notice_fmt( "Mean of this full actual Gaussian distribution is ~p.",
+                      [ Mean ] ),
 
-	MyGaussianProbe = class_Probe:create_facility_probe(
+    MyGaussianProbe = class_Probe:create_facility_probe(
 
-		_Title="Gaussian probe",
+        _Title="Gaussian probe",
 
-		_Curves=[ "After 500 draws", "After 5000 draws", "After 50000 draws",
-				  "After 500000 draws", "After 5000000 draws" ],
+        _Curves=[ "After 500 draws", "After 5000 draws", "After 50000 draws",
+                  "After 500000 draws", "After 5000000 draws" ],
 
-		_Zones=[],
+        _Zones=[],
 
-		text_utils:format( "Test of a gaussian distribution with mean mu = ~p "
-			"and a standard deviation sigma = ~p.", [ Mu, Sigma ] ),
+        text_utils:format( "Test of a gaussian distribution with mean mu = ~p "
+            "and a standard deviation sigma = ~p.", [ Mu, Sigma ] ),
 
-		text_utils:format( "Drawn values (mean value is ~w)", [ Mean ] ),
+        text_utils:format( "Drawn values (mean value is ~w)", [ Mean ] ),
 
-		"Number of times a value has been drawn" ),
+        "Number of times a value has been drawn" ),
 
-	send_tables( FirstGaussianTable, SecondGaussianTable, ThirdGaussianTable,
-				 FourthGaussianTable, FifthGaussianTable, MyGaussianProbe ),
+    send_tables( FirstGaussianTable, SecondGaussianTable, ThirdGaussianTable,
+                 FourthGaussianTable, FifthGaussianTable, MyGaussianProbe ),
 
-	?test_info( "Requesting the generation of Gaussian probe report." ),
+    ?test_info( "Requesting the generation of Gaussian probe report." ),
 
-	class_Probe:generate_report_for( MyGaussianProbe ),
+    class_Probe:generate_report_for( MyGaussianProbe ),
 
-	class_Probe:delete_facility_probe( MyGaussianProbe ).
+    class_Probe:delete_facility_probe( MyGaussianProbe ).
 
 
 
@@ -235,20 +235,20 @@ test_gaussian_random( RandomManagerPid, Mu, Sigma ) ->
 -spec run() -> no_return().
 run() ->
 
-	?test_start,
+    ?test_start,
 
-	class_ResultManager:create_mockup_environment(),
+    class_ResultManager:create_mockup_environment(),
 
-	?test_info( "Creating a random manager." ),
-	class_RandomManager:create(),
+    ?test_info( "Creating a random manager." ),
+    class_RandomManager:create(),
 
-	RandomManagerPid =
-		naming_utils:wait_for_global_registration_of( ?random_manager_name ),
-	Mu = 20,
-	Sigma = 10,
-	test_gaussian_random( RandomManagerPid, Mu, Sigma ),
+    RandomManagerPid =
+        naming_utils:wait_for_global_registration_of( ?random_manager_name ),
+    Mu = 20,
+    Sigma = 10,
+    test_gaussian_random( RandomManagerPid, Mu, Sigma ),
 
-	?test_info( "Removing random manager." ),
-	wooper:delete_synchronously_instance( RandomManagerPid ),
+    ?test_info( "Removing random manager." ),
+    wooper:delete_synchronously_instance( RandomManagerPid ),
 
-	?test_stop.
+    ?test_stop.

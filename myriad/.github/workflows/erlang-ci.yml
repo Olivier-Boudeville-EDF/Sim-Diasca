@@ -1,12 +1,11 @@
 name: Erlang CI
 
-# Do *not* whitespace-clean up this file, it would corrupt it!
-
+# Do not restrict operations on the main branch anymore:
 on:
   push:
-    branches: [ master ]
+#    branches: [ master ]
   pull_request:
-    branches: [ master ]
+#    branches: [ master ]
 
 jobs:
 
@@ -46,4 +45,11 @@ jobs:
         echo " - content of _build/default/lib directory: $(ls _build/default/lib 2>/dev/null)"
         make info-context
     - name: Run tests
-      run: make test NODE_NAMING="--sn"
+      run: |
+        echo "Testing now"
+        # Note that each Myriad BEAM file is then present twice in the code
+        # path, in the build tree and in _build/default/lib/myriad/ebin/, and
+        # some of our tests will detect it; so we wipe the latter:
+        # (not as _build/default/lib/myriad/ebin/*.beam)
+        /bin/rm -f ebin/*.beam
+        make test NODE_NAMING="--sn"

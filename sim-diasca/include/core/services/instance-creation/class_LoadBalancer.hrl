@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -29,20 +29,20 @@
 % Describes how the load balancing of actors should be performed.
 -record( load_balancing_settings, {
 
-	% Determines how actors should be placed onto computing resources.
-	%
-	% The 'round_robin' policy creates actors on each computing node in turn.
-	%
-	% All placement policies are bypassed when a placement hint is specified for
-	% an actor creation: this actor is then created on the computing node that
-	% is directly determined from the placement hint.
-	%
-	% The 'select_least_loaded_first' policy will attempt to create actors on
-	% the computing node that is least loaded, i.e. on the host that has the
-	% least (number of actors) / (processing power) ratio. This policy is not
-	% implemented yet.
-	%
-	placement_policy = round_robin :: class_LoadBalancer:placement_policy() } ).
+    % Determines how actors should be placed onto computing resources.
+    %
+    % The 'round_robin' policy creates actors on each computing node in turn.
+    %
+    % All placement policies are bypassed when a placement hint is specified for
+    % an actor creation: this actor is then created on the computing node that
+    % is directly determined from the placement hint.
+    %
+    % The 'select_least_loaded_first' policy will attempt to create actors on
+    % the computing node that is least loaded, i.e. on the host that has the
+    % least (number of actors) / (processing power) ratio. This policy is not
+    % implemented yet.
+    %
+    placement_policy = round_robin :: class_LoadBalancer:placement_policy() } ).
 
 
 
@@ -51,11 +51,11 @@
 %
 -record( actor_settings, {
 
-	% The AAI of this newer actor:
-	aai :: class_Actor:aai(),
+    % The AAI of this newer actor:
+    aai :: class_Actor:aai(),
 
-	% The random seed of this actor:
-	seed :: random_utils:seed(),
+    % The random seed of this actor:
+    seed :: random_utils:seed(),
 
-	% How it is to reorder its incoming messages:
-	message_ordering_mode :: class_Actor:message_ordering_mode() } ).
+    % How it is to reorder its incoming messages:
+    message_ordering_mode :: class_Actor:message_ordering_mode() } ).

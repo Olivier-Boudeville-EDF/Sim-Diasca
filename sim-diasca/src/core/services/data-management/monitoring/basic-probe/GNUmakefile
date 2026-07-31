@@ -1,6 +1,9 @@
 SIM_DIASCA_TOP = ../../../../../..
 
-.PHONY: test-plot-generation real-clean real-clean-local
+.PHONY: all test-plot-generation real-clean real-clean-local
+
+
+all:
 
 
 Test_probe.dat:

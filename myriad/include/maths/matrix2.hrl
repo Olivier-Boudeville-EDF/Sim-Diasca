@@ -1,4 +1,4 @@
-% Copyright (C) 2009-2025 Olivier Boudeville
+% Copyright (C) 2009-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -38,11 +38,11 @@
 %
 -record( matrix2, {
 
-	m11 :: linear:coordinate(),
-	m12 :: linear:coordinate(),
+    m11 :: linear:coordinate(),
+    m12 :: linear:coordinate(),
 
-	m21 :: linear:coordinate(),
-	m22 :: linear:coordinate() } ).
+    m21 :: linear:coordinate(),
+    m22 :: linear:coordinate() } ).
 
 
 % No relevant compact_matrix2 to be defined.

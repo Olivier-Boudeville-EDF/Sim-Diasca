@@ -1,4 +1,4 @@
-% Copyright (C) 2024-2025 Olivier Boudeville
+% Copyright (C) 2024-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -37,73 +37,85 @@
 % The state of a Myriad (custom) shell instance.
 -record( shell_state, {
 
-	% The number of commands already submitted; corresponds to the number
-	% (identifier) of any last command (or the one of the next command, minus
-	% 1):
-	%
-	submission_count = 0 :: basic_utils:count(),
+    % The number of commands already submitted; corresponds to the number
+    % (identifier) of any last command (or the one of the next command, minus
+    % 1):
+    %
+    submission_count = 0 :: basic_utils:count(),
 
-	% Tells whether the start of commands shall be timestamped:
-	do_timestamp = false :: boolean(),
-
-
-	% Tells whether the full history (inputs and outputs) shall be logged on
-	% file and, if yes, in which one:
-	%
-	log_path = undefined :: option( file_utils:bin_file_path() ),
-
-	% The file (if any) where logs are to be written:
-	log_file = undefined :: option( file_utils:file() ),
+    % Tells whether the start of commands shall be timestamped:
+    do_timestamp = false :: boolean(),
 
 
-	% Maximum number of command history elements (0: none; 1: just the last one,
-	% etc.; undefined: infinite):
-	%
-	cmd_history_max_depth=?default_command_history_max_depth ::
-		option( basic_utils:count() ),
+    % Tells whether the full history (inputs and outputs) shall be logged on
+    % file and, if yes, in which one:
+    %
+    log_path = undefined :: option( file_utils:bin_file_path() ),
 
-	% Maximum number of result history elements (0: none; 1: just the last one,
-	% etc.; undefined: infinite):
-	%
-	res_history_max_depth=?default_result_history_max_depth ::
-		option( basic_utils:count() ),
+    % The file (if any) where logs are to be written:
+    log_file = undefined :: option( file_utils:file() ),
 
 
-	% Possibly ellipsed:
-	cmd_history :: shell_utils:command_history(),
+    % Maximum number of command history elements (0: none; 1: just the last one,
+    % etc.; undefined: infinite):
+    %
+    cmd_history_max_depth=?default_command_history_max_depth ::
+        option( basic_utils:count() ),
 
-	% Possibly ellipsed:
-	res_history :: shell_utils:result_history(),
-
-	% Any file for persistent storage of past commands:
-	cmd_history_file :: option( file_utils:file() ),
-
-
-	% Records all current bindings:
-	bindings :: erl_eval:binding_struct(),
-
-
-	% The name of the module used by this shell in order to locate its built-in
-	% functions:
-	%
-	% (made to be overridden with special-purpose modules, potentially using
-	% this one as for default implementations)
-	%
-	callback_module='shell_default_callbacks' :: meta_utils:module_name(),
-
-	% Any module (e.g. 'gui_shell') of reference, for example from which help
-	% information can be obtained.
-	%
-	reference_module :: option( meta_utils:module_name() ),
+    % Maximum number of result history elements (0: none; 1: just the last one,
+    % etc.; undefined: infinite):
+    %
+    res_history_max_depth=?default_result_history_max_depth ::
+        option( basic_utils:count() ),
 
 
-	% The function that shall be called when there is a call to a local function
-	% in a shell command.
-	%
-	local_fun_handler :: erl_eval:local_function_handler()
+    % Possibly ellipsed:
+    cmd_history :: shell_utils:command_history(),
+
+    % Possibly ellipsed:
+    res_history :: shell_utils:result_history(),
+
+    % Any file for persistent storage of past commands:
+    cmd_history_file :: option( file_utils:file() ),
 
 
-	% At least currently, a shell does not keep track of the process(es) using
-	% it.
+    % Records all current bindings (typically a list of pairs of variable names
+    % (as atoms) / values (terms)):
+    %
+    bindings :: erl_eval:binding_struct(),
+
+
+    % The name of the module used by this shell in order to locate its built-in
+    % functions:
+    %
+    % (made to be overridden with special-purpose modules, potentially using
+    % this one as for default implementations)
+    %
+    callback_module='shell_default_callbacks' :: meta_utils:module_name(),
+
+    % Any module (e.g. 'gui_shell') of reference, for example from which help
+    % information can be obtained.
+    %
+    reference_module :: option( meta_utils:module_name() ),
+
+
+    % The function that shall be called when there is a call to a local function
+    % in a shell command.
+    %
+    local_fun_handler :: erl_eval:local_function_handler(),
+
+    % Tells whether auto-completion is enabled:
+    auto_complete = 'true' :: boolean(),
+
+    % Useful for auto-completion:
+    known_modules :: option( [ basic_utils:module_name() ] ),
+
+    % Used by auto-completion:
+    spell_tree :: option( spell_tree:spell_tree() ),
+
+    % A shell keeps track of its creator so that it can report information to
+    % it (e.g. if clashing BEAM modules were detected):
+    %
+    creator_pid :: pid()
 
 } ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2025 EDF R&D
+% Copyright (C) 2012-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -27,8 +27,8 @@
 % A k-record is the entry for a node; to be stored in a k-map.
 -record( k_record, {
 
-	% The nodes that this node secures:
-	securing = [] :: [ net_utils:atom_node_name() ],
+    % The nodes that this node secures:
+    securing = [] :: [ net_utils:atom_node_name() ],
 
-	% The nodes that secure this node:
-	secured_by = [] :: [ net_utils:atom_node_name() ] } ).
+    % The nodes that secure this node:
+    secured_by = [] :: [ net_utils:atom_node_name() ] } ).

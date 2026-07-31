@@ -80,7 +80,7 @@ The other way round, bottom-up one can see:
 - `Myriad <https://olivier-boudeville.github.io/Ceylan-Myriad/>`_, which gathers all common services that are needed, in terms of data-structures, lower-level constructs, most frequent processings, etc.
 - `WOOPER <https://olivier-boudeville.github.io/Ceylan-Myriad/>`_, which transforms Erlang processes into instances of classes with multiple inheritance, still running concurrently
 - `Traces <https://olivier-boudeville.github.io/Ceylan-Myriad/>`_, which allows each distributed instance to send appropriate traces
-- `Sim-Diasca <https://olivier-boudeville-edf.github.io/Sim-Diasca/>`_, which transforms a distributed object-oriented application into a simulation
+- `Sim-Diasca <https://edf-lab.github.io/Sim-Diasca/>`_, which transforms a distributed object-oriented application into a simulation
 
 
 On top of that stack, which provides the simulation engine, there are at least:

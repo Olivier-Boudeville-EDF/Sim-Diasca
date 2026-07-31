@@ -64,6 +64,7 @@ endif
 #    streams (typically files)
 #  - runtime_creations: the creation of actors in the course of the simulation
 #  - life_cycles: the life cycles, typically of actors
+#  - web_probe: the management of web-based probes
 #  - graph_streaming: the management of graph streaming, notably the related
 #    probes
 
@@ -76,7 +77,8 @@ ifeq ($(ENABLE_DEBUG),true)
 	#SIM_DIASCA_DEBUG_FLAGS += -Dsim_diasca_debug_instance_loading
 	#SIM_DIASCA_DEBUG_FLAGS += -Dsim_diasca_debug_runtime_creations
 	#SIM_DIASCA_DEBUG_FLAGS += -Dsim_diasca_debug_life_cycles
-	#SIM_DIASCA_DEBUG_FLAGS += -Dsim_diasca_debug_graph_streaming
+	#SIM_DIASCA_DEBUG_FLAGS += -Dsim_diasca_debug_web_probes
+    #SIM_DIASCA_DEBUG_FLAGS += -Dsim_diasca_debug_graph_streaming
 endif
 
 
@@ -89,12 +91,13 @@ ifeq ($(EXECUTION_TARGET),development)
 	SIM_DIASCA_CHECK_FLAGS += -Dsim_diasca_check_instance_loading
 	SIM_DIASCA_CHECK_FLAGS += -Dsim_diasca_check_runtime_creations
 	SIM_DIASCA_CHECK_FLAGS += -Dsim_diasca_check_life_cycles
-	SIM_DIASCA_CHECK_FLAGS += -Dsim_diasca_check_graph_streaming
+	SIM_DIASCA_CHECK_FLAGS += -Dsim_diasca_check_web_probes
+    SIM_DIASCA_CHECK_FLAGS += -Dsim_diasca_check_graph_streaming
 endif
 
 
 
-SIM_DIASCA_BASE_VERSION := 2.4.8
+SIM_DIASCA_BASE_VERSION := 2.4.9
 
 # The uniquely-defined version of this layer, for all uses (including rebar, hex
 # and the code itself, see sim_diascas:get_sim_diasca_version{_string,}/0):
@@ -152,7 +155,7 @@ endif
 ifndef PROJECT_RELEASE_DATE
 	# To be set only at release time:
 	#PROJECT_RELEASE_DATE := "(not set yet)"
-	PROJECT_RELEASE_DATE := "Friday, July 18, 2025"
+	PROJECT_RELEASE_DATE := "Friday, July 31, 2026"
 endif
 
 

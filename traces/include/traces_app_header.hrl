@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2025 Olivier Boudeville
+% Copyright (C) 2011-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -49,61 +49,71 @@
 
 
 -define( app_emergency( Message ),
-		 class_TraceEmitter:send_standalone_safe( emergency, Message )
+         class_TraceEmitter:send_standalone_safe( emergency, Message,
+            ?trace_emitter_categorization )
 ).
 
 
 -define( app_emergency_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( emergency,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( emergency,
+            text_utils:format( MessageFormat, FormatValues ),
+            ?trace_emitter_categorization )
 ).
 
 
 
 -define( app_alert( Message ),
-		 class_TraceEmitter:send_standalone_safe( alert, Message )
+         class_TraceEmitter:send_standalone_safe( alert, Message,
+            ?trace_emitter_categorization )
 ).
 
 
 -define( app_alert_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( alert,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( alert,
+            text_utils:format( MessageFormat, FormatValues ),
+            ?trace_emitter_categorization )
 ).
 
 
 
 -define( app_critical( Message ),
-		 class_TraceEmitter:send_standalone_safe( critical, Message )
+         class_TraceEmitter:send_standalone_safe( critical, Message,
+            ?trace_emitter_categorization )
 ).
 
 
 -define( app_critical_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( critical,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( critical,
+            text_utils:format( MessageFormat, FormatValues ),
+            ?trace_emitter_categorization )
 ).
 
 
 
 -define( app_error( Message ),
-		 class_TraceEmitter:send_standalone_safe( error, Message )
+         class_TraceEmitter:send_standalone_safe( error, Message,
+            ?trace_emitter_categorization )
 ).
 
 
 -define( app_error_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( error,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( error,
+            text_utils:format( MessageFormat, FormatValues ),
+            ?trace_emitter_categorization )
 ).
 
 
 
 -define( app_warning( Message ),
-		 class_TraceEmitter:send_standalone_safe( warning, Message )
+         class_TraceEmitter:send_standalone_safe( warning, Message,
+            ?trace_emitter_categorization )
 ).
 
 
 -define( app_warning_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( warning,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( warning,
+            text_utils:format( MessageFormat, FormatValues ),
+            ?trace_emitter_categorization )
 ).
 
 
@@ -115,37 +125,43 @@
 
 
 -define( app_notice( Message ),
-		 class_TraceEmitter:send_standalone_safe( notice, Message )
+         class_TraceEmitter:send_standalone_safe( notice, Message,
+            ?trace_emitter_categorization )
 ).
 
 
 -define( app_notice_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( notice,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( notice,
+            text_utils:format( MessageFormat, FormatValues ),
+            ?trace_emitter_categorization )
 ).
 
 
 
 -define( app_info( Message ),
-		 class_TraceEmitter:send_standalone_safe( info, Message )
+         class_TraceEmitter:send_standalone_safe( info, Message,
+            ?trace_emitter_categorization )
 ).
 
 
 -define( app_info_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( info,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( info,
+            text_utils:format( MessageFormat, FormatValues ),
+            ?trace_emitter_categorization )
 ).
 
 
 
 -define( app_debug( Message ),
-		 class_TraceEmitter:send_standalone_safe( debug, Message )
+         class_TraceEmitter:send_standalone_safe( debug, Message,
+            ?trace_emitter_categorization )
 ).
 
 
 -define( app_debug_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( debug,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( debug,
+            text_utils:format( MessageFormat, FormatValues ),
+            ?trace_emitter_categorization )
 ).
 
 
@@ -161,14 +177,11 @@
 % Here tracing_activated is not defined: non-critical traces are disabled.
 
 
-
-
-
 -define( app_notice( Message ), app_trace_disabled( Message ) ).
 
 
 -define( app_notice_fmt( Message, FormatValues ),
-		 app_trace_disabled( Message, FormatValues ) ).
+         app_trace_disabled( Message, FormatValues ) ).
 
 
 
@@ -176,7 +189,7 @@
 
 
 -define( app_info_fmt( Message, FormatValues ),
-		 app_trace_disabled( Message, FormatValues ) ).
+         app_trace_disabled( Message, FormatValues ) ).
 
 
 
@@ -184,7 +197,7 @@
 
 
 -define( app_debug_fmt( Message, FormatValues ),
-		 app_trace_disabled( Message, FormatValues ) ).
+         app_trace_disabled( Message, FormatValues ) ).
 
 
 
@@ -197,4 +210,4 @@
 -define( app_void( Message ), app_trace_disabled( Message ) ).
 
 -define( app_void_fmt( Message, FormatValues ),
-		 app_trace_disabled( Message, FormatValues ) ).
+         app_trace_disabled( Message, FormatValues ) ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2025 Olivier Boudeville
+% Copyright (C) 2020-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -105,61 +105,61 @@ beforehand, and remain possible choices).
 -export([ get_parser_name_paths/0, get_paths_for/1,
 
 
-		  % Stateless versions:
+          % Stateless versions:
 
-		  start_parser/0, stop_parser/0,
+          start_parser/0, stop_parser/0,
 
-		  get_parser_backend_name/0,
-		  get_available_parser_backend_name/0,
+          get_parser_backend_name/0,
+          get_available_parser_backend_name/0,
 
-		  check_parser_operational/0,
+          check_parser_operational/0,
 
-		  to_json/1, to_json_file/2,
+          to_json/1, to_json_file/2,
 
-		  from_json/1, from_json_file/1,
-
-
-		  % Stateful versions (preferred):
-
-		  start_parser/1, stop_parser/1,
-		  get_parser_backend_name/1,
-		  % No get_available_parser_backend_name/0: available by design here.
-
-		  check_parser_operational/1,
-
-		  to_json/2, to_json_file/3, to_json_file/4,
-
-		  from_json/2, from_json_file/2,
+          from_json/1, from_json_file/1,
 
 
-		  % General services:
+          % Stateful versions (preferred):
 
-		  is_parser_available/0, is_parser_available/1,
-		  is_parser_backend_available/1,
+          start_parser/1, stop_parser/1,
+          get_parser_backend_name/1,
+          % No get_available_parser_backend_name/0: available by design here.
 
-		  get_base_json_encoding_options/1,
-		  get_base_json_decoding_options/1,
+          check_parser_operational/1,
 
-		  get_json_unavailability_hint/1 ]).
+          to_json/2, to_json_file/3, to_json_file/4,
+
+          from_json/2, from_json_file/2,
+
+
+          % General services:
+
+          is_parser_available/0, is_parser_available/1,
+          is_parser_backend_available/1,
+
+          get_base_json_encoding_options/1,
+          get_base_json_decoding_options/1,
+
+          get_json_unavailability_hint/1 ]).
 
 
 
 % Module-local inlining:
 -compile( { inline, [ get_base_json_encoding_options/1,
-					  get_base_json_decoding_options/1 ] } ).
+                      get_base_json_decoding_options/1 ] } ).
 
 
 -doc "The known, and potentially supported, backends in terms of JSON parsers.".
 -type parser_backend_name() :: 'json'  % Built-in (recommended now)
-							 | 'jsx'   % Possible dependency
-							 | 'jiffy' % Possible dependency
-							 | otp_utils:application_name(). % Other
+                             | 'jsx'   % Possible dependency
+                             | 'jiffy' % Possible dependency
+                             | otp_utils:application_name(). % Other
 
 
 
 -doc "Often no internal state is really needed.".
 -type parser_state() ::
-		{ parser_backend_name(), InternalBackendState :: option( term() ) }.
+        { parser_backend_name(), InternalBackendState :: option( term() ) }.
 
 
 
@@ -204,7 +204,7 @@ not encoded yet), at least often a map whose keys are binary strings and whose
 values are json_term() or basic types such as integers, floats, strings, etc.).
 """.
 -type json_term() ::
-	map_hashtable:map_hashtable( decoded_json_key(), decoded_json_value() )
+    map_hashtable:map_hashtable( decoded_json_key(), decoded_json_value() )
   | integer() | float() | binary() | atom() | term().
 
 
@@ -227,12 +227,12 @@ transparently with all supported backends).
 
 -export_type([ parser_backend_name/0, parser_state/0,
 
-			   string_json/0, bin_json/0, json/0,
+               string_json/0, bin_json/0, json/0,
 
-			   decoded_json_key/0, decoded_json_value/0, decoded_json_pair/0,
-			   decoded_json/0, json_term/0,
+               decoded_json_key/0, decoded_json_value/0, decoded_json_pair/0,
+               decoded_json/0, json_term/0,
 
-			   json_encoding_option/0, json_decoding_option/0 ]).
+               json_encoding_option/0, json_decoding_option/0 ]).
 
 
 
@@ -257,39 +257,39 @@ to any upcoming deployment of a vanilla node) and any directly-resolved path;
 otherwise throws an exception.
 """.
 -spec get_parser_name_paths() ->
-	{ parser_backend_name(), option( resolvable_path() ),
-	  option( directory_path() ) }.
+    { parser_backend_name(), option( resolvable_path() ),
+      option( directory_path() ) }.
 get_parser_name_paths() ->
 
-	% Pre-Erlang 27.0 versions do not have it:
-	case code_utils:is_beam_in_path( json ) of
+    % Pre-Erlang 27.0 versions do not have it:
+    case code_utils:is_beam_in_path( json ) of
 
-		not_found ->
-			case get_paths_for( jsx ) of
+        not_found ->
+            case get_paths_for( jsx ) of
 
-				undefined ->
-					case get_paths_for( jiffy ) of
+                undefined ->
+                    case get_paths_for( jiffy ) of
 
-						undefined ->
-							throw( unresolvable_json_parser );
+                        undefined ->
+                            throw( unresolvable_json_parser );
 
-						{ JiffyRes, JiffyPlain } ->
-							{ jiffy, JiffyRes, JiffyPlain }
+                        { JiffyRes, JiffyPlain } ->
+                            { jiffy, JiffyRes, JiffyPlain }
 
-					end;
+                    end;
 
-				{ JsxRes, JsxPlain } ->
-					{ jsx, JsxRes, JsxPlain }
+                { JsxRes, JsxPlain } ->
+                    { jsx, JsxRes, JsxPlain }
 
-			end;
+            end;
 
-		[ _JsonBeamPath | _ ] ->
-			% Built-in, so need to update the code path (supposing homogeneous
-			% Erlang versions):
-			%
-			{ json, undefined, undefined }
+        [ _JsonBeamPath | _ ] ->
+            % Built-in, so need to update the code path (supposing homogeneous
+            % Erlang versions):
+            %
+            { json, undefined, undefined }
 
-	end.
+    end.
 
 
 
@@ -299,41 +299,41 @@ both a resolvable one and a directly resolved one, to the ebin directory of the
 specified JSON parser.
 """.
 -spec get_paths_for( parser_backend_name() ) ->
-						option( { resolvable_path(), directory_path() } ).
+                        option( { resolvable_path(), directory_path() } ).
 get_paths_for( _ParserName=jsx ) ->
 
-	ResolvablePath = [ home, "Software", "jsx", "jsx-current-install", "_build",
-					   "default", "lib", "jsx", "ebin" ],
+    ResolvablePath = [ home, "Software", "jsx", "jsx-current-install", "_build",
+                       "default", "lib", "jsx", "ebin" ],
 
-	ResolvedPath = file_utils:resolve_path( ResolvablePath ),
+    ResolvedPath = file_utils:resolve_path( ResolvablePath ),
 
-	case file_utils:is_existing_directory_or_link( ResolvedPath ) of
+    case file_utils:is_existing_directory_or_link( ResolvedPath ) of
 
-		true ->
-			{ ResolvablePath, ResolvedPath };
+        true ->
+            { ResolvablePath, ResolvedPath };
 
-		false ->
-			undefined
+        false ->
+            undefined
 
-	end;
+    end;
 
 get_paths_for( _ParserName=jiffy ) ->
 
-	% Maybe to be updated:
-	ResolvablePath =
-		[ home, "Software", "jiffy", "jiffy-current-install", "ebin" ],
+    % Maybe to be updated:
+    ResolvablePath =
+        [ home, "Software", "jiffy", "jiffy-current-install", "ebin" ],
 
-	ResolvedPath = file_utils:resolve_path( ResolvablePath ),
+    ResolvedPath = file_utils:resolve_path( ResolvablePath ),
 
-	case file_utils:is_existing_directory_or_link( ResolvedPath ) of
+    case file_utils:is_existing_directory_or_link( ResolvedPath ) of
 
-		true ->
-			{ ResolvablePath, ResolvedPath };
+        true ->
+            { ResolvablePath, ResolvedPath };
 
-		false ->
-			undefined
+        false ->
+            undefined
 
-	end.
+    end.
 
 
 
@@ -344,12 +344,12 @@ which optionally may be used afterwards.
 -spec start_parser() -> parser_state().
 start_parser() ->
 
-	ParserName = get_available_parser_backend_name(),
+    ParserName = get_available_parser_backend_name(),
 
-	cond_utils:if_defined( myriad_debug_json, trace_utils:info_fmt(
-		"Selected JSON parser: '~ts'.", [ ParserName ] ) ),
+    cond_utils:if_defined( myriad_debug_json, trace_utils:info_fmt(
+        "Selected JSON parser: '~ts'.", [ ParserName ] ) ),
 
-	start_parser( ParserName ).
+    start_parser( ParserName ).
 
 
 
@@ -359,16 +359,16 @@ optionally afterwards.
 """.
 -spec start_parser( parser_backend_name() ) -> parser_state().
 start_parser( BackendName ) when BackendName =:= json orelse BackendName =:= jsx
-								 orelse BackendName =:= jiffy ->
+                                 orelse BackendName =:= jiffy ->
 
-	% Appropriate for json, jsx and Jiffy:
+    % Appropriate for json, jsx and Jiffy:
 
-	% No specific initialisation needed.
+    % No specific initialisation needed.
 
-	% No particular backend state needed here:
-	InitialState = { BackendName, undefined },
+    % No particular backend state needed here:
+    InitialState = { BackendName, undefined },
 
-	check_parser_operational( InitialState ).
+    check_parser_operational( InitialState ).
 
 
 
@@ -382,81 +382,81 @@ all.
 -spec get_parser_backend_name() -> option( parser_backend_name() ).
 get_parser_backend_name() ->
 
-	% Useful to detect repeated initializations that may be unwanted (then rely
-	% on the stateful mode of operation):
-	%
-	%trace_utils:info( "Determining the JSON backend to use." ),
+    % Useful to detect repeated initializations that may be unwanted (then rely
+    % on the stateful mode of operation):
+    %
+    %trace_utils:info( "Determining the JSON backend to use." ),
 
-	% We prioritise json over jsx over Jiffy:
-	case is_parser_backend_available( json ) of
+    % We prioritise json over jsx over Jiffy:
+    case is_parser_backend_available( json ) of
 
-		false ->
-			case is_parser_backend_available( jsx ) of
+        false ->
+            case is_parser_backend_available( jsx ) of
 
-				false ->
-					case is_parser_backend_available( jiffy ) of
+                false ->
+                    case is_parser_backend_available( jiffy ) of
 
-						false ->
-							undefined;
+                        false ->
+                            undefined;
 
-						[ JiffyPath ] ->
-							cond_utils:if_defined( myriad_debug_json,
-								trace_utils:debug_fmt(
-									"Selected JSON parser is Jiffy, in '~ts'.",
-									[ JiffyPath ] ),
-								basic_utils:ignore_unused( JiffyPath ) ),
+                        [ JiffyPath ] ->
+                            cond_utils:if_defined( myriad_debug_json,
+                                trace_utils:debug_fmt(
+                                    "Selected JSON parser is Jiffy, in '~ts'.",
+                                    [ JiffyPath ] ),
+                                basic_utils:ignore_unused( JiffyPath ) ),
 
-							jiffy ;
-
-
-						JiffyPaths ->
-							trace_utils:error_fmt( "Multiple Jiffy backends "
-								"found (~ts), while ~ts",
-								[ text_utils:strings_to_listed_string(
-									JiffyPaths ),
-								  code_utils:get_code_path_as_string() ] ),
-
-							throw( { multiple_jiffy_json_backends_found,
-									 JiffyPaths } )
-
-					end;
-
-				[ JsxPath ] ->
-					cond_utils:if_defined( myriad_debug_json,
-						trace_utils:debug_fmt( "Selected JSON parser is jsx, "
-												"in '~ts'.", [ JsxPath ] ),
-						basic_utils:ignore_unused( JsxPath ) ),
-
-					jsx;
+                            jiffy ;
 
 
-				JsxPaths ->
-					trace_utils:error_fmt(
-						"Multiple jsx backends found (~ts), while ~ts",
-						[ text_utils:strings_to_listed_string( JsxPaths ),
-						  code_utils:get_code_path_as_string() ] ),
+                        JiffyPaths ->
+                            trace_utils:error_fmt( "Multiple Jiffy backends "
+                                "found (~ts), while ~ts",
+                                [ text_utils:strings_to_listed_string(
+                                    JiffyPaths ),
+                                  code_utils:get_code_path_as_string() ] ),
 
-					throw( { multiple_jsx_json_backends_found, JsxPaths } )
+                            throw( { multiple_jiffy_json_backends_found,
+                                     JiffyPaths } )
 
-			end;
+                    end;
+
+                [ JsxPath ] ->
+                    cond_utils:if_defined( myriad_debug_json,
+                        trace_utils:debug_fmt( "Selected JSON parser is jsx, "
+                                                "in '~ts'.", [ JsxPath ] ),
+                        basic_utils:ignore_unused( JsxPath ) ),
+
+                    jsx;
 
 
-		[ JsonPath ] ->
-			cond_utils:if_defined( myriad_debug_json, trace_utils:debug_fmt(
-				"Selected JSON parser is (built-in) json, in '~ts'.",
-				[ JsonPath ] ),
-				basic_utils:ignore_unused( JsonPath ) ),
+                JsxPaths ->
+                    trace_utils:error_fmt(
+                        "Multiple jsx backends found (~ts), while ~ts",
+                        [ text_utils:strings_to_listed_string( JsxPaths ),
+                          code_utils:get_code_path_as_string() ] ),
 
-			json
+                    throw( { multiple_jsx_json_backends_found, JsxPaths } )
 
-	end.
+            end;
+
+
+        [ JsonPath ] ->
+            cond_utils:if_defined( myriad_debug_json, trace_utils:debug_fmt(
+                "Selected JSON parser is (built-in) json, in '~ts'.",
+                [ JsonPath ] ),
+                basic_utils:ignore_unused( JsonPath ) ),
+
+            json
+
+    end.
 
 
 
 -doc "Tells whether a suitable JSON parser is available.".
 -spec is_parser_available() -> boolean().
 is_parser_available() ->
-	get_parser_backend_name() =/= undefined.
+    get_parser_backend_name() =/= undefined.
 
 
 
@@ -466,11 +466,11 @@ Tells whether a suitable JSON parser is available, based on the specified
 """.
 -spec is_parser_available( option( parser_state() ) ) -> boolean().
 is_parser_available( undefined ) ->
-	false;
+    false;
 
 % A bit of implicit checking:
 is_parser_available( { _ParserBackendName, _MaybeInternalState } ) ->
-	true.
+    true.
 
 
 
@@ -480,18 +480,18 @@ Returns whether specified parser backend is available.
 Useful for testing for example.
 """.
 -spec is_parser_backend_available( parser_backend_name() ) ->
-										'false' | [ directory_path() ].
+                                        'false' | [ directory_path() ].
 is_parser_backend_available( BackendName ) ->
 
-	case code_utils:is_beam_in_path( BackendName ) of
+    case code_utils:is_beam_in_path( BackendName ) of
 
-		not_found ->
-			false;
+        not_found ->
+            false;
 
-		Paths ->
-			Paths
+        Paths ->
+            Paths
 
-	end.
+    end.
 
 
 
@@ -501,8 +501,8 @@ corresponds to specified parser state.
 """.
 -spec get_parser_backend_name( parser_state() ) -> parser_backend_name().
 get_parser_backend_name(
-		_ParserState={ BackendName, _InternalBackendState } ) ->
-	BackendName.
+        _ParserState={ BackendName, _InternalBackendState } ) ->
+    BackendName.
 
 
 
@@ -513,21 +513,21 @@ otherwise throws an exception).
 -spec get_available_parser_backend_name() -> parser_backend_name().
 get_available_parser_backend_name() ->
 
-	% Auto-selects based on backend availability and order:
-	case get_parser_backend_name() of
+    % Auto-selects based on backend availability and order:
+    case get_parser_backend_name() of
 
-		undefined ->
-			trace_utils:error( "No JSON parser found available "
-				"(no json, jsx or jiffy). "
-				++ system_utils:get_json_unavailability_hint() ),
-			throw( no_json_parser_backend_found );
+        undefined ->
+            trace_utils:error( "No JSON parser found available "
+                "(no json, jsx or jiffy). "
+                ++ system_utils:get_json_unavailability_hint() ),
+            throw( no_json_parser_backend_found );
 
-		ParserName ->
-			%trace_utils:info_fmt( "Selected JSON parser: ~ts.",
-			%                      [ ParserName ] ),
-			ParserName
+        ParserName ->
+            %trace_utils:info_fmt( "Selected JSON parser: ~ts.",
+            %                      [ ParserName ] ),
+            ParserName
 
-	end.
+    end.
 
 
 
@@ -538,9 +538,9 @@ an exception if not.
 -spec check_parser_operational() -> void().
 check_parser_operational() ->
 
-	ParserState = get_parser_backend_state(),
+    ParserState = get_parser_backend_state(),
 
-	check_parser_operational( ParserState ).
+    check_parser_operational( ParserState ).
 
 
 
@@ -551,80 +551,80 @@ state if yes, otherwise throws an exception.
 -spec check_parser_operational( parser_state() ) -> parser_state().
 check_parser_operational( ParserState={ json, _InternalBackendState } ) ->
 
-	% This is a way to check that its BEAMs are available and fully usable:
-	try json:decode( <<"\"test\"">> ) of
+    % This is a way to check that its BEAMs are available and fully usable:
+    try json:decode( <<"\"test\"">> ) of
 
-		<<"test">> ->
-			% Const:
-			ParserState
+        <<"test">> ->
+            % Const:
+            ParserState
 
-	catch
+    catch
 
-		error:undef ->
-			trace_utils:error_fmt(
-				"The built-in 'json' JSON parser is not operational.~n~ts",
-				[ system_utils:get_json_unavailability_hint( json ) ] ),
-			throw( { json_parser_not_operational, json } );
+        error:undef ->
+            trace_utils:error_fmt(
+                "The built-in 'json' JSON parser is not operational.~n~ts",
+                [ system_utils:get_json_unavailability_hint( json ) ] ),
+            throw( { json_parser_not_operational, json } );
 
-		OtherError ->
-			trace_utils:error_fmt(
-				"The built-in 'json' JSON parser does not work properly: ~p.",
-				[ OtherError ] ),
-			throw( { json_parser_dysfunctional, json, OtherError } )
+        OtherError ->
+            trace_utils:error_fmt(
+                "The built-in 'json' JSON parser does not work properly: ~p.",
+                [ OtherError ] ),
+            throw( { json_parser_dysfunctional, json, OtherError } )
 
-	end;
+    end;
 
 
 check_parser_operational( ParserState={ jsx, _InternalBackendState } ) ->
 
-	% This is a way to check that its BEAMs are available and fully usable:
-	try jsx:is_json( <<"\"test\"">> ) of
+    % This is a way to check that its BEAMs are available and fully usable:
+    try jsx:is_json( <<"\"test\"">> ) of
 
-		true ->
-			% Const:
-			ParserState
+        true ->
+            % Const:
+            ParserState
 
-	catch
+    catch
 
-		error:undef ->
-			trace_utils:error_fmt(
-				"The jsx JSON parser is not operational.~n~ts",
-				[ system_utils:get_json_unavailability_hint( jsx ) ] ),
-			throw( { json_parser_not_operational, jsx } );
+        error:undef ->
+            trace_utils:error_fmt(
+                "The jsx JSON parser is not operational.~n~ts",
+                [ system_utils:get_json_unavailability_hint( jsx ) ] ),
+            throw( { json_parser_not_operational, jsx } );
 
-		OtherError ->
-			trace_utils:error_fmt(
-				"The jsx JSON parser does not work properly: ~p.",
-				[ OtherError ] ),
-			throw( { json_parser_dysfunctional, jsx, OtherError } )
+        OtherError ->
+            trace_utils:error_fmt(
+                "The jsx JSON parser does not work properly: ~p.",
+                [ OtherError ] ),
+            throw( { json_parser_dysfunctional, jsx, OtherError } )
 
-	end;
+    end;
 
 
 check_parser_operational( ParserState={ jiffy, _InternalBackendState } ) ->
 
-	% This is a way to check that its BEAMs are available and fully usable:
-	try jiffy:decode( <<"{\"foo\": \"bar\"}">> ) of
+    % This is a way to check that its BEAMs are available and fully usable:
+    try jiffy:decode( <<"{\"foo\": \"bar\"}">> ) of
 
-		{ [ { <<"foo">>, <<"bar">> } ] } ->
-			% Const:
-			ParserState
+        { [ { <<"foo">>, <<"bar">> } ] } ->
+            % Const:
+            ParserState
 
-	catch
+    catch
 
-		error:undef ->
-			trace_utils:error_fmt(
-				"The Jiffy JSON parser is not operational.~n~ts",
-				[ system_utils:get_json_unavailability_hint( jiffy ) ] ),
-			throw( { json_parser_not_operational, jiffy } );
+        error:undef ->
+            trace_utils:error_fmt(
+                "The Jiffy JSON parser is not operational.~n~ts",
+                [ system_utils:get_json_unavailability_hint( jiffy ) ] ),
+            throw( { json_parser_not_operational, jiffy } );
 
-		OtherError ->
-			trace_utils:error_fmt(
-				"The Jiffy JSON parser does not work properly: ~p.",
-				[ OtherError ] ),
-			throw( { json_parser_dysfunctional, jiffy, OtherError } )
+        OtherError ->
+            trace_utils:error_fmt(
+                "The Jiffy JSON parser does not work properly: ~p.",
+                [ OtherError ] ),
+            throw( { json_parser_dysfunctional, jiffy, OtherError } )
 
-	end.
+    end.
 
 
 
@@ -647,10 +647,10 @@ readable but more compact.
 -spec to_json( json_term() ) -> json().
 to_json( Term ) ->
 
-	% The call that would be spared if using an explicit parser state:
-	ParserState = get_parser_backend_state(),
+    % The call that would be spared if using an explicit parser state:
+    ParserState = get_parser_backend_state(),
 
-	to_json( Term, ParserState ).
+    to_json( Term, ParserState ).
 
 
 
@@ -685,10 +685,10 @@ For example `json_utils:to_json(#{
 to_json( Term, DoFormat,
          _ParserState={ json, _UndefinedInternalBackendState } ) ->
 
-	cond_utils:if_defined( myriad_debug_json,
-		trace_utils:debug_fmt( "json is to encode:~n ~p", [ Term ] ) ),
+    cond_utils:if_defined( myriad_debug_json,
+        trace_utils:debug_fmt( "json is to encode:~n ~p", [ Term ] ) ),
 
-	R = case DoFormat of
+    R = case DoFormat of
 
         true ->
             json:format( Term );
@@ -698,46 +698,46 @@ to_json( Term, DoFormat,
 
     end,
 
-	cond_utils:if_defined( myriad_debug_json,
-		trace_utils:debug_fmt( "json returned encoded term:~n ~p", [ R ] ) ),
+    cond_utils:if_defined( myriad_debug_json,
+        trace_utils:debug_fmt( "json returned encoded term:~n ~p", [ R ] ) ),
 
-	R;
+    R;
 
 
 to_json( Term, _DoFormat,
          _ParserState={ jsx, _UndefinedInternalBackendState } ) ->
 
-	Opts = get_base_json_encoding_options( jsx ),
+    Opts = get_base_json_encoding_options( jsx ),
 
-	cond_utils:if_defined( myriad_debug_json,
-		trace_utils:debug_fmt( "jsx is to encode, with options ~p:~n ~p",
-							   [ Opts, Term ] ) ),
+    cond_utils:if_defined( myriad_debug_json,
+        trace_utils:debug_fmt( "jsx is to encode, with options ~p:~n ~p",
+                               [ Opts, Term ] ) ),
 
     % No specific formatting applies:
-	R = jsx:encode( Term, Opts ),
+    R = jsx:encode( Term, Opts ),
 
-	cond_utils:if_defined( myriad_debug_json,
-		trace_utils:debug_fmt( "jsx returned encoded term:~n ~p", [ R ] ) ),
+    cond_utils:if_defined( myriad_debug_json,
+        trace_utils:debug_fmt( "jsx returned encoded term:~n ~p", [ R ] ) ),
 
-	R;
+    R;
 
 
 to_json( Term, _DoFormat,
          _ParserState={ jiffy, _UndefinedInternalBackendState } ) ->
 
-	Opts = get_base_json_encoding_options( jiffy ),
+    Opts = get_base_json_encoding_options( jiffy ),
 
-	cond_utils:if_defined( myriad_debug_json,
-		trace_utils:debug_fmt( "Jiffy is to encode, with options ~p:~n ~p",
-							   [ Opts, Term ] ) ),
+    cond_utils:if_defined( myriad_debug_json,
+        trace_utils:debug_fmt( "Jiffy is to encode, with options ~p:~n ~p",
+                               [ Opts, Term ] ) ),
 
     % No specific formatting applies:
-	R = jiffy:encode( Term, Opts ),
+    R = jiffy:encode( Term, Opts ),
 
-	cond_utils:if_defined( myriad_debug_json,
-		trace_utils:debug_fmt( "Jiffy returned encoded term:~n ~p", [ R ] ) ),
+    cond_utils:if_defined( myriad_debug_json,
+        trace_utils:debug_fmt( "Jiffy returned encoded term:~n ~p", [ R ] ) ),
 
-	R.
+    R.
 
 
 
@@ -772,8 +772,8 @@ For example `json_utils:to_json_file(#{
 -spec to_json_file( json_term(), file_path(), boolean() ) -> void().
 to_json_file( Term, TargetJsonFilePath, DoFormat ) ->
 
-	% The call that would be spared if using an explicit parser state:
-	ParserState = get_parser_backend_state(),
+    % The call that would be spared if using an explicit parser state:
+    ParserState = get_parser_backend_state(),
 
     to_json_file( Term, TargetJsonFilePath, DoFormat, ParserState ).
 
@@ -792,30 +792,30 @@ For example `json_utils:to_json_file(#{
 -spec to_json_file( json_term(), file_path(), boolean(), parser_state() ) ->
                                                 void().
 to_json_file( Term, TargetJsonFilePath, DoFormat, ParserState ) ->
-	JsonContent = to_json( Term, DoFormat, ParserState ),
-	file_utils:write_whole( TargetJsonFilePath, JsonContent ).
+    JsonContent = to_json( Term, DoFormat, ParserState ),
+    file_utils:write_whole( TargetJsonFilePath, JsonContent ).
 
 
 
 
 -doc "Returns the default options for the JSON encoding.".
 -spec get_base_json_encoding_options( parser_backend_name() ) ->
-												[ json_encoding_option() ].
+                                                [ json_encoding_option() ].
 get_base_json_encoding_options( _BackendName=json ) ->
-	[];
+    [];
 
 get_base_json_encoding_options( _BackendName=jsx ) ->
-	[];
+    [];
 
 get_base_json_encoding_options( _BackendName=jiffy ) ->
 
-	% Jiffy only understands UTF-8 in binaries; force strings to encode as UTF-8
-	% by fixing broken surrogate pairs and/or using the replacement character to
-	% remove broken UTF-8 sequences in data:
-	%
-	% We do not specify here 'use_nil' as we want to use 'null' as jsx does.
-	%
-	[ force_utf8 ].
+    % Jiffy only understands UTF-8 in binaries; force strings to encode as UTF-8
+    % by fixing broken surrogate pairs and/or using the replacement character to
+    % remove broken UTF-8 sequences in data:
+    %
+    % We do not specify here 'use_nil' as we want to use 'null' as jsx does.
+    %
+    [ force_utf8 ].
 
 
 
@@ -835,8 +835,8 @@ values will be retained (generally the lastly defined one).
 """.
 -spec from_json( json() ) -> json_term().
 from_json( Json ) ->
-	ParserState = get_parser_backend_state(),
-	from_json( Json, ParserState ).
+    ParserState = get_parser_backend_state(),
+    from_json( Json, ParserState ).
 
 
 
@@ -851,81 +851,81 @@ values will be retained (generally the lastly defined one).
 -spec from_json( json(), parser_state() ) -> json_term().
 from_json( Json, _ParserState={ json, _UndefinedInternalBackendState } ) ->
 
-	BinJson = case is_binary( Json ) of
+    BinJson = case is_binary( Json ) of
 
-		true ->
-			Json;
+        true ->
+            Json;
 
-		% Supposedly then a plain string:
-		false ->
-			text_utils:string_to_binary( Json )
+        % Supposedly then a plain string:
+        false ->
+            text_utils:string_to_binary( Json )
 
-	end,
+    end,
 
-	cond_utils:if_defined( myriad_debug_json,
-		trace_utils:debug_fmt( "Decoding '~p' with json.", [ BinJson ] ) ),
+    cond_utils:if_defined( myriad_debug_json,
+        trace_utils:debug_fmt( "Decoding '~p' with json.", [ BinJson ] ) ),
 
-	json:decode( BinJson );
+    json:decode( BinJson );
 
 
 from_json( Json, _ParserState={ jsx, _UndefinedInternalBackendState } ) ->
 
-	BinJson = case is_binary( Json ) of
+    BinJson = case is_binary( Json ) of
 
-		true ->
-			Json;
+        true ->
+            Json;
 
-		% Supposedly then a plain string:
-		false ->
-			text_utils:string_to_binary( Json )
+        % Supposedly then a plain string:
+        false ->
+            text_utils:string_to_binary( Json )
 
-	end,
+    end,
 
-	cond_utils:if_defined( myriad_debug_json,
-		trace_utils:debug_fmt( "Decoding '~p' with jsx.", [ BinJson ] ) ),
+    cond_utils:if_defined( myriad_debug_json,
+        trace_utils:debug_fmt( "Decoding '~p' with jsx.", [ BinJson ] ) ),
 
-	% Note that at least some errors in the JSON file (e.g. missing comma) will
-	% lead only to an exception such as:
-	%
-	% ** exception error: bad argument
-	%  in function jsx_decoder:maybe_done/4
-	%
-	% (not even returning a line number for the faulty JSON part...)
+    % Note that at least some errors in the JSON file (e.g. missing comma) will
+    % lead only to an exception such as:
+    %
+    % ** exception error: bad argument
+    %  in function jsx_decoder:maybe_done/4
+    %
+    % (not even returning a line number for the faulty JSON part...)
 
-	jsx:decode( BinJson, get_base_json_decoding_options( jsx ) );
+    jsx:decode( BinJson, get_base_json_decoding_options( jsx ) );
 
 
 from_json( Json, _ParserState={ jiffy, _UndefinedInternalBackendState } ) ->
 
-	cond_utils:if_defined( myriad_debug_json,
-		trace_utils:debug_fmt( "Decoding '~p' with jiffy.", [ BinJson ] ) ),
+    cond_utils:if_defined( myriad_debug_json,
+        trace_utils:debug_fmt( "Decoding '~p' with jiffy.", [ BinJson ] ) ),
 
-	jiffy:decode( Json, get_base_json_decoding_options( jiffy ) ).
+    jiffy:decode( Json, get_base_json_decoding_options( jiffy ) ).
 
 
 
 -doc "Returns the default options for the JSON decoding.".
 -spec get_base_json_decoding_options( parser_backend_name() ) ->
-												[ json_decoding_option() ].
+                                                [ json_decoding_option() ].
 get_base_json_decoding_options( _BackendName=json ) ->
-	% None applies anyway:
-	[];
+    % None applies anyway:
+    [];
 
 get_base_json_decoding_options( _BackendName=jsx ) ->
-	% We used to prefer {state,<<"PUBLISHED">>} to
-	% {<<"state">>,<<"PUBLISHED">>}, yet for compatibility with Jiffy we stick
-	% to binaries now, so [{labels, atom}] is not used anymore.
-	%
-	% return_maps is default:
-	[];
+    % We used to prefer {state,<<"PUBLISHED">>} to
+    % {<<"state">>,<<"PUBLISHED">>}, yet for compatibility with Jiffy we stick
+    % to binaries now, so [{labels, atom}] is not used anymore.
+    %
+    % return_maps is default:
+    [];
 
 get_base_json_decoding_options( _BackendName=jiffy ) ->
 
-	% dedupe_keys: if a key is repeated in a JSON object this flag will ensure
-	% that the parsed object only contains a single entry containing the last
-	% value seen.
-	%
-	[ return_maps, dedupe_keys ].
+    % dedupe_keys: if a key is repeated in a JSON object this flag will ensure
+    % that the parsed object only contains a single entry containing the last
+    % value seen.
+    %
+    [ return_maps, dedupe_keys ].
 
 
 
@@ -939,8 +939,8 @@ values will be retained (generally the lastly defined one).
 """.
 -spec from_json_file( any_file_path() ) -> json_term().
 from_json_file( JsonFilePath ) ->
-	BinJson = file_utils:read_whole( JsonFilePath ),
-	from_json( BinJson ).
+    BinJson = file_utils:read_whole( JsonFilePath ),
+    from_json( BinJson ).
 
 
 
@@ -954,8 +954,8 @@ values will be retained (generally the lastly defined one).
 """.
 -spec from_json_file( any_file_path(), parser_state() ) -> json_term().
 from_json_file( JsonFilePath, ParserState ) ->
-	BinJson = file_utils:read_whole( JsonFilePath ),
-	from_json( BinJson, ParserState ).
+    BinJson = file_utils:read_whole( JsonFilePath ),
+    from_json( BinJson, ParserState ).
 
 
 
@@ -967,23 +967,23 @@ Returns a (blank) parser state corresponding to the default parser.
 -spec get_parser_backend_state() -> option( parser_state() ).
 get_parser_backend_state() ->
 
-	ParserName = get_available_parser_backend_name(),
+    ParserName = get_available_parser_backend_name(),
 
-	% Supposed stateless:
-	{ ParserName, _InternalBackendState=undefined }.
+    % Supposed stateless:
+    { ParserName, _InternalBackendState=undefined }.
 
 
 
 -doc "Stops the JSON parser.".
 -spec stop_parser() -> void().
 stop_parser() ->
-	ok.
+    ok.
 
 
 -doc "Stops the specified JSON parser.".
 -spec stop_parser( parser_state() ) -> void().
 stop_parser( _ParserState ) ->
-	ok.
+    ok.
 
 
 
@@ -993,22 +993,22 @@ the specified backend available.
 """.
 -spec get_json_unavailability_hint( parser_backend_name() ) -> ustring().
 get_json_unavailability_hint( _Backend=undefined ) ->
-	% Note: the hints are *not* truncated here, this is normal:
-	"Hint: inspect, in myriad/GNUmakevars.inc, the USE_JSON and "
-	"JSX_BASE / JIFFY_BASE runtime variables, knowing that the "
-		++ code_utils:get_code_path_as_string();
+    % Note: the hints are *not* truncated here, this is normal:
+    "Hint: inspect, in myriad/GNUmakevars.inc, the USE_JSON and "
+    "JSX_BASE / JIFFY_BASE runtime variables, knowing that the "
+        ++ code_utils:get_code_path_as_string();
 
 get_json_unavailability_hint( _Backend=json ) ->
-	"Hint: check that using Erlang 27.0 or more recent, and inspect, in "
-	"myriad/GNUmakevars.inc, the USE_JSON runtime variables, knowing that the "
-	++ code_utils:get_code_path_as_string();
+    "Hint: check that using Erlang 27.0 or more recent, and inspect, in "
+    "myriad/GNUmakevars.inc, the USE_JSON runtime variables, knowing that the "
+    ++ code_utils:get_code_path_as_string();
 
 get_json_unavailability_hint( _Backend=jsx ) ->
-	"Hint: inspect, in myriad/GNUmakevars.inc, the USE_JSON and "
-	"JSX_BASE runtime variables, knowing that the "
-		++ code_utils:get_code_path_as_string();
+    "Hint: inspect, in myriad/GNUmakevars.inc, the USE_JSON and "
+    "JSX_BASE runtime variables, knowing that the "
+        ++ code_utils:get_code_path_as_string();
 
 get_json_unavailability_hint( _Backend=jiffy ) ->
-	"Hint: inspect, in myriad/GNUmakevars.inc, the USE_JSON and "
-	"JIFFY_BASE runtime variables, knowing that the "
-		++ code_utils:get_code_path_as_string().
+    "Hint: inspect, in myriad/GNUmakevars.inc, the USE_JSON and "
+    "JIFFY_BASE runtime variables, knowing that the "
+        ++ code_utils:get_code_path_as_string().

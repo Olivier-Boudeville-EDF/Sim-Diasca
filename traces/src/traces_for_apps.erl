@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -35,7 +35,7 @@ This module gathers all the code that allows to **lighten the trace macros for
 
 
 -export([ app_start/2, app_start/3, app_start/4,
-		  app_stop/3, app_immediate_stop/2, app_stop_on_shell/2 ]).
+          app_stop/3, app_immediate_stop/2, app_stop_on_shell/2 ]).
 
 
 -define( trace_emitter_categorization, "application.life-cycle" ).
@@ -63,7 +63,7 @@ This module gathers all the code that allows to **lighten the trace macros for
 -type aggregator_pid() :: class_TraceAggregator:aggregator_pid().
 
 -type initialise_supervision() ::
-		class_TraceAggregator:initialise_supervision().
+        class_TraceAggregator:initialise_supervision().
 
 
 
@@ -77,7 +77,7 @@ later (typically only once the desired filename for the traces file will be
 known for good, i.e. at its first renaming).
 
 Here we disable explicitly the trapping of EXIT signals, as a function run
-through "erl -eval" or through "erl -run" (like our apps) will be executed in a
+through `erl -eval` or through `erl -run` (like our apps) will be executed in a
 process that will silently trap EXIT signals, which would mean that the crash of
 any process created from the app, even thanks to spawn_link, would most probably
 remain unnoticed (just leading to an EXIT message happily sitting in the mailbox
@@ -87,7 +87,7 @@ The resulting trace aggregator will be registered globally (only).
 """.
 -spec app_start( module_name(), initialise_supervision() ) -> aggregator_pid().
 app_start( ModuleName, InitTraceSupervisor ) ->
-	app_start( ModuleName, InitTraceSupervisor, _DisableExitTrapping=true ).
+    app_start( ModuleName, InitTraceSupervisor, _DisableExitTrapping=true ).
 
 
 
@@ -99,20 +99,20 @@ The trace supervisor can be requested to be initialized now or not at all, or
 later (typically only once the desired filename for the traces file will be
 known for good, i.e. at its first renaming).
 
-The trapping of EXIT messages may be disabled (by setting DisableExitTrapping to
-true), typically in most tests / cases (see comments in app_start/2). However it
-may also be left as it is, notably when this function is executed from a
-supervisor (see traces_bridge_sup:init/1), whose trapping of EXITs shall not be
-altered (otherwise, for example, shutdowns may freeze).
+The trapping of EXIT messages may be disabled (by setting `DisableExitTrapping`
+to true), typically in most tests / cases (see comments in`
+app_start/2`). However it may also be left as it is, notably when this function
+is executed from a supervisor (see `traces_bridge_sup:init/1`), whose trapping
+of EXITs shall not be altered (otherwise, for example, shutdowns may freeze).
 
 The resulting trace aggregator will be registered globally (only).
 """.
 -spec app_start( module_name(), initialise_supervision(), boolean() ) ->
-						aggregator_pid().
+                        aggregator_pid().
 % All values possible for InitTraceSupervisor here:
 app_start( ModuleName, InitTraceSupervisor, DisableExitTrapping ) ->
-	app_start( ModuleName, InitTraceSupervisor, DisableExitTrapping,
-			   _AggRegScope=global_only ).
+    app_start( ModuleName, InitTraceSupervisor, DisableExitTrapping,
+               _AggRegScope=global_only ).
 
 
 
@@ -125,83 +125,83 @@ The trace supervisor can be requested to be initialized now or not at all, or
 later (typically only once the desired filename for the traces file will be
 known for good, i.e. at its first renaming).
 
-The trapping of EXIT messages may be disabled (by setting DisableExitTrapping to
-true), typically in most tests / cases (see comments in app_start/2). However it
-may also be left as it is, notably when this function is executed from a
-supervisor (see traces_bridge_sup:init/1), whose trapping of EXITs shall not be
-altered (otherwise, for example, shutdowns may freeze).
+The trapping of EXIT messages may be disabled (by setting `DisableExitTrapping`
+to true), typically in most tests / cases (see comments in
+`app_start/2`). However it may also be left as it is, notably when this function
+is executed from a supervisor (see `traces_bridge_sup:init/1`), whose trapping
+of EXITs shall not be altered (otherwise, for example, shutdowns may freeze).
 """.
 -spec app_start( module_name(), initialise_supervision(), boolean(),
-				 naming_utils:registration_scope() ) -> aggregator_pid().
+                 naming_utils:registration_scope() ) -> aggregator_pid().
 % All values possible for InitTraceSupervisor here:
 app_start( ModuleName, InitTraceSupervisor, DisableExitTrapping,
-		   AggRegScope ) ->
+           AggRegScope ) ->
 
-	% See also the comments of app_start/2:
-	case DisableExitTrapping of
+    % See also the comments of app_start/2:
+    case DisableExitTrapping of
 
-		true ->
-			erlang:process_flag( trap_exit, false );
+        true ->
+            erlang:process_flag( trap_exit, false );
 
-		false ->
-			% No changing the status regarding the trapping of EXITs, whatever
-			% it is currently.
-			ok
+        false ->
+            % No changing the status regarding the trapping of EXITs, whatever
+            % it is currently.
+            ok
 
-	end,
+    end,
 
-	% Create first, synchronously (to avoid race conditions), a trace
-	% aggregator.
-	%
-	% Race conditions could occur at least with trace emitters (they would
-	% create their own aggregator, should none by found) and with trace
-	% supervisor (which expects a trace file to be already created at start-up).
+    % Create first, synchronously (to avoid race conditions), a trace
+    % aggregator.
+    %
+    % Race conditions could occur at least with trace emitters (they would
+    % create their own aggregator, should none by found) and with trace
+    % supervisor (which expects a trace file to be already created at start-up).
 
-	AppIsBatch = executable_utils:is_batch(),
+    AppIsBatch = executable_utils:is_batch(),
 
-	%trace_utils:debug_fmt( "At app_start/2: AppIsBatch=~ts, "
-	%   "InitTraceSupervisor=~ts.", [ AppIsBatch, InitTraceSupervisor ] ),
+    %trace_utils:debug_fmt( "At app_start/2: AppIsBatch=~ts, "
+    %   "InitTraceSupervisor=~ts.", [ AppIsBatch, InitTraceSupervisor ] ),
 
-	TraceFilename = traces:get_trace_filename( ModuleName ),
+    TraceFilename = traces:get_trace_filename( ModuleName ),
 
-	% Not wanting the trace aggregator to initialize the trace supervisor, as
-	% otherwise the latter would notify that its monitoring is over to the
-	% former, whereas we want instead the calling process (i.e. the application)
-	% to be notified of it (see app_stop/2):
-	%
-	TraceAggregatorPid = class_TraceAggregator:synchronous_new_link(
-		TraceFilename, ?TraceType, ?TraceTitle, AggRegScope, AppIsBatch,
-		_AggInitTraceSupervisor=false ),
+    % Not wanting the trace aggregator to initialize the trace supervisor, as
+    % otherwise the latter would notify that its monitoring is over to the
+    % former, whereas we want instead the calling process (i.e. the application)
+    % to be notified of it (see app_stop/2):
+    %
+    TraceAggregatorPid = class_TraceAggregator:synchronous_new_link(
+        TraceFilename, ?TraceType, ?TraceTitle, AggRegScope, AppIsBatch,
+        _AggInitTraceSupervisor=false ),
 
-	case ModuleName of
+    case ModuleName of
 
-		traces_via_otp ->
-			?app_info( "Starting the Ceylan-Traces application from an "
-					   "OTP context." );
+        traces_via_otp ->
+            ?app_info( "Starting the Ceylan-Traces application from an "
+                       "OTP context." );
 
-		_ ->
-			?app_info_fmt( "Starting application ~ts.", [ ModuleName ] )
+        _ ->
+            ?app_info_fmt( "Starting application ~ts.", [ ModuleName ] )
 
-	end,
+    end,
 
-	% So we trigger the supervisor launch by ourselves:
-	%
-	% (e.g. InitTraceSupervisor could have been set to 'later')
-	( not AppIsBatch ) andalso ( InitTraceSupervisor =:= true ) andalso
-		begin
-			TraceAggregatorPid ! { launchTraceSupervisor, [], self() },
-			receive
+    % So we trigger the supervisor launch by ourselves:
+    %
+    % (e.g. InitTraceSupervisor could have been set to 'later')
+    ( not AppIsBatch ) andalso ( InitTraceSupervisor =:= true ) andalso
+        begin
+            TraceAggregatorPid ! { launchTraceSupervisor, [], self() },
+            receive
 
-				{ wooper_result, _SupervisorPid } ->
-					ok
+                { wooper_result, _SupervisorPid } ->
+                    ok
 
-			end
+            end
 
-		end,
+        end,
 
-	%trace_utils:debug( "(Ceylan-Traces started)" ),
+    %trace_utils:debug( "(Ceylan-Traces started)" ),
 
-	TraceAggregatorPid.
+    TraceAggregatorPid.
 
 
 
@@ -214,17 +214,17 @@ To be called from the counterpart macro.
 -spec app_stop( module_name(), aggregator_pid(), boolean() ) -> no_return().
 app_stop( ModuleName, TraceAggregatorPid, WaitForTraceSupervisor ) ->
 
-	% As app_start might have been called with InitTraceSupervisor=false.
+    % As app_start might have been called with InitTraceSupervisor=false.
 
-	%trace_utils:info_fmt( "Application stopping (aggregator: ~w, wait "
-	%    "supervisor: ~ts).", [ TraceAggregatorPid, WaitForTraceSupervisor] ),
+    %trace_utils:info_fmt( "Application stopping (aggregator: ~w, wait "
+    %    "supervisor: ~ts).", [ TraceAggregatorPid, WaitForTraceSupervisor] ),
 
-	WaitForTraceSupervisor andalso class_TraceSupervisor:wait_for(),
+    WaitForTraceSupervisor andalso class_TraceSupervisor:wait_for(),
 
-	%trace_utils:info( "Going for immediate stop of Traces." ),
+    %trace_utils:info( "Going for immediate stop of Traces." ),
 
-	% Stop trace sent there:
-	app_immediate_stop( ModuleName, TraceAggregatorPid ).
+    % Stop trace sent there:
+    app_immediate_stop( ModuleName, TraceAggregatorPid ).
 
 
 
@@ -238,14 +238,14 @@ To be called from the counterpart macro.
 -spec app_immediate_stop( module_name(), aggregator_pid() ) -> no_return().
 app_immediate_stop( ModuleName, TraceAggregatorPid ) ->
 
-	%trace_utils:info( "Immediate stop of Traces." ),
+    %trace_utils:info( "Immediate stop of Traces." ),
 
-	% Stop trace sent there:
-	app_stop_on_shell( ModuleName, TraceAggregatorPid ),
+    % Stop trace sent there:
+    app_stop_on_shell( ModuleName, TraceAggregatorPid ),
 
-	%trace_utils:info( "Finishing." ),
+    %trace_utils:info( "Finishing." ),
 
-	app_facilities:finished().
+    app_facilities:finished().
 
 
 
@@ -258,20 +258,20 @@ To be called from the counterpart macro, directly or not.
 -spec app_stop_on_shell( module_name(), aggregator_pid() ) -> no_return().
 app_stop_on_shell( ModuleName, TraceAggregatorPid ) ->
 
-	?app_info_fmt( "Stopping application ~ts.", [ ModuleName ] ),
+    ?app_info_fmt( "Stopping application ~ts.", [ ModuleName ] ),
 
-	% Also possible: class_TraceAggregator:remove(),
+    % Also possible: class_TraceAggregator:remove(),
 
-	% Variable shared through macro use:
-	TraceAggregatorPid ! { synchronous_delete, self() },
+    % Variable shared through macro use:
+    TraceAggregatorPid ! { synchronous_delete, self() },
 
-	receive
+    receive
 
-		{ deleted, TraceAggregatorPid } ->
-			ok
+        { deleted, TraceAggregatorPid } ->
+            ok
 
-	end,
+    end,
 
-	traces:check_pending_wooper_results(),
+    traces:check_pending_wooper_results(),
 
-	app_facilities:display( "End of application ~ts.", [ ModuleName ] ).
+    app_facilities:display( "End of application ~ts.", [ ModuleName ] ).

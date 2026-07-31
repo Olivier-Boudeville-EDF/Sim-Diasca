@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2025 EDF R&D
+% Copyright (C) 2011-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -48,13 +48,13 @@
 
 -spec case_trace_disabled( any() ) -> 'case_trace_disabled'.
 case_trace_disabled( _ ) ->
-	case_trace_disabled.
+    case_trace_disabled.
 
 
 
 -spec case_trace_disabled( any(), any() ) -> 'case_trace_disabled'.
 case_trace_disabled( _, _ ) ->
-	case_trace_disabled.
+    case_trace_disabled.
 
 
 -endif. % tracing_activated

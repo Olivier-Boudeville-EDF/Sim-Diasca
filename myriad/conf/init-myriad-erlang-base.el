@@ -60,16 +60,33 @@
 
 ;; If ever needed (apparently not):
 ;;(setq auto-mode-alist
-;;	  (append '(("\\.escript$" . erlang-mode)) auto-mode-alist))
+;;    (append '(("\\.escript$" . erlang-mode)) auto-mode-alist))
 
 
-;; Recommended by Erlang's CONTRIBUTING.md:
+
+;; Recommended by Erlang's CONTRIBUTING.md and thus our conventions:
+;;
+;; (use for example 'untabify-buffer' whenever needed, or possibly our
+;; fix-whitespaces*.sh scripts)
 
 (add-hook 'erlang-mode-hook 'my-erlang-hook)
 
 (defun my-erlang-hook ()
   (setq indent-tabs-mode nil)
   (setq c-basic-offset 4))
+
+
+(defun untabify-buffer ()
+  "Converts all tabs in the current buffer to spaces."
+  (interactive)
+  (untabify (point-min) (point-max)))
+
+
+(add-hook 'erlang-mode-hook
+          (lambda ()
+            (add-hook 'before-save-hook 'untabify-buffer nil t)))
+
+
 
 
 ;; Not really useful (see

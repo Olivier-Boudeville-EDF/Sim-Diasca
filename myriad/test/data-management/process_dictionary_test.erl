@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2025 Olivier Boudeville
+% Copyright (C) 2018-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -42,52 +42,52 @@ See process_dictionary tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	test_facilities:display( "Testing the support of the process dictionary." ),
+    test_facilities:display( "Testing the support of the process dictionary." ),
 
-	test_facilities:display( "Initial state: ~ts",
-							 [ process_dictionary:to_string() ] ),
+    test_facilities:display( "Initial state: ~ts",
+                             [ process_dictionary:to_string() ] ),
 
-	InitTable = process_dictionary:get_dictionary(),
+    InitTable = process_dictionary:get_dictionary(),
 
-	test_facilities:display( "Initial content: ~ts",
-							 [ list_table:to_string( InitTable ) ] ),
+    test_facilities:display( "Initial content: ~ts",
+                             [ list_table:to_string( InitTable ) ] ),
 
-	FirstKey = hello,
+    FirstKey = hello,
 
-	FirstValue = self(),
+    FirstValue = self(),
 
-	undefined = process_dictionary:get( FirstKey ),
+    undefined = process_dictionary:get( FirstKey ),
 
-	undefined = process_dictionary:put( FirstKey, FirstValue ),
+    undefined = process_dictionary:put( FirstKey, FirstValue ),
 
-	FirstValue = process_dictionary:get( FirstKey ),
-
-
-	SecondValue = 42,
-
-	FirstValue = process_dictionary:put( FirstKey, SecondValue ),
-
-	SecondValue = process_dictionary:remove( FirstKey ),
-
-	[] = process_dictionary:blank(),
+    FirstValue = process_dictionary:get( FirstKey ),
 
 
-	ThirdValue = "world",
+    SecondValue = 42,
 
-	undefined = process_dictionary:put( FirstKey, ThirdValue ),
+    FirstValue = process_dictionary:put( FirstKey, SecondValue ),
 
-	[ FirstKey ] = process_dictionary:get_keys(),
+    SecondValue = process_dictionary:remove( FirstKey ),
 
-	[ FirstKey ] = process_dictionary:get_keys_for( ThirdValue ),
+    [] = process_dictionary:blank(),
 
-	FinalTable = process_dictionary:get_dictionary(),
 
-	test_facilities:display( "Final content: ~ts",
-							 [ list_table:to_string( FinalTable ) ] ),
+    ThirdValue = "world",
 
-	test_facilities:display( "Final state: ~ts",
-							 [ process_dictionary:to_string() ] ),
+    undefined = process_dictionary:put( FirstKey, ThirdValue ),
 
-	test_facilities:stop().
+    [ FirstKey ] = process_dictionary:get_keys(),
+
+    [ FirstKey ] = process_dictionary:get_keys_for( ThirdValue ),
+
+    FinalTable = process_dictionary:get_dictionary(),
+
+    test_facilities:display( "Final content: ~ts",
+                             [ list_table:to_string( FinalTable ) ] ),
+
+    test_facilities:display( "Final state: ~ts",
+                             [ process_dictionary:to_string() ] ),
+
+    test_facilities:stop().

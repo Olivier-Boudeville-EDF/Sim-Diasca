@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -41,14 +41,14 @@
 % serialisation/deserialisation processes:
 %
 -define( process_restoration_marker,
-		 'wooper_serialisable_process_restoration_marker' ).
+         'wooper_serialisable_process_restoration_marker' ).
 
 
 % The conventional atom to mark internal, local open files (akin to file
 % descriptors) that must escape the serialisation/deserialisation processes:
 %
 -define( file_restoration_marker,
-		 'wooper_serialisable_file_restoration_marker' ).
+         'wooper_serialisable_file_restoration_marker' ).
 
 
 % The conventional atom to mark internal, local terms that must escape the
@@ -57,27 +57,27 @@
 % not have a corresponding, more specialised marker):
 %
 -define( term_restoration_marker,
-		 'wooper_serialisable_term_restoration_marker' ).
+         'wooper_serialisable_term_restoration_marker' ).
 
 
 
 -record( wooper_serialisation_instance_record, {
 
-	class_name :: wooper:classname(),
-	% The classname of that instance.
+    class_name :: wooper:classname(),
+    % The classname of that instance.
 
-	attributes :: [ wooper:attribute_entry() ],
-	% The serialisation-ready information about all instance attributes.
-
-
-	% Of course no virtual table is stored here, it will recreated on loading.
-
-	% Any extra process-level element mentioned in the 'About serialised
-	% elements' section can be managed here.
+    attributes :: [ wooper:attribute_entry() ],
+    % The serialisation-ready information about all instance attributes.
 
 
-	extra_data :: term()
-	% Any extra that needs to be kept around (e.g. to preserve the content of
-	% generated files that would be problematic to recreate).
+    % Of course no virtual table is stored here, it will recreated on loading.
+
+    % Any extra process-level element mentioned in the 'About serialised
+    % elements' section can be managed here.
+
+
+    extra_data :: term()
+    % Any extra that needs to be kept around (e.g. to preserve the content of
+    % generated files that would be problematic to recreate).
 
 } ).

@@ -181,7 +181,7 @@ A typical example:
  3> io:format("Corresponding value: ~f.~n", [ Value ] ).
  Corresponding value: -24.0.
  4> io:format("Corresponding unit: ~s.~n",
-	[unit_utils:unit_to_string(Unit)]).
+    [unit_utils:unit_to_string(Unit)]).
  "s^3.A^2.g^-1.m^-3, of order -6"
  5> unit_utils:value_with_unit_to_string(Value,Unit).
  "-2.4e-5 s^3.A^2.g^-1.m^-3"

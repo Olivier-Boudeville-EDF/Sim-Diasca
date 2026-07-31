@@ -217,16 +217,16 @@ Let's suppose for example that an actor has, for the current tick, the following
 .. code:: erlang
 
   L = [{pa,5,5},
-	   {pb,4,5},
-	   {pc,6,5},
-	   {pd,1,7},
-	   {pe,10,5},
-	   {pf,2,5},
-	   {pg,3,5},
-	   {ph,7,5},
-	   {ph,7,1},
-	   {pa,5,8},
-	   {pa,5,1}]
+       {pb,4,5},
+       {pc,6,5},
+       {pd,1,7},
+       {pe,10,5},
+       {pf,2,5},
+       {pg,3,5},
+       {ph,7,5},
+       {ph,7,1},
+       {pa,5,8},
+       {pa,5,1}]
 
 
 The constant arbitrary order is obtained thanks to ``lists:keysort(3,lists:keysort(2,L))`` [#]_.
@@ -325,23 +325,23 @@ An example of such interaction could be:
 
 .. code-block:: erlang
 
-	% Here instances are created on each calculator in turn:
-	BalancerPid = class_LoadBalancer:new_link( round_robin,
-		[ host_a, host_b, host_b ] ),
+    % Here instances are created on each calculator in turn:
+    BalancerPid = class_LoadBalancer:new_link( round_robin,
+        [ host_a, host_b, host_b ] ),
 
-	% The load balancer creates on each calculator as many local time
-	% managers as there are available nodes.
+    % The load balancer creates on each calculator as many local time
+    % managers as there are available nodes.
 
-	% Replaces class_PLCNetwork:remote_new_link(MyHost,35,4,rural):
-	BalancerPid ! {instantiate_link,[class_PLCNetwork,[35,4,rural]],self()},
+    % Replaces class_PLCNetwork:remote_new_link(MyHost,35,4,rural):
+    BalancerPid ! {instantiate_link,[class_PLCNetwork,[35,4,rural]],self()},
 
-	PLCNetworkPid = receive
+    PLCNetworkPid = receive
 
-		{wooper_result,{instantiated,Pid,_Computer}} ->
-			Pid
+        {wooper_result,{instantiated,Pid,_Computer}} ->
+            Pid
 
-	end,
-	[..]
+    end,
+    [..]
 
 
 

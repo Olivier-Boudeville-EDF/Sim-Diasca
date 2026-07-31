@@ -1,4 +1,4 @@
-% Copyright (C) 2015-2025 Olivier Boudeville
+% Copyright (C) 2015-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -49,31 +49,31 @@ enable/disable JSON support and/or backend ones.
 -doc "Returns a term-to-encode and its expected JSON-encoded form.".
 -spec get_encoding_sample() -> { term(), json_utils:bin_json() }.
 get_encoding_sample() ->
-	get_encoding_sample( as_map ).
+    get_encoding_sample( as_map ).
 
 
 -spec get_encoding_sample( 'as_list' | 'as_map' ) ->
-									{ term(), json_utils:bin_json() }.
+                                    { term(), json_utils:bin_json() }.
 get_encoding_sample( as_list ) ->
 
-	TermToEncode = { [ { foo, [ <<"bing">>, 2.3, true ] } ] },
-	JsonEncoded = <<"{\"foo\":[\"bing\",2.3,true]}">>,
+    TermToEncode = { [ { foo, [ <<"bing">>, 2.3, true ] } ] },
+    JsonEncoded = <<"{\"foo\":[\"bing\",2.3,true]}">>,
 
-	{ TermToEncode, JsonEncoded };
+    { TermToEncode, JsonEncoded };
 
 get_encoding_sample( as_map ) ->
 
-	TermToEncode = #{ <<"library">> => <<"hello">>, <<"awesome">> => true },
-	JsonEncoded = <<"{\"awesome\":true,\"library\":\"hello\"}">>,
+    TermToEncode = #{ <<"library">> => <<"hello">>, <<"awesome">> => true },
+    JsonEncoded = <<"{\"awesome\":true,\"library\":\"hello\"}">>,
 
-	{ TermToEncode, JsonEncoded }.
+    { TermToEncode, JsonEncoded }.
 
 
 
 -doc "Returns the local test JSON file.".
 -spec get_test_file_path() -> file_utils:file_path().
 get_test_file_path() ->
-	"example.json".
+    "example.json".
 
 
 
@@ -83,170 +83,170 @@ Returns a term decoded from JSON test file, if a parser is available.
 -spec run_stateless_testing() -> option( json_utils:json_term() ).
 run_stateless_testing() ->
 
-	BackendName = json_utils:get_parser_backend_name(),
+    BackendName = json_utils:get_parser_backend_name(),
 
-	test_facilities:display( "Parser backend name (if any): '~ts'.",
-							 [ BackendName ] ),
+    test_facilities:display( "Parser backend name (if any): '~ts'.",
+                             [ BackendName ] ),
 
-	case BackendName of
+    case BackendName of
 
-		undefined ->
-			test_facilities:display( "No JSON parser backend found, "
-									 "not testing further stateless support." ),
-			undefined;
+        undefined ->
+            test_facilities:display( "No JSON parser backend found, "
+                                     "not testing further stateless support." ),
+            undefined;
 
-		_ ->
-			test_facilities:display( "Available parser backend name: '~ts'.",
-				[ json_utils:get_available_parser_backend_name() ] ),
+        _ ->
+            test_facilities:display( "Available parser backend name: '~ts'.",
+                [ json_utils:get_available_parser_backend_name() ] ),
 
-			json_utils:start_parser(),
+            json_utils:start_parser(),
 
-			json_utils:check_parser_operational(),
+            json_utils:check_parser_operational(),
 
-			{ TermToEncode, ExpectedJsonEncoded } = get_encoding_sample(),
+            { TermToEncode, ExpectedJsonEncoded } = get_encoding_sample(),
 
-			% As iodata() might be returned;
-			case text_utils:io_to_binary(
-				   json_utils:to_json( TermToEncode ) ) of
+            % As iodata() might be returned;
+            case text_utils:io_to_binary(
+                   json_utils:to_json( TermToEncode ) ) of
 
-				ExpectedJsonEncoded ->
-					ok;
+                ExpectedJsonEncoded ->
+                    ok;
 
-				OtherJsonEncoded ->
-					throw( { unexpected_encoding_of, TermToEncode,
-								{ expected, ExpectedJsonEncoded },
-								{ got, OtherJsonEncoded } } )
+                OtherJsonEncoded ->
+                    throw( { unexpected_encoding_of, TermToEncode,
+                                { expected, ExpectedJsonEncoded },
+                                { got, OtherJsonEncoded } } )
 
-			end,
+            end,
 
-			case json_utils:from_json( ExpectedJsonEncoded ) of
+            case json_utils:from_json( ExpectedJsonEncoded ) of
 
-				TermToEncode ->
-					ok;
+                TermToEncode ->
+                    ok;
 
-				OtherTerm ->
-					throw( { unexpected_decoding_of, ExpectedJsonEncoded,
-							{ expected, TermToEncode }, { got, OtherTerm } } )
+                OtherTerm ->
+                    throw( { unexpected_decoding_of, ExpectedJsonEncoded,
+                            { expected, TermToEncode }, { got, OtherTerm } } )
 
 
-			end,
+            end,
 
-			TestFilePath = get_test_file_path(),
+            TestFilePath = get_test_file_path(),
 
-			test_facilities:display( "Reading test file '~ts'.",
-									 [ TestFilePath ] ),
+            test_facilities:display( "Reading test file '~ts'.",
+                                     [ TestFilePath ] ),
 
-			ReadTestTerm = json_utils:from_json_file( TestFilePath ),
+            ReadTestTerm = json_utils:from_json_file( TestFilePath ),
 
-			Type = type_utils:get_type_of( ReadTestTerm ),
+            Type = type_utils:get_type_of( ReadTestTerm ),
 
-			test_facilities:display(
-				"Test file read, type of corresponding term is: '~ts'.",
-				[ Type ] ),
+            test_facilities:display(
+                "Test file read, type of corresponding term is: '~ts'.",
+                [ Type ] ),
 
-			test_facilities:display( "The read term is:~n ~p",
-									 [ ReadTestTerm ] ),
+            test_facilities:display( "The read term is:~n ~p",
+                                     [ ReadTestTerm ] ),
 
-			test_facilities:display( "Interpreted type: '~ts'.",
-				[ type_utils:interpret_type_of( ReadTestTerm,
-												_Level=infinite ) ] ),
+            test_facilities:display( "Interpreted type: '~ts'.",
+                [ type_utils:interpret_type_of( ReadTestTerm,
+                                                _Level=infinite ) ] ),
 
-			ReadTestTerm
+            ReadTestTerm
 
-	end,
+    end,
 
-	json_utils:stop_parser().
+    json_utils:stop_parser().
 
 
 
 -doc "Returns a term decoded from JSON test file.".
 -spec run_stateful_testing( json_utils:parser_state() ) ->
-									json_utils:json_term().
+                                    json_utils:json_term().
 run_stateful_testing( ParserState ) ->
 
-	BackendName = json_utils:get_parser_backend_name( ParserState ),
+    BackendName = json_utils:get_parser_backend_name( ParserState ),
 
-	test_facilities:display( "Parser backend name: '~ts'.", [ BackendName ] ),
+    test_facilities:display( "Parser backend name: '~ts'.", [ BackendName ] ),
 
-	JsonDecodedTerm = case BackendName of
+    JsonDecodedTerm = case BackendName of
 
-		undefined ->
-			throw( stateful_parser_lacking );
+        undefined ->
+            throw( stateful_parser_lacking );
 
-		_ ->
+        _ ->
 
-			json_utils:check_parser_operational( ParserState ),
+            json_utils:check_parser_operational( ParserState ),
 
-			{ TermToEncode, ExpectedJsonEncoded } = get_encoding_sample(),
+            { TermToEncode, ExpectedJsonEncoded } = get_encoding_sample(),
 
-			case json_utils:to_json( TermToEncode, ParserState ) of
+            case json_utils:to_json( TermToEncode, ParserState ) of
 
-				ExpectedJsonEncoded ->
-					ok;
+                ExpectedJsonEncoded ->
+                    ok;
 
-				OtherJsonEncoded ->
+                OtherJsonEncoded ->
 
-					% Too strong, encoding may still depend on the parser:
-					%
-					%throw( { unexpected_encoding_of, TermToEncode,
-					%   { expected, ExpectedJsonEncoded },
-					%   { got, OtherJsonEncoded } } )
+                    % Too strong, encoding may still depend on the parser:
+                    %
+                    %throw( { unexpected_encoding_of, TermToEncode,
+                    %   { expected, ExpectedJsonEncoded },
+                    %   { got, OtherJsonEncoded } } )
 
-					test_facilities:display_fmt( "Note that the encoding of ~p "
-						"with '~ts' is different from the one obtained with "
-						"the default parser (~ts): former one returned ~p, "
-						"latter one ~p.",
-						[ TermToEncode, BackendName,
-						  json_utils:get_parser_backend_name(),
-						  OtherJsonEncoded, ExpectedJsonEncoded ] )
+                    test_facilities:display_fmt( "Note that the encoding of ~p "
+                        "with '~ts' is different from the one obtained with "
+                        "the default parser (~ts): former one returned ~p, "
+                        "latter one ~p.",
+                        [ TermToEncode, BackendName,
+                          json_utils:get_parser_backend_name(),
+                          OtherJsonEncoded, ExpectedJsonEncoded ] )
 
-			end,
+            end,
 
-			% Note that, if the actual JSON encoding of a given Erlang term
-			% depends on the parser backend (e.g. the order of JSON keys might
-			% differ), for each parser, for each valid Erlang term T, we expect
-			% that from_json( to_json( T ) ) = T:
-			%
-			case json_utils:from_json( ExpectedJsonEncoded, ParserState ) of
+            % Note that, if the actual JSON encoding of a given Erlang term
+            % depends on the parser backend (e.g. the order of JSON keys might
+            % differ), for each parser, for each valid Erlang term T, we expect
+            % that from_json( to_json( T ) ) = T:
+            %
+            case json_utils:from_json( ExpectedJsonEncoded, ParserState ) of
 
-				TermToEncode ->
-					ok;
+                TermToEncode ->
+                    ok;
 
-				OtherTerm ->
-					throw( { unexpected_decoding_of, ExpectedJsonEncoded,
-						{ expected, TermToEncode }, { got, OtherTerm } } )
+                OtherTerm ->
+                    throw( { unexpected_decoding_of, ExpectedJsonEncoded,
+                        { expected, TermToEncode }, { got, OtherTerm } } )
 
 
-			end,
+            end,
 
-			TestFilePath = get_test_file_path(),
+            TestFilePath = get_test_file_path(),
 
-			test_facilities:display( "Reading test file '~ts'.",
-									 [ TestFilePath ] ),
+            test_facilities:display( "Reading test file '~ts'.",
+                                     [ TestFilePath ] ),
 
-			ReadTestTerm =
-				json_utils:from_json_file( TestFilePath, ParserState ),
+            ReadTestTerm =
+                json_utils:from_json_file( TestFilePath, ParserState ),
 
-			Type = type_utils:get_type_of( ReadTestTerm ),
+            Type = type_utils:get_type_of( ReadTestTerm ),
 
-			test_facilities:display(
-				"Test file read, type of corresponding term is: '~ts'.",
-				[ Type ] ),
+            test_facilities:display(
+                "Test file read, type of corresponding term is: '~ts'.",
+                [ Type ] ),
 
-			test_facilities:display( "The read term is:~n ~p",
-									 [ ReadTestTerm ] ),
+            test_facilities:display( "The read term is:~n ~p",
+                                     [ ReadTestTerm ] ),
 
-			test_facilities:display( "Interpreted type: '~ts'.",
-				[ type_utils:interpret_type_of( ReadTestTerm,
-												_Level=infinite ) ] ),
+            test_facilities:display( "Interpreted type: '~ts'.",
+                [ type_utils:interpret_type_of( ReadTestTerm,
+                                                _Level=infinite ) ] ),
 
-			ReadTestTerm
+            ReadTestTerm
 
-	end,
+    end,
 
-	json_utils:stop_parser( ParserState ),
+    json_utils:stop_parser( ParserState ),
 
-	JsonDecodedTerm.
+    JsonDecodedTerm.
 
 
 
@@ -254,78 +254,78 @@ run_stateful_testing( ParserState ) ->
 Compares the decoding done by specified parser with the expected decoded term.
 """.
 -spec compare_with_if_available( json_utils:json_term(),
-					json_utils:parser_backend_name() ) -> void().
+                    json_utils:parser_backend_name() ) -> void().
 compare_with_if_available( JsonDecodedTerm, BackendName ) ->
 
-	case json_utils:is_parser_backend_available( BackendName ) of
+    case json_utils:is_parser_backend_available( BackendName ) of
 
-			false ->
-				test_facilities:display_fmt( "No comparison done with backend "
-					"'~ts' (as not found available).", [ BackendName ] );
+            false ->
+                test_facilities:display_fmt( "No comparison done with backend "
+                    "'~ts' (as not found available).", [ BackendName ] );
 
-			_ ->
-			BackendState = json_utils:start_parser( BackendName ),
+            _ ->
+            BackendState = json_utils:start_parser( BackendName ),
 
-			BackendJsonDecodedTerm = run_stateful_testing( BackendState ),
+            BackendJsonDecodedTerm = run_stateful_testing( BackendState ),
 
-			% By design none of the decoded terms is undefined:
-			case BackendJsonDecodedTerm of
+            % By design none of the decoded terms is undefined:
+            case BackendJsonDecodedTerm of
 
-				JsonDecodedTerm ->
-					% Possibly comparing a backend to itself, if is the default
-					% one:
-					%
-					test_facilities:display_fmt( "Comparison success with "
-						"backend '~ts'.", [ BackendName ] );
+                JsonDecodedTerm ->
+                    % Possibly comparing a backend to itself, if is the default
+                    % one:
+                    %
+                    test_facilities:display_fmt( "Comparison success with "
+                        "backend '~ts'.", [ BackendName ] );
 
-				_ ->
-					% Might be a too strong property:
-					throw( { non_matching_decoded_terms,
-								{ default, JsonDecodedTerm },
-								{ BackendName, BackendJsonDecodedTerm } } )
+                _ ->
+                    % Might be a too strong property:
+                    throw( { non_matching_decoded_terms,
+                                { default, JsonDecodedTerm },
+                                { BackendName, BackendJsonDecodedTerm } } )
 
-			end
+            end
 
-	end.
+    end.
 
 
 
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	test_facilities:display( "Testing JSON support." ),
-
-
-	% First, stateless testing:
-	run_stateless_testing(),
+    test_facilities:display( "Testing JSON support." ),
 
 
-	% Second, stateful testing:
+    % First, stateless testing:
+    run_stateless_testing(),
 
-	MaybeAnyJsonDecodedTerm = case json_utils:get_parser_backend_name() of
 
-		undefined ->
-			test_facilities:display( "No JSON parser backend found, "
-				"not testing further stateful support.~n  Note: refer to "
-				"GNUmakevars.inc in order to install and enable a "
-				"suitable parser.~n  Then, to trigger an actual testing "
-				"thereof, run: 'make json_utils_run USE_JSON=false'." );
+    % Second, stateful testing:
 
-		_ ->
-			test_facilities:display( "Default available parser backend "
-				"name: '~ts'.",
-				[ json_utils:get_available_parser_backend_name() ] ),
+    MaybeAnyJsonDecodedTerm = case json_utils:get_parser_backend_name() of
 
-			% Could have been named 'InitialState', yet is supposed const:
-			AnyParserState = json_utils:start_parser(),
-			run_stateful_testing( AnyParserState )
+        undefined ->
+            test_facilities:display( "No JSON parser backend found, "
+                "not testing further stateful support.~n  Note: refer to "
+                "GNUmakevars.inc in order to install and enable a "
+                "suitable parser.~n  Then, to trigger an actual testing "
+                "thereof, run: 'make json_utils_run USE_JSON=false'." );
 
-	end,
+        _ ->
+            test_facilities:display( "Default available parser backend "
+                "name: '~ts'.",
+                [ json_utils:get_available_parser_backend_name() ] ),
 
-	compare_with_if_available( MaybeAnyJsonDecodedTerm, json ),
-	compare_with_if_available( MaybeAnyJsonDecodedTerm, jsx ),
-	compare_with_if_available( MaybeAnyJsonDecodedTerm, jiffy ),
+            % Could have been named 'InitialState', yet is supposed const:
+            AnyParserState = json_utils:start_parser(),
+            run_stateful_testing( AnyParserState )
 
-	test_facilities:stop().
+    end,
+
+    compare_with_if_available( MaybeAnyJsonDecodedTerm, json ),
+    compare_with_if_available( MaybeAnyJsonDecodedTerm, jsx ),
+    compare_with_if_available( MaybeAnyJsonDecodedTerm, jiffy ),
+
+    test_facilities:stop().

@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -43,39 +43,39 @@ See the point tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	Null2D = point:null( _Dim=2 ),
+    Null2D = point:null( _Dim=2 ),
 
-	Null2D = point:new( { 0.0, 0.0 } ),
-	Null2D = point:new( [ 0.0, 0.0 ] ),
+    Null2D = point:new( { 0.0, 0.0 } ),
+    Null2D = point:new( [ 0.0, 0.0 ] ),
 
-	Vec1 = [ 0.0, 1.0, 2.0 ],
+    Vec1 = [ 0.0, 1.0, 2.0 ],
 
-	P1 = list_to_tuple( Vec1 ),
+    P1 = list_to_tuple( Vec1 ),
 
-	P1 = point:from_vector( Vec1 ),
+    P1 = point:from_vector( Vec1 ),
 
-	Vec1 = point:to_vector( P1 ),
+    Vec1 = point:to_vector( P1 ),
 
-	P2 = point:new( { 1/3, 2.0, 3330.0 } ),
-	3 = point:dimension( P2 ),
+    P2 = point:new( { 1/3, 2.0, 3330.0 } ),
+    3 = point:dimension( P2 ),
 
-	P3 = point:new( { 0, 222, 456789 } ),
+    P3 = point:new( { 0, 222, 456789 } ),
 
-	test_facilities:display( "Base textual representation for ~w:~n~ts",
-							 [ P2, point:to_string( P2 ) ] ),
+    test_facilities:display( "Base textual representation for ~w:~n~ts",
+                             [ P2, point:to_string( P2 ) ] ),
 
-	test_facilities:display( "Compact textual representation for ~w: ~ts",
-							 [ P2, point:to_compact_string( P2 ) ] ),
+    test_facilities:display( "Compact textual representation for ~w: ~ts",
+                             [ P2, point:to_compact_string( P2 ) ] ),
 
-	test_facilities:display( "Basic representation for ~w: ~ts",
-							 [ P2, point:to_basic_string( P2 ) ] ),
+    test_facilities:display( "Basic representation for ~w: ~ts",
+                             [ P2, point:to_basic_string( P2 ) ] ),
 
-	test_facilities:display( "User-friendly representation for ~w: ~ts",
-							 [ P2, point:to_user_string( P2 ) ] ),
+    test_facilities:display( "User-friendly representation for ~w: ~ts",
+                             [ P2, point:to_user_string( P2 ) ] ),
 
-	test_facilities:display( "User-friendly representation for ~w: ~ts",
-							 [ P3, point:to_user_string( P3 ) ] ),
+    test_facilities:display( "User-friendly representation for ~w: ~ts",
+                             [ P3, point:to_user_string( P3 ) ] ),
 
-	test_facilities:stop().
+    test_facilities:stop().

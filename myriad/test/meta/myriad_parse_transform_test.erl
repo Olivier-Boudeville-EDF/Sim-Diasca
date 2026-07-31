@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 Olivier Boudeville
+% Copyright (C) 2014-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -47,60 +47,60 @@ See the myriad_parse_transform.erl tested module.
 
 run_parse_transform( TargetSourceFile ) ->
 
-	test_facilities:display( "Applying the Myriad parse transform to the "
-							 "'~ts' source file.~n", [ TargetSourceFile ] ),
+    test_facilities:display( "Applying the Myriad parse transform to the "
+                             "'~ts' source file.~n", [ TargetSourceFile ] ),
 
-	PTOptions = [],
-	%PTOptions = [ { d, myriad_disable_lco } ],
+    PTOptions = [],
+    %PTOptions = [ { d, myriad_disable_lco } ],
 
-	TransformedAST = myriad_parse_transform:run_standalone( TargetSourceFile,
-															PTOptions ),
+    TransformedAST = myriad_parse_transform:run_standalone( TargetSourceFile,
+                                                            PTOptions ),
 
-	test_facilities:display( "Transformed AST:~n~p~n", [ TransformedAST ] ),
+    test_facilities:display( "Transformed AST:~n~p~n", [ TransformedAST ] ),
 
-	%WriteFile = true,
-	WriteFile = false,
+    %WriteFile = true,
+    WriteFile = false,
 
-	WriteFile andalso ast_utils:write_ast_to_file( TransformedAST,
-												   TargetSourceFile ++ ".ast" ).
+    WriteFile andalso ast_utils:write_ast_to_file( TransformedAST,
+                                                   TargetSourceFile ++ ".ast" ).
 
 
 
 run_ast_level_operations( TargetSourceFile ) ->
 
-	test_facilities:display( "Now performing directly AST-level operations." ),
+    test_facilities:display( "Now performing directly AST-level operations." ),
 
-	BaseAST = ast_utils:erl_to_ast( TargetSourceFile ),
+    BaseAST = ast_utils:erl_to_ast( TargetSourceFile ),
 
-	%test_facilities:display( "Base AST:~n~p", [ BaseAST ] ),
+    %test_facilities:display( "Base AST:~n~p", [ BaseAST ] ),
 
-	BaseModuleInfo = ast_info:extract_module_info_from_ast( BaseAST ),
+    BaseModuleInfo = ast_info:extract_module_info_from_ast( BaseAST ),
 
-	test_facilities:display( "Base module info: ~ts~n",
-		[ ast_info:module_info_to_string( BaseModuleInfo ) ] ),
+    test_facilities:display( "Base module info: ~ts~n",
+        [ ast_info:module_info_to_string( BaseModuleInfo ) ] ),
 
-	FinalModuleInfo = BaseModuleInfo,
+    FinalModuleInfo = BaseModuleInfo,
 
-	test_facilities:display( "Final module info: ~ts~n",
-		[ ast_info:module_info_to_string( FinalModuleInfo ) ] ),
+    test_facilities:display( "Final module info: ~ts~n",
+        [ ast_info:module_info_to_string( FinalModuleInfo ) ] ),
 
-	FinalAST = ast_info:recompose_ast_from_module_info( FinalModuleInfo ),
+    FinalAST = ast_info:recompose_ast_from_module_info( FinalModuleInfo ),
 
-	test_facilities:display( "Final AST:~n~p", [ FinalAST ] ).
+    test_facilities:display( "Final AST:~n~p", [ FinalAST ] ).
 
 
 
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	%TargetSourceFile = "graph_utils.erl",
-	%TargetSourceFile = "simple_parse_transform_target.erl",
-	TargetSourceFile = "../../src/user-interface/graphical/gui_splash.erl",
+    %TargetSourceFile = "graph_utils.erl",
+    %TargetSourceFile = "simple_parse_transform_target.erl",
+    TargetSourceFile = "../../src/user-interface/graphical/gui_splash.erl",
 
-	run_parse_transform( TargetSourceFile ),
+    run_parse_transform( TargetSourceFile ),
 
-	%run_ast_level_operations( TargetSourceFile ),
+    %run_ast_level_operations( TargetSourceFile ),
 
-	test_facilities:stop().
+    test_facilities:stop().

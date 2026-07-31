@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -88,23 +88,23 @@ A point of any dimension, with integer coordinates (e.g. on-screen ones).
 A specialised point that is of one of the specifically-supported dimensions.
 """.
 -type specialised_point() :: point2:point2()
-						   | point3:point3()
-						   | point4:point4().
+                           | point3:point3()
+                           | point4:point4().
 
 
 -export_type([ user_point/0, point/0, integer_point/0, any_point/0,
-			   specialised_point/0 ]).
+               specialised_point/0 ]).
 
 
 -export([ new/1, null/1, from_vector/1, to_vector/1, to_any_vector/1,
-		  roundify/1,
-		  translate/2, vectorize/2,
-		  dimension/1, are_close/2, are_equal/2,
-		  is_within/3, is_within_square/3,
-		  square_distance/2, distance/2,
-		  check/1,
-		  to_string/1, to_compact_string/1, to_basic_string/1,
-		  to_user_string/1 ] ).
+          roundify/1,
+          translate/2, vectorize/2,
+          dimension/1, are_close/2, are_equal/2,
+          is_within/3, is_within_square/3,
+          square_distance/2, distance/2,
+          check/1,
+          to_string/1, to_compact_string/1, to_basic_string/1,
+          to_user_string/1 ] ).
 
 
 
@@ -134,10 +134,10 @@ ones.
 """.
 -spec new( user_point() ) -> any_point().
 new( UserPoint ) when is_list( UserPoint ) ->
-	list_to_tuple( UserPoint );
+    list_to_tuple( UserPoint );
 
 new( UserPoint ) when is_tuple( UserPoint ) ->
-	UserPoint.
+    UserPoint.
 
 
 
@@ -147,7 +147,7 @@ null.
 """.
 -spec null( dimension() ) -> point().
 null( Dim ) ->
-	list_to_tuple( lists:duplicate( Dim, 0.0 ) ).
+    list_to_tuple( lists:duplicate( Dim, 0.0 ) ).
 
 
 
@@ -157,7 +157,7 @@ be type-homogeneous).
 """.
 -spec from_vector( any_vector() ) -> any_point().
 from_vector( V ) ->
-	list_to_tuple( V ).
+    list_to_tuple( V ).
 
 
 
@@ -167,7 +167,7 @@ corresponding to the specified point.
 """.
 -spec to_vector( any_point() ) -> vector().
 to_vector( P ) ->
-	vector:from_point( P ).
+    vector:from_point( P ).
 
 
 
@@ -177,7 +177,7 @@ corresponding to the specified point.
 """.
 -spec to_any_vector( any_point() ) -> any_vector().
 to_any_vector( P ) ->
-	tuple_to_list( P ).
+    tuple_to_list( P ).
 
 
 
@@ -187,7 +187,7 @@ respective nearest integers.
 """.
 -spec roundify( point() ) -> integer_point().
 roundify( {X,Y,Z} ) ->
-	{ erlang:round(X), erlang:round(Y), erlang:round(Z) }.
+    { erlang:round(X), erlang:round(Y), erlang:round(Z) }.
 
 
 
@@ -197,37 +197,37 @@ vector.
 """.
 -spec translate( point(), vector() ) -> point().
 translate( P, V ) ->
-	translate( tuple_to_list( P ), V, _AccP=[] ).
+    translate( tuple_to_list( P ), V, _AccP=[] ).
 
 
 % (helper)
 translate( _P=[], _V=[], AccP ) ->
-	list_to_tuple( lists:reverse( AccP ) );
+    list_to_tuple( lists:reverse( AccP ) );
 
 translate( _P=[ CP | TP ], _V=[ CV | TV ], AccP ) ->
-	translate( TP, TV, [ CP+CV | AccP ] ).
+    translate( TP, TV, [ CP+CV | AccP ] ).
 
 
 
 -doc "Returns a vector V made from the specified two points: V=P2-P1.".
 -spec vectorize( point(), point() ) -> vector().
 vectorize( P1, P2 ) ->
-	vectorize( tuple_to_list( P1 ), tuple_to_list( P2 ), _AccV=[] ).
+    vectorize( tuple_to_list( P1 ), tuple_to_list( P2 ), _AccV=[] ).
 
 
 % (helper)
 vectorize( _P1=[], _P2=[], AccV ) ->
-	lists:reverse( AccV );
+    lists:reverse( AccV );
 
 vectorize( _P1=[ C1 | T1 ], _V=[ C2 | T2 ], AccV ) ->
-	vectorize( T1, T2, [ C2-C1 | AccV ] ).
+    vectorize( T1, T2, [ C2-C1 | AccV ] ).
 
 
 
 -doc "Returns the dimension of the specified point.".
 -spec dimension( any_point() ) -> dimension().
 dimension( P ) ->
-	size( P ).
+    size( P ).
 
 
 
@@ -239,7 +239,7 @@ Alias for are_equal/2.
 """.
 -spec are_close( point(), point() ) -> boolean().
 are_close( P1, P2 ) ->
-	are_equal( P1, P2 ).
+    are_equal( P1, P2 ).
 
 
 
@@ -249,7 +249,7 @@ considered as representing the same point (equality operator on points).
 """.
 -spec are_equal( point(), point() ) -> boolean().
 are_equal( P1, P2 ) ->
-	vector:are_equal( tuple_to_list( P1 ), tuple_to_list( P2 ) ).
+    vector:are_equal( tuple_to_list( P1 ), tuple_to_list( P2 ) ).
 
 
 
@@ -259,8 +259,8 @@ to overcome numerical errors.
 """.
 -spec is_within( point(), point(), distance() ) -> boolean().
 is_within( P1, P2, D ) ->
-	% "Taylor series", square(epsilon) is negligible here:
-	square_distance( P1, P2 ) < D * ( D + ?epsilon ).
+    % "Taylor series", square(epsilon) is negligible here:
+    square_distance( P1, P2 ) < D * ( D + ?epsilon ).
 
 
 
@@ -269,7 +269,7 @@ Tells whether point P1 is within a square distance SquareD from point P2.
 """.
 -spec is_within_square( point(), point(), square_distance() ) -> boolean().
 is_within_square( P1, P2, SquareD ) ->
-	square_distance( P1, P2 ) < SquareD.
+    square_distance( P1, P2 ) < SquareD.
 
 
 
@@ -282,17 +282,17 @@ Could rely on vectorize and square_magnitude as well.
 """.
 -spec square_distance( point(), point() ) -> square_distance().
 square_distance( P1, P2 ) ->
-	square_distance( tuple_to_list( P1 ), tuple_to_list( P2 ), _Acc=0.0 ).
+    square_distance( tuple_to_list( P1 ), tuple_to_list( P2 ), _Acc=0.0 ).
 
 
 % (helper)
 square_distance( _P1=[], _P2=[], Acc ) ->
-	Acc;
+    Acc;
 
 square_distance( _P1=[ C1 | T1 ], _P2=[ C2 | T2 ], Acc ) ->
-	CDiff = C2 - C1,
-	NewAcc = Acc + CDiff*CDiff,
-	square_distance( T1, T2, NewAcc ).
+    CDiff = C2 - C1,
+    NewAcc = Acc + CDiff*CDiff,
+    square_distance( T1, T2, NewAcc ).
 
 
 
@@ -303,24 +303,24 @@ Note: just for comparison purposes, computing the square root is useless.
 """.
 -spec distance( point(), point() ) -> distance().
 distance( P1, P2 ) ->
-	math:sqrt( square_distance( P1, P2 ) ).
+    math:sqrt( square_distance( P1, P2 ) ).
 
 
 
 -doc "Checks that the specified point is legit, and returns it.".
 -spec check( any_point() ) -> any_point().
 check( P ) ->
-	[ C | T ] = tuple_to_list( P ),
-	case is_integer( C ) of
+    [ C | T ] = tuple_to_list( P ),
+    case is_integer( C ) of
 
-		true ->
-			vector:check_integer( T );
+        true ->
+            vector:check_integer( T );
 
-		false ->
-			vector:check( T )
+        false ->
+            vector:check( T )
 
-	end,
-	P.
+    end,
+    P.
 
 
 
@@ -330,7 +330,7 @@ shown.
 """.
 -spec to_string( any_point() ) -> ustring().
 to_string( Point ) ->
-	to_user_string( Point ).
+    to_user_string( Point ).
 
 
 
@@ -339,7 +339,7 @@ Returns a compact, textual, informal representation of the specified point.
 """.
 -spec to_compact_string( any_point() ) -> ustring().
 to_compact_string( Point ) ->
-	text_utils:format( "~w", [ Point ] ).
+    text_utils:format( "~w", [ Point ] ).
 
 
 
@@ -350,27 +350,27 @@ linear.hrl for width and precision) representation of the specified point.
 -spec to_basic_string( any_point() ) -> ustring().
 to_basic_string( Point ) ->
 
-	CoordList = tuple_to_list( Point ),
+    CoordList = tuple_to_list( Point ),
 
-	% Points supposed to be homogeneous tuples:
-	CoordFmt = case is_integer( hd( CoordList ) ) of
+    % Points supposed to be homogeneous tuples:
+    CoordFmt = case is_integer( hd( CoordList ) ) of
 
-		true ->
-			?coord_integer_format;
+        true ->
+            ?coord_integer_format;
 
-		false ->
-			?coord_float_format
+        false ->
+            ?coord_float_format
 
-	end,
+    end,
 
-	ElemFormatStr = "{ " ++ CoordFmt ++ " }~n",
+    ElemFormatStr = "{ " ++ CoordFmt ++ " }~n",
 
-	FormatStr = text_utils:duplicate( length( CoordList ), ElemFormatStr ),
+    FormatStr = text_utils:duplicate( length( CoordList ), ElemFormatStr ),
 
-	%trace_utils:debug_fmt( "FormatStr: ~ts; CoordList: ~w.",
-	%                       [ FormatStr, CoordList ] ),
+    %trace_utils:debug_fmt( "FormatStr: ~ts; CoordList: ~w.",
+    %                       [ FormatStr, CoordList ] ),
 
-	text_utils:format( FormatStr, CoordList ).
+    text_utils:format( FormatStr, CoordList ).
 
 
 
@@ -383,16 +383,16 @@ This is the recommended representation.
 -spec to_user_string( any_point() ) -> ustring().
 to_user_string( Point ) ->
 
-	CoordList = tuple_to_list( Point ),
+    CoordList = tuple_to_list( Point ),
 
-	Strs = linear:coords_to_best_width_strings( CoordList ),
+    Strs = linear:coords_to_best_width_strings( CoordList ),
 
-	% No need for ~ts here:
-	ElemFormatStr = "{ ~s }~n",
+    % No need for ~ts here:
+    ElemFormatStr = "{ ~s }~n",
 
-	FormatStr = text_utils:duplicate( length( CoordList ), ElemFormatStr ),
+    FormatStr = text_utils:duplicate( length( CoordList ), ElemFormatStr ),
 
-	%trace_utils:debug_fmt( "FormatStr: ~ts; Strs: ~p.",
-	%                       [ FormatStr, Strs ] ),
+    %trace_utils:debug_fmt( "FormatStr: ~ts; Strs: ~p.",
+    %                       [ FormatStr, Strs ] ),
 
-	text_utils:format( FormatStr, Strs ).
+    text_utils:format( FormatStr, Strs ).

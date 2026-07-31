@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -30,7 +30,7 @@
 -moduledoc """
 Unit tests for the **gephi_support** toolbox.
 
-See the gephi_support tested module.
+See the `gephi_support` tested module.
 """.
 
 
@@ -51,167 +51,167 @@ See the gephi_support tested module.
 
 launch_server_unconditionally() ->
 
-	test_facilities:display(
-		"Testing server management, by launching it unconditionally." ),
+    test_facilities:display(
+        "Testing server management, by launching it unconditionally." ),
 
-	% Before, a source ProjectPath may be copied, and UserDir may be removed:
-	gephi_support:launch_server( ?gephi_project_path ),
+    % Before, a source ProjectPath may be copied, and UserDir may be removed:
+    gephi_support:launch_server( ?gephi_project_path ),
 
-	SrvInfo = gephi_support:get_server_info( ?gephi_workspace ),
+    SrvInfo = gephi_support:get_server_info( ?gephi_workspace ),
 
-	case gephi_support:wait_server( SrvInfo ) of
+    case gephi_support:wait_server( SrvInfo ) of
 
-		true ->
-			SrvInfo;
+        true ->
+            SrvInfo;
 
-		false ->
-			throw( gephi_test_server_not_found )
+        false ->
+            throw( gephi_test_server_not_found )
 
-	end.
+    end.
 
 
 
 launch_server_if_needed() ->
 
-	test_facilities:display(
-		"Testing server management, by launching it if needed." ),
+    test_facilities:display(
+        "Testing server management, by launching it if needed." ),
 
-	SrvInfo = gephi_support:get_server_info( ?gephi_workspace ),
+    SrvInfo = gephi_support:get_server_info( ?gephi_workspace ),
 
-	% Before, a source ProjectPath may be copied, and UserDir may be removed:
-	gephi_support:launch_server_if_needed( ?gephi_project_path, SrvInfo ),
+    % Before, a source ProjectPath may be copied, and UserDir may be removed:
+    gephi_support:launch_server_if_needed( ?gephi_project_path, SrvInfo ),
 
-	case gephi_support:wait_server( SrvInfo ) of
+    case gephi_support:wait_server( SrvInfo ) of
 
-		true ->
-			SrvInfo;
+        true ->
+            SrvInfo;
 
-		false ->
-			throw( gephi_test_server_not_found )
+        false ->
+            throw( gephi_test_server_not_found )
 
-	end,
+    end,
 
-	SrvInfo.
+    SrvInfo.
 
 
 
 test_server( SrvInfo ) ->
 
-	test_facilities:display( "Testing the client-side API." ),
+    test_facilities:display( "Testing the client-side API." ),
 
-	gephi_support:start(),
+    gephi_support:start(),
 
-	Red    = "#ff0000",
-	Green  = "#00ff00",
-	Blue   = "#0000ff",
-	Yellow = "#ffff00",
-	% Binaries managed as well:
-	Cyan   = <<"#00ffff">>,
+    Red    = "#ff0000",
+    Green  = "#00ff00",
+    Blue   = "#0000ff",
+    Yellow = "#ffff00",
+    % Binaries managed as well:
+    Cyan   = <<"#00ffff">>,
 
-	basic_utils:ignore_unused( [ Red, Green, Blue, Yellow, Cyan ] ),
+    basic_utils:ignore_unused( [ Red, Green, Blue, Yellow, Cyan ] ),
 
-	test_facilities:display( "Testing first nodes." ),
+    test_facilities:display( "Testing first nodes." ),
 
-	FirstNodeId = "myriad-node-id-1",
+    FirstNodeId = "myriad-node-id-1",
 
-	FirstNodeLabel = text_utils:format(
-		"I am the label of the node whose identifier is '~ts'.",
-		[ FirstNodeId ] ),
+    FirstNodeLabel = text_utils:format(
+        "I am the label of the node whose identifier is '~ts'.",
+        [ FirstNodeId ] ),
 
-	gephi_support:add_node( FirstNodeId, FirstNodeLabel, SrvInfo ),
-
-
-	FirstNodePropertyId = "My first node property",
-
-	FirstTimestamp = "40.0",
-
-	gephi_support:update_node_property( FirstNodeId, FirstNodePropertyId,
-		_PropertyValue=25, FirstTimestamp, SrvInfo ),
+    gephi_support:add_node( FirstNodeId, FirstNodeLabel, SrvInfo ),
 
 
-	%SecondNodePropertyId = "My second node property",
-	SecondNodePropertyId = "color",
+    FirstNodePropertyId = "My first node property",
 
-	_SecondNodePropertyValue = 10,
-	SecondNodePropertyValue = Green,
+    FirstTimestamp = "40.0",
 
-	gephi_support:update_node_property( FirstNodeId, SecondNodePropertyId,
-		SecondNodePropertyValue, SrvInfo ),
+    gephi_support:update_node_property( FirstNodeId, FirstNodePropertyId,
+        _PropertyValue=25, FirstTimestamp, SrvInfo ),
 
 
-	SecondTimestamp = "41.0",
+    %SecondNodePropertyId = "My second node property",
+    SecondNodePropertyId = "color",
 
-	gephi_support:update_node_property( FirstNodeId, FirstNodePropertyId,
-		_PValue=26, SecondTimestamp, SrvInfo ),
+    _SecondNodePropertyValue = 10,
+    SecondNodePropertyValue = Green,
 
-
-	% Binary strings accepted as well:
-
-	SecondNodeId = <<"myriad-node-id-2">>,
-
-	SecondNodeLabel = text_utils:bin_format(
-		"I am the label of the node whose identifier is '~ts'.",
-		[ SecondNodeId ] ),
-
-	gephi_support:add_node( SecondNodeId, SecondNodeLabel, SrvInfo ),
+    gephi_support:update_node_property( FirstNodeId, SecondNodePropertyId,
+        SecondNodePropertyValue, SrvInfo ),
 
 
-	ThirdNodeId = <<"myriad-node-id-3">>,
+    SecondTimestamp = "41.0",
 
-	gephi_support:add_node( ThirdNodeId, SrvInfo ),
-
-	ThirdNodePropTable = table:new( [
-		{ label, "I am the third node" },
-		{ color, Blue } ] ),
-
-	gephi_support:update_node_properties( ThirdNodeId, ThirdNodePropTable,
-										  SrvInfo ),
+    gephi_support:update_node_property( FirstNodeId, FirstNodePropertyId,
+        _PValue=26, SecondTimestamp, SrvInfo ),
 
 
-	test_facilities:display( "Testing then edges." ),
+    % Binary strings accepted as well:
 
-	FirstEdgeId = "myriad-edge-id-1",
-	FirstEdgePropertyId = "My first edge property",
+    SecondNodeId = <<"myriad-node-id-2">>,
 
-	gephi_support:add_edge( FirstEdgeId, FirstNodeId, SecondNodeId,
-							_IsDirected=true, SrvInfo ),
+    SecondNodeLabel = text_utils:bin_format(
+        "I am the label of the node whose identifier is '~ts'.",
+        [ SecondNodeId ] ),
 
-	gephi_support:update_edge_property( FirstEdgeId, FirstEdgePropertyId,
-		_EPValue=-2, SrvInfo ),
-
-	SecondEdgePropertyId = "My second edge property",
-	gephi_support:update_edge_property( FirstEdgeId, SecondEdgePropertyId,
-		_EPV=-1, SecondTimestamp, SrvInfo ),
+    gephi_support:add_node( SecondNodeId, SecondNodeLabel, SrvInfo ),
 
 
-	SecondEdgeId = "myriad-edge-id-2",
+    ThirdNodeId = <<"myriad-node-id-3">>,
 
-	gephi_support:add_edge( SecondEdgeId, SecondNodeId, ThirdNodeId,
-							_IsDir=false, SrvInfo ),
+    gephi_support:add_node( ThirdNodeId, SrvInfo ),
 
-	SecondEdgePropTable = table:new( [
-		{ label, "I am the second edge" },
-		{ color, Red } ] ),
+    ThirdNodePropTable = table:new( [
+        { label, "I am the third node" },
+        { color, Blue } ] ),
 
-	gephi_support:update_edge_properties( SecondEdgeId, SecondEdgePropTable,
-										  SrvInfo ),
+    gephi_support:update_node_properties( ThirdNodeId, ThirdNodePropTable,
+                                          SrvInfo ),
 
 
-	test_facilities:display( "Testing the color change for nodes." ),
+    test_facilities:display( "Testing then edges." ),
 
-	FourthNodeId = "My fourth node property",
+    FirstEdgeId = "myriad-edge-id-1",
+    FirstEdgePropertyId = "My first edge property",
 
-	FourthNodeLabel = text_utils:format(
-		"I am the label of the node whose identifier is '~ts'.",
-		[ FourthNodeId ] ),
+    gephi_support:add_edge( FirstEdgeId, FirstNodeId, SecondNodeId,
+                            _IsDirected=true, SrvInfo ),
 
-	% Starts cyan but should end up yellow:
-	gephi_support:add_node( FourthNodeId, FourthNodeLabel, Cyan, SrvInfo ),
+    gephi_support:update_edge_property( FirstEdgeId, FirstEdgePropertyId,
+        _EPValue=-2, SrvInfo ),
 
-	gephi_support:update_node_property( FourthNodeId, color, Yellow,
-										SrvInfo ),
+    SecondEdgePropertyId = "My second edge property",
+    gephi_support:update_edge_property( FirstEdgeId, SecondEdgePropertyId,
+        _EPV=-1, SecondTimestamp, SrvInfo ),
 
-	gephi_support:stop().
+
+    SecondEdgeId = "myriad-edge-id-2",
+
+    gephi_support:add_edge( SecondEdgeId, SecondNodeId, ThirdNodeId,
+                            _IsDir=false, SrvInfo ),
+
+    SecondEdgePropTable = table:new( [
+        { label, "I am the second edge" },
+        { color, Red } ] ),
+
+    gephi_support:update_edge_properties( SecondEdgeId, SecondEdgePropTable,
+                                          SrvInfo ),
+
+
+    test_facilities:display( "Testing the color change for nodes." ),
+
+    FourthNodeId = "My fourth node property",
+
+    FourthNodeLabel = text_utils:format(
+        "I am the label of the node whose identifier is '~ts'.",
+        [ FourthNodeId ] ),
+
+    % Starts cyan but should end up yellow:
+    gephi_support:add_node( FourthNodeId, FourthNodeLabel, Cyan, SrvInfo ),
+
+    gephi_support:update_node_property( FourthNodeId, color, Yellow,
+                                        SrvInfo ),
+
+    gephi_support:stop().
 
 
 
@@ -219,23 +219,23 @@ test_server( SrvInfo ) ->
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	case not executable_utils:is_batch() andalso gephi_support:is_available() of
+    case not executable_utils:is_batch() andalso gephi_support:is_available() of
 
-		true ->
-			%SrvInfo = launch_server_unconditionally(),
-			SrvInfo = launch_server_if_needed(),
+        true ->
+            %SrvInfo = launch_server_unconditionally(),
+            SrvInfo = launch_server_if_needed(),
 
-			test_facilities:display( "Server information: ~ts.",
-				[ gephi_support:server_info_to_string( SrvInfo ) ] ),
+            test_facilities:display( "Server information: ~ts.",
+                [ gephi_support:server_info_to_string( SrvInfo ) ] ),
 
-			test_server( SrvInfo );
+            test_server( SrvInfo );
 
-		false ->
-			test_facilities:display( "(not running the Gephi test, being in "
-				"batch mode and/or the Gephi support not being available)" )
+        false ->
+            test_facilities:display( "(not running the Gephi test, being in "
+                "batch mode and/or the Gephi support not being available)" )
 
-	end,
+    end,
 
-	test_facilities:stop().
+    test_facilities:stop().

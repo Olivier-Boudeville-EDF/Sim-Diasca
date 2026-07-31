@@ -1,4 +1,4 @@
-% Copyright (C) 2024-2025 EDF R&D
+% Copyright (C) 2024-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -24,7 +24,7 @@
 -moduledoc """
 Integration test for the **testing of graph stream probes**.
 
-See the class_GraphStreamProbe.erl module.
+See the `class_GraphStreamProbe` module.
 """.
 
 
@@ -37,78 +37,78 @@ See the class_GraphStreamProbe.erl module.
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+    ?case_start,
 
-	?test_info( "Testing the use of graph stream probes." ),
+    ?test_info( "Testing the use of graph stream probes." ),
 
-	% Use default simulation settings (50Hz, batch reproducible):
-	SimulationSettings = #simulation_settings{
+    % Use default simulation settings (50Hz, batch reproducible):
+    SimulationSettings = #simulation_settings{
 
-		simulation_name="Graph Stream Probe Integration Test"
+        simulation_name="Graph Stream Probe Integration Test"
 
-		% Using default simulation frequency (50Hz, period of 20ms).
+        % Using default simulation frequency (50Hz, period of 20ms).
 
-		% We leave it to the default specification (all_outputs):
-		%result_specification =
-		% [ { targeted_patterns, [ {".*",[data_and_rendering] } ] },
-		%   { blacklisted_patterns, ["^Second" ] } ]
+        % We leave it to the default specification (all_outputs):
+        %result_specification =
+        % [ { targeted_patterns, [ {".*",[data_and_rendering] } ] },
+        %   { blacklisted_patterns, ["^Second" ] } ]
 
-		%result_specification = no_output
+        %result_specification = no_output
 
-	},
-
-
-	%_MaybeProjectPath=undefined,
-	MaybeProjectPath=
-		"../../../../../../../myriad/test/data-management/test-project.gephi",
-
-	% Specifies the list of computing hosts that can be used:
-	%
-	% (see the sim-diasca-host-candidates-sample.etf example in the
-	% sim-diasca/conf directory)
-	%
-	DeploymentSettings = #deployment_settings{
-		%enable_graph_streaming=false,
-		enable_graph_streaming={ true,
-
-			MaybeProjectPath,
-
-			%_WorkspaceName="Test workspace" } },
-			_WorkspaceName="siclone" } },
+    },
 
 
-	% A deployment manager is created directly on the user node:
-	DeploymentManagerPid =
-		sim_diasca:init( SimulationSettings, DeploymentSettings ),
+    %_MaybeProjectPath=undefined,
+    MaybeProjectPath=
+        "../../../../../../../myriad/test/data-management/test-project.gephi",
+
+    % Specifies the list of computing hosts that can be used:
+    %
+    % (see the sim-diasca-host-candidates-sample.etf example in the
+    % sim-diasca/conf directory)
+    %
+    DeploymentSettings = #deployment_settings{
+        %enable_graph_streaming=false,
+        enable_graph_streaming={ true,
+
+            MaybeProjectPath,
+
+            %_WorkspaceName="Test workspace" } },
+            _WorkspaceName="siclone" } },
 
 
-	_GSTA1 = class_Actor:create_initial_actor( class_TestGraphStreamActor,
-											   [ "First test actor" ] ),
-
-	DeploymentManagerPid ! { getRootTimeManager, [], self() },
-	RootTimeManagerPid = test_receive(),
-
-	StopTick = 2000,
-
-	?test_info_fmt( "Starting simulation, "
-					"for a stop at tick offset ~B.", [ StopTick ] ),
-
-	RootTimeManagerPid ! { start, [ StopTick, self() ] },
+    % A deployment manager is created directly on the user node:
+    DeploymentManagerPid =
+        sim_diasca:init( SimulationSettings, DeploymentSettings ),
 
 
-	?test_info( "Waiting for the simulation to end, "
-				"since having been declared as a simulation listener." ),
+    _GSTA1 = class_Actor:create_initial_actor( class_TestGraphStreamActor,
+                                               [ "First test actor" ] ),
 
-	receive
+    DeploymentManagerPid ! { getRootTimeManager, [], self() },
+    RootTimeManagerPid = test_receive(),
 
-		simulation_stopped ->
-			?test_info( "Simulation stopped spontaneously." )
+    StopTick = 2000,
 
-	end,
+    ?test_info_fmt( "Starting simulation, "
+                    "for a stop at tick offset ~B.", [ StopTick ] ),
 
-	?test_info( "Browsing the report results, if in batch mode." ),
-	class_ResultManager:browse_reports(),
+    RootTimeManagerPid ! { start, [ StopTick, self() ] },
 
-	sim_diasca:shutdown(),
 
-	?case_stop.
+    ?test_info( "Waiting for the simulation to end, "
+                "since having been declared as a simulation listener." ),
+
+    receive
+
+        simulation_stopped ->
+            ?test_info( "Simulation stopped spontaneously." )
+
+    end,
+
+    ?test_info( "Browsing the report results, if in batch mode." ),
+    class_ResultManager:browse_reports(),
+
+    sim_diasca:shutdown(),
+
+    ?case_stop.

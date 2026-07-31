@@ -84,7 +84,10 @@ PUBLIC_SUBDIRS = $(SD_INST_GUIDE_PUBLIC_DIR) $(COMMON_SUBDIRS)
 
 
 # For the internal version:
-ERLANG_DOC_DIR = $$HOME/Software/Erlang/Erlang-current-documentation/doc
+# (as now done from a VM)
+#
+ERLANG_DOC_DIR = /opt/Software/Erlang/Erlang-current-documentation/doc
+#ERLANG_DOC_DIR = $$HOME/Software/Erlang/Erlang-current-documentation/doc
 
 
 # Default do-nothing target:
@@ -208,7 +211,7 @@ populate-doc-dir-public: generate-doc-public
 
 copy-erlang-doc:
 	@if [ -z "$(DOC_TARGET_DIR)" ]; then echo "  Error, 'DOC_TARGET_DIR' not set." 1>&2; exit 15; fi
-	@if [ -d "$(ERLANG_DOC_DIR)" ]; then echo "  Creating a mirror of the current local Erlang documentation in $(DOC_TARGET_DIR)" ; mkdir -p $(DOC_TARGET_DIR)/erlang && /bin/cp -rf "$(ERLANG_DOC_DIR)"/* $(DOC_TARGET_DIR)/erlang/; else echo " (no local Erlang documentation found, no mirror created) "; fi
+	@if [ -d "$(ERLANG_DOC_DIR)" ]; then echo "  Creating a mirror of the current local Erlang documentation in $(DOC_TARGET_DIR)"; mkdir -p $(DOC_TARGET_DIR)/erlang && /bin/cp -rf "$(ERLANG_DOC_DIR)"/* $(DOC_TARGET_DIR)/erlang/; else echo " (no local Erlang documentation found, no mirror created)"; fi
 
 
 
@@ -245,7 +248,9 @@ create-traces-referential:
 	@traces_target_dir=$$(realpath $(DOC_TARGET_DIR))/traces; mkdir -p $$traces_target_dir && cd $(TRACES_TOP)/doc && $(MAKE) -s create-local-referential DOC_TARGET_DIR="$$traces_target_dir"
 
 
+
 export-internal:
+	@echo "  In order to export the internal Sim-Diasca documentation, the recommended mode of operation is just to create a new pipeline in https://gitlab.pleiade.edf.fr/Sim-Diasca/documentation/pipelines."
 
 
 # Note that no dead symlink shall exist in the generated documentation,

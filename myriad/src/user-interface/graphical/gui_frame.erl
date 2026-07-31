@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -82,46 +82,46 @@ See also <http://docs.wxwidgets.org/stable/classwx_frame.html>.
 """.
 -type frame_style() ::
 
-	window_style()
+    window_style()
 
-	% Corresponds to the following options: minimize_icon, maximize_icon,
-	% resize_border, system_menu, caption, close_icon and clip_children:
-	%
+    % Corresponds to the following options: minimize_icon, maximize_icon,
+    % resize_border, system_menu, caption, close_icon and clip_children:
+    %
   | 'default'
 
-	% Displays a caption on the title bar of this frame (needed for icons):
+    % Displays a caption on the title bar of this frame (needed for icons):
   | 'caption'
 
-	% Displays a minimize icon on the title bar of this frame:
+    % Displays a minimize icon on the title bar of this frame:
   | 'minimize_icon'
 
-	% Displays a maximize icon on the title bar of this frame:
+    % Displays a maximize icon on the title bar of this frame:
   | 'maximize_icon'
 
-	% Displays a close icon on the title bar of this frame:
+    % Displays a close icon on the title bar of this frame:
   | 'close_icon'
 
-	% Stays on top of all other windows (see also 'float_on_parent'):
+    % Stays on top of all other windows (see also 'float_on_parent'):
   | 'stay_on_top'
 
-	% Displays a system menu containing the list of various windows commands
-	% in the window title bar.
-	%
+    % Displays a system menu containing the list of various windows commands
+    % in the window title bar.
+    %
   | 'system_menu'
 
-	% Displays a resizable border around the window.
+    % Displays a resizable border around the window.
   | 'resize_border'
 
-	% This frame will have a small title bar:
+    % This frame will have a small title bar:
   | 'tool_window'
 
-	% Requests that this frame does not appear in the taskbar:
+    % Requests that this frame does not appear in the taskbar:
   | 'no_taskbar'
 
-	% Stays on top of (only) its parent (see also 'stay_on_top'):
+    % Stays on top of (only) its parent (see also 'stay_on_top'):
   | 'float_on_parent'
 
-	% Allows this frame to have its shape changed:
+    % Allows this frame to have its shape changed:
   | 'shaped'.
 
 
@@ -130,15 +130,15 @@ See also <http://docs.wxwidgets.org/stable/classwx_frame.html>.
 
 % For frames:
 -export([ create/0, create/1, create/2, create/3, create/4, create/6,
-		  destruct/1,
-		  set_menu_bar/2, show/1 ]).
+          destruct/1,
+          set_menu_bar/2, show/1 ]).
 
 
 % For top-level frames:
 -export([ create_top_level/1, create_top_level/2, create_top_level/4,
-		  set_icon/2, center_on_screen/1, center_on_screen/2,
-		  is_maximised/1, maximize/1,
-		  is_fullscreen/1, set_fullscreen/2 ]).
+          set_icon/2, center_on_screen/1, center_on_screen/2,
+          is_maximised/1, maximize/1,
+          is_fullscreen/1, set_fullscreen/2 ]).
 
 
 
@@ -180,12 +180,12 @@ error is indeed reported: "wxWidgets Assert failure:
 """.
 -spec create() -> frame().
 create() ->
-	% We could see a case where a call to wxFrame:new/0 issued by an helper
-	% spawned process (having set its environment) would trigger a segmentation
-	% fault, whereas wxFrame:new(wx:null(), ?wxID_ANY, "Hello") worked
-	% flawlessly:
-	%
-	wxFrame:new().
+    % We could see a case where a call to wxFrame:new/0 issued by an helper
+    % spawned process (having set its environment) would trigger a segmentation
+    % fault, whereas wxFrame:new(wx:null(), ?wxID_ANY, "Hello") worked
+    % flawlessly:
+    %
+    wxFrame:new().
 
 
 
@@ -195,7 +195,7 @@ parent.
 """.
 -spec create( title() ) -> frame().
 create( Title ) ->
-	wxFrame:new( gui_wx_backend:to_wx_parent( undefined ), ?gui_any_id, Title ).
+    wxFrame:new( gui_wx_backend:to_wx_parent( undefined ), ?gui_any_id, Title ).
 
 
 
@@ -206,20 +206,20 @@ parent.
 -spec create( title(), size() ) -> frame().
 create( Title, Size ) ->
 
-	WxOpts = [ gui_wx_backend:to_wx_size( Size ) ],
+    WxOpts = [ gui_wx_backend:to_wx_size( Size ) ],
 
-	%trace_utils:debug_fmt( "create_frame options: ~p.", [ WxOpts ] ),
+    %trace_utils:debug_fmt( "create_frame options: ~p.", [ WxOpts ] ),
 
-	wxFrame:new( gui_wx_backend:to_wx_parent( undefined ),
-				 gui_id:declare_any_id( undefined ), Title, WxOpts ).
+    wxFrame:new( gui_wx_backend:to_wx_parent( undefined ),
+                 gui_id:declare_any_id( undefined ), Title, WxOpts ).
 
 
 
 -doc "Creates a frame, with default position, size and styles.".
 -spec create( title(), id(), option( parent() ) ) -> frame().
 create( Title, Id, MaybeParent ) ->
-	wxFrame:new( gui_wx_backend:to_wx_parent( MaybeParent ),
-				 gui_id:declare_any_id( Id ), Title ).
+    wxFrame:new( gui_wx_backend:to_wx_parent( MaybeParent ),
+                 gui_id:declare_any_id( Id ), Title ).
 
 
 
@@ -230,15 +230,15 @@ default parent.
 -spec create( title(), position(), sizing(), [ frame_style() ] ) -> frame().
 create( Title, Position, Sizing, Styles ) ->
 
-	WxOpts = [ gui_wx_backend:to_wx_position( Position ),
-				gui_wx_backend:to_wx_size( Sizing ),
-				{ style, frame_styles_to_bitmask( Styles ) } ],
+    WxOpts = [ gui_wx_backend:to_wx_position( Position ),
+                gui_wx_backend:to_wx_size( Sizing ),
+                { style, frame_styles_to_bitmask( Styles ) } ],
 
-	%trace_utils:debug_fmt( "Creating a frame with WxOpts = ~w "
-	%                       "(styles: ~w).", [ WxOpts, Styles ] ),
+    %trace_utils:debug_fmt( "Creating a frame with WxOpts = ~w "
+    %                       "(styles: ~w).", [ WxOpts, Styles ] ),
 
-	wxFrame:new( gui_wx_backend:to_wx_parent( undefined ),
-				 gui_id:declare_any_id( undefined ), Title, WxOpts ).
+    wxFrame:new( gui_wx_backend:to_wx_parent( undefined ),
+                 gui_id:declare_any_id( undefined ), Title, WxOpts ).
 
 
 
@@ -247,35 +247,35 @@ Creates a frame, with the specified title, position, size and styles, and with
 the specified parent.
 """.
 -spec create( title(), position(), sizing(), [ frame_style() ], id(),
-			  option( parent() ) ) -> frame().
+              option( parent() ) ) -> frame().
 create( Title, Position, Sizing, Styles, Id, MaybeParent ) ->
 
-	WxOpts = [ gui_wx_backend:to_wx_position( Position ),
-			   gui_wx_backend:to_wx_size( Sizing ),
-			   { style, frame_styles_to_bitmask( Styles ) } ],
+    WxOpts = [ gui_wx_backend:to_wx_position( Position ),
+               gui_wx_backend:to_wx_size( Sizing ),
+               { style, frame_styles_to_bitmask( Styles ) } ],
 
-	%trace_utils:debug_fmt( "Creating a frame with WxOpts = ~w "
-	%                       "(styles: ~w).", [ WxOpts, Styles ] ),
+    %trace_utils:debug_fmt( "Creating a frame with WxOpts = ~w "
+    %                       "(styles: ~w).", [ WxOpts, Styles ] ),
 
-	ActualId = gui_id:declare_any_id( Id ),
+    ActualId = gui_id:declare_any_id( Id ),
 
-	ActualParent = gui_wx_backend:to_wx_parent( MaybeParent ),
+    ActualParent = gui_wx_backend:to_wx_parent( MaybeParent ),
 
-	wxFrame:new( ActualParent, ActualId, Title, WxOpts ).
+    wxFrame:new( ActualParent, ActualId, Title, WxOpts ).
 
 
 
 -doc "Destructs the specified frame.".
 -spec destruct( frame() ) -> void().
 destruct( Frame  ) ->
-	wxFrame:destroy( Frame ).
+    wxFrame:destroy( Frame ).
 
 
 
 -doc "Assigns the specified menu bar to the specified frame.".
 -spec set_menu_bar( frame(), menu_bar() ) -> void().
 set_menu_bar( Frame, MenuBar ) ->
-	wxFrame:setMenuBar( Frame, MenuBar ).
+    wxFrame:setMenuBar( Frame, MenuBar ).
 
 
 
@@ -288,7 +288,7 @@ This is the place where all widgets resolve their positions, sizes and contents.
 """.
 -spec show( frame() | [ frame() ] ) -> boolean().
 show( FrameMaybeList ) ->
-	gui_window:show( FrameMaybeList ).
+    gui_window:show( FrameMaybeList ).
 
 
 
@@ -300,12 +300,12 @@ bit mask.
 """.
 -spec frame_styles_to_bitmask( [ frame_style() ] ) -> bit_mask().
 frame_styles_to_bitmask( Styles ) when is_list( Styles ) ->
-	% 'bor ?wxWANTS_CHARS' not desirable a priori:
-	lists:foldl( fun( S, Acc ) ->
-					gui_generated:get_second_for_frame_style( S ) bor Acc
-				 end,
-				 _InitialAcc=0,
-				 _List=Styles ).
+    % 'bor ?wxWANTS_CHARS' not desirable a priori:
+    lists:foldl( fun( S, Acc ) ->
+                    gui_generated:get_second_for_frame_style( S ) bor Acc
+                 end,
+                 _InitialAcc=0,
+                 _List=Styles ).
 
 
 
@@ -317,9 +317,9 @@ Creates a top-level frame, with default position, size, style and identifier.
 """.
 -spec create_top_level( title() ) -> top_level_frame().
 create_top_level( Title ) ->
-	Frame = create( Title ),
-	gui_window:record_as_top_level( Frame ),
-	Frame.
+    Frame = create( Title ),
+    gui_window:record_as_top_level( Frame ),
+    Frame.
 
 
 
@@ -328,9 +328,9 @@ Creates a top-level frame, with the specified size, and a default identifier.
 """.
 -spec create_top_level( title(), size() ) -> top_level_frame().
 create_top_level( Title, Size ) ->
-	Frame = create( Title, Size ),
-	gui_window:record_as_top_level( Frame ),
-	Frame.
+    Frame = create( Title, Size ),
+    gui_window:record_as_top_level( Frame ),
+    Frame.
 
 
 
@@ -338,25 +338,25 @@ create_top_level( Title, Size ) ->
 Creates a top-level frame, with the specified title, position, size and style.
 """.
 -spec create_top_level( title(), position(), size(), frame_style() ) ->
-												top_level_frame().
+                                                top_level_frame().
 create_top_level( Title, Position, Size, Style ) ->
-	Frame = create( Title, Position, Size, Style ),
-	gui_window:record_as_top_level( Frame ),
-	Frame.
+    Frame = create( Title, Position, Size, Style ),
+    gui_window:record_as_top_level( Frame ),
+    Frame.
 
 
 
 -doc "Sets the icon of the specified top-level frame.".
 -spec set_icon( top_level_frame(), any_file_path() ) -> void().
 set_icon( TopLevelFrame, IconPath ) ->
-	gui_window:set_icon( TopLevelFrame, IconPath ).
+    gui_window:set_icon( TopLevelFrame, IconPath ).
 
 
 
 -doc "Centers the specified top-level frame on screen.".
 -spec center_on_screen( top_level_frame() ) -> void().
 center_on_screen( TopLevelFrame ) ->
-	gui_window:center_on_screen( TopLevelFrame ).
+    gui_window:center_on_screen( TopLevelFrame ).
 
 
 
@@ -366,28 +366,28 @@ orientation(s).
 """.
 -spec center_on_screen( top_level_frame(), orientation() ) -> void().
 center_on_screen( TopLevelFrame, Orientation ) ->
-	gui_window:center_on_screen( TopLevelFrame, Orientation ).
+    gui_window:center_on_screen( TopLevelFrame, Orientation ).
 
 
 
 -doc "Tells whether the specified top-level frame is maximised.".
 -spec is_maximised( top_level_frame() ) -> boolean().
 is_maximised( TopLevelFrame ) ->
-	gui_window:is_maximised( TopLevelFrame ).
+    gui_window:is_maximised( TopLevelFrame ).
 
 
 
 -doc "Maximises the specified top-level frame.".
 -spec maximize( top_level_frame() ) -> void().
 maximize( TopLevelFrame ) ->
-	gui_window:maximize( TopLevelFrame ).
+    gui_window:maximize( TopLevelFrame ).
 
 
 
 -doc "Returns whether the specified top-level frame is fullscreen.".
 -spec is_fullscreen( top_level_frame() ) -> boolean().
 is_fullscreen( TopLvlFrame ) ->
-	wxTopLevelWindow:isFullScreen( TopLvlFrame ).
+    wxTopLevelWindow:isFullScreen( TopLvlFrame ).
 
 
 
@@ -402,4 +402,4 @@ Returns (supposedly) whether the operation succeeded.
 """.
 -spec set_fullscreen( top_level_frame(), boolean() ) -> void().
 set_fullscreen( TopLvlFrame, ForceFullscreen ) ->
-	wxTopLevelWindow:showFullScreen( TopLvlFrame, ForceFullscreen ).
+    wxTopLevelWindow:showFullScreen( TopLvlFrame, ForceFullscreen ).

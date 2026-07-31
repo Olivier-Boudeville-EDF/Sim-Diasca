@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2025 EDF R&D
+% Copyright (C) 2011-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -32,9 +32,10 @@
 % Note: directly obtained from traces_test_header.hrl.
 
 
+% More proper simulation case default:
 -ifndef(trace_emitter_categorization).
 
- -define( trace_emitter_categorization, "case" ).
+ -define( trace_emitter_categorization, "Simulation case" ).
 
 -endif. % trace_emitter_categorization
 
@@ -64,61 +65,71 @@
 
 
 -define( case_emergency( Message ),
-		 class_TraceEmitter:send_standalone_safe( emergency, Message )
+         class_TraceEmitter:send_standalone_safe( emergency, Message,
+            ?trace_emitter_categorization )
 ).
 
 
 -define( case_emergency_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( emergency,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( emergency,
+            text_utils:format( MessageFormat, FormatValues ),
+            ?trace_emitter_categorization )
 ).
 
 
 
 -define( case_alert( Message ),
-		 class_TraceEmitter:send_standalone_safe( alert, Message )
+         class_TraceEmitter:send_standalone_safe( alert, Message,
+            ?trace_emitter_categorization )
 ).
 
 
 -define( case_alert_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( alert,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( alert,
+            text_utils:format( MessageFormat, FormatValues ),
+            ?trace_emitter_categorization )
 ).
 
 
 
 -define( case_critical( Message ),
-		 class_TraceEmitter:send_standalone_safe( critical, Message )
+         class_TraceEmitter:send_standalone_safe( critical, Message,
+            ?trace_emitter_categorization )
 ).
 
 
 -define( case_critical_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( critical,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( critical,
+            text_utils:format( MessageFormat, FormatValues ),
+            ?trace_emitter_categorization )
 ).
 
 
 
 -define( case_error( Message ),
-		 class_TraceEmitter:send_standalone_safe( error, Message )
+         class_TraceEmitter:send_standalone_safe( error, Message,
+            ?trace_emitter_categorization )
 ).
 
 
 -define( case_error_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( error,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( error,
+            text_utils:format( MessageFormat, FormatValues ),
+            ?trace_emitter_categorization )
 ).
 
 
 
 -define( case_warning( Message ),
-		 class_TraceEmitter:send_standalone_safe( warning, Message )
+         class_TraceEmitter:send_standalone_safe( warning, Message,
+            ?trace_emitter_categorization )
 ).
 
 
 -define( case_warning_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( warning,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( warning,
+            text_utils:format( MessageFormat, FormatValues ),
+            ?trace_emitter_categorization )
 ).
 
 
@@ -128,39 +139,46 @@
 
 
 -define( case_notice( Message ),
-		 class_TraceEmitter:send_standalone_safe( notice, Message )
+         class_TraceEmitter:send_standalone_safe( notice, Message,
+            ?trace_emitter_categorization )
 ).
 
 
 -define( case_notice_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( notice,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( notice,
+            text_utils:format( MessageFormat, FormatValues ),
+            ?trace_emitter_categorization )
 ).
 
 
 
 -define( case_info( Message ),
-		 class_TraceEmitter:send_standalone_safe( info, Message )
-
+         class_TraceEmitter:send_standalone_safe( info, Message,
+            ?trace_emitter_categorization )
 ).
 
 
 -define( case_info_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( info,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( info,
+            text_utils:format( MessageFormat, FormatValues ),
+            ?trace_emitter_categorization )
 ).
+
 
 
 
 -define( case_debug( Message ),
-		 class_TraceEmitter:send_standalone_safe( debug, Message )
+         class_TraceEmitter:send_standalone_safe( debug, Message,
+            ?trace_emitter_categorization )
 ).
 
 
 -define( case_debug_fmt( MessageFormat, FormatValues ),
-		 class_TraceEmitter:send_standalone_safe( debug,
-			text_utils:format( MessageFormat, FormatValues ) )
+         class_TraceEmitter:send_standalone_safe( debug,
+            text_utils:format( MessageFormat, FormatValues ),
+            ?trace_emitter_categorization )
 ).
+
 
 
 % 'void' section put near the end of this file.
@@ -178,7 +196,7 @@
 
 
 -define( case_notice_fmt( Message, FormatValues ),
-		 case_trace_disabled( Message, FormatValues ) ).
+         case_trace_disabled( Message, FormatValues ) ).
 
 
 
@@ -186,7 +204,7 @@
 
 
 -define( case_info_fmt( Message, FormatValues ),
-		 case_trace_disabled( Message, FormatValues ) ).
+         case_trace_disabled( Message, FormatValues ) ).
 
 
 
@@ -194,7 +212,7 @@
 
 
 -define( case_debug_fmt( Message, FormatValues ),
-		 case_trace_disabled( Message, FormatValues ) ).
+         case_trace_disabled( Message, FormatValues ) ).
 
 
 

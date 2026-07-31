@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 EDF R&D
+% Copyright (C) 2016-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -26,13 +26,13 @@ Class in charge, as a dataflow exit point, to **manage simulation steps**.
 """.
 
 -define( class_description,
-		 "The experiment exit point is a singleton instance in charge of being "
-		 "the (logical) stopping point that terminates the evaluation of the "
-		 "registered dataflows, possibly at each timestep; technically it is "
-		 "run first (spontaneously), and once done triggers the experiment "
-		 "entry point."
-		 "Note: see also the class_BaseTestExitPoint.erl in the Dataflow Urban "
-		 "Example" ).
+         "The experiment exit point is a singleton instance in charge of being "
+         "the (logical) stopping point that terminates the evaluation of the "
+         "registered dataflows, possibly at each timestep; technically it is "
+         "run first (spontaneously), and once done triggers the experiment "
+         "entry point."
+         "Note: see also the class_BaseTestExitPoint.erl in the Dataflow Urban "
+         "Example" ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -55,11 +55,11 @@ Class in charge, as a dataflow exit point, to **manage simulation steps**.
 % Attributes that are specific to such an experiment exit point are:
 -define( class_attributes, [
 
-	{ current_step, class_ExperimentManager:step_count(),
-	  "current step at which the experiment is" },
+    { current_step, class_ExperimentManager:step_count(),
+      "current step at which the experiment is" },
 
-	{ max_step, class_ExperimentManager:step_count(),
-	  "the maximum step that the experiment may reach" } ] ).
+    { max_step, class_ExperimentManager:step_count(),
+      "the maximum step that the experiment may reach" } ] ).
 
 
 
@@ -114,22 +114,22 @@ at (e.g. last year)
 - WorldManagerPid is the PID of the world manager
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-		[ dataflow_pid() ], class_ExperimentManager:step_count(),
-		class_ExperimentManager:step_count(),
-		experiment_entry_point_pid(), experiment_manager_pid(),
-		world_manager_pid() ) -> wooper:state().
+        [ dataflow_pid() ], class_ExperimentManager:step_count(),
+        class_ExperimentManager:step_count(),
+        experiment_entry_point_pid(), experiment_manager_pid(),
+        world_manager_pid() ) -> wooper:state().
 construct( State, ActorSettings, Dataflows, ExperimentStepStart,
-		ExperimentStepStop, ExperimentEntryPointPid, ExperimentManagerPid,
-		WorldManagerPid ) ->
+        ExperimentStepStop, ExperimentEntryPointPid, ExperimentManagerPid,
+        WorldManagerPid ) ->
 
-	% First the direct mother class:
-	ActorState = class_ExperimentExitPoint:construct( State, ActorSettings,
-		Dataflows, ExperimentEntryPointPid, ExperimentManagerPid,
-		WorldManagerPid ),
+    % First the direct mother class:
+    ActorState = class_ExperimentExitPoint:construct( State, ActorSettings,
+        Dataflows, ExperimentEntryPointPid, ExperimentManagerPid,
+        WorldManagerPid ),
 
-	% Then the class-specific actions:
-	setAttributes( ActorState, [ { current_step, ExperimentStepStart },
-								 { max_step, ExperimentStepStop } ] ).
+    % Then the class-specific actions:
+    setAttributes( ActorState, [ { current_step, ExperimentStepStart },
+                                 { max_step, ExperimentStepStop } ] ).
 
 
 
@@ -140,15 +140,15 @@ construct( State, ActorSettings, Dataflows, ExperimentStepStart,
 Callback executed on the first diasca of existence of this exit point.
 """.
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-							actor_oneway_return().
+                            actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
-	?debug_fmt( "Created ~ts.", [ to_string( State ) ] ),
+    ?debug_fmt( "Created ~ts.", [ to_string( State ) ] ),
 
-	% Start from this very first diasca:
-	ActState = executeOneway( State, actSpontaneous ),
+    % Start from this very first diasca:
+    ActState = executeOneway( State, actSpontaneous ),
 
-	actor:return_state( ActState ).
+    actor:return_state( ActState ).
 
 
 
@@ -156,37 +156,37 @@ onFirstDiasca( State, _SendingActorPid ) ->
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
-	Phase = ?getAttr(phase),
+    Phase = ?getAttr(phase),
 
-	CurrentStep = ?getAttr(current_step),
-	MaxStep = ?getAttr(max_step),
+    CurrentStep = ?getAttr(current_step),
+    MaxStep = ?getAttr(max_step),
 
-	?debug_fmt( "Acting spontaneously, in ~ts phase, at step ~B/~B, "
-		"on behalf of (any) previous one.", [ Phase, CurrentStep, MaxStep ] ),
+    ?debug_fmt( "Acting spontaneously, in ~ts phase, at step ~B/~B, "
+        "on behalf of (any) previous one.", [ Phase, CurrentStep, MaxStep ] ),
 
-	% Update our state (detect termination) depending on the steps:
-	StepState = case CurrentStep >= MaxStep of
+    % Update our state (detect termination) depending on the steps:
+    StepState = case CurrentStep >= MaxStep of
 
-		true ->
-			?notice_fmt( "Reached step ~B (maximum one being ~B), terminating.",
-						 [ CurrentStep, MaxStep ] ),
-			setAttribute( State, phase, termination );
+        true ->
+            ?notice_fmt( "Reached step ~B (maximum one being ~B), terminating.",
+                         [ CurrentStep, MaxStep ] ),
+            setAttribute( State, phase, termination );
 
-		false ->
-			State
+        false ->
+            State
 
-	end,
+    end,
 
-	SpontaneousState = executeOnewayAs( StepState, class_ExperimentExitPoint,
-										actSpontaneous ),
+    SpontaneousState = executeOnewayAs( class_ExperimentExitPoint, StepState,
+                                        actSpontaneous ),
 
-	NewStep = CurrentStep+1,
+    NewStep = CurrentStep+1,
 
-	YearState = setAttribute( SpontaneousState, current_step, NewStep ),
+    YearState = setAttribute( SpontaneousState, current_step, NewStep ),
 
-	?debug_fmt( "Shifting to step ~B/~B.", [ NewStep, MaxStep ] ),
+    ?debug_fmt( "Shifting to step ~B/~B.", [ NewStep, MaxStep ] ),
 
-	wooper:return_state( YearState ).
+    wooper:return_state( YearState ).
 
 
 
@@ -198,18 +198,18 @@ actSpontaneous( State ) ->
 % -spec declareExperimentTermination( wooper:state() ) -> oneway_return().
 % declareExperimentTermination( State ) ->
 
-%	NewState = case ?getAttr(phase) of
+%   NewState = case ?getAttr(phase) of
 
-%		termination ->
-%			throw( already_terminated);
+%       termination ->
+%           throw( already_terminated);
 
-%		_ ->
-%			?info( "Experiment terminating now." ),
-%			setAttribute( State, phase, termination )
+%       _ ->
+%           ?info( "Experiment terminating now." ),
+%           setAttribute( State, phase, termination )
 
-%	end,
+%   end,
 
-%	wooper:return_state( NewState ).
+%   wooper:return_state( NewState ).
 
 
 
@@ -222,25 +222,25 @@ actSpontaneous( State ) ->
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
-	DataflowString = case ?getAttr(dataflows) of
+    DataflowString = case ?getAttr(dataflows) of
 
-		[] ->
-			"not referencing any dataflow";
+        [] ->
+            "not referencing any dataflow";
 
-		[ Dataflow ] ->
-			text_utils:format( "referencing a single dataflow instance: ~p",
-							   [ Dataflow ] );
+        [ Dataflow ] ->
+            text_utils:format( "referencing a single dataflow instance: ~p",
+                               [ Dataflow ] );
 
-		Dataflows ->
-			text_utils:format( "referencing ~B dataflow instances: ~p",
-							   [ length( Dataflows ), Dataflows ] )
+        Dataflows ->
+            text_utils:format( "referencing ~B dataflow instances: ~p",
+                               [ length( Dataflows ), Dataflows ] )
 
-	end,
+    end,
 
-	text_utils:format( "experiment exit point in ~ts phase (in step ~B/~B), "
-		"referencing its entry point counterpart ~p, associated to the "
-		"experiment manager ~w, to the world manager ~w and ~ts",
-		[ ?getAttr(phase), ?getAttr(current_step),
-		  ?getAttr(max_step), ?getAttr(entry_point_pid),
-		  ?getAttr(experiment_manager_pid),
-		  ?getAttr(world_manager_pid), DataflowString ] ).
+    text_utils:format( "experiment exit point in ~ts phase (in step ~B/~B), "
+        "referencing its entry point counterpart ~p, associated to the "
+        "experiment manager ~w, to the world manager ~w and ~ts",
+        [ ?getAttr(phase), ?getAttr(current_step),
+          ?getAttr(max_step), ?getAttr(entry_point_pid),
+          ?getAttr(experiment_manager_pid),
+          ?getAttr(world_manager_pid), DataflowString ] ).

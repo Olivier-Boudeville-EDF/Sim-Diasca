@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -25,9 +25,9 @@
 
 
 -define( class_description,
-		 "Defines a simple periodic actor for testing performance tracker "
-		 "features (how to trace memory consumption and process count over "
-		 "time" ).
+         "Defines a simple periodic actor for testing performance tracker "
+         "features (how to trace memory consumption and process count over "
+         "time" ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -44,16 +44,16 @@
 
 -define( class_attributes, [
 
-	{ actor_state, activity_state(),
-	  "stores the activity level of this actor" },
+    { actor_state, activity_state(),
+      "stores the activity level of this actor" },
 
-	{ periodic, period_count(),
-	  "number of periods to wait between actor creations" },
+    { periodic, period_count(),
+      "number of periods to wait between actor creations" },
 
-	{ created_actor_count, count(), "number of actors already created" },
+    { created_actor_count, count(), "number of actors already created" },
 
-	{ termination_tick_offset, tick_offset(),
-	  "the tick offset at which this test actor will terminate" } ] ).
+    { termination_tick_offset, tick_offset(),
+      "the tick offset at which this test actor will terminate" } ] ).
 
 
 
@@ -93,24 +93,24 @@ The `memory_load_loop/1` function can be activated for an increasing memory
 consumption.
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 class_Actor:name(), tick_offset() ) -> wooper:state().
+                 class_Actor:name(), tick_offset() ) -> wooper:state().
 construct( State, ActorSettings, ActorName, TerminationTickOffset ) ->
 
-	% First the direct mother classes, then these class-specific actions:
-	ActorState = class_Actor:construct( State, ActorSettings,
-										?trace_categorize(ActorName) ),
+    % First the direct mother classes, then these class-specific actions:
+    ActorState = class_Actor:construct( State, ActorSettings,
+                                        ?trace_categorize(ActorName) ),
 
-	?send_info( ActorState, "Creating a performance tracker test actor" ),
+    ?send_info( ActorState, "Creating a performance tracker test actor" ),
 
-	setAttributes( ActorState, [
+    setAttributes( ActorState, [
 
-		{ actor_state, active },
+        { actor_state, active },
 
-		% Increase the period if wanting to slow down actor creations:
-		{ periodic, 8 },
+        % Increase the period if wanting to slow down actor creations:
+        { periodic, 8 },
 
-		{ created_actor_count, 0 },
-		{ termination_tick_offset, TerminationTickOffset } ] ).
+        { created_actor_count, 0 },
+        { termination_tick_offset, TerminationTickOffset } ] ).
 
 
 
@@ -121,72 +121,72 @@ construct( State, ActorSettings, ActorName, TerminationTickOffset ) ->
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
-	TerminationOffset = ?getAttr(termination_tick_offset),
-	CurrentTick = ?getAttr(current_tick_offset),
-	CreationTickOffset = ?getAttr(actor_creation_tick_offset),
+    TerminationOffset = ?getAttr(termination_tick_offset),
+    CurrentTick = ?getAttr(current_tick_offset),
+    CreationTickOffset = ?getAttr(actor_creation_tick_offset),
 
-	UpdatedState = case CurrentTick of
+    UpdatedState = case CurrentTick of
 
-		PastOffset when PastOffset >= CreationTickOffset + TerminationOffset ->
+        PastOffset when PastOffset >= CreationTickOffset + TerminationOffset ->
 
-			case ?getAttr(actor_state) of
+            case ?getAttr(actor_state) of
 
-				active ->
-					ActiveState = setAttribute( State, actor_state, idle ),
+                active ->
+                    ActiveState = setAttribute( State, actor_state, idle ),
 
-					executeOneway( ActiveState, scheduleNextSpontaneousTick );
-					%AState = setAttribute( State, actor_state, idle ),
-					%executeOneway( AState, declareTermination );
+                    executeOneway( ActiveState, scheduleNextSpontaneousTick );
+                    %AState = setAttribute( State, actor_state, idle ),
+                    %executeOneway( AState, declareTermination );
 
-				idle ->
-					executeOneway( State, declareTermination )
+                idle ->
+                    executeOneway( State, declareTermination )
 
-			end;
+            end;
 
-		_CurrentOffset ->
+        _CurrentOffset ->
 
-			UpdatedCreationCounter = ?getAttr(created_actor_count) + 1,
+            UpdatedCreationCounter = ?getAttr(created_actor_count) + 1,
 
-			% Note: as actors will create other actors, many actors are bound to
-			% have the same name.
-			%
-			CreatedActorName = text_utils:format(
-				"My Performance Tracker test actor #~B",
-				[ UpdatedCreationCounter ] ),
+            % Note: as actors will create other actors, many actors are bound to
+            % have the same name.
+            %
+            CreatedActorName = text_utils:format(
+                "My Performance Tracker test actor #~B",
+                [ UpdatedCreationCounter ] ),
 
-			NewState = class_Actor:create_actor(
-				_CreatedClassname=class_PerformanceTracker_TestActor,
-				[ CreatedActorName, ?getAttr(termination_tick_offset) ],
-				State ),
+            NewState = class_Actor:create_actor(
+                _CreatedClassname=class_PerformanceTracker_TestActor,
+                [ CreatedActorName, ?getAttr(termination_tick_offset) ],
+                State ),
 
-			CreatedState = setAttribute( NewState, created_actor_count,
-										 UpdatedCreationCounter ),
+            CreatedState = setAttribute( NewState, created_actor_count,
+                                         UpdatedCreationCounter ),
 
-			executeOneway( CreatedState, addSpontaneousTick,
-						   CurrentTick + ?getAttr(periodic) )
+            executeOneway( CreatedState, addSpontaneousTick,
+                           CurrentTick + ?getAttr(periodic) )
 
-	end,
+    end,
 
-	wooper:return_state( UpdatedState ).
+    wooper:return_state( UpdatedState ).
 
 
 
 -doc "Simply schedules this just created actor at the next tick (diasca 0).".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-											actor_oneway_return().
+                                            actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
-	ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),
+    ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),
 
-	actor:return_state( ScheduledState ).
+    actor:return_state( ScheduledState ).
 
 
 
 -doc "Called once a test actor has been created.".
 -spec onActorCreated( wooper:state(), created_actor_pid(), class_Actor:tag(),
-					  load_balancer_pid() ) -> const_actor_oneway_return().
+                      load_balancer_pid() ) -> const_actor_oneway_return().
 onActorCreated( State, CreatedActorPid, _CreatedActorTag, _LoadBalancerPid ) ->
 
-	?debug_fmt( "Test actor ~p created.", [ CreatedActorPid ] ),
+    ?debug_fmt( "Test actor ~p created.", [ CreatedActorPid ] ),
 
-	actor:const_return().
+    actor:const_return().

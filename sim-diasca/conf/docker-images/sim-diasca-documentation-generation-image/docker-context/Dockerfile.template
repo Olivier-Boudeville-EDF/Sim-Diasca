@@ -44,11 +44,11 @@ USER root
 
 
 # Extra packages (compared to base image) needed for documentation generation:
-# (texlive-latex-base not sufficient)
+# (texlive-latex-base not sufficient; texlive-latex-extra needed at least for
+# minitoc.sty)
 #
 RUN apt-get update && \
-	apt-get install --yes python3-docutils rubber libjs-mathjax graphviz texlive && \
-	/bin/rm -rf /var/lib/apt/lists/*
+	apt-get install --yes python3-docutils rubber libjs-mathjax graphviz texlive texlive-latex-extra && /bin/rm -rf /var/lib/apt/lists/*
 
 
 # A bit of (overridden) documentation:

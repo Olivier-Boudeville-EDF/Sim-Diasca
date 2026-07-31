@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -29,20 +29,20 @@ actors.
 
 
 -define( class_description,
-		 "Broadcasting actor base class."
-		 "This is a specialisation of the generic actor class, for all models "
-		 "that have at least once to send the same actor message to a large "
-		 "number (e.g. at least several thousands) of actors."
-		 "This broadcasting actor manages its waited actors thanks to a table "
-		 "rather than thanks to a plain list, which should be more efficient "
-		 "for larger simulations."
-		 "If applicable, for larger numbers of actors, the sendings might "
-		 "be done over more than one diasca. See the load balancer as a "
-		 "typical example of that."
-		 "Note: one must ensure that a broadcasting actor sends messages "
-		 "with its own send_actor_message/3 and send_actor_messages/3 "
-		 "static methods rather than the ones of class_Actor."
-		 "See also class_Actor.erl" ).
+         "Broadcasting actor base class."
+         "This is a specialisation of the generic actor class, for all models "
+         "that have at least once to send the same actor message to a large "
+         "number (e.g. at least several thousands) of actors."
+         "This broadcasting actor manages its waited actors thanks to a table "
+         "rather than thanks to a plain list, which should be more efficient "
+         "for larger simulations."
+         "If applicable, for larger numbers of actors, the sendings might "
+         "be done over more than one diasca. See the load balancer as a "
+         "typical example of that."
+         "Note: one must ensure that a broadcasting actor sends messages "
+         "with its own send_actor_message/3 and send_actor_messages/3 "
+         "static methods rather than the ones of class_Actor."
+         "See also class_Actor.erl" ).
 
 
 
@@ -54,16 +54,16 @@ actors.
 % Tne class-specific attributes of a broadcasting actor are:
 -define( class_attributes, [
 
-	{ waited_acks, actor_table(), "inherited from class_Actor, but with a "
-	  "different type; it is now a table whose keys are the PIDs of the "
-	  "actors to which this actor sent at least an actor message this diasca, "
-	  "and whose associated values are the actual count of these sendings; it "
-	  "allows a broadcasting actor to notify adequately its time manager that "
-	  "its diasca is finished indeed, for actors sending a large number of "
-	  "actor messages (e.g. the load balancer sending the onFirstDiasca "
-	  "message to all actors)" },
+    { waited_acks, actor_table(), "inherited from class_Actor, but with a "
+      "different type; it is now a table whose keys are the PIDs of the "
+      "actors to which this actor sent at least an actor message this diasca, "
+      "and whose associated values are the actual count of these sendings; it "
+      "allows a broadcasting actor to notify adequately its time manager that "
+      "its diasca is finished indeed, for actors sending a large number of "
+      "actor messages (e.g. the load balancer sending the onFirstDiasca "
+      "message to all actors)" },
 
-	{ chunk_size, actor_count(), "the number of actors per sending chunk" } ] ).
+    { chunk_size, actor_count(), "the number of actors per sending chunk" } ] ).
 
 
 
@@ -80,7 +80,7 @@ actors.
 
 % Helpers for scheduling, message sending, creation, etc.:
 -export([ send_actor_message/3, send_actor_messages/3,
-		  send_actor_messages_over_diascas/3 ]).
+          send_actor_messages_over_diascas/3 ]).
 
 
 
@@ -142,18 +142,18 @@ Note: directly deriving from class_Actor counterpart system.
 """.
 get_trace_timestamp( TickOffset, Diasca, State ) ->
 
-	CurrentTick = ?getAttr(initial_tick) + TickOffset,
+    CurrentTick = ?getAttr(initial_tick) + TickOffset,
 
-	% Only relies on the simulation_tick_duration attribute:
-	%CurrentSecond = class_Actor:convert_ticks_to_seconds( CurrentTick, State ),
-	CurrentSecond = CurrentTick * ?getAttr(simulation_tick_duration),
+    % Only relies on the simulation_tick_duration attribute:
+    %CurrentSecond = class_Actor:convert_ticks_to_seconds( CurrentTick, State ),
+    CurrentSecond = CurrentTick * ?getAttr(simulation_tick_duration),
 
-	Timestamp =
-		calendar:gregorian_seconds_to_datetime( round( CurrentSecond ) ),
+    Timestamp =
+        calendar:gregorian_seconds_to_datetime( round( CurrentSecond ) ),
 
-	% Cannot include a newline as it would break the trace format:
-	text_utils:format( "~ts {~B,~B}",
-		[ time_utils:get_textual_timestamp( Timestamp ), TickOffset, Diasca ] ).
+    % Cannot include a newline as it would break the trace format:
+    text_utils:format( "~ts {~B,~B}",
+        [ time_utils:get_textual_timestamp( Timestamp ), TickOffset, Diasca ] ).
 
 
 
@@ -167,16 +167,16 @@ actor, as assigned by the load balancer
 preferably not too long and without whitespaces
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 class_Actor:name() ) -> wooper:state().
+                 class_Actor:name() ) -> wooper:state().
 construct( State, ActorSettings, ActorName ) ->
 
-	% First the direct mother classes:
-	ActorState = class_Actor:construct( State, ActorSettings,
-										?trace_categorize(ActorName) ),
+    % First the direct mother classes:
+    ActorState = class_Actor:construct( State, ActorSettings,
+                                        ?trace_categorize(ActorName) ),
 
-	% Then the class-specific actions:
-	setAttributes( ActorState, [ { waited_acks, table:new() },
-								 { chunk_size, ?chunk_size } ] ).
+    % Then the class-specific actions:
+    setAttributes( ActorState, [ { waited_acks, table:new() },
+                                 { chunk_size, ?chunk_size } ] ).
 
 
 
@@ -194,57 +194,57 @@ time manager when the spontaneous action has been completed.
 -spec beginTick( wooper:state(), tick_offset() ) -> oneway_return().
 beginTick( State, NewTickOffset ) ->
 
-	% Note: exactly as the class_Actor counterpart, except for waited_acks:
+    % Note: exactly as the class_Actor counterpart, except for waited_acks:
 
-	[ NewTickOffset | T ] = ?getAttr(current_agenda),
+    [ NewTickOffset | T ] = ?getAttr(current_agenda),
 
-	%trace_utils:debug_fmt( "beginTick for actor ~w at tick offset #~B, "
-	%   "with agenda ~w.", [ self(), NewTickOffset, Agenda ] ),
+    %trace_utils:debug_fmt( "beginTick for actor ~w at tick offset #~B, "
+    %   "with agenda ~w.", [ self(), NewTickOffset, Agenda ] ),
 
-	cond_utils:if_defined( sim_diasca_check_time_management,
-		begin
-			class_Actor:check_spontaneous_tick_consistency( NewTickOffset,
-															State ),
-			[] = ?getAttr(added_spontaneous_ticks),
-			[] = ?getAttr(withdrawn_spontaneous_ticks)
-		end ),
+    cond_utils:if_defined( sim_diasca_check_time_management,
+        begin
+            class_Actor:check_spontaneous_tick_consistency( NewTickOffset,
+                                                            State ),
+            [] = ?getAttr(added_spontaneous_ticks),
+            [] = ?getAttr(withdrawn_spontaneous_ticks)
+        end ),
 
-	% Removes the first entry of this agenda, this new tick offset:
-	SpontaneousUpdatedState = setAttribute( State, current_agenda, T ),
+    % Removes the first entry of this agenda, this new tick offset:
+    SpontaneousUpdatedState = setAttribute( State, current_agenda, T ),
 
-	% Other attributes set at the end of previous scheduling:
-	PreState = setAttributes( SpontaneousUpdatedState, [
-		{ current_tick_offset, NewTickOffset },
-		{ current_diasca, 0 },
+    % Other attributes set at the end of previous scheduling:
+    PreState = setAttributes( SpontaneousUpdatedState, [
+        { current_tick_offset, NewTickOffset },
+        { current_diasca, 0 },
 
-		cond_utils:if_defined( exec_target_is_production,
-			{ trace_timestamp, { NewTickOffset, 0 } },
-			{ trace_timestamp,
-			  get_trace_timestamp( NewTickOffset, _Diasca=0, State ) } ) ] ),
+        cond_utils:if_defined( exec_target_is_production,
+            { trace_timestamp, { NewTickOffset, 0 } },
+            { trace_timestamp,
+              get_trace_timestamp( NewTickOffset, _Diasca=0, State ) } ) ] ),
 
-	SpontaneousState = executeOneway( PreState, actSpontaneous ),
+    SpontaneousState = executeOneway( PreState, actSpontaneous ),
 
-	% Note: we are not checking the correctness of the engine here, we ensure
-	% models are properly written (hence this should not be commented out):
-	%
-	cond_utils:if_defined( sim_diasca_check_model_behaviours,
-		class_Actor:validate_scheduling_outcome( SpontaneousState ) ),
+    % Note: we are not checking the correctness of the engine here, we ensure
+    % models are properly written (hence this should not be commented out):
+    %
+    cond_utils:if_defined( sim_diasca_check_model_behaviours,
+        class_Actor:validate_scheduling_outcome( SpontaneousState ) ),
 
-	% The 'actSpontaneous' method might have sent actor messages:
-	WaitedAcks = getAttribute( SpontaneousState, waited_acks ),
+    % The 'actSpontaneous' method might have sent actor messages:
+    WaitedAcks = getAttribute( SpontaneousState, waited_acks ),
 
-	AckState = case table:is_empty( WaitedAcks ) of
+    AckState = case table:is_empty( WaitedAcks ) of
 
-		true ->
-			notify_diasca_ended( SpontaneousState );
+        true ->
+            notify_diasca_ended( SpontaneousState );
 
-		false ->
-			% End of tick to be determined by acknowledgeMessage/2:
-			SpontaneousState
+        false ->
+            % End of tick to be determined by acknowledgeMessage/2:
+            SpontaneousState
 
-	end,
+    end,
 
-	wooper:return_state( AckState ).
+    wooper:return_state( AckState ).
 
 
 
@@ -258,54 +258,54 @@ time manager when the triggered actions have been completed.
 -spec beginDiasca( wooper:state(), tick_offset(), diasca() ) -> oneway_return().
 beginDiasca( State, TickOffset, NewDiasca ) ->
 
-	% Note: exactly as the class_Actor counterpart, except for waited_acks:
+    % Note: exactly as the class_Actor counterpart, except for waited_acks:
 
-	cond_utils:if_defined( sim_diasca_debug_time_management,
-		?debug_fmt( "beginDiasca for ~w at diasca ~B of tick offset #~B.",
-					[ self(), NewDiasca, TickOffset ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_time_management,
+        ?debug_fmt( "beginDiasca for ~w at diasca ~B of tick offset #~B.",
+                    [ self(), NewDiasca, TickOffset ] ) ),
 
-	cond_utils:if_defined( sim_diasca_check_time_management,
-		class_Actor:check_diasca_consistency( TickOffset, NewDiasca, State ) ),
+    cond_utils:if_defined( sim_diasca_check_time_management,
+        class_Actor:check_diasca_consistency( TickOffset, NewDiasca, State ) ),
 
-	% Other attributes set at the end of previous scheduling:
-	PreState = setAttributes( State, [
+    % Other attributes set at the end of previous scheduling:
+    PreState = setAttributes( State, [
 
-		% This is not superfluous, as we might have received an actor message
-		% while being still lagging in a past tick:
-		%
-		{ current_tick_offset, TickOffset },
+        % This is not superfluous, as we might have received an actor message
+        % while being still lagging in a past tick:
+        %
+        { current_tick_offset, TickOffset },
 
-		{ current_diasca, NewDiasca },
+        { current_diasca, NewDiasca },
 
-		cond_utils:if_defined( exec_target_is_production,
-			{ trace_timestamp, { TickOffset, NewDiasca } },
-			{ trace_timestamp,
-			  get_trace_timestamp( TickOffset, NewDiasca, State ) } ) ] ),
+        cond_utils:if_defined( exec_target_is_production,
+            { trace_timestamp, { TickOffset, NewDiasca } },
+            { trace_timestamp,
+              get_trace_timestamp( TickOffset, NewDiasca, State ) } ) ] ),
 
-	TriggerState = class_Actor:process_last_diasca_messages( TickOffset,
-		NewDiasca, PreState ),
+    TriggerState = class_Actor:process_last_diasca_messages( TickOffset,
+        NewDiasca, PreState ),
 
-	% Note: we are not checking the correctness of the engine here, we ensure
-	% models are properly written (hence this should not be commented out).
-	%
-	cond_utils:if_defined( sim_diasca_check_model_behaviours,
-		class_Actor:validate_scheduling_outcome( TriggerState ) ),
+    % Note: we are not checking the correctness of the engine here, we ensure
+    % models are properly written (hence this should not be commented out).
+    %
+    cond_utils:if_defined( sim_diasca_check_model_behaviours,
+        class_Actor:validate_scheduling_outcome( TriggerState ) ),
 
-	WaitedAcks = getAttribute( TriggerState, waited_acks ),
+    WaitedAcks = getAttribute( TriggerState, waited_acks ),
 
-	% The triggered methods might have sent actor messages:
-	AckState = case table:is_empty( WaitedAcks ) of
+    % The triggered methods might have sent actor messages:
+    AckState = case table:is_empty( WaitedAcks ) of
 
-		true ->
-			notify_diasca_ended( TriggerState );
+        true ->
+            notify_diasca_ended( TriggerState );
 
-		false ->
-			% End of diasca to be determined by acknowledgeMessage/2:
-			TriggerState
+        false ->
+            % End of diasca to be determined by acknowledgeMessage/2:
+            TriggerState
 
-	end,
+    end,
 
-	wooper:return_state( AckState ).
+    wooper:return_state( AckState ).
 
 
 
@@ -316,55 +316,55 @@ this actor sent a message.
 -spec acknowledgeMessage( wooper:state(), actor_pid() ) -> oneway_return().
 acknowledgeMessage( State, CalledActorPid ) ->
 
-	% Note: exactly as the class_Actor counterpart, except for waited_acks:
+    % Note: exactly as the class_Actor counterpart, except for waited_acks:
 
-	WaitedAcks = ?getAttr(waited_acks),
+    WaitedAcks = ?getAttr(waited_acks),
 
-	%trace_utils:debug_fmt( "~w received message acknowledgement from "
-	%   "actor ~w, while waiting for:~n~p.",
-	%   [ self(), CalledActorPid, table:enumerate( WaitedAcks ) ] ),
+    %trace_utils:debug_fmt( "~w received message acknowledgement from "
+    %   "actor ~w, while waiting for:~n~p.",
+    %   [ self(), CalledActorPid, table:enumerate( WaitedAcks ) ] ),
 
-	% Checks we are indeed waiting for this ack, removes it from list, sees if
-	% it was the last waited one:
-	%
-	ShortenWaitedAcks = case table:has_entry( CalledActorPid, WaitedAcks ) of
+    % Checks we are indeed waiting for this ack, removes it from list, sees if
+    % it was the last waited one:
+    %
+    ShortenWaitedAcks = case table:has_entry( CalledActorPid, WaitedAcks ) of
 
-		true ->
-			case table:extract_entry( _K=CalledActorPid, WaitedAcks ) of
+        true ->
+            case table:extract_entry( _K=CalledActorPid, WaitedAcks ) of
 
-				% Here the called actor was waited once, hence we can forget it:
-				% (most frequent case)
-				%
-				{ _Value=1, ExtractedAcks } ->
-					ExtractedAcks;
+                % Here the called actor was waited once, hence we can forget it:
+                % (most frequent case)
+                %
+                { _Value=1, ExtractedAcks } ->
+                    ExtractedAcks;
 
-				% Here we simply decrement and put back this entry:
-				{ MoreThanOne, ExtractedAcks } ->
-					table:add_entry( CalledActorPid, MoreThanOne-1,
-									 ExtractedAcks )
+                % Here we simply decrement and put back this entry:
+                { MoreThanOne, ExtractedAcks } ->
+                    table:add_entry( CalledActorPid, MoreThanOne-1,
+                                     ExtractedAcks )
 
-			end;
+            end;
 
-		false ->
-			throw( { unexpected_ack_from, CalledActorPid } )
+        false ->
+            throw( { unexpected_ack_from, CalledActorPid } )
 
-	end,
+    end,
 
-	ShortenState = setAttribute( State, waited_acks, ShortenWaitedAcks ),
+    ShortenState = setAttribute( State, waited_acks, ShortenWaitedAcks ),
 
-	NewState = case table:is_empty( ShortenWaitedAcks ) of
+    NewState = case table:is_empty( ShortenWaitedAcks ) of
 
-		true ->
-			% Last ack received, ready to declare this actor's end of diasca:
-			notify_diasca_ended( ShortenState );
+        true ->
+            % Last ack received, ready to declare this actor's end of diasca:
+            notify_diasca_ended( ShortenState );
 
-		false ->
-			% There is still at least one waited ack, still waiting:
-			ShortenState
+        false ->
+            % There is still at least one waited ack, still waiting:
+            ShortenState
 
-	end,
+    end,
 
-	wooper:return_state( NewState ).
+    wooper:return_state( NewState ).
 
 
 
@@ -373,13 +373,13 @@ Sends specified actor message on as many diascas as needed to reach all actors
 whose PIDs are listed in the attribute of specified name.
 """.
 -spec sendActorMessagesOverDiascas( wooper:state(), oneway_call(),
-			attribute_name(), sending_actor_pid() ) -> actor_oneway_return().
+            attribute_name(), sending_actor_pid() ) -> actor_oneway_return().
 sendActorMessagesOverDiascas( State, ActorMessage, AttributeName, _SelfPid ) ->
 
-	SentState =
-		send_actor_messages_over_diascas( AttributeName, ActorMessage, State ),
+    SentState =
+        send_actor_messages_over_diascas( AttributeName, ActorMessage, State ),
 
-	actor:return_state( SentState ).
+    actor:return_state( SentState ).
 
 
 
@@ -390,81 +390,81 @@ Returns an updated state.
 """.
 notify_diasca_ended( State ) ->
 
-	% Note: exactly as the class_Actor counterpart, except for waited_acks.
+    % Note: exactly as the class_Actor counterpart, except for waited_acks.
 
-	% Checking:
-	true = table:is_empty( ?getAttr(waited_acks) ),
+    % Checking:
+    true = table:is_empty( ?getAttr(waited_acks) ),
 
-	% Let's try to ease as much as possible the work of the time manager:
-	AddedTicks = list_utils:uniquify( ?getAttr(added_spontaneous_ticks) ),
+    % Let's try to ease as much as possible the work of the time manager:
+    AddedTicks = list_utils:uniquify( ?getAttr(added_spontaneous_ticks) ),
 
-	WithdrawnTicks =
-		list_utils:uniquify( ?getAttr(withdrawn_spontaneous_ticks) ),
+    WithdrawnTicks =
+        list_utils:uniquify( ?getAttr(withdrawn_spontaneous_ticks) ),
 
-	CurrentTickOffset = ?getAttr(current_tick_offset),
-	CurrentDiasca = ?getAttr(current_diasca),
+    CurrentTickOffset = ?getAttr(current_tick_offset),
+    CurrentDiasca = ?getAttr(current_diasca),
 
-	{ NextRecordedAction, NextNotifiedAction } = case ?getAttr(next_action) of
+    { NextRecordedAction, NextNotifiedAction } = case ?getAttr(next_action) of
 
-		A={ terminating, unlimited } ->
-			% No, we will not schedule this actor until end of time:
-			{ A, terminating_unlimited };
+        A={ terminating, unlimited } ->
+            % No, we will not schedule this actor until end of time:
+            { A, terminating_unlimited };
 
-		{ terminating, _DiascaCount=0 } ->
-			% Termination completed; an actor is expected to send a 'terminated'
-			% notification once, as it is to be deallocated just afterwards (it
-			% could be deleted at the next diasca, however we defer it to the
-			% next tick):
-			%
-			{ terminated, terminated };
+        { terminating, _DiascaCount=0 } ->
+            % Termination completed; an actor is expected to send a 'terminated'
+            % notification once, as it is to be deallocated just afterwards (it
+            % could be deleted at the next diasca, however we defer it to the
+            % next tick):
+            %
+            { terminated, terminated };
 
-		{ terminating, NonNullDiascaCount } ->
-			% Termination still in progress, we will request new diascas:
-			{ { terminating, NonNullDiascaCount-1 }, terminating };
+        { terminating, NonNullDiascaCount } ->
+            % Termination still in progress, we will request new diascas:
+            { { terminating, NonNullDiascaCount-1 }, terminating };
 
-		new_diasca_needed ->
-			% We must reset the recorded next_action attribute:
-			{ no_diasca_requested, new_diasca_needed };
+        new_diasca_needed ->
+            % We must reset the recorded next_action attribute:
+            { no_diasca_requested, new_diasca_needed };
 
-		no_diasca_requested ->
-			{ no_diasca_requested, no_diasca_requested };
+        no_diasca_requested ->
+            { no_diasca_requested, no_diasca_requested };
 
-		terminated ->
-			{ terminated, terminated }
+        terminated ->
+            { terminated, terminated }
 
-	end,
+    end,
 
-	%trace_utils:debug_fmt(
-	%   "Broadcasting actor ~w at {~p,~p}: next action is ~p.",
-	%   [ self(), CurrentTickOffset, CurrentDiasca, NextNotifiedAction ] ),
+    %trace_utils:debug_fmt(
+    %   "Broadcasting actor ~w at {~p,~p}: next action is ~p.",
+    %   [ self(), CurrentTickOffset, CurrentDiasca, NextNotifiedAction ] ),
 
-	% No more actor message waited this diasca:
-	NotificationMessage = case CurrentDiasca of
+    % No more actor message waited this diasca:
+    NotificationMessage = case CurrentDiasca of
 
-		0 ->
-			{ notifySpontaneousActionsCompleted, [ CurrentTickOffset, self(),
-				NextNotifiedAction, AddedTicks, WithdrawnTicks ] };
+        0 ->
+            { notifySpontaneousActionsCompleted, [ CurrentTickOffset, self(),
+                NextNotifiedAction, AddedTicks, WithdrawnTicks ] };
 
-		_ ->
-			{ notifyTriggeredActionsCompleted, [ CurrentTickOffset,
-				CurrentDiasca, self(), NextNotifiedAction, AddedTicks,
-				WithdrawnTicks ] }
+        _ ->
+            { notifyTriggeredActionsCompleted, [ CurrentTickOffset,
+                CurrentDiasca, self(), NextNotifiedAction, AddedTicks,
+                WithdrawnTicks ] }
 
-	end,
+    end,
 
-	% No more actor message waited this diasca:
-	?getAttr(time_manager_pid) ! NotificationMessage,
+    % No more actor message waited this diasca:
+    ?getAttr(time_manager_pid) ! NotificationMessage,
 
-	NewAgenda = class_Actor:update_agenda_with( AddedTicks, WithdrawnTicks,
-												?getAttr(current_agenda) ),
+    NewAgenda = class_Actor:update_agenda_with( AddedTicks, WithdrawnTicks,
+                                                ?getAttr(current_agenda) ),
 
-	% Prepare for next diasca, reset relevant attributes:
-	setAttributes( State, [
-		{ previous_schedule, { CurrentTickOffset, CurrentDiasca } },
-		{ added_spontaneous_ticks, [] },
-		{ withdrawn_spontaneous_ticks, [] },
-		{ next_action, NextRecordedAction },
-		{ current_agenda, NewAgenda } ] ).
+    % Prepare for next diasca, reset relevant attributes:
+    setAttributes( State, [
+        { previous_schedule, { CurrentTickOffset, CurrentDiasca } },
+        { added_spontaneous_ticks, [] },
+        { withdrawn_spontaneous_ticks, [] },
+        { next_action, NextRecordedAction },
+        { current_agenda, NewAgenda } ] ).
 
 
 
@@ -478,11 +478,11 @@ and who it is.
 -spec nudge( wooper:state(), instance_pid() ) -> const_oneway_return().
 nudge( State, SenderPid ) ->
 
-	SenderPid ! { notifyNudged, [ self(),
-					class_Actor:get_current_tick_offset( State ),
-					table:keys( ?getAttr(waited_acks) ) ] },
+    SenderPid ! { notifyNudged, [ self(),
+                    class_Actor:get_current_tick_offset( State ),
+                    table:keys( ?getAttr(waited_acks) ) ] },
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 
@@ -532,72 +532,72 @@ Returns an updated state, appropriate to wait automatically for this call to be
 acknowledged.
 """.
 -spec send_actor_message( actor_pid(), oneway_call(), wooper:state() ) ->
-								wooper:state().
+                                wooper:state().
 send_actor_message( ActorPid, ActorOneway, State ) ->
 
-	%trace_utils:debug_fmt(
-	%   "  ~w sending an actor message to ~w at {~p,~p}: ~p",
-	%   [ self(), ActorPid, ?getAttr(current_tick_offset),
-	%     ?getAttr(current_diasca), ActorOneway ] ),
+    %trace_utils:debug_fmt(
+    %   "  ~w sending an actor message to ~w at {~p,~p}: ~p",
+    %   [ self(), ActorPid, ?getAttr(current_tick_offset),
+    %     ?getAttr(current_diasca), ActorOneway ] ),
 
-	% The simulation shall be already started:
-	true = class_Actor:is_running( State ),
+    % The simulation shall be already started:
+    true = class_Actor:is_running( State ),
 
-	ActorPid ! { receiveActorMessage,
-				[ ?getAttr(current_tick_offset), ?getAttr(current_diasca)+1,
-				  ActorOneway, self(), ?getAttr(actor_abstract_id) ] },
+    ActorPid ! { receiveActorMessage,
+                [ ?getAttr(current_tick_offset), ?getAttr(current_diasca)+1,
+                  ActorOneway, self(), ?getAttr(actor_abstract_id) ] },
 
-	NewAction = case ?getAttr(next_action) of
+    NewAction = case ?getAttr(next_action) of
 
-		Action={ terminating, _Duration } ->
-			Action;
+        Action={ terminating, _Duration } ->
+            Action;
 
-		% No test really necessary against terminated: we should not even be
-		% scheduled in this case.
-		%
-		terminated ->
-			throw( { no_message_sending_when_terminated, ActorPid,
-					 ActorOneway } );
+        % No test really necessary against terminated: we should not even be
+        % scheduled in this case.
+        %
+        terminated ->
+            throw( { no_message_sending_when_terminated, ActorPid,
+                     ActorOneway } );
 
-		_ ->
-			%trace_utils:debug_fmt( "Actor ~w requesting a new diasca, "
-			%  "after having sen an actor message.", [ self() ] ),
+        _ ->
+            %trace_utils:debug_fmt( "Actor ~w requesting a new diasca, "
+            %  "after having sen an actor message.", [ self() ] ),
 
-			new_diasca_needed
+            new_diasca_needed
 
-	end,
+    end,
 
-	Waited = ?getAttr(waited_acks),
+    Waited = ?getAttr(waited_acks),
 
-	NewWaited = case table:has_entry( ActorPid, Waited ) of
+    NewWaited = case table:has_entry( ActorPid, Waited ) of
 
-		true ->
-			Value = table:get_value( ActorPid, Waited ),
-			table:add_entry( ActorPid, Value+1, Waited );
+        true ->
+            Value = table:get_value( ActorPid, Waited ),
+            table:add_entry( ActorPid, Value+1, Waited );
 
-		false ->
-			table:add_entry( ActorPid, 1, Waited )
+        false ->
+            table:add_entry( ActorPid, 1, Waited )
 
-	end,
+    end,
 
-	% Here we know for sure that the next diasca will have to be scheduled,
-	% since the actor message will have to be processed by the recipient.
-	%
-	% At least one time manager must be notified of that. The one of the actor
-	% that receives the actor message should be avoided, since it may have
-	% already finished its tick and answered to its parent manager (if any).
-	%
-	% Conversely, we know for sure that the time manager of this sending actor
-	% is still waiting for the end of its tick.
-	%
-	% Therefore it is up to that sending actor to trigger the scheduling of the
-	% next tick, once it will finish its own scheduling for this diasca.
-	%
-	% This works, as all time managers are notified of all diascas, regardless
-	% of what they are to schedule.
-	%
-	setAttributes( State, [ { waited_acks, NewWaited },
-							{ next_action, NewAction } ] ).
+    % Here we know for sure that the next diasca will have to be scheduled,
+    % since the actor message will have to be processed by the recipient.
+    %
+    % At least one time manager must be notified of that. The one of the actor
+    % that receives the actor message should be avoided, since it may have
+    % already finished its tick and answered to its parent manager (if any).
+    %
+    % Conversely, we know for sure that the time manager of this sending actor
+    % is still waiting for the end of its tick.
+    %
+    % Therefore it is up to that sending actor to trigger the scheduling of the
+    % next tick, once it will finish its own scheduling for this diasca.
+    %
+    % This works, as all time managers are notified of all diascas, regardless
+    % of what they are to schedule.
+    %
+    setAttributes( State, [ { waited_acks, NewWaited },
+                            { next_action, NewAction } ] ).
 
 
 
@@ -648,85 +648,85 @@ acknowledged.
 
 """.
 -spec send_actor_messages( [ actor_pid() ], oneway_call(), wooper:state() ) ->
-								                wooper:state().
+                                                wooper:state().
 send_actor_messages( _ActorPidList=[], _ActorOneway, State ) ->
-	% No target, no state change wanted:
-	State;
+    % No target, no state change wanted:
+    State;
 
 send_actor_messages( ActorPidList, ActorOneway, State ) ->
 
-	%trace_utils:debug_fmt(
-	%   "  ~w sending an actor message to ~w at {~p,~p}: ~p",
-	%   [ self(), ActorPidList, ?getAttr(current_tick_offset),
-	%     ?getAttr(current_diasca), ActorOneway ] ),
+    %trace_utils:debug_fmt(
+    %   "  ~w sending an actor message to ~w at {~p,~p}: ~p",
+    %   [ self(), ActorPidList, ?getAttr(current_tick_offset),
+    %     ?getAttr(current_diasca), ActorOneway ] ),
 
-	ActorMessage = { receiveActorMessage,
-				[ ?getAttr(current_tick_offset), ?getAttr(current_diasca)+1,
-				  ActorOneway, self(), ?getAttr(actor_abstract_id) ] },
+    ActorMessage = { receiveActorMessage,
+                [ ?getAttr(current_tick_offset), ?getAttr(current_diasca)+1,
+                  ActorOneway, self(), ?getAttr(actor_abstract_id) ] },
 
-	[ ActorPid ! ActorMessage || ActorPid <- ActorPidList ],
+    [ ActorPid ! ActorMessage || ActorPid <- ActorPidList ],
 
-	NewAction = case ?getAttr(next_action) of
+    NewAction = case ?getAttr(next_action) of
 
-		Action={ terminating, _Duration } ->
-			Action;
+        Action={ terminating, _Duration } ->
+            Action;
 
-		% No test really necessary against terminated: we should not even be
-		% scheduled in this case.
-		%
-		terminated ->
-			throw( { no_message_sending_when_terminated, ActorPidList,
-					 ActorOneway } );
+        % No test really necessary against terminated: we should not even be
+        % scheduled in this case.
+        %
+        terminated ->
+            throw( { no_message_sending_when_terminated, ActorPidList,
+                     ActorOneway } );
 
-		_ ->
-			%trace_utils:debug_fmt( "Actor ~w requesting a new diasca, "
-			%   "after having sent an actor message.", [ self() ] ),
-			new_diasca_needed
+        _ ->
+            %trace_utils:debug_fmt( "Actor ~w requesting a new diasca, "
+            %   "after having sent an actor message.", [ self() ] ),
+            new_diasca_needed
 
-	end,
+    end,
 
-	NewWaited = add_waited( ActorPidList, ?getAttr(waited_acks) ),
+    NewWaited = add_waited( ActorPidList, ?getAttr(waited_acks) ),
 
-	% Here we know for sure that the next diasca will have to be scheduled,
-	% since the actor message will have to be processed by the recipient.
-	%
-	% At least one time manager must be notified of that. The one of the actor
-	% that receives the actor message should be avoided, since it may have
-	% already finished its tick and answered to its parent manager (if any).
-	%
-	% Conversely, we know for sure that the time manager of this sending actor
-	% is still waiting for the end of its tick.
-	%
-	% Therefore it is up to that sending actor to trigger the scheduling of the
-	% next tick, once it will finish its own scheduling for this diasca.
-	%
-	% This works, as all time managers are notified of all diascas, regardless
-	% of what they are to schedule.
-	%
-	setAttributes( State, [ { waited_acks, NewWaited },
-							{ next_action, NewAction } ] ).
+    % Here we know for sure that the next diasca will have to be scheduled,
+    % since the actor message will have to be processed by the recipient.
+    %
+    % At least one time manager must be notified of that. The one of the actor
+    % that receives the actor message should be avoided, since it may have
+    % already finished its tick and answered to its parent manager (if any).
+    %
+    % Conversely, we know for sure that the time manager of this sending actor
+    % is still waiting for the end of its tick.
+    %
+    % Therefore it is up to that sending actor to trigger the scheduling of the
+    % next tick, once it will finish its own scheduling for this diasca.
+    %
+    % This works, as all time managers are notified of all diascas, regardless
+    % of what they are to schedule.
+    %
+    setAttributes( State, [ { waited_acks, NewWaited },
+                            { next_action, NewAction } ] ).
 
 
 
 -doc "Adds specified list of waited actors to the specified table.".
 -spec add_waited( [ actor_pid() ], actor_table() ) -> actor_table().
 add_waited( _ActorPidList=[], ActorTable ) ->
-	ActorTable;
+    ActorTable;
 
 add_waited( _ActorPidList=[ Pid | T ], ActorTable ) ->
 
-	NewActorTable = case table:has_entry( Pid, ActorTable ) of
+    NewActorTable = case table:has_entry( Pid, ActorTable ) of
 
-		true ->
-			NewCount = table:get_value( Pid, ActorTable ) + 1,
-			table:add_entry( Pid, NewCount, ActorTable );
+        true ->
+            NewCount = table:get_value( Pid, ActorTable ) + 1,
+            table:add_entry( Pid, NewCount, ActorTable );
 
-		false ->
-			table:add_entry( Pid, _Count=1, ActorTable )
+        false ->
+            table:add_entry( Pid, _Count=1, ActorTable )
 
-	end,
+    end,
 
-	add_waited( T, NewActorTable ).
+    add_waited( T, NewActorTable ).
 
 
 
@@ -743,39 +743,39 @@ See the load-balancer for an example.
 Returns an updated state.
 """.
 -spec send_actor_messages_over_diascas( attribute_name(), oneway_call(),
-										wooper:state() ) -> wooper:state().
+                                        wooper:state() ) -> wooper:state().
 send_actor_messages_over_diascas( AttributeName, ActorOneway, State ) ->
 
-	ActorList = ?getAttr(AttributeName),
+    ActorList = ?getAttr(AttributeName),
 
-	% Gets a chunk from the actor list:
-	{ FirstActors, RemainingActors } =
-		list_utils:split_at( ?getAttr(chunk_size), ActorList ),
+    % Gets a chunk from the actor list:
+    { FirstActors, RemainingActors } =
+        list_utils:split_at( ?getAttr(chunk_size), ActorList ),
 
-	%trace_utils:debug_fmt(
-	%   "Actor message ~p sent to a chunk of ~B actors at ~p.",
-	%   [ ActorOneway, length( FirstActors ),
-	%     { ?getAttr(current_tick_offset), ?getAttr(current_diasca) } ] ),
+    %trace_utils:debug_fmt(
+    %   "Actor message ~p sent to a chunk of ~B actors at ~p.",
+    %   [ ActorOneway, length( FirstActors ),
+    %     { ?getAttr(current_tick_offset), ?getAttr(current_diasca) } ] ),
 
-	SentState = send_actor_messages( FirstActors, ActorOneway, State ),
+    SentState = send_actor_messages( FirstActors, ActorOneway, State ),
 
-	case RemainingActors of
+    case RemainingActors of
 
-		[] ->
-			% We just exhausted the list, let's update it and stop requesting
-			% any new action/diasca:
-			%
-			setAttribute( SentState, AttributeName, [] );
+        [] ->
+            % We just exhausted the list, let's update it and stop requesting
+            % any new action/diasca:
+            %
+            setAttribute( SentState, AttributeName, [] );
 
-		_ ->
-			% The sending must go on at the next diasca, let's send us (to
-			% ourselves) an actor message for that:
-			%
-			PlanState = send_actor_message( _Target=self(),
-				{ sendActorMessagesOverDiascas,
-					[ ActorOneway, AttributeName ] },
-				SentState ),
+        _ ->
+            % The sending must go on at the next diasca, let's send us (to
+            % ourselves) an actor message for that:
+            %
+            PlanState = send_actor_message( _Target=self(),
+                { sendActorMessagesOverDiascas,
+                    [ ActorOneway, AttributeName ] },
+                SentState ),
 
-			setAttribute( PlanState, AttributeName, RemainingActors )
+            setAttribute( PlanState, AttributeName, RemainingActors )
 
-	end.
+    end.

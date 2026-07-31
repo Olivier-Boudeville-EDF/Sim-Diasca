@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2025 EDF R&D
+% Copyright (C) 2012-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -37,68 +37,68 @@ See the `class_GIS` tested class.
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+    ?case_start,
 
    % Testing offline services first:
 
-	WGS84PolarCoord = { 48.820471, 2.206146, 1500.0 },
+    WGS84PolarCoord = { 48.820471, 2.206146, 1500.0 },
 
-	WGS84CartesianCoord = class_GIS:wgs84_polar_to_cartesian( WGS84PolarCoord ),
+    WGS84CartesianCoord = class_GIS:wgs84_polar_to_cartesian( WGS84PolarCoord ),
 
-	test_facilities:display( "Testing the conversion of WGS84 polar "
-		"coordinates into WGS84 cartesian ones: '~ts' becomes '~ts'.",
-		[ class_GIS:wgs84_polar_to_string( WGS84PolarCoord ),
-		  class_GIS:wgs84_cartesian_to_string( WGS84CartesianCoord ) ] ),
+    test_facilities:display( "Testing the conversion of WGS84 polar "
+        "coordinates into WGS84 cartesian ones: '~ts' becomes '~ts'.",
+        [ class_GIS:wgs84_polar_to_string( WGS84PolarCoord ),
+          class_GIS:wgs84_cartesian_to_string( WGS84CartesianCoord ) ] ),
 
-	% Use default simulation settings (50Hz, batch reproducible):
-	SimulationSettings = #simulation_settings{
+    % Use default simulation settings (50Hz, batch reproducible):
+    SimulationSettings = #simulation_settings{
 
-		simulation_name = "Sim-Diasca City-example GIS Test Case",
+        simulation_name = "Sim-Diasca City-example GIS Test Case",
 
-		tick_duration = 0.2,
+        tick_duration = 0.2,
 
-		result_specification = [ { targeted_patterns, [
+        result_specification = [ { targeted_patterns, [
 
-						{ "Incinerator-1.*", [ data_and_rendering ] }
+                        { "Incinerator-1.*", [ data_and_rendering ] }
 
-								] } ] },
-
-
-	DeploymentSettings = #deployment_settings{
-
-		computing_hosts = { use_host_file_otherwise_local,
-			"sim-diasca-host-candidates-for-scale-benchmarks.txt" },
-
-		%node_availability_tolerance = fail_on_unavailable_node,
-
-		% We want to embed additionally this test and its specific
-		% prerequisites, defined in the Mock Simulators:
-		%
-		additional_elements_to_deploy = [ { ".", code },
-										  { "gis_location.txt", data } ] },
+                                ] } ] },
 
 
-	% Default load balancing settings (round-robin placement heuristic):
-	LoadBalancingSettings = #load_balancing_settings{},
+    DeploymentSettings = #deployment_settings{
 
-	% A deployment manager is created directly on the user node:
-	_DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-		DeploymentSettings, LoadBalancingSettings ),
+        computing_hosts = { use_host_file_otherwise_local,
+            "sim-diasca-host-candidates-for-scale-benchmarks.txt" },
+
+        %node_availability_tolerance = fail_on_unavailable_node,
+
+        % We want to embed additionally this test and its specific
+        % prerequisites, defined in the Mock Simulators:
+        %
+        additional_elements_to_deploy = [ { ".", code },
+                                          { "gis_location.txt", data } ] },
 
 
-	% Testing the GIS service by itself:
+    % Default load balancing settings (round-robin placement heuristic):
+    LoadBalancingSettings = #load_balancing_settings{},
 
-	GISPid = class_Actor:create_initial_actor( class_GIS,
-		[ "gis_location.txt", _PrepareRendering=false ] ),
+    % A deployment manager is created directly on the user node:
+    _DeploymentManagerPid = sim_diasca:init( SimulationSettings,
+        DeploymentSettings, LoadBalancingSettings ),
 
-	GISPid ! { toString, [], self() },
 
-	GISString = test_receive(),
+    % Testing the GIS service by itself:
 
-	test_facilities:display( "GIS current state is: ~ts.", [ GISString ] ),
+    GISPid = class_Actor:create_initial_actor( class_GIS,
+        [ "gis_location.txt", _PrepareRendering=false ] ),
 
-	class_GIS:shutdown( GISPid ),
+    GISPid ! { toString, [], self() },
 
-	sim_diasca:shutdown(),
+    GISString = test_receive(),
 
-	?case_stop.
+    test_facilities:display( "GIS current state is: ~ts.", [ GISString ] ),
+
+    class_GIS:shutdown( GISPid ),
+
+    sim_diasca:shutdown(),
+
+    ?case_stop.

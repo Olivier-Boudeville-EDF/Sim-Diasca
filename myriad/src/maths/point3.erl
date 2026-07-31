@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -69,8 +69,8 @@ vector), with 3 integer or floating-point coordinates.
 
 -doc "A point in a 3D space, with (exactly) 3 integer coordinates.".
 -type integer_point3() :: { X :: integer_coordinate(),
-							Y :: integer_coordinate(),
-							Z :: integer_coordinate() }.
+                            Y :: integer_coordinate(),
+                            Z :: integer_coordinate() }.
 
 
 
@@ -107,25 +107,25 @@ ones). Refer to the design notes in linear_3D.erl for further details.
 
 
 -export_type([ user_point3/0, point3/0, integer_point3/0, any_point3/0,
-			   vertex3/0, integer_vertex3/0, any_vertex3/0, yup_point3/0 ]).
+               vertex3/0, integer_vertex3/0, any_vertex3/0, yup_point3/0 ]).
 
 
 % See vector3:compute_normal/3 to determine a normal from a plane defined out of
 % 3 vertices.
 
 -export([ new/1, new/3, new_integer/3, null/0,
-		  from_vector/1, to_vector/1, to_any_vector/1,
-		  point3_to_yup/1, yup_to_point3/1, point3_to_yups/1, yup_to_point3s/1,
-		  to_buffer/1,
+          from_vector/1, to_vector/1, to_any_vector/1,
+          point3_to_yup/1, yup_to_point3/1, point3_to_yups/1, yup_to_point3s/1,
+          to_buffer/1,
 
-		  roundify/1,
-		  get_center/2, get_integer_center/2,
-		  translate/2, scale/2, vectorize/2, unit_vectorize/2,
-		  are_close/2, are_equal/2, is_within/3, is_within_square/3,
-		  square_distance/2, distance/2,
-		  check/1,
-		  to_string/1, to_compact_string/1, to_basic_string/1,
-		  to_user_string/1 ] ).
+          roundify/1,
+          get_center/2, get_integer_center/2,
+          translate/2, scale/2, vectorize/2, unit_vectorize/2,
+          are_close/2, are_equal/2, is_within/3, is_within_square/3,
+          square_distance/2, distance/2,
+          check/1,
+          to_string/1, to_compact_string/1, to_basic_string/1,
+          to_user_string/1 ] ).
 
 
 
@@ -159,28 +159,28 @@ ones.
 """.
 -spec new( user_point3() ) -> any_point3().
 new( UserPoint3 ) when is_list( UserPoint3 ) ->
-	list_to_tuple( UserPoint3 );
+    list_to_tuple( UserPoint3 );
 
 new( UserPoint3 ) when is_tuple( UserPoint3 ) ->
-	UserPoint3.
+    UserPoint3.
 
 
 
 -doc "Returns a 3D point corresponding to the user-specified one.".
 -spec new( user_coordinate(), user_coordinate(), user_coordinate() ) ->
-			point3().
+            point3().
 new( X, Y, Z ) ->
-	{ type_utils:ensure_float( X ), type_utils:ensure_float( Y ),
-	  type_utils:ensure_float( Z ) }.
+    { type_utils:ensure_float( X ), type_utils:ensure_float( Y ),
+      type_utils:ensure_float( Z ) }.
 
 
 
 -doc "Returns an integer 3D point corresponding to the user-specified one.".
 -spec new_integer( integer_coordinate(), integer_coordinate(),
-				   integer_coordinate() ) -> integer_point3().
+                   integer_coordinate() ) -> integer_point3().
 new_integer( X, Y, Z ) when is_integer( X ) andalso is_integer( Y )
-							andalso is_integer( Z ) ->
-	{ X, Y, Z }.
+                            andalso is_integer( Z ) ->
+    { X, Y, Z }.
 
 
 
@@ -192,8 +192,8 @@ See also linear_3D:get_origin/0.
 """.
 -spec null() -> point3().
 null() ->
-	Zero = 0.0,
-	{ Zero, Zero, Zero }.
+    Zero = 0.0,
+    { Zero, Zero, Zero }.
 
 
 
@@ -203,7 +203,7 @@ type-homogeneous).
 """.
 -spec from_vector( any_vector3() ) -> any_point3().
 from_vector( V3 ) ->
-	list_to_tuple( V3 ).
+    list_to_tuple( V3 ).
 
 
 
@@ -213,7 +213,7 @@ specified 3D point.
 """.
 -spec to_vector( any_point3() ) -> vector3().
 to_vector( P3 ) ->
-	vector3:from_point( P3 ).
+    vector3:from_point( P3 ).
 
 
 
@@ -223,7 +223,7 @@ specified 3D point.
 """.
 -spec to_any_vector( any_point3() ) -> any_vector3().
 to_any_vector( P3 ) ->
-	tuple_to_list( P3 ).
+    tuple_to_list( P3 ).
 
 
 
@@ -233,7 +233,7 @@ to the Myriad Z-UP one, see the design notes in linear_3D).
 """.
 -spec point3_to_yup( point3() ) -> yup_point3().
 point3_to_yup( _P={X,Y,Z} ) ->
-	{X,Z,-Y}.
+    {X,Z,-Y}.
 
 
 
@@ -243,7 +243,7 @@ to the Myriad Z-UP one, see the design notes in linear_3D).
 """.
 -spec point3_to_yups( [ point3() ] ) -> [ yup_point3() ].
 point3_to_yups( Points ) ->
-	[ point3_to_yup( P ) || P <- Points ].
+    [ point3_to_yup( P ) || P <- Points ].
 
 
 
@@ -253,7 +253,7 @@ see the design notes in linear_3D) into a usual one.
 """.
 -spec yup_to_point3( yup_point3() ) -> point3().
 yup_to_point3( _P={X,Y,Z} ) ->
-	{X,-Z,Y}.
+    {X,-Z,Y}.
 
 
 
@@ -263,7 +263,7 @@ see the design notes in linear_3D) into a usual one.
 """.
 -spec yup_to_point3s( [ yup_point3() ] ) -> [ point3() ].
 yup_to_point3s( Points ) ->
-	[ yup_to_point3( P ) || P <- Points ].
+    [ yup_to_point3( P ) || P <- Points ].
 
 
 
@@ -274,7 +274,7 @@ Typically suitable for OpenGL.
 """.
 -spec to_buffer( [ any_point3() ] ) -> binary().
 to_buffer( Points ) ->
-	<< <<X:?F32, Y:?F32, Z:?F32>> || { X, Y, Z } <- Points >>.
+    << <<X:?F32, Y:?F32, Z:?F32>> || { X, Y, Z } <- Points >>.
 
 
 
@@ -284,7 +284,7 @@ respective nearest integers.
 """.
 -spec roundify( point3() ) -> integer_point3().
 roundify( _P={X,Y,Z} ) ->
-	{ erlang:round(X), erlang:round(Y), erlang:round(Z) }.
+    { erlang:round(X), erlang:round(Y), erlang:round(Z) }.
 
 
 
@@ -293,7 +293,7 @@ Returns a point corresponding the midpoint (middle) of the two specified points.
 """.
 -spec get_center( point3(), point3() ) -> point3().
 get_center( _P1={X1,Y1,Z1}, _P2={X2,Y2,Z2} ) ->
-	{ (X1+X2)/2, (Y1+Y2)/2, (Z1+Z2)/2 }.
+    { (X1+X2)/2, (Y1+Y2)/2, (Z1+Z2)/2 }.
 
 
 
@@ -303,7 +303,7 @@ with integer coordinates.
 """.
 -spec get_integer_center( point3(), point3() ) -> integer_point3().
 get_integer_center( P1, P2 ) ->
-	roundify( get_center( P1, P2 ) ).
+    roundify( get_center( P1, P2 ) ).
 
 
 
@@ -313,14 +313,14 @@ vector.
 """.
 -spec translate( point3(), vector3() ) -> point3().
 translate( _P={X,Y,Z}, _V=[Vx,Vy,Vz] ) ->
-	{ X+Vx, Y+Vy, Z+Vz }.
+    { X+Vx, Y+Vy, Z+Vz }.
 
 
 
 -doc "Scales the specified 3D point of the specified scalar factor.".
 -spec scale( any_point3(), factor() ) -> point3().
 scale( _P={X,Y,Z}, Factor ) ->
-	{ Factor*X, Factor*Y, Factor*Z }.
+    { Factor*X, Factor*Y, Factor*Z }.
 
 
 
@@ -329,7 +329,7 @@ Returns a vector V made from the specified two points, from P1 to P2: V=P2-P1.
 """.
 -spec vectorize( point3(), point3() ) -> vector3().
 vectorize( _P1={X1,Y1,Z1}, _P2={X2,Y2,Z2} ) ->
-	[ X2-X1, Y2-Y1, Z2-Z1 ].
+    [ X2-X1, Y2-Y1, Z2-Z1 ].
 
 
 
@@ -340,16 +340,16 @@ V=1/magnitude(P1P2).(P2-P1).
 -spec unit_vectorize( point3(), point3() ) -> unit_vector3().
 unit_vectorize( P1={X1,Y1,Z1}, P2={X2,Y2,Z2} ) ->
 
-	% Possibly cheaper than relying on vector3:normalise/1:
-	D = distance( P1, P2 ),
+    % Possibly cheaper than relying on vector3:normalise/1:
+    D = distance( P1, P2 ),
 
-	math_utils:is_null( D ) andalso
-		throw( { same_point, P1, P2 } ),
+    math_utils:is_null( D ) andalso
+        throw( { same_point, P1, P2 } ),
 
-	% Thus licit:
-	Factor = 1.0 / D,
+    % Thus licit:
+    Factor = 1.0 / D,
 
-	[ Factor*(X2-X1), Factor*(Y2-Y1), Factor*(Z2-Z1) ].
+    [ Factor*(X2-X1), Factor*(Y2-Y1), Factor*(Z2-Z1) ].
 
 
 
@@ -359,7 +359,7 @@ considered as representing the same point (equality operator on points).
 """.
 -spec are_close( point3(), point3() ) -> boolean().
 are_close( P1, P2 ) ->
-	are_equal( P1, P2 ).
+    are_equal( P1, P2 ).
 
 
 
@@ -369,8 +369,8 @@ considered as representing the same point (equality operator on points).
 """.
 -spec are_equal( point3(), point3() ) -> boolean().
 are_equal( _P1={X1,Y1,Z1}, _P2={X2,Y2,Z2} ) ->
-	math_utils:are_close( X1, X2 ) andalso math_utils:are_close( Y1, Y2 )
-		andalso math_utils:are_close( Z1, Z2 ).
+    math_utils:are_close( X1, X2 ) andalso math_utils:are_close( Y1, Y2 )
+        andalso math_utils:are_close( Z1, Z2 ).
 
 
 
@@ -380,8 +380,8 @@ using some margin to overcome numerical errors.
 """.
 -spec is_within( point3(), point3(), distance() ) -> boolean().
 is_within( P1, P2, D ) ->
-	% "Taylor series", square(epsilon) is negligible here:
-	square_distance( P1, P2 ) < D * ( D + ?epsilon ).
+    % "Taylor series", square(epsilon) is negligible here:
+    square_distance( P1, P2 ) < D * ( D + ?epsilon ).
 
 
 
@@ -391,7 +391,7 @@ Tells whether the specified 3D point P1 is within a square distance SquareD from
 """.
 -spec is_within_square( point3(), point3(), square_distance() ) -> boolean().
 is_within_square( P1, P2, SquareD ) ->
-	square_distance( P1, P2 ) < SquareD.
+    square_distance( P1, P2 ) < SquareD.
 
 
 
@@ -405,11 +405,11 @@ Could rely on vectorize and square_magnitude as well.
 -spec square_distance( point3(), point3() ) -> square_distance().
 square_distance( _P1={X1,Y1,Z1}, _P2={X2,Y2,Z2} ) ->
 
-	XDiff = X2 - X1,
-	YDiff = Y2 - Y1,
-	ZDiff = Z2 - Z1,
+    XDiff = X2 - X1,
+    YDiff = Y2 - Y1,
+    ZDiff = Z2 - Z1,
 
-	XDiff*XDiff + YDiff*YDiff + ZDiff*ZDiff.
+    XDiff*XDiff + YDiff*YDiff + ZDiff*ZDiff.
 
 
 
@@ -420,14 +420,14 @@ Note: just for comparison purposes, computing the square root is useless.
 """.
 -spec distance( point3(), point3() ) -> distance().
 distance( P1, P2 ) ->
-	math:sqrt( square_distance( P1, P2 ) ).
+    math:sqrt( square_distance( P1, P2 ) ).
 
 
 
 -doc "Checks that the specified 3D point is legit, and returns it.".
 -spec check( point3() ) -> point3().
 check( P ) ->
-	point:check( P ).
+    point:check( P ).
 
 
 
@@ -444,7 +444,7 @@ For example, for a point `P={2.0, 3.142, 0.0}`, returns:
 """.
 -spec to_string( any_point3() ) -> ustring().
 to_string( Point3 ) ->
-	to_user_string( Point3 ).
+    to_user_string( Point3 ).
 
 
 
@@ -455,7 +455,7 @@ For example, for a point `P={2.0, 3.142, 0.0}`, returns: `2.0,3.142,0.0`.
 """.
 -spec to_compact_string( any_point3() ) -> ustring().
 to_compact_string( Point3 ) ->
-	text_utils:format( "~w", [ Point3 ] ).
+    text_utils:format( "~w", [ Point3 ] ).
 
 
 
@@ -473,27 +473,27 @@ For example, for a point `P={2.0, 3.142, 0.0}`, returns:
 -spec to_basic_string( any_point3() ) -> ustring().
 to_basic_string( Point3 ) ->
 
-	CoordList = tuple_to_list( Point3 ),
+    CoordList = tuple_to_list( Point3 ),
 
-	% Points supposed to be homogeneous tuples:
-	CoordFmt = case is_integer( hd( CoordList ) ) of
+    % Points supposed to be homogeneous tuples:
+    CoordFmt = case is_integer( hd( CoordList ) ) of
 
-		true ->
-			?coord_integer_format;
+        true ->
+            ?coord_integer_format;
 
-		false ->
-			?coord_float_format
+        false ->
+            ?coord_float_format
 
-	end,
+    end,
 
-	ElemFormatStr = "{ " ++ CoordFmt ++ " }~n",
+    ElemFormatStr = "{ " ++ CoordFmt ++ " }~n",
 
-	FormatStr = "~n" ++ text_utils:duplicate( 3, ElemFormatStr ),
+    FormatStr = "~n" ++ text_utils:duplicate( 3, ElemFormatStr ),
 
-	%trace_utils:debug_fmt( "FormatStr: ~ts; CoordList: ~w.",
-	%                       [ FormatStr, CoordList ] ),
+    %trace_utils:debug_fmt( "FormatStr: ~ts; CoordList: ~w.",
+    %                       [ FormatStr, CoordList ] ),
 
-	text_utils:format( FormatStr, CoordList ).
+    text_utils:format( FormatStr, CoordList ).
 
 
 
@@ -513,16 +513,16 @@ For example, for a point `P={2.0, 3.142, 0.0}`, returns:
 -spec to_user_string( any_point3() ) -> ustring().
 to_user_string( Point3 ) ->
 
-	CoordList = tuple_to_list( Point3 ),
+    CoordList = tuple_to_list( Point3 ),
 
-	Strs = linear:coords_to_best_width_strings( CoordList ),
+    Strs = linear:coords_to_best_width_strings( CoordList ),
 
-	% No need for ~ts here:
-	ElemFormatStr = "{ ~s }~n",
+    % No need for ~ts here:
+    ElemFormatStr = "{ ~s }~n",
 
-	FormatStr = "~n" ++ text_utils:duplicate( 3, ElemFormatStr ),
+    FormatStr = "~n" ++ text_utils:duplicate( 3, ElemFormatStr ),
 
-	%trace_utils:debug_fmt( "FormatStr: ~ts; Strs: ~p.",
-	%                       [ FormatStr, Strs ] ),
+    %trace_utils:debug_fmt( "FormatStr: ~ts; Strs: ~p.",
+    %                       [ FormatStr, Strs ] ),
 
-	text_utils:format( FormatStr, Strs ).
+    text_utils:format( FormatStr, Strs ).

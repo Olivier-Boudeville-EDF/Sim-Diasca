@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 EDF R&D
+% Copyright (C) 2014-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -32,31 +32,23 @@
 
 
 
-% Type shorthands:
-
--type tick_offset() :: class_TimeManager:tick_offset().
--type entity_pid() :: class_TwoDimensionalEnvironment:entity_pid().
--type environment_pid() :: class_TwoDimensionalEnvironment: environment_pid().
-
-
-
 % The class-specific attributes of a spatialised test actor:
 -define( class_attributes, [
 
-	{ speed, unit_utils:meters_per_tick(),
-	  "the speed of this test actor (at least one upper-bound thereof)" },
+    { speed, unit_utils:meters_per_tick(),
+      "the speed of this test actor (at least one upper-bound thereof)" },
 
-	{ perception_radius, linear:radius(),
-	  "the perception radius of this actor" },
+    { perception_radius, linear:radius(),
+      "the perception radius of this actor" },
 
-	{ perception_period, tick_offset(),
-	  "the period at which this actor will trigger a perception request" },
+    { perception_period, tick_offset(),
+      "the period at which this actor will trigger a perception request" },
 
-	{ move_period, tick_offset(),
-	  "the period at which this actor will move (i.e. update its position)" },
+    { move_period, tick_offset(),
+      "the period at which this actor will move (i.e. update its position)" },
 
-	{ termination_offset, union( tick_offset(), 'none' ),
-	  "the tick offset at which this actor will terminate" } ] ).
+    { termination_offset, union( tick_offset(), 'none' ),
+      "the tick offset at which this actor will terminate" } ] ).
 
 
 
@@ -68,6 +60,13 @@
 % Allows to use macros for trace sending:
 -include("sim_diasca_for_spatialised_actors.hrl").
 
+
+
+% Type shorthands:
+
+-type tick_offset() :: class_TimeManager:tick_offset().
+-type entity_pid() :: class_TwoDimensionalEnvironment:entity_pid().
+-type environment_pid() :: class_TwoDimensionalEnvironment: environment_pid().
 
 
 
@@ -94,30 +93,30 @@ terminate (or 'none')
 - EnvironmentPid is the PID of the environment this actor will live in%
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 class_Actor:name(), class_SpatialisedActor:position(),
-				 linear:radius(), tick_offset(),
-				 class_TwoDimensionalEnvironment:max_speed(),
-				 tick_offset(), environment_pid() ) -> wooper:state().
+                 class_Actor:name(), class_SpatialisedActor:position(),
+                 linear:radius(), tick_offset(),
+                 class_TwoDimensionalEnvironment:max_speed(),
+                 tick_offset(), environment_pid() ) -> wooper:state().
 construct( State, ActorSettings, Name, InitialPosition, PerceptionRadius,
-		   PerceptionPeriod, MaxSpeed, TerminationTickOffset,
-		   EnvironmentPid ) ->
+           PerceptionPeriod, MaxSpeed, TerminationTickOffset,
+           EnvironmentPid ) ->
 
-	SpatialState = class_SpatialisedActor:construct( State, ActorSettings,
-		?trace_categorize(Name), InitialPosition, MaxSpeed, EnvironmentPid ),
+    SpatialState = class_SpatialisedActor:construct( State, ActorSettings,
+        ?trace_categorize(Name), InitialPosition, MaxSpeed, EnvironmentPid ),
 
-	setAttributes( SpatialState, [
+    setAttributes( SpatialState, [
 
-		% We consider that the speed of this actor is constantly its maximum
-		% one.
-		%
-		% Temporarily in meters per second:
-		%
-		{ speed, MaxSpeed },
+        % We consider that the speed of this actor is constantly its maximum
+        % one.
+        %
+        % Temporarily in meters per second:
+        %
+        { speed, MaxSpeed },
 
-		{ perception_radius, PerceptionRadius },
-		{ perception_period, PerceptionPeriod },
-		{ move_period, 5 },
-		{ termination_offset, TerminationTickOffset } ] ).
+        { perception_radius, PerceptionRadius },
+        { perception_period, PerceptionPeriod },
+        { move_period, 5 },
+        { termination_offset, TerminationTickOffset } ] ).
 
 
 
@@ -128,39 +127,39 @@ construct( State, ActorSettings, Name, InitialPosition, PerceptionRadius,
 
 -doc "First scheduling of this test actor.".
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-											actor_oneway_return().
+                                            actor_oneway_return().
 onFirstDiasca( State, SendingActorPid ) ->
 
-	MetersPerSecond = ?getAttr(speed),
+    MetersPerSecond = ?getAttr(speed),
 
-	TickDuration = ?getAttr(simulation_tick_duration),
+    TickDuration = ?getAttr(simulation_tick_duration),
 
-	% In meters per tick:
-	VirtualSpeed = case MetersPerSecond of
+    % In meters per tick:
+    VirtualSpeed = case MetersPerSecond of
 
-		undefined ->
-			undefined;
+        undefined ->
+            undefined;
 
-		_ ->
-			MetersPerSecond * TickDuration
+        _ ->
+            MetersPerSecond * TickDuration
 
-	end,
+    end,
 
-	?notice_fmt( "Overall speed of ~p meters per second, "
-		"converted to ~p meters per tick "
-		"(duration of a tick: ~p virtual seconds).",
-		[ MetersPerSecond, VirtualSpeed, TickDuration ] ),
+    ?notice_fmt( "Overall speed of ~p meters per second, "
+        "converted to ~p meters per tick "
+        "(duration of a tick: ~p virtual seconds).",
+        [ MetersPerSecond, VirtualSpeed, TickDuration ] ),
 
-	% First, local actions; converting to meters per tick:
-	LocalState = setAttribute( State, speed, VirtualSpeed ),
+    % First, local actions; converting to meters per tick:
+    LocalState = setAttribute( State, speed, VirtualSpeed ),
 
-	% Then calling the parent one, to declare ourself to the environment:
-	ParentState = executeOnewayAs( LocalState, class_SpatialisedActor,
-								   onFirstDiasca, [ SendingActorPid ] ),
+    % Then calling the parent one, to declare ourself to the environment:
+    ParentState = executeOnewayAs( class_SpatialisedActor, LocalState,
+                                   onFirstDiasca, [ SendingActorPid ] ),
 
-	PlanState = class_Actor:scheduleNextSpontaneousTick( ParentState ),
+    PlanState = class_Actor:scheduleNextSpontaneousTick( ParentState ),
 
-	actor:return_state( PlanState ).
+    actor:return_state( PlanState ).
 
 
 
@@ -168,95 +167,95 @@ onFirstDiasca( State, SendingActorPid ) ->
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
-	CurrentTickOffset = class_Actor:get_current_tick_offset( State ),
+    CurrentTickOffset = class_Actor:get_current_tick_offset( State ),
 
-	TerminationTickOffset = ?getAttr(termination_offset),
+    TerminationTickOffset = ?getAttr(termination_offset),
 
-	ActState = case ( TerminationTickOffset =/= none )
-					andalso ( CurrentTickOffset >= TerminationTickOffset ) of
+    ActState = case ( TerminationTickOffset =/= none )
+                    andalso ( CurrentTickOffset >= TerminationTickOffset ) of
 
-		true ->
-			trace_utils:info_fmt(
-				"~w decided to terminate (at #~p, diasca O).",
-				[ self(), CurrentTickOffset ] ),
+        true ->
+            trace_utils:info_fmt(
+                "~w decided to terminate (at #~p, diasca O).",
+                [ self(), CurrentTickOffset ] ),
 
-			UndeclaredState = class_Actor:send_actor_message(
-				?getAttr(environment_pid), undeclareEntity, State ),
+            UndeclaredState = class_Actor:send_actor_message(
+                ?getAttr(environment_pid), undeclareEntity, State ),
 
-			executeOneway( UndeclaredState, declareTermination );
+            executeOneway( UndeclaredState, declareTermination );
 
-		false ->
-			act_normally( CurrentTickOffset, State )
+        false ->
+            act_normally( CurrentTickOffset, State )
 
-	end,
+    end,
 
-	wooper:return_state( ActState ).
+    wooper:return_state( ActState ).
 
 
 
 % (helper)
 act_normally( CurrentTickOffset, State ) ->
 
-	% This actor moves from left to right (increasing abscissa):
+    % This actor moves from left to right (increasing abscissa):
 
-	Position = ?getAttr(position),
+    Position = ?getAttr(position),
 
-	MovePeriod = ?getAttr(move_period),
+    MovePeriod = ?getAttr(move_period),
 
-	% Speed in meters per tick:
-	NewPosition = case ?getAttr(speed) of
+    % Speed in meters per tick:
+    NewPosition = case ?getAttr(speed) of
 
-		% Static:
-		undefined ->
-			Position;
+        % Static:
+        undefined ->
+            Position;
 
-		S ->
-			XOffset = S * MovePeriod,
-			point2:translate( Position, _V=[ XOffset, _YOffset=0 ] )
+        S ->
+            XOffset = S * MovePeriod,
+            point2:translate( Position, _V=[ XOffset, _YOffset=0 ] )
 
-	end,
+    end,
 
-	?debug_fmt( "Moving to ~p.", [ NewPosition ] ),
+    ?debug_fmt( "Moving to ~p.", [ NewPosition ] ),
 
 
-	PerceptionPeriod = ?getAttr(perception_period),
+    PerceptionPeriod = ?getAttr(perception_period),
 
-	% We decrement the current tick offset so that it is a multiple of 5:p
-	RequestState = case ( CurrentTickOffset - 1 ) rem PerceptionPeriod of
+    % We decrement the current tick offset so that it is a multiple of 5:p
+    RequestState = case ( CurrentTickOffset - 1 ) rem PerceptionPeriod of
 
-		0 ->
-			class_Actor:send_actor_message( ?getAttr(environment_pid),
-				{ getTypedEntitiesWithin,
-				  [ class_TestSpatialisedActor, Position,
-					?getAttr(perception_radius) ] }, State );
+        0 ->
+            class_Actor:send_actor_message( ?getAttr(environment_pid),
+                { getTypedEntitiesWithin,
+                  [ class_TestSpatialisedActor, Position,
+                    ?getAttr(perception_radius) ] }, State );
 
-		_ ->
-			State
+        _ ->
+            State
 
-	end,
+    end,
 
-	NextActionOffset = CurrentTickOffset + MovePeriod,
+    NextActionOffset = CurrentTickOffset + MovePeriod,
 
-	PlannedState = class_Actor:addSpontaneousTick( RequestState,
-												   NextActionOffset ),
+    PlannedState = class_Actor:addSpontaneousTick( RequestState,
+                                                   NextActionOffset ),
 
-	setAttribute( PlannedState, position, NewPosition ).
+    setAttribute( PlannedState, position, NewPosition ).
 
 
 
 -doc "Called in response to a getEntitiesWithin request.".
 -spec notifyEntitiesNearby( wooper:state(), [ entity_pid() ],
-							environment_pid() ) -> const_actor_oneway_return().
+                            environment_pid() ) -> const_actor_oneway_return().
 notifyEntitiesNearby( State, _NearbyEntities=[], _EnvironmentPid ) ->
 
-	?debug( "No entity found in perception radius." ),
+    ?debug( "No entity found in perception radius." ),
 
-	actor:const_return();
+    actor:const_return();
 
 
 notifyEntitiesNearby( State, NearbyEntities, _EnvironmentPid ) ->
 
-	?notice_fmt( "~B entities found in perception radius: ~p.",
-				 [ length( NearbyEntities ), NearbyEntities ] ),
+    ?notice_fmt( "~B entities found in perception radius: ~p.",
+                 [ length( NearbyEntities ), NearbyEntities ] ),
 
-	actor:const_return().
+    actor:const_return().

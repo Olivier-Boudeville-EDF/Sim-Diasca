@@ -112,16 +112,6 @@
 				("\\.rst.template$"  . rst-mode)
 				("\\.rest$" . rst-mode)) auto-mode-alist))
 
-;; Displays the line numbers also with the next specified extensions:
-(add-hook 'find-file-hook 'maybe-activate-line-numbers-mode)
-
-(defun maybe-activate-line-numbers-mode()
-  (when (and (stringp buffer-file-name)
-             (or (string-match "\\.config\\'" buffer-file-name)
-                 (string-match "\\.etf\\'" buffer-file-name)
-                 (string-match "\\.xml\\'" buffer-file-name)
-				 ))
-    (display-line-numbers-mode)))
 
 
 ;; YAML support surprisingly not built-in; so set in
@@ -320,10 +310,27 @@
 ;; Displays the line numbers on the left of the editor, in all
 ;; programming modes:
 ;;
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+;;(add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
 ;; Also useful, for the debugging of document generation:
-(add-hook 'rst-mode-hook 'display-line-numbers-mode)
+;;(add-hook 'rst-mode-hook 'display-line-numbers-mode)
+
+
+;; Displays the line numbers also with the next specified extensions:
+;;(add-hook 'find-file-hook 'maybe-activate-line-numbers-mode)
+
+;;(defun maybe-activate-line-numbers-mode()
+;;  (when (and (stringp buffer-file-name)
+;;             (or (string-match "\\.config\\'" buffer-file-name)
+;;                 (string-match "\\.etf\\'" buffer-file-name)
+;;                 (string-match "\\.xml\\'" buffer-file-name)
+;;               ))
+;;    (display-line-numbers-mode)))
+
+
+;; Finally useful in all major modes:
+(global-display-line-numbers-mode 1)
+
 
 
 ;; Function section:

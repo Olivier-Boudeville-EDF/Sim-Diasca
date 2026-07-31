@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2025 Olivier Boudeville
+% Copyright (C) 2011-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -76,16 +76,16 @@
 % TraceAggregatorPid voluntarily exported from app_start, for app_stop:
 
 -define( app_start,
-	% true is for InitTraceSupervisor (not even binding a mute variable for
-	% that); app_stop/2 to be consistent with it.
-	%
-	TraceAggregatorPid = traces_for_apps:app_start( ?MODULE, true )
+    % true is for InitTraceSupervisor (not even binding a mute variable for
+    % that); app_stop/2 to be consistent with it.
+    %
+    TraceAggregatorPid = traces_for_apps:app_start( ?MODULE, true )
 ).
 
 
 -define( app_stop,
-	% true is for WaitForTraceSupervisor, in accordance with app_start/2.
-	traces_for_apps:app_stop( ?MODULE, TraceAggregatorPid, true )
+    % true is for WaitForTraceSupervisor, in accordance with app_start/2.
+    traces_for_apps:app_stop( ?MODULE, TraceAggregatorPid, true )
 ).
 
 
@@ -99,16 +99,16 @@
 % However no trace supervisor is needed here.
 %
 -define( app_start,
-	% false is for InitTraceSupervisor (not even binding a mute variable for
-	% that); app_stop/2 to be consistent with it.
-	%
-	TraceAggregatorPid = traces_for_apps:app_start( ?MODULE, false ) ).
+    % false is for InitTraceSupervisor (not even binding a mute variable for
+    % that); app_stop/2 to be consistent with it.
+    %
+    TraceAggregatorPid = traces_for_apps:app_start( ?MODULE, false ) ).
 
 
 
 -define( app_stop,
-	% false is for WaitForTraceSupervisor, in accordance with app_start/2.
-	traces_for_apps:app_immediate_stop( ?MODULE, TraceAggregatorPid, false )
+    % false is for WaitForTraceSupervisor, in accordance with app_start/2.
+    traces_for_apps:app_immediate_stop( ?MODULE, TraceAggregatorPid, false )
 ).
 
 
@@ -119,12 +119,12 @@
 % Valid whether or not tracing is activated:
 
 -define( app_stop_without_waiting_for_trace_supervisor,
-		 traces_for_apps:app_immediate_stop( ?MODULE, TraceAggregatorPid )
+         traces_for_apps:app_immediate_stop( ?MODULE, TraceAggregatorPid )
 ).
 
 
 -define( app_stop_on_shell,
-		 traces_for_apps:app_stop_on_shell( ?MODULE, TraceAggregatorPid )
+         traces_for_apps:app_stop_on_shell( ?MODULE, TraceAggregatorPid )
 ).
 
 
@@ -155,7 +155,7 @@ Pid ! {getBaz, [], self()},
 receive
 
   {wooper_result, V} ->
-	  V
+      V
 
 end,
 ...
@@ -163,7 +163,7 @@ end,
 """.
 -spec app_receive() -> any().
 app_receive() ->
-	traces:receive_applicative_message().
+    traces:receive_applicative_message().
 
 
 
@@ -173,7 +173,7 @@ while not interfering with trace supervision.
 """.
 -spec app_receive( any() ) -> void().
 app_receive( Message ) ->
-	traces:receive_applicative_message( Message ).
+    traces:receive_applicative_message( Message ).
 
 
 
@@ -191,20 +191,20 @@ Handles an application failure, using specified string as advertised reason.
 -spec app_failed( text_utils:ustring() ) -> no_return().
 app_failed( Reason ) ->
 
-	% For some reason erlang:error is unable to interpret strings as strings,
-	% they are always output as unreadable lists.
+    % For some reason erlang:error is unable to interpret strings as strings,
+    % they are always output as unreadable lists.
 
-	Message = text_utils:format( "Application ~ts failed, reason: ~ts.",
-								 [ ?MODULE, Reason ] ),
+    Message = text_utils:format( "Application ~ts failed, reason: ~ts.",
+                                 [ ?MODULE, Reason ] ),
 
-	trace_utils:error( Message ),
+    trace_utils:error( Message ),
 
-	?app_emergency( Message ),
+    ?app_emergency( Message ),
 
-	% Needed, otherwise error_logger may not display anything:
-	system_utils:await_output_completion(),
+    % Needed, otherwise error_logger may not display anything:
+    system_utils:await_output_completion(),
 
-	erlang:error( "Application ~ts failed.", [ ?MODULE ] ).
+    erlang:error( "Application ~ts failed.", [ ?MODULE ] ).
 
 
 
@@ -214,6 +214,6 @@ reason with format characters (e.g. '~w') and specified list as actual values to
 be formatted.
 """.
 -spec app_failed( text_utils:format_string(), text_utils:format_values() ) ->
-							no_return().
+                            no_return().
 app_failed( FormatReason, FormatValues ) ->
-	app_failed( text_utils:format( FormatReason, FormatValues ) ).
+    app_failed( text_utils:format( FormatReason, FormatValues ) ).

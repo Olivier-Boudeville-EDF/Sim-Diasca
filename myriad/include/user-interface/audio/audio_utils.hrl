@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -29,17 +29,17 @@
 % Specification of an audio stream:
 -record( audio_stream_settings, {
 
-	% The standard (integer) sampling rate (in kHz) of this stream:
-	sampling_rate :: audio_utils:standard_sampling_rate(),
+    % The standard (integer) sampling rate (in kHz) of this stream:
+    sampling_rate :: audio_utils:standard_sampling_rate(),
 
-	% The number and layout of audio channels:
-	channel_layout :: audio_utils:channel_layout(),
+    % The number and layout of audio channels:
+    channel_layout :: audio_utils:channel_layout(),
 
-	% Either a bit rate or a bit depth:
-	bit_level :: audio_utils:bit_level(),
+    % Either a bit rate or a bit depth:
+    bit_level :: audio_utils:bit_level(),
 
-	% How to store metadata and possibly multiple audio streams:
-	container_format :: audio_utils:container_format(),
+    % How to store metadata and possibly multiple audio streams:
+    container_format :: audio_utils:container_format(),
 
-	% How audio content is encoded:
-	audio_format :: audio_utils:audio_format() } ).
+    % How audio content is encoded:
+    audio_format :: audio_utils:audio_format() } ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -45,7 +45,7 @@ They are very useful to trace events, and can be split in separate fields.
 
 -doc "A style element of a status bar.".
 -type status_bar_style() ::
-	'normal'
+    'normal'
   | 'flat'
   | 'raised'
   | 'sunken'
@@ -78,13 +78,13 @@ If negative, designates a width ratio among all variable-width fields.
 
 
 -export_type([ status_bar/0, status_bar_style/0,
-			   field_count/0, field_index/0, field_width/0 ]).
+               field_count/0, field_index/0, field_width/0 ]).
 
 
 -export([ create/1, create/2, destruct/1,
-		  set_field_count/2, set_field_widths/2,
-		  push_text/2, push_text/3,
-		  push_field_text/3, push_field_text/4 ]).
+          set_field_count/2, set_field_widths/2,
+          push_text/2, push_text/3,
+          push_field_text/3, push_field_text/4 ]).
 
 
 
@@ -109,8 +109,8 @@ Creates and attaches a status bar at the bottom of the specified frame.
 """.
 -spec create( frame() ) -> status_bar().
 create( Frame ) ->
-	% No interesting option (winid):
-	wxFrame:createStatusBar( Frame ).
+    % No interesting option (winid):
+    wxFrame:createStatusBar( Frame ).
 
 
 
@@ -120,16 +120,16 @@ specified frame.
 """.
 -spec create( frame(), [ status_bar_style() ] ) -> status_bar().
 create( Frame, StatusBarStyles ) ->
-	% No interesting option (winid):
-	wxFrame:createStatusBar( Frame,
-		[ { style, statusbar_styles_to_bitmask( StatusBarStyles ) } ] ).
+    % No interesting option (winid):
+    wxFrame:createStatusBar( Frame,
+        [ { style, statusbar_styles_to_bitmask( StatusBarStyles ) } ] ).
 
 
 
 -doc "Destructs the specified status bar.".
 -spec destruct( status_bar() ) -> void().
 destruct( StatusBar ) ->
-	wxStatusBar:destroy( StatusBar ).
+    wxStatusBar:destroy( StatusBar ).
 
 
 
@@ -139,7 +139,7 @@ split.
 """.
 -spec set_field_count( status_bar(), field_count() ) -> void().
 set_field_count( StatusBar, FieldCount ) ->
-	wxStatusBar:setFieldsCount( StatusBar, FieldCount ).
+    wxStatusBar:setFieldsCount( StatusBar, FieldCount ).
 
 
 
@@ -149,8 +149,8 @@ their number as well).
 """.
 -spec set_field_widths( status_bar(), [ field_width() ] ) -> void().
 set_field_widths( StatusBar, FieldWidths ) ->
-	wxStatusBar:setFieldsCount( StatusBar, length( FieldWidths ),
-								[ { widths, FieldWidths } ] ).
+    wxStatusBar:setFieldsCount( StatusBar, length( FieldWidths ),
+                                [ { widths, FieldWidths } ] ).
 
 
 
@@ -159,7 +159,7 @@ Pushes the specified text in the (first field of the) specified status bar.
 """.
 -spec push_text( status_bar(), text() ) -> void().
 push_text( StatusBar, Text ) ->
-	wxStatusBar:pushStatusText( StatusBar, Text ).
+    wxStatusBar:pushStatusText( StatusBar, Text ).
 
 
 
@@ -169,8 +169,8 @@ bar.
 """.
 -spec push_text( status_bar(), format_string(), format_values() ) -> void().
 push_text( StatusBar, FormatString, FormatValues ) ->
-	Text = text_utils:format( FormatString, FormatValues ),
-	push_text( StatusBar, Text ).
+    Text = text_utils:format( FormatString, FormatValues ),
+    push_text( StatusBar, Text ).
 
 
 
@@ -179,17 +179,17 @@ Pushes the specified text in the specified field of the specified status bar.
 """.
 -spec push_field_text( status_bar(), text(), field_index() ) -> void().
 push_field_text( StatusBar, Text, FieldIndex ) ->
-	% Wx starts at zero:
-	wxStatusBar:pushStatusText( StatusBar, Text, [ { number, FieldIndex-1 } ] ).
+    % Wx starts at zero:
+    wxStatusBar:pushStatusText( StatusBar, Text, [ { number, FieldIndex-1 } ] ).
 
 
 
 -doc "Pushes the specified formatted text in the specified status bar.".
 -spec push_field_text( status_bar(), format_string(), format_values(),
-						 field_index() ) -> void().
+                         field_index() ) -> void().
 push_field_text( StatusBar, FormatString, FormatValues, FieldIndex ) ->
-	Text = text_utils:format( FormatString, FormatValues ),
-	push_field_text( StatusBar, Text, FieldIndex ).
+    Text = text_utils:format( FormatString, FormatValues ),
+    push_field_text( StatusBar, Text, FieldIndex ).
 
 
 
@@ -201,8 +201,8 @@ wx-specific bit mask.
 """.
 -spec statusbar_styles_to_bitmask( [ status_bar_style() ] ) -> bit_mask().
 statusbar_styles_to_bitmask( Styles ) ->
-	lists:foldl( fun( S, Acc ) ->
-					gui_generated:get_second_for_status_bar_style( S ) bor Acc
-				 end,
-				 _InitialAcc=0,
-				 _List=Styles ).
+    lists:foldl( fun( S, Acc ) ->
+                    gui_generated:get_second_for_status_bar_style( S ) bor Acc
+                 end,
+                 _InitialAcc=0,
+                 _List=Styles ).

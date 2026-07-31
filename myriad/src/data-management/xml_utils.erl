@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -135,14 +135,14 @@ The description of an attribute of a XML tag.
 For example `{refCount,"4"}` in: `<Account refCount="4"> ...</Account>`.
 """.
 -type xml_attribute() :: { xml_attribute_name(), xml_attribute_value() }
-						 | attribute_record().
+                         | attribute_record().
 
 
 
 -doc "An XML tag, expressed in xmerl's simple form.".
 -type xml_simple_tag() :: xml_tag()
-					  | { xml_tag(), xml_content() }
-					  | { xml_tag(), [ xml_attribute() ], xml_content() }.
+                      | { xml_tag(), xml_content() }
+                      | { xml_tag(), [ xml_attribute() ], xml_content() }.
 
 
 
@@ -190,10 +190,10 @@ etc.).
 The internal records introduced by xmerl in order to denote XML elements.
 """.
 -type xml_record() :: text_record()
-					| element_record()
-					| instruction_record()
-					| comment_record()
-					| declaration_record().
+                    | element_record()
+                    | instruction_record()
+                    | comment_record()
+                    | declaration_record().
 
 
 
@@ -263,7 +263,7 @@ If the root element is an xmlElement record, then a (single) namespace may be
 specified thanks to its 'namespace' field:
 ```
 RootElem = #xmlElement{name=birds,
-					   namespace=#xmlNamespace{default=SpeciesStr}, ...
+                       namespace=#xmlNamespace{default=SpeciesStr}, ...
 ```
 """.
 -type xml_prolog_value() :: xml_attribute_value().
@@ -298,23 +298,23 @@ RootElem = #xmlElement{name=birds,
 
 -export_type([ xml_document/0, xml_text/0, xml_tag/0,
 
-			   attribute_record/0,
-			   xml_attribute_name/0, xml_attribute_value/0, xml_attribute/0,
+               attribute_record/0,
+               xml_attribute_name/0, xml_attribute_value/0, xml_attribute/0,
 
-			   % xmerl records:
-			   text_record/0, element_record/0, instruction_record/0,
-			   comment_record/0, declaration_record/0,
+               % xmerl records:
+               text_record/0, element_record/0, instruction_record/0,
+               comment_record/0, declaration_record/0,
 
-			   xml_simple_tag/0, xml_iolist/0, xml_record/0, xml_element/0,
-			   xml_content/0, xml_simple_content/0,
-			   xml_root_attributes/0, xml_prolog_value/0 ]).
+               xml_simple_tag/0, xml_iolist/0, xml_record/0, xml_element/0,
+               xml_content/0, xml_simple_content/0,
+               xml_root_attributes/0, xml_prolog_value/0 ]).
 
 
 -export([ to_xml_text/1,
-		  get_default_prolog/0,
-		  xml_to_string/1, xml_to_string/2, string_to_xml/1,
-		  parse_xml_file/1,
-		  pretty_print_from_string/1, pretty_print_from_file/1 ]).
+          get_default_prolog/0,
+          xml_to_string/1, xml_to_string/2, string_to_xml/1,
+          parse_xml_file/1,
+          pretty_print_from_string/1, pretty_print_from_file/1 ]).
 
 
 % Shorthands:
@@ -333,10 +333,10 @@ included safely within an XML content.
 """.
 -spec to_xml_text( any_string() ) -> ustring().
 to_xml_text( Text ) ->
-	% As our HTML escaping goes a little beyond the strictly necessary and
-	% matches the XML requirements:
-	%
-	web_utils:escape_as_html_content( Text ).
+    % As our HTML escaping goes a little beyond the strictly necessary and
+    % matches the XML requirements:
+    %
+    web_utils:escape_as_html_content( Text ).
 
 
 
@@ -346,7 +346,7 @@ encoding="utf-8" ?>.`.
 """.
 -spec get_default_prolog() -> xml_prolog_value().
 get_default_prolog() ->
-	"<?xml version=\"1.0\" encoding=\"utf-8\" ?>".
+    "<?xml version=\"1.0\" encoding=\"utf-8\" ?>".
 
 
 
@@ -360,7 +360,7 @@ network, etc.
 """.
 -spec xml_to_string( xml_content() ) -> io_list().
 xml_to_string( XMLContent ) ->
-	xml_to_string( XMLContent, get_default_prolog() ).
+    xml_to_string( XMLContent, get_default_prolog() ).
 
 
 
@@ -374,15 +374,15 @@ network, etc.
 -spec xml_to_string( xml_content(), xml_prolog_value() ) -> ustring().
 xml_to_string( XMLContent, PrologValue ) ->
 
-	% See
-	% https://www.erlang.org/doc/apps/xmerl/xmerl_ug.html#example--create-xml-out-of-arbitrary-data:
+    % See
+    % https://www.erlang.org/doc/apps/xmerl/xmerl_ug.html#example--create-xml-out-of-arbitrary-data:
 
-	%trace_utils:debug_fmt( "XML content to serialise:~n ~p", [ XMLContent ] ),
+    %trace_utils:debug_fmt( "XML content to serialise:~n ~p", [ XMLContent ] ),
 
-	IOList = xmerl:export_simple( XMLContent, xmerl_xml,
-								  [ { prolog, PrologValue } ] ),
+    IOList = xmerl:export_simple( XMLContent, xmerl_xml,
+                                  [ { prolog, PrologValue } ] ),
 
-	text_utils:flatten( IOList ).
+    text_utils:flatten( IOList ).
 
 
 
@@ -396,14 +396,14 @@ tags (no XML records).
 -spec string_to_xml( ustring() ) -> xml_content().
 string_to_xml( XMLStr ) ->
 
-	% See parse_xml_file/1.
+    % See parse_xml_file/1.
 
-	SpaceFlag = normalize, % rather than preserve
-	{ Document, _Rest } = xmerl_scan:string( XMLStr, [ { space, SpaceFlag } ] ),
+    SpaceFlag = normalize, % rather than preserve
+    { Document, _Rest } = xmerl_scan:string( XMLStr, [ { space, SpaceFlag } ] ),
 
-	[ CleanedContent ] = xmerl_lib:remove_whitespace( [ Document ] ),
+    [ CleanedContent ] = xmerl_lib:remove_whitespace( [ Document ] ),
 
-	xmerl_lib:simplify_element( CleanedContent ).
+    xmerl_lib:simplify_element( CleanedContent ).
 
 
 
@@ -417,15 +417,15 @@ tags (no XML records).
 -spec parse_xml_file( any_file_path() ) -> xml_content().
 parse_xml_file( FilePath ) ->
 
-	% Directly deriving from
-	% https://medium.com/erlang-battleground/the-hidden-xml-simplifier-a5f66e10c928:
+    % Directly deriving from
+    % https://medium.com/erlang-battleground/the-hidden-xml-simplifier-a5f66e10c928:
 
-	SpaceFlag = normalize, % rather than preserve
-	{ Document, _Rest } = xmerl_scan:file( FilePath, [ { space, SpaceFlag } ] ),
+    SpaceFlag = normalize, % rather than preserve
+    { Document, _Rest } = xmerl_scan:file( FilePath, [ { space, SpaceFlag } ] ),
 
-	[ CleanedContent ] = xmerl_lib:remove_whitespace( [ Document ] ),
+    [ CleanedContent ] = xmerl_lib:remove_whitespace( [ Document ] ),
 
-	xmerl_lib:simplify_element( CleanedContent ).
+    xmerl_lib:simplify_element( CleanedContent ).
 
 
 
@@ -437,10 +437,10 @@ consumption.
 """.
 -spec pretty_print_from_string( xml_text() ) -> xml_text().
 pretty_print_from_string( XMLText ) ->
-	TmpFilePath = file_utils:write_whole_in_non_clashing( XMLText ),
-	XMLText = pretty_print_from_file( TmpFilePath ),
-	file_utils:remove_file( TmpFilePath ),
-	XMLText.
+    TmpFilePath = file_utils:write_whole_in_non_clashing( XMLText ),
+    XMLText = pretty_print_from_file( TmpFilePath ),
+    file_utils:remove_file( TmpFilePath ),
+    XMLText.
 
 
 
@@ -452,17 +452,17 @@ display/human consumption.
 -spec pretty_print_from_file( any_file_path() ) -> xml_text().
 pretty_print_from_file( XMLFilePath ) ->
 
-	PrinterExecPath = executable_utils:get_default_xml_prettyprinter(),
+    PrinterExecPath = executable_utils:get_default_xml_prettyprinter(),
 
-	% Maybe the output content shall be stored in a temporary file as well:
-	Args = [ "--format", XMLFilePath ],
+    % Maybe the output content shall be stored in a temporary file as well:
+    Args = [ "--format", XMLFilePath ],
 
-	case system_utils:run_executable( PrinterExecPath, Args ) of
+    case system_utils:run_executable( PrinterExecPath, Args ) of
 
-		{ _ReturnCode=0, CmdOutput } ->
-			CmdOutput;
+        { _ReturnCode=0, CmdOutput } ->
+            CmdOutput;
 
-		{ ErrorCode, Output } ->
-			throw( { pretty_print_failed, XMLFilePath, Output, ErrorCode } )
+        { ErrorCode, Output } ->
+            throw( { pretty_print_failed, XMLFilePath, Output, ErrorCode } )
 
-	end.
+    end.

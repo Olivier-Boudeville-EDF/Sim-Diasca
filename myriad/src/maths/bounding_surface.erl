@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2025 Olivier Boudeville
+% Copyright (C) 2010-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -50,10 +50,10 @@ See `bounding_surface_test.erl` for the corresponding test.
 
 
 -export([ get_bounding_rectangle/1,
-		  get_lazy_bounding_circle/1, get_minimal_enclosing_circle/1,
-		  get_circle_if_in_range/3, is_within/2, is_within/3,
-		  get_circumscribed_circle_for/3,
-		  to_string/1 ]).
+          get_lazy_bounding_circle/1, get_minimal_enclosing_circle/1,
+          get_circle_if_in_range/3, is_within/2, is_within/3,
+          get_circumscribed_circle_for/3,
+          to_string/1 ]).
 
 
 % For record declarations of bounding surfaces:
@@ -88,7 +88,7 @@ A bounding surface defined based on any circle (e.g. lazy or MEC).
 
 
 -export_type([ bounding_algorithm/0,
-			   rectangle/0, circle/0, bounding_surface/0 ]).
+               rectangle/0, circle/0, bounding_surface/0 ]).
 
 
 % Design notes:
@@ -149,10 +149,10 @@ compute.
 -spec get_bounding_rectangle( [ any_point2() ] ) -> rectangle().
 get_bounding_rectangle( Points ) ->
 
-	{ TopLeftP, BottomRightP } =
-		linear_2D:compute_smallest_enclosing_rectangle( Points ),
+    { TopLeftP, BottomRightP } =
+        linear_2D:compute_smallest_enclosing_rectangle( Points ),
 
-	#rectangle{ top_left=TopLeftP, bottom_right=BottomRightP }.
+    #rectangle{ top_left=TopLeftP, bottom_right=BottomRightP }.
 
 
 
@@ -166,15 +166,15 @@ compute.
 -spec get_lazy_bounding_circle( [ any_point2() ] ) -> circle().
 get_lazy_bounding_circle( Points ) ->
 
-	{ TopLeftP, BottomRightP } =
-		linear_2D:compute_smallest_enclosing_rectangle( Points ),
+    { TopLeftP, BottomRightP } =
+        linear_2D:compute_smallest_enclosing_rectangle( Points ),
 
-	Center = point2:get_center( TopLeftP, BottomRightP ),
+    Center = point2:get_center( TopLeftP, BottomRightP ),
 
-	% We divide by 4, as we are dealing with squared quantities:
-	SquareRadius = point2:square_distance( TopLeftP, BottomRightP ) / 4,
+    % We divide by 4, as we are dealing with squared quantities:
+    SquareRadius = point2:square_distance( TopLeftP, BottomRightP ) / 4,
 
-	#circle{ center=Center, square_radius=SquareRadius }.
+    #circle{ center=Center, square_radius=SquareRadius }.
 
 
 
@@ -191,21 +191,21 @@ update_minimal_enclosing_circle_surface/2 function.
 """.
 -spec get_minimal_enclosing_circle( [ any_point2() ] ) -> circle().
 get_minimal_enclosing_circle( _Points=[] ) ->
-	throw( no_point_to_enclose );
+    throw( no_point_to_enclose );
 
 get_minimal_enclosing_circle( _Points=[ P ] ) ->
-	% Only one point, epsilon-based comparison allows for a null radius:
-	{ _Center=P, _SquareRadius=0.0 };
+    % Only one point, epsilon-based comparison allows for a null radius:
+    { _Center=P, _SquareRadius=0.0 };
 
 get_minimal_enclosing_circle( _Points=[ P1, P2 ] ) ->
 
-	% Here we have two points; this defines the circle:
-	CenterP = point2:get_center( P1, P2 ),
+    % Here we have two points; this defines the circle:
+    CenterP = point2:get_center( P1, P2 ),
 
-	% Division by 4, not 2, as we deal with square quantities:
-	SquareRadius = point2:square_distance( P1, P2 ) / 4,
+    % Division by 4, not 2, as we deal with square quantities:
+    SquareRadius = point2:square_distance( P1, P2 ) / 4,
 
-	#circle{ center=CenterP, square_radius=SquareRadius };
+    #circle{ center=CenterP, square_radius=SquareRadius };
 
 
 % This clause is necessary, as the next one may end with a MEC for 2 or 3
@@ -219,80 +219,80 @@ get_minimal_enclosing_circle( _Points=[ P1, P2 ] ) ->
 %
 get_minimal_enclosing_circle( _Points=[ P1, P2, P3 ] ) ->
 
-	cond_utils:if_defined( bounding_surfaces, trace_utils:debug_fmt(
-		"get_minimal_enclosing_circle for 3 points: "
-		"~w, ~w and ~w.", [ P1, P2, P3 ] ) ),
+    cond_utils:if_defined( bounding_surfaces, trace_utils:debug_fmt(
+        "get_minimal_enclosing_circle for 3 points: "
+        "~w, ~w and ~w.", [ P1, P2, P3 ] ) ),
 
-	% As discussed for example in
-	% https://www.geeksforgeeks.org/minimum-enclosing-circle-set-1/, the MEC for
-	% 3 points intersects either 2 or 3 of these points.
+    % As discussed for example in
+    % https://www.geeksforgeeks.org/minimum-enclosing-circle-set-1/, the MEC for
+    % 3 points intersects either 2 or 3 of these points.
 
-	% So we test first the "intersects exactly 2 of the points", by testing in
-	% turn the 3 possibilities in terms of sides: if, for a given tested side,
-	% the third point lies in the circle having that side for diameter, then we
-	% have found the (unique) MEC. Otherwise we know it intersects the 3 points,
-	% and handle it by determining their circumscribed circle, which is thus the
-	% MEC.
+    % So we test first the "intersects exactly 2 of the points", by testing in
+    % turn the 3 possibilities in terms of sides: if, for a given tested side,
+    % the third point lies in the circle having that side for diameter, then we
+    % have found the (unique) MEC. Otherwise we know it intersects the 3 points,
+    % and handle it by determining their circumscribed circle, which is thus the
+    % MEC.
 
-	% First, let's test the P1P2 side:
-	case get_circle_if_in_range( P3, P1, P2 ) of
+    % First, let's test the P1P2 side:
+    case get_circle_if_in_range( P3, P1, P2 ) of
 
-		undefined ->
-			% Nope, let's test the P1P3 side:
-			case get_circle_if_in_range( P2, P1, P3 ) of
+        undefined ->
+            % Nope, let's test the P1P3 side:
+            case get_circle_if_in_range( P2, P1, P3 ) of
 
-				undefined ->
-					% Nope, let's test the P2P3 side:
-					case get_circle_if_in_range( P1, P2, P3 ) of
+                undefined ->
+                    % Nope, let's test the P2P3 side:
+                    case get_circle_if_in_range( P1, P2, P3 ) of
 
-						undefined ->
-							% Nope, let's go for the circumscribed circle then:
-							case get_circumscribed_circle_for( P1, P2, P3 ) of
+                        undefined ->
+                            % Nope, let's go for the circumscribed circle then:
+                            case get_circumscribed_circle_for( P1, P2, P3 ) of
 
-								% Were aligned...
-								undefined ->
-									get_circle_for_aligned( P1, P2, P3 );
+                                % Were aligned...
+                                undefined ->
+                                    get_circle_for_aligned( P1, P2, P3 );
 
-								CircumscribedCircle ->
-									CircumscribedCircle
+                                CircumscribedCircle ->
+                                    CircumscribedCircle
 
-							end;
+                            end;
 
-						P2P3Circle ->
-							P2P3Circle
+                        P2P3Circle ->
+                            P2P3Circle
 
-					end;
+                    end;
 
-				P1P3Circle ->
-					P1P3Circle
+                P1P3Circle ->
+                    P1P3Circle
 
-			end;
+            end;
 
-		P1P2Circle ->
-			P1P2Circle
+        P1P2Circle ->
+            P1P2Circle
 
-	end;
+    end;
 
 
 get_minimal_enclosing_circle( Points ) ->
 
-	% Here we have at least three points, let's work on the hull instead:
-	% See http://www.cs.mcgill.ca/~cs507/projects/1998/jacob/solutions.html
-	% for the solution.
+    % Here we have at least three points, let's work on the hull instead:
+    % See http://www.cs.mcgill.ca/~cs507/projects/1998/jacob/solutions.html
+    % for the solution.
 
-	%trace_utils:debug_fmt( "MEC for ~w.", [ Points ] ),
+    %trace_utils:debug_fmt( "MEC for ~w.", [ Points ] ),
 
-	% This allows to operate on potentially a lot fewer points:
-	case linear_2D:compute_convex_hull( Points ) of
+    % This allows to operate on potentially a lot fewer points:
+    case linear_2D:compute_convex_hull( Points ) of
 
-		[ P1, P2 | OtherPoints ] ->
-			% We start with a side S defined by P1 and P2 here:
-			try_side( P1, P2, OtherPoints );
+        [ P1, P2 | OtherPoints ] ->
+            % We start with a side S defined by P1 and P2 here:
+            try_side( P1, P2, OtherPoints );
 
-		Other ->
-			throw( { unexpected_hull, Other } )
+        Other ->
+            throw( { unexpected_hull, Other } )
 
-	end.
+    end.
 
 
 
@@ -301,34 +301,34 @@ Returns the circle whose diameter is the [A,B] segment if the specified point P
 is in it (bounds of the circle included), otherwise 'undefined'.
 """.
 -spec get_circle_if_in_range( P :: any_point2(), A :: any_point2(),
-							  B :: any_point2() ) -> option( circle() ).
+                              B :: any_point2() ) -> option( circle() ).
 get_circle_if_in_range( P, A, B ) ->
-	Center = point2:get_center( A, B ),
-	SquareRadius = point2:square_distance( A, B ) / 4.0,
-	SquareDistOfP = point2:square_distance( Center, P ),
-	case SquareDistOfP > SquareRadius of
+    Center = point2:get_center( A, B ),
+    SquareRadius = point2:square_distance( A, B ) / 4.0,
+    SquareDistOfP = point2:square_distance( Center, P ),
+    case SquareDistOfP > SquareRadius of
 
-		true ->
-			undefined;
+        true ->
+            undefined;
 
-		false ->
-			#circle{ center=Center, square_radius=SquareRadius }
+        false ->
+            #circle{ center=Center, square_radius=SquareRadius }
 
-	end.
+    end.
 
 
 
 -doc "Tells whether the specified point P is within the specified circle.".
 -spec is_within( any_point2(), circle() ) -> boolean().
 is_within( P, #circle{ center=C, square_radius=SR } ) ->
-	is_within( P, C, SR ).
+    is_within( P, C, SR ).
 
 
 
 -doc "Tells whether the specified point P is within the specified circle.".
 -spec is_within( any_point2(), any_point2(), square_distance() ) -> boolean().
 is_within( P, Center, SquareRadius ) ->
-	point2:square_distance( P, Center ) =< SquareRadius.
+    point2:square_distance( P, Center ) =< SquareRadius.
 
 
 
@@ -338,82 +338,82 @@ Returns the circumscribed circle of the three specified points, that is the
 (otherwise returns undefined).
 """.
 -spec get_circumscribed_circle_for( any_point2(), any_point2(),
-									any_point2() ) -> option( circle() ).
+                                    any_point2() ) -> option( circle() ).
 get_circumscribed_circle_for( P1, P2, P3 ) ->
 
-	% Here we have three points, a triangle, which defines the circumscribed
-	% circle, whose center is the intersection of the three perpendicular
-	% bisectors.
-	%
-	% Let La be the perpendicular bisector of [P1,P2] and Lb the one of [P1,P3]:
+    % Here we have three points, a triangle, which defines the circumscribed
+    % circle, whose center is the intersection of the three perpendicular
+    % bisectors.
+    %
+    % Let La be the perpendicular bisector of [P1,P2] and Lb the one of [P1,P3]:
 
-	Pa = point2:get_center( P1, P2 ),
-	La = linear_2D:get_line( Pa, point2:vectorize( P1, P2 ) ),
+    Pa = point2:get_center( P1, P2 ),
+    La = linear_2D:get_line( Pa, point2:vectorize( P1, P2 ) ),
 
-	Pb = point2:get_center( P1, P3 ),
-	Lb = linear_2D:get_line( Pb, point2:vectorize( P1, P3 ) ),
+    Pb = point2:get_center( P1, P3 ),
+    Lb = linear_2D:get_line( Pb, point2:vectorize( P1, P3 ) ),
 
-	case linear_2D:intersect( La, Lb ) of
+    case linear_2D:intersect( La, Lb ) of
 
-		no_point ->
-			% Here the two bisectors are parallel, the three vertices must be
-			% aligned, no circumscribed circle exists:
-			%
-			%throw( { flat_triangle, Points } );
-			undefined;
+        no_point ->
+            % Here the two bisectors are parallel, the three vertices must be
+            % aligned, no circumscribed circle exists:
+            %
+            %throw( { flat_triangle, Points } );
+            undefined;
 
-		% Necessarily with floating-point coordinates:
-		CenterP ->
-			#circle{ center=CenterP,
-					 square_radius=point2:square_distance( CenterP, P1 ) }
+        % Necessarily with floating-point coordinates:
+        CenterP ->
+            #circle{ center=CenterP,
+                     square_radius=point2:square_distance( CenterP, P1 ) }
 
-	end.
+    end.
 
 
 
 -doc "Returns the MEC of the three specified points, supposed to be aligned.".
 -spec get_circle_for_aligned( any_point2(), any_point2(), any_point2() ) ->
-														circle().
+                                                        circle().
 get_circle_for_aligned( P1, P2, P3 ) ->
 
-	% Computing the square distances:
-	SDForP1P2 = point2:square_distance( P1, P2 ),
-	SDForP1P3 = point2:square_distance( P1, P3 ),
-	SDForP2P3 = point2:square_distance( P2, P3 ),
+    % Computing the square distances:
+    SDForP1P2 = point2:square_distance( P1, P2 ),
+    SDForP1P3 = point2:square_distance( P1, P3 ),
+    SDForP2P3 = point2:square_distance( P2, P3 ),
 
-	% Let's be A and B the most distant points of the three, and SD their square
-	% distance:
-	%
-	{ A, B, SquareRadius } = case SDForP1P2 > SDForP1P3 of
+    % Let's be A and B the most distant points of the three, and SD their square
+    % distance:
+    %
+    { A, B, SquareRadius } = case SDForP1P2 > SDForP1P3 of
 
-		true ->
-			case SDForP1P2 > SDForP2P3 of
+        true ->
+            case SDForP1P2 > SDForP2P3 of
 
-				true ->
-					{ P1, P2, SDForP1P2 };
+                true ->
+                    { P1, P2, SDForP1P2 };
 
-				false ->
-					{ P2, P3, SDForP2P3 }
+                false ->
+                    { P2, P3, SDForP2P3 }
 
-			end;
+            end;
 
-		false ->
-			case SDForP1P3 > SDForP2P3 of
+        false ->
+            case SDForP1P3 > SDForP2P3 of
 
-				true ->
-					{ P1, P3, SDForP1P3 };
+                true ->
+                    { P1, P3, SDForP1P3 };
 
-				false ->
-					{ P2, P3, SDForP2P3 }
+                false ->
+                    { P2, P3, SDForP2P3 }
 
-			end
+            end
 
-	end,
+    end,
 
-	Center = point2:get_center( A, B ),
+    Center = point2:get_center( A, B ),
 
-	% Necessarily floating-point:
-	#circle{ center=Center, square_radius=SquareRadius }.
+    % Necessarily floating-point:
+    #circle{ center=Center, square_radius=SquareRadius }.
 
 
 
@@ -422,64 +422,64 @@ get_circle_for_aligned( P1, P2, P3 ) ->
 % (helper)
 try_side( P1, P2, OtherPoints ) ->
 
-	{ MinAngle, MinVertex } = find_minimal_angle( P1, P2, OtherPoints ),
+    { MinAngle, MinVertex } = find_minimal_angle( P1, P2, OtherPoints ),
 
-	%trace_utils:debug_fmt( "Trying side [~w, ~w], min vertex: ~w, "
-	%                       "others: ~w.", [ P1, P2, MinVertex, OtherPoints ] ),
+    %trace_utils:debug_fmt( "Trying side [~w, ~w], min vertex: ~w, "
+    %                       "others: ~w.", [ P1, P2, MinVertex, OtherPoints ] ),
 
-	case MinAngle of
+    case MinAngle of
 
-		FirstAngle when FirstAngle > 90 ->
-			% Finished, P1 and P2 determine the diametric circle, reusing the
-			% code for that:
-			%
-			get_minimal_enclosing_circle( [ P1, P2 ] );
+        FirstAngle when FirstAngle > 90 ->
+            % Finished, P1 and P2 determine the diametric circle, reusing the
+            % code for that:
+            %
+            get_minimal_enclosing_circle( [ P1, P2 ] );
 
-		_FirstAngleTooSmall ->
+        _FirstAngleTooSmall ->
 
-			SecondAngle = linear_2D:abs_angle_deg( P1, MinVertex, P2 ),
+            SecondAngle = linear_2D:abs_angle_deg( P1, MinVertex, P2 ),
 
-			case linear_2D:is_obtuse( SecondAngle ) of
+            case linear_2D:is_obtuse( SecondAngle ) of
 
-				false ->
-					ThirdAngle = linear_2D:abs_angle_deg( P2, MinVertex, P1 ),
+                false ->
+                    ThirdAngle = linear_2D:abs_angle_deg( P2, MinVertex, P1 ),
 
-					case linear_2D:is_obtuse( ThirdAngle ) of
+                    case linear_2D:is_obtuse( ThirdAngle ) of
 
-						false ->
-							% MEC determined by P1, P2 and MinVertex:
-							get_minimal_enclosing_circle(
-								[ P1, P2, MinVertex ] );
+                        false ->
+                            % MEC determined by P1, P2 and MinVertex:
+                            get_minimal_enclosing_circle(
+                                [ P1, P2, MinVertex ] );
 
-						true ->
-							% Here we try the new side defined by the opposite
-							% points of P2, i.e. MinVertex and P1.
+                        true ->
+                            % Here we try the new side defined by the opposite
+                            % points of P2, i.e. MinVertex and P1.
 
-							% We must however reconstruct beforehand the list of
-							% remaining points, since OtherPoints contains
-							% MinVertex but not P2:
-							%
-							NewOtherPoints =
-								[ P2 | lists:delete( MinVertex, OtherPoints ) ],
-							try_side( MinVertex, P1, NewOtherPoints )
+                            % We must however reconstruct beforehand the list of
+                            % remaining points, since OtherPoints contains
+                            % MinVertex but not P2:
+                            %
+                            NewOtherPoints =
+                                [ P2 | lists:delete( MinVertex, OtherPoints ) ],
+                            try_side( MinVertex, P1, NewOtherPoints )
 
-					end;
+                    end;
 
-				true ->
-					% Here we try the new side defined by the opposite points of
-					% P1, i.e. MinVertex and P2.
+                true ->
+                    % Here we try the new side defined by the opposite points of
+                    % P1, i.e. MinVertex and P2.
 
-					% We must however reconstruct beforehand the list of
-					% remaining points, since OtherPoints contains MinVertex but
-					% not P1:
-					%
-					NewOtherPoints =
-						[ P1 | lists:delete( MinVertex, OtherPoints ) ],
-					try_side( MinVertex, P2, NewOtherPoints )
+                    % We must however reconstruct beforehand the list of
+                    % remaining points, since OtherPoints contains MinVertex but
+                    % not P1:
+                    %
+                    NewOtherPoints =
+                        [ P1 | lists:delete( MinVertex, OtherPoints ) ],
+                    try_side( MinVertex, P2, NewOtherPoints )
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -488,47 +488,47 @@ Returns {MinAngle, MinVertex}, the minimum angle (in canonical degrees)
 subtended by the segment [P1, P2] among the specified list of points.
 """.
 -spec find_minimal_angle( any_point2(), any_point2(), [ any_point2() ] ) ->
-											{ int_degrees(), any_point2() }.
+                                            { int_degrees(), any_point2() }.
 find_minimal_angle( _P1, _P2, _Points=[] ) ->
-	throw( { find_minimal_angle, not_enough_points } );
+    throw( { find_minimal_angle, not_enough_points } );
 
 find_minimal_angle( P1, P2, _Points=[ Pfirst | OtherPoints ] ) ->
 
-	%trace_utils:debug_fmt( "Trying to find minimal angle in ~w for ~w "
-	%    "and ~w.", [ Points, P1, P2 ] ),
+    %trace_utils:debug_fmt( "Trying to find minimal angle in ~w for ~w "
+    %    "and ~w.", [ Points, P1, P2 ] ),
 
-	BootstrapAngle = linear_2D:abs_angle_deg( Pfirst, P1, P2 ),
+    BootstrapAngle = linear_2D:abs_angle_deg( Pfirst, P1, P2 ),
 
-	find_minimal_angle( P1, P2, OtherPoints, _MinAngle=BootstrapAngle,
-						_MinVertex=Pfirst ).
+    find_minimal_angle( P1, P2, OtherPoints, _MinAngle=BootstrapAngle,
+                        _MinVertex=Pfirst ).
 
 
 % Points was not empty, thus not 'undefined' in the returned pair:
 find_minimal_angle( _P1, _P2, _Points=[], MinAngle, MinVertex ) ->
-	{ MinAngle, MinVertex };
+    { MinAngle, MinVertex };
 
 find_minimal_angle( P1, P2, [ P | OtherPoints ], MinAngle, MinVertex ) ->
 
-	case linear_2D:abs_angle_deg( P, P1, P2 ) of
+    case linear_2D:abs_angle_deg( P, P1, P2 ) of
 
-		Angle when Angle =< MinAngle ->
-			% We have a new winner here:
-			find_minimal_angle( P1, P2, OtherPoints, Angle, P );
+        Angle when Angle =< MinAngle ->
+            % We have a new winner here:
+            find_minimal_angle( P1, P2, OtherPoints, Angle, P );
 
-		_NonMinimalAngle ->
-			find_minimal_angle( P1, P2, OtherPoints, MinAngle, MinVertex )
+        _NonMinimalAngle ->
+            find_minimal_angle( P1, P2, OtherPoints, MinAngle, MinVertex )
 
-	 end.
+     end.
 
 
 
 -doc "Returns a textual description of the specified bounding surface.".
 -spec to_string( bounding_surface() ) -> ustring().
 to_string( #rectangle{ top_left=TopLeft, bottom_right=BottomRight } ) ->
-	text_utils:format( "bounding rectangle whose top-left corner is ~ts "
-		"and bottom-right one is ~ts",
-		[ point2:to_string( TopLeft ), point2:to_string( BottomRight ) ] );
+    text_utils:format( "bounding rectangle whose top-left corner is ~ts "
+        "and bottom-right one is ~ts",
+        [ point2:to_string( TopLeft ), point2:to_string( BottomRight ) ] );
 
 to_string( #circle{ center=Center, square_radius=SquareRadius } ) ->
-	text_utils:format( "bounding circle whose center is ~ts and "
-		"square radius is ~w", [ point2:to_string( Center ), SquareRadius ] ).
+    text_utils:format( "bounding circle whose center is ~ts and "
+        "square radius is ~w", [ point2:to_string( Center ), SquareRadius ] ).

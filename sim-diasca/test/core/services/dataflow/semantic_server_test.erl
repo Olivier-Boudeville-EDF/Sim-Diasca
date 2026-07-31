@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 EDF R&D
+% Copyright (C) 2016-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -25,12 +25,12 @@
 The purpose of this module is to test the support provided by the semantic
 server.
 
-See also class_SemanticServer.erl.
+See also the `class_SemanticServer` module.
 """.
 
 
-% For facilities common to all cases:
--include("sim_diasca_for_cases.hrl").
+% Not a simulation case, just a test:
+-include("traces_for_tests.hrl").
 
 
 
@@ -41,42 +41,42 @@ defaults.
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+    ?test_start,
 
-	SemanticServerPid = class_SemanticServer:start(),
+    SemanticServerPid = class_SemanticServer:start(),
 
-	% Add 'wheels' to test a failure case:
-	FirstWords = text_utils:strings_to_binaries(
-		[ "wheel", "motor", "hood", "brakes" ] ),
+    % Add 'wheels' to test a failure case:
+    FirstWords = text_utils:strings_to_binaries(
+        [ "wheel", "motor", "hood", "brakes" ] ),
 
-	[ SemanticServerPid ! { declareSemantics, [ W ] } || W <- FirstWords ],
+    [ SemanticServerPid ! { declareSemantics, [ W ] } || W <- FirstWords ],
 
 
-	SecondWords = text_utils:strings_to_binaries(
-		[ "boat", "river", "fish", "wheels", "island" ] ),
+    SecondWords = text_utils:strings_to_binaries(
+        [ "boat", "river", "fish", "wheels", "island" ] ),
 
-	ValidationRequests = [ { validateSemantics, W } || W <- SecondWords ],
+    ValidationRequests = [ { validateSemantics, W } || W <- SecondWords ],
 
-	ExpectedOutcomes = [ semantics_accepted, semantics_accepted,
-						 semantics_accepted,
+    ExpectedOutcomes = [ semantics_accepted, semantics_accepted,
+                         semantics_accepted,
 
-						 % Used to be rejected, at least temporarily now:
-						 %{ semantics_rejected,
-						 %  { semantics_too_close, {"wheels","wheel"} } },
+                         % Used to be rejected, at least temporarily now:
+                         %{ semantics_rejected,
+                         %  { semantics_too_close, {"wheels","wheel"} } },
 
-						 semantics_accepted,
+                         semantics_accepted,
 
-						 semantics_accepted ],
+                         semantics_accepted ],
 
-	ExpectedOutcomes = wooper:obtain_results_for_request_series(
-		ValidationRequests, SemanticServerPid ),
+    ExpectedOutcomes = wooper:obtain_results_for_request_series(
+        ValidationRequests, SemanticServerPid ),
 
-	% Also useful for synchronous operation of the test:
-	SemanticServerPid ! { getStatus, [], self() },
-	StateString = test_receive(),
+    % Also useful for synchronous operation of the test:
+    SemanticServerPid ! { getStatus, [], self() },
+    StateString = test_receive(),
 
-	?test_notice_fmt( "Current state of server: ~ts", [ StateString ] ),
+    ?test_notice_fmt( "Current state of server: ~ts", [ StateString ] ),
 
-	class_SemanticServer:stop(),
+    class_SemanticServer:stop(),
 
-	?case_stop.
+    ?test_stop.

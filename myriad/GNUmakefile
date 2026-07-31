@@ -2,7 +2,8 @@ MYRIAD_TOP = .
 
 
 .PHONY: help help-myriad help-hints help-batch                                \
-		register-version-in-header register-myriad list-beam-dirs             \
+		register-version-in-header register-myriad                            \
+        list-beam-dirs list-beam-relative-paths                               \
 		add-prerequisite-plts prepare-base-plt add-erlhdf5-plt add-jsx-plt    \
 		add-sqlite3-plt link-plt clean-ast-outputs clean-local stats          \
 		info-versions info-parse-transform-local info-conditionals info-glsl
@@ -66,7 +67,6 @@ register-myriad:
 	@echo "-define( myriad_version, \"$(MYRIAD_VERSION)\" )." >> $(VERSION_FILE)
 
 
-
 # Useful to extract internal layout for re-use in upper layers:
 list-beam-dirs:
 	@for d in $(MYRIAD_BEAM_DIRS); do echo $$(readlink -f $$d); done
@@ -74,6 +74,7 @@ list-beam-dirs:
 
 list-beam-relative-paths:
 	@cd src && echo $(MYRIAD_BEAM_DIRS)
+
 
 
 # Not needing add-jsx-plt anymore:

@@ -1,4 +1,3 @@
-
 :raw-latex:`\pagebreak`
 
 .. _`code injection`:
@@ -51,17 +50,17 @@ Injecting a *single* expression (i.e. not multiple ones) is not a limitation: no
 
 .. [#] A previous implementation of ``cond_utils`` allowed to specify the code to inject either as an expression or as a *list* of expressions.
 
-	   It was actually a mistake, as a single expression to return can be itself a list (e.g. ``["red", "blue"]``), which bears a different semantics and should not be interpreted as a list of expressions to evaluate. For example, the result from the code to inject may be bound to a variable, in which case we expect ``A=["red", "blue"]`` rather than ``A="red", "blue"`` (this latter term being constructed but not used).
+       It was actually a mistake, as a single expression to return can be itself a list (e.g. ``["red", "blue"]``), which bears a different semantics and should not be interpreted as a list of expressions to evaluate. For example, the result from the code to inject may be bound to a variable, in which case we expect ``A=["red", "blue"]`` rather than ``A="red", "blue"`` (this latter term being constructed but not used).
 
-	   So the following code injection *is* faulty (a ``begin/end`` block was meant, not a list):
+       So the following code injection *is* faulty (a ``begin/end`` block was meant, not a list):
 
-	   .. code:: erlang
+       .. code:: erlang
 
-		  cond_utils:if_defined(my_token, [
-			  A = 1,
-			  io:format("Hello ~p!~n", [A])]),
+          cond_utils:if_defined(my_token, [
+              A = 1,
+              io:format("Hello ~p!~n", [A])]),
 
-	   (and moreover such code will trigger a compilation error, the ``A`` in ``io:format/2`` being reported as unbounded then)
+       (and moreover such code will trigger a compilation error, the ``A`` in ``io:format/2`` being reported as unbounded then)
 
 
 
@@ -91,9 +90,9 @@ or, to illustrate expression blocks:
 .. code:: erlang
 
  cond_utils:if_debug(begin
-						 C=B+1,
-						 io:format("Goodbye ~p",[C])
-					 end)
+                         C=B+1,
+                         io:format("Goodbye ~p",[C])
+                     end)
 
 
 These constructs will be replaced by the expression they specify for injection, at their location in the program, iff the ``myriad_debug_mode`` token has been defined, otherwise they will be replaced by nothing at all (hence with exactly *no* runtime penalty; and the result of the evaluation of ``if_debug/1`` is then not an expression).
@@ -175,7 +174,7 @@ Example:
 .. code:: erlang
 
   io:format( "We are in ~ts mode.",
-	  [cond_utils:switch_execution_target("development", "production")])
+      [cond_utils:switch_execution_target("development", "production")])
 
 
 Finally, the ``switch_set_to/{2,3}`` primitives allow to generalise these ``if``-like constructs, with one among any number of code branches selected based on the build-time value of a token, possibly with defaults (should the token not be defined at all, or defined to a value that is not among the ones associated to a code branch).
@@ -185,10 +184,10 @@ For that we specify a list of pairs, each made of a value and of the correspondi
 .. code:: erlang
 
   cond_utils:switch_set_to(TOKEN, [
-		 {VALUE_1, EXPR_1},
-		 {VALUE_2, EXPR_2},
-		 % [...]
-		 {VALUE_N, EXPR_N}])
+         {VALUE_1, EXPR_1},
+         {VALUE_2, EXPR_2},
+         % [...]
+         {VALUE_N, EXPR_N}])
 
 
 For example:
@@ -196,9 +195,9 @@ For example:
 .. code:: erlang
 
   cond_utils:switch_set_to(my_token, [
-	   {my_first_value, io:format("Hello!")},
-	   {my_second_value, begin f(), g(X,debug), h() end},
-	   {some_third_value, a(X,Y)}])
+       {my_first_value, io:format("Hello!")},
+       {my_second_value, begin f(), g(X,debug), h() end},
+       {some_third_value, a(X,Y)}])
 
 A compilation-time error will be raised if ``my_token`` is not set, or if it is set to none of the declared values (i.e. not in ``[my_first_value, my_second_value, some_third_value]``).
 
@@ -208,11 +207,11 @@ A variation of this primitive exists that applies a default token value if none 
 .. code:: erlang
 
   cond_utils:switch_set_to(TOKEN,
-						   [ {VALUE_1, EXPR_1},
-							 {VALUE_2, EXPR_2},
-							 % [...]
-							 {VALUE_N, EXPR_N}],
-						   DEFAULT_VALUE)
+                           [ {VALUE_1, EXPR_1},
+                             {VALUE_2, EXPR_2},
+                             % [...]
+                             {VALUE_N, EXPR_N}],
+                           DEFAULT_VALUE)
 
 
 As always with primitives that define a default, alternate branch, they always inject an expression and thus can be considered as such.
@@ -222,7 +221,7 @@ For example:
 .. code:: erlang
 
   ModuleFilename = atom_to_list( cond_utils:switch_set_to(some_token,
-				[{1, foo}, {14, bar}, {20, hello}], 14) ++ ".erl"
+                [{1, foo}, {14, bar}, {20, hello}], 14) ++ ".erl"
 
 
 Here, if ``some_token`` is not defined, or defined to a value that is neither ``1``, ``14`` or ``20``, then the ``14`` default value applies, and thus ``ModuleFilename`` is set to ``"bar.erl"``.
@@ -302,8 +301,8 @@ As for **variables**, should A, B or C be reported as unused if ``some_token`` w
 
  [...]
  cond_utils:if_defined(some_token,
-					   f(A, B, C),
-					   basic_utils:ignore_unused([A, B, C])),
+                       f(A, B, C),
+                       basic_utils:ignore_unused([A, B, C])),
  [...]
 
 

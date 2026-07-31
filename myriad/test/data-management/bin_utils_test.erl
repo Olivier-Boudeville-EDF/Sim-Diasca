@@ -1,4 +1,4 @@
-% Copyright (C) 2017-2025 Olivier Boudeville
+% Copyright (C) 2017-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -43,20 +43,20 @@ See the unit_utils.erl tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	test_facilities:display( "Testing CRC support." ),
+    test_facilities:display( "Testing CRC support." ),
 
-	CRCTable = bin_utils:get_crc8_table(),
+    CRCTable = bin_utils:get_crc8_table(),
 
-	%test_facilities:display( "CRC table: ~p", [ CRCTable ] ),
+    %test_facilities:display( "CRC table: ~p", [ CRCTable ] ),
 
-	256 = size( CRCTable ),
+    256 = size( CRCTable ),
 
-	Binary = << 0, 1, 2, 3, 4, 5, 6 >>,
+    Binary = << 0, 1, 2, 3, 4, 5, 6 >>,
 
-	CRC = bin_utils:compute_crc8_checksum( Binary ),
+    CRC = bin_utils:compute_crc8_checksum( Binary ),
 
-	test_facilities:display( "CRC for ~p is ~p.", [ Binary, CRC ] ),
+    test_facilities:display( "CRC for ~p is ~p.", [ Binary, CRC ] ),
 
-	test_facilities:stop().
+    test_facilities:stop().

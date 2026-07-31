@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2025 Olivier Boudeville
+% Copyright (C) 2020-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -49,53 +49,53 @@ For a test with a bridge registered, refer, in Ceylan-Traces, to
 % Defined for external re-use:
 emit_traces() ->
 
-	% No bridge spec defined or used, no bridging registration here:
+    % No bridge spec defined or used, no bridging registration here:
 
-	trace_bridge:debug( "I am a debug simple message." ),
-	trace_bridge:debug_fmt( "I am a debug ~ts message.", [ "formatted" ] ),
+    trace_bridge:debug( "I am a debug simple message." ),
+    trace_bridge:debug_fmt( "I am a debug ~ts message.", [ "formatted" ] ),
 
     % To check that a ill-formatted trace is caught at compilation time:
-	%trace_bridge:debug_fmt( "I am a faulty message: ~B and ~B.",
+    %trace_bridge:debug_fmt( "I am a faulty message: ~B and ~B.",
     %                        [ _SingleValue=1 ] ),
 
-	trace_bridge:set_application_timestamp( "My applicative timestamp" ),
+    trace_bridge:set_application_timestamp( "My applicative timestamp" ),
 
-	trace_bridge:info( "I am an info simple message." ),
-	trace_bridge:info_fmt( "I am an info ~ts message.", [ "formatted" ] ),
+    trace_bridge:info( "I am an info simple message." ),
+    trace_bridge:info_fmt( "I am an info ~ts message.", [ "formatted" ] ),
 
-	trace_bridge:notice( "I am a notice simple message." ),
-	trace_bridge:notice_fmt( "I am a notice ~ts message.", [ "formatted" ] ),
+    trace_bridge:notice( "I am a notice simple message." ),
+    trace_bridge:notice_fmt( "I am a notice ~ts message.", [ "formatted" ] ),
 
-	trace_bridge:warning( "I am a warning simple message." ),
-	trace_bridge:warning_fmt( "I am a warning ~ts message.", [ "formatted" ] ),
+    trace_bridge:warning( "I am a warning simple message." ),
+    trace_bridge:warning_fmt( "I am a warning ~ts message.", [ "formatted" ] ),
 
-	trace_bridge:error( "I am an error simple message." ),
-	trace_bridge:error_fmt( "I am an error ~ts message.", [ "formatted" ] ),
+    trace_bridge:error( "I am an error simple message." ),
+    trace_bridge:error_fmt( "I am an error ~ts message.", [ "formatted" ] ),
 
-	trace_bridge:critical( "I am a critical simple message." ),
-	trace_bridge:critical_fmt( "I am a critical ~ts message.",
-							   [ "formatted" ] ),
+    trace_bridge:critical( "I am a critical simple message." ),
+    trace_bridge:critical_fmt( "I am a critical ~ts message.",
+                               [ "formatted" ] ),
 
-	trace_bridge:alert( "I am an alert simple message." ),
-	trace_bridge:alert_fmt( "I am an alert ~ts message.", [ "formatted" ] ),
+    trace_bridge:alert( "I am an alert simple message." ),
+    trace_bridge:alert_fmt( "I am an alert ~ts message.", [ "formatted" ] ),
 
-	trace_bridge:emergency( "I am an emergency simple message." ),
-	trace_bridge:emergency_fmt( "I am an emergency  ~ts message.",
-								[ "formatted" ] ),
+    trace_bridge:emergency( "I am an emergency simple message." ),
+    trace_bridge:emergency_fmt( "I am an emergency  ~ts message.",
+                                [ "formatted" ] ),
 
-	trace_bridge:void( "I am a void simple message." ),
-	trace_bridge:void_fmt( "I am a void ~ts message.", [ "formatted" ] ).
+    trace_bridge:void( "I am a void simple message." ),
+    trace_bridge:void_fmt( "I am a void ~ts message.", [ "formatted" ] ).
 
 
 
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	test_facilities:display( "Testing the trace bridge, here with "
-							 "no bridge registered." ),
+    test_facilities:display( "Testing the trace bridge, here with "
+                             "no bridge registered." ),
 
-	emit_traces(),
+    emit_traces(),
 
-	test_facilities:stop().
+    test_facilities:stop().

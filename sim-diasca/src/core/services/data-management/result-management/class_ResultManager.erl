@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2025 EDF R&D
+% Copyright (C) 2010-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -28,12 +28,12 @@ possibly post-process the **results of the simulation**.
 
 
 -define( class_description,
-		 "This service allows to declare, keep track of, retrieve, make "
-		 "available, possibly post-process (e.g. generating appropriate "
-		 "rendering) the results of the simulation. "
-		 "These are the subset of the simulation outputs that the user wants "
-		 "to obtain from the simulation. "
-		 "See also: class_ResultProducer.erl." ).
+         "This service allows to declare, keep track of, retrieve, make "
+         "available, possibly post-process (e.g. generating appropriate "
+         "rendering) the results of the simulation. "
+         "These are the subset of the simulation outputs that the user wants "
+         "to obtain from the simulation. "
+         "See also: class_ResultProducer.erl." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -43,72 +43,72 @@ possibly post-process the **results of the simulation**.
 % The class-specific attributes of a result manager:
 -define( class_attributes, [
 
-	{ result_spec, result_specification(),
-	  "stores the result settings, after a first early "
-	  "validation/transformation pass, for later use; it is either an atom "
-	  "or a pair made of two lists (targeted/blacklisted); elements of the "
-	  "targeted list are {BinaryPattern, PrecompiledMatchSpec, OptionList} "
-	  "triplets, whereas elements of the blacklisted list are "
-	  "{BinaryPatttern, PrecompiledMatchSpec} pairs; for both lists we keep "
-	  "the original pattern so that we can know easily which to remove (not "
-	  "sure match specs can be reliably compared)" },
+    { result_spec, result_specification(),
+      "stores the result settings, after a first early "
+      "validation/transformation pass, for later use; it is either an atom "
+      "or a pair made of two lists (targeted/blacklisted); elements of the "
+      "targeted list are {BinaryPattern, PrecompiledMatchSpec, OptionList} "
+      "triplets, whereas elements of the blacklisted list are "
+      "{BinaryPatttern, PrecompiledMatchSpec} pairs; for both lists we keep "
+      "the original pattern so that we can know easily which to remove (not "
+      "sure match specs can be reliably compared)" },
 
-	{ result_dir, directory_path(), "the directory in which actual
-	  results (such as basic probe outputs) will be stored" },
+    { result_dir, directory_path(), "the directory in which actual
+      results (such as basic probe outputs) will be stored" },
 
-	{ basic_probe_table, table( bin_probe_name(), basic_probe_entry() ),
-	  "table associating, to a basic probe name, its related record "
-	  "information, as known of this manager" },
+    { basic_probe_table, table( bin_probe_name(), basic_probe_entry() ),
+      "table associating, to a basic probe name, its related record "
+      "information, as known of this manager" },
 
-	{ basic_probe_default_options, [ probe_options() ],
-	  "a list of the default options for basic probes" },
+    { basic_probe_default_options, [ probe_options() ],
+      "a list of the default options for basic probes" },
 
-	{ virtual_probe_table,
-	  table( bin_probe_name(), virtual_probe_entry() ),
-	  "table associating, to a virtual probe name, its related record "
-	  "information, as known of this manager" },
+    { virtual_probe_table,
+      table( bin_probe_name(), virtual_probe_entry() ),
+      "table associating, to a virtual probe name, its related record "
+      "information, as known of this manager" },
 
-	{ datalogger_default_options, [ probe_options() ],
-	  "a list of default options for virtual probes" },
+    { datalogger_default_options, [ probe_options() ],
+      "a list of default options for virtual probes" },
 
-	{ web_probe_table, table( bin_probe_name(), web_probe_entry() ),
-	  "table associating, to a web probe name, its related record "
-	  "information, as known of this manager" },
+    { web_probe_table, table( bin_probe_name(), web_probe_entry() ),
+      "table associating, to a web probe name, its related record "
+      "information, as known of this manager" },
 
-	{ web_probe_default_options, [ probe_options() ],
-	  "a list of the default options for web probes" },
+    { web_probe_default_options, [ probe_options() ],
+      "a list of the default options for web probes" },
 
-	{ graph_probe_table, table( bin_probe_name(), graph_probe_entry() ),
-	  "table associating, to a graph stream probe name, its related record "
-	  "information, as known of this manager" },
+    { graph_probe_table, table( bin_probe_name(), graph_probe_entry() ),
+      "table associating, to a graph stream probe name, its related record "
+      "information, as known of this manager" },
 
-	{ pid_to_queue, table( producer_pid(), result_queue() ),
-	  "table allowing to convert the PID of a tracked producer into the "
-	  "result queue in charge of it" },
+    { pid_to_queue, table( producer_pid(), result_queue() ),
+      "table allowing to convert the PID of a tracked producer into the "
+      "result queue in charge of it" },
 
-	{ result_queues, [ result_queue() ], "stores the queues of pending results "
-	  "assigned to computing nodes, to control their load" },
+    { result_queues, [ result_queue() ], "stores the queues of pending results "
+      "assigned to computing nodes, to control their load" },
 
-	{ user_node_info, { atom_node_name(), atom_host_name() },
-	  "allows to record information about the user node and host, notably so "
-	  "that any load induced by result producers created directly from the "
-	  "simulation case can be assigned to the relevant host" },
+    { user_node_info, { atom_node_name(), atom_host_name() },
+      "allows to record information about the user node and host, notably so "
+      "that any load induced by result producers created directly from the "
+      "simulation case can be assigned to the relevant host" },
 
-	{ result_collected, boolean(),
-	  "tells whether result collection has already been performed" },
+    { result_collected, boolean(),
+      "tells whether result collection has already been performed" },
 
-	{ result_found, boolean(),
-	  "tells whether there was at least one actual collected result" },
+    { result_found, boolean(),
+      "tells whether there was at least one actual collected result" },
 
-	{ listeners, [ result_listener_pid() ], "a list of the PID of the result "
-	  "listeners, to be notified of the main result-related events" },
+    { listeners, [ result_listener_pid() ], "a list of the PID of the result "
+      "listeners, to be notified of the main result-related events" },
 
-	{ meta_data, meta_data(), "an ordered list of {Key,Value} pairs describing "
-	  "result-related metadata, which for example will be sent to each created "
-	  "probe (useful to have these information stored in their result files)" },
+    { meta_data, meta_data(), "an ordered list of {Key,Value} pairs describing "
+      "result-related metadata, which for example will be sent to each created "
+      "probe (useful to have these information stored in their result files)" },
 
-	{ root_time_manager_pid, time_manager_pid(),
-	  "the PID of the root time manager" } ] ).
+    { root_time_manager_pid, time_manager_pid(),
+      "the PID of the root time manager" } ] ).
 
 
 % Scope at which the result manager should be registered:
@@ -139,7 +139,7 @@ possibly post-process the **results of the simulation**.
 
 
 -type target_pattern() :: base_result_pattern()
-		| { base_result_pattern(), producer_options() }.
+                        | { base_result_pattern(), producer_options() }.
 
 
 -doc "Allows whitelisting specific results.".
@@ -161,12 +161,12 @@ possibly post-process the **results of the simulation**.
 
 -doc "User-specified result specification.".
 -type result_specification() :: 'all_outputs'
-							  | 'no_output'
-							  | 'all_basic_probes_only'
-							  | 'all_virtual_probes_only'
-							  | 'all_web_probes_only'
-							  | 'all_graph_stream_probes_only'
-							  | [ selection_pattern() ].
+                              | 'no_output'
+                              | 'all_basic_probes_only'
+                              | 'all_virtual_probes_only'
+                              | 'all_web_probes_only'
+                              | 'all_graph_stream_probes_only'
+                              | [ selection_pattern() ].
 
 
 -doc """
@@ -187,31 +187,31 @@ name, tick duration, etc.
 %
 -record( result_queue, {
 
-	% The identifier of this queue (a simple counter):
-	id :: count(),
+    % The identifier of this queue (a simple counter):
+    id :: count(),
 
-	% The name of the computing host this result queue applies to:
-	host_name :: atom_host_name(),
+    % The name of the computing host this result queue applies to:
+    host_name :: atom_host_name(),
 
-	% The name of the corresponding computing node:
-	node_name :: atom_node_name(),
+    % The name of the corresponding computing node:
+    node_name :: atom_node_name(),
 
-	% An evaluation of the maximum number of simultaneous workers (depending
-	% notably on the number of available cores) that can be used to generate
-	% results on the corresponding node:
-	%
-	max_worker_count :: count(),
+    % An evaluation of the maximum number of simultaneous workers (depending
+    % notably on the number of available cores) that can be used to generate
+    % results on the corresponding node:
+    %
+    max_worker_count :: count(),
 
-	% A list of the result producers that are currently working:
-	waited_producers :: [ producer_pid() ],
+    % A list of the result producers that are currently working:
+    waited_producers :: [ producer_pid() ],
 
-	% A list of the names (as binaries) of the result producers whose generation
-	% is still pending:
-	%
-	% (we list names rather than PIDs as the names are (and must be) the keys of
-	% the table)
-	%
-	pending_results :: [ bin_string() ] } ).
+    % A list of the names (as binaries) of the result producers whose generation
+    % is still pending:
+    %
+    % (we list names rather than PIDs as the names are (and must be) the keys of
+    % the table)
+    %
+    pending_results :: [ bin_string() ] } ).
 
 
 -doc """
@@ -230,17 +230,17 @@ when generating the results, and not overload/crash it.
 %
 -record( basic_probe_entry, {
 
-	% The PID of the corresponding probe:
-	probe_pid :: probe_pid(),
+    % The PID of the corresponding probe:
+    probe_pid :: probe_pid(),
 
-	% The generation options for that probe:
-	probe_options :: producer_options(),
+    % The generation options for that probe:
+    probe_options :: producer_options(),
 
-	% Tells whether this probe is to be tracked as a result:
-	is_tracked :: boolean(),
+    % Tells whether this probe is to be tracked as a result:
+    is_tracked :: boolean(),
 
-	% The directory in which that probe is to produce content, if not tracked:
-	probe_dir :: option( bin_directory_path() ) } ).
+    % The directory in which that probe is to produce content, if not tracked:
+    probe_dir :: option( bin_directory_path() ) } ).
 
 
 -doc """
@@ -261,14 +261,14 @@ table.
 %
 -record( web_probe_entry, {
 
-	% The PID of the corresponding web probe:
-	probe_pid :: class_WebProbe:probe_pid(),
+    % The PID of the corresponding web probe:
+    probe_pid :: class_WebProbe:probe_pid(),
 
-	% The generation options for that probe:
-	probe_options :: producer_options(),
+    % The generation options for that probe:
+    probe_options :: producer_options(),
 
-	% Tells whether this probe is to be tracked as a result:
-	is_tracked :: boolean() } ).
+    % Tells whether this probe is to be tracked as a result:
+    is_tracked :: boolean() } ).
 
 
 -doc """
@@ -289,11 +289,11 @@ probe table.
 %
 -record( graph_probe_entry, {
 
-	% The PID of the corresponding graph stream probe:
-	probe_pid :: class_GraphStreamProbe:graph_stream_probe_pid(),
+    % The PID of the corresponding graph stream probe:
+    probe_pid :: class_GraphStreamProbe:graph_stream_probe_pid(),
 
-	% Tells whether this probe is to be tracked as a result:
-	is_tracked :: boolean() } ).
+    % Tells whether this probe is to be tracked as a result:
+    is_tracked :: boolean() } ).
 
 
 -doc """
@@ -306,10 +306,10 @@ stream probe table.
 
 
 -export_type([ manager_pid/0, result_specification/0, meta_data/0,
-			   declaration_outcome/0,
-			   result_queue/0,
-			   basic_probe_entry/0, web_probe_entry/0, graph_probe_entry/0,
-			   probe_info/0 ]).
+               declaration_outcome/0,
+               result_queue/0,
+               basic_probe_entry/0, web_probe_entry/0, graph_probe_entry/0,
+               probe_info/0 ]).
 
 
 
@@ -465,71 +465,71 @@ atoms, and values are binary strings
 See class_TimeManager.erl for further details.
 """.
 -spec construct( wooper:state(), result_specification(), boolean(),
-				 time_manager_pid(), directory_path(), directory_name(),
-				 meta_data() ) -> wooper:state().
+                 time_manager_pid(), directory_path(), directory_name(),
+                 meta_data() ) -> wooper:state().
 construct( State, ResultSpecification, DataLoggerEnabled,
-		   RootTimeManagerPid, SimRunDir, ResultBaseDirName, Metadata ) ->
+           RootTimeManagerPid, SimRunDir, ResultBaseDirName, Metadata ) ->
 
-	% First the direct mother classes:
-	TraceState = class_EngineBaseObject:construct( State,
-		?trace_categorize("Result manager") ),
+    % First the direct mother classes:
+    TraceState = class_EngineBaseObject:construct( State,
+        ?trace_categorize("Result manager") ),
 
-	% As a result manager may receive a larger number of messages:
-	erlang:process_flag( message_queue_data, off_heap ),
+    % As a result manager may receive a larger number of messages:
+    erlang:process_flag( message_queue_data, off_heap ),
 
-	ProcessedResultSpec =
-		check_and_transform_result_specification( ResultSpecification ),
+    ProcessedResultSpec =
+        check_and_transform_result_specification( ResultSpecification ),
 
-	RegistrationName = get_registration_name(),
+    RegistrationName = get_registration_name(),
 
-	% Result producers rely on it:
-	naming_utils:register_as( RegistrationName, ?registration_scope ),
+    % Result producers rely on it:
+    naming_utils:register_as( RegistrationName, ?registration_scope ),
 
-	class_InstanceTracker:register_agent( RegistrationName ),
+    class_InstanceTracker:register_agent( RegistrationName ),
 
-	% We want to know when/if the simulation terminates on success:
-	RootTimeManagerPid ! { declareResultManager, self() },
+    % We want to know when/if the simulation terminates on success:
+    RootTimeManagerPid ! { declareResultManager, self() },
 
-	SimResultDirName =
-		file_utils:join( ResultBaseDirName, "simulation-results" ),
+    SimResultDirName =
+        file_utils:join( ResultBaseDirName, "simulation-results" ),
 
-	EmptyTable = table:new(),
+    EmptyTable = table:new(),
 
-	FinalState = setAttributes( TraceState, [
+    FinalState = setAttributes( TraceState, [
 
-		{ result_spec, ProcessedResultSpec },
+        { result_spec, ProcessedResultSpec },
 
-		{ result_dir, SimResultDirName },
+        { result_dir, SimResultDirName },
 
-		{ simulation_run_dir, SimRunDir },
+        { simulation_run_dir, SimRunDir },
 
-		{ basic_probe_table, EmptyTable },
-		{ basic_probe_default_options, [ data_and_rendering ] },
+        { basic_probe_table, EmptyTable },
+        { basic_probe_default_options, [ data_and_rendering ] },
 
-		{ virtual_probe_table, EmptyTable },
-		{ datalogger_default_options, [ rendering_only ] },
+        { virtual_probe_table, EmptyTable },
+        { datalogger_default_options, [ rendering_only ] },
 
-		{ web_probe_table, EmptyTable },
-		{ web_probe_default_options, [] },
+        { web_probe_table, EmptyTable },
+        { web_probe_default_options, [] },
 
-		{ graph_probe_table, EmptyTable },
+        { graph_probe_table, EmptyTable },
 
-		{ pid_to_queue, EmptyTable },
-		{ result_queues, undefined },
-		{ user_node_info, undefined },
-		{ result_collected, false },
-		{ result_found, false },
-		{ listeners, [] },
-		{ data_logger_enabled, DataLoggerEnabled },
-		{ meta_data, Metadata },
-		{ root_time_manager_pid, RootTimeManagerPid } ] ),
+        { pid_to_queue, EmptyTable },
+        { result_queues, undefined },
+        { user_node_info, undefined },
+        { result_collected, false },
+        { result_found, false },
+        { listeners, [] },
+        { data_logger_enabled, DataLoggerEnabled },
+        { meta_data, Metadata },
+        { root_time_manager_pid, RootTimeManagerPid } ] ),
 
-	% Late sending, to have it rely on the emitter category:
-	?send_info_fmt( FinalState, "Constructed, with following result "
-		"specification: ~p and following meta-data: ~ts",
-		[ ResultSpecification, get_metadata_string( Metadata ) ] ),
+    % Late sending, to have it rely on the emitter category:
+    ?send_info_fmt( FinalState, "Constructed, with following result "
+        "specification: ~p and following meta-data: ~ts",
+        [ ResultSpecification, get_metadata_string( Metadata ) ] ),
 
-	FinalState.
+    FinalState.
 
 
 
@@ -537,76 +537,76 @@ construct( State, ResultSpecification, DataLoggerEnabled,
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
-	% Class-specific actions:
-	?info( "Deleting result manager." ),
+    % Class-specific actions:
+    ?info( "Deleting result manager." ),
 
-	% Deleting all probes that are tracked (others are to be managed explicitly
-	% by their user):
+    % Deleting all probes that are tracked (others are to be managed explicitly
+    % by their user):
 
-	BasicProbePids = [ Pid || #basic_probe_entry{ probe_pid=Pid,
-												  is_tracked=true }
-							<- table:values( ?getAttr(basic_probe_table) ) ],
+    BasicProbePids = [ Pid || #basic_probe_entry{ probe_pid=Pid,
+                                                  is_tracked=true }
+                            <- table:values( ?getAttr(basic_probe_table) ) ],
 
-	case BasicProbePids of
+    case BasicProbePids of
 
-		[] ->
-			?debug( "No tracked basic probe to delete." );
+        [] ->
+            ?debug( "No tracked basic probe to delete." );
 
-		_ ->
-			?debug_fmt( "Deleting ~B tracked basic probe(s): ~w.",
-						[ length( BasicProbePids ), BasicProbePids ] ),
+        _ ->
+            ?debug_fmt( "Deleting ~B tracked basic probe(s): ~w.",
+                        [ length( BasicProbePids ), BasicProbePids ] ),
 
-			wooper:delete_synchronously_instances( BasicProbePids )
+            wooper:delete_synchronously_instances( BasicProbePids )
 
-	end,
-
-
-	WebProbePids = [ Pid || #web_probe_entry{ probe_pid=Pid,
-											  is_tracked=true }
-								<- table:values( ?getAttr(web_probe_table) ) ],
-
-	case WebProbePids of
-
-		[] ->
-			?debug( "No tracked web probe to delete." );
-
-		_ ->
-			?debug_fmt( "Deleting ~B tracked web probes: ~w.",
-						[ length( WebProbePids ), WebProbePids ] ),
-
-			wooper:delete_synchronously_instances( WebProbePids )
-
-	end,
+    end,
 
 
-	GraphProbePids = [ Pid || #graph_probe_entry{ probe_pid=Pid,
-												  is_tracked=true }
-						<- table:values( ?getAttr(graph_probe_table) ) ],
+    WebProbePids = [ Pid || #web_probe_entry{ probe_pid=Pid,
+                                              is_tracked=true }
+                                <- table:values( ?getAttr(web_probe_table) ) ],
 
-	case GraphProbePids of
+    case WebProbePids of
 
-		[] ->
-			?debug( "No tracked graph stream probe to delete." );
+        [] ->
+            ?debug( "No tracked web probe to delete." );
 
-		_ ->
-			?debug_fmt( "Deleting ~B tracked graph stream probes: ~w.",
-						[ length( GraphProbePids ), GraphProbePids ] ),
+        _ ->
+            ?debug_fmt( "Deleting ~B tracked web probes: ~w.",
+                        [ length( WebProbePids ), WebProbePids ] ),
 
-			wooper:delete_synchronously_instances( GraphProbePids )
+            wooper:delete_synchronously_instances( WebProbePids )
 
-	end,
+    end,
 
 
-	?getAttr(root_time_manager_pid) ! { removeSimulationListener, self() },
+    GraphProbePids = [ Pid || #graph_probe_entry{ probe_pid=Pid,
+                                                  is_tracked=true }
+                        <- table:values( ?getAttr(graph_probe_table) ) ],
 
-	class_InstanceTracker:unregister_agent(),
+    case GraphProbePids of
 
-	naming_utils:unregister( get_registration_name(), ?registration_scope ),
+        [] ->
+            ?debug( "No tracked graph stream probe to delete." );
 
-	?info( "Result manager deleted." ),
+        _ ->
+            ?debug_fmt( "Deleting ~B tracked graph stream probes: ~w.",
+                        [ length( GraphProbePids ), GraphProbePids ] ),
 
-	% Then allow chaining:
-	State.
+            wooper:delete_synchronously_instances( GraphProbePids )
+
+    end,
+
+
+    ?getAttr(root_time_manager_pid) ! { removeSimulationListener, self() },
+
+    class_InstanceTracker:unregister_agent(),
+
+    naming_utils:unregister( get_registration_name(), ?registration_scope ),
+
+    ?info( "Result manager deleted." ),
+
+    % Then allow chaining:
+    State.
 
 
 
@@ -626,16 +626,16 @@ have to be assigned to the local computing node instead, not too overload the
 corresponding host.
 """.
 -spec setResourceMapping( wooper:state(),
-		[ { atom_host_name(), atom_node_name(), count() } ],
-		{ atom_node_name(), atom_host_name() } ) -> oneway_return().
+        [ { atom_host_name(), atom_node_name(), count() } ],
+        { atom_node_name(), atom_host_name() } ) -> oneway_return().
 setResourceMapping( State, HostCoreList, UserNodeInfos ) ->
 
-	% Initially there is no pending result producer:
-	InitialResultQueues = create_initial_queues( HostCoreList ),
+    % Initially there is no pending result producer:
+    InitialResultQueues = create_initial_queues( HostCoreList ),
 
-	wooper:return_state( setAttributes( State, [
-		{ result_queues, InitialResultQueues },
-		{ user_node_info, UserNodeInfos } ] ) ).
+    wooper:return_state( setAttributes( State, [
+        { result_queues, InitialResultQueues },
+        { user_node_info, UserNodeInfos } ] ) ).
 
 
 
@@ -646,30 +646,30 @@ One objective is to ensure that the user host has a queue (and only one), as
 result producers may be created directly from the simulation case.
 """.
 create_initial_queues( HostCoreList ) ->
-	create_initial_queues( HostCoreList, _Count=1, _Acc=[] ).
+    create_initial_queues( HostCoreList, _Count=1, _Acc=[] ).
 
 
 create_initial_queues( _HostCoreList=[], _Count, Acc ) ->
-	Acc;
+    Acc;
 
 create_initial_queues( _HostCoreList=[ { HostName, NodeName, CoreCount } | T ],
-					   Count, Acc ) ->
+                       Count, Acc ) ->
 
-	 NewQueue = #result_queue{
-		id=Count,
-		host_name=HostName,
-		node_name=NodeName,
+     NewQueue = #result_queue{
+        id=Count,
+        host_name=HostName,
+        node_name=NodeName,
 
-		% We ensure that each core will be busy enough, yet not too overloaded:
-		max_worker_count=2*CoreCount,
+        % We ensure that each core will be busy enough, yet not too overloaded:
+        max_worker_count=2*CoreCount,
 
-		% No generation triggered yet:
-		waited_producers=[],
+        % No generation triggered yet:
+        waited_producers=[],
 
-		% No result known yet:
-		pending_results=[] },
+        % No result known yet:
+        pending_results=[] },
 
-	create_initial_queues( T, Count+1, [ NewQueue | Acc ] ).
+    create_initial_queues( T, Count+1, [ NewQueue | Acc ] ).
 
 
 
@@ -686,62 +686,62 @@ or output_not_requested. Note that this may change over time, should
 targeted/blacklisted patterns be used and changed.
 """.
 -spec declareProbe( wooper:state(), bin_probe_name(), boolean(),
-	option( bin_directory_path() ) ) -> request_return( declaration_outcome() ).
+    option( bin_directory_path() ) ) -> request_return( declaration_outcome() ).
 declareProbe( State, BinProbeName, IsToBeTracked, MaybeProbeBinDir ) ->
 
-	ProbeName = text_utils:binary_to_string( BinProbeName ),
+    ProbeName = text_utils:binary_to_string( BinProbeName ),
 
-	?info_fmt( "Declaration of basic probe '~ts' (tracked: ~ts).",
-				[ ProbeName, IsToBeTracked ] ),
+    ?info_fmt( "Declaration of basic probe '~ts' (tracked: ~ts).",
+                [ ProbeName, IsToBeTracked ] ),
 
-	case is_result_wanted( BinProbeName, basic_probe, State ) of
+    case is_result_wanted( BinProbeName, basic_probe, State ) of
 
-		false ->
-			% Can thus be fully ignored:
-			?debug_fmt( "Basic probe '~ts' is not wanted.", [ ProbeName ] ),
-			wooper:const_return_result( output_not_requested );
-
-
-		{ true, ProbeOptions } ->
-
-			% First, check that the same probe will not be registered twice:
-
-			BasicProbeTable = ?getAttr(basic_probe_table),
-
-			table:has_entry( _Key=BinProbeName, BasicProbeTable ) andalso
-				throw( { basic_probe_already_declared, ProbeName } ),
+        false ->
+            % Can thus be fully ignored:
+            ?debug_fmt( "Basic probe '~ts' is not wanted.", [ ProbeName ] ),
+            wooper:const_return_result( output_not_requested );
 
 
-			WebProbeTable = ?getAttr(web_probe_table),
+        { true, ProbeOptions } ->
 
-			table:has_entry( BinProbeName, WebProbeTable ) andalso
-				throw( { basic_probe_already_declared_as_web_one, ProbeName } ),
+            % First, check that the same probe will not be registered twice:
 
+            BasicProbeTable = ?getAttr(basic_probe_table),
 
-			GraphProbeTable = ?getAttr(graph_probe_table),
-
-			table:has_entry( BinProbeName, GraphProbeTable ) andalso
-				throw( { basic_probe_already_declared_as_graph_one,
-						 ProbeName } ),
+            table:has_entry( _Key=BinProbeName, BasicProbeTable ) andalso
+                throw( { basic_probe_already_declared, ProbeName } ),
 
 
-			ActualProbeOptions = case ProbeOptions of
+            WebProbeTable = ?getAttr(web_probe_table),
 
-				undefined ->
-					?getAttr(basic_probe_default_options);
+            table:has_entry( BinProbeName, WebProbeTable ) andalso
+                throw( { basic_probe_already_declared_as_web_one, ProbeName } ),
 
-				Other ->
-					Other
 
-			end,
+            GraphProbeTable = ?getAttr(graph_probe_table),
 
-			RegisteredState = register_basic_probe( BinProbeName,
-				ActualProbeOptions, IsToBeTracked, MaybeProbeBinDir,
-				_ProbePid=?getSender(), State ),
+            table:has_entry( BinProbeName, GraphProbeTable ) andalso
+                throw( { basic_probe_already_declared_as_graph_one,
+                         ProbeName } ),
 
-			wooper:return_state_result( RegisteredState, output_requested )
 
-	end.
+            ActualProbeOptions = case ProbeOptions of
+
+                undefined ->
+                    ?getAttr(basic_probe_default_options);
+
+                Other ->
+                    Other
+
+            end,
+
+            RegisteredState = register_basic_probe( BinProbeName,
+                ActualProbeOptions, IsToBeTracked, MaybeProbeBinDir,
+                _ProbePid=?getSender(), State ),
+
+            wooper:return_state_result( RegisteredState, output_requested )
+
+    end.
 
 
 
@@ -757,61 +757,61 @@ or output_not_requested. Note that this may change over time, should
 targeted/blacklisted patterns be used and changed.
 """.
 -spec declareWebProbe( wooper:state(), bin_probe_name(), boolean() ) ->
-						request_return( declaration_outcome() ).
+                        request_return( declaration_outcome() ).
 declareWebProbe( State, BinProbeName, IsToBeTracked ) ->
 
-	ProbeName = text_utils:binary_to_string( BinProbeName ),
+    ProbeName = text_utils:binary_to_string( BinProbeName ),
 
-	?info_fmt( "Declaration of web probe '~ts' (tracked: ~ts).",
-				[ ProbeName, IsToBeTracked ] ),
+    ?info_fmt( "Declaration of web probe '~ts' (tracked: ~ts).",
+                [ ProbeName, IsToBeTracked ] ),
 
-	case is_result_wanted( BinProbeName, web_probe, State ) of
+    case is_result_wanted( BinProbeName, web_probe, State ) of
 
-		false ->
-			% Can thus be fully ignored:
-			wooper:const_return_result( output_not_requested );
-
-
-		{ true, ProbeOptions } ->
-
-			% First, check that the same probe will not be registered twice:
-
-			BasicProbeTable = ?getAttr(basic_probe_table),
-
-			table:has_entry( _Key=BinProbeName, BasicProbeTable ) andalso
-				throw( { web_probe_already_declared_as_basic_one, ProbeName } ),
+        false ->
+            % Can thus be fully ignored:
+            wooper:const_return_result( output_not_requested );
 
 
-			WebProbeTable = ?getAttr(web_probe_table),
+        { true, ProbeOptions } ->
 
-			table:has_entry( BinProbeName, WebProbeTable ) andalso
-				throw( { web_probe_already_declared, ProbeName } ),
+            % First, check that the same probe will not be registered twice:
 
+            BasicProbeTable = ?getAttr(basic_probe_table),
 
-			GraphProbeTable = ?getAttr(graph_probe_table),
-
-			table:has_entry( BinProbeName, GraphProbeTable ) andalso
-				throw( { web_probe_already_declared_as_graph_one,
-						 ProbeName } ),
+            table:has_entry( _Key=BinProbeName, BasicProbeTable ) andalso
+                throw( { web_probe_already_declared_as_basic_one, ProbeName } ),
 
 
-			ActualProbeOptions = case ProbeOptions of
+            WebProbeTable = ?getAttr(web_probe_table),
 
-				undefined ->
-					?getAttr(basic_probe_default_options);
+            table:has_entry( BinProbeName, WebProbeTable ) andalso
+                throw( { web_probe_already_declared, ProbeName } ),
 
-				Other ->
-					Other
 
-			end,
+            GraphProbeTable = ?getAttr(graph_probe_table),
 
-			RegisteredState = register_web_probe( BinProbeName,
-				ActualProbeOptions, IsToBeTracked, _ProbePid=?getSender(),
-				State ),
+            table:has_entry( BinProbeName, GraphProbeTable ) andalso
+                throw( { web_probe_already_declared_as_graph_one,
+                         ProbeName } ),
 
-			wooper:return_state_result( RegisteredState, output_requested )
 
-	end.
+            ActualProbeOptions = case ProbeOptions of
+
+                undefined ->
+                    ?getAttr(basic_probe_default_options);
+
+                Other ->
+                    Other
+
+            end,
+
+            RegisteredState = register_web_probe( BinProbeName,
+                ActualProbeOptions, IsToBeTracked, _ProbePid=?getSender(),
+                State ),
+
+            wooper:return_state_result( RegisteredState, output_requested )
+
+    end.
 
 
 
@@ -827,51 +827,51 @@ or output_not_requested. Note that this may change over time, should
 targeted/blacklisted patterns be used and changed.
 """.
 -spec declareGraphStreamProbe( wooper:state(), bin_probe_name(), boolean() ) ->
-										request_return( declaration_outcome() ).
+                                        request_return( declaration_outcome() ).
 declareGraphStreamProbe( State, BinProbeName, IsToBeTracked ) ->
 
-	ProbeName = text_utils:binary_to_string( BinProbeName ),
+    ProbeName = text_utils:binary_to_string( BinProbeName ),
 
-	?info_fmt( "Declaration of grap stream probe '~ts' (tracked: ~ts).",
-			   [ ProbeName, IsToBeTracked ] ),
+    ?info_fmt( "Declaration of grap stream probe '~ts' (tracked: ~ts).",
+               [ ProbeName, IsToBeTracked ] ),
 
-	case is_result_wanted( BinProbeName, web_probe, State ) of
+    case is_result_wanted( BinProbeName, web_probe, State ) of
 
-		false ->
-			% Can thus be fully ignored:
-			wooper:const_return_result( output_not_requested );
-
-
-		{ true, _ProbeOptions } ->
-
-			% First, check that the same probe will not be registered twice:
-
-			BasicProbeTable = ?getAttr(basic_probe_table),
-
-			table:has_entry( _Key=BinProbeName, BasicProbeTable ) andalso
-				throw( { graph_stream_probe_already_declared_as_basic_one,
-						 ProbeName } ),
+        false ->
+            % Can thus be fully ignored:
+            wooper:const_return_result( output_not_requested );
 
 
-			WebProbeTable = ?getAttr(web_probe_table),
+        { true, _ProbeOptions } ->
 
-			table:has_entry( BinProbeName, WebProbeTable ) andalso
-				throw( { graph_stream_probe_already_declared_as_web_one,
-						 ProbeName } ),
+            % First, check that the same probe will not be registered twice:
 
+            BasicProbeTable = ?getAttr(basic_probe_table),
 
-			GraphProbeTable = ?getAttr(graph_probe_table),
-
-			table:has_entry( BinProbeName, GraphProbeTable ) andalso
-				throw( { graph_stream_probe_already_declared, ProbeName } ),
+            table:has_entry( _Key=BinProbeName, BasicProbeTable ) andalso
+                throw( { graph_stream_probe_already_declared_as_basic_one,
+                         ProbeName } ),
 
 
-			RegisteredState = register_graph_probe( BinProbeName, IsToBeTracked,
-				_ProbePid=?getSender(), State ),
+            WebProbeTable = ?getAttr(web_probe_table),
 
-			wooper:return_state_result( RegisteredState, output_requested )
+            table:has_entry( BinProbeName, WebProbeTable ) andalso
+                throw( { graph_stream_probe_already_declared_as_web_one,
+                         ProbeName } ),
 
-	end.
+
+            GraphProbeTable = ?getAttr(graph_probe_table),
+
+            table:has_entry( BinProbeName, GraphProbeTable ) andalso
+                throw( { graph_stream_probe_already_declared, ProbeName } ),
+
+
+            RegisteredState = register_graph_probe( BinProbeName, IsToBeTracked,
+                _ProbePid=?getSender(), State ),
+
+            wooper:return_state_result( RegisteredState, output_requested )
+
+    end.
 
 
 
@@ -881,63 +881,63 @@ Registers specified basic probe, returns an updated state.
 (helper)
 """.
 register_basic_probe( BinProbeName, ProbeOptions, IsToBeTracked,
-					  MaybeProbeBinDir, ProbePid, State ) ->
+                      MaybeProbeBinDir, ProbePid, State ) ->
 
-	?debug_fmt( "Registering basic probe '~ts' (~w); to be tracked: ~w.",
-				[ BinProbeName, ProbePid, IsToBeTracked ] ),
+    ?debug_fmt( "Registering basic probe '~ts' (~w); to be tracked: ~w.",
+                [ BinProbeName, ProbePid, IsToBeTracked ] ),
 
-	ProbeEntry = #basic_probe_entry{ probe_pid=ProbePid,
-									 probe_options=ProbeOptions,
-									 is_tracked=IsToBeTracked,
-									 probe_dir=MaybeProbeBinDir },
+    ProbeEntry = #basic_probe_entry{ probe_pid=ProbePid,
+                                     probe_options=ProbeOptions,
+                                     is_tracked=IsToBeTracked,
+                                     probe_dir=MaybeProbeBinDir },
 
-	NewProbeTable = table:add_entry( _K=BinProbeName, _V=ProbeEntry,
-									 ?getAttr(basic_probe_table) ),
+    NewProbeTable = table:add_entry( _K=BinProbeName, _V=ProbeEntry,
+                                     ?getAttr(basic_probe_table) ),
 
-	% Now, takes care of the update of the result queues, if this probe is
-	% tracked:
-	%
-	case IsToBeTracked of
+    % Now, takes care of the update of the result queues, if this probe is
+    % tracked:
+    %
+    case IsToBeTracked of
 
-		false ->
-			setAttribute( State, basic_probe_table, NewProbeTable );
+        false ->
+            setAttribute( State, basic_probe_table, NewProbeTable );
 
-		true ->
-			{ UserNodeName, UserHostAtom } = ?getAttr(user_node_info),
+        true ->
+            { UserNodeName, UserHostAtom } = ?getAttr(user_node_info),
 
-			{ ResultQueue, OtherQueues } = case node( ProbePid ) of
+            { ResultQueue, OtherQueues } = case node( ProbePid ) of
 
-			   UserNodeName ->
+               UserNodeName ->
 
-					% This probe runs on the user node, hence we must register
-					% it in the right result queue (based on the appropriate
-					% computing host):
-					%
-					extract_queue_by_host( UserHostAtom,
-										   ?getAttr(result_queues) );
+                    % This probe runs on the user node, hence we must register
+                    % it in the right result queue (based on the appropriate
+                    % computing host):
+                    %
+                    extract_queue_by_host( UserHostAtom,
+                                           ?getAttr(result_queues) );
 
-				AComputingNode ->
-					extract_queue_by_node( AComputingNode,
-										   ?getAttr(result_queues) )
+                AComputingNode ->
+                    extract_queue_by_node( AComputingNode,
+                                           ?getAttr(result_queues) )
 
-			end,
+            end,
 
-			% Adds this probe to the pending ones:
-			NewResultQueue = ResultQueue#result_queue{
+            % Adds this probe to the pending ones:
+            NewResultQueue = ResultQueue#result_queue{
 
-				pending_results= [ BinProbeName
-					| ResultQueue#result_queue.pending_results ] },
+                pending_results= [ BinProbeName
+                    | ResultQueue#result_queue.pending_results ] },
 
-			% Updates also the PID-to-queue table:
-			NewPidToQueueTable = table:add_entry( _Key=ProbePid,
-				_Value=NewResultQueue#result_queue.id, ?getAttr(pid_to_queue) ),
+            % Updates also the PID-to-queue table:
+            NewPidToQueueTable = table:add_entry( _Key=ProbePid,
+                _Value=NewResultQueue#result_queue.id, ?getAttr(pid_to_queue) ),
 
-			setAttributes( State, [
-				{ basic_probe_table, NewProbeTable },
-				{ result_queues, [ NewResultQueue | OtherQueues ] },
-				{ pid_to_queue, NewPidToQueueTable } ] )
+            setAttributes( State, [
+                { basic_probe_table, NewProbeTable },
+                { result_queues, [ NewResultQueue | OtherQueues ] },
+                { pid_to_queue, NewPidToQueueTable } ] )
 
-	end.
+    end.
 
 
 
@@ -946,63 +946,63 @@ register_basic_probe( BinProbeName, ProbeOptions, IsToBeTracked,
 % (helper)
 %
 register_web_probe( BinProbeName, ProbeOptions, IsToBeTracked, ProbePid,
-					State ) ->
+                    State ) ->
 
-	% Mostly the same as register_basic_probe/5:
+    % Mostly the same as register_basic_probe/5:
 
-	%trace_utils:debug_fmt( "Adding web probe '~ts' (~w); "
-	%    "is to be tracked: ~ts.", [ BinProbeName, ProbePid, IsToBeTracked ] ),
+    %trace_utils:debug_fmt( "Adding web probe '~ts' (~w); "
+    %    "is to be tracked: ~ts.", [ BinProbeName, ProbePid, IsToBeTracked ] ),
 
-	ProbeEntry = #web_probe_entry{ probe_pid=ProbePid,
-								   probe_options=ProbeOptions,
-								   is_tracked=IsToBeTracked },
+    ProbeEntry = #web_probe_entry{ probe_pid=ProbePid,
+                                   probe_options=ProbeOptions,
+                                   is_tracked=IsToBeTracked },
 
-	NewProbeTable = table:add_entry( _K=BinProbeName, _V=ProbeEntry,
-									 ?getAttr(web_probe_table) ),
+    NewProbeTable = table:add_entry( _K=BinProbeName, _V=ProbeEntry,
+                                     ?getAttr(web_probe_table) ),
 
-	% Now, takes care of the update of the result queues, if this probe is
-	% tracked:
-	%
-	case IsToBeTracked of
+    % Now, takes care of the update of the result queues, if this probe is
+    % tracked:
+    %
+    case IsToBeTracked of
 
-		false ->
-			setAttribute( State, web_probe_table, NewProbeTable );
+        false ->
+            setAttribute( State, web_probe_table, NewProbeTable );
 
-		true ->
-			{ UserNodeName, UserHostAtom } = ?getAttr(user_node_info),
+        true ->
+            { UserNodeName, UserHostAtom } = ?getAttr(user_node_info),
 
-			{ ResultQueue, OtherQueues } = case node( ProbePid ) of
+            { ResultQueue, OtherQueues } = case node( ProbePid ) of
 
-			   UserNodeName ->
-					% This probe runs on the user node, hence we must register
-					% it in the right result queue (based on the appropriate
-					% computing host):
-					%
-					extract_queue_by_host( UserHostAtom,
-										   ?getAttr(result_queues) );
+               UserNodeName ->
+                    % This probe runs on the user node, hence we must register
+                    % it in the right result queue (based on the appropriate
+                    % computing host):
+                    %
+                    extract_queue_by_host( UserHostAtom,
+                                           ?getAttr(result_queues) );
 
-				AComputingNode ->
-					extract_queue_by_node( AComputingNode,
-										   ?getAttr(result_queues) )
+                AComputingNode ->
+                    extract_queue_by_node( AComputingNode,
+                                           ?getAttr(result_queues) )
 
-			end,
+            end,
 
-			% Adds this probe to the pending ones:
-			NewResultQueue = ResultQueue#result_queue{
+            % Adds this probe to the pending ones:
+            NewResultQueue = ResultQueue#result_queue{
 
-				pending_results= [ BinProbeName
-							| ResultQueue#result_queue.pending_results ] },
+                pending_results= [ BinProbeName
+                            | ResultQueue#result_queue.pending_results ] },
 
-			% Updates also the PID-to-queue table:
-			NewPidToQueueTable = table:add_entry( _Key=ProbePid,
-				_Value=NewResultQueue#result_queue.id, ?getAttr(pid_to_queue) ),
+            % Updates also the PID-to-queue table:
+            NewPidToQueueTable = table:add_entry( _Key=ProbePid,
+                _Value=NewResultQueue#result_queue.id, ?getAttr(pid_to_queue) ),
 
-			setAttributes( State, [
-				{ web_probe_table, NewProbeTable },
-				{ result_queues, [ NewResultQueue | OtherQueues ] },
-				{ pid_to_queue, NewPidToQueueTable } ] )
+            setAttributes( State, [
+                { web_probe_table, NewProbeTable },
+                { result_queues, [ NewResultQueue | OtherQueues ] },
+                { pid_to_queue, NewPidToQueueTable } ] )
 
-	end.
+    end.
 
 
 
@@ -1012,60 +1012,60 @@ register_web_probe( BinProbeName, ProbeOptions, IsToBeTracked, ProbePid,
 %
 register_graph_probe( BinProbeName, IsToBeTracked, ProbePid, State ) ->
 
-	% Mostly the same as register_basic_probe/5:
+    % Mostly the same as register_basic_probe/5:
 
-	%trace_utils:debug_fmt( "Adding graph stream probe '~ts' (~w); "
-	%    "is to be tracked: ~ts.", [ BinProbeName, ProbePid, IsToBeTracked ] ),
+    %trace_utils:debug_fmt( "Adding graph stream probe '~ts' (~w); "
+    %    "is to be tracked: ~ts.", [ BinProbeName, ProbePid, IsToBeTracked ] ),
 
-	ProbeEntry = #graph_probe_entry{ probe_pid=ProbePid,
-									 is_tracked=IsToBeTracked },
+    ProbeEntry = #graph_probe_entry{ probe_pid=ProbePid,
+                                     is_tracked=IsToBeTracked },
 
-	NewProbeTable = table:add_entry( _K=BinProbeName, _V=ProbeEntry,
-									 ?getAttr(graph_probe_table) ),
+    NewProbeTable = table:add_entry( _K=BinProbeName, _V=ProbeEntry,
+                                     ?getAttr(graph_probe_table) ),
 
-	% Now, takes care of the update of the result queues, if this probe is
-	% tracked:
-	%
-	case IsToBeTracked of
+    % Now, takes care of the update of the result queues, if this probe is
+    % tracked:
+    %
+    case IsToBeTracked of
 
-		false ->
-			setAttribute( State, graph_probe_table, NewProbeTable );
+        false ->
+            setAttribute( State, graph_probe_table, NewProbeTable );
 
-		true ->
-			{ UserNodeName, UserHostAtom } = ?getAttr(user_node_info),
+        true ->
+            { UserNodeName, UserHostAtom } = ?getAttr(user_node_info),
 
-			{ ResultQueue, OtherQueues } = case node( ProbePid ) of
+            { ResultQueue, OtherQueues } = case node( ProbePid ) of
 
-			   UserNodeName ->
-					% This probe runs on the user node, hence we must register
-					% it in the right result queue (based on the appropriate
-					% computing host):
-					%
-					extract_queue_by_host( UserHostAtom,
-										   ?getAttr(result_queues) );
+               UserNodeName ->
+                    % This probe runs on the user node, hence we must register
+                    % it in the right result queue (based on the appropriate
+                    % computing host):
+                    %
+                    extract_queue_by_host( UserHostAtom,
+                                           ?getAttr(result_queues) );
 
-				AComputingNode ->
-					extract_queue_by_node( AComputingNode,
-										   ?getAttr(result_queues) )
+                AComputingNode ->
+                    extract_queue_by_node( AComputingNode,
+                                           ?getAttr(result_queues) )
 
-			end,
+            end,
 
-			% Adds this probe to the pending ones:
-			NewResultQueue = ResultQueue#result_queue{
+            % Adds this probe to the pending ones:
+            NewResultQueue = ResultQueue#result_queue{
 
-				 pending_results= [ BinProbeName
-							| ResultQueue#result_queue.pending_results ] },
+                 pending_results= [ BinProbeName
+                            | ResultQueue#result_queue.pending_results ] },
 
-			% Updates also the PID-to-queue table:
-			NewPidToQueueTable = table:add_entry( _Key=ProbePid,
-				_Value=NewResultQueue#result_queue.id, ?getAttr(pid_to_queue) ),
+            % Updates also the PID-to-queue table:
+            NewPidToQueueTable = table:add_entry( _Key=ProbePid,
+                _Value=NewResultQueue#result_queue.id, ?getAttr(pid_to_queue) ),
 
-			setAttributes( State, [
-				{ graph_probe_table, NewProbeTable },
-				{ result_queues, [ NewResultQueue | OtherQueues ] },
-				{ pid_to_queue, NewPidToQueueTable } ] )
+            setAttributes( State, [
+                { graph_probe_table, NewProbeTable },
+                { result_queues, [ NewResultQueue | OtherQueues ] },
+                { pid_to_queue, NewPidToQueueTable } ] )
 
-	end.
+    end.
 
 
 
@@ -1085,17 +1085,17 @@ If this result is wanted, any key/value metadata (comprising the default ones)
 will be transmitted.
 """.
 -spec isResultProducerWanted( wooper:state(), bin_producer_name() ) ->
-			const_request_return( 'false' | { 'true', meta_data() } ).
+            const_request_return( 'false' | { 'true', meta_data() } ).
 isResultProducerWanted( State, ProducerName ) ->
 
-	% When we do not know the nature (basic, virtual or web probe, etc.) of a
-	% producer, we consider it is wanted, knowing its results will be correctly
-	% managed on simulation success (only drawback: we may allow some producers
-	% to unnecessarily exist).
+    % When we do not know the nature (basic, virtual or web probe, etc.) of a
+    % producer, we consider it is wanted, knowing its results will be correctly
+    % managed on simulation success (only drawback: we may allow some producers
+    % to unnecessarily exist).
 
-	Res = isResultProducerWanted( State, ProducerName, _Nature=undefined ),
+    Res = isResultProducerWanted( State, ProducerName, _Nature=undefined ),
 
-	wooper:const_return_result( Res ).
+    wooper:const_return_result( Res ).
 
 
 
@@ -1111,24 +1111,24 @@ be created.
 If this result is wanted, any additional key/value metadata will be transmitted.
 """.
 -spec isResultProducerWanted( wooper:state(), bin_producer_name(),
-							  producer_nature() ) ->
-			const_request_return( 'false' | { 'true', meta_data() } ).
+                              producer_nature() ) ->
+            const_request_return( 'false' | { 'true', meta_data() } ).
 isResultProducerWanted( State, ProducerName, Nature ) ->
 
-	Res = case is_result_wanted( ProducerName, Nature, State ) of
+    Res = case is_result_wanted( ProducerName, Nature, State ) of
 
-		false ->
-			false;
+        false ->
+            false;
 
-		{ true, _Opts } ->
-			{ true, ?getAttr(meta_data) }
+        { true, _Opts } ->
+            { true, ?getAttr(meta_data) }
 
-	end,
+    end,
 
-	%trace_utils:debug_fmt( "isResultProducerWanted for producer '~ts' "
-	%  "of nature ~p:~n  ~p", [ ProducerName, Nature, Res ] ),
+    %trace_utils:debug_fmt( "isResultProducerWanted for producer '~ts' "
+    %  "of nature ~p:~n  ~p", [ ProducerName, Nature, Res ] ),
 
-	wooper:const_return_result( Res ).
+    wooper:const_return_result( Res ).
 
 
 
@@ -1143,17 +1143,17 @@ created.
 If this result is wanted, any additional key/value metadata will be transmitted.
 """.
 -spec isResultProducerWantedWithOptions( wooper:state(), bin_producer_name(),
-										 producer_nature() ) ->
-			const_request_return( 'false' | { 'true', producer_options() } ).
+                                         producer_nature() ) ->
+            const_request_return( 'false' | { 'true', producer_options() } ).
 isResultProducerWantedWithOptions( State, ProducerName, Nature ) ->
 
-	Res = is_result_wanted( ProducerName, Nature, State ),
+    Res = is_result_wanted( ProducerName, Nature, State ),
 
-	%trace_utils:debug_fmt( "isResultProducerWantedWithOptions "
-	%   "for producer '~ts' of nature ~p: answer is '~p'.",
-	%   [ ProducerName, Nature, Res ] ),
+    %trace_utils:debug_fmt( "isResultProducerWantedWithOptions "
+    %   "for producer '~ts' of nature ~p: answer is '~p'.",
+    %   [ ProducerName, Nature, Res ] ),
 
-	wooper:const_return_result( Res ).
+    wooper:const_return_result( Res ).
 
 
 
@@ -1166,34 +1166,34 @@ Note: one must of course ensure that the patterns are changed *before* a
 producer whose name is intended to match or not match declares itself.
 """.
 -spec addTargetedPattern( wooper:state(), base_result_pattern() ) ->
-								oneway_return().
+                                oneway_return().
 addTargetedPattern( State, Pattern ) ->
 
-	NewState = case text_utils:is_string( Pattern ) of
+    NewState = case text_utils:is_string( Pattern ) of
 
-		true ->
-			case ?getAttr(result_spec) of
+        true ->
+            case ?getAttr(result_spec) of
 
-				{ Targets, BlackLists } ->
-					BinTarget = text_utils:string_to_binary( Pattern ),
-					setAttribute( State, result_spec,
-								  { [ BinTarget | Targets ], BlackLists } );
+                { Targets, BlackLists } ->
+                    BinTarget = text_utils:string_to_binary( Pattern ),
+                    setAttribute( State, result_spec,
+                                  { [ BinTarget | Targets ], BlackLists } );
 
-				Other ->
-					?error_fmt( "Error, no targeted pattern can be added "
-						"when relying on an incompatible result "
-						"specification (trying to add '~p' to '~p').",
-						[ Pattern, Other ] ),
-					throw( { target_cannot_be_added, Pattern, Other } )
+                Other ->
+                    ?error_fmt( "Error, no targeted pattern can be added "
+                        "when relying on an incompatible result "
+                        "specification (trying to add '~p' to '~p').",
+                        [ Pattern, Other ] ),
+                    throw( { target_cannot_be_added, Pattern, Other } )
 
-			end;
+            end;
 
-		false ->
-			throw( { added_target_not_a_string, Pattern } )
+        false ->
+            throw( { added_target_not_a_string, Pattern } )
 
-	end,
+    end,
 
-	wooper:return_state( NewState ).
+    wooper:return_state( NewState ).
 
 
 
@@ -1206,34 +1206,34 @@ Note: one must of course ensure that the patterns are changed *before* a
 producer whose name is intended to match or not match declares itself.
 """.
 -spec addTargetedPatterns( wooper:state(), [ base_result_pattern() ] ) ->
-								oneway_return().
+                                oneway_return().
 addTargetedPatterns( State, Patterns ) ->
 
-	NewState = case text_utils:are_strings( Patterns ) of
+    NewState = case text_utils:are_strings( Patterns ) of
 
-		true ->
-			case ?getAttr(result_spec) of
+        true ->
+            case ?getAttr(result_spec) of
 
-				{ Targets, BlackLists } ->
-					BinTargets = text_utils:strings_to_binaries( Patterns ),
-					setAttribute( State, result_spec,
-								  { BinTargets ++ Targets, BlackLists } );
+                { Targets, BlackLists } ->
+                    BinTargets = text_utils:strings_to_binaries( Patterns ),
+                    setAttribute( State, result_spec,
+                                  { BinTargets ++ Targets, BlackLists } );
 
-				Other ->
-					?error_fmt( "Error, no targeted pattern can be added "
-						"when relying on an incompatible result "
-						"specification (trying to add '~p' to '~p').",
-						[ Patterns, Other ] ),
-					throw( { targets_cannot_be_added, Patterns, Other } )
+                Other ->
+                    ?error_fmt( "Error, no targeted pattern can be added "
+                        "when relying on an incompatible result "
+                        "specification (trying to add '~p' to '~p').",
+                        [ Patterns, Other ] ),
+                    throw( { targets_cannot_be_added, Patterns, Other } )
 
-			end;
+            end;
 
-		false ->
-			throw( { added_targets_not_all_strings, Patterns } )
+        false ->
+            throw( { added_targets_not_all_strings, Patterns } )
 
-	end,
+    end,
 
-	wooper:return_state( NewState ).
+    wooper:return_state( NewState ).
 
 
 
@@ -1246,36 +1246,36 @@ Note: one must of course ensure that the patterns are changed *before* a
 producer whose name is intended to match or not match declares itself.
 """.
 -spec removeTargetedPattern( wooper:state(), base_result_pattern() ) ->
-									oneway_return().
+                                    oneway_return().
 removeTargetedPattern( State, Pattern ) ->
 
-	NewState = case text_utils:is_string( Pattern ) of
+    NewState = case text_utils:is_string( Pattern ) of
 
-		true ->
-			case ?getAttr(result_spec) of
+        true ->
+            case ?getAttr(result_spec) of
 
-				{ Targets, BlackLists } ->
-					BinTarget = text_utils:string_to_binary( Pattern ),
-					% Supposed to be there only once:
-					NewTargets = lists:delete( BinTarget, Targets ),
-					setAttribute( State, result_spec,
-								  { NewTargets, BlackLists } );
+                { Targets, BlackLists } ->
+                    BinTarget = text_utils:string_to_binary( Pattern ),
+                    % Supposed to be there only once:
+                    NewTargets = lists:delete( BinTarget, Targets ),
+                    setAttribute( State, result_spec,
+                                  { NewTargets, BlackLists } );
 
-				Other ->
-					?error_fmt( "Error, no targeted pattern can be removed "
-						"when relying on an incompatible result specification "
-						"specification (trying to remove '~p' from '~p').",
-						[ Pattern, Other ] ),
-					throw( { target_cannot_be_removed, Pattern, Other } )
+                Other ->
+                    ?error_fmt( "Error, no targeted pattern can be removed "
+                        "when relying on an incompatible result specification "
+                        "specification (trying to remove '~p' from '~p').",
+                        [ Pattern, Other ] ),
+                    throw( { target_cannot_be_removed, Pattern, Other } )
 
-			end;
+            end;
 
-		false ->
-			throw( { removed_target_not_a_string, Pattern } )
+        false ->
+            throw( { removed_target_not_a_string, Pattern } )
 
-	end,
+    end,
 
-	wooper:return_state( NewState ).
+    wooper:return_state( NewState ).
 
 
 
@@ -1288,35 +1288,35 @@ Note: one must of course ensure that the patterns are changed *before* a
 producer whose name is intended to match or not match declares itself.
 """.
 -spec removeTargetedPatterns( wooper:state(), [ base_result_pattern() ] ) ->
-									oneway_return().
+                                    oneway_return().
 removeTargetedPatterns( State, Patterns ) ->
 
-	NewState = case text_utils:are_strings( Patterns ) of
+    NewState = case text_utils:are_strings( Patterns ) of
 
-		true ->
-			case ?getAttr(result_spec) of
+        true ->
+            case ?getAttr(result_spec) of
 
-				{ Targets, BlackLists } ->
-					BinTargets = text_utils:strings_to_binaries( Patterns ),
-					NewTargets = lists:subtract( Targets, BinTargets ),
-					setAttribute( State, result_spec,
-								  { NewTargets, BlackLists } );
+                { Targets, BlackLists } ->
+                    BinTargets = text_utils:strings_to_binaries( Patterns ),
+                    NewTargets = lists:subtract( Targets, BinTargets ),
+                    setAttribute( State, result_spec,
+                                  { NewTargets, BlackLists } );
 
-				Other ->
-					?error_fmt( "Error, no targeted pattern can be added "
-						"when relying on an incompatible result "
-						"specification (trying to add '~p' to '~p').",
-						[ Patterns, Other ] ),
-					throw( { targets_cannot_be_removed, Patterns, Other } )
+                Other ->
+                    ?error_fmt( "Error, no targeted pattern can be added "
+                        "when relying on an incompatible result "
+                        "specification (trying to add '~p' to '~p').",
+                        [ Patterns, Other ] ),
+                    throw( { targets_cannot_be_removed, Patterns, Other } )
 
-			end;
+            end;
 
-		false ->
-			throw( { removed_targets_not_all_strings, Patterns } )
+        false ->
+            throw( { removed_targets_not_all_strings, Patterns } )
 
-	end,
+    end,
 
-	wooper:return_state( NewState ).
+    wooper:return_state( NewState ).
 
 
 
@@ -1329,34 +1329,34 @@ Note: one must of course ensure that the patterns are changed *before* a
 producer whose name is intended to match or not match declares itself.
 """.
 -spec setTargetedPatterns( wooper:state(), [ base_result_pattern() ] ) ->
-									oneway_return().
+                                    oneway_return().
 setTargetedPatterns( State, NewPatterns ) ->
 
-	NewState = case text_utils:are_strings( NewPatterns ) of
+    NewState = case text_utils:are_strings( NewPatterns ) of
 
-		true ->
-			case ?getAttr(result_spec) of
+        true ->
+            case ?getAttr(result_spec) of
 
-				{ _Targets, BlackLists } ->
-					BinTargets = text_utils:strings_to_binaries( NewPatterns ),
-					setAttribute( State, result_spec,
-								  { BinTargets, BlackLists } );
+                { _Targets, BlackLists } ->
+                    BinTargets = text_utils:strings_to_binaries( NewPatterns ),
+                    setAttribute( State, result_spec,
+                                  { BinTargets, BlackLists } );
 
-				Other ->
-					?error_fmt( "Error, targeted patterns cannot be set "
-						"when relying on an incompatible result "
-						"specification (trying to set '~p' in '~p').",
-						[ NewPatterns, Other ] ),
-					throw( { targets_cannot_be_set, NewPatterns, Other } )
+                Other ->
+                    ?error_fmt( "Error, targeted patterns cannot be set "
+                        "when relying on an incompatible result "
+                        "specification (trying to set '~p' in '~p').",
+                        [ NewPatterns, Other ] ),
+                    throw( { targets_cannot_be_set, NewPatterns, Other } )
 
-			end;
+            end;
 
-		false ->
-			throw( { removed_targets_not_all_strings, NewPatterns } )
+        false ->
+            throw( { removed_targets_not_all_strings, NewPatterns } )
 
-	end,
+    end,
 
-	wooper:return_state( NewState ).
+    wooper:return_state( NewState ).
 
 
 
@@ -1373,34 +1373,34 @@ Note: one must of course ensure that the patterns are changed *before* a
 producer whose name is intended to match or not match declares itself.
 """.
 -spec addBlacklistedPattern( wooper:state(), base_result_pattern() ) ->
-									oneway_return().
+                                    oneway_return().
 addBlacklistedPattern( State, Pattern ) ->
 
-	NewState = case text_utils:is_string( Pattern ) of
+    NewState = case text_utils:is_string( Pattern ) of
 
-		true ->
-			case ?getAttr(result_spec) of
+        true ->
+            case ?getAttr(result_spec) of
 
-				{ Targetlists, BlackLists } ->
-					BinBlacklist = text_utils:string_to_binary( Pattern ),
-					setAttribute( State, result_spec,
-						{ Targetlists, [ BinBlacklist | BlackLists ] } );
+                { Targetlists, BlackLists } ->
+                    BinBlacklist = text_utils:string_to_binary( Pattern ),
+                    setAttribute( State, result_spec,
+                        { Targetlists, [ BinBlacklist | BlackLists ] } );
 
-				Other ->
-					?error_fmt( "Error, no blacklisted pattern can be added "
-						"when relying on an incompatible result "
-						"specification (trying to add '~p' to '~p').",
-						[ Pattern, Other ] ),
-					throw( { blacklist_cannot_be_added, Pattern, Other } )
+                Other ->
+                    ?error_fmt( "Error, no blacklisted pattern can be added "
+                        "when relying on an incompatible result "
+                        "specification (trying to add '~p' to '~p').",
+                        [ Pattern, Other ] ),
+                    throw( { blacklist_cannot_be_added, Pattern, Other } )
 
-			end;
+            end;
 
-		false ->
-			throw( { added_blacklist_not_a_string, Pattern } )
+        false ->
+            throw( { added_blacklist_not_a_string, Pattern } )
 
-	end,
+    end,
 
-	wooper:return_state( NewState ).
+    wooper:return_state( NewState ).
 
 
 
@@ -1413,34 +1413,34 @@ Note: one must of course ensure that the patterns are changed *before* a
 producer whose name is intended to match or not match declares itself.
 """.
 -spec addBlacklistedPatterns( wooper:state(), [ base_result_pattern() ] ) ->
-									oneway_return().
+                                    oneway_return().
 addBlacklistedPatterns( State, Patterns ) ->
 
-	NewState = case text_utils:are_strings( Patterns ) of
+    NewState = case text_utils:are_strings( Patterns ) of
 
-		true ->
-			case ?getAttr(result_spec) of
+        true ->
+            case ?getAttr(result_spec) of
 
-				{ Targetlists, BlackLists } ->
-					BinBlacklists = text_utils:strings_to_binaries( Patterns ),
-					setAttribute( State, result_spec,
-						{ Targetlists, BinBlacklists ++ BlackLists } );
+                { Targetlists, BlackLists } ->
+                    BinBlacklists = text_utils:strings_to_binaries( Patterns ),
+                    setAttribute( State, result_spec,
+                        { Targetlists, BinBlacklists ++ BlackLists } );
 
-				Other ->
-					?error_fmt( "Error, no blacklisted pattern can be added "
-						"when relying on an incompatible result "
-						"specification (trying to add '~p' to '~p').",
-						[ Patterns, Other ] ),
-					throw( { blacklists_cannot_be_added, Patterns, Other } )
+                Other ->
+                    ?error_fmt( "Error, no blacklisted pattern can be added "
+                        "when relying on an incompatible result "
+                        "specification (trying to add '~p' to '~p').",
+                        [ Patterns, Other ] ),
+                    throw( { blacklists_cannot_be_added, Patterns, Other } )
 
-			end;
+            end;
 
-		false ->
-			throw( { added_blacklists_not_all_strings, Patterns } )
+        false ->
+            throw( { added_blacklists_not_all_strings, Patterns } )
 
-	end,
+    end,
 
-	wooper:return_state( NewState ).
+    wooper:return_state( NewState ).
 
 
 
@@ -1453,36 +1453,36 @@ Note: one must of course ensure that the patterns are changed *before* a
 producer whose name is intended to match or not match declares itself.
 """.
 -spec removeBlacklistedPattern( wooper:state(), base_result_pattern() ) ->
-										oneway_return().
+                                        oneway_return().
 removeBlacklistedPattern( State, Pattern ) ->
 
-	NewState = case text_utils:is_string( Pattern ) of
+    NewState = case text_utils:is_string( Pattern ) of
 
-		true ->
-			case ?getAttr(result_spec) of
+        true ->
+            case ?getAttr(result_spec) of
 
-				{ Targetlists, BlackLists } ->
-					BinBlacklist = text_utils:string_to_binary( Pattern ),
-					% Supposed to be there only once:
-					NewBlacklists = lists:delete( BinBlacklist, BlackLists ),
-					setAttribute( State, result_spec,
-								  { Targetlists, NewBlacklists } );
+                { Targetlists, BlackLists } ->
+                    BinBlacklist = text_utils:string_to_binary( Pattern ),
+                    % Supposed to be there only once:
+                    NewBlacklists = lists:delete( BinBlacklist, BlackLists ),
+                    setAttribute( State, result_spec,
+                                  { Targetlists, NewBlacklists } );
 
-				Other ->
-					?error_fmt( "Error, no blacklisted pattern can be removed "
-						"when relying on an incompatible result "
-						"specification (trying to remove "
-						"'~p' from '~p').", [ Pattern, Other ] ),
-					throw( { blacklist_cannot_be_removed, Pattern, Other } )
+                Other ->
+                    ?error_fmt( "Error, no blacklisted pattern can be removed "
+                        "when relying on an incompatible result "
+                        "specification (trying to remove "
+                        "'~p' from '~p').", [ Pattern, Other ] ),
+                    throw( { blacklist_cannot_be_removed, Pattern, Other } )
 
-			end;
+            end;
 
-		false ->
-			throw( { removed_blacklist_not_a_string, Pattern } )
+        false ->
+            throw( { removed_blacklist_not_a_string, Pattern } )
 
-	end,
+    end,
 
-	wooper:return_state( NewState ).
+    wooper:return_state( NewState ).
 
 
 
@@ -1496,35 +1496,35 @@ producer whose name is intended to match or not match declares itself.
 
 """.
 -spec removeBlacklistedPatterns( wooper:state(), [ base_result_pattern() ] ) ->
-										oneway_return().
+                                        oneway_return().
 removeBlacklistedPatterns( State, Patterns ) ->
 
-	NewState = case text_utils:are_strings( Patterns ) of
+    NewState = case text_utils:are_strings( Patterns ) of
 
-		true ->
-			case ?getAttr(result_spec) of
+        true ->
+            case ?getAttr(result_spec) of
 
-				{ Targetlists, BlackLists } ->
-					BinBlacklists = text_utils:strings_to_binaries( Patterns ),
-					NewBlacklists = lists:subtract( BlackLists, BinBlacklists ),
-					setAttribute( State, result_spec,
-								  { Targetlists, NewBlacklists } );
+                { Targetlists, BlackLists } ->
+                    BinBlacklists = text_utils:strings_to_binaries( Patterns ),
+                    NewBlacklists = lists:subtract( BlackLists, BinBlacklists ),
+                    setAttribute( State, result_spec,
+                                  { Targetlists, NewBlacklists } );
 
-				Other ->
-					?error_fmt( "Error, no blacklisted pattern can be added "
-						"when relying on an incompatible result "
-						"specification (trying to add '~p' to '~p').",
-						[ Patterns, Other ] ),
-					throw( { blacklists_cannot_be_removed, Patterns, Other } )
+                Other ->
+                    ?error_fmt( "Error, no blacklisted pattern can be added "
+                        "when relying on an incompatible result "
+                        "specification (trying to add '~p' to '~p').",
+                        [ Patterns, Other ] ),
+                    throw( { blacklists_cannot_be_removed, Patterns, Other } )
 
-			end;
+            end;
 
-		false ->
-			throw( { removed_blacklists_not_all_strings, Patterns } )
+        false ->
+            throw( { removed_blacklists_not_all_strings, Patterns } )
 
-	end,
+    end,
 
-	wooper:return_state( NewState ).
+    wooper:return_state( NewState ).
 
 
 
@@ -1537,35 +1537,35 @@ Note: one must of course ensure that the patterns are changed *before* a
 producer whose name is intended to match or not match declares itself.
 """.
 -spec setBlacklistedPatterns( wooper:state(), [ base_result_pattern()] ) ->
-									oneway_return().
+                                    oneway_return().
 setBlacklistedPatterns( State, NewPatterns ) ->
 
-	NewState = case text_utils:are_strings( NewPatterns ) of
+    NewState = case text_utils:are_strings( NewPatterns ) of
 
-		true ->
-			case ?getAttr(result_spec) of
+        true ->
+            case ?getAttr(result_spec) of
 
-				{ TargetLists, _BlackLists } ->
-					BinBlacklists =
-						text_utils:strings_to_binaries( NewPatterns ),
-					setAttribute( State, result_spec,
-								  { TargetLists, BinBlacklists } );
+                { TargetLists, _BlackLists } ->
+                    BinBlacklists =
+                        text_utils:strings_to_binaries( NewPatterns ),
+                    setAttribute( State, result_spec,
+                                  { TargetLists, BinBlacklists } );
 
-				Other ->
-					?error_fmt( "Error, blacklisted patterns cannot be set "
-						"when relying on an incompatible result "
-						"specification (trying to set '~p' in '~p').",
-						[ NewPatterns, Other ] ),
-					throw( { blacklists_cannot_be_set, NewPatterns, Other } )
+                Other ->
+                    ?error_fmt( "Error, blacklisted patterns cannot be set "
+                        "when relying on an incompatible result "
+                        "specification (trying to set '~p' in '~p').",
+                        [ NewPatterns, Other ] ),
+                    throw( { blacklists_cannot_be_set, NewPatterns, Other } )
 
-			end;
+            end;
 
-		false ->
-			throw( { removed_blacklists_not_all_strings, NewPatterns } )
+        false ->
+            throw( { removed_blacklists_not_all_strings, NewPatterns } )
 
-	end,
+    end,
 
-	wooper:return_state( NewState ).
+    wooper:return_state( NewState ).
 
 
 
@@ -1576,18 +1576,18 @@ meta-data with the specified (possibly, user-originating) one.
 (request, for synchronicity)
 """.
 -spec updateMetaData( wooper:state(), meta_data() ) ->
-							request_return( 'meta_data_added' ).
+                            request_return( 'meta_data_added' ).
 updateMetaData( State, UpdatingMetaData ) ->
 
-	NewMetaData = lists:foldl( fun( Pair, Acc ) ->
-								option_list:set( Pair, Acc )
-							   end,
-							  _AccInit=?getAttr(meta_data),
-							  _List=option_list:enumerate( UpdatingMetaData ) ),
+    NewMetaData = lists:foldl( fun( Pair, Acc ) ->
+                                option_list:set( Pair, Acc )
+                               end,
+                              _AccInit=?getAttr(meta_data),
+                              _List=option_list:enumerate( UpdatingMetaData ) ),
 
-	NewState = setAttribute( State, meta_data, NewMetaData ),
+    NewState = setAttribute( State, meta_data, NewMetaData ),
 
-	wooper:return_state_result( NewState, meta_data_added ).
+    wooper:return_state_result( NewState, meta_data_added ).
 
 
 
@@ -1600,52 +1600,52 @@ place.
 (request, for synchronicity)
 """.
 -spec notifyResilienceAgentsOfProbes( wooper:state(),
-									  [ resilience_agent_pid() ] ) ->
-							const_request_return( 'probes_notified' ).
+                                      [ resilience_agent_pid() ] ) ->
+                            const_request_return( 'probes_notified' ).
 notifyResilienceAgentsOfProbes( State, NodeAgents ) ->
 
-	% Retrieving first the PID of all basic probes:
-	ProbePids = [ ProbePid || { _NameKey,
-			_Value=#basic_probe_entry{ probe_pid=ProbePid } }
-					<- table:enumerate( ?getAttr(basic_probe_table) ) ],
+    % Retrieving first the PID of all basic probes:
+    ProbePids = [ ProbePid || { _NameKey,
+            _Value=#basic_probe_entry{ probe_pid=ProbePid } }
+                    <- table:enumerate( ?getAttr(basic_probe_table) ) ],
 
-	% Note: virtual, web and graph probes to be managed.
+    % Note: virtual, web and graph probes to be managed.
 
-	% Creating then an empty table where the keys are the node names, and the
-	% associated values are a pair made of the PID of the resilience agent
-	% corresponding to that node and of the list of the PIDs of the
-	% corresponding (local) probes (initially an empty list):
-	%
-	EmptyNodeTable = lists:foldl(
-		fun( AgentPid, TableAcc ) ->
-				table:add_entry( _K=node( AgentPid ),
-								 _V={ AgentPid, _Probes=[] }, TableAcc )
-		end,
-		_EmptyInitialAcc=table:new(),
-		_EmptyList=NodeAgents ),
+    % Creating then an empty table where the keys are the node names, and the
+    % associated values are a pair made of the PID of the resilience agent
+    % corresponding to that node and of the list of the PIDs of the
+    % corresponding (local) probes (initially an empty list):
+    %
+    EmptyNodeTable = lists:foldl(
+        fun( AgentPid, TableAcc ) ->
+                table:add_entry( _K=node( AgentPid ),
+                                 _V={ AgentPid, _Probes=[] }, TableAcc )
+        end,
+        _EmptyInitialAcc=table:new(),
+        _EmptyList=NodeAgents ),
 
-	% Now let's map the probes onto the agents, using nodes as intermediary:
-	FilledNodeTable = lists:foldl(
+    % Now let's map the probes onto the agents, using nodes as intermediary:
+    FilledNodeTable = lists:foldl(
 
-		fun( ProbePid, TableAcc ) ->
-			% Simply adds this probe to the list for the right node:
-			NodeKey = node( ProbePid ),
-			{ AgentPid, ProbeList } = table:get_value( NodeKey, TableAcc ),
-				table:add_entry( NodeKey,
-					{ AgentPid, [ ProbePid | ProbeList ] }, TableAcc )
+        fun( ProbePid, TableAcc ) ->
+            % Simply adds this probe to the list for the right node:
+            NodeKey = node( ProbePid ),
+            { AgentPid, ProbeList } = table:get_value( NodeKey, TableAcc ),
+                table:add_entry( NodeKey,
+                    { AgentPid, [ ProbePid | ProbeList ] }, TableAcc )
 
-		end,
-		_FilledInitialAcc=EmptyNodeTable,
-		_FilledList=ProbePids ),
+        end,
+        _FilledInitialAcc=EmptyNodeTable,
+        _FilledList=ProbePids ),
 
-	% Now we can notify each resilience agent of its probes:
-	[ AgentPid ! { notifyOfLocalProbes, [ AgentProbeList ], self() }
-		|| { AgentPid, AgentProbeList } <- table:values( FilledNodeTable ) ],
+    % Now we can notify each resilience agent of its probes:
+    [ AgentPid ! { notifyOfLocalProbes, [ AgentProbeList ], self() }
+        || { AgentPid, AgentProbeList } <- table:values( FilledNodeTable ) ],
 
-	wooper:wait_for_request_answers( _RequestedList=NodeAgents,
-									 _AckAtom=probes_recorded ),
+    wooper:wait_for_request_answers( _RequestedList=NodeAgents,
+                                     _AckAtom=probes_recorded ),
 
-	wooper:const_return_result( probes_notified ).
+    wooper:const_return_result( probes_notified ).
 
 
 
@@ -1655,35 +1655,35 @@ Returns probe-related base information.
 Typically called by the web manager.
 """.
 -spec getBaseProbeInfos( wooper:state() ) ->
-	const_request_return( { [ probe_info() ], [ probe_info() ], meta_data() } ).
+    const_request_return( { [ probe_info() ], [ probe_info() ], meta_data() } ).
 getBaseProbeInfos( State ) ->
 
-	% The only probes whose directory cannot be automatically determined are the
-	% facility ones:
+    % The only probes whose directory cannot be automatically determined are the
+    % facility ones:
 
-	Res = { get_basic_probe_infos( State ), get_virtual_probe_infos( State ),
-			?getAttr(meta_data) },
+    Res = { get_basic_probe_infos( State ), get_virtual_probe_infos( State ),
+            ?getAttr(meta_data) },
 
-	wooper:const_return_result( Res ).
+    wooper:const_return_result( Res ).
 
 
 
 -doc "Returns information regarding all basic probes.".
 get_basic_probe_infos( State ) ->
-	[ get_basic_probe_info( Name, Entry )
-		|| { Name, Entry } <- table:enumerate( ?getAttr(basic_probe_table) ) ].
+    [ get_basic_probe_info( Name, Entry )
+        || { Name, Entry } <- table:enumerate( ?getAttr(basic_probe_table) ) ].
 
 
 
 -doc "Returns information regarding the specified basic probe.".
 get_basic_probe_info( Name, #basic_probe_entry{ probe_dir=MaybeBinDir } ) ->
-	{ Name, MaybeBinDir }.
+    { Name, MaybeBinDir }.
 
 
 
 % Not implemented currently:
 get_virtual_probe_infos( _State ) ->
-	undefined.
+    undefined.
 
 
 
@@ -1699,113 +1699,113 @@ Optimises the result tables and lists all known registered results.
 -spec onSimulationStart( wooper:state() ) -> oneway_return().
 onSimulationStart( State ) ->
 
-	BasicProbeTable = ?getAttr(basic_probe_table),
+    BasicProbeTable = ?getAttr(basic_probe_table),
 
-	OptimisedBasicProbeTable = table:optimise( BasicProbeTable ),
-	%table:display( "Basic probe table", OptimisedBasicProbeTable ),
+    OptimisedBasicProbeTable = table:optimise( BasicProbeTable ),
+    %table:display( "Basic probe table", OptimisedBasicProbeTable ),
 
-	% Note: we do not distinguish here between probes that are tracked or not:
-	BasicProbeBinNames = table:keys( OptimisedBasicProbeTable ),
-	BasicProbeString = text_utils:binaries_to_string( BasicProbeBinNames ),
-	BasicProbeCount = length( BasicProbeBinNames ),
+    % Note: we do not distinguish here between probes that are tracked or not:
+    BasicProbeBinNames = table:keys( OptimisedBasicProbeTable ),
+    BasicProbeString = text_utils:binaries_to_string( BasicProbeBinNames ),
+    BasicProbeCount = length( BasicProbeBinNames ),
 
-	VirtualProbeTable = ?getAttr(virtual_probe_table),
-	OptimisedVirtualProbeTable = table:optimise( VirtualProbeTable ),
-	%table:display( "Virtual probe table", OptimisedVirtualProbeTable ),
+    VirtualProbeTable = ?getAttr(virtual_probe_table),
+    OptimisedVirtualProbeTable = table:optimise( VirtualProbeTable ),
+    %table:display( "Virtual probe table", OptimisedVirtualProbeTable ),
 
-	VirtualProbeBinNames = table:keys( OptimisedVirtualProbeTable ),
+    VirtualProbeBinNames = table:keys( OptimisedVirtualProbeTable ),
 
-	VirtualProbeString = text_utils:binaries_to_string( VirtualProbeBinNames ),
+    VirtualProbeString = text_utils:binaries_to_string( VirtualProbeBinNames ),
 
-	VirtualProbeCount = length( VirtualProbeBinNames ),
-
-
-	WebProbeTable = ?getAttr(web_probe_table),
-	OptimisedWebProbeTable = table:optimise( WebProbeTable ),
-	%table:display( "Web probe table", OptimisedWebProbeTable ),
-
-	WebProbeBinNames = table:keys( OptimisedWebProbeTable ),
-
-	WebProbeString = text_utils:binaries_to_string( WebProbeBinNames ),
-
-	WebProbeCount = length( WebProbeBinNames ),
-
-	GraphProbeTable = ?getAttr(graph_probe_table),
-	OptimisedGraphProbeTable = table:optimise( GraphProbeTable ),
-	%table:display( "Graph stream probe table", OptimisedGraphProbeTable ),
-
-	GraphProbeBinNames = table:keys( OptimisedGraphProbeTable ),
-
-	GraphProbeString = text_utils:binaries_to_string( GraphProbeBinNames ),
-
-	GraphProbeCount = length( GraphProbeBinNames ),
+    VirtualProbeCount = length( VirtualProbeBinNames ),
 
 
-	ResultCount = BasicProbeCount + VirtualProbeCount + WebProbeCount
-		+ GraphProbeCount,
+    WebProbeTable = ?getAttr(web_probe_table),
+    OptimisedWebProbeTable = table:optimise( WebProbeTable ),
+    %table:display( "Web probe table", OptimisedWebProbeTable ),
 
-	case ResultCount of
+    WebProbeBinNames = table:keys( OptimisedWebProbeTable ),
 
-		0 ->
-			% Results *may* also be declared at simulation-time (dynamically):
-			?notice( "At simulation start, no expected result is identified." );
+    WebProbeString = text_utils:binaries_to_string( WebProbeBinNames ),
 
-		_ ->
-			BasicString = case BasicProbeCount of
+    WebProbeCount = length( WebProbeBinNames ),
 
-				0 ->
-					"no basic probe declared";
+    GraphProbeTable = ?getAttr(graph_probe_table),
+    OptimisedGraphProbeTable = table:optimise( GraphProbeTable ),
+    %table:display( "Graph stream probe table", OptimisedGraphProbeTable ),
 
-				_ ->
-					text_utils:format( "~B basic probe(s) declared: ~ts",
-									   [ BasicProbeCount, BasicProbeString ] )
+    GraphProbeBinNames = table:keys( OptimisedGraphProbeTable ),
 
-			end,
+    GraphProbeString = text_utils:binaries_to_string( GraphProbeBinNames ),
+
+    GraphProbeCount = length( GraphProbeBinNames ),
 
 
-			VirtualString = case VirtualProbeCount of
+    ResultCount = BasicProbeCount + VirtualProbeCount + WebProbeCount
+        + GraphProbeCount,
 
-				0 ->
-					"no virtual probe declared";
+    case ResultCount of
 
-				_ ->
-					text_utils:format( "~B virtual probe(s) declared: ~ts",
-						[ VirtualProbeCount, VirtualProbeString ] )
+        0 ->
+            % Results *may* also be declared at simulation-time (dynamically):
+            ?notice( "At simulation start, no expected result is identified." );
 
-			end,
+        _ ->
+            BasicString = case BasicProbeCount of
 
-			WebString = case WebProbeCount of
+                0 ->
+                    "no basic probe declared";
 
-				0 ->
-					"no web probe declared";
+                _ ->
+                    text_utils:format( "~B basic probe(s) declared: ~ts",
+                                       [ BasicProbeCount, BasicProbeString ] )
 
-				_ ->
-					text_utils:format( "~B web probe(s) declared: ~ts",
-									   [ WebProbeCount, WebProbeString ] )
+            end,
 
-			end,
 
-			GraphString = case GraphProbeCount of
+            VirtualString = case VirtualProbeCount of
 
-				0 ->
-					"no graph stream probe declared";
+                0 ->
+                    "no virtual probe declared";
 
-				_ ->
-					text_utils:format( "~B graph stream probe(s) declared: ~ts",
-									   [ GraphProbeCount, GraphProbeString ] )
+                _ ->
+                    text_utils:format( "~B virtual probe(s) declared: ~ts",
+                        [ VirtualProbeCount, VirtualProbeString ] )
 
-			end,
+            end,
 
-			?notice_fmt( "At simulation start, ~ts, ~ts, ~ts and ~ts",
-				[ BasicString, VirtualString, WebString, GraphString ] )
+            WebString = case WebProbeCount of
 
-	end,
+                0 ->
+                    "no web probe declared";
 
-	wooper:return_state( setAttributes( State, [
-		{ basic_probe_table, OptimisedBasicProbeTable },
-		{ virtual_probe_table, OptimisedVirtualProbeTable },
-		{ web_probe_table, OptimisedWebProbeTable },
-		{ graph_probe_table, OptimisedGraphProbeTable } ] ) ).
+                _ ->
+                    text_utils:format( "~B web probe(s) declared: ~ts",
+                                       [ WebProbeCount, WebProbeString ] )
+
+            end,
+
+            GraphString = case GraphProbeCount of
+
+                0 ->
+                    "no graph stream probe declared";
+
+                _ ->
+                    text_utils:format( "~B graph stream probe(s) declared: ~ts",
+                                       [ GraphProbeCount, GraphProbeString ] )
+
+            end,
+
+            ?notice_fmt( "At simulation start, ~ts, ~ts, ~ts and ~ts",
+                [ BasicString, VirtualString, WebString, GraphString ] )
+
+    end,
+
+    wooper:return_state( setAttributes( State, [
+        { basic_probe_table, OptimisedBasicProbeTable },
+        { virtual_probe_table, OptimisedVirtualProbeTable },
+        { web_probe_table, OptimisedWebProbeTable },
+        { graph_probe_table, OptimisedGraphProbeTable } ] ) ).
 
 
 
@@ -1814,109 +1814,109 @@ onSimulationStart( State ) ->
 Called by the (root) time manager when the simulation ends with a success.
 """.
 -spec onSimulationSuccess( wooper:state() ) ->
-								request_return( 'results_collected' ).
+                                request_return( 'results_collected' ).
 onSimulationSuccess( State ) ->
 
-	?info( "Simulation succeeded, collecting results now." ),
+    ?info( "Simulation succeeded, collecting results now." ),
 
-	class_PluginManager:notify( on_result_gathering_start ),
+    class_PluginManager:notify( on_result_gathering_start ),
 
-	% We used to change the (overall) current directory, not done anymore, for
-	% the best (changing the overall VM current directory whereas plenty of
-	% processes are potentially relying on a stable one is not recommended)
-	%
-	%RunDir = ?getAttr(simulation_run_dir),
-	%
-	%?debug_fmt( "Switching from '~ts' to '~ts'.",
-	%            [ file_utils:get_current_directory(), RunDir ] ),
-	%
-	%file_utils:set_current_directory( RunDir ),
+    % We used to change the (overall) current directory, not done anymore, for
+    % the best (changing the overall VM current directory whereas plenty of
+    % processes are potentially relying on a stable one is not recommended)
+    %
+    %RunDir = ?getAttr(simulation_run_dir),
+    %
+    %?debug_fmt( "Switching from '~ts' to '~ts'.",
+    %            [ file_utils:get_current_directory(), RunDir ] ),
+    %
+    %file_utils:set_current_directory( RunDir ),
 
-	% Let's create the result directory for that simulation:
-	ResultBaseDirName = ?getAttr(result_dir),
+    % Let's create the result directory for that simulation:
+    ResultBaseDirName = ?getAttr(result_dir),
 
-	case file_utils:is_existing_directory( ResultBaseDirName ) of
+    case file_utils:is_existing_directory( ResultBaseDirName ) of
 
-		% Normal case:
-		false ->
-			file_utils:create_directory( ResultBaseDirName );
+        % Normal case:
+        false ->
+            file_utils:create_directory( ResultBaseDirName );
 
-		_True ->
-			% At least the SII may have been used more than once:
-			?error_fmt( "Result directory ('~ts') is already existing, "
-				"which is both unlikely and abnormal.", [ ResultBaseDirName ] ),
+        _True ->
+            % At least the SII may have been used more than once:
+            ?error_fmt( "Result directory ('~ts') is already existing, "
+                "which is both unlikely and abnormal.", [ ResultBaseDirName ] ),
 
-			throw( { already_existing_result_directory, ResultBaseDirName } )
+            throw( { already_existing_result_directory, ResultBaseDirName } )
 
-	end,
+    end,
 
-	% Note that this would have side-effects, as the current working directory
-	% of the whole VM (the one of the simulation case - i.e. the user one) would
-	% then change, which as detailed below is not wanted:
-	%
-	% ok = file:set_cwd( ResultBaseDirName ),
+    % Note that this would have side-effects, as the current working directory
+    % of the whole VM (the one of the simulation case - i.e. the user one) would
+    % then change, which as detailed below is not wanted:
+    %
+    % ok = file:set_cwd( ResultBaseDirName ),
 
-	% There would be no problem for all producers that were created from models,
-	% as they are running on different VMs with different working directories
-	% (by default, under '/tmp').
-	%
-	% But producers created from the simulation case (e.g. a probe created from
-	% a test) are in the same VM as the result manager, and thus share the same
-	% current working directory.
-	%
-	% If we went to the output directory, then the .dat file could have been
-	% produced in the initial directory (if written immediately), and thus would
-	% not be found. The solution is to stay in the initial directory, and to
-	% write/extract results in the output one.
+    % There would be no problem for all producers that were created from models,
+    % as they are running on different VMs with different working directories
+    % (by default, under '/tmp').
+    %
+    % But producers created from the simulation case (e.g. a probe created from
+    % a test) are in the same VM as the result manager, and thus share the same
+    % current working directory.
+    %
+    % If we went to the output directory, then the .dat file could have been
+    % produced in the initial directory (if written immediately), and thus would
+    % not be found. The solution is to stay in the initial directory, and to
+    % write/extract results in the output one.
 
-	% We request results to be produced and sent in parallel, but we have to
-	% ensure that some flow control is enforced, otherwise a given computing
-	% host might be overwhelmed by the number of parallel reports requested, and
-	% may even crash because of it.
+    % We request results to be produced and sent in parallel, but we have to
+    % ensure that some flow control is enforced, otherwise a given computing
+    % host might be overwhelmed by the number of parallel reports requested, and
+    % may even crash because of it.
 
-	?info_fmt( "Simulation succeeded, collecting results now from "
-		"producers in result directory '~ts', while current one is '~ts'.",
-		[ ResultBaseDirName, file_utils:get_current_directory() ] ),
+    ?info_fmt( "Simulation succeeded, collecting results now from "
+        "producers in result directory '~ts', while current one is '~ts'.",
+        [ ResultBaseDirName, file_utils:get_current_directory() ] ),
 
-	% First, triggers the possibly most loaded producer:
-	VirtualState = case ?getAttr(data_logger_enabled) of
+    % First, triggers the possibly most loaded producer:
+    VirtualState = case ?getAttr(data_logger_enabled) of
 
-		true ->
-			trigger_virtual_probe_results( State );
+        true ->
+            trigger_virtual_probe_results( State );
 
-		false ->
-			State
+        false ->
+            State
 
-	end,
+    end,
 
-	% Then, the other producers, and wait for them all:
-	ProbeState = manage_all_producers( VirtualState ),
+    % Then, the other producers, and wait for them all:
+    ProbeState = manage_all_producers( VirtualState ),
 
-	Listeners = ?getAttr(listeners),
+    Listeners = ?getAttr(listeners),
 
-	case Listeners of
+    case Listeners of
 
-		[] ->
-			?info( "All results successfully gathered, "
-				   "no listener to notify." );
+        [] ->
+            ?info( "All results successfully gathered, "
+                   "no listener to notify." );
 
-		_ ->
-			?info_fmt( "All results successfully gathered, "
-				"notifying all listeners (~p).", [ Listeners ] )
+        _ ->
+            ?info_fmt( "All results successfully gathered, "
+                "notifying all listeners (~p).", [ Listeners ] )
 
-	end,
+    end,
 
-	ResultOneway= { results_collected,
-					text_utils:string_to_binary( ResultBaseDirName ) },
+    ResultOneway= { results_collected,
+                    text_utils:string_to_binary( ResultBaseDirName ) },
 
-	% Notifies that the result collection is over, but does not imply there were
-	% actual results:
-	%
-	[ Pid ! ResultOneway || Pid <- Listeners ],
+    % Notifies that the result collection is over, but does not imply there were
+    % actual results:
+    %
+    [ Pid ! ResultOneway || Pid <- Listeners ],
 
-	class_PluginManager:notify( on_result_gathering_stop ),
+    class_PluginManager:notify( on_result_gathering_stop ),
 
-	wooper:return_state_result( ProbeState, results_collected ).
+    wooper:return_state_result( ProbeState, results_collected ).
 
 
 
@@ -1930,56 +1930,56 @@ Returns an updated state, with updated queues.
 """.
 trigger_virtual_probe_results( State ) ->
 
-	case ?getAttr(result_spec) of
+    case ?getAttr(result_spec) of
 
-		no_output ->
-			State;
+        no_output ->
+            State;
 
-		all_basic_probes_only ->
-			State;
+        all_basic_probes_only ->
+            State;
 
-		% Includes: all_outputs, all_virtual_probes_only, hence always involves
-		% results from the data-logger:
-		%
-		_Other ->
-			% First, triggers the result generation:
+        % Includes: all_outputs, all_virtual_probes_only, hence always involves
+        % results from the data-logger:
+        %
+        _Other ->
+            % First, triggers the result generation:
 
-			DataloggerPid = class_DataLogger:get_main_datalogger(),
+            DataloggerPid = class_DataLogger:get_main_datalogger(),
 
-			DataloggerPid ! { sendResults,
-				[ ?getAttr(datalogger_default_options) ], self() },
+            DataloggerPid ! { sendResults,
+                [ ?getAttr(datalogger_default_options) ], self() },
 
 
-			% Then registers this generation:
+            % Then registers this generation:
 
-			DataloggerNode = node( DataloggerPid ),
+            DataloggerNode = node( DataloggerPid ),
 
-			% We add only now the datalogger to the pending result producers;
-			% this is fortunate, as it will thus be the first one to be picked
-			% and thus the first to be triggered (a good thing, knowing it might
-			% induce a lot of processing).
+            % We add only now the datalogger to the pending result producers;
+            % this is fortunate, as it will thus be the first one to be picked
+            % and thus the first to be triggered (a good thing, knowing it might
+            % induce a lot of processing).
 
-			{ DataloggerQueue, OtherQueues } = extract_queue_by_node(
-				DataloggerNode, ?getAttr(result_queues) ),
+            { DataloggerQueue, OtherQueues } = extract_queue_by_node(
+                DataloggerNode, ?getAttr(result_queues) ),
 
-			NewPidToQueueTable = table:add_entry( _K=DataloggerPid,
-				_V=DataloggerQueue#result_queue.id, ?getAttr(pid_to_queue) ),
+            NewPidToQueueTable = table:add_entry( _K=DataloggerPid,
+                _V=DataloggerQueue#result_queue.id, ?getAttr(pid_to_queue) ),
 
-			% Waited list was presumably empty:
-			NewWaited = [ DataloggerPid
-							| DataloggerQueue#result_queue.waited_producers ],
+            % Waited list was presumably empty:
+            NewWaited = [ DataloggerPid
+                            | DataloggerQueue#result_queue.waited_producers ],
 
-			NewDataloggerQueue =
-				DataloggerQueue#result_queue{ waited_producers=NewWaited },
+            NewDataloggerQueue =
+                DataloggerQueue#result_queue{ waited_producers=NewWaited },
 
-			setAttributes( State, [
-				{ result_queues, [ NewDataloggerQueue | OtherQueues ] },
-				{ pid_to_queue, NewPidToQueueTable }
-				% result_collected set to true upon acknowledgement that all
-				% result producers finished.
-								  ] )
+            setAttributes( State, [
+                { result_queues, [ NewDataloggerQueue | OtherQueues ] },
+                { pid_to_queue, NewPidToQueueTable }
+                % result_collected set to true upon acknowledgement that all
+                % result producers finished.
+                                  ] )
 
-	end.
+    end.
 
 
 
@@ -1991,61 +1991,61 @@ Returns an updated state.
 """.
 manage_all_producers( State ) ->
 
-	ManagedState = case ?getAttr(result_spec) of
+    ManagedState = case ?getAttr(result_spec) of
 
-		no_output ->
-			State;
+        no_output ->
+            State;
 
-		% Includes: all_outputs, all_virtual_probes_only, all_basic_probes_only,
-		% all_graph_stream_probes_only; basically, we wait and trigger producers
-		% until all of them are over:
-		%
-		_Other ->
-			Queues = ?getAttr(result_queues),
+        % Includes: all_outputs, all_virtual_probes_only, all_basic_probes_only,
+        % all_graph_stream_probes_only; basically, we wait and trigger producers
+        % until all of them are over:
+        %
+        _Other ->
+            Queues = ?getAttr(result_queues),
 
-			%trace_utils:debug( "Managing result queues." ),
-			%display_queues( Queues ),
+            %trace_utils:debug( "Managing result queues." ),
+            %display_queues( Queues ),
 
-			TotalProducerCount = compute_producer_count( Queues, _Sum=0 ),
+            TotalProducerCount = compute_producer_count( Queues, _Sum=0 ),
 
-			?debug_fmt( "Requesting results from ~B producers.",
-						[ TotalProducerCount ] ),
+            ?debug_fmt( "Requesting results from ~B producers.",
+                        [ TotalProducerCount ] ),
 
-			ResultFound = ( TotalProducerCount > 0 ),
+            ResultFound = ( TotalProducerCount > 0 ),
 
-			% All concrete (non-virtual) probes (unclashing merges expected):
-			MergedTable = table:merge( [ ?getAttr(basic_probe_table),
-				?getAttr(web_probe_table), ?getAttr(graph_probe_table) ] ),
+            % All concrete (non-virtual) probes (unclashing merges expected):
+            MergedTable = table:merge( [ ?getAttr(basic_probe_table),
+                ?getAttr(web_probe_table), ?getAttr(graph_probe_table) ] ),
 
-			% Triggers a first set of result production:
-			{ TriggeredQueues, UpdatedPidToQueueTable } =
-			  load_result_queues( Queues, ?getAttr(pid_to_queue), MergedTable ),
+            % Triggers a first set of result production:
+            { TriggeredQueues, UpdatedPidToQueueTable } =
+              load_result_queues( Queues, ?getAttr(pid_to_queue), MergedTable ),
 
-			ProducerTimeout = get_producer_time_out(),
+            ProducerTimeout = get_producer_time_out(),
 
-			% Now waits until all producers have been processed:
-			DepletedQueues = wait_and_exhaust_queues( TriggeredQueues,
-				UpdatedPidToQueueTable, TotalProducerCount, MergedTable,
-				ProducerTimeout, State ),
+            % Now waits until all producers have been processed:
+            DepletedQueues = wait_and_exhaust_queues( TriggeredQueues,
+                UpdatedPidToQueueTable, TotalProducerCount, MergedTable,
+                ProducerTimeout, State ),
 
-			setAttributes( State, [ { result_queues, DepletedQueues },
-									{ result_found, ResultFound } ] )
+            setAttributes( State, [ { result_queues, DepletedQueues },
+                                    { result_found, ResultFound } ] )
 
-	end,
+    end,
 
-	setAttribute( ManagedState, result_collected, true ).
+    setAttribute( ManagedState, result_collected, true ).
 
 
 
 % (helper)
 compute_producer_count( _Queues=[], Sum ) ->
-	Sum;
+    Sum;
 
 compute_producer_count( _Queues=[ #result_queue{ pending_results=Pending,
-							waited_producers=Waited } | T ], Sum ) ->
+                            waited_producers=Waited } | T ], Sum ) ->
 
-	% We may have producers already launched and waited:
-	compute_producer_count( T, Sum + length( Pending ) + length( Waited ) ).
+    % We may have producers already launched and waited:
+    compute_producer_count( T, Sum + length( Pending ) + length( Waited ) ).
 
 
 
@@ -2057,27 +2057,27 @@ list of updated queues and PidToQueueTable is an updated 'PID to queue ID'
 translation table.
 """.
 load_result_queues( Queues, PidToQueueTable, ProbeTable ) ->
-	load_result_queues( Queues, PidToQueueTable, ProbeTable, _AccQueues=[] ).
+    load_result_queues( Queues, PidToQueueTable, ProbeTable, _AccQueues=[] ).
 
 
 load_result_queues( _Queues=[], PidToQueueTable, _ProbeTable, AccQueues ) ->
-	{ AccQueues, PidToQueueTable } ;
+    { AccQueues, PidToQueueTable } ;
 
 load_result_queues( _Queues=[ Q | T ], PidToQueueTable, ProbeTable,
-					AccQueues ) ->
+                    AccQueues ) ->
 
-	{ UpdatedQueue, ProducerPids } = load_result_queue( Q, ProbeTable ),
+    { UpdatedQueue, ProducerPids } = load_result_queue( Q, ProbeTable ),
 
-	QueueId = UpdatedQueue#result_queue.id,
+    QueueId = UpdatedQueue#result_queue.id,
 
-	% Adds these key/value pairs:
-	NewPidEntries = [ { Pid, QueueId } || Pid <- ProducerPids ],
+    % Adds these key/value pairs:
+    NewPidEntries = [ { Pid, QueueId } || Pid <- ProducerPids ],
 
-	UpdatedPidToQueueTable =
-		table:add_entries( NewPidEntries, PidToQueueTable ),
+    UpdatedPidToQueueTable =
+        table:add_entries( NewPidEntries, PidToQueueTable ),
 
-	load_result_queues( T, UpdatedPidToQueueTable, ProbeTable,
-						[ UpdatedQueue | AccQueues ] ).
+    load_result_queues( T, UpdatedPidToQueueTable, ProbeTable,
+                        [ UpdatedQueue | AccQueues ] ).
 
 
 
@@ -2088,26 +2088,26 @@ Returns {UpdatedQueue, ProducerPids}.
 """.
 load_result_queue( Queue=#result_queue{ pending_results=[] }, _ProbeTable ) ->
 
-	% Here, no pending result, nothing to do, thus nothing to change:
-	{ Queue, _ProducerPids=[] };
+    % Here, no pending result, nothing to do, thus nothing to change:
+    { Queue, _ProducerPids=[] };
 
 
 load_result_queue( Queue=#result_queue{ max_worker_count=MaxCount,
-		waited_producers=Waited, pending_results=Pending }, ProbeTable ) ->
+        waited_producers=Waited, pending_results=Pending }, ProbeTable ) ->
 
-	% Here, there are results to be generated; how many worker slots are free?
-	SpareSlotCount = MaxCount - length( Waited ),
+    % Here, there are results to be generated; how many worker slots are free?
+    SpareSlotCount = MaxCount - length( Waited ),
 
-	% Selects the SpareSlots first producers:
-	{ FirstProducers, OtherProducers } =
-		list_utils:split_at( SpareSlotCount, Pending ),
+    % Selects the SpareSlots first producers:
+    { FirstProducers, OtherProducers } =
+        list_utils:split_at( SpareSlotCount, Pending ),
 
-	ProducerPids = trigger_producers( FirstProducers, ProbeTable ),
+    ProducerPids = trigger_producers( FirstProducers, ProbeTable ),
 
-	NewQueue = Queue#result_queue{ waited_producers= ProducerPids ++ Waited,
-								   pending_results=OtherProducers },
+    NewQueue = Queue#result_queue{ waited_producers= ProducerPids ++ Waited,
+                                   pending_results=OtherProducers },
 
-	{ NewQueue, ProducerPids }.
+    { NewQueue, ProducerPids }.
 
 
 
@@ -2117,17 +2117,17 @@ Triggers the specified producers.
 Returns a list of their PIDs.
 """.
 trigger_producers( Producers, ProbeTable ) ->
-	trigger_producers( Producers, ProbeTable, _Acc=[] ).
+    trigger_producers( Producers, ProbeTable, _Acc=[] ).
 
 
 trigger_producers( _Producers=[], _ProbeTable, Acc ) ->
-	Acc;
+    Acc;
 
 trigger_producers( _Producers=[ ProducerName | T ], ProbeTable, Acc ) ->
 
-	ProducerPid = trigger_producer( ProducerName, ProbeTable ),
+    ProducerPid = trigger_producer( ProducerName, ProbeTable ),
 
-	trigger_producers( T, ProbeTable, [ ProducerPid | Acc ] ).
+    trigger_producers( T, ProbeTable, [ ProducerPid | Acc ] ).
 
 
 
@@ -2138,26 +2138,26 @@ Defined for reusability.
 """.
 trigger_producer( ProducerName, ProbeTable ) ->
 
-	{ ProducerPid, Options } =
-		case table:get_value( ProducerName, ProbeTable ) of
+    { ProducerPid, Options } =
+        case table:get_value( ProducerName, ProbeTable ) of
 
-			#basic_probe_entry{ probe_pid=Pid, probe_options=Opts } ->
-				{ Pid, Opts };
+            #basic_probe_entry{ probe_pid=Pid, probe_options=Opts } ->
+                { Pid, Opts };
 
-			#web_probe_entry{ probe_pid=Pid, probe_options=Opts } ->
-				{ Pid, Opts };
+            #web_probe_entry{ probe_pid=Pid, probe_options=Opts } ->
+                { Pid, Opts };
 
-			#graph_probe_entry{ probe_pid=Pid } ->
-				{ Pid, _Opts=[] }
+            #graph_probe_entry{ probe_pid=Pid } ->
+                { Pid, _Opts=[] }
 
-	end,
+    end,
 
-	%trace_utils:debug_fmt( "Triggering producer ~ts (~w).",
-	%                       [ ProducerName, ProducerPid ] ),
+    %trace_utils:debug_fmt( "Triggering producer ~ts (~w).",
+    %                       [ ProducerName, ProducerPid ] ),
 
-	ProducerPid ! { sendResults, [ Options ], self() },
+    ProducerPid ! { sendResults, [ Options ], self() },
 
-	ProducerPid.
+    ProducerPid.
 
 
 
@@ -2168,79 +2168,79 @@ queues, until no result is pending.
 Returns the updated queues.
 """.
 wait_and_exhaust_queues( Queues, _PidToQueueTable, _TotalProducerCount=0,
-						 _ProbeTable, _ProducerTimeout, _State ) ->
+                         _ProbeTable, _ProducerTimeout, _State ) ->
 
-	%trace_utils:debug( "No producer left, finished!" ),
+    %trace_utils:debug( "No producer left, finished!" ),
 
-	check_queues_empty( Queues ),
+    check_queues_empty( Queues ),
 
-	Queues;
+    Queues;
 
 
 wait_and_exhaust_queues( Queues, PidToQueueTable, TotalProducerCount,
-						 ProbeTable, ProducerTimeout, State ) ->
+                         ProbeTable, ProducerTimeout, State ) ->
 
-	%trace_utils:debug_fmt( "Still ~B producers waited.",
-	%                       [ TotalProducerCount ] ),
+    %trace_utils:debug_fmt( "Still ~B producers waited.",
+    %                       [ TotalProducerCount ] ),
 
-	% Hijacks the WOOPER main loop to better manage time-outs.
-	%
-	% We consider that, on a previous step, an initial request in order to
-	% produce the first results was sent; let's wait for answers and replenish
-	% waited lists:
-	%
+    % Hijacks the WOOPER main loop to better manage time-outs.
+    %
+    % We consider that, on a previous step, an initial request in order to
+    % produce the first results was sent; let's wait for answers and replenish
+    % waited lists:
+    %
 
-	ActualProducerPid = receive
+    ActualProducerPid = receive
 
-		{ wooper_result, { ProducerPid, archive, BinArchive } } ->
+        { wooper_result, { ProducerPid, archive, BinArchive } } ->
 
-			Filenames = file_utils:zipped_term_to_unzipped_files( BinArchive,
-				?getAttr(result_dir) ),
+            Filenames = file_utils:zipped_term_to_unzipped_files( BinArchive,
+                ?getAttr(result_dir) ),
 
-			?info_fmt( "Received an archive from producer ~w, following "
-				"files were extracted (while in directory '~ts'): ~ts",
-				[ ProducerPid, file_utils:get_current_directory(),
-				  text_utils:strings_to_string( Filenames ) ] ),
+            ?info_fmt( "Received an archive from producer ~w, following "
+                "files were extracted (while in directory '~ts'): ~ts",
+                [ ProducerPid, file_utils:get_current_directory(),
+                  text_utils:strings_to_string( Filenames ) ] ),
 
-			ProducerPid;
-
-
-		{ wooper_result, { ProducerPid, raw, { BinFilename, BinContent } } } ->
-
-			Filename = text_utils:binary_to_string( BinFilename ),
-			TargetFilename = file_utils:join( ?getAttr(result_dir), Filename ),
-
-			file_utils:write_whole( TargetFilename, BinContent ),
-
-			?info_fmt( "Received a raw file from producer ~w: '~ts', "
-				"written (while in directory '~ts') as '~ts'.",
-				[ ProducerPid, BinFilename, file_utils:get_current_directory(),
-				  TargetFilename ] ),
-
-			ProducerPid;
+            ProducerPid;
 
 
-		{ wooper_result, { ProducerPid, no_result } } ->
+        { wooper_result, { ProducerPid, raw, { BinFilename, BinContent } } } ->
 
-			% A producer may have nothing to report (e.g. the data-logger):
-			?info_fmt( "Producer ~w notified that it had no result "
-					   "to provide.", [ ProducerPid ] ),
+            Filename = text_utils:binary_to_string( BinFilename ),
+            TargetFilename = file_utils:join( ?getAttr(result_dir), Filename ),
 
-			ProducerPid
+            file_utils:write_whole( TargetFilename, BinContent ),
+
+            ?info_fmt( "Received a raw file from producer ~w: '~ts', "
+                "written (while in directory '~ts') as '~ts'.",
+                [ ProducerPid, BinFilename, file_utils:get_current_directory(),
+                  TargetFilename ] ),
+
+            ProducerPid;
 
 
-	% Time-out renewed at each producer answer:
-	after ProducerTimeout ->
+        { wooper_result, { ProducerPid, no_result } } ->
 
-		throw( { result_producer_time_out, TotalProducerCount, Queues } )
+            % A producer may have nothing to report (e.g. the data-logger):
+            ?info_fmt( "Producer ~w notified that it had no result "
+                       "to provide.", [ ProducerPid ] ),
 
-	end,
+            ProducerPid
 
-	{ NewQueues, NewPidToQueueTable } = update_queues_after_result(
-		ActualProducerPid, PidToQueueTable, ProbeTable, Queues ),
 
-	wait_and_exhaust_queues( NewQueues, NewPidToQueueTable,
-		TotalProducerCount - 1, ProbeTable, ProducerTimeout, State ).
+    % Time-out renewed at each producer answer:
+    after ProducerTimeout ->
+
+        throw( { result_producer_time_out, TotalProducerCount, Queues } )
+
+    end,
+
+    { NewQueues, NewPidToQueueTable } = update_queues_after_result(
+        ActualProducerPid, PidToQueueTable, ProbeTable, Queues ),
+
+    wait_and_exhaust_queues( NewQueues, NewPidToQueueTable,
+        TotalProducerCount - 1, ProbeTable, ProducerTimeout, State ).
 
 
 
@@ -2250,56 +2250,56 @@ Updates the queues after the reception of the result from specified producer.
 Returns `{NewQueues, NewPidToQueueTable}`.
 """.
 update_queues_after_result( ProducerPid, PidToQueueTable, ProbeTable,
-							Queues ) ->
+                            Queues ) ->
 
-	QueueId = table:get_value( ProducerPid, PidToQueueTable ),
+    QueueId = table:get_value( ProducerPid, PidToQueueTable ),
 
-	{ Queue, OtherQueues } = extract_queue_by_id( QueueId, Queues ),
+    { Queue, OtherQueues } = extract_queue_by_id( QueueId, Queues ),
 
-	NewPidToQueueTable = table:remove_entry( ProducerPid, PidToQueueTable ),
+    NewPidToQueueTable = table:remove_entry( ProducerPid, PidToQueueTable ),
 
-	DelWaited = lists:delete( ProducerPid,
-							  Queue#result_queue.waited_producers ),
+    DelWaited = lists:delete( ProducerPid,
+                              Queue#result_queue.waited_producers ),
 
-	% One less producer online, hence one more to trigger:
-	{ NewPending, NewWaited } = case Queue#result_queue.pending_results of
+    % One less producer online, hence one more to trigger:
+    { NewPending, NewWaited } = case Queue#result_queue.pending_results of
 
-		[] ->
-			{ [], DelWaited };
+        [] ->
+            { [], DelWaited };
 
-		[ ProducerName | T ] ->
+        [ ProducerName | T ] ->
 
-			%trace_utils:debug_fmt( "Replenishing queue #~B with '~ts'.",
-			%                       [ QueueId, ProducerName ] ),
+            %trace_utils:debug_fmt( "Replenishing queue #~B with '~ts'.",
+            %                       [ QueueId, ProducerName ] ),
 
-			NewProducerPid = trigger_producer( ProducerName, ProbeTable ),
+            NewProducerPid = trigger_producer( ProducerName, ProbeTable ),
 
-			{ T, [ NewProducerPid | DelWaited ] }
+            { T, [ NewProducerPid | DelWaited ] }
 
-	end,
+    end,
 
-	NewQueue = Queue#result_queue{ waited_producers=NewWaited,
-								   pending_results=NewPending },
+    NewQueue = Queue#result_queue{ waited_producers=NewWaited,
+                                   pending_results=NewPending },
 
-	NewQueues = [ NewQueue | OtherQueues ],
+    NewQueues = [ NewQueue | OtherQueues ],
 
-	{ NewQueues, NewPidToQueueTable }.
+    { NewQueues, NewPidToQueueTable }.
 
 
 
 -doc "Ensures that all result queues have been fully processed indeed.".
 check_queues_empty( _Queues=[] ) ->
-	ok;
+    ok;
 
 check_queues_empty( _Queues=[
-		#result_queue{ waited_producers=[], pending_results=[] } | T ] ) ->
-	check_queues_empty( T ).
+        #result_queue{ waited_producers=[], pending_results=[] } | T ] ) ->
+    check_queues_empty( T ).
 
 
 -doc "Notification ignored.".
 -spec simulation_stopped( wooper:state() ) -> const_oneway_return().
 simulation_stopped( State ) ->
-	wooper:const_return().
+    wooper:const_return().
 
 
 
@@ -2307,56 +2307,56 @@ simulation_stopped( State ) ->
 -spec getResultDirectory( wooper:state() ) ->
                                 const_request_return( directory_path() ).
 getResultDirectory( State ) ->
-	wooper:const_return_result( ?getAttr(result_dir) ).
+    wooper:const_return_result( ?getAttr(result_dir) ).
 
 
 -doc "Requires the result reports to be browsed.".
 -spec browseResultReports( wooper:state() ) ->
-								const_request_return( 'results_browsed' ).
+                                const_request_return( 'results_browsed' ).
 browseResultReports( State ) ->
 
-	% Checking:
-	true = ?getAttr(result_collected),
+    % Checking:
+    true = ?getAttr(result_collected),
 
-	case ?getAttr(result_found) of
+    case ?getAttr(result_found) of
 
-		true ->
-			ResultDir = ?getAttr(result_dir),
+        true ->
+            ResultDir = ?getAttr(result_dir),
 
-			% As all results may be non-graphical (e.g. only *.dat):
-			{ Files, _Symlinks, _Directories, _OtherFiles, _Devices } =
-				file_utils:list_dir_elements( ResultDir ),
+            % As all results may be non-graphical (e.g. only *.dat):
+            { Files, _Symlinks, _Directories, _OtherFiles, _Devices } =
+                file_utils:list_dir_elements( ResultDir ),
 
-			case file_utils:filter_by_extensions( Files,
-					file_utils:get_image_extensions() ) of
+            case file_utils:filter_by_extensions( Files,
+                    file_utils:get_image_extensions() ) of
 
-				[] ->
-					trace_utils:notice( "(results matched the specification, "
-						"but none was graphical, thus nothing to be browsed "
-						"here)" );
+                [] ->
+                    trace_utils:notice( "(results matched the specification, "
+                        "but none was graphical, thus nothing to be displayed "
+                        "directly here)" );
 
-				[ _ ] ->
-					trace_utils:notice(
-						"(displaying a single graphical result)" ),
+                [ _ ] ->
+                    trace_utils:notice(
+                        "(displaying a single graphical result)" ),
 
-					executable_utils:browse_images_in( ResultDir );
+                    executable_utils:browse_images_in( ResultDir );
 
-				L ->
-					trace_utils:notice_fmt( "(displaying ~B graphical results)",
-											[ length( L ) ] ),
+                L ->
+                    trace_utils:notice_fmt( "(displaying ~B graphical results)",
+                                            [ length( L ) ] ),
 
-					executable_utils:browse_images_in( ResultDir )
+                    executable_utils:browse_images_in( ResultDir )
 
-			end;
+            end;
 
 
-		false ->
-			trace_utils:notice( "(no result matched the specification, "
-								"thus nothing to be browsed here)" )
+        false ->
+            trace_utils:notice( "(no result matched the specification, "
+                                "thus nothing to be browsed here)" )
 
-	end,
+    end,
 
-	wooper:const_return_result( results_browsed ).
+    wooper:const_return_result( results_browsed ).
 
 
 
@@ -2365,28 +2365,28 @@ Adds the specified process as a result listener, which will be notified of any
 event it missed.
 """.
 -spec addResultListener( wooper:state(), result_listener_pid() ) ->
-								oneway_return().
+                                oneway_return().
 addResultListener( State, ListenerPid ) ->
 
-	% If results were already collected, send past notification:
-	?getAttr(result_collected) andalso
-		begin
-			ResultBinDir = text_utils:string_to_binary( ?getAttr(result_dir) ),
-			ListenerPid ! { results_collected, ResultBinDir }
-		end,
+    % If results were already collected, send past notification:
+    ?getAttr(result_collected) andalso
+        begin
+            ResultBinDir = text_utils:string_to_binary( ?getAttr(result_dir) ),
+            ListenerPid ! { results_collected, ResultBinDir }
+        end,
 
-	wooper:return_state( appendToAttribute( State, listeners, ListenerPid ) ).
+    wooper:return_state( appendToAttribute( State, listeners, ListenerPid ) ).
 
 
 
 -doc "Removes the specified process from the known result listeners.".
 -spec removeResultListener( wooper:state(), result_listener_pid() ) ->
-								oneway_return().
+                                oneway_return().
 removeResultListener( State, ListenerPid ) ->
 
-	?debug_fmt( "Remove result listener ~p.", [ ListenerPid ] ),
+    ?debug_fmt( "Remove result listener ~p.", [ ListenerPid ] ),
 
-	wooper:return_state( deleteFromAttribute( State, listeners, ListenerPid ) ).
+    wooper:return_state( deleteFromAttribute( State, listeners, ListenerPid ) ).
 
 
 
@@ -2400,7 +2400,7 @@ registered as.
 """.
 -spec get_registration_name() -> static_return( atom_node_name() ).
 get_registration_name() ->
-	wooper:return_static( sim_diasca_result_manager ).
+    wooper:return_static( sim_diasca_result_manager ).
 
 
 
@@ -2413,10 +2413,10 @@ producers).
 -spec get_result_manager() -> static_return( manager_pid() ).
 get_result_manager() ->
 
-	ManagerPid =
-		naming_utils:wait_for_global_registration_of( get_registration_name() ),
+    ManagerPid =
+        naming_utils:wait_for_global_registration_of( get_registration_name() ),
 
-	wooper:return_static( ManagerPid ).
+    wooper:return_static( ManagerPid ).
 
 
 
@@ -2424,16 +2424,16 @@ get_result_manager() ->
 -spec get_result_directory() -> static_return( directory_path() ).
 get_result_directory() ->
 
-	ManagerPid = get_result_manager(),
+    ManagerPid = get_result_manager(),
 
-	ManagerPid ! { getResultDirectory, [], self() },
+    ManagerPid ! { getResultDirectory, [], self() },
 
-	receive
+    receive
 
-		{ wooper_result, Dir } when is_list( Dir ) ->
-			wooper:return_static( Dir )
+        { wooper_result, Dir } when is_list( Dir ) ->
+            wooper:return_static( Dir )
 
-	end.
+    end.
 
 
 
@@ -2441,7 +2441,7 @@ get_result_directory() ->
 Triggers the browsing of simulation reports.
 
 Allows to request the automatic displaying of graphical reports (e.g. plots from
-plots) depending on the batch mode being enabled or not, and to wait for it.
+probes) depending on the batch mode being enabled or not, and to wait for it.
 
 To be used from simulation cases.
 
@@ -2449,164 +2449,169 @@ Replaces a less reliable macro.
 """.
 -spec browse_reports() -> static_void_return().
 browse_reports() ->
-	browse_reports( _TriggerBasicDisplay=true ),
-	wooper:return_static_void().
+    % Supposing here that the web manager is not used:
+    browse_reports( _TriggerBasicDisplay=true ),
+    wooper:return_static_void().
 
 
 
 -doc """
-Triggers the browsing of simulation reports, with possibly a display of them.
+Triggers the browsing of simulation reports, with possibly a basic (direct, with
+dedicated tools, rather than through a brower)) display of them.
 
 Allows to request the automatic displaying of graphical reports (e.g. plots from
-plots) depending on the batch mode being enabled or not, and to wait for it.
+probes) depending on the batch mode being enabled or not, and to wait for it.
 
 To be used from simulation cases.
+
+`TriggerBasicDisplay` is set to `false` typically when the web manager is used,
+as otherwise a double display would be made.
 
 Replaces a less reliable macro.
 """.
 -spec browse_reports( boolean() ) -> static_void_return().
 browse_reports( TriggerBasicDisplay ) ->
 
-	% This function is stateless, which is very convenient as, since the start,
-	% most services may have been redeployed in the meantime, due to resilience
-	% mechanisms having to kick in.
+    % This function is stateless, which is very convenient as, since the start,
+    % most services may have been redeployed in the meantime, due to resilience
+    % mechanisms having to kick in.
 
-	% Generating performance monitoring results, if any, and in parallel to
-	% simulation results:
-	%
-	WaitForPerformanceTracker = case class_PerformanceTracker:get_tracker() of
+    % Generating performance monitoring results, if any, and in parallel to
+    % simulation results:
+    %
+    WaitForPerformanceTracker = case class_PerformanceTracker:get_tracker() of
 
-		not_registered ->
-			%trace_utils:debug( "No performance tracker was enabled." ),
-			false;
+        not_registered ->
+            %trace_utils:debug( "No performance tracker was enabled." ),
+            false;
 
-		TrackerPid ->
-			?notify_debug_fmt_cat( "Requesting reports from the "
-				"performance tracker ~w.", [ TrackerPid ],
-				?trace_emitter_categorization ),
+        TrackerPid ->
+            ?notify_debug_fmt_cat( "Requesting reports from the "
+                "performance tracker ~w.", [ TrackerPid ],
+                ?trace_emitter_categorization ),
 
-			TrackerPid ! { generateMonitoringReports, [], self() },
+            TrackerPid ! { generateMonitoringReports, [], self() },
 
-			true
+            true
 
-	end,
+    end,
 
-	ResultManagerPid = class_ResultManager:get_result_manager(),
+    ResultManagerPid = class_ResultManager:get_result_manager(),
 
-	% All simulation test cases are expected to register themselves as
-	% simulation listeners (e.g. at simulation start), thus they should be
-	% notified also about the simulation success (if any).
+    % All simulation test cases are expected to register themselves as
+    % simulation listeners (e.g. at simulation start), thus they should be
+    % notified also about the simulation success (if any).
 
-	case executable_utils:is_batch() of
+    case executable_utils:is_batch() of
 
-		true ->
+        true ->
 
-			% In batch mode here.
+            % In batch mode here.
 
-			receive
+            receive
 
-				% We *must* wait for that, otherwise results will not be copied
-				% on time before the VM halts (race condition with case
-				% termination, we must wait synchronously):
-				%
-				simulation_succeeded ->
+                % We *must* wait for that, otherwise results will not be copied
+                % on time before the VM halts (race condition with case
+                % termination, we must wait synchronously):
+                %
+                simulation_succeeded ->
 
-					% We nevertheless have to wait for them:
-					ResultManagerPid ! { addResultListener, self() },
+                    % We nevertheless have to wait for them:
+                    ResultManagerPid ! { addResultListener, self() },
 
-					trace_utils:notice(
-						"In batch mode, no browsing of results performed. "
-						"Waiting for their processing and retrieval." ),
-
-
-					receive
-
-						{ results_collected, ResultBinDir } ->
-							trace_utils:notice_fmt( "Results are available "
-								"now, in the '~ts' directory.",
-								[ ResultBinDir ] )
-
-					end
-
-			end;
+                    trace_utils:notice(
+                        "In batch mode, no browsing of results performed. "
+                        "Waiting for their processing and retrieval." ),
 
 
-		false ->
+                    receive
 
-			% In interactive mode here.
+                        { results_collected, ResultBinDir } ->
+                            trace_utils:notice_fmt( "Results are available "
+                                "now, in the '~ts' directory.",
+                                [ ResultBinDir ] )
 
-			receive
+                    end
 
-				% All simulation test cases are expected to register themselves
-				% as simulation listeners (e.g. at simulation start), thus they
-				% should be notified also about the simulation success (if any).
-				%
-				simulation_succeeded ->
+            end;
 
-					% We need to wait for the results:
-					ResultManagerPid ! { addResultListener, self() },
 
-					trace_utils:notice( "Simulation success, result reports to "
-						"be processed, collected then browsed now." ),
+        false ->
 
-					receive
+            % In interactive mode here.
 
-						{ results_collected, ResultBinDir } ->
-							trace_utils:notice_fmt( "Results are available now,"
-								" in the '~ts' directory.", [ ResultBinDir ] )
+            receive
 
-					end,
+                % All simulation test cases are expected to register themselves
+                % as simulation listeners (e.g. at simulation start), thus they
+                % should be notified also about the simulation success (if any).
+                %
+                simulation_succeeded ->
 
-					case TriggerBasicDisplay of
+                    % We need to wait for the results:
+                    ResultManagerPid ! { addResultListener, self() },
 
-						true ->
-							ResultManagerPid !
-								{ browseResultReports, [], self() },
+                    trace_utils:notice( "Simulation success, result reports to "
+                        "be processed, collected then browsed now." ),
 
-							receive
+                    receive
 
-								{ wooper_result, results_browsed } ->
-									?notify_info_cat( "Result reports have "
-										"been successfully browsed.",
-										?trace_emitter_categorization )
+                        { results_collected, ResultBinDir } ->
+                            trace_utils:notice_fmt( "Results are available now,"
+                                " in the '~ts' directory.", [ ResultBinDir ] )
 
-							after 5000 ->
+                    end,
 
-								trace_utils:notice(
-									"Simulation failed, no result gathered." )
+                    case TriggerBasicDisplay of
 
-							end;
+                        true ->
+                            ResultManagerPid !
+                                { browseResultReports, [], self() },
 
-						false ->
-							%trace_utils:info( "No basic display requested." )
-							ok
+                            receive
 
-					end
+                                { wooper_result, results_browsed } ->
+                                    ?notify_info_cat( "Result reports have "
+                                        "been successfully browsed.",
+                                        ?trace_emitter_categorization )
 
-			end
+                            after 5000 ->
 
-	end,
+                                trace_utils:notice(
+                                    "Simulation failed, no result gathered." )
 
-	WaitForPerformanceTracker andalso
-		begin
-			%trace_utils:debug( "Waiting for the performance tracker." ),
+                            end;
 
-			receive
+                        false ->
+                            %trace_utils:info( "No basic display requested." )
+                            ok
 
-				{ wooper_result, report_generated } ->
+                    end
 
-					?notify_info_cat( "Monitoring reports have been "
-						"successfully generated.",
-						?trace_emitter_categorization ),
+            end
 
-					trace_utils:notice( "Monitoring reports have been "
-										"successfully generated." )
+    end,
 
-			end
+    WaitForPerformanceTracker andalso
+        begin
+            %trace_utils:debug( "Waiting for the performance tracker." ),
 
-		end,
+            receive
 
-	wooper:return_static_void().
+                { wooper_result, report_generated } ->
+
+                    ?notify_info_cat( "Monitoring reports have been "
+                        "successfully generated.",
+                        ?trace_emitter_categorization ),
+
+                    trace_utils:notice( "Monitoring reports have been "
+                                        "successfully generated." )
+
+            end
+
+        end,
+
+    wooper:return_static_void().
 
 
 
@@ -2616,12 +2621,12 @@ Returns a plain string describing the specified result-related meta-data.
 -spec get_metadata_string( meta_data() ) -> static_return( ustring() ).
 get_metadata_string( Metadata ) ->
 
-	MetadataAllStrings = [ text_utils:binary_to_string( BinText )
-							|| { _Key, BinText } <- Metadata ],
+    MetadataAllStrings = [ text_utils:binary_to_string( BinText )
+                            || { _Key, BinText } <- Metadata ],
 
-	Desc = text_utils:strings_to_string( MetadataAllStrings ),
+    Desc = text_utils:strings_to_string( MetadataAllStrings ),
 
-	wooper:return_static( Desc ).
+    wooper:return_static( Desc ).
 
 
 
@@ -2635,17 +2640,17 @@ See also: class_InstanceTracker:create_mockup_environment/0.
 -spec create_mockup_environment() -> static_return( pid() ).
 create_mockup_environment() ->
 
-	Pid = ?myriad_spawn_link(
-		fun() ->
+    Pid = ?myriad_spawn_link(
+        fun() ->
 
-			naming_utils:register_as( ?instance_tracker_name, local_only ),
-			naming_utils:register_as( ?result_manager_name, global_only ),
+            naming_utils:register_as( ?instance_tracker_name, local_only ),
+            naming_utils:register_as( ?result_manager_name, global_only ),
 
-			create_mockup_environment_loop()
+            create_mockup_environment_loop()
 
-		end ),
+        end ),
 
-	wooper:return_static( Pid ).
+    wooper:return_static( Pid ).
 
 
 
@@ -2658,35 +2663,35 @@ still registered process.
 """.
 create_mockup_environment_loop() ->
 
-	% Mimics a result manager (and the existence of a local instance tracker):
+    % Mimics a result manager (and the existence of a local instance tracker):
 
-	% Fakes a local instance tracker and a result manager:
-	receive
+    % Fakes a local instance tracker and a result manager:
+    receive
 
-		{ registerResultProducer, _BinName, ProducerPid } ->
-			ProducerPid ! { wooper_result, result_producer_registered };
+        { registerResultProducer, _BinName, ProducerPid } ->
+            ProducerPid ! { wooper_result, result_producer_registered };
 
-		{ registerAgent, _AgentRef, AgentPid } ->
-			AgentPid ! { wooper_result, agent_registered };
+        { registerAgent, _AgentRef, AgentPid } ->
+            AgentPid ! { wooper_result, agent_registered };
 
-		{ declareProbe, [ _Name, _IsTrackedProducer, _MaybeProbeBinDir ],
-		  ProbePid } ->
-			ProbePid ! { wooper_result, output_requested };
+        { declareProbe, [ _Name, _IsTrackedProducer, _MaybeProbeBinDir ],
+          ProbePid } ->
+            ProbePid ! { wooper_result, output_requested };
 
-		{ unregisterResultProducer, _ProducerPid } ->
-			ok;
+        { unregisterResultProducer, _ProducerPid } ->
+            ok;
 
-		{ unregisterAgent, _AgentPid } ->
-			ok;
+        { unregisterAgent, _AgentPid } ->
+            ok;
 
-		Unexpected ->
-			trace_utils:error_fmt(
-				"Mock-up result environment received an unexpected (hence "
-				"ignored) message:~n  ~p", [ Unexpected ] )
+        Unexpected ->
+            trace_utils:error_fmt(
+                "Mock-up result environment received an unexpected (hence "
+                "ignored) message:~n  ~p", [ Unexpected ] )
 
-	end,
+    end,
 
-	create_mockup_environment_loop().
+    create_mockup_environment_loop().
 
 
 
@@ -2700,52 +2705,52 @@ create_mockup_environment_loop() ->
 % Result is either an atom of a pair of two lists.
 %
 check_and_transform_result_specification( all_outputs ) ->
-	all_outputs;
+    all_outputs;
 
 check_and_transform_result_specification( no_output) ->
-	no_output;
+    no_output;
 
 check_and_transform_result_specification( all_basic_probes_only ) ->
-	all_basic_probes_only;
+    all_basic_probes_only;
 
 check_and_transform_result_specification( all_virtual_probes_only ) ->
-	all_virtual_probes_only;
+    all_virtual_probes_only;
 
 check_and_transform_result_specification( all_web_probes_only ) ->
-	all_web_probes_only;
+    all_web_probes_only;
 
 check_and_transform_result_specification( all_graph_probes_only ) ->
-	all_graph_probes_only;
+    all_graph_probes_only;
 
 % Returns {Targets, Blacklists}:
 check_and_transform_result_specification( Specs ) when is_list( Specs ) ->
-	manage_patterns( Specs, _Targets=[], _Blacklists=[] );
+    manage_patterns( Specs, _Targets=[], _Blacklists=[] );
 
 check_and_transform_result_specification( NonMatching ) ->
-	throw( { invalid_result_specification, NonMatching } ).
+    throw( { invalid_result_specification, NonMatching } ).
 
 
 % (helper)
 manage_patterns( _Specs=[], Targets, Blacklists ) ->
-	{ Targets, Blacklists };
+    { Targets, Blacklists };
 
 manage_patterns( [ { targeted_patterns, L } | T ], Targets, Blacklists )
-											when is_list( L ) ->
+                                            when is_list( L ) ->
    manage_patterns( T, manage_targets( L ) ++ Targets, Blacklists );
 
 manage_patterns( [ { targeted_patterns, L } | _T ], _Targets, _Blacklists ) ->
-	throw( { invalid_result_target_pattern, L } );
+    throw( { invalid_result_target_pattern, L } );
 
 manage_patterns( [ { blacklisted_patterns, L } | T ], Targets, Blacklists )
-											when is_list( L ) ->
-	manage_patterns( T, Targets, manage_blacklists( L ) ++ Blacklists );
+                                            when is_list( L ) ->
+    manage_patterns( T, Targets, manage_blacklists( L ) ++ Blacklists );
 
 manage_patterns( [ { blacklisted_patterns, L } | _T ], _Targets,
-				 _Blacklists ) ->
-	throw( { invalid_result_blacklist_pattern, L } );
+                 _Blacklists ) ->
+    throw( { invalid_result_blacklist_pattern, L } );
 
 manage_patterns( [ Any | _T ], _Targets, _Blacklists ) ->
-	throw( { invalid_result_pattern, Any } ).
+    throw( { invalid_result_pattern, Any } ).
 
 
 
@@ -2753,39 +2758,39 @@ manage_patterns( [ Any | _T ], _Targets, _Blacklists ) ->
 % OptionList} triplets (default option list is empty).
 %
 manage_targets( Targets ) ->
-	manage_targets( Targets, _Acc=[] ).
+    manage_targets( Targets, _Acc=[] ).
 
 
 manage_targets( _Targets=[], Acc ) ->
-	Acc;
+    Acc;
 
 % Wanting a list of options, if it is not the 'undefined' atom:
 manage_targets( [ { Target, Option } | T ], Acc )
-						when is_atom( Option ) andalso Option =/= undefined ->
-	manage_targets( [ { Target, [ Option ] } | T ], Acc );
+                        when is_atom( Option ) andalso Option =/= undefined ->
+    manage_targets( [ { Target, [ Option ] } | T ], Acc );
 
 % We have a list of options here:
 manage_targets( [ { Target, Options } | T ], Acc ) ->
 
-	case text_utils:is_string( Target ) of
+    case text_utils:is_string( Target ) of
 
-		true ->
-			check_target_option( Options ),
-			NewAcc = [ { text_utils:string_to_binary( Target ),
-						 compile( Target ), Options } | Acc ],
-			manage_targets( T, NewAcc );
+        true ->
+            check_target_option( Options ),
+            NewAcc = [ { text_utils:string_to_binary( Target ),
+                         compile( Target ), Options } | Acc ],
+            manage_targets( T, NewAcc );
 
-		false ->
-			throw( { invalid_result_target, Target } )
+        false ->
+            throw( { invalid_result_target, Target } )
 
-	end;
+    end;
 
 % No option here:
 manage_targets( [ Target | T ], Acc ) when is_list( Target ) ->
-	manage_targets( [ { Target, undefined } | T ], Acc );
+    manage_targets( [ { Target, undefined } | T ], Acc );
 
 manage_targets( Other, _Acc ) ->
-	throw( { invalid_result_target_specification, Other } ).
+    throw( { invalid_result_target_specification, Other } ).
 
 
 
@@ -2793,62 +2798,62 @@ manage_targets( Other, _Acc ) ->
 % pairs.
 %
 manage_blacklists( Blacklists ) ->
-	manage_blacklists( Blacklists, _Acc=[] ).
+    manage_blacklists( Blacklists, _Acc=[] ).
 
 
 manage_blacklists( _Blacklists=[], Acc ) ->
-	Acc;
+    Acc;
 
 manage_blacklists( [ BlackList | T ], Acc ) ->
 
-	case text_utils:is_string( BlackList ) of
+    case text_utils:is_string( BlackList ) of
 
-		true ->
-			NewAcc = [ { text_utils:string_to_binary( BlackList ),
-						 compile( BlackList ) } | Acc ],
-			manage_blacklists( T, NewAcc );
+        true ->
+            NewAcc = [ { text_utils:string_to_binary( BlackList ),
+                         compile( BlackList ) } | Acc ],
+            manage_blacklists( T, NewAcc );
 
-		false ->
-			throw( { invalid_result_blacklist, BlackList } )
+        false ->
+            throw( { invalid_result_blacklist, BlackList } )
 
-	end.
+    end.
 
 
 % Checks that the option(s) specified with the targeted patterns are valid.
 check_target_option( _Options=undefined ) ->
-	ok;
+    ok;
 
 check_target_option( _Options=[] ) ->
-	ok;
+    ok;
 
 check_target_option( _Options=[ H | T ] ) ->
 
-	case lists:member( H, [ data_only, rendering_only, data_and_rendering ] ) of
+    case lists:member( H, [ data_only, rendering_only, data_and_rendering ] ) of
 
-		true ->
-			check_target_option( T );
+        true ->
+            check_target_option( T );
 
-		false ->
-			throw( { invalid_targeted_pattern_option, H } )
+        false ->
+            throw( { invalid_targeted_pattern_option, H } )
 
-	end.
+    end.
 
 
 
 -doc "Returns a precompiled regular expression.".
 compile( Pattern ) ->
 
-	%trace_utils:debug_fmt( "Compiling pattern '~ts'.", [ Pattern ] ),
+    %trace_utils:debug_fmt( "Compiling pattern '~ts'.", [ Pattern ] ),
 
-	case re:compile( Pattern ) of
+    case re:compile( Pattern ) of
 
-		{ ok, MatchSpec } ->
-			MatchSpec;
+        { ok, MatchSpec } ->
+            MatchSpec;
 
-		{ error, Error } ->
-			throw( { result_pattern_precompilation_failed, Pattern, Error } )
+        { error, Error } ->
+            throw( { result_pattern_precompilation_failed, Pattern, Error } )
 
-	end.
+    end.
 
 
 
@@ -2856,134 +2861,134 @@ compile( Pattern ) ->
 Returns either false, or true with the corresponding producer options (if any).
 """.
 -spec is_result_wanted( bin_producer_name(), producer_nature(),
-		wooper:state() ) -> 'false' | { 'true', option( producer_options() ) }.
+        wooper:state() ) -> 'false' | { 'true', option( producer_options() ) }.
 is_result_wanted( ProducerName, _Nature=graph_stream_probe, State ) ->
-	case executable_utils:is_batch() of
+    case executable_utils:is_batch() of
 
-		true ->
-			% Anyway the deployment manager must not have launched the overall
-			% graph stream tool:
-			%
-			false;
+        true ->
+            % Anyway the deployment manager must not have launched the overall
+            % graph stream tool:
+            %
+            false;
 
-		false ->
-			case ?getAttr(result_spec) of
+        false ->
+            case ?getAttr(result_spec) of
 
-				{ TargetPatterns, BlacklistPatterns } ->
-					is_selected_with_options( ProducerName, TargetPatterns,
-											  BlacklistPatterns );
+                { TargetPatterns, BlacklistPatterns } ->
+                    is_selected_with_options( ProducerName, TargetPatterns,
+                                              BlacklistPatterns );
 
-				_ ->
-					{ true, undefined }
+                _ ->
+                    { true, undefined }
 
-			end
+            end
 
-	end;
+    end;
 
 is_result_wanted( ProducerName, Nature, State ) ->
 
-	WantedInfos = case ?getAttr(result_spec) of
+    WantedInfos = case ?getAttr(result_spec) of
 
-		all_outputs ->
-			{ true, undefined };
+        all_outputs ->
+            { true, undefined };
 
-		no_output ->
-			false;
+        no_output ->
+            false;
 
-		all_basic_probes_only ->
+        all_basic_probes_only ->
 
-			case Nature of
+            case Nature of
 
-				undefined ->
-					{ true, undefined };
+                undefined ->
+                    { true, undefined };
 
-				basic_probe ->
-					{ true, undefined };
+                basic_probe ->
+                    { true, undefined };
 
-				virtual_probe ->
-					false;
+                virtual_probe ->
+                    false;
 
-				web_probe ->
-					false;
+                web_probe ->
+                    false;
 
-				graph_probe ->
-					false
+                graph_probe ->
+                    false
 
-			end;
+            end;
 
-		all_virtual_probes_only ->
-			case Nature of
+        all_virtual_probes_only ->
+            case Nature of
 
-				undefined ->
-					{ true, undefined };
+                undefined ->
+                    { true, undefined };
 
-				basic_probe ->
-					false;
+                basic_probe ->
+                    false;
 
-				virtual_probe ->
-					{ true, undefined };
+                virtual_probe ->
+                    { true, undefined };
 
-				web_probe ->
-					false;
+                web_probe ->
+                    false;
 
-				graph_probe ->
-					false
+                graph_probe ->
+                    false
 
-			end;
+            end;
 
-		all_web_probes_only ->
-			case Nature of
+        all_web_probes_only ->
+            case Nature of
 
-				undefined ->
-					{ true, undefined };
+                undefined ->
+                    { true, undefined };
 
-				basic_probe ->
-					false;
+                basic_probe ->
+                    false;
 
-				virtual_probe ->
-					false;
+                virtual_probe ->
+                    false;
 
-				web_probe ->
-					{ true, undefined };
+                web_probe ->
+                    { true, undefined };
 
-				graph_probe ->
-					false
+                graph_probe ->
+                    false
 
-			end;
+            end;
 
-		all_graph_probes_only ->
-			case Nature of
+        all_graph_probes_only ->
+            case Nature of
 
-				undefined ->
-					{ true, undefined };
+                undefined ->
+                    { true, undefined };
 
-				basic_probe ->
-					false;
+                basic_probe ->
+                    false;
 
-				virtual_probe ->
-					false;
+                virtual_probe ->
+                    false;
 
-				web_probe ->
-					false;
+                web_probe ->
+                    false;
 
-				graph_probe ->
-					{ true, undefined }
+                graph_probe ->
+                    { true, undefined }
 
-			end;
+            end;
 
-		{ TargetPatterns, BlacklistPatterns } ->
-			is_selected_with_options( ProducerName, TargetPatterns,
-									  BlacklistPatterns )
+        { TargetPatterns, BlacklistPatterns } ->
+            is_selected_with_options( ProducerName, TargetPatterns,
+                                      BlacklistPatterns )
 
-	end,
+    end,
 
-	%trace_utils:debug_fmt( "Is result producer '~ts' wanted? '~p'.",
-	%                       [ ProducerName, WantedInfos ] ),
+    %trace_utils:debug_fmt( "Is result producer '~ts' wanted? '~p'.",
+    %                       [ ProducerName, WantedInfos ] ),
 
-	%?info_fmt( "Is result producer '~ts' wanted? '~p'.",
-	%           [ ProducerName, WantedInfos ] ),
+    %?info_fmt( "Is result producer '~ts' wanted? '~p'.",
+    %           [ ProducerName, WantedInfos ] ),
 
-	WantedInfos.
+    WantedInfos.
 
 
 
@@ -2992,81 +2997,81 @@ Tells whether the specified producer name is targeted and non-blacklisted. If
 yes, returns also its associated options (if any).
 """.
 -spec is_selected_with_options( bin_producer_name(), [ target_pattern() ],
-								[ blacklist_pattern() ] ) ->
-						'false' | { 'true', option( producer_options() ) }.
+                                [ blacklist_pattern() ] ) ->
+                        'false' | { 'true', option( producer_options() ) }.
 
 is_selected_with_options( BinProducerName, TargetPatterns,
-						  BlacklistPatterns ) ->
+                          BlacklistPatterns ) ->
 
-	ProducerName = text_utils:binary_to_string( BinProducerName ),
+    ProducerName = text_utils:binary_to_string( BinProducerName ),
 
-	case check_targeted( ProducerName, TargetPatterns ) of
+    case check_targeted( ProducerName, TargetPatterns ) of
 
-		false ->
-			%trace_utils:debug_fmt( "Producer ~p was not selected, "
-			%                       "as not targeted.", [ ProducerName ] ),
-			false;
+        false ->
+            %trace_utils:debug_fmt( "Producer ~p was not selected, "
+            %                       "as not targeted.", [ ProducerName ] ),
+            false;
 
-		Res -> % = { true, Options } ->
-			case check_blacklisted( ProducerName, BlacklistPatterns ) of
+        Res -> % = { true, Options } ->
+            case check_blacklisted( ProducerName, BlacklistPatterns ) of
 
-				true ->
-					%trace_utils:debug_fmt( "Producer ~p was not selected, "
-					%     "as targeted but blacklisted.", [ ProducerName ] ),
-					false;
+                true ->
+                    %trace_utils:debug_fmt( "Producer ~p was not selected, "
+                    %     "as targeted but blacklisted.", [ ProducerName ] ),
+                    false;
 
-				false ->
-					%trace_utils:debug_fmt( "Producer ~p was selected, "
-					%  "as targeted and not blacklisted.", [ ProducerName ] ),
-					Res
+                false ->
+                    %trace_utils:debug_fmt( "Producer ~p was selected, "
+                    %  "as targeted and not blacklisted.", [ ProducerName ] ),
+                    Res
 
-			end
+            end
 
-	end.
+    end.
 
 
 
 % (helper)
 check_targeted( _ProducerName, _TargetPatterns=[] ) ->
-	false;
+    false;
 
 check_targeted( ProducerName, [ { _BinPattern, MatchSpec, Opts } | T ] ) ->
 
-	%trace_utils:debug_fmt( "Checking '~ts' against targeted pattern ~p.",
-	%                       [ ProducerName, BinPattern ] ),
+    %trace_utils:debug_fmt( "Checking '~ts' against targeted pattern ~p.",
+    %                       [ ProducerName, BinPattern ] ),
 
-	case re:run( ProducerName, MatchSpec ) of
+    case re:run( ProducerName, MatchSpec ) of
 
-		nomatch ->
-			check_targeted( ProducerName, T );
+        nomatch ->
+            check_targeted( ProducerName, T );
 
-		{ match, _ } = _Match ->
-			%trace_utils:debug_fmt( "Targeted match found: '~p'.", [ Match ] ),
-			{ true, Opts }
+        { match, _ } = _Match ->
+            %trace_utils:debug_fmt( "Targeted match found: '~p'.", [ Match ] ),
+            { true, Opts }
 
-	end.
+    end.
 
 
 % (helper)
 check_blacklisted( _ProducerName, _BlacklistPatterns=[] ) ->
-	false;
+    false;
 
 check_blacklisted( ProducerName, [ { _BinPattern, MatchSpec } | T ] ) ->
 
-	%trace_utils:debug_fmt( "Checking '~ts' against blacklisted pattern ~p.",
-	%                       [ ProducerName, BinPattern ] ),
+    %trace_utils:debug_fmt( "Checking '~ts' against blacklisted pattern ~p.",
+    %                       [ ProducerName, BinPattern ] ),
 
-	case re:run( ProducerName, MatchSpec ) of
+    case re:run( ProducerName, MatchSpec ) of
 
-		nomatch ->
-			check_blacklisted( ProducerName, T );
+        nomatch ->
+            check_blacklisted( ProducerName, T );
 
-		{ match, _ } = _Match ->
-			%trace_utils:debug_fmt( "Blacklisted match found: '~p'.",
-			%                       [ Match ] ),
-			true
+        { match, _ } = _Match ->
+            %trace_utils:debug_fmt( "Blacklisted match found: '~p'.",
+            %                       [ Match ] ),
+            true
 
-	end.
+    end.
 
 
 
@@ -3077,17 +3082,17 @@ check_blacklisted( ProducerName, [ { _BinPattern, MatchSpec } | T ] ) ->
 % (helper)
 %
 extract_queue_by_node( AtomNodeName, ResultQueues ) ->
-	extract_queue_by_node( AtomNodeName, ResultQueues, _Acc=[] ).
+    extract_queue_by_node( AtomNodeName, ResultQueues, _Acc=[] ).
 
 
 
 extract_queue_by_node( AtomNodeName,
   _ResultQueues=[ Queue=#result_queue{ node_name=AtomNodeName } | T ], Acc ) ->
-	% Found!
-	{ Queue, T ++ Acc };
+    % Found!
+    { Queue, T ++ Acc };
 
 extract_queue_by_node( AtomNodeName, _ResultQueues=[ H | T ], Acc ) ->
-	extract_queue_by_node( AtomNodeName, T, [ H | Acc ] ).
+    extract_queue_by_node( AtomNodeName, T, [ H | Acc ] ).
 
 
 
@@ -3098,17 +3103,17 @@ extract_queue_by_node( AtomNodeName, _ResultQueues=[ H | T ], Acc ) ->
 % (helper)
 %
 extract_queue_by_host( AtomHostName, ResultQueues ) ->
-	extract_queue_by_host( AtomHostName, ResultQueues, _Acc=[] ).
+    extract_queue_by_host( AtomHostName, ResultQueues, _Acc=[] ).
 
 
 
 extract_queue_by_host( AtomHostName,
   _ResultQueues=[ Queue=#result_queue{ host_name=AtomHostName } | T ], Acc ) ->
-	% Found!
-	{ Queue, T ++ Acc };
+    % Found!
+    { Queue, T ++ Acc };
 
 extract_queue_by_host( AtomHostName, _ResultQueues=[ H | T ], Acc ) ->
-	extract_queue_by_host( AtomHostName, T, [ H | Acc ] ).
+    extract_queue_by_host( AtomHostName, T, [ H | Acc ] ).
 
 
 
@@ -3119,58 +3124,58 @@ extract_queue_by_host( AtomHostName, _ResultQueues=[ H | T ], Acc ) ->
 % (helper)
 %
 extract_queue_by_id( Id, ResultQueues ) ->
-	extract_queue_by_id( Id, ResultQueues, _Acc=[] ).
+    extract_queue_by_id( Id, ResultQueues, _Acc=[] ).
 
 
 
 extract_queue_by_id( Id,
   _ResultQueues=[ Queue=#result_queue{ id=Id } | T ], Acc ) ->
-	% Found!
-	{ Queue, T ++ Acc };
+    % Found!
+    { Queue, T ++ Acc };
 
 extract_queue_by_id( Id, _ResultQueues=[ H | T ], Acc ) ->
-	extract_queue_by_id( Id, T, [ H | Acc ] ).
+    extract_queue_by_id( Id, T, [ H | Acc ] ).
 
 
 
 -doc "Returns a textual description of the specified queue.".
 -spec to_string( result_queue() ) -> ustring().
 to_string( #result_queue{ id=Id,
-						  host_name=Hostname,
-						  node_name=Nodename,
-						  max_worker_count=MaxWorkerCount,
-						  waited_producers=WaitedProducers,
-						  pending_results=PendingResults } ) ->
+                          host_name=Hostname,
+                          node_name=Nodename,
+                          max_worker_count=MaxWorkerCount,
+                          waited_producers=WaitedProducers,
+                          pending_results=PendingResults } ) ->
 
-	PendingString = case PendingResults of
+    PendingString = case PendingResults of
 
-		[] ->
-			"no pending result";
+        [] ->
+            "no pending result";
 
-		_ ->
-			text_utils:format( "~B pending results (~ts)",
-							   [ length( PendingResults ), PendingResults ] )
+        _ ->
+            text_utils:format( "~B pending results (~ts)",
+                               [ length( PendingResults ), PendingResults ] )
 
-	end,
+    end,
 
-	text_utils:format(
-		"Result queue whose ID is #~B, on host '~ts' (node: '~ts') "
-		"with up to ~B workers allowed, currently waiting for "
-		"producers ~w, having ~ts",
-		[ Id, Hostname, Nodename, MaxWorkerCount, WaitedProducers,
-		  PendingString ] ).
+    text_utils:format(
+        "Result queue whose ID is #~B, on host '~ts' (node: '~ts') "
+        "with up to ~B workers allowed, currently waiting for "
+        "producers ~w, having ~ts",
+        [ Id, Hostname, Nodename, MaxWorkerCount, WaitedProducers,
+          PendingString ] ).
 
 
 
 -doc "Displays on the console the specified result queues.".
 display_queues( Queues ) ->
 
-	% Sorts by ID:
-	QueueStrings =
-		[ to_string( Q ) || Q <- lists:keysort( _IndexId=2, Queues ) ],
+    % Sorts by ID:
+    QueueStrings =
+        [ to_string( Q ) || Q <- lists:keysort( _IndexId=2, Queues ) ],
 
-	trace_utils:debug_fmt( "Result queues:~n ~ts",
-						   [ text_utils:strings_to_string( QueueStrings ) ] ).
+    trace_utils:debug_fmt( "Result queues:~n ~ts",
+                           [ text_utils:strings_to_string( QueueStrings ) ] ).
 
 
 
@@ -3185,8 +3190,8 @@ display_queues( Queues ) ->
 
 % In production mode:
 get_producer_time_out() ->
-	% 4 hours here (yes, this is quite a lot):
-	4 * 60 * 60 * 1000.
+    % 4 hours here (yes, this is quite a lot):
+    4 * 60 * 60 * 1000.
 
 
 -else. % exec_target_is_production
@@ -3194,8 +3199,8 @@ get_producer_time_out() ->
 
 % In development mode, we can rely on the default value:
 get_producer_time_out() ->
-	% 5 minutes here:
-	5 * 60 * 1000.
+    % 5 minutes here:
+    5 * 60 * 1000.
 
 
 -endif. % exec_target_is_production

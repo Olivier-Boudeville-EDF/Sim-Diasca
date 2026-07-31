@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -132,8 +132,8 @@ A known provider of TTS.
 See also web_utils:cloud_provider/0.
 """.
 -type tts_provider() :: 'google' % Google (Wavenet)
-					  | 'aws'    % Amazon Polly
-					  | 'azure'. % Microsoft Azure (Neural)
+                      | 'aws'    % Amazon Polly
+                      | 'azure'. % Microsoft Azure (Neural)
 
 
 
@@ -164,7 +164,7 @@ For example `<<"Foobar Server Speech Text to Speech Voice (xr-XG, Yoda)">>`.
 
 -doc "The type of a voice.".
 -type voice_type() :: 'normal'  % Basic.
-					| 'neural'. % AI-produced.
+                    | 'neural'. % AI-produced.
 
 
 
@@ -190,27 +190,27 @@ See, for a synthesis of the styles supported by each voice,
 or enable the list_voices/1 the writing of the voice JSON listing.
 """.
 -type supported_style() :: 'assistant'
-						 | 'news_reading'
-						 | 'news_reading_casual'
-						 | 'news_reading_formal'
-						 | 'story_narrating'
-						 | 'work_narrating'
-						 | 'conversing'
-						 | 'customer_support'
-						 | 'calm'
-						 | 'fearful'
-						 | 'angry'
-						 | 'sad'
-						 | 'envious'
-						 | 'affectionate'
-						 | 'gentle'
-						 | 'depressed'
-						 | 'serious'
-						 | 'disgruntled'
-						 | 'cheerful'
-						 | 'embarrassed'
-						 | 'empathetic'
-						 | 'lyrical'.
+                         | 'news_reading'
+                         | 'news_reading_casual'
+                         | 'news_reading_formal'
+                         | 'story_narrating'
+                         | 'work_narrating'
+                         | 'conversing'
+                         | 'customer_support'
+                         | 'calm'
+                         | 'fearful'
+                         | 'angry'
+                         | 'sad'
+                         | 'envious'
+                         | 'affectionate'
+                         | 'gentle'
+                         | 'depressed'
+                         | 'serious'
+                         | 'disgruntled'
+                         | 'cheerful'
+                         | 'embarrassed'
+                         | 'empathetic'
+                         | 'lyrical'.
 
 
 
@@ -263,7 +263,7 @@ Information regarding a speech to be recorded (many of whom are optional).
 
 -doc "A table of speech settings.".
 -type speech_settings_table() ::
-		table( speech_settings_id(), speech_settings() ).
+        table( speech_settings_id(), speech_settings() ).
 
 
 
@@ -359,34 +359,34 @@ A datastructure collecting information regarding a set of logical speeches.
 
 
 -export_type([ tts_provider/0, voice_id/0, voice_id_at_provider/0,
-			   voice_name/0, voice_type/0, voice_gender/0,
-			   language_locale/0, supported_style/0,
-			   voice_info/0, voice_table/0,
-			   speech_settings/0, speech_settings_id/0, speech_settings_table/0,
-			   ssml_text/0, user_speech_info/0,
-			   speech_id/0, speech_base_name/0, any_speech_base_name/0,
-			   logical_speech/0, actual_speech_info/0, locale_table/0,
-			   speech_table/0, speech_repository/0, speech_state/0,
-			   role_played/0 ]).
+               voice_name/0, voice_type/0, voice_gender/0,
+               language_locale/0, supported_style/0,
+               voice_info/0, voice_table/0,
+               speech_settings/0, speech_settings_id/0, speech_settings_table/0,
+               ssml_text/0, user_speech_info/0,
+               speech_id/0, speech_base_name/0, any_speech_base_name/0,
+               logical_speech/0, actual_speech_info/0, locale_table/0,
+               speech_table/0, speech_repository/0, speech_state/0,
+               role_played/0 ]).
 
 
 -export([ check_availability/0,
-		  get_default_audio_settings/0, get_audio_format_string/1,
-		  start/1, start/2, stop/1,
-		  list_voices/1,
-		  record_speech/3, record_speech/4, record_speech/5,
+          get_default_audio_settings/0, get_audio_format_string/1,
+          start/1, start/2, stop/1,
+          list_voices/1,
+          record_speech/3, record_speech/4, record_speech/5,
 
-		  register_speech_settings/2,
-		  create_repository/1, record_logical_speech/3,
-		  get_audio_path_for/3,
+          register_speech_settings/2,
+          create_repository/1, record_logical_speech/3,
+          get_audio_path_for/3,
 
-		  filter_by_gender/2, filter_by_locale/2,
+          filter_by_gender/2, filter_by_locale/2,
 
-		  speech_state_to_string/1, voice_id_to_string/1,
-		  tts_provider_to_string/1, voice_table_to_string/1,
-		  voice_info_to_string/1, role_to_string/1,
-		  speech_settings_to_string/1, logical_speech_to_string/1,
-		  actual_speech_info_to_string/1, speech_repository_to_string/1 ]).
+          speech_state_to_string/1, voice_id_to_string/1,
+          tts_provider_to_string/1, voice_table_to_string/1,
+          voice_info_to_string/1, role_to_string/1,
+          speech_settings_to_string/1, logical_speech_to_string/1,
+          actual_speech_info_to_string/1, speech_repository_to_string/1 ]).
 
 
 
@@ -417,7 +417,7 @@ A datastructure collecting information regarding a set of logical speeches.
 
 
 -define( azure_speech_api_endpoint,
-		 "api.cognitive.microsoft.com/sts/v1.0/issuetoken" ).
+         "api.cognitive.microsoft.com/sts/v1.0/issuetoken" ).
 
 
 
@@ -429,42 +429,42 @@ Tells whether the speech support is available:
 Side-effect: ensures that a Myriad preferences server is running.
 """.
 -spec check_availability() -> { 'true', speech_state() }
-							| { 'false', ustring() }.
+                            | { 'false', ustring() }.
 check_availability() ->
 
-	case json_utils:is_parser_available() of
+    case json_utils:is_parser_available() of
 
-		true ->
-			ParserState = json_utils:start_parser(),
+        true ->
+            ParserState = json_utils:start_parser(),
 
-			SpeechState = #speech_state{
-				json_parser_state=ParserState,
-				http_options=[ { ssl, web_utils:get_ssl_verify_options() } ],
-				audio_settings=get_default_audio_settings() },
+            SpeechState = #speech_state{
+                json_parser_state=ParserState,
+                http_options=[ { ssl, web_utils:get_ssl_verify_options() } ],
+                audio_settings=get_default_audio_settings() },
 
-			check_tts_provider_availability( SpeechState );
+            check_tts_provider_availability( SpeechState );
 
-		false ->
-			{ false, "no JSON parser found available" }
+        false ->
+            { false, "no JSON parser found available" }
 
-	end.
+    end.
 
 
 
 -doc "Returns the default settings enforced for the speech audio output.".
 -spec get_default_audio_settings() -> audio_stream_settings().
 get_default_audio_settings() ->
-	% Corresponds to 'ogg-48khz-16bit-mono-opus', probably close to the best
-	% available quality:
-	%
-	% (another option could be 'raw-48khz-16bit-mono-pcm' to perform the
-	% encoding by oneself afterwards)
-	%
-	#audio_stream_settings{ sampling_rate=48,
-							channel_layout=mono,
-							bit_level={ bit, 16 },
-							container_format=ogg,
-							audio_format=opus }.
+    % Corresponds to 'ogg-48khz-16bit-mono-opus', probably close to the best
+    % available quality:
+    %
+    % (another option could be 'raw-48khz-16bit-mono-pcm' to perform the
+    % encoding by oneself afterwards)
+    %
+    #audio_stream_settings{ sampling_rate=48,
+                            channel_layout=mono,
+                            bit_level={ bit, 16 },
+                            container_format=ogg,
+                            audio_format=opus }.
 
 
 
@@ -476,45 +476,45 @@ Tells whether the speech support is available:
 Side-effect: ensures that a Myriad preferences server is running.
 """.
 -spec check_tts_provider_availability( speech_state() ) ->
-			{ 'true', speech_state() } | { 'false', ustring() }.
+            { 'true', speech_state() } | { 'false', ustring() }.
 check_tts_provider_availability( SpeechState ) ->
 
-	% We look for the relevant credentials, expected to be found in the user
-	% preferences:
+    % We look for the relevant credentials, expected to be found in the user
+    % preferences:
 
-	PrefServerPid = preferences:start(),
+    PrefServerPid = preferences:start(),
 
-	InstPrefKeyForKey = azure_speech_instance_key,
-	InstPrefKeyForLoc = azure_speech_instance_location,
+    InstPrefKeyForKey = azure_speech_instance_key,
+    InstPrefKeyForLoc = azure_speech_instance_location,
 
-	[ MaybeInstanceKey, MaybeInstanceLocation ] = preferences:get(
-		[ InstPrefKeyForKey, InstPrefKeyForLoc ], PrefServerPid ),
+    [ MaybeInstanceKey, MaybeInstanceLocation ] = preferences:get(
+        [ InstPrefKeyForKey, InstPrefKeyForLoc ], PrefServerPid ),
 
-	case MaybeInstanceKey of
+    case MaybeInstanceKey of
 
-		undefined ->
-			{ false, text_utils:format( "no key found in the user preferences "
-				"to designate a Microsoft Azure instance for speech "
-				"(no '~ts' entry found)", [ InstPrefKeyForKey ] ) };
+        undefined ->
+            { false, text_utils:format( "no key found in the user preferences "
+                "to designate a Microsoft Azure instance for speech "
+                "(no '~ts' entry found)", [ InstPrefKeyForKey ] ) };
 
-		InstKey ->
-			case MaybeInstanceLocation of
+        InstKey ->
+            case MaybeInstanceLocation of
 
-				undefined ->
-					{ false, text_utils:format( "no location found in the "
-						"user preferences to designate a Microsoft Azure "
-						"instance for speech (no '~ts' entry found)",
-						[ InstPrefKeyForLoc ] ) };
+                undefined ->
+                    { false, text_utils:format( "no location found in the "
+                        "user preferences to designate a Microsoft Azure "
+                        "instance for speech (no '~ts' entry found)",
+                        [ InstPrefKeyForLoc ] ) };
 
-				InstLoc ->
-					AzureInstInfo = web_utils:get_azure_instance_information(
-										InstKey, InstLoc ),
-					{ true, SpeechState#speech_state{
-								cloud_instance_info=AzureInstInfo } }
+                InstLoc ->
+                    AzureInstInfo = web_utils:get_azure_instance_information(
+                                        InstKey, InstLoc ),
+                    { true, SpeechState#speech_state{
+                                cloud_instance_info=AzureInstInfo } }
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -536,31 +536,31 @@ for more information.
 """.
 -spec get_audio_format_string( audio_stream_settings() ) -> bin_string().
 get_audio_format_string( #audio_stream_settings{
-							sampling_rate=StdSamplingRate,
-							channel_layout=ChannelLayout,
-							bit_level=BitLevel,
-							container_format=ContainerFormat,
-							audio_format=AudioFormat } ) ->
+                            sampling_rate=StdSamplingRate,
+                            channel_layout=ChannelLayout,
+                            bit_level=BitLevel,
+                            container_format=ContainerFormat,
+                            audio_format=AudioFormat } ) ->
 
-	BitStr = case BitLevel of
+    BitStr = case BitLevel of
 
-		% 8 or 16 most probably:
-		{ bit, BitDepth } ->
-			text_utils:format( "~Bbit", [ BitDepth ] );
+        % 8 or 16 most probably:
+        { bit, BitDepth } ->
+            text_utils:format( "~Bbit", [ BitDepth ] );
 
-		{ kbps, BitRate } ->
-			text_utils:format( "~tskbitrate", [ BitRate ] )
+        { kbps, BitRate } ->
+            text_utils:format( "~tskbitrate", [ BitRate ] )
 
-	end,
+    end,
 
-	% Hope for the best (e.g. <<"ogg-24khz-16bit-mono-opus">>):
-	BinFormat = text_utils:bin_format( "~ts-~Bkhz-~ts-~ts-~ts",
-		[ ContainerFormat, StdSamplingRate, BitStr, ChannelLayout,
-		  AudioFormat ] ),
+    % Hope for the best (e.g. <<"ogg-24khz-16bit-mono-opus">>):
+    BinFormat = text_utils:bin_format( "~ts-~Bkhz-~ts-~ts-~ts",
+        [ ContainerFormat, StdSamplingRate, BitStr, ChannelLayout,
+          AudioFormat ] ),
 
-	%trace_utils:debug_fmt( "Returning audio format '~ts'.", [ BinFormat ] ),
+    %trace_utils:debug_fmt( "Returning audio format '~ts'.", [ BinFormat ] ),
 
-	BinFormat.
+    BinFormat.
 
 
 
@@ -570,7 +570,7 @@ current directory.
 """.
 -spec start( speech_state() ) -> speech_state().
 start( SpeechState ) ->
-	start( SpeechState, _DefBaseDir="." ).
+    start( SpeechState, _DefBaseDir="." ).
 
 
 
@@ -580,15 +580,15 @@ specified directory.
 """.
 -spec start( speech_state(), any_directory_path() ) -> speech_state().
 start( SpeechState=#speech_state{ audio_settings=AudioSettings },
-	   AnyBaseDir ) ->
+       AnyBaseDir ) ->
 
-	BaseDir = file_utils:ensure_path_is_absolute( AnyBaseDir ),
+    BaseDir = file_utils:ensure_path_is_absolute( AnyBaseDir ),
 
-	SpeechRepository = create_repository( BaseDir, AudioSettings ),
+    SpeechRepository = create_repository( BaseDir, AudioSettings ),
 
-	web_utils:start( _Opts=ssl ),
+    web_utils:start( _Opts=ssl ),
 
-	SpeechState#speech_state{ speech_repository=SpeechRepository }.
+    SpeechState#speech_state{ speech_repository=SpeechRepository }.
 
 
 
@@ -598,46 +598,46 @@ TTS provider.
 """.
 -spec list_voices( speech_state() ) -> voice_table().
 list_voices( #speech_state{ cloud_instance_info=#azure_instance_info{
-									instance_key=InstKey,
-									instance_location=InstLoc },
-							json_parser_state=ParserState,
-							http_options=HTTPOptions } ) ->
+                                    instance_key=InstKey,
+                                    instance_location=InstLoc },
+                            json_parser_state=ParserState,
+                            http_options=HTTPOptions } ) ->
 
-	Uri = text_utils:format(
-		"https://~ts.tts.speech.microsoft.com/cognitiveservices/voices/list",
-		[ InstLoc ] ),
+    Uri = text_utils:format(
+        "https://~ts.tts.speech.microsoft.com/cognitiveservices/voices/list",
+        [ InstLoc ] ),
 
-	Headers = #{ <<"Ocp-Apim-Subscription-Key">> => InstKey },
+    Headers = #{ <<"Ocp-Apim-Subscription-Key">> => InstKey },
 
-	case web_utils:get( Uri, Headers, HTTPOptions ) of
+    case web_utils:get( Uri, Headers, HTTPOptions ) of
 
-		{ _HTTPStatusCode=200, _Headers, JsonBinBody } ->
+        { _HTTPStatusCode=200, _Headers, JsonBinBody } ->
 
-			%file_utils:write_whole( "voice-listing.json", JsonBinBody ),
+            %file_utils:write_whole( "voice-listing.json", JsonBinBody ),
 
-			JsonTerm = json_utils:from_json( JsonBinBody, ParserState ),
+            JsonTerm = json_utils:from_json( JsonBinBody, ParserState ),
 
-			%trace_utils:debug_fmt( "Fetched following decoded JSON "
-			%                       "content:~n ~p", [ JsonTerm ] ),
+            %trace_utils:debug_fmt( "Fetched following decoded JSON "
+            %                       "content:~n ~p", [ JsonTerm ] ),
 
-			register_voices( _TTSProvider=azure, JsonTerm,
-							 _InitTable=table:new() );
+            register_voices( _TTSProvider=azure, JsonTerm,
+                             _InitTable=table:new() );
 
-		{ HTTPErrorCode, _Headers, BinBody } ->
-			trace_utils:error_fmt( "Failed to list voices (~ts; body: ~p)",
-				[ web_utils:interpret_http_status_code( HTTPErrorCode ),
-				  BinBody ] ),
+        { HTTPErrorCode, _Headers, BinBody } ->
+            trace_utils:error_fmt( "Failed to list voices (~ts; body: ~p)",
+                [ web_utils:interpret_http_status_code( HTTPErrorCode ),
+                  BinBody ] ),
 
-			throw( { unable_to_list_voices, HTTPErrorCode } );
+            throw( { unable_to_list_voices, HTTPErrorCode } );
 
-		{ error, ErrorReason } ->
-			% For example no Internet access
-			trace_utils:error_fmt( "Failed to list voices; reason:~n ~p",
-								   [ ErrorReason ] ),
+        { error, ErrorReason } ->
+            % For example no Internet access
+            trace_utils:error_fmt( "Failed to list voices; reason:~n ~p",
+                                   [ ErrorReason ] ),
 
-			throw( { unable_to_list_voices, ErrorReason } )
+            throw( { unable_to_list_voices, ErrorReason } )
 
-	end.
+    end.
 
 
 
@@ -646,120 +646,120 @@ Registers the specified (non-deprecated, non-preview) voices of specified TTS
 provider in the specified voice table.
 """.
 -spec register_voices( tts_provider(), json_term(), voice_table() ) ->
-															voice_table().
+                                                            voice_table().
 register_voices( _TTSProvider, _JsonTerm=[], VoiceTable ) ->
-	VoiceTable;
+    VoiceTable;
 
 register_voices( TTSProvider, _JsonTerm=[ VoiceMap | T ], VoiceTable ) ->
 
-	%trace_utils:debug_fmt( "Registering voice ~p", [ VoiceMap ] ),
+    %trace_utils:debug_fmt( "Registering voice ~p", [ VoiceMap ] ),
 
-	% Extract first all base (always_-pecified) information:
-	{ [ VIdAtProvider, ReadType, ReadGender, ReadSampleRate, ReadStatus,
-		ReadName, ReadLocale, ReadDisplayName, ReadLocalName, ReadLocDesc ],
-	  ExtractedVoiceMap } = table:extract_entries(
-		[ <<"ShortName">>, <<"VoiceType">>, <<"Gender">>, <<"SampleRateHertz">>,
-		  <<"Status">>, <<"Name">>, <<"Locale">>, <<"DisplayName">>,
-		  <<"LocalName">>, <<"LocaleName">> ], VoiceMap ),
+    % Extract first all base (always_-pecified) information:
+    { [ VIdAtProvider, ReadType, ReadGender, ReadSampleRate, ReadStatus,
+        ReadName, ReadLocale, ReadDisplayName, ReadLocalName, ReadLocDesc ],
+      ExtractedVoiceMap } = table:extract_entries(
+        [ <<"ShortName">>, <<"VoiceType">>, <<"Gender">>, <<"SampleRateHertz">>,
+          <<"Status">>, <<"Name">>, <<"Locale">>, <<"DisplayName">>,
+          <<"LocalName">>, <<"LocaleName">> ], VoiceMap ),
 
-	VId = { TTSProvider, VIdAtProvider },
+    VId = { TTSProvider, VIdAtProvider },
 
-	Type = case ReadType of
+    Type = case ReadType of
 
-		<<"Neural">> ->
-			neural
+        <<"Neural">> ->
+            neural
 
-	end,
+    end,
 
-	Gender = case ReadGender of
+    Gender = case ReadGender of
 
-		<<"Male">> ->
-			male;
+        <<"Male">> ->
+            male;
 
-		<<"Female">> ->
-			female
+        <<"Female">> ->
+            female
 
-	end,
+    end,
 
-	SampleRate = text_utils:binary_to_integer( ReadSampleRate ),
+    SampleRate = text_utils:binary_to_integer( ReadSampleRate ),
 
-	% Now managing optional information:
+    % Now managing optional information:
 
-	{ Styles, StyleShrunkVMap } = case table:extract_entry_if_existing(
-			<<"StyleList">>, ExtractedVoiceMap ) of
+    { Styles, StyleShrunkVMap } = case table:extract_entry_if_existing(
+            <<"StyleList">>, ExtractedVoiceMap ) of
 
-		false ->
-			{ undefined, ExtractedVoiceMap };
+        false ->
+            { undefined, ExtractedVoiceMap };
 
-		{ ReadStyles, StVMap } ->
-			{ convert_styles_from_azure( ReadStyles ), StVMap }
+        { ReadStyles, StVMap } ->
+            { convert_styles_from_azure( ReadStyles ), StVMap }
 
-	end,
+    end,
 
-	{ SecLocales, SecLocShrunkVMap } = case table:extract_entry_if_existing(
-			<<"SecondaryLocaleList">> , StyleShrunkVMap ) of
+    { SecLocales, SecLocShrunkVMap } = case table:extract_entry_if_existing(
+            <<"SecondaryLocaleList">> , StyleShrunkVMap ) of
 
-		false ->
-			{ [], StyleShrunkVMap };
+        false ->
+            { [], StyleShrunkVMap };
 
-		P -> %{ SecLocs, LocVMap } ->
-			P
+        P -> %{ SecLocs, LocVMap } ->
+            P
 
-	end,
+    end,
 
-	{ Roles, RoleShrunkVMap } = case table:extract_entry_if_existing(
-			<<"RolePlayList">>, SecLocShrunkVMap ) of
+    { Roles, RoleShrunkVMap } = case table:extract_entry_if_existing(
+            <<"RolePlayList">>, SecLocShrunkVMap ) of
 
-		false ->
-			{ [], SecLocShrunkVMap };
+        false ->
+            { [], SecLocShrunkVMap };
 
-		{ ReadRoles, RlVMap } ->
-			{ convert_roles_played_from_azure( ReadRoles ), RlVMap }
+        { ReadRoles, RlVMap } ->
+            { convert_roles_played_from_azure( ReadRoles ), RlVMap }
 
-	end,
+    end,
 
-	FinalVMap = RoleShrunkVMap,
+    FinalVMap = RoleShrunkVMap,
 
-	case table:enumerate( FinalVMap ) of
+    case table:enumerate( FinalVMap ) of
 
-		[] ->
-			ok;
+        [] ->
+            ok;
 
-		UnexpectedEntries ->
-			trace_utils:warning_fmt( "For voice '~ts', ~B unexpected (ignored) "
-				"entries:~n ~p", [ VIdAtProvider, length( UnexpectedEntries ),
-								   UnexpectedEntries ] )
+        UnexpectedEntries ->
+            trace_utils:warning_fmt( "For voice '~ts', ~B unexpected (ignored) "
+                "entries:~n ~p", [ VIdAtProvider, length( UnexpectedEntries ),
+                                   UnexpectedEntries ] )
 
-	end,
+    end,
 
-	case ReadStatus of
+    case ReadStatus of
 
-		<<"GA">> ->
-			VoiceRec = #voice_info{
-					name=ReadName,
-					id=VId,
-					type=Type,
-					gender=Gender,
-					styles=Styles,
-					roles_played=Roles,
-					locale=ReadLocale,
-					locale_description=ReadLocDesc,
-					secondary_locales=SecLocales,
-					display_name=ReadDisplayName,
-					local_name=ReadLocalName,
-					sample_rate=SampleRate },
+        <<"GA">> ->
+            VoiceRec = #voice_info{
+                    name=ReadName,
+                    id=VId,
+                    type=Type,
+                    gender=Gender,
+                    styles=Styles,
+                    roles_played=Roles,
+                    locale=ReadLocale,
+                    locale_description=ReadLocDesc,
+                    secondary_locales=SecLocales,
+                    display_name=ReadDisplayName,
+                    local_name=ReadLocalName,
+                    sample_rate=SampleRate },
 
-			NewVoiceTable = table:add_new_entry( VId, VoiceRec, VoiceTable ),
+            NewVoiceTable = table:add_new_entry( VId, VoiceRec, VoiceTable ),
 
-			register_voices( TTSProvider, T, NewVoiceTable );
+            register_voices( TTSProvider, T, NewVoiceTable );
 
-		<<"Preview">> ->
-			register_voices( TTSProvider, T, VoiceTable );
+        <<"Preview">> ->
+            register_voices( TTSProvider, T, VoiceTable );
 
-		<<"Deprecated">> ->
-			register_voices( TTSProvider, T, VoiceTable )
+        <<"Deprecated">> ->
+            register_voices( TTSProvider, T, VoiceTable )
 
-	end.
+    end.
 
 
 
@@ -769,15 +769,15 @@ the specified gender would be kept.
 """.
 -spec filter_by_gender( voice_gender(), voice_table() ) -> voice_table().
 filter_by_gender( Gender, VoiceTable ) ->
-	table:fold( fun( VId, VInfo=#voice_info{ gender=G }, Acc )
-									when G =:= Gender ->
-					table:add_entry( VId, VInfo, Acc );
+    table:fold( fun( VId, VInfo=#voice_info{ gender=G }, Acc )
+                                    when G =:= Gender ->
+                    table:add_entry( VId, VInfo, Acc );
 
-					( _VId, _VInfo, Acc ) ->
-						Acc
-				end,
-				table:new(),
-				VoiceTable ).
+                    ( _VId, _VInfo, Acc ) ->
+                        Acc
+                end,
+                table:new(),
+                VoiceTable ).
 
 
 
@@ -788,26 +788,26 @@ the specified spoken locale (as primary or secondary) would be kept.
 -spec filter_by_locale( any_locale(), voice_table() ) -> voice_table().
 filter_by_locale( SpokenLocale, VoiceTable ) ->
 
-	BinLocale = text_utils:ensure_binary( SpokenLocale ),
+    BinLocale = text_utils:ensure_binary( SpokenLocale ),
 
-	table:fold( fun( VId, VInfo=#voice_info{ locale=Loc,
-											 secondary_locales=SecLocs },
-					 Acc ) ->
-						case Loc =:= BinLocale
-								orelse lists:member( BinLocale, SecLocs ) of
+    table:fold( fun( VId, VInfo=#voice_info{ locale=Loc,
+                                             secondary_locales=SecLocs },
+                     Acc ) ->
+                        case Loc =:= BinLocale
+                                orelse lists:member( BinLocale, SecLocs ) of
 
-							true ->
-								table:add_entry( VId, VInfo, Acc );
+                            true ->
+                                table:add_entry( VId, VInfo, Acc );
 
-							false ->
-								Acc
-						end;
+                            false ->
+                                Acc
+                        end;
 
-					( _VId, _VInfo, Acc ) ->
-						Acc
-				end,
-				table:new(),
-				VoiceTable ).
+                    ( _VId, _VInfo, Acc ) ->
+                        Acc
+                end,
+                table:new(),
+                VoiceTable ).
 
 
 
@@ -833,9 +833,9 @@ John"]},...`.
 See record_speech/5 for further details.
 """.
 -spec record_speech( ssml_text(), any_speech_base_name(), speech_state() ) ->
-													file_path().
+                                                    file_path().
 record_speech( SSMLText, BaseName, SpeechState ) ->
-	record_speech( SSMLText, BaseName, _MaybeOutputDir=undefined, SpeechState ).
+    record_speech( SSMLText, BaseName, _MaybeOutputDir=undefined, SpeechState ).
 
 
 
@@ -861,15 +861,15 @@ John"]},...`.
 See record_speech/5 for further details.
 """.
 -spec record_speech( ssml_text(), any_speech_base_name(),
-			option( any_directory_path() ), speech_state() ) -> bin_file_name().
+            option( any_directory_path() ), speech_state() ) -> bin_file_name().
 record_speech( _SSMLText, _BaseName, _MaybeOutputDir,
-			   #speech_state{ speech_settings=undefined } ) ->
-	throw( no_speech_settings_stored );
+               #speech_state{ speech_settings=undefined } ) ->
+    throw( no_speech_settings_stored );
 
 record_speech( SSMLText, BaseName, MaybeOutputDir,
-			   SpeechState=#speech_state{ speech_settings=SpeechSettings } ) ->
-	record_speech( SSMLText, BaseName, SpeechSettings, MaybeOutputDir,
-				   SpeechState ).
+               SpeechState=#speech_state{ speech_settings=SpeechSettings } ) ->
+    record_speech( SSMLText, BaseName, SpeechSettings, MaybeOutputDir,
+                   SpeechState ).
 
 
 
@@ -903,190 +903,190 @@ and anyway the supported 'style' conveys more meaning)
 
 """.
 -spec record_speech( ssml_text(), any_speech_base_name(), speech_settings(),
-			option( any_directory_path() ), speech_state() ) -> bin_file_name().
+            option( any_directory_path() ), speech_state() ) -> bin_file_name().
 record_speech( SSMLText,
-			   AnyBaseName,
-			   #speech_settings{
-					voice_id={ azure, BinVoiceProviderId },
-					language_locale=MaybeLangLoc,
-					voice_gender=MaybeGender,
-					speech_style=MaybeStyle,
-					role=MaybeRole },
-			   MaybeOutputDir,
-			   #speech_state{
-					cloud_instance_info=#azure_instance_info{
-											instance_key=InstKey,
-											instance_location=InstLoc },
-					http_options=HTTPOptions,
-					requester_app_name=BinAppName,
-					audio_settings=AudioSettings } ) ->
+               AnyBaseName,
+               #speech_settings{
+                    voice_id={ azure, BinVoiceProviderId },
+                    language_locale=MaybeLangLoc,
+                    voice_gender=MaybeGender,
+                    speech_style=MaybeStyle,
+                    role=MaybeRole },
+               MaybeOutputDir,
+               #speech_state{
+                    cloud_instance_info=#azure_instance_info{
+                                            instance_key=InstKey,
+                                            instance_location=InstLoc },
+                    http_options=HTTPOptions,
+                    requester_app_name=BinAppName,
+                    audio_settings=AudioSettings } ) ->
 
-	BaseName = text_utils:ensure_binary( AnyBaseName ),
+    BaseName = text_utils:ensure_binary( AnyBaseName ),
 
-	Uri = text_utils:format(
-		"https://~ts.tts.speech.microsoft.com/cognitiveservices/v1",
-		[ InstLoc ] ),
+    Uri = text_utils:format(
+        "https://~ts.tts.speech.microsoft.com/cognitiveservices/v1",
+        [ InstLoc ] ),
 
-	BinAudioFormatStr = get_audio_format_string( AudioSettings ),
+    BinAudioFormatStr = get_audio_format_string( AudioSettings ),
 
-	Headers = #{ <<"Ocp-Apim-Subscription-Key">> => InstKey,
-				 <<"X-Microsoft-OutputFormat">> => BinAudioFormatStr,
-				 <<"User-Agent">> => BinAppName },
+    Headers = #{ <<"Ocp-Apim-Subscription-Key">> => InstKey,
+                 <<"X-Microsoft-OutputFormat">> => BinAudioFormatStr,
+                 <<"User-Agent">> => BinAppName },
 
-	% We create here the string containing the XML message expected by Azure. We
-	% now use a real XML parser (through xml_utils) rather than forging XML by
-	% ourselves as we used to, to avoid possibly complex escaping of SSML text.
+    % We create here the string containing the XML message expected by Azure. We
+    % now use a real XML parser (through xml_utils) rather than forging XML by
+    % ourselves as we used to, to avoid possibly complex escaping of SSML text.
 
-	% We use lists of XML attributes for flexibility, as a maybe-type (empty
-	% list or, often, single-element one).
+    % We use lists of XML attributes for flexibility, as a maybe-type (empty
+    % list or, often, single-element one).
 
-	% Text expected to be expressed in the same locale as the speaker:
-	{ LangLoc, RootDocLangAttrs, LangLocAttrs } = case MaybeLangLoc of
+    % Text expected to be expressed in the same locale as the speaker:
+    { LangLoc, RootDocLangAttrs, LangLocAttrs } = case MaybeLangLoc of
 
-		undefined ->
-			% No clue here, so use a default for document, and implicit for
-			% voice:
-			%
-			DefaultDocLangLoc = <<"en-US">>,
+        undefined ->
+            % No clue here, so use a default for document, and implicit for
+            % voice:
+            %
+            DefaultDocLangLoc = <<"en-US">>,
 
-			DocLangLocXMLAttrs = [ { 'xml:lang', DefaultDocLangLoc } ],
+            DocLangLocXMLAttrs = [ { 'xml:lang', DefaultDocLangLoc } ],
 
-			{ DefaultDocLangLoc, DocLangLocXMLAttrs, [] };
+            { DefaultDocLangLoc, DocLangLocXMLAttrs, [] };
 
-		BinLangLoc ->
-			LangLocXMLAttrs = [ { 'xml:lang', BinLangLoc } ],
-			% Same for document and voice:
-			{ BinLangLoc, LangLocXMLAttrs, LangLocXMLAttrs }
+        BinLangLoc ->
+            LangLocXMLAttrs = [ { 'xml:lang', BinLangLoc } ],
+            % Same for document and voice:
+            { BinLangLoc, LangLocXMLAttrs, LangLocXMLAttrs }
 
-	end,
+    end,
 
-	BinOutputFilename = text_utils:bin_format( "~ts-~ts.~ts",
-		[ BaseName, LangLoc, get_extension_for( AudioSettings ) ] ),
+    BinOutputFilename = text_utils:bin_format( "~ts-~ts.~ts",
+        [ BaseName, LangLoc, get_extension_for( AudioSettings ) ] ),
 
-	OutputDir = case MaybeOutputDir of
+    OutputDir = case MaybeOutputDir of
 
-		undefined ->
-			file_utils:get_current_directory();
+        undefined ->
+            file_utils:get_current_directory();
 
-		_ ->
-			MaybeOutputDir
+        _ ->
+            MaybeOutputDir
 
-	end,
+    end,
 
-	BinOutputFilePath = file_utils:join( OutputDir, BinOutputFilename ),
+    BinOutputFilePath = file_utils:join( OutputDir, BinOutputFilename ),
 
-	% For Azure:
-	BinVoiceName = BinVoiceProviderId,
+    % For Azure:
+    BinVoiceName = BinVoiceProviderId,
 
-	% Targeting a resulting XML string akin to:
-	%
-	% <speak version="1.0"
-	%        xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en_US">
-	%     <voice name="XXX" xml:gender="male">
-	%         <mstts:express-as style="YYY">
-	%             Properly XML-escaped, tag-rich SSML text here.
-	%         </mstts:express-as>
-	%     </voice>
-	% </speak>
+    % Targeting a resulting XML string akin to:
+    %
+    % <speak version="1.0"
+    %        xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en_US">
+    %     <voice name="XXX" xml:gender="male">
+    %         <mstts:express-as style="YYY">
+    %             Properly XML-escaped, tag-rich SSML text here.
+    %         </mstts:express-as>
+    %     </voice>
+    % </speak>
 
-	GenderXMLAttrs = case MaybeGender of
+    GenderXMLAttrs = case MaybeGender of
 
-		undefined ->
-			% Let it be implicit then:
-			[];
+        undefined ->
+            % Let it be implicit then:
+            [];
 
-		Gender ->
-			[ { 'xml:gender', convert_gender_to_azure( Gender ) } ]
+        Gender ->
+            [ { 'xml:gender', convert_gender_to_azure( Gender ) } ]
 
-	end,
+    end,
 
-	StyleXMLAttrs = case MaybeStyle of
+    StyleXMLAttrs = case MaybeStyle of
 
-		undefined ->
-			% Let it be implicit then:
-			[];
+        undefined ->
+            % Let it be implicit then:
+            [];
 
-		Style ->
-			[ { style, convert_style_to_azure( Style ) } ]
+        Style ->
+            [ { style, convert_style_to_azure( Style ) } ]
 
-	end,
+    end,
 
-	RoleXMLAttrs = case MaybeRole of
+    RoleXMLAttrs = case MaybeRole of
 
-		undefined ->
-			% Let it be implicit then:
-			[];
+        undefined ->
+            % Let it be implicit then:
+            [];
 
-		Role ->
-			[ { role, convert_roleplay_to_azure( Role ) } ]
+        Role ->
+            [ { role, convert_roleplay_to_azure( Role ) } ]
 
-	end,
+    end,
 
-	SSMLElement = case { StyleXMLAttrs, RoleXMLAttrs } of
+    SSMLElement = case { StyleXMLAttrs, RoleXMLAttrs } of
 
-		{ [], [] } ->
-			SSMLText;
+        { [], [] } ->
+            SSMLText;
 
-		_ ->
-			[ { _Tag='mstts:express-as', _Attrs=StyleXMLAttrs++RoleXMLAttrs,
-				_Content=SSMLText } ]
+        _ ->
+            [ { _Tag='mstts:express-as', _Attrs=StyleXMLAttrs++RoleXMLAttrs,
+                _Content=SSMLText } ]
 
-	end,
+    end,
 
-	VoiceAttrs = [ { name, BinVoiceName } | LangLocAttrs ++ GenderXMLAttrs ],
+    VoiceAttrs = [ { name, BinVoiceName } | LangLocAttrs ++ GenderXMLAttrs ],
 
-	VoiceContent = [ { voice, VoiceAttrs, SSMLElement } ],
+    VoiceContent = [ { voice, VoiceAttrs, SSMLElement } ],
 
 
-	SpeakAttrs = [ { version, "1.0" },
-				   { xmlns, "http://www.w3.org/2001/10/synthesis" },
-				   { 'xmlns:mstts', "https://www.w3.org/2001/mstts" },
-				   { 'xmlns:emo', "http://www.w3.org/2009/10/emotionml" } ]
-												++ RootDocLangAttrs,
+    SpeakAttrs = [ { version, "1.0" },
+                   { xmlns, "http://www.w3.org/2001/10/synthesis" },
+                   { 'xmlns:mstts', "https://www.w3.org/2001/mstts" },
+                   { 'xmlns:emo', "http://www.w3.org/2009/10/emotionml" } ]
+                                                ++ RootDocLangAttrs,
 
-	XMLContent = [ { speak, SpeakAttrs, VoiceContent } ],
+    XMLContent = [ { speak, SpeakAttrs, VoiceContent } ],
 
-	%trace_utils:debug_fmt( "XML content for speech record:~n ~p",
-	%                       [ XMLContent ] ),
+    %trace_utils:debug_fmt( "XML content for speech record:~n ~p",
+    %                       [ XMLContent ] ),
 
-	XMLStr = xml_utils:xml_to_string( XMLContent ),
+    XMLStr = xml_utils:xml_to_string( XMLContent ),
 
-	% Specifying a binary body is strictly necessary (one as a plain string
-	% would result in encoding issues with non-Latin1 characters):
-	%
-	BinBody = text_utils:string_to_binary( XMLStr ),
+    % Specifying a binary body is strictly necessary (one as a plain string
+    % would result in encoding issues with non-Latin1 characters):
+    %
+    BinBody = text_utils:string_to_binary( XMLStr ),
 
-	%trace_utils:debug_fmt( "Resulting XML string:~n ~ts", [ BinXMLStr ] ),
+    %trace_utils:debug_fmt( "Resulting XML string:~n ~ts", [ BinXMLStr ] ),
 
-	%basic_utils:crash(),
+    %basic_utils:crash(),
 
-	ContentType = "application/ssml+xml",
+    ContentType = "application/ssml+xml",
 
-	case web_utils:post( Uri, Headers, HTTPOptions, BinBody, ContentType ) of
+    case web_utils:post( Uri, Headers, HTTPOptions, BinBody, ContentType ) of
 
-		{ _HTTPStatusCode=200, _Headers, BinAudio } ->
+        { _HTTPStatusCode=200, _Headers, BinAudio } ->
 
-			%trace_utils:debug_fmt( "Fetched following audio content "
-			%   "of type ~ts:~n ~p",
-			%   [ type_utils:interpret_type_of( BinAudio ), BinAudio ] ),
+            %trace_utils:debug_fmt( "Fetched following audio content "
+            %   "of type ~ts:~n ~p",
+            %   [ type_utils:interpret_type_of( BinAudio ), BinAudio ] ),
 
-			file_utils:write_whole( BinOutputFilePath, BinAudio ),
-			BinOutputFilePath;
+            file_utils:write_whole( BinOutputFilePath, BinAudio ),
+            BinOutputFilePath;
 
-		{ HTTPErrorCode, _Headers, BinBody } ->
-			trace_utils:error_fmt( "Failed to record speech (~ts; body: ~p)",
-				[ web_utils:interpret_http_status_code( HTTPErrorCode ),
-				  BinBody ] ),
+        { HTTPErrorCode, _Headers, BinBody } ->
+            trace_utils:error_fmt( "Failed to record speech (~ts; body: ~p)",
+                [ web_utils:interpret_http_status_code( HTTPErrorCode ),
+                  BinBody ] ),
 
-			throw( { unable_to_record_speech, HTTPErrorCode } );
+            throw( { unable_to_record_speech, HTTPErrorCode } );
 
-		{ error, ErrorReason } ->
-			trace_utils:error_fmt( "Failed to record speech, reason:~n ~p",
-								   [ ErrorReason ] ),
+        { error, ErrorReason } ->
+            trace_utils:error_fmt( "Failed to record speech, reason:~n ~p",
+                                   [ ErrorReason ] ),
 
-			throw( { unable_to_record_speech, ErrorReason } )
+            throw( { unable_to_record_speech, ErrorReason } )
 
-	end.
+    end.
 
 
 
@@ -1095,18 +1095,18 @@ Registers the specified speech settings in the specified state, and returns it
 once updated, along with the identifier assigned to these settings.
 """.
 -spec register_speech_settings( speech_settings(), speech_state() ) ->
-						{ speech_settings_id(), speech_state() }.
+                        { speech_settings_id(), speech_state() }.
 register_speech_settings( SpeechSettings,
-		SpeechState=#speech_state{ speech_settings_table=SpeechSettingsTable,
-								   next_speech_settings_id=NextId } ) ->
+        SpeechState=#speech_state{ speech_settings_table=SpeechSettingsTable,
+                                   next_speech_settings_id=NextId } ) ->
 
-	NewTable = table:add_new_entry( _K=NextId, _V=SpeechSettings,
-									SpeechSettingsTable ),
+    NewTable = table:add_new_entry( _K=NextId, _V=SpeechSettings,
+                                    SpeechSettingsTable ),
 
-	NewState = SpeechState#speech_state{ speech_settings_table=NewTable,
-										 next_speech_settings_id=NextId+1 },
+    NewState = SpeechState#speech_state{ speech_settings_table=NewTable,
+                                         next_speech_settings_id=NextId+1 },
 
-	{ NextId, NewState }.
+    { NextId, NewState }.
 
 
 
@@ -1117,7 +1117,7 @@ defined (yet).
 """.
 -spec create_repository( any_directory_path() ) -> speech_repository().
 create_repository( BaseDir ) ->
-	create_repository( BaseDir, get_default_audio_settings() ).
+    create_repository( BaseDir, get_default_audio_settings() ).
 
 
 
@@ -1127,9 +1127,9 @@ specified audio settings, that is a repository not keeping track of any logical
 speech defined (yet).
 """.
 -spec create_repository( any_directory_path(), audio_stream_settings() ) ->
-											speech_repository().
+                                            speech_repository().
 create_repository( BaseDir, AudioStreamSettings ) ->
-	create_repository( BaseDir, _RefLocal= <<"en-US">>, AudioStreamSettings ).
+    create_repository( BaseDir, _RefLocal= <<"en-US">>, AudioStreamSettings ).
 
 
 
@@ -1139,18 +1139,18 @@ settings, that is a repository not keeping track of any logical speech defined
 (yet).
 """.
 -spec create_repository( any_directory_path(), any_locale(),
-						  audio_stream_settings() ) -> speech_repository().
+                          audio_stream_settings() ) -> speech_repository().
 create_repository( BaseDir, RefLocale, AudioSettings )
-				when is_record( AudioSettings, audio_stream_settings ) ->
+                when is_record( AudioSettings, audio_stream_settings ) ->
 
-	BinBaseDir = text_utils:ensure_binary( BaseDir ),
+    BinBaseDir = text_utils:ensure_binary( BaseDir ),
 
-	file_utils:is_existing_directory_or_link( BinBaseDir ) orelse
-		throw( { non_existing_repository_base_dir, BaseDir } ),
+    file_utils:is_existing_directory_or_link( BinBaseDir ) orelse
+        throw( { non_existing_repository_base_dir, BaseDir } ),
 
-	#speech_repository{ speech_table=table:new(),
-						reference_locale=text_utils:ensure_binary( RefLocale ),
-						base_dir=BinBaseDir }.
+    #speech_repository{ speech_table=table:new(),
+                        reference_locale=text_utils:ensure_binary( RefLocale ),
+                        base_dir=BinBaseDir }.
 
 
 
@@ -1166,38 +1166,38 @@ Note that all speech settings referenced for the generation have to have their
 locale defined.
 """.
 -spec record_logical_speech( any_speech_base_name(),
-		% A list of per-locale {speech_settings_id(), ssml_text()}:
-		[ user_speech_info() ], speech_state() ) ->
-			{ speech_id(), speech_state() }.
+        % A list of per-locale {speech_settings_id(), ssml_text()}:
+        [ user_speech_info() ], speech_state() ) ->
+            { speech_id(), speech_state() }.
 record_logical_speech( AnyBaseName, UserSpeechInfos,
-		SpeechState=#speech_state{
-			speech_settings_table=SpeechSettingsTable,
-			audio_settings=AudioSettings,
-			speech_repository=SpeechRef=#speech_repository{
-					speech_table=SpeechTable,
-					base_dir=BinBaseDir,
-					next_speech_id=ThisLogSpeechId } } ) ->
+        SpeechState=#speech_state{
+            speech_settings_table=SpeechSettingsTable,
+            audio_settings=AudioSettings,
+            speech_repository=SpeechRef=#speech_repository{
+                    speech_table=SpeechTable,
+                    base_dir=BinBaseDir,
+                    next_speech_id=ThisLogSpeechId } } ) ->
 
-	% Preferably done once for all:
-	BinBaseName = text_utils:ensure_binary( AnyBaseName ),
+    % Preferably done once for all:
+    BinBaseName = text_utils:ensure_binary( AnyBaseName ),
 
-	LocTable = record_speeches( UserSpeechInfos, BinBaseName,
-		AudioSettings, BinBaseDir, _LocTable=table:new(),
-		SpeechSettingsTable, SpeechState ),
+    LocTable = record_speeches( UserSpeechInfos, BinBaseName,
+        AudioSettings, BinBaseDir, _LocTable=table:new(),
+        SpeechSettingsTable, SpeechState ),
 
-	LogSpeech = #logical_speech{ id=ThisLogSpeechId,
-								 base_name=BinBaseName,
-								 locale_table=LocTable },
+    LogSpeech = #logical_speech{ id=ThisLogSpeechId,
+                                 base_name=BinBaseName,
+                                 locale_table=LocTable },
 
-	NewSpeechTable =
-		table:add_new_entry( ThisLogSpeechId, LogSpeech, SpeechTable ),
+    NewSpeechTable =
+        table:add_new_entry( ThisLogSpeechId, LogSpeech, SpeechTable ),
 
-	NewSpeechRef = SpeechRef#speech_repository{
-		speech_table=NewSpeechTable,
-		next_speech_id=ThisLogSpeechId+1 },
+    NewSpeechRef = SpeechRef#speech_repository{
+        speech_table=NewSpeechTable,
+        next_speech_id=ThisLogSpeechId+1 },
 
-	{ ThisLogSpeechId,
-	  SpeechState#speech_state{ speech_repository=NewSpeechRef } }.
+    { ThisLogSpeechId,
+      SpeechState#speech_state{ speech_repository=NewSpeechRef } }.
 
 
 
@@ -1206,39 +1206,39 @@ Records and references all speeches described in the specified list of speech
 information.
 """.
 record_speeches( _UserlSpeechInfos=[], _BinBaseName, _AudioSettings,
-		_BinBaseDir, LocTable, _SpeechSettingsTable, _SpeechState ) ->
-	LocTable;
+        _BinBaseDir, LocTable, _SpeechSettingsTable, _SpeechState ) ->
+    LocTable;
 
 record_speeches( _UserlSpeechInfos=[ { SpeechSettingsId, SSMLText } | T ],
-		BinBaseName, AudioSettings, BinBaseDir, LocTable, SpeechSettingsTable,
-		SpeechState ) ->
+        BinBaseName, AudioSettings, BinBaseDir, LocTable, SpeechSettingsTable,
+        SpeechState ) ->
 
-	SpeechSettings = table:get_value( SpeechSettingsId, SpeechSettingsTable ),
+    SpeechSettings = table:get_value( SpeechSettingsId, SpeechSettingsTable ),
 
-	% Needing its locale to be set, as will be a key:
-	SpeechLocale = case SpeechSettings#speech_settings.language_locale of
+    % Needing its locale to be set, as will be a key:
+    SpeechLocale = case SpeechSettings#speech_settings.language_locale of
 
-		undefined ->
-			throw( { no_locale_defined_for, SpeechSettings } );
+        undefined ->
+            throw( { no_locale_defined_for, SpeechSettings } );
 
-		Loc ->
-			Loc
+        Loc ->
+            Loc
 
-	end,
+    end,
 
-	% Returns filename relative to BinBaseDir:
-	BinSpeechFilename = record_speech( SSMLText, BinBaseName, SpeechSettings,
-									   BinBaseDir, SpeechState ),
+    % Returns filename relative to BinBaseDir:
+    BinSpeechFilename = record_speech( SSMLText, BinBaseName, SpeechSettings,
+                                       BinBaseDir, SpeechState ),
 
-	ActualSpeechInfo = #actual_speech_info{ ssml_text=SSMLText,
-											speech_settings_id=SpeechSettingsId,
-											audio_filename=BinSpeechFilename },
+    ActualSpeechInfo = #actual_speech_info{ ssml_text=SSMLText,
+                                            speech_settings_id=SpeechSettingsId,
+                                            audio_filename=BinSpeechFilename },
 
-	NewLocTable = table:add_new_entry( _K=SpeechLocale, ActualSpeechInfo,
-									   LocTable ),
+    NewLocTable = table:add_new_entry( _K=SpeechLocale, ActualSpeechInfo,
+                                       LocTable ),
 
-	record_speeches( T, BinBaseName, AudioSettings, BinBaseDir, NewLocTable,
-					 SpeechSettingsTable, SpeechState ).
+    record_speeches( T, BinBaseName, AudioSettings, BinBaseDir, NewLocTable,
+                     SpeechSettingsTable, SpeechState ).
 
 
 
@@ -1247,31 +1247,31 @@ Returns the absolute path of the audio file corresponding to the logical speech
 specified through its identifier, for the specified locale.
 """.
 -spec get_audio_path_for( speech_id(), language_locale(), speech_state() ) ->
-											bin_file_path().
+                                            bin_file_path().
 get_audio_path_for( LogSpeechId, LangLocale,
-					#speech_state{ speech_repository=#speech_repository{
-										speech_table=SpeechTable,
-										base_dir=BaseDir } } ) ->
+                    #speech_state{ speech_repository=#speech_repository{
+                                        speech_table=SpeechTable,
+                                        base_dir=BaseDir } } ) ->
 
-	LocaleTable = case table:lookup_entry( _K=LogSpeechId, SpeechTable ) of
+    LocaleTable = case table:lookup_entry( _K=LogSpeechId, SpeechTable ) of
 
-		key_not_found ->
-			throw( { logical_speech_not_found, LogSpeechId } );
+        key_not_found ->
+            throw( { logical_speech_not_found, LogSpeechId } );
 
-		{ value, #logical_speech{ locale_table=LocT } } ->
-			LocT
+        { value, #logical_speech{ locale_table=LocT } } ->
+            LocT
 
-	end,
+    end,
 
-	case table:lookup_entry( LangLocale, LocaleTable ) of
+    case table:lookup_entry( LangLocale, LocaleTable ) of
 
-		key_not_found ->
-			throw( { language_locale_not_found, LangLocale, LogSpeechId } );
+        key_not_found ->
+            throw( { language_locale_not_found, LangLocale, LogSpeechId } );
 
-		{ value, #actual_speech_info{ audio_filename=AudioFilename } } ->
-			file_utils:bin_join( BaseDir, AudioFilename )
+        { value, #actual_speech_info{ audio_filename=AudioFilename } } ->
+            file_utils:bin_join( BaseDir, AudioFilename )
 
-	end.
+    end.
 
 
 
@@ -1282,45 +1282,45 @@ get_audio_path_for( LogSpeechId, LangLocale,
 -doc "Returns a textual description of the specified speech state.".
 -spec speech_state_to_string( speech_state() ) -> ustring().
 speech_state_to_string( #speech_state{
-		cloud_instance_info=InstInfo,
-		speech_settings_table=SpeechSettingsTable,
-		speech_repository=MaybeSpeechRepository } ) ->
+        cloud_instance_info=InstInfo,
+        speech_settings_table=SpeechSettingsTable,
+        speech_repository=MaybeSpeechRepository } ) ->
 
-	RefStr = case MaybeSpeechRepository of
+    RefStr = case MaybeSpeechRepository of
 
-		undefined ->
-			"no";
+        undefined ->
+            "no";
 
-		_ ->
-			"a"
+        _ ->
+            "a"
 
-	end,
+    end,
 
-	text_utils:format( "speech taken in charge by a ~ts, "
-		"referencing ~B speech settings and ~ts speech repository",
-		[ web_utils:cloud_instance_info_to_string( InstInfo ),
-		  table:size( SpeechSettingsTable ), RefStr ] ).
+    text_utils:format( "speech taken in charge by a ~ts, "
+        "referencing ~B speech settings and ~ts speech repository",
+        [ web_utils:cloud_instance_info_to_string( InstInfo ),
+          table:size( SpeechSettingsTable ), RefStr ] ).
 
 
 
 -doc "Returns a textual description of the specified voice identifier.".
 -spec voice_id_to_string( voice_id() ) -> ustring().
 voice_id_to_string( _VoiceId={ TTSProvider, BinVoiceName } ) ->
-	text_utils:format( "voice '~ts' from ~ts",
-		[ BinVoiceName, tts_provider_to_string( TTSProvider ) ] ).
+    text_utils:format( "voice '~ts' from ~ts",
+        [ BinVoiceName, tts_provider_to_string( TTSProvider ) ] ).
 
 
 
 -doc "Returns a textual description of the specified TTS provider.".
 -spec tts_provider_to_string( tts_provider() ) -> ustring().
 tts_provider_to_string( _TTSProvider=google ) ->
-	"Google Wavenet";
+    "Google Wavenet";
 
 tts_provider_to_string( _TTSProvider=aws ) ->
-	"Amazon Polly";
+    "Amazon Polly";
 
 tts_provider_to_string( _TTSProvider=azure ) ->
-	"Microsoft Azure".
+    "Microsoft Azure".
 
 
 
@@ -1328,203 +1328,203 @@ tts_provider_to_string( _TTSProvider=azure ) ->
 -spec voice_table_to_string( voice_table() ) -> ustring().
 voice_table_to_string( VoiceTable ) ->
 
-	case table:values( VoiceTable ) of
+    case table:values( VoiceTable ) of
 
-		[] ->
-			"no voice registered";
+        [] ->
+            "no voice registered";
 
-		[ SingleVoice ] ->
-			text_utils:format( "a single voice registered: ~ts",
-				[ voice_info_to_string( SingleVoice ) ] );
+        [ SingleVoice ] ->
+            text_utils:format( "a single voice registered: ~ts",
+                [ voice_info_to_string( SingleVoice ) ] );
 
-		Voices ->
-			text_utils:format( "~B voices registered: ~ts",
-				[ length( Voices ), text_utils:strings_to_string(
-					[ voice_info_to_string( V ) || V <- Voices ] ) ] )
+        Voices ->
+            text_utils:format( "~B voices registered: ~ts",
+                [ length( Voices ), text_utils:strings_to_string(
+                    [ voice_info_to_string( V ) || V <- Voices ] ) ] )
 
-	end.
+    end.
 
 
 
 -doc "Returns a textual description of the specified voice.".
 -spec voice_info_to_string( voice_info() ) -> ustring().
 voice_info_to_string( #voice_info{
-						name=FullName,
-						id=Id,
-						type=Type,
-						gender=Gender,
-						styles=MaybeStyles,
-						roles_played=MaybeRoles,
-						locale=Locale,
-						locale_description=LocaleDesc,
-						secondary_locales=SecondaryLocales,
-						display_name=DisplayName,
-						local_name=LocalName,
-						sample_rate=SampleRate } ) ->
+                        name=FullName,
+                        id=Id,
+                        type=Type,
+                        gender=Gender,
+                        styles=MaybeStyles,
+                        roles_played=MaybeRoles,
+                        locale=Locale,
+                        locale_description=LocaleDesc,
+                        secondary_locales=SecondaryLocales,
+                        display_name=DisplayName,
+                        local_name=LocalName,
+                        sample_rate=SampleRate } ) ->
 
-	SecLocStr = case SecondaryLocales of
+    SecLocStr = case SecondaryLocales of
 
-		[] ->
-			"";
+        [] ->
+            "";
 
-		[ SecLoc ] ->
-			text_utils:format( "and supporting '~ts' as secondary locale",
-							   [ SecLoc ] );
+        [ SecLoc ] ->
+            text_utils:format( "and supporting '~ts' as secondary locale",
+                               [ SecLoc ] );
 
-		SecLocs ->
-			text_utils:format( "and supporting ~B secondary locales: ~ts",
-				[ length( SecLocs ),
-				  text_utils:binaries_to_listed_string( SecLocs ) ] )
+        SecLocs ->
+            text_utils:format( "and supporting ~B secondary locales: ~ts",
+                [ length( SecLocs ),
+                  text_utils:binaries_to_listed_string( SecLocs ) ] )
 
-	end,
+    end,
 
-	StyleStr = case MaybeStyles of
+    StyleStr = case MaybeStyles of
 
-		undefined ->
-			"";
+        undefined ->
+            "";
 
-		[] ->
-			"";
+        [] ->
+            "";
 
-		[ SingleStyle ] ->
-			text_utils:format( ", supporting the '~ts' style",
-							   [ SingleStyle ] );
+        [ SingleStyle ] ->
+            text_utils:format( ", supporting the '~ts' style",
+                               [ SingleStyle ] );
 
-		Styles ->
-			text_utils:format( ", supporting ~B styles: ~ts",
-							   [ length( Styles ),
-				text_utils:atoms_to_listed_string( Styles ) ] )
+        Styles ->
+            text_utils:format( ", supporting ~B styles: ~ts",
+                               [ length( Styles ),
+                text_utils:atoms_to_listed_string( Styles ) ] )
 
-	end,
+    end,
 
-	RoleStr = case MaybeRoles of
+    RoleStr = case MaybeRoles of
 
-		undefined ->
-			"";
+        undefined ->
+            "";
 
-		[] ->
-			"";
+        [] ->
+            "";
 
-		[ SingleRole ] ->
-			text_utils:format( ", supporting the '~ts' role",
-							   [ role_to_string( SingleRole ) ] );
+        [ SingleRole ] ->
+            text_utils:format( ", supporting the '~ts' role",
+                               [ role_to_string( SingleRole ) ] );
 
-		Roles ->
-			text_utils:format( ", supporting ~B roles: ~ts",
-				[ length( Roles ),
-				  text_utils:strings_to_listed_string(
-					[ role_to_string( R ) || R <- Roles ] ) ] )
+        Roles ->
+            text_utils:format( ", supporting ~B roles: ~ts",
+                [ length( Roles ),
+                  text_utils:strings_to_listed_string(
+                    [ role_to_string( R ) || R <- Roles ] ) ] )
 
-	end,
+    end,
 
 
-	text_utils:format( "~ts (full name is '~ts', display one is '~ts', "
-		"local one is '~ts') ~ts of type ~ts, speaking the ~ts locale (~ts)"
-		"~ts~ts~ts, with a sampling rate of ~B Hz",
-		[ voice_id_to_string( Id ), FullName, DisplayName, LocalName, Gender,
-		  Type, Locale, LocaleDesc, SecLocStr, StyleStr, RoleStr,
-		  SampleRate ] ).
+    text_utils:format( "~ts (full name is '~ts', display one is '~ts', "
+        "local one is '~ts') ~ts of type ~ts, speaking the ~ts locale (~ts)"
+        "~ts~ts~ts, with a sampling rate of ~B Hz",
+        [ voice_id_to_string( Id ), FullName, DisplayName, LocalName, Gender,
+          Type, Locale, LocaleDesc, SecLocStr, StyleStr, RoleStr,
+          SampleRate ] ).
 
 
 
 -doc "Returns a textual description of the specified role.".
 -spec role_to_string( role_played() ) -> ustring().
 role_to_string( { _Gender=male, _AgePlayed=child } ) ->
-	"boy";
+    "boy";
 
 role_to_string( { _Gender=female, _AgePlayed=child } ) ->
-	"girl";
+    "girl";
 
 
 role_to_string( { _Gender=male, _AgePlayed=young_adult } ) ->
-	"young man";
+    "young man";
 
 role_to_string( { _Gender=female, _AgePlayed=young_adult } ) ->
-	"young woman";
+    "young woman";
 
 
 role_to_string( { _Gender=male, _AgePlayed=senior } ) ->
-	"senior man";
+    "senior man";
 
 role_to_string( { _Gender=female, _AgePlayed=senior } ) ->
-	"senior woman";
+    "senior woman";
 
 
 role_to_string( { _Gender=male, _AgePlayed=older_adult } ) ->
-	"older man";
+    "older man";
 
 role_to_string( { _Gender=female, _AgePlayed=older_adult } ) ->
-	"older woman";
+    "older woman";
 
 role_to_string( narrator ) ->
-	"narrator".
+    "narrator".
 
 
 
 -doc "Returns a textual description of the specified speech settings.".
 -spec speech_settings_to_string( speech_settings() ) -> ustring().
 speech_settings_to_string( #speech_settings{ voice_id=VoiceId,
-											 language_locale=MaybeLoc,
-											 voice_gender=MaybeGender,
-											 speech_style=MaybeStyle,
-											 role=MaybeRole } ) ->
+                                             language_locale=MaybeLoc,
+                                             voice_gender=MaybeGender,
+                                             speech_style=MaybeStyle,
+                                             role=MaybeRole } ) ->
 
-	GenderStr = case MaybeGender of
+    GenderStr = case MaybeGender of
 
-		undefined ->
-			"with no gender specified";
+        undefined ->
+            "with no gender specified";
 
-		Gender ->
-			text_utils:format( "of the ~ts gender", [ Gender ] )
+        Gender ->
+            text_utils:format( "of the ~ts gender", [ Gender ] )
 
-	end,
+    end,
 
-	LocStr = case MaybeLoc of
+    LocStr = case MaybeLoc of
 
-		undefined ->
-			"with no spoken locale specified";
+        undefined ->
+            "with no spoken locale specified";
 
-		Loc ->
-			text_utils:format( "with the ~ts spoken locale", [ Loc ] )
+        Loc ->
+            text_utils:format( "with the ~ts spoken locale", [ Loc ] )
 
-	end,
+    end,
 
-	StyleStr = case MaybeStyle of
+    StyleStr = case MaybeStyle of
 
-		undefined ->
-			"no style specified";
+        undefined ->
+            "no style specified";
 
-		Style ->
-			text_utils:format( "the ~ts style", [ Style ] )
+        Style ->
+            text_utils:format( "the ~ts style", [ Style ] )
 
-	end,
+    end,
 
-	RoleStr = case MaybeRole of
+    RoleStr = case MaybeRole of
 
-		undefined ->
-			"no role specified";
+        undefined ->
+            "no role specified";
 
-		Role ->
-			text_utils:format( "the ~ts role", [ role_to_string( Role ) ] )
+        Role ->
+            text_utils:format( "the ~ts role", [ role_to_string( Role ) ] )
 
-	end,
+    end,
 
-	text_utils:format( "speech settings about ~ts, ~ts, ~ts, "
-		"with ~ts and ~ts",
-		[ voice_id_to_string( VoiceId ), GenderStr, LocStr, StyleStr,
-		  RoleStr ] ).
+    text_utils:format( "speech settings about ~ts, ~ts, ~ts, "
+        "with ~ts and ~ts",
+        [ voice_id_to_string( VoiceId ), GenderStr, LocStr, StyleStr,
+          RoleStr ] ).
 
 
 
 -doc "Returns a textual description of the specified logical speech.".
 -spec logical_speech_to_string( logical_speech() ) -> ustring().
 logical_speech_to_string( #logical_speech{ id=Id,
-										   base_name=BaseName,
-										   locale_table=LocaleTable } ) ->
-	text_utils:format( "logical speech of ID #~B, whose base name is '~ts', "
-		"recorded for the following locales: ~ts",
-		[ Id, BaseName,
-		  text_utils:strings_to_listed_string( table:keys( LocaleTable ) ) ] ).
+                                           base_name=BaseName,
+                                           locale_table=LocaleTable } ) ->
+    text_utils:format( "logical speech of ID #~B, whose base name is '~ts', "
+        "recorded for the following locales: ~ts",
+        [ Id, BaseName,
+          text_utils:strings_to_listed_string( table:keys( LocaleTable ) ) ] ).
 
 
 
@@ -1534,35 +1534,35 @@ speech.
 """.
 -spec actual_speech_info_to_string( actual_speech_info() ) -> ustring().
 actual_speech_info_to_string( #actual_speech_info{
-								ssml_text=SSMLText,
-								speech_settings_id=SpeechSettingsId,
-								audio_filename=AudioFilename } ) ->
-	text_utils:format( "actual speech whose SSML is ~p, based on speech "
-		"settings ~B, recorded in '~ts'",
-		[ SSMLText, SpeechSettingsId, AudioFilename ] ).
+                                ssml_text=SSMLText,
+                                speech_settings_id=SpeechSettingsId,
+                                audio_filename=AudioFilename } ) ->
+    text_utils:format( "actual speech whose SSML is ~p, based on speech "
+        "settings ~B, recorded in '~ts'",
+        [ SSMLText, SpeechSettingsId, AudioFilename ] ).
 
 
 
 -doc "Returns a textual description of the specified speech repository.".
 -spec speech_repository_to_string( speech_repository() ) -> ustring().
 speech_repository_to_string( #speech_repository{
-		speech_table=SpeechTable,
-		reference_locale=RefLocale,
-		base_dir=BaseDir
-		%next_speech_id=NextSpeechId
-								} ) ->
-	text_utils:format( "speech repository of ~B logical speeches, "
-		"whose reference locale is '~ts' and "
-		"whose base directory is '~ts'",
-		[ table:size( SpeechTable ), RefLocale, BaseDir ] ).
+        speech_table=SpeechTable,
+        reference_locale=RefLocale,
+        base_dir=BaseDir
+        %next_speech_id=NextSpeechId
+                                } ) ->
+    text_utils:format( "speech repository of ~B logical speeches, "
+        "whose reference locale is '~ts' and "
+        "whose base directory is '~ts'",
+        [ table:size( SpeechTable ), RefLocale, BaseDir ] ).
 
 
 
 -doc "Stops the speech support.".
 -spec stop( speech_state() ) -> void().
 stop( _SpeechState=#speech_state{ json_parser_state=ParserState } ) ->
-	json_utils:stop_parser( ParserState ),
-	web_utils:stop().
+    json_utils:stop_parser( ParserState ),
+    web_utils:stop().
 
 
 
@@ -1576,109 +1576,109 @@ For example "ogg.opus".
 """.
 -spec get_extension_for( audio_stream_settings() ) -> extension().
 get_extension_for( #audio_stream_settings{ container_format=ContainerFormat,
-										   audio_format=AudioFormat } ) ->
-	text_utils:format( "~ts.~ts", [ ContainerFormat, AudioFormat ] ).
+                                           audio_format=AudioFormat } ) ->
+    text_utils:format( "~ts.~ts", [ ContainerFormat, AudioFormat ] ).
 
 
 
 -doc "Converts Azure styles into our own.".
 convert_styles_from_azure( [] ) ->
-	[];
+    [];
 
 % First, translations:
 convert_styles_from_azure( [ <<"assistant">> | T ] ) ->
-	[ assistant | convert_styles_from_azure( T ) ];
+    [ assistant | convert_styles_from_azure( T ) ];
 
 convert_styles_from_azure( [ <<"chat">> | T ] ) ->
-	[ conversing | convert_styles_from_azure( T ) ];
+    [ conversing | convert_styles_from_azure( T ) ];
 
 convert_styles_from_azure( [ <<"narration">> | T ] ) ->
-	[ story_narrating | convert_styles_from_azure( T ) ];
+    [ story_narrating | convert_styles_from_azure( T ) ];
 
 convert_styles_from_azure( [ <<"narrative">> | T ] ) ->
-	[ story_narrating | convert_styles_from_azure( T ) ];
+    [ story_narrating | convert_styles_from_azure( T ) ];
 
 convert_styles_from_azure( [ <<"narration-professional">> | T ] ) ->
-	[ work_narrating | convert_styles_from_azure( T ) ];
+    [ work_narrating | convert_styles_from_azure( T ) ];
 
 convert_styles_from_azure( [ <<"customerservice">> | T ] ) ->
-	[ customer_support | convert_styles_from_azure( T ) ];
+    [ customer_support | convert_styles_from_azure( T ) ];
 
 convert_styles_from_azure( [ <<"newscast">> | T ] ) ->
-	[ news_reading | convert_styles_from_azure( T ) ];
+    [ news_reading | convert_styles_from_azure( T ) ];
 
 convert_styles_from_azure( [ <<"newscast-casual">> | T ] ) ->
-	[ news_reading_casual | convert_styles_from_azure( T ) ];
+    [ news_reading_casual | convert_styles_from_azure( T ) ];
 
 convert_styles_from_azure( [ <<"newscast-formal">> | T ] ) ->
-	[ news_reading_formal | convert_styles_from_azure( T ) ];
+    [ news_reading_formal | convert_styles_from_azure( T ) ];
 
 convert_styles_from_azure( [ <<"Envy">> | T ] ) ->
-	[ envious | convert_styles_from_azure( T ) ];
+    [ envious | convert_styles_from_azure( T ) ];
 
 % Then either literal re-use or not known:
 convert_styles_from_azure( [ Other | T ] ) ->
-	AtomOther = text_utils:binary_to_atom( Other ),
-	case lists:member( AtomOther, get_supported_styles() ) of
+    AtomOther = text_utils:binary_to_atom( Other ),
+    case lists:member( AtomOther, get_supported_styles() ) of
 
-		true ->
-			[ AtomOther | convert_styles_from_azure( T ) ];
+        true ->
+            [ AtomOther | convert_styles_from_azure( T ) ];
 
-		false ->
-			trace_utils:warning_fmt( "Unknown speech style: '~ts'; ignored.",
-									 [ Other ] ),
-			convert_styles_from_azure( T )
+        false ->
+            trace_utils:warning_fmt( "Unknown speech style: '~ts'; ignored.",
+                                     [ Other ] ),
+            convert_styles_from_azure( T )
 
-	end.
+    end.
 
 
 
 -doc "Returns a list of the known supported styles.".
 -spec get_supported_styles() -> [ supported_style() ].
 get_supported_styles() ->
-	[ assistant, news_reading, news_reading_casual, news_reading_formal,
-	  story_narrating, work_narrating, conversing, customer_support, calm,
-	  fearful, angry, sad, envious, affectionate, gentle, depressed, serious,
-	  disgruntled, cheerful, embarrassed, empathetic, lyrical ].
+    [ assistant, news_reading, news_reading_casual, news_reading_formal,
+      story_narrating, work_narrating, conversing, customer_support, calm,
+      fearful, angry, sad, envious, affectionate, gentle, depressed, serious,
+      disgruntled, cheerful, embarrassed, empathetic, lyrical ].
 
 
 
 -doc "Converts Azure role plays into our own.".
 -spec convert_roles_played_from_azure( [ bin_string() ] ) ->
-												[ supported_style() ].
+                                                [ supported_style() ].
 convert_roles_played_from_azure( [] ) ->
-	[];
+    [];
 
 convert_roles_played_from_azure( [ <<"Girl">> | T ] ) ->
-	[ { female, child } | convert_roles_played_from_azure( T ) ];
+    [ { female, child } | convert_roles_played_from_azure( T ) ];
 
 convert_roles_played_from_azure( [ <<"Boy">> | T ] ) ->
-	[ { male, child } | convert_roles_played_from_azure( T ) ];
+    [ { male, child } | convert_roles_played_from_azure( T ) ];
 
 convert_roles_played_from_azure( [ <<"YoungAdultFemale">> | T ] ) ->
-	[ { female, young_adult } | convert_roles_played_from_azure( T ) ];
+    [ { female, young_adult } | convert_roles_played_from_azure( T ) ];
 
 convert_roles_played_from_azure( [ <<"YoungAdultMale">> | T ] ) ->
-	[ { male, young_adult } | convert_roles_played_from_azure( T ) ];
+    [ { male, young_adult } | convert_roles_played_from_azure( T ) ];
 
 convert_roles_played_from_azure( [ <<"SeniorFemale">> | T ] ) ->
-	[ { female, senior }  | convert_roles_played_from_azure( T ) ];
+    [ { female, senior }  | convert_roles_played_from_azure( T ) ];
 
 convert_roles_played_from_azure( [ <<"SeniorMale">> | T ] ) ->
-	[ { male, senior }  | convert_roles_played_from_azure( T ) ];
+    [ { male, senior }  | convert_roles_played_from_azure( T ) ];
 
 convert_roles_played_from_azure( [ <<"OlderAdultFemale">> | T ] ) ->
-	[ { female, older_adult } | convert_roles_played_from_azure( T ) ];
+    [ { female, older_adult } | convert_roles_played_from_azure( T ) ];
 
 convert_roles_played_from_azure( [ <<"OlderAdultMale">> | T ] ) ->
-	[ { male, older_adult } | convert_roles_played_from_azure( T ) ];
+    [ { male, older_adult } | convert_roles_played_from_azure( T ) ];
 
 convert_roles_played_from_azure( [ <<"Narrator">> | T ] ) ->
-	[ narrator | convert_roles_played_from_azure( T ) ];
+    [ narrator | convert_roles_played_from_azure( T ) ];
 
 convert_roles_played_from_azure( [ Other | T ] ) ->
-	trace_utils:warning_fmt( "Unknown roleplay: '~ts'; ignored.", [ Other ] ),
-	convert_roles_played_from_azure( T ).
+    trace_utils:warning_fmt( "Unknown roleplay: '~ts'; ignored.", [ Other ] ),
+    convert_roles_played_from_azure( T ).
 
 
 
@@ -1688,10 +1688,10 @@ convert_roles_played_from_azure( [ Other | T ] ) ->
 -doc "Converts back our notion of gender into the one of Azure.".
 -spec convert_gender_to_azure( voice_gender() ) -> ustring().
 convert_gender_to_azure( _Gender=male ) ->
-	"Male";
+    "Male";
 
 convert_gender_to_azure( _Gender=female ) ->
-	"Female".
+    "Female".
 
 
 
@@ -1699,41 +1699,41 @@ convert_gender_to_azure( _Gender=female ) ->
 -spec convert_style_to_azure( supported_style() ) -> ustring().
 % First the different translations:
 convert_style_to_azure( _Style=conversing ) ->
-	"chat";
+    "chat";
 
 convert_style_to_azure( _Style=story_narrating ) ->
-	% Could have also be "narrative":
-	"narration";
+    % Could have also be "narrative":
+    "narration";
 
 convert_style_to_azure( _Style=work_narrating ) ->
-	"narration-professional";
+    "narration-professional";
 
 convert_style_to_azure( _Style=customer_support ) ->
-	"customerservice";
+    "customerservice";
 
 convert_style_to_azure( _Style=news_reading ) ->
-	"newscast";
+    "newscast";
 
 convert_style_to_azure( _Style=news_reading_casual ) ->
-	"newscast-casual";
+    "newscast-casual";
 
 convert_style_to_azure( _Style=news_reading_formal ) ->
-	"newscast-formal";
+    "newscast-formal";
 
 convert_style_to_azure( _Style=envious ) ->
-	"Envy";
+    "Envy";
 
 % Then the identical ones:
 convert_style_to_azure( Style ) ->
-	case lists:member( Style, get_supported_styles() ) of
+    case lists:member( Style, get_supported_styles() ) of
 
-		true ->
-			text_utils:atom_to_string( Style );
+        true ->
+            text_utils:atom_to_string( Style );
 
-		false ->
-			throw( { unknown_supported_style, Style } )
+        false ->
+            throw( { unknown_supported_style, Style } )
 
-	end.
+    end.
 
 
 
@@ -1741,27 +1741,27 @@ convert_style_to_azure( Style ) ->
 -spec convert_age_played_to_azure( age_played() ) -> ustring().
 % Not defined: convert_age_played_to_azure( child ) ->
 convert_age_played_to_azure( young_adult ) ->
-	"YoungAdult";
+    "YoungAdult";
 
 convert_age_played_to_azure( older_adult ) ->
-	"OlderAdult";
+    "OlderAdult";
 
 convert_age_played_to_azure( senior ) ->
-	"Senior".
+    "Senior".
 
 
 
 -doc "Converts back our notion of roleplay into the one of Azure.".
 -spec convert_roleplay_to_azure( role_played() ) -> ustring().
 convert_roleplay_to_azure( narrator ) ->
-	"Narrator";
+    "Narrator";
 
 convert_roleplay_to_azure( { _Gender=male, _AgePlayed=child } ) ->
-	"Boy";
+    "Boy";
 
 convert_roleplay_to_azure( { _Gender=female, _AgePlayed=child } ) ->
-	"Girl";
+    "Girl";
 
 convert_roleplay_to_azure( { Gender, AgePlayed } ) ->
-	convert_age_played_to_azure( AgePlayed )
-		++ convert_gender_to_azure( Gender ).
+    convert_age_played_to_azure( AgePlayed )
+        ++ convert_gender_to_azure( Gender ).

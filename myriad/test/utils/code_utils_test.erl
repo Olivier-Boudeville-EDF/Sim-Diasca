@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -43,17 +43,17 @@ See the code_utils.erl tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	test_facilities:display( "The ~ts.",
-							 [ code_utils:get_code_path_as_string() ] ),
+    test_facilities:display( "The ~ts.",
+                             [ code_utils:get_code_path_as_string() ] ),
 
-	ModuleName = hashtable,
+    ModuleName = hashtable,
 
-	test_facilities:display( "Determining whether '~ts' is in code path: ~p.",
-		[ ModuleName, code_utils:is_beam_in_path( ModuleName ) ] ),
+    test_facilities:display( "Determining whether '~ts' is in code path: ~p.",
+        [ ModuleName, code_utils:is_beam_in_path( ModuleName ) ] ),
 
-	test_facilities:display( "Current stack trace: ~ts",
-		[ code_utils:interpret_stacktrace() ] ),
+    test_facilities:display( "Current stack trace: ~ts",
+        [ code_utils:interpret_stacktrace() ] ),
 
-	test_facilities:stop().
+    test_facilities:stop().

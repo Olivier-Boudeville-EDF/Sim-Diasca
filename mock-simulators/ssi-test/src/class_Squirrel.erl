@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -35,8 +35,8 @@ integration test example.
 
 
 -define( class_description,
-		 "Class modelling a squirrel actor. It defines the common squirrel "
-		 "actor attributes and spontaneous behaviour." ).
+         "Class modelling a squirrel actor. It defines the common squirrel "
+         "actor attributes and spontaneous behaviour." ).
 
 % NB: In SSI-Test, each simulation tick corresponds to a week.
 
@@ -72,44 +72,44 @@ defined as a static value: 208 weeks
 """.
 construct( State, ActorSettings, SquirrelName, GivenAge, ForestPid ) ->
 
-	% Firstly, the mother class
-	DwellerState = class_ForestDweller:construct( State, ActorSettings,
-		?trace_categorize(SquirrelName), GivenAge, ForestPid ),
+    % Firstly, the mother class
+    DwellerState = class_ForestDweller:construct( State, ActorSettings,
+        ?trace_categorize(SquirrelName), GivenAge, ForestPid ),
 
-	% For an initial created squirrel, a default age is given to make difference
-	% between the initially created squirrels.
-	%
-	% For the squirrel created during the simulation, the given age is 0 and age
-	% will change over simulation time.
-	%
-	% And the lifespan of a squirrel is defined as 4 years, i.e. 208 weeks.
-	%
-	{ InitialSquirrelState, AvailableTick } = case GivenAge of
+    % For an initial created squirrel, a default age is given to make difference
+    % between the initially created squirrels.
+    %
+    % For the squirrel created during the simulation, the given age is 0 and age
+    % will change over simulation time.
+    %
+    % And the lifespan of a squirrel is defined as 4 years, i.e. 208 weeks.
+    %
+    { InitialSquirrelState, AvailableTick } = case GivenAge of
 
-		0 ->
-			{ weak, 10 };
+        0 ->
+            { weak, 10 };
 
-		_Others ->
-			{ available, 0 }
+        _Others ->
+            { available, 0 }
 
-	end,
+    end,
 
-	setAttributes( DwellerState, [
-		{ gender, undefined },
-		{ oak_pid, undefined },
-		{ lifespan, 208 },
+    setAttributes( DwellerState, [
+        { gender, undefined },
+        { oak_pid, undefined },
+        { lifespan, 208 },
 
-		% All newborn squirrels must be nursed for 10 weeks:
-		{ be_nursed_period, 10 },
+        % All newborn squirrels must be nursed for 10 weeks:
+        { be_nursed_period, 10 },
 
-		% At squirrel actor creation, the termination_tick_offset is initiated
-		% as its lifespan; it can anyway be modified during the simulation:
-		%
-		{ termination_tick_offset, 208 },
+        % At squirrel actor creation, the termination_tick_offset is initiated
+        % as its lifespan; it can anyway be modified during the simulation:
+        %
+        { termination_tick_offset, 208 },
 
-		{ termination_waiting_ticks, 3 },
-		{ state, InitialSquirrelState },
-		{ available_tick, AvailableTick } ] ).
+        { termination_waiting_ticks, 3 },
+        { state, InitialSquirrelState },
+        { available_tick, AvailableTick } ] ).
 
 
 
@@ -117,12 +117,12 @@ construct( State, ActorSettings, SquirrelName, GivenAge, ForestPid ) ->
 Simply schedules this just created actor at the next tick (diasca 0).
 """.
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-										actor_oneway_return().
+                                        actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
-	ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),
+    ScheduledState = executeOneway( State, scheduleNextSpontaneousTick ),
 
-	actor:return_state( ScheduledState ).
+    actor:return_state( ScheduledState ).
 
 
 
@@ -135,100 +135,100 @@ When receiving this message, the squirrel asks its forest for a relocation.
 -spec beMoved( wooper:state(), sending_actor_pid() ) -> actor_oneway_return().
 beMoved( State, SendingActorPid ) ->
 
-	NewState = case ?getAttr(oak_pid) of
+    NewState = case ?getAttr(oak_pid) of
 
-		undefined ->
-			?notice_fmt( "I receive a beMoved from ~w, but it is not my oak.",
-						 [ SendingActorPid ] ),
-			State;
+        undefined ->
+            ?notice_fmt( "I receive a beMoved from ~w, but it is not my oak.",
+                         [ SendingActorPid ] ),
+            State;
 
-		% Note the matching to this already-bound variable:
-		SendingActorPid ->
+        % Note the matching to this already-bound variable:
+        SendingActorPid ->
 
-			?notice( "I am moved from my oak, I have no home and I am "
-					 "requiring to be relocated." ),
+            ?notice( "I am moved from my oak, I have no home and I am "
+                     "requiring to be relocated." ),
 
-			UpdatedTargetPeers = lists:delete( SendingActorPid,
-											   ?getAttr(target_peers) ),
+            UpdatedTargetPeers = lists:delete( SendingActorPid,
+                                               ?getAttr(target_peers) ),
 
-			NState = setAttribute( State, target_peers, UpdatedTargetPeers ),
+            NState = setAttribute( State, target_peers, UpdatedTargetPeers ),
 
-			class_Actor:send_actor_message( ?getAttr(forest_pid),
-											requiredLocation, NState );
+            class_Actor:send_actor_message( ?getAttr(forest_pid),
+                                            requiredLocation, NState );
 
-		_OtherPid ->
-			?notice_fmt( "I receive a beMoved from ~w, but it is not my oak.",
-						 [ SendingActorPid ] ),
-			State
+        _OtherPid ->
+            ?notice_fmt( "I receive a beMoved from ~w, but it is not my oak.",
+                         [ SendingActorPid ] ),
+            State
 
-	end,
+    end,
 
-	actor:return_state( NewState ).
+    actor:return_state( NewState ).
 
 
 
 -doc "Called by the forest for informing this squirrel of a new oak.".
 -spec beAllocated( wooper:state(), actor_pid(), sending_actor_pid() ) ->
-							actor_oneway_return().
+                            actor_oneway_return().
 beAllocated( State, OakPid, _SendingActorPid ) ->
 
-	TargetPeers = ?getAttr(target_peers),
+    TargetPeers = ?getAttr(target_peers),
 
-	UpdatedState = case OakPid of
+    UpdatedState = case OakPid of
 
-		undefined ->
+        undefined ->
 
-			?notice( "I am moved from my tree and I am homeless." ),
+            ?notice( "I am moved from my tree and I am homeless." ),
 
-			NState = setAttributes( State, [
-				{ oak_pid, undefined },
-				{ target_peers, TargetPeers } ] ),
+            NState = setAttributes( State, [
+                { oak_pid, undefined },
+                { target_peers, TargetPeers } ] ),
 
-			executeOneway( NState, notifyTermination );
+            executeOneway( NState, notifyTermination );
 
-		_ ->
-			?notice_fmt( "I am relocated to ~w.", [ OakPid ] ),
-			setAttributes( State, [
-				{ oak_pid, OakPid },
-				{ target_peers,[ OakPid | TargetPeers ] } ] )
+        _ ->
+            ?notice_fmt( "I am relocated to ~w.", [ OakPid ] ),
+            setAttributes( State, [
+                { oak_pid, OakPid },
+                { target_peers,[ OakPid | TargetPeers ] } ] )
 
-	end,
+    end,
 
-	actor:return_state( UpdatedState ).
+    actor:return_state( UpdatedState ).
 
 
 
 -doc "Deletes a specified squirrel PID from the target peers.".
 -spec deleteFromPeers( wooper:state(), sending_actor_pid() ) ->
-											actor_oneway_return().
+                                            actor_oneway_return().
 deleteFromPeers( State, SendingActorPid ) ->
 
-	?notice_fmt( "~w is deleted from the target peers of ~w.",
-				 [ SendingActorPid, self() ] ),
+    ?notice_fmt( "~w is deleted from the target peers of ~w.",
+                 [ SendingActorPid, self() ] ),
 
-	TargetPeers = ?getAttr(target_peers),
-	UpdatedList = lists:delete( SendingActorPid, TargetPeers ),
+    TargetPeers = ?getAttr(target_peers),
+    UpdatedList = lists:delete( SendingActorPid, TargetPeers ),
 
-	actor:return_state( setAttribute( State, target_peers, UpdatedList ) ).
+    actor:return_state( setAttribute( State, target_peers, UpdatedList ) ).
 
 
 
 -doc "Received from the forest.".
 -spec forestDestroyed( wooper:state(), sending_actor_pid() ) ->
-								actor_oneway_return().
+                                actor_oneway_return().
 forestDestroyed( State, SendingActorPid )->
 
-	?notice_fmt( "~w ~w will terminate because of destroyed forest.",
-				 [ self(), ?getAttr(name) ] ),
+    ?notice_fmt( "~w ~w will terminate because of destroyed forest.",
+                 [ self(), ?getAttr(name) ] ),
 
-	TargetPeers = ?getAttr(target_peers),
-	UpdatedList = lists:delete( SendingActorPid, TargetPeers ),
-	NewState = setAttributes( State, [ { forest_pid, undefined },
-									   { target_peers, UpdatedList } ] ),
+    TargetPeers = ?getAttr(target_peers),
+    UpdatedList = lists:delete( SendingActorPid, TargetPeers ),
+    NewState = setAttributes( State, [ { forest_pid, undefined },
+                                       { target_peers, UpdatedList } ] ),
 
-	NotifState = executeOneway( NewState, notifyTermination ),
+    NotifState = executeOneway( NewState, notifyTermination ),
 
-	actor:return_state( NotifState ).
+    actor:return_state( NotifState ).
 
 
 
@@ -236,38 +236,38 @@ forestDestroyed( State, SendingActorPid )->
 -spec notifyTermination( wooper:state() ) -> actor_oneway_return().
 notifyTermination( State ) ->
 
-	% Source and target peers must be notified here, otherwise, next time they
-	% will send a message to this actor, they will hang forever:
-	%
-	% (this returns a new state)
+    % Source and target peers must be notified here, otherwise, next time they
+    % will send a message to this actor, they will hang forever:
+    %
+    % (this returns a new state)
 
-	CurrentOffset = ?getAttr(current_tick_offset),
+    CurrentOffset = ?getAttr(current_tick_offset),
 
-	?notice_fmt( "I inform my relative actors for my termination at tick #~B.",
-				 [ CurrentOffset ] ),
+    ?notice_fmt( "I inform my relative actors for my termination at tick #~B.",
+                 [ CurrentOffset ] ),
 
-	NewState = case ?getAttr(target_peers) of
+    NewState = case ?getAttr(target_peers) of
 
-		[] ->
-			State;
+        [] ->
+            State;
 
-		TargetPeers ->
+        TargetPeers ->
 
-			SendFun = fun( TargetPid, FunState ) ->
+            SendFun = fun( TargetPid, FunState ) ->
 
-				% Returns an updated state:
-				class_Actor:send_actor_message( TargetPid, deleteFromPeers,
-												FunState )
-			end,
+                % Returns an updated state:
+                class_Actor:send_actor_message( TargetPid, deleteFromPeers,
+                                                FunState )
+            end,
 
-			% Returns an updated state:
-			lists:foldl( SendFun, State, TargetPeers )
+            % Returns an updated state:
+            lists:foldl( SendFun, State, TargetPeers )
 
-		end,
+        end,
 
-	FinalState = executeOneway( NewState, prepareTermination ),
+    FinalState = executeOneway( NewState, prepareTermination ),
 
-	actor:return_state( FinalState ).
+    actor:return_state( FinalState ).
 
 
 
@@ -278,29 +278,29 @@ The actor sends a addInPeers message when the forest PID exists and then an
 updated state is returned; otherwise, the original state is returned.
 """.
 -spec tryToRegister( wooper:state(), classname(), sending_actor_pid() ) ->
-							actor_oneway_return().
+                            actor_oneway_return().
 tryToRegister( State, Classname, _SendingActorPid ) ->
 
-	UpdatedState = case ?getAttr(forest_pid) of
+    UpdatedState = case ?getAttr(forest_pid) of
 
-		undefined ->
-			State;
+        undefined ->
+            State;
 
-		ForestPid  ->
+        ForestPid  ->
 
-			NewState = class_Actor:send_actor_message( ForestPid,
-				{ addInPeers, Classname }, State ),
+            NewState = class_Actor:send_actor_message( ForestPid,
+                { addInPeers, Classname }, State ),
 
-			TargetPeers = ?getAttr(target_peers),
+            TargetPeers = ?getAttr(target_peers),
 
-			UpdatedTargetPeers = [ ForestPid | TargetPeers ],
+            UpdatedTargetPeers = [ ForestPid | TargetPeers ],
 
-			PeerState = setAttributes( NewState, [
-				{ is_registered, true },
-				{ target_peers, UpdatedTargetPeers } ] ),
+            PeerState = setAttributes( NewState, [
+                { is_registered, true },
+                { target_peers, UpdatedTargetPeers } ] ),
 
-			executeOneway( PeerState, scheduleNextSpontaneousTick )
+            executeOneway( PeerState, scheduleNextSpontaneousTick )
 
-	end,
+    end,
 
-	actor:return_state( UpdatedState ).
+    actor:return_state( UpdatedState ).

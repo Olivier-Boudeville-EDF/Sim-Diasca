@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2025 EDF R&D
+% Copyright (C) 2012-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -26,8 +26,8 @@
 
 
 -define( class_description,
-		 "Class modelling a geographical container, which is a geolocalized "
-		 "element containing potentially other geolocalized elements." ).
+         "Class modelling a geographical container, which is a geolocalized "
+         "element containing potentially other geolocalized elements." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -37,8 +37,8 @@
 % The class-specific attributes of an instance of a geo-container element are:
 -define( class_attributes, [
 
-	{ contained, [ geolocalized_pid() ], "a list of the geolocalized elements "
-	  "currently contained by this geocontainer" } ] ).
+    { contained, [ geolocalized_pid() ], "a list of the geolocalized elements "
+      "currently contained by this geocontainer" } ] ).
 
 
 % Exported helpers:
@@ -95,10 +95,10 @@ a WGS84 polar coordinate
 -spec construct( wooper:state(), class_GIS:location() ) -> wooper:state().
 construct( State, AnyKindOfLocation ) ->
 
-	LocalizedState = class_GeolocalizedElement:construct( State,
-														  AnyKindOfLocation ),
+    LocalizedState = class_GeolocalizedElement:construct( State,
+                                                          AnyKindOfLocation ),
 
-	setAttribute( LocalizedState, contained, [] ).
+    setAttribute( LocalizedState, contained, [] ).
 
 
 
@@ -114,11 +114,11 @@ This default implementation always accepts this incoming geo-element.
 -spec requestEntry( wooper:state() ) -> request_return( entry_outcome() ).
 requestEntry( State ) ->
 
-	GeoRequester = ?getSender(),
+    GeoRequester = ?getSender(),
 
-	{ EnterState, Outcome } = request_entry( GeoRequester, State ),
+    { EnterState, Outcome } = request_entry( GeoRequester, State ),
 
-	wooper:return_state_result( EnterState, Outcome ).
+    wooper:return_state_result( EnterState, Outcome ).
 
 
 
@@ -126,16 +126,16 @@ requestEntry( State ) ->
 -spec traceContent( wooper:state() ) -> const_oneway_return().
 traceContent( State ) ->
 
-	?notice( to_string( State ) ),
+    ?notice( to_string( State ) ),
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 
 -doc "Returns a string describing the state of this geocontainer.".
 -spec toString( wooper:state() ) -> const_request_return( ustring() ).
 toString( State ) ->
-	wooper:const_return_result( to_string( State ) ).
+    wooper:const_return_result( to_string( State ) ).
 
 
 
@@ -149,28 +149,28 @@ toString( State ) ->
 % (helper)
 %
 -spec request_entry( geolocalized_pid(), wooper:state() ) ->
-						{ wooper:state(), entry_outcome() }.
+                        { wooper:state(), entry_outcome() }.
 request_entry( GeoRequester, State ) ->
 
-	?info_fmt( "Accepting geolocalized element ~w.", [ GeoRequester ] ),
+    ?info_fmt( "Accepting geolocalized element ~w.", [ GeoRequester ] ),
 
-	{ appendToAttribute( State, contained, GeoRequester ), entered }.
+    { appendToAttribute( State, contained, GeoRequester ), entered }.
 
 
 
 -doc "Returns a textual description of that instance.".
 to_string( State ) ->
 
-	ContainedString = case ?getAttr(contained) of
+    ContainedString = case ?getAttr(contained) of
 
-		[] ->
-			"not containing any geo-element";
+        [] ->
+            "not containing any geo-element";
 
-		List ->
-			text_utils:format( "containing following ~B geo-elements: ~w",
-							   [ length( List ), List ] )
+        List ->
+            text_utils:format( "containing following ~B geo-elements: ~w",
+                               [ length( List ), List ] )
 
-	end,
+    end,
 
-	text_utils:format( "geocontainer named '~ts' located at ~w ~ts",
-		[ ?getAttr(name), ?getAttr(location), ContainedString ] ).
+    text_utils:format( "geocontainer named '~ts' located at ~w ~ts",
+        [ ?getAttr(name), ?getAttr(location), ContainedString ] ).

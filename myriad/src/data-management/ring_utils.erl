@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -55,7 +55,7 @@ extracted), while the second is a copy of the full reference one.
 
 % Ring-related operations:
 -export([ from_list/1, to_list/1, head/1, get_next/2, get_reference_list/1,
-		  size/1, to_string/1 ]).
+          size/1, to_string/1 ]).
 
 
 
@@ -78,29 +78,29 @@ extracted), while the second is a copy of the full reference one.
 -doc "Returns a ring corresponding to the specified list.".
 -spec from_list( list() ) -> ring().
 from_list( InputList ) ->
-	{ InputList, InputList }.
+    { InputList, InputList }.
 
 
 
 -doc "Returns a list corresponding to the current state of the specified ring.".
 -spec to_list( ring() ) -> list().
 to_list( Ring={ _WorkingList, ReferenceList } ) ->
-	{ List, _NewRing } = get_next( _Count=length( ReferenceList ), Ring ),
-	List.
+    { List, _NewRing } = get_next( _Count=length( ReferenceList ), Ring ),
+    List.
 
 
 
 -doc "Pops the head of the specified ring: returns {Head,UpdatedRing}.".
 -spec head( ring() ) -> { term(), ring() }.
 head( _Ring={ _WorkingList=[], ReferenceList } ) ->
-	% Replenish:
-	%
-	% Dialyzer does not want an opaque argument to be used:
-	%head( { ReferenceList, ReferenceList } );
-	head( from_list( ReferenceList ) );
+    % Replenish:
+    %
+    % Dialyzer does not want an opaque argument to be used:
+    %head( { ReferenceList, ReferenceList } );
+    head( from_list( ReferenceList ) );
 
 head( _Ring={ _WorkingList=[ H | T ], ReferenceList } ) ->
-	{ H, { T, ReferenceList } }.
+    { H, { T, ReferenceList } }.
 
 
 
@@ -113,16 +113,16 @@ b] will be returned.
 """.
 -spec get_next( count(), ring() ) -> { [ term() ], ring() }.
 get_next( Count, Ring ) ->
-	% Quite similar to a map:foldl/3:
-	get_next_helper( Count, Ring, _Acc=[] ).
+    % Quite similar to a map:foldl/3:
+    get_next_helper( Count, Ring, _Acc=[] ).
 
 
 get_next_helper( _Count=0, Ring, Acc ) ->
-	{ lists:reverse( Acc ), Ring };
+    { lists:reverse( Acc ), Ring };
 
 get_next_helper( Count, Ring, Acc ) ->
-	{ H, NewRing } = head( Ring ),
-	get_next_helper( Count-1, NewRing, [ H | Acc ] ).
+    { H, NewRing } = head( Ring ),
+    get_next_helper( Count-1, NewRing, [ H | Acc ] ).
 
 
 
@@ -131,14 +131,14 @@ Returns the list from which the ring was created (in its original order).
 """.
 -spec get_reference_list( ring() ) -> [ term() ].
 get_reference_list( _Ring={ _WorkingList, ReferenceList } ) ->
-	ReferenceList.
+    ReferenceList.
 
 
 
 -doc "Returns the number of elements in the specified ring.".
 -spec size( ring() ) -> count().
 size( _Ring={ _WorkingList, ReferenceList } ) ->
-	length( ReferenceList ).
+    length( ReferenceList ).
 
 
 
@@ -146,20 +146,20 @@ size( _Ring={ _WorkingList, ReferenceList } ) ->
 -spec to_string( ring() ) -> ustring().
 to_string( Ring ) ->
 
-	case to_list( Ring ) of
+    case to_list( Ring ) of
 
-		[] ->
-			"empty ring";
+        [] ->
+            "empty ring";
 
-		[ Element ] ->
-			text_utils:format( "ring with a single element, ~p", [ Element ] );
+        [ Element ] ->
+            text_utils:format( "ring with a single element, ~p", [ Element ] );
 
-		Elements ->
+        Elements ->
 
-			ElemString = text_utils:strings_to_string( [
-				text_utils:format( "~p", [ E ] ) || E <- Elements ] ),
+            ElemString = text_utils:strings_to_string( [
+                text_utils:format( "~p", [ E ] ) || E <- Elements ] ),
 
-			text_utils:format( "ring with following ~B elements: ~ts",
-							   [ length( Elements ), ElemString ] )
+            text_utils:format( "ring with following ~B elements: ~ts",
+                               [ length( Elements ), ElemString ] )
 
-	end.
+    end.

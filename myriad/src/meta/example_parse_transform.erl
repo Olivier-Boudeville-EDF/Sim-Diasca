@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 Olivier Boudeville
+% Copyright (C) 2014-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -52,11 +52,11 @@ another one.
 -spec parse_transform( ast(), parse_transform_options() ) -> ast().
 parse_transform( AST, _Options ) ->
 
-	% Less verbose:
-	io:format( "		  (applying example parse transform '~p')~n",
-			   [ ?MODULE ] ),
+    % Less verbose:
+    io:format( "          (applying example parse transform '~p')~n",
+               [ ?MODULE ] ),
 
-	%io:format( "Applying example parse transform '~p' on:~n~p",
-	%		   [ ?MODULE, AST ] ),
+    %io:format( "Applying example parse transform '~p' on:~n~p",
+    %          [ ?MODULE, AST ] ),
 
-	AST.
+    AST.

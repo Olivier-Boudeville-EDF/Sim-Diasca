@@ -26,7 +26,7 @@ For example:
  -include("data_types.hrl").
 
  f( A ) ->
-	true = ?list_impl:is_empty( A ), [...]
+    true = ?list_impl:is_empty( A ), [...]
 
 
 :raw-html:`<center><img src="xkcd-tree.png"></img></center>`
@@ -72,7 +72,7 @@ Here is a list of recommended steps to go through, in order to have a better cha
    - re-activate traces, reverting the content of ``traces/src/class_TraceEmitter.hrl``
    - update the time-stamps of all target classes, e.g.:
 
-	 touch sim-diasca/src/core/src/scheduling/class_DeploymentManager.erl
+     touch sim-diasca/src/core/src/scheduling/class_DeploymentManager.erl
 
 #. re-compile from the root (``make all``) if traces were enabled for at least one class
 

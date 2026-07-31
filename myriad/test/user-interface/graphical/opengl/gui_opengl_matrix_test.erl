@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -54,19 +54,19 @@ See the gui_opengl.erl tested module.
 %
 -record( my_gui_state, {
 
-	% The main frame of this test:
-	main_frame :: frame(),
+    % The main frame of this test:
+    main_frame :: frame(),
 
-	% The OpenGL canvas on which rendering will be done:
-	canvas :: gl_canvas(),
+    % The OpenGL canvas on which rendering will be done:
+    canvas :: gl_canvas(),
 
-	% The OpenGL context being used:
-	context :: gl_context(),
+    % The OpenGL context being used:
+    context :: gl_context(),
 
-	% Here just a boolean; in more complex cases, would be a maybe OpenGL state
-	% (e.g. to store the loaded textures):
-	%
-	opengl_initialised = false :: boolean() } ).
+    % Here just a boolean; in more complex cases, would be a maybe OpenGL state
+    % (e.g. to store the loaded textures):
+    %
+    opengl_initialised = false :: boolean() } ).
 
 
 -doc "Test-specific overall GUI state.".
@@ -87,27 +87,27 @@ See the gui_opengl.erl tested module.
 -spec run_actual_test() -> void().
 run_actual_test() ->
 
-	test_facilities:display( "This test will perform basic OpenGL-related "
-		"matrix operations; no specific graphical output shall be expected "
-		"(but OpenGL must be properly initialised), except a blank, "
-		"non-updated window. "
-		"Note that finally, at least currently, the matrix support cannot "
-		"be tested due to the lack of solution in order to extract a "
-		"matrix from OpenGL." ),
+    test_facilities:display( "This test will perform basic OpenGL-related "
+        "matrix operations; no specific graphical output shall be expected "
+        "(but OpenGL must be properly initialised), except a blank, "
+        "non-updated window. "
+        "Note that finally, at least currently, the matrix support cannot "
+        "be tested due to the lack of solution in order to extract a "
+        "matrix from OpenGL." ),
 
-	gui:start(),
+    gui:start(),
 
-	% Could be batched (see gui:batch/1) to be more effective:
-	InitialGUIState = init_test_gui(),
+    % Could be batched (see gui:batch/1) to be more effective:
+    InitialGUIState = init_test_gui(),
 
-	gui_frame:show( InitialGUIState#my_gui_state.main_frame ),
+    gui_frame:show( InitialGUIState#my_gui_state.main_frame ),
 
-	% OpenGL will be initialised only when the corresponding frame will be ready
-	% (that is once first reported as resized):
-	%
-	gui_main_loop( InitialGUIState ),
+    % OpenGL will be initialised only when the corresponding frame will be ready
+    % (that is once first reported as resized):
+    %
+    gui_main_loop( InitialGUIState ),
 
-	gui:stop().
+    gui:stop().
 
 
 
@@ -121,20 +121,20 @@ displayed.
 -spec init_test_gui() -> my_gui_state().
 init_test_gui() ->
 
-	MainFrame = gui_frame:create( "MyriadGUI OpenGL Matrix Test",
-								  _Size={ 500, 250 } ),
+    MainFrame = gui_frame:create( "MyriadGUI OpenGL Matrix Test",
+                                  _Size={ 500, 250 } ),
 
-	% Using default GL attributes:
-	GLCanvas = gui_opengl:create_canvas( _Parent=MainFrame ),
+    % Using default GL attributes:
+    GLCanvas = gui_opengl:create_canvas( _Parent=MainFrame ),
 
-	% Created, yet not bound yet (must wait for the main frame to be shown):
-	GLContext = gui_opengl:create_context( GLCanvas ),
+    % Created, yet not bound yet (must wait for the main frame to be shown):
+    GLContext = gui_opengl:create_context( GLCanvas ),
 
-	% Minimal registering:
-	gui:subscribe_to_events( { [ onShown, onWindowClosed ], MainFrame } ),
+    % Minimal registering:
+    gui:subscribe_to_events( { [ onShown, onWindowClosed ], MainFrame } ),
 
-	% No OpenGL state yet (GL context cannot be set as current yet):
-	#my_gui_state{ main_frame=MainFrame, canvas=GLCanvas, context=GLContext }.
+    % No OpenGL state yet (GL context cannot be set as current yet):
+    #my_gui_state{ main_frame=MainFrame, canvas=GLCanvas, context=GLContext }.
 
 
 
@@ -144,48 +144,48 @@ The main loop of this test, driven by the receiving of MyriadGUI messages.
 -spec gui_main_loop( my_gui_state() ) -> void().
 gui_main_loop( GUIState ) ->
 
-	%trace_utils:debug( "Main loop." ),
+    %trace_utils:debug( "Main loop." ),
 
-	% Matching the least-often received messages last:
-	receive
-
-
-		% The most suitable first location to initialise OpenGL, as making a GL
-		% context current requires a shown window:
-		%
-		{ onShown, [ ParentWindow, _ParentWindowId, _EventContext ] } ->
-
-			trace_utils:debug_fmt( "Parent window (main frame) just shown "
-				"(initial size of ~w).",
-				[ gui_widget:get_size( ParentWindow ) ] ),
-
-			% Done once for all:
-			InitGUIState = initialise_opengl( GUIState ),
-
-			test_matrices(),
-
-			gui_main_loop( InitGUIState );
+    % Matching the least-often received messages last:
+    receive
 
 
-		{ onWindowClosed, [ ParentWindow, _ParentWindowId, _EventContext ] } ->
-			trace_utils:info( "Main frame closed, test success." ),
+        % The most suitable first location to initialise OpenGL, as making a GL
+        % context current requires a shown window:
+        %
+        { onShown, [ ParentWindow, _ParentWindowId, _EventContext ] } ->
 
-			% Very final check, while there is still an OpenGL context:
-			gui_opengl:check_error(),
+            trace_utils:debug_fmt( "Parent window (main frame) just shown "
+                "(initial size of ~w).",
+                [ gui_widget:get_size( ParentWindow ) ] ),
 
-			% No more recursing:
-			gui_window:destruct( ParentWindow );
+            % Done once for all:
+            InitGUIState = initialise_opengl( GUIState ),
+
+            test_matrices(),
+
+            gui_main_loop( InitGUIState );
 
 
-		OtherEvent ->
-			trace_utils:warning_fmt( "Test ignored following event:~n ~p",
-									 [ OtherEvent ] ),
+        { onWindowClosed, [ ParentWindow, _ParentWindowId, _EventContext ] } ->
+            trace_utils:info( "Main frame closed, test success." ),
 
-			gui_main_loop( GUIState )
+            % Very final check, while there is still an OpenGL context:
+            gui_opengl:check_error(),
 
-	% No 'after': no spontaneous action taken, in the absence of events.
+            % No more recursing:
+            gui_window:destruct( ParentWindow );
 
-	end.
+
+        OtherEvent ->
+            trace_utils:warning_fmt( "Test ignored following event:~n ~p",
+                                     [ OtherEvent ] ),
+
+            gui_main_loop( GUIState )
+
+    % No 'after': no spontaneous action taken, in the absence of events.
+
+    end.
 
 
 
@@ -195,25 +195,25 @@ OpenGL context is available.
 """.
 -spec initialise_opengl( my_gui_state() ) -> my_gui_state().
 initialise_opengl( GUIState=#my_gui_state{ canvas=GLCanvas,
-										   context=GLContext,
-										   % Check:
-										   opengl_initialised=false } ) ->
+                                           context=GLContext,
+                                           % Check:
+                                           opengl_initialised=false } ) ->
 
-	% Initial size of canvas is typically 20x20 pixels:
-	trace_utils:debug_fmt( "Initialising OpenGL (whereas canvas is of initial "
-						   "size ~w).", [ gui_widget:get_size( GLCanvas ) ] ),
+    % Initial size of canvas is typically 20x20 pixels:
+    trace_utils:debug_fmt( "Initialising OpenGL (whereas canvas is of initial "
+                           "size ~w).", [ gui_widget:get_size( GLCanvas ) ] ),
 
-	% So done only once:
-	gui_opengl:set_context_on_shown( GLCanvas, GLContext ),
+    % So done only once:
+    gui_opengl:set_context_on_shown( GLCanvas, GLContext ),
 
-	% No specific initialisation needed.
+    % No specific initialisation needed.
 
-	InitGUIState = GUIState#my_gui_state{ opengl_initialised=true },
+    InitGUIState = GUIState#my_gui_state{ opengl_initialised=true },
 
-	% As the initial onResized was triggered whereas no OpenGL state was
-	% already available:
-	%
-	on_main_frame_resized( InitGUIState ).
+    % As the initial onResized was triggered whereas no OpenGL state was
+    % already available:
+    %
+    on_main_frame_resized( InitGUIState ).
 
 
 
@@ -221,45 +221,45 @@ initialise_opengl( GUIState=#my_gui_state{ canvas=GLCanvas,
 -spec test_matrices() -> void().
 test_matrices() ->
 
-	% We show that our usual matrices, respecting Myriad conventions, can
-	% integrate smoothly with OpenGL:
-	%
-	% Octave: M = [1, 2, 3, 4; 5, 6, 7, 8; 9, 10, 11, 12; 13, 14, 15, 16]
-	M = matrix4:new( [ [ 1,   2,  3,  4 ],
-					   [ 5,   6,  7,  8 ],
-					   [ 9,  10, 11, 12 ],
-					   [ 13, 14, 15, 16 ] ] ),
+    % We show that our usual matrices, respecting Myriad conventions, can
+    % integrate smoothly with OpenGL:
+    %
+    % Octave: M = [1, 2, 3, 4; 5, 6, 7, 8; 9, 10, 11, 12; 13, 14, 15, 16]
+    M = matrix4:new( [ [ 1,   2,  3,  4 ],
+                       [ 5,   6,  7,  8 ],
+                       [ 9,  10, 11, 12 ],
+                       [ 13, 14, 15, 16 ] ] ),
 
-	% Selects this matrix (must be already the case):
-	gl:matrixMode( ?GL_MODELVIEW ),
+    % Selects this matrix (must be already the case):
+    gl:matrixMode( ?GL_MODELVIEW ),
 
-	gui_opengl:set_matrix( M ),
+    gui_opengl:set_matrix( M ),
 
-	% Octave: A = [ 1, 0, -1, 0; 0, -2, 0, 2; 3, 4, 3, 4; 5, 9, 7, 1]
-	A = matrix4:new( [ [ 1,  0, -1, 0 ],
-					   [ 0, -2,  0, 2 ],
-					   [ 3,  4,  3, 4 ],
-					   [ 5,  9,  7, 1 ] ] ),
+    % Octave: A = [ 1, 0, -1, 0; 0, -2, 0, 2; 3, 4, 3, 4; 5, 9, 7, 1]
+    A = matrix4:new( [ [ 1,  0, -1, 0 ],
+                       [ 0, -2,  0, 2 ],
+                       [ 3,  4,  3, 4 ],
+                       [ 5,  9,  7, 1 ] ] ),
 
-	MpCeylan = matrix4:mult( M, A ),
+    MpCeylan = matrix4:mult( M, A ),
 
-	% We consider it is post-multiplication (M' = M.A):
-	gl:multMatrixf( matrix4:to_tuple( A ) ),
+    % We consider it is post-multiplication (M' = M.A):
+    gl:multMatrixf( matrix4:to_tuple( A ) ),
 
-	% Extra verification: Octave: M' = M.A =
-	MpOctave = matrix4:new( [ [  30,  44,  36,  20 ],
-							  [  66,  88,  72,  48 ],
-							  [ 102, 132, 108,  76 ],
-							  [ 138, 176, 144, 104 ] ] ),
+    % Extra verification: Octave: M' = M.A =
+    MpOctave = matrix4:new( [ [  30,  44,  36,  20 ],
+                              [  66,  88,  72,  48 ],
+                              [ 102, 132, 108,  76 ],
+                              [ 138, 176, 144, 104 ] ] ),
 
-	true = matrix4:are_equal( MpCeylan, MpOctave ),
+    true = matrix4:are_equal( MpCeylan, MpOctave ),
 
-	% Problem: apparently no way of extracting the current matrix from OpenGL.
-	% Not existing: MpGL = gl:get( ?GL_MODELVIEW_MATRIX)
-	%
-	%true = matrix4:are_equal( MpCeylan, MpGL ).
-	%throw( no_test_performed).
-	ok.
+    % Problem: apparently no way of extracting the current matrix from OpenGL.
+    % Not existing: MpGL = gl:get( ?GL_MODELVIEW_MATRIX)
+    %
+    %true = matrix4:are_equal( MpCeylan, MpGL ).
+    %throw( no_test_performed).
+    ok.
 
 
 
@@ -271,32 +271,32 @@ OpenGL context expected here to have already been set.
 -spec on_main_frame_resized( my_gui_state() ) -> my_gui_state().
 on_main_frame_resized( GUIState=#my_gui_state{ canvas=GLCanvas } ) ->
 
-	% Maximises the canvas in the main frame:
-	{ CanvasWidth, CanvasHeight } = gui_widget:maximise_in_parent( GLCanvas ),
+    % Maximises the canvas in the main frame:
+    { CanvasWidth, CanvasHeight } = gui_widget:maximise_in_parent( GLCanvas ),
 
-	%trace_utils:debug_fmt( "New client canvas size: {~B,~B}.",
-	%                       [ CanvasWidth, CanvasHeight ] ),
+    %trace_utils:debug_fmt( "New client canvas size: {~B,~B}.",
+    %                       [ CanvasWidth, CanvasHeight ] ),
 
-	% Lower-left corner and size of the viewport in the current window:
-	gl:viewport( 0, 0, CanvasWidth, CanvasHeight ),
+    % Lower-left corner and size of the viewport in the current window:
+    gl:viewport( 0, 0, CanvasWidth, CanvasHeight ),
 
-	% Apparently, at least on a test setting, a race condition (discovered
-	% thanks to the commenting-out of a debug trace) seems to exist between the
-	% moment when the canvas is resized and the one when a new OpenGL rendering
-	% is triggered afterwards; the cause is probably that maximising involves an
-	% (Erlang) asynchronous message to be sent from this user process and to be
-	% received and applied by the process of the target window, whereas a GL
-	% (NIF-based) operation is immediate; without a sufficient delay, the
-	% rendering will thus take place according to the former (e.g. minimised)
-	% canvas size, not according to the one that was expected to be already
-	% resized.
-	%
-	gui_widget:sync( GLCanvas ),
+    % Apparently, at least on a test setting, a race condition (discovered
+    % thanks to the commenting-out of a debug trace) seems to exist between the
+    % moment when the canvas is resized and the one when a new OpenGL rendering
+    % is triggered afterwards; the cause is probably that maximising involves an
+    % (Erlang) asynchronous message to be sent from this user process and to be
+    % received and applied by the process of the target window, whereas a GL
+    % (NIF-based) operation is immediate; without a sufficient delay, the
+    % rendering will thus take place according to the former (e.g. minimised)
+    % canvas size, not according to the one that was expected to be already
+    % resized.
+    %
+    gui_widget:sync( GLCanvas ),
 
-	% Not changing model-view or projection.
+    % Not changing model-view or projection.
 
-	% Const here:
-	GUIState.
+    % Const here:
+    GUIState.
 
 
 
@@ -304,9 +304,9 @@ on_main_frame_resized( GUIState=#my_gui_state{ canvas=GLCanvas } ) ->
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	gui_opengl_for_testing:can_be_run(
-		"the test of OpenGL Matrix support" ) =:= yes andalso run_actual_test(),
+    gui_opengl_for_testing:can_be_run(
+        "the test of OpenGL Matrix support" ) =:= yes andalso run_actual_test(),
 
-	test_facilities:stop().
+    test_facilities:stop().

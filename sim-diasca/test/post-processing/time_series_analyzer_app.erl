@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2025 EDF R&D
+% Copyright (C) 2011-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -42,23 +42,23 @@ Note: still to be developed.
 -spec exec() -> no_return().
 exec() ->
 
-	?app_start,
+    ?app_start,
 
-	TestDataFilename = "time_series_test.dat",
-	%TestDataFilename = "time_series_test-warningless.dat",
-	%TestDataFilename = "non_existing_file",
+    TestDataFilename = "time_series_test.dat",
+    %TestDataFilename = "time_series_test-warningless.dat",
+    %TestDataFilename = "non_existing_file",
 
-	% Parameters for the "selector" series filter: we select only the first two
-	% curves, and the fourth (out of 6, here), in that order.
-	%
-	CurveSelection = [ 1, 2, 4 ],
+    % Parameters for the "selector" series filter: we select only the first two
+    % curves, and the fourth (out of 6, here), in that order.
+    %
+    CurveSelection = [ 1, 2, 4 ],
 
-	AnalyzerPid = class_TimeSeriesAnalyzer:synchronous_new_link(
-		TestDataFilename,
-		_SeriesFilters=[ { curve_selector_series_filter, CurveSelection } ],
-		_CommonCurveFilters=[ { extrema_curve_filter, [] } ],
-		_CurveSpecificFilters=[] ),
+    AnalyzerPid = class_TimeSeriesAnalyzer:synchronous_new_link(
+        TestDataFilename,
+        _SeriesFilters=[ { curve_selector_series_filter, CurveSelection } ],
+        _CommonCurveFilters=[ { extrema_curve_filter, [] } ],
+        _CurveSpecificFilters=[] ),
 
-	AnalyzerPid ! delete,
+    AnalyzerPid ! delete,
 
-	?app_stop.
+    ?app_stop.

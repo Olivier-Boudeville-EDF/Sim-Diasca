@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -27,7 +27,7 @@
 
 
 % These keyboard keycodes (i.e. gui_keyboard:keycode()) are directly coming from
-% Loic Hoguin's esdl2 (see [1]:
+% Loïc Hoguin's esdl2 (see [1]:
 % https://github.com/ninenines/esdl2/blob/master/include/sdl_keycode.hrl), which
 % are themselves deriving in turn from Sam Lantinga's libSDL2 (see [2]:
 % https://github.com/libsdl-org/SDL/blob/main/src/events/SDL_keyboard.c).
@@ -163,7 +163,7 @@
 -define(MYR_K_BACKQUOTE, $`).    % 96
 
 -define(MYR_K_a, 97). % For 'a': neither 65 (keycode for 'A') nor 24 (scancode
-					  % of the key labelled 'A' on a French keyboard)
+                      % of the key labelled 'A' on a French keyboard)
 -define(MYR_K_b, 98). % Neither 66 nor 56
 -define(MYR_K_c, 54). % Not 67 nor 99.
 -define(MYR_K_d, 40). % Not 68.

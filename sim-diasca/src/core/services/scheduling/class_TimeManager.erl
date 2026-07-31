@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -29,15 +29,15 @@ behalf of the simulation actors.
 
 
 -define( class_description,
-		 "Distributed management of simulation time. "
-		 "The time manager is expected to be a singleton on each computing "
-		 "node. "
-		 "Its process is registered locally under the name returned by the "
-		 "get_registration_name/0 static method. "
-		 "This is a time-driven simulation, actors are expected to be "
-		 "synchronous. "
-		 "See class_TimeManager_batch_test.erl and "
-		 "class_TimeManager_interactive_test.erl." ).
+         "Distributed management of simulation time. "
+         "The time manager is expected to be a singleton on each computing "
+         "node. "
+         "Its process is registered locally under the name returned by the "
+         "get_registration_name/0 static method. "
+         "This is a time-driven simulation, actors are expected to be "
+         "synchronous. "
+         "See class_TimeManager_batch_test.erl and "
+         "class_TimeManager_interactive_test.erl." ).
 
 
 
@@ -48,9 +48,9 @@ behalf of the simulation actors.
 
 % Helper functions:
 -export([ get_current_tick_offset/1, get_current_tick/1,
-		  get_simulation_time_and_date/1,
-		  timestamp_to_ticks/2, ticks_to_timestamp/2,
-		  display_waiting_reason/1, merge_local_with/1 ]).
+          get_simulation_time_and_date/1,
+          timestamp_to_ticks/2, ticks_to_timestamp/2,
+          display_waiting_reason/1, merge_local_with/1 ]).
 
 
 % Useful for testing directly from the shell:
@@ -193,8 +193,8 @@ the current diasca), or a new (possibly distant) tick to schedule (the smaller
 they have in their subtree).
 """.
 -type next_manager_action() :: 'no_planned_action'
-							 | 'new_diasca_needed'
-							 | tick_offset().
+                             | 'new_diasca_needed'
+                             | tick_offset().
 
 
 
@@ -217,10 +217,10 @@ otherwise for triggered actors)
 The main simulation events that may be listened to (for example by plugins).
 """.
 -type simulation_events() :: 'simulation_started'
-						   | 'simulation_suspended'
-						   | 'simulation_resumed'
-						   | 'simulation_succeeded'
-						   | 'simulation_stopped'.
+                           | 'simulation_suspended'
+                           | 'simulation_resumed'
+                           | 'simulation_succeeded'
+                           | 'simulation_stopped'.
 
 
 
@@ -292,11 +292,11 @@ Corresponds to a process listening to wallclock-timing events.
 
 
 -export_type([ tick/0, tick_offset/0, tick_duration/0, diasca/0,
-			   logical_timestamp/0, virtual_seconds/0, simulation_events/0,
-			   simulation_interactivity_mode/0, schedule_count/0,
-			   time_manager_pid/0,
-			   simulation_listener_pid/0, logical_time_listener_pid/0,
-			   wallclock_time_listener_pid/0 ]).
+               logical_timestamp/0, virtual_seconds/0, simulation_events/0,
+               simulation_interactivity_mode/0, schedule_count/0,
+               time_manager_pid/0,
+               simulation_listener_pid/0, logical_time_listener_pid/0,
+               wallclock_time_listener_pid/0 ]).
 
 
 % The time, in milliseconds, to wait between two nominal console outputs of the
@@ -326,7 +326,7 @@ To display relevant time information on the console, respectively: simulation
 date and time, tick and diasca, wallclock date and time.
 """.
 -type timing_info() ::
-		{ SimDateStr :: ustring(), SimTimeStr :: ustring(),
+        { SimDateStr :: ustring(), SimTimeStr :: ustring(),
           tick_offset(), diasca(),
           WallclockDateStr :: ustring(), WallclockTimeStr :: ustring() }.
 
@@ -346,232 +346,232 @@ count, total scheduled count, total process count.
 % The attributes that are specific to a time-manager instance are:
 -define( class_attributes, [
 
-	{ parent_manager_pid, option( time_manager_pid() ),
-	  "the PID of the parent time manager of this manager (if any, otherwise "
-	  "set to 'undefined', in which case the current time manager is the root "
-	  "one" },
+    { parent_manager_pid, option( time_manager_pid() ),
+      "the PID of the parent time manager of this manager (if any, otherwise "
+      "set to 'undefined', in which case the current time manager is the root "
+      "one" },
 
-	{ child_managers, set( time_manager_pid() ),
-	  "the set (unordered, with no duplicates) of the direct child managers "
-	  "of this manager" },
+    { child_managers, set( time_manager_pid() ),
+      "the set (unordered, with no duplicates) of the direct child managers "
+      "of this manager" },
 
-	{ known_local_actors, set( actor_pid() ),
-	  "the set of the PIDs of all known actors that are directly managed by "
-	  "this time manager; useful to notify them for example that the "
-	  "simulation starts (it is a set, as for example we have to ensure that "
-	  "an actor is not already subscribed before subscribing it)" },
+    { known_local_actors, set( actor_pid() ),
+      "the set of the PIDs of all known actors that are directly managed by "
+      "this time manager; useful to notify them for example that the "
+      "simulation starts (it is a set, as for example we have to ensure that "
+      "an actor is not already subscribed before subscribing it)" },
 
-	{ load_balancer_pid, load_balancer_pid(), "the PID of the load balancer "
-	  "(useful to keep track of actor overall count for example)" },
+    { load_balancer_pid, load_balancer_pid(), "the PID of the load balancer "
+      "(useful to keep track of actor overall count for example)" },
 
-	{ started, boolean(), "tells whether the time manager is running" },
+    { started, boolean(), "tells whether this time manager is running" },
 
-	{ initial_tick, tick(), "the (absolute) simulation tick at which the time "
-	  "manager will start, whenever asked to start; this corresponds to the "
-	  "actual beginning of the simulation" },
+    { initial_tick, tick(), "the (absolute) simulation tick at which this time "
+      "manager will start, whenever asked to start; this corresponds to the "
+      "actual beginning of the simulation" },
 
-	{ initial_timestamp, timestamp(), "the wallclock timestamp "
-	  "corresponding to the moment the time manager was requested to start" },
+    { initial_timestamp, timestamp(), "the wallclock timestamp "
+      "corresponding to the moment this time manager was requested to start" },
 
-	{ current_tick_offset, tick_offset(), "the offset, expressed as a number "
-	  "of ticks, between the initial tick and the current one; we use mostly "
-	  "offsets rather than absolute ticks for efficiency reasons" },
+    { current_tick_offset, tick_offset(), "the offset, expressed as a number "
+      "of ticks, between the initial tick and the current one; for efficiency "
+      "reasons, we use mostly offsets rather than absolute ticks" },
 
-	{ current_diasca, diasca(),
-	  "corresponds to the current diasca being evaluated" },
+    { current_diasca, diasca(),
+      "corresponds to the current diasca being evaluated" },
 
-	{ spontaneous_agenda, agenda(), "the agenda  of the next simulation tick "
-	  "offsets during which this time manager will have to send spontaneous "
-	  "tops, to at least one actor" },
+    { spontaneous_agenda, agenda(), "the agenda  of the next simulation tick "
+      "offsets during which this time manager will have to send spontaneous "
+      "tops, to at least one actor" },
 
-	{ previous_timestamp, logical_timestamp(), "the previous diasca "
-	  "that was scheduled, so that tracking information can be correctly "
-	  "associated to the right simulation moment" },
+    { previous_timestamp, logical_timestamp(), "the previous diasca "
+      "that was scheduled, so that tracking information can be correctly "
+      "associated to the right simulation moment" },
 
-	{ next_timestamp, option( logical_timestamp() ),
-	  "the expected new simulation timestamp, from the point of view of this "
-	  "time manager; when being in {Talpha,Dalpha} it can be either "
-	  "'undefined', or {Talpha,Dalpha+1} (if a new diasca is already known to "
-	  "be needed) or {Tbeta,0} with Tbeta > Talpha otherwise" },
+    { next_timestamp, option( logical_timestamp() ),
+      "the expected new simulation timestamp, from the point of view of this "
+      "time manager; when being in {Talpha,Dalpha} it can be either "
+      "'undefined', or {Talpha,Dalpha+1} (if a new diasca is already known to "
+      "be needed) or {Tbeta,0} with Tbeta > Talpha otherwise" },
 
-	{ next_action, next_manager_action(), "the soonest deadline that is known "
-	  "of this manager (based on its scheduling subtree), equal to "
-	  "'no_planned_action', to 'new_diasca_needed' or to an actual tick offset "
-	  "to keep track of its soonest known deadline" },
+    { next_action, next_manager_action(), "the soonest deadline that is known "
+      "of this manager (based on its scheduling subtree), equal to "
+      "'no_planned_action', to 'new_diasca_needed' or to an actual tick offset "
+      "to keep track of its soonest known deadline" },
 
-	{ actors_to_trigger_in_one_diasca, set( actor_pid() ),
-	  "the set of actors that should be triggered on the next scheduled "
-	  "diasca (stored in next_timestamp, whichever it is, whether or not this "
-	  "time manager has already received its 'new diasca' message) because "
-	  "they have received an actor message the current overall diasca; a local "
-	  "actor is thus listed up to once, even if it received more than one "
-	  "actor message on the corresponding diasca (this is ensured actor-side, "
-	  "see schedule_trigger_already_sent, and also because the time managers "
-	  "store them in a set, not a list)" },
+    { actors_to_trigger_in_one_diasca, set( actor_pid() ),
+      "the set of actors that should be triggered on the next scheduled "
+      "diasca (stored in next_timestamp, whichever it is, whether or not this "
+      "time manager has already received its 'new diasca' message) because "
+      "they have received an actor message the current overall diasca; a local "
+      "actor is thus listed up to once, even if it received more than one "
+      "actor message on the corresponding diasca (this is ensured actor-side, "
+      "see schedule_trigger_already_sent, and also because the time managers "
+      "store them in a set, not a list)" },
 
-	{ actors_to_trigger_in_two_diascas, set( actor_pid() ),
-	  "the set of actors that should be triggered on the diasca *after* the "
-	  "next scheduled one, due to the intrinsic race condition described in "
-	  "the implementation notes; a local actor must be listed up to once, "
-	  "even if it received more than one actor message on the corresponding "
-	  "diasca (this is ensured actor-side, see schedule_trigger_already_sent); "
-	  "this is also a set, as it will be assigned to "
-	  "actors_to_trigger_in_one_diasca afterwards" },
+    { actors_to_trigger_in_two_diascas, set( actor_pid() ),
+      "the set of actors that should be triggered on the diasca *after* the "
+      "next scheduled one, due to the intrinsic race condition described in "
+      "the implementation notes; a local actor must be listed up to once, "
+      "even if it received more than one actor message on the corresponding "
+      "diasca (this is ensured actor-side, see schedule_trigger_already_sent); "
+      "this is also a set, as it will be assigned to "
+      "actors_to_trigger_in_one_diasca afterwards" },
 
-	{ watchdog_pid, option( pid() ),
-	  "PID of the watchdog, if any, i.e. iff being the root time manager" },
+    { watchdog_pid, option( pid() ),
+      "PID of the watchdog, if any, i.e. iff being the root time manager" },
 
-	{ stop_tick_offset, option( tick_offset() ), "the tick offset at which the "
-	  "simulation should end (if being in the root time manager and if "
-	  "termination is based on a fixed timestamp in simulation time), "
-	  "otherwise 'undefined'; only the root time manager may have a stop tick "
-	  "offset defined" },
+    { stop_tick_offset, option( tick_offset() ), "the tick offset at which the "
+      "simulation should end (if being in the root time manager and if "
+      "termination is based on a fixed timestamp in simulation time), "
+      "otherwise 'undefined'; only the root time manager may have a stop tick "
+      "offset defined" },
 
-	{ result_manager_pid, option( result_manager_pid() ), "the PID of the "
-	  "result manager, notably so that the collection of results can be "
-	  "driven" },
+    { result_manager_pid, option( result_manager_pid() ), "the PID of the "
+      "result manager, notably so that the collection of results can be "
+      "driven" },
 
-	{ simulation_listeners, [ simulation_listener_pid() ],
-	  "a (plain) list of the PIDs of the processes which are to keep track of "
-	  "the main simulation events, like start, stop, suspend, resume "
-	  "transitions" },
+    { simulation_listeners, [ simulation_listener_pid() ],
+      "a (plain) list of the PIDs of the processes which are to keep track of "
+      "the main simulation events, like start, stop, suspend, resume "
+      "transitions" },
 
-	{ time_listeners, [ logical_time_listener_pid() ],
-	  "a (plain) list of the PIDs of the processes that are to keep track of "
-	  "the logical scheduling (i.e. ticks and diascas), while not being actors "
-	  "(their onNewTick/2 and onNewDiasca/3 oneways are triggered "
-	  "appropriately)" },
+    { time_listeners, [ logical_time_listener_pid() ],
+      "a (plain) list of the PIDs of the processes that are to keep track of "
+      "the logical scheduling (i.e. ticks and diascas), while not being actors "
+      "(their onNewTick/2 and onNewDiasca/3 oneways are triggered "
+      "appropriately)" },
 
-	{ wallclock_milestone_period, milliseconds(),
-	  "the actual (wall-clock) duration between two wallclock milestones" },
+    { wallclock_milestone_period, milliseconds(),
+      "the actual (wall-clock) duration between two wallclock milestones" },
 
-	{ wallclock_milestone_listeners, [ wallclock_time_listener_pid() ],
-	  "a (plain) list of the PIDs of the processes that are to be notified "
-	  "whenever wallclock-based milestones are met (their "
-	  "onWallclockMilestone/2 oneways are triggered appropriately), i.e. when "
-	  "a sufficient time in the real world elapsed" },
+    { wallclock_milestone_listeners, [ wallclock_time_listener_pid() ],
+      "a (plain) list of the PIDs of the processes that are to be notified "
+      "whenever wallclock-based milestones are met (their "
+      "onWallclockMilestone/2 oneways are triggered appropriately), i.e. when "
+      "a sufficient time in the real world elapsed" },
 
-	{ tick_milestone_period, tick_offset(), "the virtual (in simulation-time) "
-	  "duration between two tick milestones" },
+    { tick_milestone_period, tick_offset(), "the virtual (in simulation-time) "
+      "duration between two tick milestones" },
 
-	{ tick_milestone_listeners, [ logical_time_listener_pid() ],
-	  "a (plain) list of the PIDs of the processes that are to be notified "
-	  "whenever tick-based milestones are met (their onTickMilestone/2 oneways "
-	  "are triggered appropriately), i.e. when a sufficient time in the "
-	  "simulated world elapsed" },
+    { tick_milestone_listeners, [ logical_time_listener_pid() ],
+      "a (plain) list of the PIDs of the processes that are to be notified "
+      "whenever tick-based milestones are met (their onTickMilestone/2 oneways "
+      "are triggered appropriately), i.e. when a sufficient time in the "
+      "simulated world elapsed" },
 
-	{ suspended, boolean(),
-	  "tells whether the simulation is currently suspended" },
+    { suspended, boolean(),
+      "tells whether the simulation is currently suspended" },
 
-	{ simulation_tick_duration, virtual_seconds(),
-	  "tells the actual duration, in seconds (in virtual time) between two "
-	  "simulation ticks (as a floating-point value)" },
+    { simulation_tick_duration, virtual_seconds(),
+      "tells the actual duration, in seconds (in virtual time) between two "
+      "simulation ticks (as a floating-point value)" },
 
-	{ simulation_tick_waiting, milliseconds(),
-	  "tells, when in interactive mode (with regard to simulation), "
-	  "the real (i.e. wall-clock, user) duration, in milliseconds, which is "
-	  "expected between two simulation ticks (possibly once scaled and "
-	  "rounded)" },
+    { simulation_tick_waiting, milliseconds(),
+      "tells, when in interactive mode (with regard to simulation), "
+      "the real (i.e. wall-clock, user) duration, in milliseconds, which is "
+      "expected between two simulation ticks (possibly once scaled and "
+      "rounded)" },
 
-	{ simulation_interactivity_mode, simulation_interactivity_mode(),
-	  "discriminates between the 'interactive' and 'batch' simulation modes" },
+    { simulation_interactivity_mode, simulation_interactivity_mode(),
+      "discriminates between the 'interactive' and 'batch' simulation modes" },
 
-	{ diasca_count, option( count() ), "keeps track of the number of all "
-	  "diascas evaluated up to now, for example to measure concurrency" },
+    { diasca_count, option( count() ), "keeps track of the number of all "
+      "diascas evaluated up to now, for example to measure concurrency" },
 
-	{ schedule_count, option( count() ), "keeps track of the total number of "
-	  "schedulings across all diascas, notably to be able to compute the "
-	  "average concurrency at the end of a given case" },
+    { schedule_count, option( count() ), "keeps track of the total number of "
+      "schedulings across all diascas, notably to be able to compute the "
+      "average concurrency at the end of a given case" },
 
-	{ terminated_actors, [ actor_pid() ], "a plain list of actors that have "
-	  "terminated (they have completed their termination procedure and can "
-	  "thus be deleted at any time; actually their deletion is triggered at "
-	  "the beginning of the next tick); does not seem to be actually used "
-	  "currently (never set)" },
+    { terminated_actors, [ actor_pid() ], "a plain list of actors that have "
+      "terminated (they have completed their termination procedure and can "
+      "thus be deleted at any time; actually their deletion is triggered at "
+      "the beginning of the next tick); does not seem to be actually used "
+      "currently (never set)" },
 
-	{ terminating_actors, [ actor_pid() ], "a plain list (not a set: just "
-	  "needing to add elements or iterate on them all) of actors that are "
-	  "actively terminating (i.e. within a bounded number of diascas) this "
-	  "diasca, but have not terminated yet; the list is established (reset "
-	  "and rebuilt) at each diasca" },
+    { terminating_actors, [ actor_pid() ], "a plain list (not a set: just "
+      "needing to add elements or iterate on them all) of actors that are "
+      "actively terminating (i.e. within a bounded number of diascas) this "
+      "diasca, but have not terminated yet; the list is established (reset "
+      "and rebuilt) at each diasca" },
 
-	{ actors_to_delete_at_next_tick, [ actor_pid() ],
-	  "a list of the PIDs of all actors that are terminating and whose "
-	  "(deferred) deletion is to happen at next tick" },
+    { actors_to_delete_at_next_tick, [ actor_pid() ],
+      "a list of the PIDs of all actors that are terminating and whose "
+      "(deferred) deletion is to happen at next tick" },
 
-	{ waited_child_managers, set( time_manager_pid() ),
-	  "the set of child managers that are still waited, for the current diasca "
-	  "to finish; it is a set as well, since a simulation distributed over a "
-	  "cluster may involve, say, 300+ nodes, if not 65000 nodes on a "
-	  "Bluegene/Q?" },
+    { waited_child_managers, set( time_manager_pid() ),
+      "the set of child managers that are still waited, for the current diasca "
+      "to finish; it is a set as well, since a simulation distributed over a "
+      "cluster may involve, say, 300+ nodes, if not 65000 nodes on a "
+      "Bluegene/Q?" },
 
-	{ waited_spontaneous_actors, set( actor_pid() ),
-	  "the set of the actors whose spontaneous behaviour has been scheduled "
-	  "this tick (as diasca 0) and that are still waited, for the current "
-	  "diasca to finish" },
+    { waited_spontaneous_actors, set( actor_pid() ),
+      "the set of the actors whose spontaneous behaviour has been scheduled "
+      "this tick (as diasca 0) and that are still waited, for the current "
+      "diasca to finish" },
 
-	{ waited_triggered_actors, set( actor_pid() ),
-	  "the set of the actors whose triggered behaviour has been scheduled this "
-	  "diasca and that are still waited, for the current diasca to finish" },
+    { waited_triggered_actors, set( actor_pid() ),
+      "the set of the actors whose triggered behaviour has been scheduled this "
+      "diasca and that are still waited, for the current diasca to finish" },
 
-	{ watchdog_waited, boolean(),
-	  "tells whether the watchdog is still waited on this diasca" },
+    { watchdog_waited, boolean(),
+      "tells whether the watchdog is still waited on this diasca" },
 
-	{ waited_count, count(), "the number of 'done' notifications, coming "
-	  "from scheduled actors, child managers and the watchdog, that are "
-	  "waited this diasca (this cached count spares the need of polling "
-	  "numerous sets each time a new 'done' message is received)" },
+    { waited_count, count(), "the number of 'done' notifications, coming "
+      "from scheduled actors, child managers and the watchdog, that are "
+      "waited this diasca (this cached count spares the need of polling "
+      "numerous sets each time a new 'done' message is received)" },
 
-	{ interactive_tick_triggered, boolean(), "allows, in interactive mode, to "
-	  "schedule a new tick only once, even if the timer sent multiple "
-	  "timerTickFinished messages" },
+    { interactive_tick_triggered, boolean(), "allows, in interactive mode, to "
+      "schedule a new tick only once, even if the timer sent multiple "
+      "timerTickFinished messages" },
 
-	{ timer_pid, option( pid() ), "the PID of the timer process (if any), used "
-	  "to keep track of real time when running in interactive mode; is set "
-	  "iff being the root time manager and being in interactive mode" },
+    { timer_pid, option( pid() ), "the PID of the timer process (if any), used "
+      "to keep track of real time when running in interactive mode; is set "
+      "iff being the root time manager and being in interactive mode" },
 
-	{ wallclock_tracker_pid, option( pid() ), "the PID of the wallclock "
-	  "tracker (only used for the root time manager)" },
+    { wallclock_tracker_pid, option( pid() ), "the PID of the wallclock "
+      "tracker (only used for the root time manager)" },
 
-	{ time_tracker_pid, option( pid() ), "the PID of the time tracker (if any; "
-	  "only used for the root time manager)" },
+    { time_tracker_pid, option( pid() ), "the PID of the time tracker (if any; "
+      "only used for the root time manager)" },
 
-	{ overall_actor_count, actor_count(), "the current total number of actors "
-	  "in the simulation, as notified by the load balancer (only useful in the "
-	  "root time manager)" },
+    { overall_actor_count, actor_count(), "the current total number of actors "
+      "in the simulation, as notified by the load balancer (only useful in the "
+      "root time manager)" },
 
-	{ scheduled_tracking, actor_count(), "the number of actors to be "
-	  "spontaneously scheduled (if being at diasca 0), or triggered (in "
-	  "later diascas); it is the sum for all the scheduling subtree that "
-	  "corresponds to this time manager (including itself), and it is updated "
-	  "at each scheduled diasca" },
+    { scheduled_tracking, actor_count(), "the number of actors to be "
+      "spontaneously scheduled (if being at diasca 0), or triggered (in "
+      "later diascas); it is the sum for all the scheduling subtree that "
+      "corresponds to this time manager (including itself), and it is updated "
+      "at each scheduled diasca" },
 
-	{ process_tracking, count(), "the current count in terms of Erlang "
-	  "processes, for all the scheduling subtree that corresponds to this "
-	  "time manager (including itself); is updated at each scheduled tick" },
+    { process_tracking, count(), "the current count in terms of Erlang "
+      "processes, for all the scheduling subtree that corresponds to this "
+      "time manager (including itself); is updated at each scheduled tick" },
 
-	{ root_data_exchanger_pid, option( data_exchanger_pid() ), "the PID of the "
-	  "root data-exchanger (if any), with whom the root time manager may have "
-	  "to interact" },
+    { root_data_exchanger_pid, option( data_exchanger_pid() ), "the PID of the "
+      "root data-exchanger (if any), with whom the root time manager may have "
+      "to interact" },
 
-	{ root_instance_tracker_pid, option( instance_tracker_pid() ),
-	  "the PID of the root instance tracker (if any), to resolve "
-	  "instance-level issues" },
+    { root_instance_tracker_pid, option( instance_tracker_pid() ),
+      "the PID of the root instance tracker (if any), to resolve "
+      "instance-level issues" },
 
-	{ local_instance_tracker_pid, instance_tracker_pid(),
-	  "the PID of the local instance tracker (if any), i.e. the one running "
-	  "on the same node as this time manager), to resolve instance-level "
-	  "issues" },
+    { local_instance_tracker_pid, instance_tracker_pid(),
+      "the PID of the local instance tracker (if any), i.e. the one running "
+      "on the same node as this time manager), to resolve instance-level "
+      "issues" },
 
-	{ interdiasca_listeners, [ logical_time_listener_pid() ],
-	  "a list containing the PIDs of all registered inter-diasca listeners "
-	  "(e.g. typically including the root data-exchanger)" },
+    { interdiasca_listeners, [ logical_time_listener_pid() ],
+      "a list containing the PIDs of all registered inter-diasca listeners "
+      "(e.g. typically including the root data-exchanger)" },
 
-	{ resilience_manager_pid, option( resilence_manager_pid() ),
-	  "the PID of the resilience manager" },
+    { resilience_manager_pid, option( resilence_manager_pid() ),
+      "the PID of the resilience manager" },
 
-	{ serialisation_requested, boolean(), "tells whether a serialisation is "
-	  "to occur once the current diasca is over" } ] ).
+    { serialisation_requested, boolean(), "tells whether a serialisation is "
+      "to occur once the current diasca is over" } ] ).
 
 
 
@@ -581,8 +581,8 @@ count, total scheduled count, total process count.
 
 % For silencing conditionally-unused functions:
 -compile({ nowarn_unused_function,
-		   [ get_trace_timestamp/3, check_tick_consistency/2,
-			 check_diasca_consistency/3 ] }).
+           [ get_trace_timestamp/3, check_tick_consistency/2,
+             check_diasca_consistency/3 ] }).
 
 
 -include("engine_common_defines.hrl").
@@ -618,27 +618,27 @@ count, total scheduled count, total process count.
 % To display additional (debug) information on the console:
 
 % To disable as a whole:
--define( display_console( FormatString, Values ), ok ).
+-define( display_console( FormatStr, Values ), ok ).
 
 
 % To have the PID information about the emitter:
-%-define( display_console( FormatString, Values ),
-%         trace_utils:debug_fmt( "[~w] " ++ FormatString,
+%-define( display_console( FormatStr, Values ),
+%         trace_utils:debug_fmt( "[~w] " ++ FormatStr,
 %                                [ self() | Values ] ) ).
 
 % To additionally discriminate between PIDs having the same middle number, based
 % on node:
 %
-%-define( display_console( FormatString, Values ),
-%         trace_utils:debug_fmt( "[~w on ~ts] " ++ FormatString,
+%-define( display_console( FormatStr, Values ),
+%         trace_utils:debug_fmt( "[~w on ~ts] " ++ FormatStr,
 %                                [ self(), node() | Values ] ) ).
 
 % To additionally discriminate between PIDs having the same middle number, based
 % on host:
 %
-%-define( display_console( FormatString, Values ),
-%		 trace_utils:debug_fmt( "[~w on ~ts] " ++ FormatString,
-%								[ self(), net_adm:localhost() | Values ] ) ).
+%-define( display_console( FormatStr, Values ),
+%        trace_utils:debug_fmt( "[~w on ~ts] " ++ FormatStr,
+%                               [ self(), net_adm:localhost() | Values ] ) ).
 
 
 
@@ -878,17 +878,17 @@ Note: directly deriving from the class_Actor counterpart system.
 """.
 get_trace_timestamp( TickOffset, Diasca, State ) ->
 
-	CurrentTick = ?getAttr(initial_tick) + TickOffset,
+    CurrentTick = ?getAttr(initial_tick) + TickOffset,
 
-	% Only relies on the simulation_tick_duration attribute:
-	CurrentSecond = convert_ticks_to_seconds( CurrentTick, State ),
+    % Only relies on the simulation_tick_duration attribute:
+    CurrentSecond = convert_ticks_to_seconds( CurrentTick, State ),
 
-	Timestamp =
-		calendar:gregorian_seconds_to_datetime( round( CurrentSecond ) ),
+    Timestamp =
+        calendar:gregorian_seconds_to_datetime( round( CurrentSecond ) ),
 
-	% Cannot include a newline as it would break the trace format:
-	text_utils:format( "~ts {~B,~B}",
-		[ time_utils:get_textual_timestamp( Timestamp ), TickOffset, Diasca ] ).
+    % Cannot include a newline as it would break the trace format:
+    text_utils:format( "~ts {~B,~B}",
+        [ time_utils:get_textual_timestamp( Timestamp ), TickOffset, Diasca ] ).
 
 
 
@@ -927,275 +927,275 @@ Note: the initial simulation date is to be given only when this time manager is
 started.
 """.
 -spec construct( wooper:state(), virtual_seconds(),
-	simulation_interactivity_mode(),
-	RootTimeManager :: 'none' | time_manager_pid(),
-	RootInstanceTracker :: instance_tracker_pid(), boolean(),
-	class_DeploymentManager:simulation_context() ) -> wooper:state().
+    simulation_interactivity_mode(),
+    RootTimeManager :: 'none' | time_manager_pid(),
+    RootInstanceTracker :: instance_tracker_pid(), boolean(),
+    class_DeploymentManager:simulation_context() ) -> wooper:state().
 construct( State, SimulationTickDuration, SimInteractivityMode,
-		   ParentManagerInformation, RootInstanceTrackerPid,
-		   TroubleshootingMode, _Context ) ->
+           ParentManagerInformation, RootInstanceTrackerPid,
+           TroubleshootingMode, _Context ) ->
 
-	% This manager will terminate if ever an exit signal is received, instead of
-	% transforming the signal into an 'EXIT' message:
-	% (a monitor could be used instead)
-	%
-	%erlang:process_flag( trap_exit, true ),
+    % This manager will terminate if ever an exit signal is received, instead of
+    % transforming the signal into an 'EXIT' message:
+    % (a monitor could be used instead)
+    %
+    %erlang:process_flag( trap_exit, true ),
 
-	% First the direct mother classes, then this class-specific actions:
-	TraceState = class_EngineBaseObject:construct( State,
-		?trace_categorize("Time Manager") ),
-
-
-	% We raise here the priority of all time managers, not specifically for
-	% their processings, but because they are to send a large number of messages
-	% (to scheduled actors), and, as a consequence, the Erlang scheduler might
-	% want to retaliate:
-	%
-	erlang:process_flag( priority, _Level=high ),
-
-	% As a time manager may receive a larger number of messages from its local
-	% actors:
-	%
-	erlang:process_flag( message_queue_data, off_heap ),
+    % First the direct mother classes, then this class-specific actions:
+    TraceState = class_EngineBaseObject:construct( State,
+        ?trace_categorize("Time Manager") ),
 
 
-	% Instance trackers are created before time managers:
-	LocalInstanceTrackerPid =
-		class_InstanceTracker:register_agent( ?time_manager_name ),
+    % We raise here the priority of all time managers, not specifically for
+    % their processings, but because they are to send a large number of messages
+    % (to scheduled actors), and, as a consequence, the Erlang scheduler might
+    % want to retaliate:
+    %
+    erlang:process_flag( priority, _Level=high ),
 
-	% The child_managers are declared here, as the declareChildManager call will
-	% need them to be already set:
-	%
-	CategorizedState =
-		setAttribute( TraceState, child_managers, set_utils:new() ),
+    % As a time manager may receive a larger number of messages from its local
+    % actors:
+    %
+    erlang:process_flag( message_queue_data, off_heap ),
 
-	ActualSimulationTickDuration =
-		check_tick_duration( SimulationTickDuration ),
 
-	SimInteractivityMode =:= interactive
+    % Instance trackers are created before time managers:
+    LocalInstanceTrackerPid =
+        class_InstanceTracker:register_agent( ?time_manager_name ),
+
+    % The child_managers are declared here, as the declareChildManager call will
+    % need them to be already set:
+    %
+    CategorizedState =
+        setAttribute( TraceState, child_managers, set_utils:new() ),
+
+    ActualSimulationTickDuration =
+        check_tick_duration( SimulationTickDuration ),
+
+    SimInteractivityMode =:= interactive
         orelse SimInteractivityMode =:= batch orelse
-			throw( { invalid_simulation_interactivity_mode,
-					 SimInteractivityMode } ),
+            throw( { invalid_simulation_interactivity_mode,
+                     SimInteractivityMode } ),
 
-	RegistrationName = get_registration_name(),
+    RegistrationName = get_registration_name(),
 
-	{ ParentManager, Description, InitialWaitedCount } =
-			case ParentManagerInformation of
+    { ParentManager, Description, InitialWaitedCount } =
+            case ParentManagerInformation of
 
-		none ->
+        none ->
 
-			% Only one to register globally as well (even if re-deploying after
-			% a recovered crash):
-			%
-			naming_utils:register_as( RegistrationName, local_and_global ),
+            % Only one to register globally as well (even if re-deploying after
+            % a recovered crash):
+            %
+            naming_utils:register_as( RegistrationName, local_and_global ),
 
-			?send_debug_fmt( CategorizedState, "Root time manager "
-				"registered as '~ts', locally and globally.",
-				[ RegistrationName ] ),
+            ?send_debug_fmt( CategorizedState, "Root time manager "
+                "registered as '~ts', locally and globally.",
+                [ RegistrationName ] ),
 
-			% The root manager is directly spawned as a process linked to the
-			% deployment manager.
+            % The root manager is directly spawned as a process linked to the
+            % deployment manager.
 
-			% We wait until the actual start to set the initial waited count (as
-			% the root time manager may be restarted, so each start should be
-			% done with a right initialisation):
-			%
-			{ undefined, "root time manager", _InitialWaitedCount=undefined };
-
-
-		ParentPid when is_pid( ParentPid ) ->
-
-			% We are here a local (non-root) time manager, the children have to
-			% declare themselves to their direct parent:
-			%
-			% (request for synchronisation purposes)
-			%
-			ParentPid ! { declareChildManager, [], self() },
-
-			% A bit of interleaving:
-
-			% Linking to the parent time manager so that transitively the root
-			% one is linked to all actors:
-			%
-			erlang:link( ParentPid ),
-
-			?send_debug_fmt( CategorizedState, "Child time manager "
-				"registered, locally, as '~ts'.", [ RegistrationName ] ),
-
-			naming_utils:register_as( RegistrationName, local_only ),
-
-			receive
-
-				{ wooper_result, child_manager_registered } ->
-
-					Desc = text_utils:format(
-						"child time manager, whose parent manager is ~w,",
-						[ ParentPid ] ),
-
-					% A child manager is not specifically started, hence it will
-					% not go through init/0, so we initialise its waited count
-					% here:
-					%
-					{ ParentPid, Desc, _InitialWaitedCount=0 }
-
-			end
-
-	 end,
-
-	SimulationFrequency = 1 / ActualSimulationTickDuration,
-
-	TickDurationString = time_utils:duration_to_string(
-		round( 1000 * ActualSimulationTickDuration ) ),
-
-	?send_info_fmt( CategorizedState,
-		"Creating a " ++ Description ++ " in ~w mode with an actual "
-		"fundamental simulation frequency of approximately ~.2fHz; "
-		"in virtual time, each simulation tick will last exactly for ~fs "
-		"(i.e. ~ts).",
-		[ SimInteractivityMode, SimulationFrequency,
-		  ActualSimulationTickDuration, TickDurationString ] ),
+            % We wait until the actual start to set the initial waited count (as
+            % the root time manager may be restarted, so each start should be
+            % done with a right initialisation):
+            %
+            { undefined, "root time manager", _InitialWaitedCount=undefined };
 
 
-	TickWaitingDuration = case SimInteractivityMode of
+        ParentPid when is_pid( ParentPid ) ->
 
-		interactive ->
+            % We are here a local (non-root) time manager, the children have to
+            % declare themselves to their direct parent:
+            %
+            % (request for synchronisation purposes)
+            %
+            ParentPid ! { declareChildManager, [], self() },
 
-			% In milliseconds:
-			case round( ?scale_factor_for_interactive_time * 1000
-							* ActualSimulationTickDuration ) of
+            % A bit of interleaving:
 
-				0 ->
-					?send_warning_fmt( CategorizedState,
-						"Running in simulation interactive mode, "
-						"with a inter-tick duration that has been forced "
-						"to exactly 1 ms, "
-						"knowing that applying the interactive scale factor "
-						"of x~f to the simulation tick duration "
-						"(of ~fs, i.e. ~ts) would have led to a null "
-						"inter-tick duration.",
-						[ ?scale_factor_for_interactive_time,
-						  ActualSimulationTickDuration, TickDurationString ] ),
-					1;
+            % Linking to the parent time manager so that transitively the root
+            % one is linked to all actors:
+            %
+            erlang:link( ParentPid ),
 
-				RoundDuration ->
-					?send_info_fmt( CategorizedState,
-						"Running in simulation interactive mode, "
-						"with an actual inter-tick duration of ~B ms "
-						"(i.e. ~ts), resulting from a simulation tick of ~f ms "
-						"(i.e. ~ts) to which the interactive scale factor of "
-						"x~p applies.",
-						[ RoundDuration, time_utils:duration_to_string(
-							round( RoundDuration ) ),
-						  ActualSimulationTickDuration, TickDurationString,
-						  ?scale_factor_for_interactive_time ] ),
-					RoundDuration
+            ?send_debug_fmt( CategorizedState, "Child time manager "
+                "registered, locally, as '~ts'.", [ RegistrationName ] ),
 
-			end;
+            naming_utils:register_as( RegistrationName, local_only ),
 
-		_ ->
-			undefined
+            receive
 
-	end,
+                { wooper_result, child_manager_registered } ->
 
-	% Useful to inspect the code path of each computing node:
-	%send_debug_fmt( CategorizedState, "Code path for node '~ts' is: ~ts",
-	%   [ node(),
-	%     text_utils:strings_to_string( code_utils:get_code_path() ) ] ),
+                    Desc = text_utils:format(
+                        "child time manager, whose parent manager is ~w,",
+                        [ ParentPid ] ),
 
-	EmptySet = set_utils:new(),
+                    % A child manager is not specifically started, hence it will
+                    % not go through init/0, so we initialise its waited count
+                    % here:
+                    %
+                    { ParentPid, Desc, _InitialWaitedCount=0 }
 
-	StartState = setAttributes( CategorizedState, [
+            end
 
-		{ parent_manager_pid, ParentManager },
+     end,
 
-		% child_managers already defined.
+    SimulationFrequency = 1 / ActualSimulationTickDuration,
 
-		% As local actors may register before the simulation starts, their list
-		% must be created here:
-		%
-		{ known_local_actors, EmptySet },
+    TickDurationStr = time_utils:duration_to_string(
+        round( 1000 * ActualSimulationTickDuration ) ),
 
-		{ load_balancer_pid, undefined },
-		{ started, false },
+    ?send_info_fmt( CategorizedState,
+        "Creating a " ++ Description ++ " in ~w mode with an actual "
+        "fundamental simulation frequency of approximately ~.2fHz; "
+        "in virtual time, each simulation tick will last exactly for ~fs "
+        "(i.e. ~ts).",
+        [ SimInteractivityMode, SimulationFrequency,
+          ActualSimulationTickDuration, TickDurationStr ] ),
 
-		% initial_tick set later in this method.
-		{ initial_timestamp, time_utils:get_precise_timestamp() },
 
-		% Will be set at simulation start:
-		{ current_tick_offset, undefined },
-		{ current_diasca, undefined },
+    TickWaitingDuration = case SimInteractivityMode of
 
-		% As local actors may register and be scheduled before the simulation
-		% starts, must be created here:
-		%
-		{ spontaneous_agenda, [] },
+        interactive ->
 
-		{ actors_to_trigger_in_one_diasca, EmptySet },
-		{ actors_to_trigger_in_two_diascas, EmptySet },
+            % In milliseconds:
+            case round( ?scale_factor_for_interactive_time * 1000
+                            * ActualSimulationTickDuration ) of
 
-		{ next_action, undefined },
-		{ previous_timestamp, undefined },
-		{ next_timestamp, undefined },
-		{ watchdog_pid, undefined },
-		{ stop_tick_offset, undefined },
-		{ result_manager_pid, undefined },
-		{ simulation_listeners, [] },
-		{ time_listeners, [] },
+                0 ->
+                    ?send_warning_fmt( CategorizedState,
+                        "Running in simulation interactive mode, "
+                        "with a inter-tick duration that has been forced "
+                        "to exactly 1 ms, "
+                        "knowing that applying the interactive scale factor "
+                        "of x~f to the simulation tick duration "
+                        "(of ~fs, i.e. ~ts) would have led to a null "
+                        "inter-tick duration.",
+                        [ ?scale_factor_for_interactive_time,
+                          ActualSimulationTickDuration, TickDurationStr ] ),
+                    1;
 
-		% By default once every 4 real minutes:
-		{ wallclock_milestone_period, 4*60*1000 },
-		{ wallclock_milestone_listeners, [] },
+                RoundDuration ->
+                    ?send_info_fmt( CategorizedState,
+                        "Running in simulation interactive mode, "
+                        "with an actual inter-tick duration of ~B ms "
+                        "(i.e. ~ts), resulting from a simulation tick of ~f ms "
+                        "(i.e. ~ts) to which the interactive scale factor of "
+                        "x~p applies.",
+                        [ RoundDuration, time_utils:duration_to_string(
+                            round( RoundDuration ) ),
+                          ActualSimulationTickDuration, TickDurationStr,
+                          ?scale_factor_for_interactive_time ] ),
+                    RoundDuration
 
-		% By default every 1000 ticks:
-		{ tick_milestone_period, 1000 },
-		{ tick_milestone_listeners, [] },
+            end;
 
-		{ suspended, false },
-		{ simulation_tick_duration, ActualSimulationTickDuration },
-		{ simulation_tick_waiting, TickWaitingDuration },
-		{ simulation_interactivity_mode, SimInteractivityMode },
+        _ ->
+            undefined
 
-		{ diasca_count, undefined },
-		{ schedule_count, undefined },
+    end,
 
-		{ terminated_actors, undefined },
-		{ terminating_actors, undefined },
-		{ actors_to_delete_at_next_tick, [] },
-		{ waited_child_managers, undefined },
-		{ waited_spontaneous_actors, undefined },
-		{ waited_triggered_actors, undefined },
-		{ watchdog_waited, false },
-		{ waited_count, InitialWaitedCount },
-		{ interactive_tick_triggered, undefined },
-		{ timer_pid, undefined },
-		{ wallclock_tracker_pid, undefined },
-		{ time_tracker_pid, undefined },
-		{ overall_actor_count, 0 },
-		{ scheduled_tracking, 0 },
-		{ process_tracking, system_utils:get_process_count() },
-		{ troubleshooting_mode, TroubleshootingMode },
-		{ root_data_exchanger_pid, undefined },
-		{ root_instance_tracker_pid, RootInstanceTrackerPid },
-		{ local_instance_tracker_pid, LocalInstanceTrackerPid },
-		{ interdiasca_listeners, [] },
-		{ resilience_manager_pid, undefined },
-		{ serialisation_requested, false } ] ),
+    % Useful to inspect the code path of each computing node:
+    %send_debug_fmt( CategorizedState, "Code path for node '~ts' is: ~ts",
+    %   [ node(),
+    %     text_utils:strings_to_string( code_utils:get_code_path() ) ] ),
 
-	% Not starting at user time anymore, as it would break reproducibility:
-	%{Date, Time} = {date(), time()},
+    EmptySet = set_utils:new(),
 
-	% Starting by default at a base (common) date instead:
-	%
-	% (StartState needed, as depends on simulation_tick_duration)
-	%
-	DefaultInitialTick =
-		timestamp_to_ticks( ?initial_simulation_date, StartState ),
+    StartState = setAttributes( CategorizedState, [
 
-	?send_debug_fmt( StartState,
-		"Time manager created, default initial tick is ~B.",
-		[ DefaultInitialTick ] ),
+        { parent_manager_pid, ParentManager },
 
-	setAttribute( StartState, initial_tick, DefaultInitialTick ).
+        % child_managers already defined.
+
+        % As local actors may register before the simulation starts, their list
+        % must be created here:
+        %
+        { known_local_actors, EmptySet },
+
+        { load_balancer_pid, undefined },
+        { started, false },
+
+        % initial_tick set later in this method.
+        { initial_timestamp, time_utils:get_precise_timestamp() },
+
+        % Will be set at simulation start:
+        { current_tick_offset, undefined },
+        { current_diasca, undefined },
+
+        % As local actors may register and be scheduled before the simulation
+        % starts, must be created here:
+        %
+        { spontaneous_agenda, [] },
+
+        { actors_to_trigger_in_one_diasca, EmptySet },
+        { actors_to_trigger_in_two_diascas, EmptySet },
+
+        { next_action, undefined },
+        { previous_timestamp, undefined },
+        { next_timestamp, undefined },
+        { watchdog_pid, undefined },
+        { stop_tick_offset, undefined },
+        { result_manager_pid, undefined },
+        { simulation_listeners, [] },
+        { time_listeners, [] },
+
+        % By default once every 4 real minutes:
+        { wallclock_milestone_period, 4*60*1000 },
+        { wallclock_milestone_listeners, [] },
+
+        % By default every 1000 ticks:
+        { tick_milestone_period, 1000 },
+        { tick_milestone_listeners, [] },
+
+        { suspended, false },
+        { simulation_tick_duration, ActualSimulationTickDuration },
+        { simulation_tick_waiting, TickWaitingDuration },
+        { simulation_interactivity_mode, SimInteractivityMode },
+
+        { diasca_count, undefined },
+        { schedule_count, undefined },
+
+        { terminated_actors, undefined },
+        { terminating_actors, undefined },
+        { actors_to_delete_at_next_tick, [] },
+        { waited_child_managers, undefined },
+        { waited_spontaneous_actors, undefined },
+        { waited_triggered_actors, undefined },
+        { watchdog_waited, false },
+        { waited_count, InitialWaitedCount },
+        { interactive_tick_triggered, undefined },
+        { timer_pid, undefined },
+        { wallclock_tracker_pid, undefined },
+        { time_tracker_pid, undefined },
+        { overall_actor_count, 0 },
+        { scheduled_tracking, 0 },
+        { process_tracking, system_utils:get_process_count() },
+        { troubleshooting_mode, TroubleshootingMode },
+        { root_data_exchanger_pid, undefined },
+        { root_instance_tracker_pid, RootInstanceTrackerPid },
+        { local_instance_tracker_pid, LocalInstanceTrackerPid },
+        { interdiasca_listeners, [] },
+        { resilience_manager_pid, undefined },
+        { serialisation_requested, false } ] ),
+
+    % Not starting at user time anymore, as it would break reproducibility:
+    %{Date, Time} = {date(), time()},
+
+    % Starting by default at a base (common) date instead:
+    %
+    % (StartState needed, as depends on simulation_tick_duration)
+    %
+    DefaultInitialTick =
+        timestamp_to_ticks( ?initial_simulation_date, StartState ),
+
+    ?send_debug_fmt( StartState,
+        "Time manager created, default initial tick is ~B.",
+        [ DefaultInitialTick ] ),
+
+    setAttribute( StartState, initial_tick, DefaultInitialTick ).
 
 
 
@@ -1209,35 +1209,35 @@ All still-subscribed listeners will be warned of the manager deletion by a
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
-	% Class-specific actions:
-	?info( "Deleting the time manager." ),
+    % Class-specific actions:
+    ?info( "Deleting the time manager." ),
 
-	StoppedState = case ?getAttr(started) of
+    StoppedState = case ?getAttr(started) of
 
-		true ->
-			{ NewState, stopped } = executeRequest( State, stop ),
-			NewState;
+        true ->
+            { NewState, stopped } = executeRequest( State, stop ),
+            NewState;
 
-		false ->
-			State
+        false ->
+            State
 
-	end,
+    end,
 
-	% Recurses down the scheduling tree:
-	wooper:delete_synchronously_instances(
-		set_utils:to_list( ?getAttr(child_managers) ) ),
+    % Recurses down the scheduling tree:
+    wooper:delete_synchronously_instances(
+        set_utils:to_list( ?getAttr(child_managers) ) ),
 
-	basic_utils:send_to_pid_set( timeManagerShutdown,
-								 ?getAttr(known_local_actors) ),
+    basic_utils:send_to_pid_set( timeManagerShutdown,
+                                 ?getAttr(known_local_actors) ),
 
-	naming_utils:unregister( get_registration_name(), ?registration_scope ),
+    naming_utils:unregister( get_registration_name(), ?registration_scope ),
 
-	class_InstanceTracker:unregister_agent(),
+    class_InstanceTracker:unregister_agent(),
 
-	?info( "Time manager deleted." ),
+    ?info( "Time manager deleted." ),
 
-	% Then allows chaining:
-	StoppedState.
+    % Then allows chaining:
+    StoppedState.
 
 
 
@@ -1257,17 +1257,17 @@ To be called before the simulation is started.
 (request, for synchronisation purposes)
 """.
 -spec declareChildManager( wooper:state() ) ->
-								request_return( 'child_manager_registered' ).
+                                request_return( 'child_manager_registered' ).
 declareChildManager( State ) ->
 
-	NewManagers = set_utils:add( ?getSender(), ?getAttr(child_managers) ),
+    NewManagers = set_utils:add( ?getSender(), ?getAttr(child_managers) ),
 
-	NewState = setAttribute( State, child_managers, NewManagers ),
+    NewState = setAttribute( State, child_managers, NewManagers ),
 
-	% The simulation interactivity mode has already been specified at
-	% construction:
-	%
-	wooper:return_state_result( NewState, child_manager_registered ).
+    % The simulation interactivity mode has already been specified at
+    % construction:
+    %
+    wooper:return_state_result( NewState, child_manager_registered ).
 
 
 
@@ -1278,14 +1278,14 @@ Called to notify the (root) time manager of the PID of the load balancer.
 (request, for synchronisation reasons)
 """.
 -spec setLoadBalancerPid( wooper:state(), load_balancer_pid() ) ->
-								request_return( 'load_balancer_set' ).
+                                request_return( 'load_balancer_set' ).
 setLoadBalancerPid( State, LoadBalancerPid ) ->
 
-	wooper:check_undefined( load_balancer_pid, State ),
+    wooper:check_undefined( load_balancer_pid, State ),
 
-	SetState = setAttribute ( State, load_balancer_pid, LoadBalancerPid  ),
+    SetState = setAttribute ( State, load_balancer_pid, LoadBalancerPid  ),
 
-	wooper:return_state_result( SetState, load_balancer_set ).
+    wooper:return_state_result( SetState, load_balancer_set ).
 
 
 
@@ -1295,27 +1295,27 @@ Registers the fact that the specified load balancer is to be managed by this
 time manager, hence its bootstrap scheduling must be accounted for.
 """.
 -spec registerBootstrapScheduling( wooper:state(), load_balancer_pid() ) ->
-										request_return( 'load_balancer_set' ).
+                                        request_return( 'load_balancer_set' ).
 registerBootstrapScheduling( State, LoadBalancerPid ) ->
 
-	% load_balancer_pid may (if this manager is the root one) or may not be
-	% already set.
+    % load_balancer_pid may (if this manager is the root one) or may not be
+    % already set.
 
-	[] = ?getAttr(spontaneous_agenda),
+    [] = ?getAttr(spontaneous_agenda),
 
-	% We want to schedule the load balancer for a spontaneous behaviour at the
-	% first diasca of the first scheduled tick, so that it can itself trigger
-	% the 'onFirstDiasca/2' actor oneway on all initial actors:
-	%
-	BalancerEntry = { _TickOffset=0, set_utils:singleton( LoadBalancerPid ) },
+    % We want to schedule the load balancer for a spontaneous behaviour at the
+    % first diasca of the first scheduled tick, so that it can itself trigger
+    % the 'onFirstDiasca/2' actor oneway on all initial actors:
+    %
+    BalancerEntry = { _TickOffset=0, set_utils:singleton( LoadBalancerPid ) },
 
-	InitialAgenda = [ BalancerEntry ],
+    InitialAgenda = [ BalancerEntry ],
 
-	SetState = setAttributes( State, [
-		{ load_balancer_pid, LoadBalancerPid },
-		{ spontaneous_agenda, InitialAgenda } ] ),
+    SetState = setAttributes( State, [
+        { load_balancer_pid, LoadBalancerPid },
+        { spontaneous_agenda, InitialAgenda } ] ),
 
-	wooper:return_state_result( SetState, load_balancer_set ).
+    wooper:return_state_result( SetState, load_balancer_set ).
 
 
 
@@ -1324,9 +1324,9 @@ Returns the initial tick for that simulation, if it has been already set,
 otherwise the atom 'undefined'.
 """.
 -spec getInitialTick( wooper:state() ) ->
-							const_request_return( option( tick() ) ).
+                            const_request_return( option( tick() ) ).
 getInitialTick( State ) ->
-	wooper:const_return_result( ?getAttr(initial_tick) ).
+    wooper:const_return_result( ?getAttr(initial_tick) ).
 
 
 
@@ -1335,14 +1335,14 @@ Sets the initial tick to be used by the simulation.
 
 Must not be called while the simulation is running.
 
-See also: `setFinalTick/2`.
+See also: `setInitialSimulationTimestamp/2` and `setFinalTick/2`.
 """.
 -spec setInitialTick( wooper:state(), tick() ) -> oneway_return().
 setInitialTick( State, InitialTick ) ->
 
-	false = ?getAttr(started),
+    false = ?getAttr(started),
 
-	wooper:return_state( setAttribute( State, initial_tick, InitialTick ) ).
+    wooper:return_state( setAttribute( State, initial_tick, InitialTick ) ).
 
 
 
@@ -1355,12 +1355,12 @@ Must not be called while the simulation is running.
 See also: `setFinalSimulationTimestamp/2`.
 """.
 -spec setInitialSimulationTimestamp( wooper:state(), timestamp() ) ->
-											oneway_return().
+                                            oneway_return().
 setInitialSimulationTimestamp( State, InitialTimestamp ) ->
 
-	SetState = set_initial_simulation_timestamp( InitialTimestamp, State ),
+    SetState = set_initial_simulation_timestamp( InitialTimestamp, State ),
 
-	wooper:return_state( SetState ).
+    wooper:return_state( SetState ).
 
 
 
@@ -1374,31 +1374,31 @@ Must not be called while the simulation is running.
 See also: `setFinalSimulationTimestamp/3`.
 """.
 -spec setInitialSimulationTimestamp( wooper:state(), date(), time() ) ->
-															oneway_return().
+                                                            oneway_return().
 setInitialSimulationTimestamp( State, Date, Time ) ->
 
-	SetState =
-		set_initial_simulation_timestamp( _Timestamp={ Date, Time }, State ),
+    SetState =
+        set_initial_simulation_timestamp( _Timestamp={ Date, Time }, State ),
 
-	wooper:return_state( SetState ).
+    wooper:return_state( SetState ).
 
 
 
 % (helper)
 -spec set_initial_simulation_timestamp( timestamp(), wooper:state() ) ->
-												wooper:state().
+                                                wooper:state().
 set_initial_simulation_timestamp( InitialTimestamp, State ) ->
 
-	false = ?getAttr(started),
+    false = ?getAttr(started),
 
-	NewInitialTick = timestamp_to_ticks( InitialTimestamp, State ),
+    NewInitialTick = timestamp_to_ticks( InitialTimestamp, State ),
 
-	?notice_fmt( "Initial timestamp set to ~ts (corresponding to "
-		"absolute tick ~B, i.e. by design tick offset #0).",
-		[ time_utils:get_textual_timestamp( InitialTimestamp ),
-		  NewInitialTick ] ),
+    ?notice_fmt( "Initial timestamp set to ~ts (corresponding to "
+        "absolute tick ~B, i.e. by design tick offset #0).",
+        [ time_utils:get_textual_timestamp( InitialTimestamp ),
+          NewInitialTick ] ),
 
-	setAttribute( State, initial_tick, NewInitialTick ).
+    setAttribute( State, initial_tick, NewInitialTick ).
 
 
 
@@ -1410,17 +1410,17 @@ if no final tick was defined.
                                 const_request_return( option( tick() ) ).
 getFinalTick( State ) ->
 
-	Res = case ?getAttr(stop_tick_offset) of
+    Res = case ?getAttr(stop_tick_offset) of
 
-		undefined ->
-			undefined;
+        undefined ->
+            undefined;
 
-		StopOffset ->
-			?getAttr(initial_tick) + StopOffset
+        StopOffset ->
+            ?getAttr(initial_tick) + StopOffset
 
-	end,
+    end,
 
-	wooper:const_return_result( Res ).
+    wooper:const_return_result( Res ).
 
 
 
@@ -1437,27 +1437,27 @@ See also: `setInitialTick/2`.
 -spec setFinalTick( wooper:state(), tick() ) -> oneway_return().
 setFinalTick( State, FinalTick ) ->
 
-	false = ?getAttr(started),
+    false = ?getAttr(started),
 
-	InitialTick = ?getAttr(initial_tick),
+    InitialTick = ?getAttr(initial_tick),
 
-	DurationInTicks = FinalTick - InitialTick,
+    DurationInTicks = FinalTick - InitialTick,
 
-	case DurationInTicks > 0 of
+    case DurationInTicks > 0 of
 
-		true ->
-			?notice_fmt( "Final (absolute) tick set to ~B (corresponding to "
-				"tick offset #~B, i.e ~ts).",
-				[ FinalTick, DurationInTicks, time_utils:get_textual_timestamp(
-					ticks_to_timestamp( FinalTick, State ) ) ] ),
+        true ->
+            ?notice_fmt( "Final (absolute) tick set to ~B (corresponding to "
+                "tick offset #~B, i.e ~ts).",
+                [ FinalTick, DurationInTicks, time_utils:get_textual_timestamp(
+                    ticks_to_timestamp( FinalTick, State ) ) ] ),
 
-			wooper:return_state(
-				setAttribute( State, stop_tick_offset, DurationInTicks ) );
+            wooper:return_state(
+                setAttribute( State, stop_tick_offset, DurationInTicks ) );
 
-		false ->
-			throw( { final_tick_on_the_past, FinalTick, InitialTick } )
+        false ->
+            throw( { final_tick_on_the_past, FinalTick, InitialTick } )
 
-	end.
+    end.
 
 
 
@@ -1472,12 +1472,12 @@ Note: depends on the current initial tick, as is stored as a tick offset.
 See also: `setInitialSimulationTimestamp/2`.
 """.
 -spec setFinalSimulationTimestamp( wooper:state(), timestamp() ) ->
-											oneway_return().
+                                            oneway_return().
 setFinalSimulationTimestamp( State, FinalTimestamp ) ->
 
-	SetState = set_final_simulation_timestamp( FinalTimestamp, State ),
+    SetState = set_final_simulation_timestamp( FinalTimestamp, State ),
 
-	wooper:return_state( SetState ).
+    wooper:return_state( SetState ).
 
 
 
@@ -1493,45 +1493,45 @@ Note: depends on the current initial tick, as is stored as a tick offset.
 See also: `setInitialSimulationTimestamp/3`.
 """.
 -spec setFinalSimulationTimestamp( wooper:state(), date(), time() ) ->
-												oneway_return().
+                                                oneway_return().
 setFinalSimulationTimestamp( State, FinalDate, FinalTime ) ->
 
-	FinalTimestamp = { FinalDate, FinalTime },
+    FinalTimestamp = { FinalDate, FinalTime },
 
-	SetState = set_final_simulation_timestamp( FinalTimestamp, State ),
+    SetState = set_final_simulation_timestamp( FinalTimestamp, State ),
 
-	wooper:return_state( SetState ).
+    wooper:return_state( SetState ).
 
 
 
 % (helper)
 -spec set_final_simulation_timestamp( timestamp(), wooper:state() ) ->
-											wooper:state().
+                                            wooper:state().
 set_final_simulation_timestamp( FinalTimestamp, State ) ->
 
-	false = ?getAttr(started),
+    false = ?getAttr(started),
 
-	FinalTick = timestamp_to_ticks( FinalTimestamp, State ),
+    FinalTick = timestamp_to_ticks( FinalTimestamp, State ),
 
-	InitialTick = ?getAttr(initial_tick),
+    InitialTick = ?getAttr(initial_tick),
 
-	DurationInTicks = FinalTick - InitialTick,
+    DurationInTicks = FinalTick - InitialTick,
 
-	case DurationInTicks > 0 of
+    case DurationInTicks > 0 of
 
-		true ->
-			?notice_fmt( "Final timestamp set to ~ts (corresponding "
-				"to absolute tick ~B, i.e. tick offset #~B).",
-				[ time_utils:get_textual_timestamp( FinalTimestamp ),
-				  FinalTick, DurationInTicks ] ),
+        true ->
+            ?notice_fmt( "Final timestamp set to ~ts (corresponding "
+                "to absolute tick ~B, i.e. tick offset #~B).",
+                [ time_utils:get_textual_timestamp( FinalTimestamp ),
+                  FinalTick, DurationInTicks ] ),
 
-			setAttribute( State, stop_tick_offset, DurationInTicks );
+            setAttribute( State, stop_tick_offset, DurationInTicks );
 
-		false ->
-			throw( { final_timestamp_in_the_past, FinalTimestamp,
-					 { FinalTick, InitialTick }, DurationInTicks } )
+        false ->
+            throw( { final_timestamp_in_the_past, FinalTimestamp,
+                     { FinalTick, InitialTick }, DurationInTicks } )
 
-	end.
+    end.
 
 
 
@@ -1545,15 +1545,15 @@ Must not be called while the simulation is running.
 See also: `setInitialSimulationTimestamp/2`, `setFinalSimulationTimestamp/2`.
 """.
 -spec setSimulationTimeframe( wooper:state(), timestamp(), timestamp() ) ->
-									oneway_return().
+                                    oneway_return().
 setSimulationTimeframe( State, InitialTimestamp, FinalTimestamp ) ->
 
-	% Order matters:
+    % Order matters:
 
-	InitialState = set_initial_simulation_timestamp( InitialTimestamp, State ),
-	FinalState = set_final_simulation_timestamp( FinalTimestamp, InitialState ),
+    InitialState = set_initial_simulation_timestamp( InitialTimestamp, State ),
+    FinalState = set_final_simulation_timestamp( FinalTimestamp, InitialState ),
 
-	wooper:return_state( FinalState ).
+    wooper:return_state( FinalState ).
 
 
 
@@ -1563,274 +1563,271 @@ setSimulationTimeframe( State, InitialTimestamp, FinalTimestamp ) ->
 
 
 -doc """
-Starts this (root) time manager with no specific termination tick defined.
+Starts this (root) time manager with no specific termination tick or simulation
+listener defined.
 """.
 -spec start( wooper:state() ) -> oneway_return().
 start( State ) ->
-	% Here no termination tick is set:
-	wooper:return_state( init( State ) ).
+    % Here no termination tick is set:
+    wooper:return_state( init( State ) ).
 
 
 
 -doc """
-Starts this (root) time manager with a specific termination tick defined,
-expressed as an offset to the initial tick.
+Starts this (root) time manager with either the specified termination tick
+defined, expressed as an offset to the initial tick, or with the specified
+simulation listener.
 """.
 -spec start( wooper:state(), tick_offset() | simulation_listener_pid() ) ->
-															oneway_return().
+                                                            oneway_return().
 start( State, TerminationOffset ) when is_integer( TerminationOffset ) ->
 
-	% This is an offset, no checking needed here:
-	InitState =
-		init( setAttribute( State, stop_tick_offset, TerminationOffset ) ),
+    % This is an offset, no checking needed here:
+    InitState =
+        init( setAttribute( State, stop_tick_offset, TerminationOffset ) ),
 
-	StopTick = getAttribute( InitState, initial_tick ) + TerminationOffset,
+    StopTick = getAttribute( InitState, initial_tick ) + TerminationOffset,
 
-	?notice_fmt( "The simulation will stop no later than tick ~B "
-		"(termination tick offset is #~B).", [ StopTick, TerminationOffset ] ),
+    ?notice_fmt( "The simulation will stop no later than tick ~B "
+        "(termination tick offset is #~B).", [ StopTick, TerminationOffset ] ),
 
-	wooper:return_state( InitState );
+    wooper:return_state( InitState );
 
 
-% This clause: starts this (root) time manager with a specific termination tick
-% defined, expressed as an offset to the initial tick.
-%
-% (second clause of the oneway)
-%
 start( State, SimulationListenerPID ) when is_pid( SimulationListenerPID ) ->
 
-	StartState = start( appendToAttribute( State, simulation_listeners,
-										   SimulationListenerPID ) ),
+    StartState = start( appendToAttribute( State, simulation_listeners,
+                                           SimulationListenerPID ) ),
 
-	wooper:return_state( StartState ).
+    wooper:return_state( StartState ).
 
 
 
 -doc """
-Starts this (root) time manager with a specific termination tick and specified
-registered simulation listener.
+Starts this (root) time manager with the specified termination tick and
+simulation listener.
 """.
 -spec start( wooper:state(), tick_offset(), simulation_listener_pid() ) ->
-				oneway_return().
+                oneway_return().
 start( State, TerminationOffset, SimulationListenerPID )
-					when is_integer( TerminationOffset )
-						 andalso is_pid( SimulationListenerPID ) ->
+                    when is_integer( TerminationOffset )
+                         andalso is_pid( SimulationListenerPID ) ->
 
-	StartState = start( appendToAttribute( State, simulation_listeners,
-										   SimulationListenerPID ),
-						TerminationOffset ),
+    StartState = start( appendToAttribute( State, simulation_listeners,
+                                           SimulationListenerPID ),
+                        TerminationOffset ),
 
-	wooper:return_state( StartState ).
+    wooper:return_state( StartState ).
 
 
 
 -doc """
-Starts this (root) time manager for a specified duration, expressed in
+Starts this (root) time manager for the specified duration, expressed in
 simulation time (as a DHMS value or a number of virtual seconds).
 """.
 -spec startFor( wooper:state(), dhms_duration() | any_seconds() ) ->
-													oneway_return().
+                                                    oneway_return().
 startFor( State, Duration ) when is_integer( Duration ) ->
-	StartState = startFor( State, erlang:float( Duration ) ),
-	wooper:return_state( StartState );
+    StartState = startFor( State, erlang:float( Duration ) ),
+    wooper:return_state( StartState );
 
 
 startFor( State, Duration ) when is_float( Duration ) andalso Duration > 0.0 ->
 
-	TerminationOffset = convert_seconds_to_ticks( Duration, State ),
+    TerminationOffset = convert_seconds_to_ticks( Duration, State ),
 
-	StartState =
-		init( setAttribute( State, stop_tick_offset, TerminationOffset ) ),
+    StartState =
+        init( setAttribute( State, stop_tick_offset, TerminationOffset ) ),
 
-	StopTick = getAttribute( StartState, initial_tick ) + TerminationOffset,
+    StopTick = getAttribute( StartState, initial_tick ) + TerminationOffset,
 
-	?notice_fmt( "The simulation will stop no later than tick ~B "
-		"(termination tick offset is #~B), corresponding to "
-		"a user-specified duration, in simulation time, of ~ts.",
-		[ StopTick, TerminationOffset,
-		  time_utils:duration_to_string( round( 1000 * Duration ) ) ] ),
+    ?notice_fmt( "The simulation will stop no later than tick ~B "
+        "(termination tick offset is #~B), corresponding to "
+        "a user-specified duration, in simulation time, of ~ts.",
+        [ StopTick, TerminationOffset,
+          time_utils:duration_to_string( round( 1000 * Duration ) ) ] ),
 
-	wooper:return_state( StartState );
+    wooper:return_state( StartState );
 
 
 startFor( State, DHMS ) when is_tuple( DHMS ) ->
-	Secs = time_utils:dhms_to_seconds( DHMS ),
-	wooper:return_state( startFor( State, Secs ) );
+    Secs = time_utils:dhms_to_seconds( DHMS ),
+    wooper:return_state( startFor( State, Secs ) );
 
 startFor( _State, ErrorDuration ) ->
-	throw( { invalid_simulation_duration_specified, ErrorDuration } ).
+    throw( { invalid_simulation_duration_specified, ErrorDuration } ).
 
 
 
 -doc """
-Starts this (root) time manager for a specified duration, expressed in
-simulation time (as a number of virtual seconds), with a registered stop
-listener.
+Starts this (root) time manager for the specified duration, expressed in
+simulation time (as a DHMS value or a number of virtual seconds), and with the
+specified simulation listener.
 """.
 -spec startFor( wooper:state(), dhms_duration() | any_seconds(),
-				simulation_listener_pid() ) -> oneway_return().
+                simulation_listener_pid() ) -> oneway_return().
 startFor( State, Duration, SimulationListenerPID )
-						when is_pid( SimulationListenerPID ) ->
+                        when is_pid( SimulationListenerPID ) ->
 
-	StartState = startFor( appendToAttribute( State, simulation_listeners,
-											  SimulationListenerPID ),
-						   Duration ),
+    StartState = startFor( appendToAttribute( State, simulation_listeners,
+                                              SimulationListenerPID ),
+                           Duration ),
 
-	wooper:return_state( StartState ).
+    wooper:return_state( StartState ).
 
 
 
 -doc "Stops this time manager.".
 -spec stop( wooper:state() ) ->
-				request_return( { 'stopped', time_manager_pid() } ).
+                request_return( { 'stopped', time_manager_pid() } ).
 stop( State ) ->
 
-	StoppedState = case ?getAttr(started) of
+    StoppedState = case ?getAttr(started) of
 
-		false ->
-			?error( "Stop request ignored: simulation clock not running." ),
-			State;
-
-
-		true ->
-
-			Timings = get_textual_timings( State ),
-
-			?notice_fmt( "Stopping simulation clock at ~ts.", [ Timings ] ),
-
-			% The engine may be stopped at any time.
+        false ->
+            ?error( "Stop request ignored: simulation clock not running." ),
+            State;
 
 
-			ActorsToDeleteAtNextTick = ?getAttr(actors_to_delete_at_next_tick),
+        true ->
 
-			case ActorsToDeleteAtNextTick of
+            Timings = get_textual_timings( State ),
 
-				[] ->
-					?debug( "No pending already terminated actor to delete." );
+            ?notice_fmt( "Stopping simulation clock at ~ts.", [ Timings ] ),
 
-				_ ->
-					?debug_fmt( "Deleting synchronously the ~B pending already "
-						"terminated actors: ~ts.",
-						[ length( ActorsToDeleteAtNextTick ),
-						  text_utils:pids_to_short_string(
-							ActorsToDeleteAtNextTick ) ] )
-
-			end,
-
-			?display_console( "Stopping at #~p, hence deleting actors ~p.",
-				[ ?getAttr(current_tick_offset), ActorsToDeleteAtNextTick ] ),
-
-			% We used to directly delete actors; however this led these actors
-			% to be destructed whereas still bearing a timestamp in the past
-			% (from their last scheduling/actor message receiving), which could
-			% be a problem (e.g. if when destructed they update their probe, so
-			% that it has a final sample for a correct, non-interrupted plot).
-			%
-			% Then actors were terminated by calling a
-			% onSyncTerminationRequested/3 oneway method that specified the
-			% termination timestamp (rather than a direct delete one), yet such
-			% a method is not able to let their process terminate (the
-			% 'delete'/'synchronous_delete' messages do not correspond to
-			% methods, they cannot be called).
-			%
-			% So the best, most reliable approach is to send two messages per
-			% terminating actor, one to synchronise it, one to delete it (and no
-			% single message can do that); the latter is done just below,
-			% whereas the former is done sooner, in on_simulation_success/1,
-			% otherwise the termination of the result manager will result in the
-			% one of all (tracked) probes, before they have a chance of being
-			% properly synchronised.
-
-			wooper:delete_synchronously_instances( ActorsToDeleteAtNextTick ),
+            % The engine may be stopped at any time.
 
 
-			TerminatedActors = ?getAttr(terminated_actors),
+            ActorsToDeleteAtNextTick = ?getAttr(actors_to_delete_at_next_tick),
 
-			case TerminatedActors of
+            case ActorsToDeleteAtNextTick of
 
-				[] ->
-					?debug( "No already terminating actor to delete." );
+                [] ->
+                    ?debug( "No pending already terminated actor to delete." );
 
-				_ ->
-					?debug_fmt( "Deleting synchronously the ~B already "
-						"terminating actors: ~ts.",
-						[ length( TerminatedActors ),
-						  text_utils:pids_to_short_string(
-							TerminatedActors ) ] )
+                _ ->
+                    ?debug_fmt( "Deleting synchronously the ~B pending already "
+                        "terminated actors: ~ts.",
+                        [ length( ActorsToDeleteAtNextTick ),
+                          text_utils:pids_to_short_string(
+                            ActorsToDeleteAtNextTick ) ] )
 
-			end,
+            end,
+
+            ?display_console( "Stopping at #~p, hence deleting actors ~p.",
+                [ ?getAttr(current_tick_offset), ActorsToDeleteAtNextTick ] ),
+
+            % We used to directly delete actors; however this led these actors
+            % to be destructed whereas still bearing a timestamp in the past
+            % (from their last scheduling/actor message receiving), which could
+            % be a problem (e.g. if when destructed they update their probe, so
+            % that it has a final sample for a correct, non-interrupted plot).
+            %
+            % Then actors were terminated by calling a
+            % onSyncTerminationRequested/3 oneway method that specified the
+            % termination timestamp (rather than a direct delete one), yet such
+            % a method is not able to let their process terminate (the
+            % 'delete'/'synchronous_delete' messages do not correspond to
+            % methods, they cannot be called).
+            %
+            % So the best, most reliable approach is to send two messages per
+            % terminating actor, one to synchronise it, one to delete it (and no
+            % single message can do that); the latter is done just below,
+            % whereas the former is done sooner, in on_simulation_success/1,
+            % otherwise the termination of the result manager will result in the
+            % one of all (tracked) probes, before they have a chance of being
+            % properly synchronised.
+
+            wooper:delete_synchronously_instances( ActorsToDeleteAtNextTick ),
 
 
-			% Having no more active actors is only one of the causes for the
-			% time manager to stop, therefore there could be
-			% already-terminating, or still running actors, which must be
-			% removed:
-			%
-			wooper:delete_synchronously_instances( TerminatedActors ),
+            TerminatedActors = ?getAttr(terminated_actors),
 
-			TerminatedState = terminate_running_actors(
-				_ActorsToSkip=ActorsToDeleteAtNextTick, State ),
+            case TerminatedActors of
 
-			?debug( "Stopping watchdog, trackers and child managers." ),
+                [] ->
+                    ?debug( "No already terminating actor to delete." );
 
-			TimeTrackerState = stop_time_tracker( TerminatedState ),
+                _ ->
+                    ?debug_fmt( "Deleting synchronously the ~B already "
+                        "terminating actors: ~ts.",
+                        [ length( TerminatedActors ),
+                          text_utils:pids_to_short_string(
+                            TerminatedActors ) ] )
 
-			WallclockTrackerState = stop_wallclock_tracker( TimeTrackerState ),
-
-			WatchdogState = stop_watchdog( WallclockTrackerState ),
-
-			TimerState = stop_timer( WatchdogState ),
-
-			stop_child_managers( TimerState ),
-
-			[ L ! simulation_stopped || L <- ?getAttr(simulation_listeners) ],
-
-			flush_scheduling_messages(),
+            end,
 
 
-			?debug( "Stop successful." ),
+            % Having no more active actors is only one of the causes for the
+            % time manager to stop, therefore there could be
+            % already-terminating, or still running actors, which must be
+            % removed:
+            %
+            wooper:delete_synchronously_instances( TerminatedActors ),
 
-			% Only one display wanted, the one of the root time manager:
-			is_root_manager( State ) andalso
-				begin
+            TerminatedState = terminate_running_actors(
+                _ActorsToSkip=ActorsToDeleteAtNextTick, State ),
 
-					% Now that all actors are terminated, any proble their
-					% destructor would have to ultimately update is ready, and
-					% thus we can trigger (synchronously) notably the result
-					% collection:
-					%
-					?getAttr(result_manager_pid) !
-						{ onSimulationSuccess, [], self() },
+            ?debug( "Stopping watchdog, trackers and child managers." ),
 
-					class_PluginManager:notify( on_simulation_stop ),
-					display_timing_information( Timings, TimerState ),
-					display_concurrency_information( TimerState ),
+            TimeTrackerState = stop_time_tracker( TerminatedState ),
 
-					% onSimulationSuccess/1 interleaved:
-					receive
+            WallclockTrackerState = stop_wallclock_tracker( TimeTrackerState ),
 
-						{ wooper_result, results_collected } ->
-							?debug( "Results collected." )
+            WatchdogState = stop_watchdog( WallclockTrackerState ),
 
-					end
+            TimerState = stop_timer( WatchdogState ),
 
-				end,
+            stop_child_managers( TimerState ),
 
-			% Prepares back a blank state, should a new simulation be started:
-			setAttributes( TimerState, [
-				{ initial_timestamp, undefined },
-				{ started, false },
-				{ actors_to_delete_at_next_tick, [] },
-				{ known_local_actors, set_utils:new() },
-				{ spontaneous_agenda, [] },
-				{ overall_actor_count, 0 } ] )
+            [ L ! simulation_stopped || L <- ?getAttr(simulation_listeners) ],
 
-	end,
+            flush_scheduling_messages(),
 
-	% Returning the time manager PID allows to wait in parallel for multiple
-	% stopping child managers:
-	%
-	wooper:return_state_result( StoppedState, { stopped, self() } ).
+
+            ?debug( "Stop successful." ),
+
+            % Only one display wanted, the one of the root time manager:
+            is_root_manager( State ) andalso
+                begin
+
+                    % Now that all actors are terminated, any proble their
+                    % destructor would have to ultimately update is ready, and
+                    % thus we can trigger (synchronously) notably the result
+                    % collection:
+                    %
+                    ?getAttr(result_manager_pid) !
+                        { onSimulationSuccess, [], self() },
+
+                    class_PluginManager:notify( on_simulation_stop ),
+                    display_timing_information( Timings, TimerState ),
+                    display_concurrency_information( TimerState ),
+
+                    % onSimulationSuccess/1 interleaved:
+                    receive
+
+                        { wooper_result, results_collected } ->
+                            ?debug( "Results collected." )
+
+                    end
+
+                end,
+
+            % Prepares back a blank state, should a new simulation be started:
+            setAttributes( TimerState, [
+                { initial_timestamp, undefined },
+                { started, false },
+                { actors_to_delete_at_next_tick, [] },
+                { known_local_actors, set_utils:new() },
+                { spontaneous_agenda, [] },
+                { overall_actor_count, 0 } ] )
+
+    end,
+
+    % Returning the time manager PID allows to wait in parallel for multiple
+    % stopping child managers:
+    %
+    wooper:return_state_result( StoppedState, { stopped, self() } ).
 
 
 
@@ -1838,9 +1835,9 @@ stop( State ) ->
 -spec selfStop( wooper:state() ) -> oneway_return().
 selfStop( State ) ->
 
-	{ StoppedState, _Result } = executeRequest( State, stop, [] ),
+    { StoppedState, _Result } = executeRequest( State, stop, [] ),
 
-	wooper:return_state( StoppedState ).
+    wooper:return_state( StoppedState ).
 
 
 
@@ -1848,11 +1845,11 @@ selfStop( State ) ->
 -spec suspend( wooper:state() ) -> oneway_return().
 suspend( State ) ->
 
-	?notice( "Simulation requested to suspend." ),
+    ?notice( "Simulation requested to suspend." ),
 
-	[ L ! simulation_suspended || L <- ?getAttr(simulation_listeners) ],
+    [ L ! simulation_suspended || L <- ?getAttr(simulation_listeners) ],
 
-	wooper:return_state( setAttribute( State, suspended, true ) ).
+    wooper:return_state( setAttribute( State, suspended, true ) ).
 
 
 
@@ -1860,10 +1857,10 @@ suspend( State ) ->
 -spec resume( wooper:state() ) -> const_oneway_return().
 resume( State ) ->
 
-	?error( "Resume request received, whereas should have been intercepted "
-			"by suspend code. Ignored." ),
+    ?error( "Resume request received, whereas should have been intercepted "
+            "by suspend code. Ignored." ),
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 
@@ -1873,20 +1870,20 @@ trigger the result collection when the latter determines the simulation
 succeeded.
 """.
 -spec declareResultManager( wooper:state(), result_manager_pid() ) ->
-											oneway_return().
+                                            oneway_return().
 declareResultManager( State, ResultManagerPid ) ->
-	case ?getAttr(result_manager_pid) of
+    case ?getAttr(result_manager_pid) of
 
-		undefined ->
-			DecState = setAttribute( State, result_manager_pid,
-									 ResultManagerPid ),
-			wooper:return_state( DecState );
+        undefined ->
+            DecState = setAttribute( State, result_manager_pid,
+                                     ResultManagerPid ),
+            wooper:return_state( DecState );
 
-		Other ->
-			throw( { result_manager_already_declared, Other,
-					 ResultManagerPid } )
+        Other ->
+            throw( { result_manager_already_declared, Other,
+                     ResultManagerPid } )
 
-	end.
+    end.
 
 
 
@@ -1898,25 +1895,25 @@ Registers a new simulation listener, which will be notified of all main
 simulation events (like start, stop, resume, etc.).
 """.
 -spec addSimulationListener( wooper:state(), simulation_listener_pid() ) ->
-								oneway_return().
+                                oneway_return().
 addSimulationListener( State, ListenerPid ) ->
 
-	%?debug_fmt( "Simulation listener ~w added.", [ ListenerPid ] ),
+    %?debug_fmt( "Simulation listener ~w added.", [ ListenerPid ] ),
 
-	wooper:return_state(
-		appendToAttribute( State, simulation_listeners, ListenerPid ) ).
+    wooper:return_state(
+        appendToAttribute( State, simulation_listeners, ListenerPid ) ).
 
 
 
 -doc "Unregisters a simulation listener, expected to be already registered.".
 -spec removeSimulationListener( wooper:state(), simulation_listener_pid() ) ->
-									oneway_return().
+                                    oneway_return().
 removeSimulationListener( State, ListenerPid ) ->
 
-	%?debug_fmt( "Simulation listener ~w removed.", [ ListenerPid ] ),
+    %?debug_fmt( "Simulation listener ~w removed.", [ ListenerPid ] ),
 
-	wooper:return_state(
-		deleteFromAttribute( State, simulation_listeners, ListenerPid ) ).
+    wooper:return_state(
+        deleteFromAttribute( State, simulation_listeners, ListenerPid ) ).
 
 
 
@@ -1928,25 +1925,25 @@ Note: contrary to an actor, no synchronisation will be performed, and the
 listener will not be able to trigger the scheduling of any tick.
 """.
 -spec addTimeListener( wooper:state(), logical_time_listener_pid() ) ->
-							oneway_return().
+                            oneway_return().
 addTimeListener( State, ListenerPid ) ->
 
-	%?debug_fmt( "Time listener ~w added.", [ ListenerPid ] ),
+    %?debug_fmt( "Time listener ~w added.", [ ListenerPid ] ),
 
-	wooper:return_state(
-		appendToAttribute( State, time_listeners, ListenerPid ) ).
+    wooper:return_state(
+        appendToAttribute( State, time_listeners, ListenerPid ) ).
 
 
 
 -doc "Unregisters a time listener, expected to be already registered.".
 -spec removeTimeListener( wooper:state(), logical_time_listener_pid() ) ->
-								oneway_return().
+                                oneway_return().
 removeTimeListener( State, ListenerPid ) ->
 
-	%?debug_fmt( "Time listener ~w removed.", [ ListenerPid ] ),
+    %?debug_fmt( "Time listener ~w removed.", [ ListenerPid ] ),
 
-	wooper:return_state(
-		deleteFromAttribute( State, time_listeners, ListenerPid ) ).
+    wooper:return_state(
+        deleteFromAttribute( State, time_listeners, ListenerPid ) ).
 
 
 
@@ -1958,25 +1955,25 @@ events, like all other simulation listeners).
 (request, for synchronicity)
 """.
 -spec registerResilienceManager( wooper:state() ) ->
-												request_return( 'registered' ).
+                                                request_return( 'registered' ).
 registerResilienceManager( State ) ->
 
-	ResilienceManagerPid = ?getSender(),
+    ResilienceManagerPid = ?getSender(),
 
-	Listeners = ?getAttr(simulation_listeners),
+    Listeners = ?getAttr(simulation_listeners),
 
-	wooper:return_state_result( setAttributes( State, [
-		{ simulation_listeners, [ ResilienceManagerPid | Listeners ] },
-		{ resilience_manager_pid, ResilienceManagerPid } ] ),
-								registered ).
+    wooper:return_state_result( setAttributes( State, [
+        { simulation_listeners, [ ResilienceManagerPid | Listeners ] },
+        { resilience_manager_pid, ResilienceManagerPid } ] ),
+                                registered ).
 
 
 
 -doc "Unregisters the resilience manager.".
 -spec unregisterResilienceManager( wooper:state() ) -> oneway_return().
 unregisterResilienceManager( State ) ->
-	wooper:return_state(
-		setAttribute( State, resilience_manager_pid, undefined ) ).
+    wooper:return_state(
+        setAttribute( State, resilience_manager_pid, undefined ) ).
 
 
 
@@ -1986,8 +1983,8 @@ the current diasca is over (typically called by the resilience manager).
 """.
 -spec serialisationRequested( wooper:state() ) -> oneway_return().
 serialisationRequested( State ) ->
-	wooper:return_state(
-		setAttribute( State, serialisation_requested, true ) ).
+    wooper:return_state(
+        setAttribute( State, serialisation_requested, true ) ).
 
 
 
@@ -1996,20 +1993,20 @@ Returns a list of all the "real" actors (the ones that are not simulation
 agents) and that are directly managed by this time manager.
 """.
 -spec getAllLocalActors( wooper:state() ) ->
-								const_request_return( [ actor_pid() ] ).
+                                const_request_return( [ actor_pid() ] ).
 getAllLocalActors( State ) ->
 
-	% We filter out the load balancer (if ever it was managed by this time
-	% manager), as we want only actual, "real", actors:
+    % We filter out the load balancer (if ever it was managed by this time
+    % manager), as we want only actual, "real", actors:
 
-	% Efficient search, no error if not found:
-	NonAgentActors = set_utils:delete( ?getAttr(load_balancer_pid),
-									   ?getAttr(known_local_actors) ),
+    % Efficient search, no error if not found:
+    NonAgentActors = set_utils:delete( ?getAttr(load_balancer_pid),
+                                       ?getAttr(known_local_actors) ),
 
-	% More compact sending:
-	Actors = set_utils:to_list( NonAgentActors ),
+    % More compact sending:
+    Actors = set_utils:to_list( NonAgentActors ),
 
-	wooper:const_return_result( Actors ).
+    wooper:const_return_result( Actors ).
 
 
 
@@ -2017,77 +2014,77 @@ getAllLocalActors( State ) ->
 Merges the specified serialisation entries into the state of this time manager.
 """.
 -spec mergeWith( wooper:state(), [ attribute_entry() ] ) ->
-								request_return( 'merged' ).
+                                request_return( 'merged' ).
 mergeWith( State, Entries ) ->
 
-	ToMergeAgenda = option_list:get( spontaneous_agenda, Entries ),
+    ToMergeAgenda = option_list:get( spontaneous_agenda, Entries ),
 
-	% Supposedly the current is the smallest:
-	MergedAgenda = merge_agendas( ?getAttr(spontaneous_agenda), ToMergeAgenda ),
+    % Supposedly the current is the smallest:
+    MergedAgenda = merge_agendas( ?getAttr(spontaneous_agenda), ToMergeAgenda ),
 
-	% Default pair order is *not* fine:
-	MergedPreviousTimestamp = max_timestamp( ?getAttr(previous_timestamp),
-		option_list:get( previous_timestamp, Entries ) ),
+    % Default pair order is *not* fine:
+    MergedPreviousTimestamp = max_timestamp( ?getAttr(previous_timestamp),
+        option_list:get( previous_timestamp, Entries ) ),
 
-	MergedNextTimestamp = min_timestamp( ?getAttr(next_timestamp),
-		option_list:get( next_timestamp, Entries ) ),
+    MergedNextTimestamp = min_timestamp( ?getAttr(next_timestamp),
+        option_list:get( next_timestamp, Entries ) ),
 
-	MergedNextAction = merge_next_action( ?getAttr(next_action),
-		option_list:get( next_action, Entries ), MergedAgenda ),
+    MergedNextAction = merge_next_action( ?getAttr(next_action),
+        option_list:get( next_action, Entries ), MergedAgenda ),
 
-	MergedKnownActors = set_utils:union( ?getAttr(known_local_actors),
-		option_list:get( known_local_actors, Entries ) ),
+    MergedKnownActors = set_utils:union( ?getAttr(known_local_actors),
+        option_list:get( known_local_actors, Entries ) ),
 
-	MergedToDelete = ?getAttr(actors_to_delete_at_next_tick)
-		++ option_list:get( actors_to_delete_at_next_tick, Entries ),
+    MergedToDelete = ?getAttr(actors_to_delete_at_next_tick)
+        ++ option_list:get( actors_to_delete_at_next_tick, Entries ),
 
-	MergedState = setAttributes( State, [
-		{ spontaneous_agenda, MergedAgenda },
-		{ previous_timestamp, MergedPreviousTimestamp },
-		{ next_timestamp, MergedNextTimestamp },
-		{ next_action, MergedNextAction },
-		{ known_local_actors, MergedKnownActors },
-		{ initial_timestamp, option_list:get( initial_timestamp, Entries ) },
-		{ initial_tick, option_list:get( initial_tick, Entries ) },
-		{ current_tick_offset,
-			option_list:get( current_tick_offset, Entries ) },
-		{ current_diasca, option_list:get( current_diasca, Entries ) },
-		{ actors_to_delete_at_next_tick, MergedToDelete } ] ),
+    MergedState = setAttributes( State, [
+        { spontaneous_agenda, MergedAgenda },
+        { previous_timestamp, MergedPreviousTimestamp },
+        { next_timestamp, MergedNextTimestamp },
+        { next_action, MergedNextAction },
+        { known_local_actors, MergedKnownActors },
+        { initial_timestamp, option_list:get( initial_timestamp, Entries ) },
+        { initial_tick, option_list:get( initial_tick, Entries ) },
+        { current_tick_offset,
+            option_list:get( current_tick_offset, Entries ) },
+        { current_diasca, option_list:get( current_diasca, Entries ) },
+        { actors_to_delete_at_next_tick, MergedToDelete } ] ),
 
-	?debug_fmt( "The merge of current state: ~ts~nwith specified entries: ~ts~n"
-		"resulted in: ~ts", [ wooper:state_to_string( State ),
-							  option_list:to_string( Entries ),
-							  wooper:state_to_string( MergedState ) ] ),
+    ?debug_fmt( "The merge of current state: ~ts~nwith specified entries: ~ts~n"
+        "resulted in: ~ts", [ wooper:state_to_string( State ),
+                              option_list:to_string( Entries ),
+                              wooper:state_to_string( MergedState ) ] ),
 
-	wooper:return_state_result( MergedState, merged ).
+    wooper:return_state_result( MergedState, merged ).
 
 
 
 -doc "Determines the next action after the agenda merge.".
 merge_next_action( _FirstAction=no_planned_action,
-				   _SecondAction=no_planned_action,
-				   _MergedAgenda=[] ) ->
-	no_planned_action;
+                   _SecondAction=no_planned_action,
+                   _MergedAgenda=[] ) ->
+    no_planned_action;
 
 merge_next_action( _FirstAction=no_planned_action,
-				   _SecondAction=no_planned_action,
-				   _MergedAgenda=[ { Offset, _ActorSet } | _T ] ) ->
-	Offset;
+                   _SecondAction=no_planned_action,
+                   _MergedAgenda=[ { Offset, _ActorSet } | _T ] ) ->
+    Offset;
 
 merge_next_action( FirstAction, _SecondAction=no_planned_action,
-				   _MergedAgenda ) ->
-	FirstAction;
+                   _MergedAgenda ) ->
+    FirstAction;
 
 merge_next_action( _FirstAction=no_planned_action, SecondAction,
-				   _MergedAgenda ) ->
-	SecondAction;
+                   _MergedAgenda ) ->
+    SecondAction;
 
 merge_next_action( FirstAction, SecondAction, _MergedAgenda )
-										when FirstAction < SecondAction ->
-	FirstAction;
+                                        when FirstAction < SecondAction ->
+    FirstAction;
 
 merge_next_action( _FirstAction, SecondAction, _MergedAgenda ) ->
-	SecondAction.
+    SecondAction.
 
 
 
@@ -2097,68 +2094,68 @@ Relinks this time manager, supposing it was just deserialised.
 (request, for synchronicity)
 """.
 -spec relink( wooper:state() ) ->
-					request_return( { 'relinked', time_manager_pid() } ).
+                    request_return( { 'relinked', time_manager_pid() } ).
 relink( State ) ->
 
-	% Let's ensure we have all proper PIDs, starting from class-specific
-	% updates:
+    % Let's ensure we have all proper PIDs, starting from class-specific
+    % updates:
 
-	% Otherwise the next functions could not send traces:
-	InitState = class_EngineBaseObject:init( State ),
+    % Otherwise the next functions could not send traces:
+    InitState = class_EngineBaseObject:init( State ),
 
-	UpdatedState = InitState,
+    UpdatedState = InitState,
 
-	% We have to recreate all private helper processes that were running, see
-	% get_private_processes_attribute_names/0:
-	%
-	WatchdogState = case ?getAttr(watchdog_pid) of
+    % We have to recreate all private helper processes that were running, see
+    % get_private_processes_attribute_names/0:
+    %
+    WatchdogState = case ?getAttr(watchdog_pid) of
 
-		undefined ->
-			UpdatedState;
+        undefined ->
+            UpdatedState;
 
-		?term_restoration_marker ->
-			% We restore the watchdog then (reset):
-			launch_watchdog( UpdatedState )
+        ?term_restoration_marker ->
+            % We restore the watchdog then (reset):
+            launch_watchdog( UpdatedState )
 
-	end,
+    end,
 
-	TimerState = case ?getAttr(timer_pid) of
+    TimerState = case ?getAttr(timer_pid) of
 
-		undefined ->
-			WatchdogState;
+        undefined ->
+            WatchdogState;
 
-		?term_restoration_marker ->
-			% We restore the timer then (reset):
-			launch_timer( WatchdogState )
+        ?term_restoration_marker ->
+            % We restore the timer then (reset):
+            launch_timer( WatchdogState )
 
-	end,
+    end,
 
-	WallclockState = case ?getAttr(wallclock_tracker_pid) of
+    WallclockState = case ?getAttr(wallclock_tracker_pid) of
 
-		undefined ->
-			TimerState;
+        undefined ->
+            TimerState;
 
-		?term_restoration_marker ->
-			% We restore the wallclcok time tracker then (reset):
-			launch_wallclock_tracker( TimerState )
+        ?term_restoration_marker ->
+            % We restore the wallclcok time tracker then (reset):
+            launch_wallclock_tracker( TimerState )
 
-	end,
+    end,
 
-	TimeState = case ?getAttr(time_tracker_pid) of
+    TimeState = case ?getAttr(time_tracker_pid) of
 
-		undefined ->
-			WallclockState;
+        undefined ->
+            WallclockState;
 
-		?term_restoration_marker ->
-			% We restore the time tracker then (reset):
-			launch_time_tracker( WallclockState )
+        ?term_restoration_marker ->
+            % We restore the time tracker then (reset):
+            launch_time_tracker( WallclockState )
 
-	end,
+    end,
 
-	% Then performing generic relinking, based on an entry transformer
-	% requesting the instance tracking service to convert back PIDs:
+    % Then performing generic relinking, based on an entry transformer
+    % requesting the instance tracking service to convert back PIDs:
 
-	wooper:return_state_result( TimeState, { relinked, self() } ).
+    wooper:return_state_result( TimeState, { relinked, self() } ).
 
 
 
@@ -2169,11 +2166,11 @@ based on a just deserialised state).
 -spec restartAfterRollback( wooper:state() ) -> oneway_return().
 restartAfterRollback( State ) ->
 
-	% Of course we do not want an infinite rollback loop:
-	RestartedState = manage_end_of_diasca_as_root_manager(
-		setAttribute( State, serialisation_requested, false ) ),
+    % Of course we do not want an infinite rollback loop:
+    RestartedState = manage_end_of_diasca_as_root_manager(
+        setAttribute( State, serialisation_requested, false ) ),
 
-	wooper:return_state( RestartedState ).
+    wooper:return_state( RestartedState ).
 
 
 
@@ -2196,152 +2193,152 @@ the whole scheduling tree, so that all relevant actors can be reached.
 -spec beginTimeManagerTick( wooper:state(), tick_offset() ) -> oneway_return().
 beginTimeManagerTick( State, NewTickOffset ) ->
 
-	?display_console( "beginTimeManagerTick: new tick offset is #~B, "
-		"next action ~p.", [ NewTickOffset, ?getAttr(next_action) ] ),
+    ?display_console( "beginTimeManagerTick: new tick offset is #~B, "
+        "next action ~p.", [ NewTickOffset, ?getAttr(next_action) ] ),
 
-	cond_utils:if_defined( sim_diasca_check_time_management,
-		begin
-			check_tick_consistency( NewTickOffset, State ),
-			check_waited_count_consistency( State ),
+    cond_utils:if_defined( sim_diasca_check_time_management,
+        begin
+            check_tick_consistency( NewTickOffset, State ),
+            check_waited_count_consistency( State ),
 
-			ToTriggerNextDiasca = ?getAttr(actors_to_trigger_in_one_diasca),
+            ToTriggerNextDiasca = ?getAttr(actors_to_trigger_in_one_diasca),
 
-			% We cannot have messages waiting for diasca 0, by design:
-			set_utils:is_empty( ToTriggerNextDiasca ) orelse
-				throw( { new_tick_whereas_actors_still_to_trigger,
-						 NewTickOffset,
-						 set_utils:to_list( ToTriggerNextDiasca ) } )
+            % We cannot have messages waiting for diasca 0, by design:
+            set_utils:is_empty( ToTriggerNextDiasca ) orelse
+                throw( { new_tick_whereas_actors_still_to_trigger,
+                         NewTickOffset,
+                         set_utils:to_list( ToTriggerNextDiasca ) } )
 
-		end ),
+        end ),
 
-	% There might be early actors which already targeted diasca 1 of this new
-	% tick:
-	% true = set_utils:is_empty( ?getAttr(actors_to_trigger_in_two_diascas) ),
-
-
-	% In the rest of that method, we will be sending traces with an explicit
-	% state (instead of using directly '?notice(..)') so that the traces are
-	% output with a timestamp set to the new current tick rather than the
-	% previous one still in ?getAttr(current_tick_offset): we want the next
-	% traces to be the first of this new tick, not the last of the previous one,
-	% thus the use of 'NewState' instead of the usual (implicit) 'State'.
-
-	% Here we go for this next tick:
-
-	StopTickOffset = ?getAttr(stop_tick_offset),
-
-	FinalState = case NewTickOffset of
-
-		% The stop tick (if defined) may happen to be a skipped tick:
-		%
-		% (relies also on the fact that any integer is considered as smaller
-		% than the 'undefined' atom, according to Erlang term order: number <
-		% atom)
-		%
-		LateOffset when LateOffset >= StopTickOffset ->
-
-			% We never enter this clause if StopTickOffset == 'undefined'.
-
-			?display_console( "beginTimeManagerTick: stopping at tick #~B, "
-				"as stop tick was #~B.", [ NewTickOffset, StopTickOffset ] ),
-
-			% Can only happen if being the root time manager.
-
-			% Not using this new tick (which is past the requested end),
-			% specifying the user-defined stop tick instead:
-			%
-			NewState = setAttributes( State, [
-				{ current_tick_offset, StopTickOffset },
-				{ current_diasca, 0 },
-				{ next_action, no_planned_action },
-
-				% So that the traces bear the right timestamp:
-				{ trace_timestamp, get_trace_timestamp( StopTickOffset,
-					_NewDiasca=0, State ) } ] ),
-
-			ActualCurrentTick = ?getAttr(initial_tick) + StopTickOffset,
-
-			?send_notice_fmt( NewState, "Reached termination tick ~B: "
-				"~B ticks, corresponding to ~ts, have elapsed since the "
-				"simulation started, stopping now.",
-				[ ActualCurrentTick, StopTickOffset,
-				  time_utils:duration_to_string( 1000 *
-					convert_ticks_to_seconds( StopTickOffset, State ) ) ] ),
-
-			case ?getAttr(spontaneous_agenda) of
-
-				[] ->
-					ok;
-
-				Agenda ->
-					% A warning would be a bit too much:
-					?send_notice_fmt( NewState, "At the termination tick "
-						"offset (#~B), some actors had still to be "
-						"scheduled; the simulation had a spontaneous ~ts",
-						[ StopTickOffset, agenda_to_string( Agenda ) ] )
-
-			end,
-
-			on_simulation_success( NewState ),
-
-			{ StoppedState, { stopped, _SelfPid } } =
-				executeRequest( NewState, stop ),
-
-			StoppedState;
+    % There might be early actors which already targeted diasca 1 of this new
+    % tick:
+    % true = set_utils:is_empty( ?getAttr(actors_to_trigger_in_two_diascas) ),
 
 
-		% Most common case, business as usual:
-		_NonTerminalOrUndefinedStopTickOffset ->
+    % In the rest of that method, we will be sending traces with an explicit
+    % state (instead of using directly '?notice(..)') so that the traces are
+    % output with a timestamp set to the new current tick rather than the
+    % previous one still in ?getAttr(current_tick_offset): we want the next
+    % traces to be the first of this new tick, not the last of the previous one,
+    % thus the use of 'NewState' instead of the usual (implicit) 'State'.
 
-			?display_console( "beginTimeManagerTick: continuing at tick #~B.",
-							  [ NewTickOffset ] ),
+    % Here we go for this next tick:
 
-			NewTimestamp = { NewTickOffset, 0 },
+    StopTickOffset = ?getAttr(stop_tick_offset),
 
-			NewState = setAttributes( State, [
-				{ current_tick_offset, NewTickOffset },
-				{ current_diasca, 0 },
-				{ trace_timestamp, NewTimestamp },
+    FinalState = case NewTickOffset of
 
-				cond_utils:if_defined( exec_target_is_production,
-					{ trace_timestamp, { NewTickOffset, 0 } },
-					{ trace_timestamp, get_trace_timestamp( NewTickOffset,
-														_Diasca=0, State ) } ),
+        % The stop tick (if defined) may happen to be a skipped tick:
+        %
+        % (relies also on the fact that any integer is considered as smaller
+        % than the 'undefined' atom, according to Erlang term order: number <
+        % atom)
+        %
+        LateOffset when LateOffset >= StopTickOffset ->
 
-				{ next_action, no_planned_action } ] ),
+            % We never enter this clause if StopTickOffset == 'undefined'.
 
-			% Let's run this new tick, and possibly wait for answers:
-			ManagedState = manage_new_tick( NewTickOffset, NewState ),
+            ?display_console( "beginTimeManagerTick: stopping at tick #~B, "
+                "as stop tick was #~B.", [ NewTickOffset, StopTickOffset ] ),
 
-			?display_console( "beginTimeManagerTick: new tick managed.", [] ),
+            % Can only happen if being the root time manager.
 
-			% Deferred deletion of terminated actors in the course of the
-			% simulation:
+            % Not using this new tick (which is past the requested end),
+            % specifying the user-defined stop tick instead:
+            %
+            NewState = setAttributes( State, [
+                { current_tick_offset, StopTickOffset },
+                { current_diasca, 0 },
+                { next_action, no_planned_action },
 
-			KnownActors = ?getAttr(known_local_actors),
+                % So that the traces bear the right timestamp:
+                { trace_timestamp, get_trace_timestamp( StopTickOffset,
+                    _NewDiasca=0, State ) } ] ),
 
-			NewKnownActors = case ?getAttr(actors_to_delete_at_next_tick) of
+            ActualCurrentTick = ?getAttr(initial_tick) + StopTickOffset,
 
-				[] ->
-					KnownActors;
+            ?send_notice_fmt( NewState, "Reached termination tick ~B: "
+                "~B ticks, corresponding to ~ts, have elapsed since the "
+                "simulation started, stopping now.",
+                [ ActualCurrentTick, StopTickOffset,
+                  time_utils:duration_to_string( 1000 *
+                    convert_ticks_to_seconds( StopTickOffset, State ) ) ] ),
 
-				ActorsToDeleteNow ->
-					wooper:delete_synchronously_instances( ActorsToDeleteNow ),
-					% Now remove these deleted actors from the known ones:
-					DeletedSet = set_utils:from_list( ActorsToDeleteNow ),
-					set_utils:difference( KnownActors, DeletedSet )
+            case ?getAttr(spontaneous_agenda) of
 
-			end,
+                [] ->
+                    ok;
 
-			setAttributes( ManagedState, [
-				{ previous_timestamp, NewTimestamp },
-				{ known_local_actors, NewKnownActors },
-				{ actors_to_delete_at_next_tick, [] } ] )
+                Agenda ->
+                    % A warning would be a bit too much:
+                    ?send_notice_fmt( NewState, "At the termination tick "
+                        "offset (#~B), some actors had still to be "
+                        "scheduled; the simulation had a spontaneous ~ts",
+                        [ StopTickOffset, agenda_to_string( Agenda ) ] )
+
+            end,
+
+            on_simulation_success( NewState ),
+
+            { StoppedState, { stopped, _SelfPid } } =
+                executeRequest( NewState, stop ),
+
+            StoppedState;
 
 
-	end,
+        % Most common case, business as usual:
+        _NonTerminalOrUndefinedStopTickOffset ->
 
-	wooper:return_state( FinalState ).
+            ?display_console( "beginTimeManagerTick: continuing at tick #~B.",
+                              [ NewTickOffset ] ),
+
+            NewTimestamp = { NewTickOffset, 0 },
+
+            NewState = setAttributes( State, [
+                { current_tick_offset, NewTickOffset },
+                { current_diasca, 0 },
+                { trace_timestamp, NewTimestamp },
+
+                cond_utils:if_defined( exec_target_is_production,
+                    { trace_timestamp, { NewTickOffset, 0 } },
+                    { trace_timestamp, get_trace_timestamp( NewTickOffset,
+                                                        _Diasca=0, State ) } ),
+
+                { next_action, no_planned_action } ] ),
+
+            % Let's run this new tick, and possibly wait for answers:
+            ManagedState = manage_new_tick( NewTickOffset, NewState ),
+
+            ?display_console( "beginTimeManagerTick: new tick managed.", [] ),
+
+            % Deferred deletion of terminated actors in the course of the
+            % simulation:
+
+            KnownActors = ?getAttr(known_local_actors),
+
+            NewKnownActors = case ?getAttr(actors_to_delete_at_next_tick) of
+
+                [] ->
+                    KnownActors;
+
+                ActorsToDeleteNow ->
+                    wooper:delete_synchronously_instances( ActorsToDeleteNow ),
+                    % Now remove these deleted actors from the known ones:
+                    DeletedSet = set_utils:from_list( ActorsToDeleteNow ),
+                    set_utils:difference( KnownActors, DeletedSet )
+
+            end,
+
+            setAttributes( ManagedState, [
+                { previous_timestamp, NewTimestamp },
+                { known_local_actors, NewKnownActors },
+                { actors_to_delete_at_next_tick, [] } ] )
+
+
+    end,
+
+    wooper:return_state( FinalState ).
 
 
 
@@ -2351,56 +2348,56 @@ time manager that sent this message finished its spontaneous scheduling (first
 diasca) for the current tick.
 """.
 -spec notifySpontaneousSubtreeCompletion( wooper:state(), tick_offset(),
-		time_manager_pid(), next_manager_action(), diasca_tracking_info() ) ->
-												oneway_return().
+        time_manager_pid(), next_manager_action(), diasca_tracking_info() ) ->
+                                                oneway_return().
 notifySpontaneousSubtreeCompletion( State, SubtreeTickOffset, ChildManagerPid,
-		NextActionInSubtree,
-		_TrackingInfo={ ChildScheduleCount, ChildProcessCount } ) ->
+        NextActionInSubtree,
+        _TrackingInfo={ ChildScheduleCount, ChildProcessCount } ) ->
 
-	?display_console( "Notified of the completion of subtree managed by ~w.",
-					  [ ChildManagerPid ] ),
+    ?display_console( "Notified of the completion of subtree managed by ~w.",
+                      [ ChildManagerPid ] ),
 
-	WaitedManagers = ?getAttr(waited_child_managers),
+    WaitedManagers = ?getAttr(waited_child_managers),
 
-	cond_utils:if_defined( sim_diasca_debug_time_management,
-		?debug_fmt( "Time manager ~w received "
-			"notifySpontaneousSubtreeCompletion from ~w at #~B, reporting for "
-			"next action '~p'; was still waiting for ~w.",
-			[ self(), ChildManagerPid, SubtreeTickOffset,
-			  NextActionInSubtree, set_utils:to_list( WaitedManagers ) ] ),
-		basic_utils:ignore_unused( SubtreeTickOffset ) ),
+    cond_utils:if_defined( sim_diasca_debug_time_management,
+        ?debug_fmt( "Time manager ~w received "
+            "notifySpontaneousSubtreeCompletion from ~w at #~B, reporting for "
+            "next action '~p'; was still waiting for ~w.",
+            [ self(), ChildManagerPid, SubtreeTickOffset,
+              NextActionInSubtree, set_utils:to_list( WaitedManagers ) ] ),
+        basic_utils:ignore_unused( SubtreeTickOffset ) ),
 
-	cond_utils:if_defined( sim_diasca_check_time_management,
-		begin
-			% First, some (optional) checkings:
-			check_waited_count_consistency( State ),
-			true = set_utils:member( ChildManagerPid, WaitedManagers ),
-			SubtreeTickOffset = ?getAttr(current_tick_offset),
-			0 = ?getAttr(current_diasca),
-			true = set_utils:is_empty( ?getAttr(waited_triggered_actors) )
-		end,
-		basic_utils:ignore_unused( SubtreeTickOffset ) ),
+    cond_utils:if_defined( sim_diasca_check_time_management,
+        begin
+            % First, some (optional) checkings:
+            check_waited_count_consistency( State ),
+            true = set_utils:member( ChildManagerPid, WaitedManagers ),
+            SubtreeTickOffset = ?getAttr(current_tick_offset),
+            0 = ?getAttr(current_diasca),
+            true = set_utils:is_empty( ?getAttr(waited_triggered_actors) )
+        end,
+        basic_utils:ignore_unused( SubtreeTickOffset ) ),
 
-	SoonestState = update_next_action_with( NextActionInSubtree, State ),
+    SoonestState = update_next_action_with( NextActionInSubtree, State ),
 
-	% Already checked for membership:
-	RemainingWaitedManagers =
-		set_utils:delete( ChildManagerPid, WaitedManagers ),
+    % Already checked for membership:
+    RemainingWaitedManagers =
+        set_utils:delete( ChildManagerPid, WaitedManagers ),
 
-	CurrentScheduleCount = ?getAttr(scheduled_tracking) + ChildScheduleCount,
+    CurrentScheduleCount = ?getAttr(scheduled_tracking) + ChildScheduleCount,
 
-	CurrentProcessCount = ?getAttr(process_tracking) + ChildProcessCount,
+    CurrentProcessCount = ?getAttr(process_tracking) + ChildProcessCount,
 
-	CurrentOverallScheduleCount = ?getAttr(schedule_count) + ChildScheduleCount,
+    CurrentOverallScheduleCount = ?getAttr(schedule_count) + ChildScheduleCount,
 
-	WaitedState = setAttributes( SoonestState, [
-		{ waited_child_managers, RemainingWaitedManagers },
-		{ scheduled_tracking, CurrentScheduleCount },
-		{ process_tracking, CurrentProcessCount },
-		{ schedule_count, CurrentOverallScheduleCount },
-		{ waited_count, ?getAttr(waited_count)-1 } ] ),
+    WaitedState = setAttributes( SoonestState, [
+        { waited_child_managers, RemainingWaitedManagers },
+        { scheduled_tracking, CurrentScheduleCount },
+        { process_tracking, CurrentProcessCount },
+        { schedule_count, CurrentOverallScheduleCount },
+        { waited_count, ?getAttr(waited_count)-1 } ] ),
 
-	wooper:return_state( manage_possible_end_of_diasca( WaitedState ) ).
+    wooper:return_state( manage_possible_end_of_diasca( WaitedState ) ).
 
 
 
@@ -2412,259 +2409,259 @@ expects next in terms of scheduling.
 Clauses are sorted by decreasing probability.
 """.
 -spec notifySpontaneousActionsCompleted( wooper:state(), tick_offset(),
-		actor_pid(), class_Actor:next_reported_action(), [ tick_offset() ],
-		[ tick_offset() ] ) -> oneway_return().
+        actor_pid(), class_Actor:next_reported_action(), [ tick_offset() ],
+        [ tick_offset() ] ) -> oneway_return().
 notifySpontaneousActionsCompleted( State, ActorTickOffset, ActorPid,
-		_NextActorAction=no_diasca_requested, AddedSpontaneousTicks,
-		WithdrawnSpontaneousTicks ) ->
+        _NextActorAction=no_diasca_requested, AddedSpontaneousTicks,
+        WithdrawnSpontaneousTicks ) ->
 
-	% Here this actor does not request any diasca, so it must not have sent any
-	% actor message this diasca.
+    % Here this actor does not request any diasca, so it must not have sent any
+    % actor message this diasca.
 
-	WaitedActors = ?getAttr(waited_spontaneous_actors),
+    WaitedActors = ?getAttr(waited_spontaneous_actors),
 
-	cond_utils:if_defined( sim_diasca_debug_time_management,
-		?debug_fmt( "Time manager ~w received "
-			"notifySpontaneousActionsCompleted from ~w at #~B, reporting no "
-			"need for a new diasca; "
-			"was still waiting for ~B spontaneous actors.",
-			[ self(), ActorPid, ActorTickOffset,
-			  set_utils:size( WaitedActors ) ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_time_management,
+        ?debug_fmt( "Time manager ~w received "
+            "notifySpontaneousActionsCompleted from ~w at #~B, reporting no "
+            "need for a new diasca; "
+            "was still waiting for ~B spontaneous actors.",
+            [ self(), ActorPid, ActorTickOffset,
+              set_utils:size( WaitedActors ) ] ) ),
 
-	%trace_utils:debug_fmt(
-	%   "Adding for actor ~w following spontaneous ticks: ~w.",
-	%   [ ActorPid, AddedSpontaneousTicks ] ),
+    %trace_utils:debug_fmt(
+    %   "Adding for actor ~w following spontaneous ticks: ~w.",
+    %   [ ActorPid, AddedSpontaneousTicks ] ),
 
-	cond_utils:if_defined( sim_diasca_check_time_management,
-		begin
-			check_waited_count_consistency( State ),
-			true = set_utils:member( ActorPid, WaitedActors ),
-			ActorTickOffset = ?getAttr(current_tick_offset),
-			0 = ?getAttr(current_diasca),
-			true = set_utils:is_empty( ?getAttr(waited_triggered_actors) )
-		end ),
+    cond_utils:if_defined( sim_diasca_check_time_management,
+        begin
+            check_waited_count_consistency( State ),
+            true = set_utils:member( ActorPid, WaitedActors ),
+            ActorTickOffset = ?getAttr(current_tick_offset),
+            0 = ?getAttr(current_diasca),
+            true = set_utils:is_empty( ?getAttr(waited_triggered_actors) )
+        end ),
 
-	% Note: the agenda is updated, but not the next action:
-	AgendaState = update_agenda( AddedSpontaneousTicks,
-		WithdrawnSpontaneousTicks, ActorTickOffset, ActorPid, State ),
+    % Note: the agenda is updated, but not the next action:
+    AgendaState = update_agenda( AddedSpontaneousTicks,
+        WithdrawnSpontaneousTicks, ActorTickOffset, ActorPid, State ),
 
-	% Already checked for membership:
-	NewWaitedSpontaneousActors = set_utils:delete( ActorPid, WaitedActors ),
+    % Already checked for membership:
+    NewWaitedSpontaneousActors = set_utils:delete( ActorPid, WaitedActors ),
 
-	% next_timestamp, next_action, etc. not to be changed here.
+    % next_timestamp, next_action, etc. not to be changed here.
 
-	UpdatedState = setAttributes( AgendaState, [
-		{ waited_spontaneous_actors, NewWaitedSpontaneousActors },
-		{ waited_count, ?getAttr(waited_count)-1 } ] ),
+    UpdatedState = setAttributes( AgendaState, [
+        { waited_spontaneous_actors, NewWaitedSpontaneousActors },
+        { waited_count, ?getAttr(waited_count)-1 } ] ),
 
-	wooper:return_state( manage_possible_end_of_diasca( UpdatedState ) );
-
-
-
-notifySpontaneousActionsCompleted( State, ActorTickOffset, ActorPid,
-		_NextActorAction=new_diasca_needed, AddedSpontaneousTicks,
-		WithdrawnSpontaneousTicks ) ->
-
-	% Here the actor requests a new diasca, most probably because it sent an
-	% actor message this diasca. This means the next diasca should be scheduled,
-	% but not necessarily that this sending actor is to be scheduled (the
-	% receiving actor must have notified its own time manager about that).
-
-	WaitedActors = ?getAttr(waited_spontaneous_actors),
-
-	cond_utils:if_defined( sim_diasca_debug_time_management,
-		?debug_fmt( "Time manager ~w received "
-			"notifySpontaneousActionsCompleted from ~w at #~B, reporting the "
-			"need for a new diasca; "
-			"was still waiting for ~B spontaneous actors.",
-			[ self(), ActorPid, ActorTickOffset,
-			  set_utils:size( WaitedActors ) ] ) ),
-
-	%trace_utils:debug_fmt(
-	%   "Adding for actor ~w following spontaneous ticks: ~w.",
-	%   [ ActorPid, AddedSpontaneousTicks ] ),
-
-	cond_utils:if_defined( sim_diasca_check_time_management,
-		begin
-			check_waited_count_consistency( State ),
-			true = set_utils:member( ActorPid, WaitedActors ),
-			ActorTickOffset = ?getAttr(current_tick_offset),
-			0 = ?getAttr(current_diasca),
-			true = set_utils:is_empty( ?getAttr(waited_triggered_actors) )
-		end ),
-
-	AgendaState = update_agenda( AddedSpontaneousTicks,
-		WithdrawnSpontaneousTicks, ActorTickOffset, ActorPid, State ),
-
-	% Already checked for membership:
-	NewWaitedSpontaneousActors = set_utils:delete( ActorPid, WaitedActors ),
-
-	UpdatedState = setAttributes( AgendaState, [
-		{ next_timestamp, { ActorTickOffset, 1 } },
-		{ next_action, new_diasca_needed },
-		{ waited_spontaneous_actors, NewWaitedSpontaneousActors } ,
-		{ waited_count, ?getAttr(waited_count)-1 } ] ),
-
-	wooper:return_state( manage_possible_end_of_diasca( UpdatedState ) );
+    wooper:return_state( manage_possible_end_of_diasca( UpdatedState ) );
 
 
 
 notifySpontaneousActionsCompleted( State, ActorTickOffset, ActorPid,
-		_NextActorAction=terminating, _AddedSpontaneousTicks=[],
-		_WithdrawnSpontaneousTicks=[] ) ->
+        _NextActorAction=new_diasca_needed, AddedSpontaneousTicks,
+        WithdrawnSpontaneousTicks ) ->
 
-	% Here the actor is (actively) terminating, has specified a number of
-	% intercalary diascas and has not exhausted them.
-	%
-	% This implies that the next diasca must be scheduled (regardless whether it
-	% sent an actor message or not), and that this actor will have to be
-	% scheduled during it.
+    % Here the actor requests a new diasca, most probably because it sent an
+    % actor message this diasca. This means the next diasca should be scheduled,
+    % but not necessarily that this sending actor is to be scheduled (the
+    % receiving actor must have notified its own time manager about that).
 
-	WaitedActors = ?getAttr(waited_spontaneous_actors),
+    WaitedActors = ?getAttr(waited_spontaneous_actors),
 
-	cond_utils:if_defined( sim_diasca_debug_time_management,
-		?debug_fmt( "Time manager ~w received "
-			"notifySpontaneousActionsCompleted from ~w at #~B, reporting the "
-			"actor termination; "
-			"was still waiting for ~B spontaneous actors.",
-			[ self(), ActorPid, ActorTickOffset,
-			  set_utils:size( WaitedActors ) ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_time_management,
+        ?debug_fmt( "Time manager ~w received "
+            "notifySpontaneousActionsCompleted from ~w at #~B, reporting the "
+            "need for a new diasca; "
+            "was still waiting for ~B spontaneous actors.",
+            [ self(), ActorPid, ActorTickOffset,
+              set_utils:size( WaitedActors ) ] ) ),
 
-	cond_utils:if_defined( sim_diasca_check_time_management,
-		begin
-			check_waited_count_consistency( State ),
-			true = set_utils:member( ActorPid, WaitedActors ),
-			ActorTickOffset = ?getAttr(current_tick_offset),
-			0 = ?getAttr(current_diasca),
-			true = set_utils:is_empty( ?getAttr(waited_triggered_actors) )
-		end ),
+    %trace_utils:debug_fmt(
+    %   "Adding for actor ~w following spontaneous ticks: ~w.",
+    %   [ ActorPid, AddedSpontaneousTicks ] ),
 
-	% List reset at each diasca:
-	NewTerminating = [ ActorPid | ?getAttr(terminating_actors) ],
+    cond_utils:if_defined( sim_diasca_check_time_management,
+        begin
+            check_waited_count_consistency( State ),
+            true = set_utils:member( ActorPid, WaitedActors ),
+            ActorTickOffset = ?getAttr(current_tick_offset),
+            0 = ?getAttr(current_diasca),
+            true = set_utils:is_empty( ?getAttr(waited_triggered_actors) )
+        end ),
 
-	% Already checked for membership:
-	NewWaitedSpontaneousActors = set_utils:delete( ActorPid, WaitedActors ),
+    AgendaState = update_agenda( AddedSpontaneousTicks,
+        WithdrawnSpontaneousTicks, ActorTickOffset, ActorPid, State ),
 
-	UpdatedState = setAttributes( State, [
-		{ next_timestamp, { ActorTickOffset, 1 } },
-		{ next_action, new_diasca_needed },
-		{ terminating_actors, NewTerminating },
-		{ waited_spontaneous_actors, NewWaitedSpontaneousActors },
-		{ waited_count, ?getAttr(waited_count)-1 } ] ),
+    % Already checked for membership:
+    NewWaitedSpontaneousActors = set_utils:delete( ActorPid, WaitedActors ),
 
-	wooper:return_state( manage_possible_end_of_diasca( UpdatedState ) );
+    UpdatedState = setAttributes( AgendaState, [
+        { next_timestamp, { ActorTickOffset, 1 } },
+        { next_action, new_diasca_needed },
+        { waited_spontaneous_actors, NewWaitedSpontaneousActors } ,
+        { waited_count, ?getAttr(waited_count)-1 } ] ),
 
-
-
-notifySpontaneousActionsCompleted( State, ActorTickOffset, ActorPid,
-		_NextActorAction={ terminating_unlimited, DiascaRequest },
-		_AddedSpontaneousTicks=[], _WithdrawnSpontaneousTicks=[] ) ->
-
-	% Here the actor has for next action { terminating, unlimited }; hence it is
-	% passively terminating, we do not specifically schedule it anymore, and
-	% simply will delete it at the next tick, regardless of the number of diasca
-	% elapsed.
-
-	WaitedActors = ?getAttr(waited_spontaneous_actors),
-
-	cond_utils:if_defined( sim_diasca_debug_time_management,
-		?debug_fmt( "Time manager ~w received "
-			"notifySpontaneousActionsCompleted from ~w at #~B, reporting this "
-			"actor is passively terminating;"
-			"was still waiting for ~B spontaneous actors.",
-			[ self(), ActorPid, ActorTickOffset,
-			  set_utils:size( WaitedActors ) ] ) ),
-
-	cond_utils:if_defined( sim_diasca_check_time_management,
-		begin
-			check_waited_count_consistency( State ),
-			true = set_utils:member( ActorPid, WaitedActors ),
-			ActorTickOffset = ?getAttr(current_tick_offset),
-			0 = ?getAttr(current_diasca),
-			true = set_utils:is_empty( ?getAttr(waited_triggered_actors) )
-		end ),
-
-	% This actor will be left as is during the current tick, then will be
-	% deleted.
-	%
-	ActorsToDelete = [ ActorPid | ?getAttr(actors_to_delete_at_next_tick) ],
-
-	% Already checked for membership:
-	NewWaitedSpontaneousActors = set_utils:delete( ActorPid, WaitedActors ),
-
-	{ NewNextTimestamp, NewNextAction } = case DiascaRequest of
-
-		no_diasca_requested ->
-			{ ?getAttr(next_timestamp), ?getAttr(next_action) };
-
-		new_diasca_needed ->
-			{ { ActorTickOffset, 1 }, new_diasca_needed }
-
-	end,
-
-	UpdatedState = setAttributes( State, [
-		{ next_timestamp, NewNextTimestamp },
-		{ next_action, NewNextAction },
-		{ actors_to_delete_at_next_tick, ActorsToDelete },
-		{ waited_spontaneous_actors, NewWaitedSpontaneousActors },
-		{ waited_count, ?getAttr(waited_count)-1 } ] ),
-
-	wooper:return_state( manage_possible_end_of_diasca( UpdatedState ) );
+    wooper:return_state( manage_possible_end_of_diasca( UpdatedState ) );
 
 
 
 notifySpontaneousActionsCompleted( State, ActorTickOffset, ActorPid,
-		_NextActorAction={ terminated, DiascaRequest },
-		_AddedSpontaneousTicks=[], _WithdrawnSpontaneousTicks=[] ) ->
+        _NextActorAction=terminating, _AddedSpontaneousTicks=[],
+        _WithdrawnSpontaneousTicks=[] ) ->
 
-	% This actor has terminated now, it could be deleted on any next
-	% diasca/tick, but we leave it live until the next tick (not depending on
-	% the number of intermediary diascas), to be able to catch any unexpected
-	% late actor message directed at it.
+    % Here the actor is (actively) terminating, has specified a number of
+    % intercalary diascas and has not exhausted them.
+    %
+    % This implies that the next diasca must be scheduled (regardless whether it
+    % sent an actor message or not), and that this actor will have to be
+    % scheduled during it.
 
-	WaitedActors = ?getAttr(waited_spontaneous_actors),
+    WaitedActors = ?getAttr(waited_spontaneous_actors),
 
-	cond_utils:if_defined( sim_diasca_debug_time_management,
-		?debug_fmt( "Time manager ~w received "
-			"notifySpontaneousActionsCompleted from ~w at #~B, reporting the "
-			"actual actor termination; "
-			"was still waiting for ~B triggered actors.",
-			[ self(), ActorPid, ActorTickOffset,
-			  set_utils:size( WaitedActors ) ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_time_management,
+        ?debug_fmt( "Time manager ~w received "
+            "notifySpontaneousActionsCompleted from ~w at #~B, reporting the "
+            "actor termination; "
+            "was still waiting for ~B spontaneous actors.",
+            [ self(), ActorPid, ActorTickOffset,
+              set_utils:size( WaitedActors ) ] ) ),
 
-	cond_utils:if_defined( sim_diasca_check_time_management,
-		begin
-			check_waited_count_consistency( State ),
-			true = set_utils:member( ActorPid, WaitedActors ),
-			ActorTickOffset = ?getAttr(current_tick_offset),
-			0 = ?getAttr(current_diasca),
-			true = set_utils:is_empty( ?getAttr(waited_triggered_actors) )
-		end ),
+    cond_utils:if_defined( sim_diasca_check_time_management,
+        begin
+            check_waited_count_consistency( State ),
+            true = set_utils:member( ActorPid, WaitedActors ),
+            ActorTickOffset = ?getAttr(current_tick_offset),
+            0 = ?getAttr(current_diasca),
+            true = set_utils:is_empty( ?getAttr(waited_triggered_actors) )
+        end ),
 
-	% Already checked for membership:
-	NewWaitedSpontaneousActors = set_utils:delete( ActorPid, WaitedActors ),
+    % List reset at each diasca:
+    NewTerminating = [ ActorPid | ?getAttr(terminating_actors) ],
 
-	% Postponing a bit the actual deletion:
-	ActorsToDelete = [ ActorPid | ?getAttr(actors_to_delete_at_next_tick) ],
+    % Already checked for membership:
+    NewWaitedSpontaneousActors = set_utils:delete( ActorPid, WaitedActors ),
 
-	{ NewNextTimestamp, NewNextAction } = case DiascaRequest of
+    UpdatedState = setAttributes( State, [
+        { next_timestamp, { ActorTickOffset, 1 } },
+        { next_action, new_diasca_needed },
+        { terminating_actors, NewTerminating },
+        { waited_spontaneous_actors, NewWaitedSpontaneousActors },
+        { waited_count, ?getAttr(waited_count)-1 } ] ),
 
-		no_diasca_requested ->
-			{ ?getAttr(next_timestamp), ?getAttr(next_action) };
+    wooper:return_state( manage_possible_end_of_diasca( UpdatedState ) );
 
-		new_diasca_needed ->
-			{ { ActorTickOffset, 1 }, new_diasca_needed }
 
-	end,
 
-	UpdatedState = setAttributes( State, [
-		{ next_timestamp, NewNextTimestamp },
-		{ next_action, NewNextAction },
-		{ actors_to_delete_at_next_tick, ActorsToDelete },
-		{ waited_spontaneous_actors, NewWaitedSpontaneousActors },
-		{ waited_count, ?getAttr(waited_count)-1 } ] ),
+notifySpontaneousActionsCompleted( State, ActorTickOffset, ActorPid,
+        _NextActorAction={ terminating_unlimited, DiascaRequest },
+        _AddedSpontaneousTicks=[], _WithdrawnSpontaneousTicks=[] ) ->
 
-	wooper:return_state( manage_possible_end_of_diasca( UpdatedState ) ).
+    % Here the actor has for next action { terminating, unlimited }; hence it is
+    % passively terminating, we do not specifically schedule it anymore, and
+    % simply will delete it at the next tick, regardless of the number of diasca
+    % elapsed.
+
+    WaitedActors = ?getAttr(waited_spontaneous_actors),
+
+    cond_utils:if_defined( sim_diasca_debug_time_management,
+        ?debug_fmt( "Time manager ~w received "
+            "notifySpontaneousActionsCompleted from ~w at #~B, reporting this "
+            "actor is passively terminating;"
+            "was still waiting for ~B spontaneous actors.",
+            [ self(), ActorPid, ActorTickOffset,
+              set_utils:size( WaitedActors ) ] ) ),
+
+    cond_utils:if_defined( sim_diasca_check_time_management,
+        begin
+            check_waited_count_consistency( State ),
+            true = set_utils:member( ActorPid, WaitedActors ),
+            ActorTickOffset = ?getAttr(current_tick_offset),
+            0 = ?getAttr(current_diasca),
+            true = set_utils:is_empty( ?getAttr(waited_triggered_actors) )
+        end ),
+
+    % This actor will be left as is during the current tick, then will be
+    % deleted.
+    %
+    ActorsToDelete = [ ActorPid | ?getAttr(actors_to_delete_at_next_tick) ],
+
+    % Already checked for membership:
+    NewWaitedSpontaneousActors = set_utils:delete( ActorPid, WaitedActors ),
+
+    { NewNextTimestamp, NewNextAction } = case DiascaRequest of
+
+        no_diasca_requested ->
+            { ?getAttr(next_timestamp), ?getAttr(next_action) };
+
+        new_diasca_needed ->
+            { { ActorTickOffset, 1 }, new_diasca_needed }
+
+    end,
+
+    UpdatedState = setAttributes( State, [
+        { next_timestamp, NewNextTimestamp },
+        { next_action, NewNextAction },
+        { actors_to_delete_at_next_tick, ActorsToDelete },
+        { waited_spontaneous_actors, NewWaitedSpontaneousActors },
+        { waited_count, ?getAttr(waited_count)-1 } ] ),
+
+    wooper:return_state( manage_possible_end_of_diasca( UpdatedState ) );
+
+
+
+notifySpontaneousActionsCompleted( State, ActorTickOffset, ActorPid,
+        _NextActorAction={ terminated, DiascaRequest },
+        _AddedSpontaneousTicks=[], _WithdrawnSpontaneousTicks=[] ) ->
+
+    % This actor has terminated now, it could be deleted on any next
+    % diasca/tick, but we leave it live until the next tick (not depending on
+    % the number of intermediary diascas), to be able to catch any unexpected
+    % late actor message directed at it.
+
+    WaitedActors = ?getAttr(waited_spontaneous_actors),
+
+    cond_utils:if_defined( sim_diasca_debug_time_management,
+        ?debug_fmt( "Time manager ~w received "
+            "notifySpontaneousActionsCompleted from ~w at #~B, reporting the "
+            "actual actor termination; "
+            "was still waiting for ~B triggered actors.",
+            [ self(), ActorPid, ActorTickOffset,
+              set_utils:size( WaitedActors ) ] ) ),
+
+    cond_utils:if_defined( sim_diasca_check_time_management,
+        begin
+            check_waited_count_consistency( State ),
+            true = set_utils:member( ActorPid, WaitedActors ),
+            ActorTickOffset = ?getAttr(current_tick_offset),
+            0 = ?getAttr(current_diasca),
+            true = set_utils:is_empty( ?getAttr(waited_triggered_actors) )
+        end ),
+
+    % Already checked for membership:
+    NewWaitedSpontaneousActors = set_utils:delete( ActorPid, WaitedActors ),
+
+    % Postponing a bit the actual deletion:
+    ActorsToDelete = [ ActorPid | ?getAttr(actors_to_delete_at_next_tick) ],
+
+    { NewNextTimestamp, NewNextAction } = case DiascaRequest of
+
+        no_diasca_requested ->
+            { ?getAttr(next_timestamp), ?getAttr(next_action) };
+
+        new_diasca_needed ->
+            { { ActorTickOffset, 1 }, new_diasca_needed }
+
+    end,
+
+    UpdatedState = setAttributes( State, [
+        { next_timestamp, NewNextTimestamp },
+        { next_action, NewNextAction },
+        { actors_to_delete_at_next_tick, ActorsToDelete },
+        { waited_spontaneous_actors, NewWaitedSpontaneousActors },
+        { waited_count, ?getAttr(waited_count)-1 } ] ),
+
+    wooper:return_state( manage_possible_end_of_diasca( UpdatedState ) ).
 
 
 
@@ -2674,39 +2671,39 @@ Notifies this (root) time manager that the watchdog finished its spontaneous
 actions (first diasca) for the current tick.
 """.
 -spec notifySpontaneousWatchdogCompleted( wooper:state(), tick_offset() ) ->
-												oneway_return().
+                                                oneway_return().
 notifySpontaneousWatchdogCompleted( State, WatchdogTickOffset ) ->
 
-	cond_utils:if_defined( sim_diasca_debug_time_management,
-		?debug_fmt( "Time manager ~w received "
-			"notifySpontaneousWatchdogCompleted from watchdog at #~B, while "
-			"still waiting for ~B spontaneous actor(s).",
-			[ self(), WatchdogTickOffset,
-			  set_utils:size( ?getAttr(waited_spontaneous_actors) ) ] ),
-		basic_utils:ignore_unused( WatchdogTickOffset ) ),
+    cond_utils:if_defined( sim_diasca_debug_time_management,
+        ?debug_fmt( "Time manager ~w received "
+            "notifySpontaneousWatchdogCompleted from watchdog at #~B, while "
+            "still waiting for ~B spontaneous actor(s).",
+            [ self(), WatchdogTickOffset,
+              set_utils:size( ?getAttr(waited_spontaneous_actors) ) ] ),
+        basic_utils:ignore_unused( WatchdogTickOffset ) ),
 
-	cond_utils:if_defined( sim_diasca_check_time_management,
-		begin
-			check_waited_count_consistency( State ),
-			true = ?getAttr(watchdog_waited),
-			WatchdogTickOffset = ?getAttr(current_tick_offset),
-			0 = ?getAttr(current_diasca),
-			true = set_utils:is_empty( ?getAttr(waited_triggered_actors) )
-		end,
-		basic_utils:ignore_unused( WatchdogTickOffset ) ),
+    cond_utils:if_defined( sim_diasca_check_time_management,
+        begin
+            check_waited_count_consistency( State ),
+            true = ?getAttr(watchdog_waited),
+            WatchdogTickOffset = ?getAttr(current_tick_offset),
+            0 = ?getAttr(current_diasca),
+            true = set_utils:is_empty( ?getAttr(waited_triggered_actors) )
+        end,
+        basic_utils:ignore_unused( WatchdogTickOffset ) ),
 
-	% Nothing to do. Although it is not necessary, we prefer to force the
-	% keeping in sync with the watchdog as well.
+    % Nothing to do. Although it is not necessary, we prefer to force the
+    % keeping in sync with the watchdog as well.
 
-	AcknowledgedState = setAttributes( State, [
-		{ waited_count, ?getAttr(waited_count)-1 },
-		{ watchdog_waited, false } ] ),
+    AcknowledgedState = setAttributes( State, [
+        { waited_count, ?getAttr(waited_count)-1 },
+        { watchdog_waited, false } ] ),
 
-	% Yes, indeed, it may actually happen that the watchdog is the last to
-	% answer, even in a distributed context!
-	%
-	wooper:return_state(
-		manage_possible_end_of_diasca( AcknowledgedState ) ).
+    % Yes, indeed, it may actually happen that the watchdog is the last to
+    % answer, even in a distributed context!
+    %
+    wooper:return_state(
+        manage_possible_end_of_diasca( AcknowledgedState ) ).
 
 
 
@@ -2727,37 +2724,37 @@ this message recursively through the whole scheduling tree, so that all relevant
 actors can be notified.
 """.
 -spec beginTimeManagerDiasca( wooper:state(), tick_offset(), diasca() ) ->
-									oneway_return().
+                                    oneway_return().
 beginTimeManagerDiasca( State, TickOffset, NewDiasca ) ->
 
-	?display_console( "beginTimeManagerDiasca: at tick offset #~B, "
-					  "new diasca is ~B.", [ TickOffset, NewDiasca ] ),
+    ?display_console( "beginTimeManagerDiasca: at tick offset #~B, "
+                      "new diasca is ~B.", [ TickOffset, NewDiasca ] ),
 
-	cond_utils:if_defined( sim_diasca_check_time_management,
-		check_diasca_consistency( TickOffset, NewDiasca, State ) ),
+    cond_utils:if_defined( sim_diasca_check_time_management,
+        check_diasca_consistency( TickOffset, NewDiasca, State ) ),
 
-	% actors_to_trigger_in_one_diasca and/or actors_to_trigger_in_two_diascas
-	% might be non-empty here.
+    % actors_to_trigger_in_one_diasca and/or actors_to_trigger_in_two_diascas
+    % might be non-empty here.
 
-	NewTimestamp = { TickOffset, NewDiasca },
+    NewTimestamp = { TickOffset, NewDiasca },
 
-	NewState = setAttributes( State, [
-		{ current_diasca, NewDiasca },
+    NewState = setAttributes( State, [
+        { current_diasca, NewDiasca },
 
-		cond_utils:if_defined( exec_target_is_production,
-			{ trace_timestamp, { TickOffset, NewDiasca } },
-			{ trace_timestamp,
-			  get_trace_timestamp( TickOffset, NewDiasca, State ) } ),
+        cond_utils:if_defined( exec_target_is_production,
+            { trace_timestamp, { TickOffset, NewDiasca } },
+            { trace_timestamp,
+              get_trace_timestamp( TickOffset, NewDiasca, State ) } ),
 
-		{ trace_timestamp, NewTimestamp },
-		{ next_action, no_planned_action } ] ),
+        { trace_timestamp, NewTimestamp },
+        { next_action, no_planned_action } ] ),
 
-	% Let's run this new diasca, and possibly wait for answers:
-	ManagedState = manage_new_diasca( TickOffset, NewDiasca, NewState ),
+    % Let's run this new diasca, and possibly wait for answers:
+    ManagedState = manage_new_diasca( TickOffset, NewDiasca, NewState ),
 
-	FinalState = setAttribute( ManagedState, previous_timestamp, NewTimestamp ),
+    FinalState = setAttribute( ManagedState, previous_timestamp, NewTimestamp ),
 
-	wooper:return_state( FinalState ).
+    wooper:return_state( FinalState ).
 
 
 
@@ -2768,55 +2765,55 @@ time manager that sent this message finished the specified (strictly positive)
 diasca for the current tick.
 """.
 -spec notifyTriggerSubtreeCompletion( wooper:state(), tick_offset(),
-		diasca(), time_manager_pid(), next_manager_action(),
-		diasca_tracking_info() ) -> oneway_return().
+        diasca(), time_manager_pid(), next_manager_action(),
+        diasca_tracking_info() ) -> oneway_return().
 notifyTriggerSubtreeCompletion( State, SubtreeTickOffset, SubtreeDiasca,
-		ChildManagerPid, NextActionInSubtree,
-		_TrackingInfo={ ChildScheduleCount, ChildProcessCount } ) ->
+        ChildManagerPid, NextActionInSubtree,
+        _TrackingInfo={ ChildScheduleCount, ChildProcessCount } ) ->
 
-	WaitedManagers = ?getAttr(waited_child_managers),
+    WaitedManagers = ?getAttr(waited_child_managers),
 
-	cond_utils:if_defined( sim_diasca_debug_time_management,
-		?debug_fmt( "Time manager ~w received notifyTriggerSubtreeCompletion "
-			"from ~w at #~B diasca ~B, reporting for next action '~p'; "
-			"was still waiting for ~p.",
-			[ self(), ChildManagerPid, SubtreeTickOffset, SubtreeDiasca,
-			  NextActionInSubtree, set_utils:to_list( WaitedManagers ) ] ),
-		basic_utils:ignore_unused( [ SubtreeTickOffset, SubtreeDiasca ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_time_management,
+        ?debug_fmt( "Time manager ~w received notifyTriggerSubtreeCompletion "
+            "from ~w at #~B diasca ~B, reporting for next action '~p'; "
+            "was still waiting for ~p.",
+            [ self(), ChildManagerPid, SubtreeTickOffset, SubtreeDiasca,
+              NextActionInSubtree, set_utils:to_list( WaitedManagers ) ] ),
+        basic_utils:ignore_unused( [ SubtreeTickOffset, SubtreeDiasca ] ) ),
 
 
-	cond_utils:if_defined( sim_diasca_check_time_management,
-		begin
-			check_waited_count_consistency( State ),
-			true = set_utils:member( ChildManagerPid, WaitedManagers ),
-			SubtreeTickOffset = ?getAttr(current_tick_offset),
-			SubtreeDiasca = ?getAttr(current_diasca),
-			true = ( is_integer( SubtreeDiasca ) andalso SubtreeDiasca =/= 0 ),
-			true = set_utils:is_empty( ?getAttr(waited_spontaneous_actors) )
-		end,
-		basic_utils:ignore_unused( [ SubtreeTickOffset, SubtreeDiasca ] ) ),
+    cond_utils:if_defined( sim_diasca_check_time_management,
+        begin
+            check_waited_count_consistency( State ),
+            true = set_utils:member( ChildManagerPid, WaitedManagers ),
+            SubtreeTickOffset = ?getAttr(current_tick_offset),
+            SubtreeDiasca = ?getAttr(current_diasca),
+            true = ( is_integer( SubtreeDiasca ) andalso SubtreeDiasca =/= 0 ),
+            true = set_utils:is_empty( ?getAttr(waited_spontaneous_actors) )
+        end,
+        basic_utils:ignore_unused( [ SubtreeTickOffset, SubtreeDiasca ] ) ),
 
-	SoonestState = update_next_action_with( NextActionInSubtree, State ),
+    SoonestState = update_next_action_with( NextActionInSubtree, State ),
 
-	RemainingWaitedManagers = set_utils:delete( ChildManagerPid,
-												WaitedManagers ),
+    RemainingWaitedManagers = set_utils:delete( ChildManagerPid,
+                                                WaitedManagers ),
 
-	CurrentScheduleCount = ?getAttr(scheduled_tracking) + ChildScheduleCount,
+    CurrentScheduleCount = ?getAttr(scheduled_tracking) + ChildScheduleCount,
 
-	CurrentProcessCount = ?getAttr(process_tracking) + ChildProcessCount,
+    CurrentProcessCount = ?getAttr(process_tracking) + ChildProcessCount,
 
-	CurrentOverallScheduleCount = ?getAttr(schedule_count) + ChildScheduleCount,
+    CurrentOverallScheduleCount = ?getAttr(schedule_count) + ChildScheduleCount,
 
-	WaitedState = setAttributes( SoonestState, [
-		{ waited_child_managers, RemainingWaitedManagers },
-		{ scheduled_tracking, CurrentScheduleCount },
-		{ process_tracking, CurrentProcessCount },
+    WaitedState = setAttributes( SoonestState, [
+        { waited_child_managers, RemainingWaitedManagers },
+        { scheduled_tracking, CurrentScheduleCount },
+        { process_tracking, CurrentProcessCount },
 
-		% Never reset:
-		{ schedule_count, CurrentOverallScheduleCount },
-		{ waited_count, ?getAttr(waited_count)-1 } ] ),
+        % Never reset:
+        { schedule_count, CurrentOverallScheduleCount },
+        { waited_count, ?getAttr(waited_count)-1 } ] ),
 
-	wooper:return_state( manage_possible_end_of_diasca( WaitedState ) ).
+    wooper:return_state( manage_possible_end_of_diasca( WaitedState ) ).
 
 
 
@@ -2828,273 +2825,273 @@ of scheduling.
 Clauses are sorted by decreasing probability.
 """.
 -spec notifyTriggeredActionsCompleted( wooper:state(), tick_offset(), diasca(),
-		actor_pid(), class_Actor:next_reported_action(),
-		[ tick_offset() ], [ tick_offset() ] ) -> oneway_return().
+        actor_pid(), class_Actor:next_reported_action(),
+        [ tick_offset() ], [ tick_offset() ] ) -> oneway_return().
 notifyTriggeredActionsCompleted( State, ActorTickOffset, ActorDiasca, ActorPid,
-		_NextActorAction=no_diasca_requested, AddedSpontaneousTicks,
-		WithdrawnSpontaneousTicks ) ->
+        _NextActorAction=no_diasca_requested, AddedSpontaneousTicks,
+        WithdrawnSpontaneousTicks ) ->
 
-	cond_utils:if_defined( sim_diasca_debug_time_management,
-		trace_utils:debug_fmt(
-			"Adding at ~w for actor ~w following spontaneous ticks: ~w "
-			"(no_diasca_requested).",
-			[ { ActorTickOffset, ActorDiasca }, ActorPid,
-			  AddedSpontaneousTicks ] ),
-		basic_utils:ignore_unused( ActorDiasca ) ),
+    cond_utils:if_defined( sim_diasca_debug_time_management,
+        trace_utils:debug_fmt(
+            "Adding at ~w for actor ~w following spontaneous ticks: ~w "
+            "(no_diasca_requested).",
+            [ { ActorTickOffset, ActorDiasca }, ActorPid,
+              AddedSpontaneousTicks ] ),
+        basic_utils:ignore_unused( ActorDiasca ) ),
 
-	% Here this actor does not request any diasca, so it must not have sent any
-	% actor message this diasca.
+    % Here this actor does not request any diasca, so it must not have sent any
+    % actor message this diasca.
 
-	WaitedActors = ?getAttr(waited_triggered_actors),
+    WaitedActors = ?getAttr(waited_triggered_actors),
 
-	cond_utils:if_defined( sim_diasca_debug_time_management,
-		?debug_fmt( "Time manager ~w received notifyTriggeredActionsCompleted "
-			"from ~w at #~B diasca ~B, reporting no need for a new diasca;"
-			" was still waiting for ~B triggered actors.",
-			[ self(), ActorPid, ActorTickOffset, ActorDiasca,
-			  set_utils:size( WaitedActors ) ] ),
-		basic_utils:ignore_unused( ActorDiasca ) ),
+    cond_utils:if_defined( sim_diasca_debug_time_management,
+        ?debug_fmt( "Time manager ~w received notifyTriggeredActionsCompleted "
+            "from ~w at #~B diasca ~B, reporting no need for a new diasca;"
+            " was still waiting for ~B triggered actors.",
+            [ self(), ActorPid, ActorTickOffset, ActorDiasca,
+              set_utils:size( WaitedActors ) ] ),
+        basic_utils:ignore_unused( ActorDiasca ) ),
 
-	cond_utils:if_defined( sim_diasca_check_time_management,
-		begin
-			check_waited_count_consistency( State ),
-			true = set_utils:member( ActorPid, WaitedActors ),
-			ActorTickOffset = ?getAttr(current_tick_offset),
-			ActorDiasca = ?getAttr(current_diasca),
-			true = ( is_integer( ActorDiasca ) andalso ActorDiasca =/= 0 ),
-			true = set_utils:is_empty( ?getAttr(waited_spontaneous_actors) )
-		end,
-		basic_utils:ignore_unused( ActorDiasca ) ),
+    cond_utils:if_defined( sim_diasca_check_time_management,
+        begin
+            check_waited_count_consistency( State ),
+            true = set_utils:member( ActorPid, WaitedActors ),
+            ActorTickOffset = ?getAttr(current_tick_offset),
+            ActorDiasca = ?getAttr(current_diasca),
+            true = ( is_integer( ActorDiasca ) andalso ActorDiasca =/= 0 ),
+            true = set_utils:is_empty( ?getAttr(waited_spontaneous_actors) )
+        end,
+        basic_utils:ignore_unused( ActorDiasca ) ),
 
-	% Note: the agenda is updated, but not the next action:
-	AgendaState = update_agenda( AddedSpontaneousTicks,
-		WithdrawnSpontaneousTicks, ActorTickOffset, ActorPid, State ),
+    % Note: the agenda is updated, but not the next action:
+    AgendaState = update_agenda( AddedSpontaneousTicks,
+        WithdrawnSpontaneousTicks, ActorTickOffset, ActorPid, State ),
 
-	% Already checked for membership:
-	NewWaitedTriggeredActors = set_utils:delete( ActorPid, WaitedActors ),
+    % Already checked for membership:
+    NewWaitedTriggeredActors = set_utils:delete( ActorPid, WaitedActors ),
 
-	% next_timestamp, next_action, etc. should not to be changed here (will be
-	% determined just when needed, when reporting the end of this diasca).
+    % next_timestamp, next_action, etc. should not to be changed here (will be
+    % determined just when needed, when reporting the end of this diasca).
 
-	UpdatedState = setAttributes( AgendaState, [
-		{ waited_triggered_actors, NewWaitedTriggeredActors },
-		{ waited_count, ?getAttr(waited_count)-1 } ] ),
+    UpdatedState = setAttributes( AgendaState, [
+        { waited_triggered_actors, NewWaitedTriggeredActors },
+        { waited_count, ?getAttr(waited_count)-1 } ] ),
 
-	wooper:return_state( manage_possible_end_of_diasca( UpdatedState ) );
-
-
-
-notifyTriggeredActionsCompleted( State, ActorTickOffset, ActorDiasca, ActorPid,
-		_NextActorAction=new_diasca_needed, AddedSpontaneousTicks,
-		WithdrawnSpontaneousTicks ) ->
-
-	%trace_utils:debug_fmt(
-	%  "Adding at ~w for actor ~w following spontaneous ticks: ~w "
-	%  "(new_diasca_needed).",
-	%  [ { ActorTickOffset, ActorDiasca }, ActorPid, AddedSpontaneousTicks ] ),
-
-	% Here the actor requests a new diasca, most probably because it sent an
-	% actor message this diasca. This means the next diasca should be scheduled,
-	% but not necessarily that this sending actor is to be scheduled (the
-	% receiving actor must have notified its own time manager about that).
-
-	WaitedActors = ?getAttr(waited_triggered_actors),
-
-	cond_utils:if_defined( sim_diasca_debug_time_management,
-		?debug_fmt( "Time manager ~w received notifyTriggeredActionsCompleted "
-			"from ~w at #~B diasca ~B, reporting the need for a new diasca;"
-			" was still waiting for ~B triggered actors.",
-			[ self(), ActorPid, ActorTickOffset, ActorDiasca,
-			  set_utils:size( WaitedActors ) ] ) ),
-
-	cond_utils:if_defined( sim_diasca_check_time_management,
-		begin
-			check_waited_count_consistency( State ),
-
-			% If this match fails, it may be the sign that at least one of your
-			% classes sent an actor message from its constructor, whereas it is
-			% not allowed (it should be done from its onFirstDiasca/2 actor
-			% oneway onward).
-			%
-			true = set_utils:member( ActorPid, WaitedActors ),
-			ActorTickOffset = ?getAttr(current_tick_offset),
-			ActorDiasca = ?getAttr(current_diasca),
-			true = ( is_integer( ActorDiasca ) andalso ActorDiasca =/= 0 ),
-			true = set_utils:is_empty( ?getAttr(waited_spontaneous_actors) )
-		end ),
-
-	% Note: the agenda is updated, but not the next action:
-	AgendaState = update_agenda( AddedSpontaneousTicks,
-			WithdrawnSpontaneousTicks, ActorTickOffset, ActorPid, State ),
-
-	% Already checked for membership:
-	NewWaitedTriggeredActors = set_utils:delete( ActorPid, WaitedActors ),
-
-	UpdatedState = setAttributes( AgendaState, [
-		{ next_timestamp, { ActorTickOffset, ActorDiasca+1 } },
-		{ next_action, new_diasca_needed },
-		{ waited_triggered_actors, NewWaitedTriggeredActors },
-		{ waited_count, ?getAttr(waited_count)-1 } ] ),
-
-	wooper:return_state( manage_possible_end_of_diasca( UpdatedState ) );
+    wooper:return_state( manage_possible_end_of_diasca( UpdatedState ) );
 
 
 
 notifyTriggeredActionsCompleted( State, ActorTickOffset, ActorDiasca, ActorPid,
-		_NextActorAction=terminating, _AddedSpontaneousTicks=[],
-		_WithdrawnSpontaneousTicks=[] ) ->
+        _NextActorAction=new_diasca_needed, AddedSpontaneousTicks,
+        WithdrawnSpontaneousTicks ) ->
 
-	% Here the actor is (actively) terminating, has specified a number of
-	% intercalary diascas and has not exhausted them.
-	%
-	% This implies that the next diasca must be scheduled, and that this actor
-	% will have to be scheduled during it.
+    %trace_utils:debug_fmt(
+    %  "Adding at ~w for actor ~w following spontaneous ticks: ~w "
+    %  "(new_diasca_needed).",
+    %  [ { ActorTickOffset, ActorDiasca }, ActorPid, AddedSpontaneousTicks ] ),
 
-	WaitedActors = ?getAttr(waited_triggered_actors),
+    % Here the actor requests a new diasca, most probably because it sent an
+    % actor message this diasca. This means the next diasca should be scheduled,
+    % but not necessarily that this sending actor is to be scheduled (the
+    % receiving actor must have notified its own time manager about that).
 
-	cond_utils:if_defined( sim_diasca_debug_time_management,
-		?debug_fmt( "Time manager ~w received notifyTriggeredActionsCompleted "
-			"from ~w at #~B diasca ~B, reporting this actor is actively "
-			"terminating; was still waiting for ~B triggered actors.",
-			[ self(), ActorPid, ActorTickOffset, ActorDiasca,
-			  set_utils:size( WaitedActors ) ] ) ),
+    WaitedActors = ?getAttr(waited_triggered_actors),
 
-	cond_utils:if_defined( sim_diasca_check_time_management,
-		begin
-			check_waited_count_consistency( State ),
-			true = set_utils:member( ActorPid, WaitedActors ),
-			ActorTickOffset = ?getAttr(current_tick_offset),
-			ActorDiasca = ?getAttr(current_diasca),
-			true = ( is_integer( ActorDiasca ) andalso ActorDiasca =/= 0 ),
-			true = set_utils:is_empty( ?getAttr(waited_spontaneous_actors) )
-		end ),
+    cond_utils:if_defined( sim_diasca_debug_time_management,
+        ?debug_fmt( "Time manager ~w received notifyTriggeredActionsCompleted "
+            "from ~w at #~B diasca ~B, reporting the need for a new diasca;"
+            " was still waiting for ~B triggered actors.",
+            [ self(), ActorPid, ActorTickOffset, ActorDiasca,
+              set_utils:size( WaitedActors ) ] ) ),
 
-	NewTerminating = [ ActorPid | ?getAttr(terminating_actors) ],
+    cond_utils:if_defined( sim_diasca_check_time_management,
+        begin
+            check_waited_count_consistency( State ),
 
-	% Already checked for membership:
-	NewWaitedTriggeredActors = set_utils:delete( ActorPid, WaitedActors ),
+            % If this match fails, it may be the sign that at least one of your
+            % classes sent an actor message from its constructor, whereas it is
+            % not allowed (it should be done from its onFirstDiasca/2 actor
+            % oneway onward).
+            %
+            true = set_utils:member( ActorPid, WaitedActors ),
+            ActorTickOffset = ?getAttr(current_tick_offset),
+            ActorDiasca = ?getAttr(current_diasca),
+            true = ( is_integer( ActorDiasca ) andalso ActorDiasca =/= 0 ),
+            true = set_utils:is_empty( ?getAttr(waited_spontaneous_actors) )
+        end ),
 
-	UpdatedState = setAttributes( State, [
-		{ next_timestamp, { ActorTickOffset, ActorDiasca + 1 } },
-		{ next_action, new_diasca_needed },
-		{ terminating_actors, NewTerminating },
-		{ waited_triggered_actors, NewWaitedTriggeredActors },
-		{ waited_count, ?getAttr(waited_count)-1 } ] ),
+    % Note: the agenda is updated, but not the next action:
+    AgendaState = update_agenda( AddedSpontaneousTicks,
+            WithdrawnSpontaneousTicks, ActorTickOffset, ActorPid, State ),
 
-	wooper:return_state( manage_possible_end_of_diasca( UpdatedState ) );
+    % Already checked for membership:
+    NewWaitedTriggeredActors = set_utils:delete( ActorPid, WaitedActors ),
 
+    UpdatedState = setAttributes( AgendaState, [
+        { next_timestamp, { ActorTickOffset, ActorDiasca+1 } },
+        { next_action, new_diasca_needed },
+        { waited_triggered_actors, NewWaitedTriggeredActors },
+        { waited_count, ?getAttr(waited_count)-1 } ] ),
 
-
-notifyTriggeredActionsCompleted( State, ActorTickOffset, ActorDiasca, ActorPid,
-		_NextActorAction={ terminating_unlimited, DiascaRequest },
-		_AddedSpontaneousTicks=[], _WithdrawnSpontaneousTicks=[] ) ->
-
-	% Here the actor has for next action { terminating, unlimited }; hence it is
-	% passively terminating, we do not specifically schedule it anymore, and
-	% simply will delete it at the next tick, regardless of the number of diasca
-	% elapsed.
-
-	WaitedActors = ?getAttr(waited_triggered_actors),
-
-	cond_utils:if_defined( sim_diasca_debug_time_management,
-		?debug_fmt( "Time manager ~w received notifyTriggeredActionsCompleted "
-			"from ~w at #~B diasca ~B, reporting this actor is passively "
-			"terminating; was still waiting for ~B triggered actors; "
-			"next action is ~p.",
-			[ self(), ActorPid, ActorTickOffset, ActorDiasca,
-			  set_utils:size( WaitedActors ), ?getAttr(next_action) ] ) ),
-
-	cond_utils:if_defined( sim_diasca_check_time_management,
-		begin
-			check_waited_count_consistency( State ),
-			true = set_utils:member( ActorPid, WaitedActors ),
-			ActorTickOffset = ?getAttr(current_tick_offset),
-			ActorDiasca = ?getAttr(current_diasca),
-			true = ( is_integer( ActorDiasca ) andalso ActorDiasca =/= 0 ),
-			true = set_utils:is_empty( ?getAttr(waited_spontaneous_actors) )
-		end ),
-
-	% This actor will be left as is during the current tick, then will be
-	% deleted.
-	%
-	ActorsToDelete = [ ActorPid | ?getAttr(actors_to_delete_at_next_tick) ],
-
-	{ NewNextTimestamp, NewNextAction } = case DiascaRequest of
-
-		no_diasca_requested ->
-			{ ?getAttr(next_timestamp), ?getAttr(next_action) };
-
-		new_diasca_needed ->
-			{ { ActorTickOffset, ActorDiasca + 1 }, new_diasca_needed }
-
-	end,
-
-	% Already checked for membership:
-	NewWaitedTriggeredActors = set_utils:delete( ActorPid, WaitedActors ),
-
-	UpdatedState = setAttributes( State, [
-		{ next_timestamp, NewNextTimestamp },
-		{ next_action, NewNextAction },
-		{ actors_to_delete_at_next_tick, ActorsToDelete },
-		{ waited_triggered_actors, NewWaitedTriggeredActors },
-		{ waited_count, ?getAttr(waited_count)-1 } ] ),
-
-	wooper:return_state( manage_possible_end_of_diasca( UpdatedState ) );
+    wooper:return_state( manage_possible_end_of_diasca( UpdatedState ) );
 
 
 
 notifyTriggeredActionsCompleted( State, ActorTickOffset, ActorDiasca, ActorPid,
-		_NextActorAction={ terminated, DiascaRequest },
-		_AddedSpontaneousTicks=[], _WithdrawnSpontaneousTicks=[] ) ->
+        _NextActorAction=terminating, _AddedSpontaneousTicks=[],
+        _WithdrawnSpontaneousTicks=[] ) ->
 
-	% This actor has terminated now, it could be deleted on any next
-	% diasca/tick, but we leave it live until the next tick (not depending on
-	% the number of intermediary diascas), to be able to catch any unexpected
-	% late actor message directed at it.
+    % Here the actor is (actively) terminating, has specified a number of
+    % intercalary diascas and has not exhausted them.
+    %
+    % This implies that the next diasca must be scheduled, and that this actor
+    % will have to be scheduled during it.
 
-	WaitedActors = ?getAttr(waited_triggered_actors),
+    WaitedActors = ?getAttr(waited_triggered_actors),
 
-	cond_utils:if_defined( sim_diasca_debug_time_management,
-		?debug_fmt( "Time manager ~w received notifyTriggeredActionsCompleted "
-			"from ~w at #~B diasca ~B, reporting the actual actor "
-			"termination; was still waiting for ~B triggered actors.",
-			[ self(), ActorPid, ActorTickOffset, ActorDiasca,
-			  set_utils:size( WaitedActors ) ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_time_management,
+        ?debug_fmt( "Time manager ~w received notifyTriggeredActionsCompleted "
+            "from ~w at #~B diasca ~B, reporting this actor is actively "
+            "terminating; was still waiting for ~B triggered actors.",
+            [ self(), ActorPid, ActorTickOffset, ActorDiasca,
+              set_utils:size( WaitedActors ) ] ) ),
 
-	cond_utils:if_defined( sim_diasca_check_time_management,
-		begin
-			check_waited_count_consistency( State ),
-			true = set_utils:member( ActorPid, WaitedActors ),
-			ActorTickOffset = ?getAttr(current_tick_offset),
-			ActorDiasca = ?getAttr(current_diasca),
-			true = ( is_integer( ActorDiasca ) andalso ActorDiasca =/= 0 ),
-			true = set_utils:is_empty( ?getAttr(waited_spontaneous_actors) )
-		end ),
+    cond_utils:if_defined( sim_diasca_check_time_management,
+        begin
+            check_waited_count_consistency( State ),
+            true = set_utils:member( ActorPid, WaitedActors ),
+            ActorTickOffset = ?getAttr(current_tick_offset),
+            ActorDiasca = ?getAttr(current_diasca),
+            true = ( is_integer( ActorDiasca ) andalso ActorDiasca =/= 0 ),
+            true = set_utils:is_empty( ?getAttr(waited_spontaneous_actors) )
+        end ),
 
-	% Already checked for membership:
-	NewWaitedTriggeredActors = set_utils:delete( ActorPid, WaitedActors ),
+    NewTerminating = [ ActorPid | ?getAttr(terminating_actors) ],
 
-	% Postponing a bit the actual deletion:
-	ActorsToDelete = [ ActorPid | ?getAttr(actors_to_delete_at_next_tick) ],
+    % Already checked for membership:
+    NewWaitedTriggeredActors = set_utils:delete( ActorPid, WaitedActors ),
 
-	{ NewNextTimestamp, NewNextAction } = case DiascaRequest of
+    UpdatedState = setAttributes( State, [
+        { next_timestamp, { ActorTickOffset, ActorDiasca + 1 } },
+        { next_action, new_diasca_needed },
+        { terminating_actors, NewTerminating },
+        { waited_triggered_actors, NewWaitedTriggeredActors },
+        { waited_count, ?getAttr(waited_count)-1 } ] ),
 
-		no_diasca_requested ->
-			{ ?getAttr(next_timestamp), ?getAttr(next_action) };
+    wooper:return_state( manage_possible_end_of_diasca( UpdatedState ) );
 
-		new_diasca_needed ->
-			{ { ActorTickOffset, ActorDiasca + 1 }, new_diasca_needed }
 
-	end,
 
-	UpdatedState = setAttributes( State, [
-		{ next_timestamp, NewNextTimestamp },
-		{ next_action, NewNextAction },
-		{ actors_to_delete_at_next_tick, ActorsToDelete },
-		{ waited_triggered_actors, NewWaitedTriggeredActors },
-		{ waited_count, ?getAttr(waited_count)-1 } ] ),
+notifyTriggeredActionsCompleted( State, ActorTickOffset, ActorDiasca, ActorPid,
+        _NextActorAction={ terminating_unlimited, DiascaRequest },
+        _AddedSpontaneousTicks=[], _WithdrawnSpontaneousTicks=[] ) ->
 
-	wooper:return_state( manage_possible_end_of_diasca( UpdatedState ) ).
+    % Here the actor has for next action { terminating, unlimited }; hence it is
+    % passively terminating, we do not specifically schedule it anymore, and
+    % simply will delete it at the next tick, regardless of the number of diasca
+    % elapsed.
+
+    WaitedActors = ?getAttr(waited_triggered_actors),
+
+    cond_utils:if_defined( sim_diasca_debug_time_management,
+        ?debug_fmt( "Time manager ~w received notifyTriggeredActionsCompleted "
+            "from ~w at #~B diasca ~B, reporting this actor is passively "
+            "terminating; was still waiting for ~B triggered actors; "
+            "next action is ~p.",
+            [ self(), ActorPid, ActorTickOffset, ActorDiasca,
+              set_utils:size( WaitedActors ), ?getAttr(next_action) ] ) ),
+
+    cond_utils:if_defined( sim_diasca_check_time_management,
+        begin
+            check_waited_count_consistency( State ),
+            true = set_utils:member( ActorPid, WaitedActors ),
+            ActorTickOffset = ?getAttr(current_tick_offset),
+            ActorDiasca = ?getAttr(current_diasca),
+            true = ( is_integer( ActorDiasca ) andalso ActorDiasca =/= 0 ),
+            true = set_utils:is_empty( ?getAttr(waited_spontaneous_actors) )
+        end ),
+
+    % This actor will be left as is during the current tick, then will be
+    % deleted.
+    %
+    ActorsToDelete = [ ActorPid | ?getAttr(actors_to_delete_at_next_tick) ],
+
+    { NewNextTimestamp, NewNextAction } = case DiascaRequest of
+
+        no_diasca_requested ->
+            { ?getAttr(next_timestamp), ?getAttr(next_action) };
+
+        new_diasca_needed ->
+            { { ActorTickOffset, ActorDiasca + 1 }, new_diasca_needed }
+
+    end,
+
+    % Already checked for membership:
+    NewWaitedTriggeredActors = set_utils:delete( ActorPid, WaitedActors ),
+
+    UpdatedState = setAttributes( State, [
+        { next_timestamp, NewNextTimestamp },
+        { next_action, NewNextAction },
+        { actors_to_delete_at_next_tick, ActorsToDelete },
+        { waited_triggered_actors, NewWaitedTriggeredActors },
+        { waited_count, ?getAttr(waited_count)-1 } ] ),
+
+    wooper:return_state( manage_possible_end_of_diasca( UpdatedState ) );
+
+
+
+notifyTriggeredActionsCompleted( State, ActorTickOffset, ActorDiasca, ActorPid,
+        _NextActorAction={ terminated, DiascaRequest },
+        _AddedSpontaneousTicks=[], _WithdrawnSpontaneousTicks=[] ) ->
+
+    % This actor has terminated now, it could be deleted on any next
+    % diasca/tick, but we leave it live until the next tick (not depending on
+    % the number of intermediary diascas), to be able to catch any unexpected
+    % late actor message directed at it.
+
+    WaitedActors = ?getAttr(waited_triggered_actors),
+
+    cond_utils:if_defined( sim_diasca_debug_time_management,
+        ?debug_fmt( "Time manager ~w received notifyTriggeredActionsCompleted "
+            "from ~w at #~B diasca ~B, reporting the actual actor "
+            "termination; was still waiting for ~B triggered actors.",
+            [ self(), ActorPid, ActorTickOffset, ActorDiasca,
+              set_utils:size( WaitedActors ) ] ) ),
+
+    cond_utils:if_defined( sim_diasca_check_time_management,
+        begin
+            check_waited_count_consistency( State ),
+            true = set_utils:member( ActorPid, WaitedActors ),
+            ActorTickOffset = ?getAttr(current_tick_offset),
+            ActorDiasca = ?getAttr(current_diasca),
+            true = ( is_integer( ActorDiasca ) andalso ActorDiasca =/= 0 ),
+            true = set_utils:is_empty( ?getAttr(waited_spontaneous_actors) )
+        end ),
+
+    % Already checked for membership:
+    NewWaitedTriggeredActors = set_utils:delete( ActorPid, WaitedActors ),
+
+    % Postponing a bit the actual deletion:
+    ActorsToDelete = [ ActorPid | ?getAttr(actors_to_delete_at_next_tick) ],
+
+    { NewNextTimestamp, NewNextAction } = case DiascaRequest of
+
+        no_diasca_requested ->
+            { ?getAttr(next_timestamp), ?getAttr(next_action) };
+
+        new_diasca_needed ->
+            { { ActorTickOffset, ActorDiasca + 1 }, new_diasca_needed }
+
+    end,
+
+    UpdatedState = setAttributes( State, [
+        { next_timestamp, NewNextTimestamp },
+        { next_action, NewNextAction },
+        { actors_to_delete_at_next_tick, ActorsToDelete },
+        { waited_triggered_actors, NewWaitedTriggeredActors },
+        { waited_count, ?getAttr(waited_count)-1 } ] ),
+
+    wooper:return_state( manage_possible_end_of_diasca( UpdatedState ) ).
 
 
 
@@ -3104,41 +3101,41 @@ Notifies this (root) time manager that the watchdog finished its current
 (non-first) diasca for the current tick.
 """.
 -spec notifyTriggeredWatchdogCompleted( wooper:state(),
-							tick_offset(), diasca() ) -> oneway_return().
+                            tick_offset(), diasca() ) -> oneway_return().
 notifyTriggeredWatchdogCompleted( State, WatchdogTickOffset, WatchdogDiasca ) ->
 
-	cond_utils:if_defined( sim_diasca_debug_time_management,
-		?debug_fmt( "Time manager ~w received notifyTriggeredWatchdogCompleted "
-			"from watchdog at #~B diasca ~B, while still waiting "
-			"for ~B triggered actor(s).",
-			[ self(), WatchdogTickOffset, WatchdogDiasca,
-			  set_utils:size( ?getAttr(waited_spontaneous_actors) ) ] ),
-		basic_utils:ignore_unused( [ WatchdogTickOffset, WatchdogDiasca ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_time_management,
+        ?debug_fmt( "Time manager ~w received notifyTriggeredWatchdogCompleted "
+            "from watchdog at #~B diasca ~B, while still waiting "
+            "for ~B triggered actor(s).",
+            [ self(), WatchdogTickOffset, WatchdogDiasca,
+              set_utils:size( ?getAttr(waited_spontaneous_actors) ) ] ),
+        basic_utils:ignore_unused( [ WatchdogTickOffset, WatchdogDiasca ] ) ),
 
-	cond_utils:if_defined( sim_diasca_check_time_management,
-		begin
-			check_waited_count_consistency( State ),
-			true = ?getAttr(watchdog_waited),
-			WatchdogTickOffset = ?getAttr(current_tick_offset),
-			WatchdogDiasca = ?getAttr(current_diasca),
-			true = set_utils:is_empty( ?getAttr(waited_spontaneous_actors) )
-		end,
-		basic_utils:ignore_unused( [ WatchdogTickOffset, WatchdogDiasca ] ) ),
+    cond_utils:if_defined( sim_diasca_check_time_management,
+        begin
+            check_waited_count_consistency( State ),
+            true = ?getAttr(watchdog_waited),
+            WatchdogTickOffset = ?getAttr(current_tick_offset),
+            WatchdogDiasca = ?getAttr(current_diasca),
+            true = set_utils:is_empty( ?getAttr(waited_spontaneous_actors) )
+        end,
+        basic_utils:ignore_unused( [ WatchdogTickOffset, WatchdogDiasca ] ) ),
 
-	% Nothing to do. Although it is not necessary, we prefer to force the
-	% keeping in sync with the watchdog as well.
+    % Nothing to do. Although it is not necessary, we prefer to force the
+    % keeping in sync with the watchdog as well.
 
-	WaitedCount = ?getAttr(waited_count),
+    WaitedCount = ?getAttr(waited_count),
 
-	AcknowledgedState = setAttributes( State, [
-		{ waited_count, WaitedCount-1 },
-		{ watchdog_waited, false } ] ),
+    AcknowledgedState = setAttributes( State, [
+        { waited_count, WaitedCount-1 },
+        { watchdog_waited, false } ] ),
 
-	% Yes, indeed, it may actually happen that the watchdog is the last to
-	% answer, even in a distributed context!
-	%
-	wooper:return_state(
-		manage_possible_end_of_diasca( AcknowledgedState ) ).
+    % Yes, indeed, it may actually happen that the watchdog is the last to
+    % answer, even in a distributed context!
+    %
+    wooper:return_state(
+        manage_possible_end_of_diasca( AcknowledgedState ) ).
 
 
 
@@ -3161,95 +3158,95 @@ spite of delays, drops and other events.
 -spec timerTickFinished( wooper:state() ) -> oneway_return().
 timerTickFinished( State ) ->
 
-	%?info( "Received a timerTickFinished notification." ),
+    %?info( "Received a timerTickFinished notification." ),
 
-	cond_utils:if_defined( sim_diasca_check_time_management,
-		begin
-			interactive = ?getAttr(simulation_interactivity_mode),
-			check_waited_count_consistency( State )
-		end ),
+    cond_utils:if_defined( sim_diasca_check_time_management,
+        begin
+            interactive = ?getAttr(simulation_interactivity_mode),
+            check_waited_count_consistency( State )
+        end ),
 
-	% Checks whether this (root) time manager has indeed finished the evaluation
-	% of its previous tick and hence is ready on time:
-	%
-	case ?getAttr(waited_count) of
+    % Checks whether this (root) time manager has indeed finished the evaluation
+    % of its previous tick and hence is ready on time:
+    %
+    case ?getAttr(waited_count) of
 
-		0 ->
+        0 ->
 
-			% Yes, all agents reported the tick could be ended, so we are on
-			% time indeed, as we suppose here that this manager is not
-			% overloaded enough to process this oneway with significant delay.
-			%
-			% So we just suppose this call corresponds to the real time and just
-			% check that actors are on time.
-			%
-			% A more robust approach would be to base at least the timer
-			% on the real time, not on receive time-outs.
+            % Yes, all agents reported the tick could be ended, so we are on
+            % time indeed, as we suppose here that this manager is not
+            % overloaded enough to process this oneway with significant delay.
+            %
+            % So we just suppose this call corresponds to the real time and just
+            % check that actors are on time.
+            %
+            % A more robust approach would be to base at least the timer
+            % on the real time, not on receive time-outs.
 
-			CurrentTickOffset = ?getAttr(current_tick_offset),
+            CurrentTickOffset = ?getAttr(current_tick_offset),
 
-			?debug_fmt( "The simulation is on time for tick offset #~B.",
-						[ CurrentTickOffset ] ),
+            ?debug_fmt( "The simulation is on time for tick offset #~B.",
+                        [ CurrentTickOffset ] ),
 
-			% Ready for next tick... if not suspended:
-			SuspendedState = manage_suspension( CurrentTickOffset, State ),
+            % Ready for next tick... if not suspended:
+            SuspendedState = manage_suspension( CurrentTickOffset, State ),
 
-			% Still supposed to be running?
-			TimerState = case getAttribute( SuspendedState, started ) of
+            % Still supposed to be running?
+            TimerState = case getAttribute( SuspendedState, started ) of
 
-				true ->
-					% Yes, so continue with the next tick (using a message to
-					% ensure constant space), provided it has not already been
-					% triggered (as timerTickFinished messages may accumulate):
-					case getAttribute( SuspendedState,
-									   interactive_tick_triggered ) of
+                true ->
+                    % Yes, so continue with the next tick (using a message to
+                    % ensure constant space), provided it has not already been
+                    % triggered (as timerTickFinished messages may accumulate):
+                    case getAttribute( SuspendedState,
+                                       interactive_tick_triggered ) of
 
-						true ->
-							% Tick already triggered, nothing more to do, except
-							% that we do not want this timer message to be
-							% silently eaten, so:
-							%
-							self() ! timerTickFinished,
-							SuspendedState;
+                        true ->
+                            % Tick already triggered, nothing more to do, except
+                            % that we do not want this timer message to be
+                            % silently eaten, so:
+                            %
+                            self() ! timerTickFinished,
+                            SuspendedState;
 
-						false ->
-							NewTickOffset = CurrentTickOffset + 1,
-							self() ! { beginTimeManagerTick, NewTickOffset },
-							setAttribute( SuspendedState,
-										  interactive_tick_triggered, true )
+                        false ->
+                            NewTickOffset = CurrentTickOffset + 1,
+                            self() ! { beginTimeManagerTick, NewTickOffset },
+                            setAttribute( SuspendedState,
+                                          interactive_tick_triggered, true )
 
-					end;
+                    end;
 
-				false ->
-					% No new tick should be begun if stopped in the meantime: a
-					% stop request might have been issued whereas a
-					% timerTickFinished message was still in the mailbox of this
-					% manager.
-					%
-					% If it was the case, just do nothing, to avoid beginning a
-					% new tick whereas stopped:
-					%
-					SuspendedState
+                false ->
+                    % No new tick should be begun if stopped in the meantime: a
+                    % stop request might have been issued whereas a
+                    % timerTickFinished message was still in the mailbox of this
+                    % manager.
+                    %
+                    % If it was the case, just do nothing, to avoid beginning a
+                    % new tick whereas stopped:
+                    %
+                    SuspendedState
 
-			end,
-			wooper:return_state( TimerState );
-
-
-		undefined ->
-			throw( faulty_interactive_waited_count );
+            end,
+            wooper:return_state( TimerState );
 
 
-		_NonZeroCount ->
+        undefined ->
+            throw( faulty_interactive_waited_count );
 
-			%?warning_fmt( "Cannot keep up with the interactive pace, still "
-			%    "waiting for ~B agents, loosing sync with hard "
-			%    "real time, continuing in a best-effort basis.",
-			%    [ NonZeroCount ] ),
 
-			% Tick not changed, still waiting:
-			wooper:const_return()
+        _NonZeroCount ->
 
-	end.
+            %?warning_fmt( "Cannot keep up with the interactive pace, still "
+            %    "waiting for ~B agents, loosing sync with hard "
+            %    "real time, continuing in a best-effort basis.",
+            %    [ NonZeroCount ] ),
+
+            % Tick not changed, still waiting:
+            wooper:const_return()
+
+    end.
 
 
 
@@ -3260,7 +3257,7 @@ timerTickFinished( State ) ->
 -doc "Returns the current simulation time, as an absolute tick.".
 -spec getSimulationTick( wooper:state() ) -> const_request_return( tick() ).
 getSimulationTick( State ) ->
-	wooper:const_return_result( get_current_tick( State ) ).
+    wooper:const_return_result( get_current_tick( State ) ).
 
 
 
@@ -3269,9 +3266,9 @@ Returns the current simulation tick offset, if the simulation has already been
 started, otherwise the atom `undefined`.
 """.
 -spec getSimulationTickOffset( wooper:state() ) ->
-									const_request_return( tick_offset() ).
+                                    const_request_return( tick_offset() ).
 getSimulationTickOffset( State ) ->
-	wooper:const_return_result( ?getAttr(current_tick_offset) ).
+    wooper:const_return_result( ?getAttr(current_tick_offset) ).
 
 
 
@@ -3280,9 +3277,9 @@ Returns the current simulation diasca, if the simulation has already been
 started, otherwise the atom `undefined`.
 """.
 -spec getSimulationDiasca( wooper:state() ) ->
-								const_request_return( option( diasca() ) ).
+                                const_request_return( option( diasca() ) ).
 getSimulationDiasca( State ) ->
-	wooper:const_return_result( ?getAttr(current_diasca) ).
+    wooper:const_return_result( ?getAttr(current_diasca) ).
 
 
 
@@ -3291,20 +3288,20 @@ Returns the current simulation timestamp (tick offset and diasca), if the
 simulation has already been started, otherwise the atom `undefined`.
 """.
 -spec getSimulationLogicalTimestamp( wooper:state() ) ->
-					const_request_return( option( logical_timestamp() ) ).
+                    const_request_return( option( logical_timestamp() ) ).
 getSimulationLogicalTimestamp( State ) ->
 
-	Res = case ?getAttr(current_tick_offset) of
+    Res = case ?getAttr(current_tick_offset) of
 
-		undefined ->
-			undefined;
+        undefined ->
+            undefined;
 
-		TickOffset ->
-			{ TickOffset, ?getAttr(current_diasca) }
+        TickOffset ->
+            { TickOffset, ?getAttr(current_diasca) }
 
-	end,
+    end,
 
-	wooper:const_return_result( Res ).
+    wooper:const_return_result( Res ).
 
 
 
@@ -3314,21 +3311,21 @@ Returns the current simulation time, structured as follows:
 `{{SimYear,SimMonth,SimDay}, {SimHour,SimMinute,SimSecond}}`.
 """.
 -spec getSimulationDate( wooper:state() ) ->
-							const_request_return( timestamp() ).
+                            const_request_return( timestamp() ).
 getSimulationDate( State ) ->
 
-	Seconds = convert_ticks_to_rounded_seconds( get_current_tick( State ),
-												State ),
+    Seconds = convert_ticks_to_rounded_seconds( get_current_tick( State ),
+                                                State ),
 
-	wooper:const_return_result(
-		calendar:gregorian_seconds_to_datetime( Seconds ) ).
+    wooper:const_return_result(
+        calendar:gregorian_seconds_to_datetime( Seconds ) ).
 
 
 
 -doc "Returns a textual description of the simulation and real time.".
 -spec getTextualTimings( wooper:state() ) -> const_request_return( ustring() ).
 getTextualTimings( State ) ->
-	wooper:const_return_result( get_textual_timings( State ) ).
+    wooper:const_return_result( get_textual_timings( State ) ).
 
 
 
@@ -3350,9 +3347,9 @@ Note also that models are expected to call the counterpart
 interacting with their time manager.
 """.
 -spec convertSecondsToTicks( wooper:state(), any_seconds() ) ->
-								const_request_return( tick_offset() ).
+                                const_request_return( tick_offset() ).
 convertSecondsToTicks( State, Seconds ) ->
-	wooper:const_return_result( convert_seconds_to_ticks( Seconds, State ) ).
+    wooper:const_return_result( convert_seconds_to_ticks( Seconds, State ) ).
 
 
 
@@ -3370,20 +3367,20 @@ Useful to ensure that under no circumstances a duration can be null, in order
 that planned actions will always happen in a strict future.
 """.
 -spec convertSecondsToNonNullTickDuration( wooper:state(), any_seconds() ) ->
-										const_request_return( tick_offset() ).
+                                        const_request_return( tick_offset() ).
 convertSecondsToNonNullTickDuration( State, Seconds ) ->
 
-	Count = case convert_seconds_to_ticks( Seconds, State ) of
+    Count = case convert_seconds_to_ticks( Seconds, State ) of
 
-		0 ->
-			1;
+        0 ->
+            1;
 
-		NonNullCount ->
-			NonNullCount
+        NonNullCount ->
+            NonNullCount
 
-	end,
+    end,
 
-	wooper:const_return_result( Count ).
+    wooper:const_return_result( Count ).
 
 
 
@@ -3394,10 +3391,10 @@ using the specified time manager.
 Returns the appropriate number of seconds.
 """.
 -spec convertTicksToSeconds( wooper:state(), tick_offset() ) ->
-								const_request_return( seconds() ).
+                                const_request_return( seconds() ).
 convertTicksToSeconds( State, Ticks ) ->
-	wooper:const_return_result(
-		convert_ticks_to_rounded_seconds( Ticks, State ) ).
+    wooper:const_return_result(
+        convert_ticks_to_rounded_seconds( Ticks, State ) ).
 
 
 -doc """
@@ -3407,9 +3404,9 @@ the specified time manager.
 Returns the appropriate number of seconds.
 """.
 -spec convertTicksToPreciseDuration( wooper:state(), tick_offset() ) ->
-				const_request_return( virtual_seconds() ).
+                const_request_return( virtual_seconds() ).
 convertTicksToPreciseDuration( State, Ticks ) ->
-	wooper:const_return_result( convert_ticks_to_seconds( Ticks, State ) ).
+    wooper:const_return_result( convert_ticks_to_seconds( Ticks, State ) ).
 
 
 
@@ -3451,115 +3448,115 @@ Note: in the future AAI, subscription will be a oneway, and the load-balancer
 will supply all relevant information (in addition to AAI and seeding).
 """.
 -spec subscribe( wooper:state(), class_Actor:aai(), text_utils:bin_string(),
-				 classname() ) -> request_return(
-	'already_time_subscribed'
-	| { 'time_subscribed', virtual_seconds(),
-		'not_started_yet' | { tick(), logical_timestamp() } } ).
+                 classname() ) -> request_return(
+    'already_time_subscribed'
+    | { 'time_subscribed', virtual_seconds(),
+        'not_started_yet' | { tick(), logical_timestamp() } } ).
 subscribe( State, AbstractActorIdentifier, ActorBinName, Classname ) ->
 
-	% PID retrieved from request:
-	CallerPid = ?getSender(),
+    % PID retrieved from request:
+    CallerPid = ?getSender(),
 
-	?getAttr(troubleshooting_mode) andalso
-		begin
-			% Updates directly the right instance tracker: this time manager,
-			% the subscribing actor and the instance tracker that shall be
-			% targeted are by design on the same node, thus a local look-up is
-			% the best approach.
-			%
-			LocalInstanceTracker = class_InstanceTracker:get_local_tracker(),
+    ?getAttr(troubleshooting_mode) andalso
+        begin
+            % Updates directly the right instance tracker: this time manager,
+            % the subscribing actor and the instance tracker that shall be
+            % targeted are by design on the same node, thus a local look-up is
+            % the best approach.
+            %
+            LocalInstanceTracker = class_InstanceTracker:get_local_tracker(),
 
-			LocalInstanceTracker ! { registerActor, [ AbstractActorIdentifier,
-				ActorBinName, CallerPid, Classname ] }
+            LocalInstanceTracker ! { registerActor, [ AbstractActorIdentifier,
+                ActorBinName, CallerPid, Classname ] }
 
-		end,
+        end,
 
-	% Links together this manager and the calling listener (usually an actor),
-	% so that the termination of one will result in the other receiving an exit
-	% signal:
-	%
-	% (this is better to link actors to their own local time manager, in a
-	% distributed way, rather than for example linking all actors to the often
-	% remote load balancer; linking to a single manager moreover would not be
-	% scalable in terms of actor population)
-	%
-	erlang:link( CallerPid ),
+    % Links together this manager and the calling listener (usually an actor),
+    % so that the termination of one will result in the other receiving an exit
+    % signal:
+    %
+    % (this is better to link actors to their own local time manager, in a
+    % distributed way, rather than for example linking all actors to the often
+    % remote load balancer; linking to a single manager moreover would not be
+    % scalable in terms of actor population)
+    %
+    erlang:link( CallerPid ),
 
-	LocalActors = ?getAttr(known_local_actors),
+    LocalActors = ?getAttr(known_local_actors),
 
-	case set_utils:member( CallerPid, LocalActors ) of
+    case set_utils:member( CallerPid, LocalActors ) of
 
-		true ->
-			?warning_fmt( "Subscribing requested, whereas actor ~w "
-						  "was already time subscribed.", [ CallerPid ] ),
+        true ->
+            ?warning_fmt( "Subscribing requested, whereas actor ~w "
+                          "was already time subscribed.", [ CallerPid ] ),
 
-			wooper:const_return_result( already_time_subscribed ) ;
+            wooper:const_return_result( already_time_subscribed ) ;
 
-		false ->
-			%?debug_fmt( "Subscribing actor ~w.", [ CallerPid ] ),
+        false ->
+            %?debug_fmt( "Subscribing actor ~w.", [ CallerPid ] ),
 
-			AddedState = setAttribute( State, known_local_actors,
-				set_utils:add( CallerPid, LocalActors ) ),
+            AddedState = setAttribute( State, known_local_actors,
+                set_utils:add( CallerPid, LocalActors ) ),
 
-			% If the simulation is already running, notifies directly the actor,
-			% otherwise does nothing, as it will be done when starting:
-			%
-			% (the actor is currently blocked in its constructor, waiting for a
-			% wooper result; therefore its simulationStarted/3 request could not
-			% be called until it received the result of this subscribe method,
-			% which would in turn create a deadlock)
-			%
-			% We now have to be able to:
-			%
-			% - subscribe an actor
-			%
-			% - notify it that the simulation is already running (if it is the
-			% case)
-			%
-			% both as one atomic operation, as otherwise there could be a race
-			% condition between two spawned actors, the first receiving the
-			% start notification and its first top then sending a message to the
-			% second actor, whereas this latter actor is not even started yet.
+            % If the simulation is already running, notifies directly the actor,
+            % otherwise does nothing, as it will be done when starting:
+            %
+            % (the actor is currently blocked in its constructor, waiting for a
+            % wooper result; therefore its simulationStarted/3 request could not
+            % be called until it received the result of this subscribe method,
+            % which would in turn create a deadlock)
+            %
+            % We now have to be able to:
+            %
+            % - subscribe an actor
+            %
+            % - notify it that the simulation is already running (if it is the
+            % case)
+            %
+            % both as one atomic operation, as otherwise there could be a race
+            % condition between two spawned actors, the first receiving the
+            % start notification and its first top then sending a message to the
+            % second actor, whereas this latter actor is not even started yet.
 
-			StartInformation = case ?getAttr(started) of
+            StartInformation = case ?getAttr(started) of
 
-				true ->
-					% Already running, notifying this actor about that.
-					%
-					% No need to specifically schedule this actor on the fly for
-					% the very next diasca (based on the 'onFirstDiasca/2' actor
-					% oneway) as it is done by the load balancer.
-					%
-					% We specify here the current diasca, not the next one at
-					% which this actor will be scheduled, as it may receive an
-					% actor message in-between (typically onFirstDiasca/2) and
-					% this would trigger a 'message in the past' error:
-					%
-					NewTimestamp = { ?getAttr(current_tick_offset),
-									 ?getAttr(current_diasca) },
+                true ->
+                    % Already running, notifying this actor about that.
+                    %
+                    % No need to specifically schedule this actor on the fly for
+                    % the very next diasca (based on the 'onFirstDiasca/2' actor
+                    % oneway) as it is done by the load balancer.
+                    %
+                    % We specify here the current diasca, not the next one at
+                    % which this actor will be scheduled, as it may receive an
+                    % actor message in-between (typically onFirstDiasca/2) and
+                    % this would trigger a 'message in the past' error:
+                    %
+                    NewTimestamp = { ?getAttr(current_tick_offset),
+                                     ?getAttr(current_diasca) },
 
-					{ ?getAttr(initial_tick), NewTimestamp };
+                    { ?getAttr(initial_tick), NewTimestamp };
 
-				false ->
-					not_started_yet
+                false ->
+                    not_started_yet
 
-			end,
+            end,
 
-			% Note: the created actor is not the one which must ensure the next
-			% diasca is actually scheduled, since its time manager may already
-			% have reported its end of diasca; the only time manager that should
-			% be used is the only one that for sure has not finished its diasca
-			% yet, i.e. the one of the creating actor. As a consequence here we
-			% do nothing to ensure that the next diasca is scheduled.
+            % Note: the created actor is not the one which must ensure the next
+            % diasca is actually scheduled, since its time manager may already
+            % have reported its end of diasca; the only time manager that should
+            % be used is the only one that for sure has not finished its diasca
+            % yet, i.e. the one of the creating actor. As a consequence here we
+            % do nothing to ensure that the next diasca is scheduled.
 
-			% StartInformation allows to combine 'subscribe' and
-			% 'simulationStarted' into one atomic operation:
-			%
-			wooper:return_state_result( AddedState,
-				{ time_subscribed, ?getAttr(simulation_tick_duration),
-				  StartInformation } )
+            % StartInformation allows to combine 'subscribe' and
+            % 'simulationStarted' into one atomic operation:
+            %
+            wooper:return_state_result( AddedState,
+                { time_subscribed, ?getAttr(simulation_tick_duration),
+                  StartInformation } )
 
-	end.
+    end.
 
 
 
@@ -3573,8 +3570,8 @@ For example `MyTimeManager ! {unsubscribe, [], self()}`.
 """.
 -spec unsubscribe( wooper:state() ) -> request_return( 'time_unsubscribed' ).
 unsubscribe( State ) ->
-	UpdatedState = actual_unsubscribing( ?getSender(), State ),
-	wooper:return_state_result( UpdatedState, time_unsubscribed ).
+    UpdatedState = actual_unsubscribing( ?getSender(), State ),
+    wooper:return_state_result( UpdatedState, time_unsubscribed ).
 
 
 
@@ -3595,117 +3592,117 @@ condition for a local time manager between this message and its 'begin diasca'
 message sent by its parent time manager.
 """.
 -spec scheduleTrigger( wooper:state(), tick_offset(), diasca() ) ->
-							request_return( 'trigger_planned' ).
+                            request_return( 'trigger_planned' ).
 scheduleTrigger( State, TriggerTickOffset, TriggerDiasca ) ->
 
-	CurrentTickOffset = ?getAttr(current_tick_offset),
-	CurrentDiasca = ?getAttr(current_diasca),
+    CurrentTickOffset = ?getAttr(current_tick_offset),
+    CurrentDiasca = ?getAttr(current_diasca),
 
-	ActorToSchedule = ?getSender(),
+    ActorToSchedule = ?getSender(),
 
-	?display_console( "scheduleTrigger: ~w adding actor to trigger ~w "
-		"at diasca ~B of tick offset #~B while being "
-		"at diasca ~B of tick offset #~B.",
-		[ self(), ActorToSchedule, TriggerDiasca,
-		  TriggerTickOffset, CurrentDiasca, CurrentTickOffset ] ),
-
-
-	% Checkings:
-
-	% Most of the triggers should come from the same tick and diasca. However an
-	% early non-local actor may already be in the next diasca (before this
-	% manager receives its 'begin diasca' notification), or even in any
-	% arbitrary future tick (after a jump over idle ones). So we can only test:
-	%
-	RecordedState = case TriggerTickOffset of
+    ?display_console( "scheduleTrigger: ~w adding actor to trigger ~w "
+        "at diasca ~B of tick offset #~B while being "
+        "at diasca ~B of tick offset #~B.",
+        [ self(), ActorToSchedule, TriggerDiasca,
+          TriggerTickOffset, CurrentDiasca, CurrentTickOffset ] ),
 
 
-		CurrentTickOffset ->
+    % Checkings:
 
-			% Usual case: same tick; either sent from the same diasca (most
-			% frequent), or being diasca-early:
-			%
-			UsuallyExpectedTriggerDiasca = CurrentDiasca + 1,
-			EarlyBirdTriggerDiasca = CurrentDiasca + 2,
-
-			case TriggerDiasca of
-
-				UsuallyExpectedTriggerDiasca ->
-
-					% Most common case, sender and manager in synch:
-
-					CurrentDiascaActors =
-						?getAttr(actors_to_trigger_in_one_diasca),
-
-					% Expected not already registered:
-					UpdatedDiascaActors = set_utils:add_as_new(
-						ActorToSchedule, CurrentDiascaActors ),
-
-					setAttribute( State, actors_to_trigger_in_one_diasca,
-								  UpdatedDiascaActors );
+    % Most of the triggers should come from the same tick and diasca. However an
+    % early non-local actor may already be in the next diasca (before this
+    % manager receives its 'begin diasca' notification), or even in any
+    % arbitrary future tick (after a jump over idle ones). So we can only test:
+    %
+    RecordedState = case TriggerTickOffset of
 
 
-				EarlyBirdTriggerDiasca ->
+        CurrentTickOffset ->
 
-					% Early sender, compared to this manager that must be
-					% lagging behind:
+            % Usual case: same tick; either sent from the same diasca (most
+            % frequent), or being diasca-early:
+            %
+            UsuallyExpectedTriggerDiasca = CurrentDiasca + 1,
+            EarlyBirdTriggerDiasca = CurrentDiasca + 2,
 
-					FutureDiascaActors =
-						?getAttr(actors_to_trigger_in_two_diascas),
+            case TriggerDiasca of
 
-					% Expected not already registered:
-					UpdatedDiascaActors = set_utils:add_as_new( ActorToSchedule,
-						FutureDiascaActors ),
+                UsuallyExpectedTriggerDiasca ->
 
-					% We now know what is the next timestamp (hopefully):
-					NextTimestamp =
-						{ CurrentTickOffset, EarlyBirdTriggerDiasca },
+                    % Most common case, sender and manager in synch:
 
-					setAttributes( State, [
-						{ actors_to_trigger_in_two_diascas,
-						  UpdatedDiascaActors },
-						{ next_timestamp, NextTimestamp } ] );
+                    CurrentDiascaActors =
+                        ?getAttr(actors_to_trigger_in_one_diasca),
 
-				_ ->
-					throw( { invalid_trigger_diasca, TriggerDiasca,
-						CurrentDiasca, CurrentTickOffset, ActorToSchedule } )
+                    % Expected not already registered:
+                    UpdatedDiascaActors = set_utils:add_as_new(
+                        ActorToSchedule, CurrentDiascaActors ),
 
-			end;
+                    setAttribute( State, actors_to_trigger_in_one_diasca,
+                                  UpdatedDiascaActors );
 
 
-		OtherTickOffset when OtherTickOffset > CurrentTickOffset ->
+                EarlyBirdTriggerDiasca ->
 
-			% If already in the future (after a jump), cannot have gone past
-			% diasca 0, thus the message must be targeting diasca 1:
-			%
-			1 = TriggerDiasca,
+                    % Early sender, compared to this manager that must be
+                    % lagging behind:
 
-			FutureDiascaActors = ?getAttr(actors_to_trigger_in_two_diascas),
+                    FutureDiascaActors =
+                        ?getAttr(actors_to_trigger_in_two_diascas),
 
-			% This is another case of early actor, with a 2-diasca offset:
-			UpdatedDiascaActors = set_utils:add_as_new( ActorToSchedule,
-														FutureDiascaActors ),
+                    % Expected not already registered:
+                    UpdatedDiascaActors = set_utils:add_as_new( ActorToSchedule,
+                        FutureDiascaActors ),
 
-			% We now know what is the next timestamp (hopefully):
-			NextTimestamp = { OtherTickOffset, 1 },
+                    % We now know what is the next timestamp (hopefully):
+                    NextTimestamp =
+                        { CurrentTickOffset, EarlyBirdTriggerDiasca },
 
-			setAttributes( State, [
-				{ actors_to_trigger_in_two_diascas, UpdatedDiascaActors },
-				{ next_timestamp, NextTimestamp } ] )
+                    setAttributes( State, [
+                        { actors_to_trigger_in_two_diascas,
+                          UpdatedDiascaActors },
+                        { next_timestamp, NextTimestamp } ] );
 
-	end,
+                _ ->
+                    throw( { invalid_trigger_diasca, TriggerDiasca,
+                        CurrentDiasca, CurrentTickOffset, ActorToSchedule } )
+
+            end;
 
 
-	% Note: the sender of the actor message is expected to have notified its own
-	% time manager (the only one which by design cannot have finished its
-	% diasca) that the next diasca should be scheduled.
+        OtherTickOffset when OtherTickOffset > CurrentTickOffset ->
 
-	% The purpose of having a request here (rather than a oneway) is not to
-	% return a specific result, but to ensure that the actor that received the
-	% actor message is blocked, itself blocking the calling actor, so that no
-	% race condition can happen:
-	%
-	wooper:return_state_result( RecordedState, trigger_planned ).
+            % If already in the future (after a jump), cannot have gone past
+            % diasca 0, thus the message must be targeting diasca 1:
+            %
+            1 = TriggerDiasca,
+
+            FutureDiascaActors = ?getAttr(actors_to_trigger_in_two_diascas),
+
+            % This is another case of early actor, with a 2-diasca offset:
+            UpdatedDiascaActors = set_utils:add_as_new( ActorToSchedule,
+                                                        FutureDiascaActors ),
+
+            % We now know what is the next timestamp (hopefully):
+            NextTimestamp = { OtherTickOffset, 1 },
+
+            setAttributes( State, [
+                { actors_to_trigger_in_two_diascas, UpdatedDiascaActors },
+                { next_timestamp, NextTimestamp } ] )
+
+    end,
+
+
+    % Note: the sender of the actor message is expected to have notified its own
+    % time manager (the only one which by design cannot have finished its
+    % diasca) that the next diasca should be scheduled.
+
+    % The purpose of having a request here (rather than a oneway) is not to
+    % return a specific result, but to ensure that the actor that received the
+    % actor message is blocked, itself blocking the calling actor, so that no
+    % race condition can happen:
+    %
+    wooper:return_state_result( RecordedState, trigger_planned ).
 
 
 
@@ -3718,10 +3715,10 @@ onSimulationStallDetected/1 has already given up waiting for this answer, and
 this method is called instead. As a result, this later call shall be ignored.
 """.
 -spec notifyNudged( wooper:state(), actor_pid(), tick_offset(),
-					[ actor_pid() ] ) -> const_oneway_return().
+                    [ actor_pid() ] ) -> const_oneway_return().
 notifyNudged( State, _NudgedActorPid, _TickOffset, _WaitedAcks ) ->
-	% Ignored, as came too late (was meant to be intercepted before):
-	wooper:const_return().
+    % Ignored, as came too late (was meant to be intercepted before):
+    wooper:const_return().
 
 
 
@@ -3734,16 +3731,16 @@ Overriding the WOOPER default EXIT handler, not interested in `normal` EXIT
 messages.
 """.
 -spec onWOOPERExitReceived( wooper:state(), pid(),
-					basic_utils:exit_reason() ) -> const_oneway_return().
+                    basic_utils:exit_reason() ) -> const_oneway_return().
 onWOOPERExitReceived( State, _Pid, normal ) ->
-	wooper:const_return();
+    wooper:const_return();
 
 onWOOPERExitReceived( State, Pid, ExitType ) ->
 
-	?warning_fmt( "Time manager EXIT handler ignored signal '~p' from ~w.",
-				  [ ExitType, Pid ] ),
+    ?warning_fmt( "Time manager EXIT handler ignored signal '~p' from ~w.",
+                  [ ExitType, Pid ] ),
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 
@@ -3766,32 +3763,32 @@ will triggered by the root one, to avoid non-synchronised waitings.
 -spec onWallclockMilestone( wooper:state(), milliseconds() ) -> oneway_return().
 onWallclockMilestone( State, CurrentMillisecond ) ->
 
-	% First notifies ASAP the direct child managers:
-	MilestoneMessage = { onWallclockMilestone, CurrentMillisecond },
+    % First notifies ASAP the direct child managers:
+    MilestoneMessage = { onWallclockMilestone, CurrentMillisecond },
 
-	basic_utils:send_to_pid_set( MilestoneMessage, ?getAttr(child_managers) ),
+    basic_utils:send_to_pid_set( MilestoneMessage, ?getAttr(child_managers) ),
 
-	% Only the root manager will display it:
-	is_root_manager( State ) andalso
-		?info_fmt( "Wall-clock milestone triggered after an elapsed "
-			"duration of ~ts; current wall-clock time is ~ts.",
-			[ time_utils:duration_to_string( CurrentMillisecond ),
-			  time_utils:get_textual_timestamp() ] ),
+    % Only the root manager will display it:
+    is_root_manager( State ) andalso
+        ?info_fmt( "Wall-clock milestone triggered after an elapsed "
+            "duration of ~ts; current wall-clock time is ~ts.",
+            [ time_utils:duration_to_string( CurrentMillisecond ),
+              time_utils:get_textual_timestamp() ] ),
 
-	?display_console( "Wall-clock milestone triggered on ~p (~p) after an "
-		"elapsed duration of ~ts; current wall-clock time is ~ts.",
-		[ self(), node(), time_utils:duration_to_string( CurrentMillisecond ),
-		  time_utils:get_textual_timestamp() ] ),
+    ?display_console( "Wall-clock milestone triggered on ~p (~p) after an "
+        "elapsed duration of ~ts; current wall-clock time is ~ts.",
+        [ self(), node(), time_utils:duration_to_string( CurrentMillisecond ),
+          time_utils:get_textual_timestamp() ] ),
 
-	class_PluginManager:notify( _Event=on_simulation_wallclock_milestone_met,
-								_Parameters=CurrentMillisecond ),
+    class_PluginManager:notify( _Event=on_simulation_wallclock_milestone_met,
+                                _Parameters=CurrentMillisecond ),
 
-	% Then propagates the milestone to the registered local processes:
-	[ A ! MilestoneMessage || A <- ?getAttr(wallclock_milestone_listeners) ],
+    % Then propagates the milestone to the registered local processes:
+    [ A ! MilestoneMessage || A <- ?getAttr(wallclock_milestone_listeners) ],
 
-	CleanedState = perform_house_keeping( State ),
+    CleanedState = perform_house_keeping( State ),
 
-	wooper:return_state( CleanedState ).
+    wooper:return_state( CleanedState ).
 
 
 
@@ -3808,26 +3805,26 @@ tick), unlike wallclock-milestones.
 -spec onTickMilestone( wooper:state(), tick_offset() ) -> oneway_return().
 onTickMilestone( State, TickOffset ) ->
 
-	% Only the root manager will display it:
-	is_root_manager( State ) andalso
-		?info_fmt( "Simulation-time milestone triggered at tick offset #~B,"
-			" while current wall-clock time is ~ts.",
-			[ TickOffset, time_utils:get_textual_timestamp() ] ),
+    % Only the root manager will display it:
+    is_root_manager( State ) andalso
+        ?info_fmt( "Simulation-time milestone triggered at tick offset #~B,"
+            " while current wall-clock time is ~ts.",
+            [ TickOffset, time_utils:get_textual_timestamp() ] ),
 
-	class_PluginManager:notify( _Event=on_simulation_tick_milestone_met,
-								_Parameters=TickOffset ),
+    class_PluginManager:notify( _Event=on_simulation_tick_milestone_met,
+                                _Parameters=TickOffset ),
 
-	?display_console( "Simulation-time milestone triggered on ~p (~p) "
-		"at tick offset #~B, while current wall-clock time is ~ts.",
-		[ self(), node(), TickOffset, time_utils:get_textual_timestamp() ] ),
+    ?display_console( "Simulation-time milestone triggered on ~p (~p) "
+        "at tick offset #~B, while current wall-clock time is ~ts.",
+        [ self(), node(), TickOffset, time_utils:get_textual_timestamp() ] ),
 
-	% Propagates the milestone to relevant simulation agents:
-	[ A ! { onTickMilestone, TickOffset }
-		|| A <- ?getAttr(tick_milestone_listeners) ],
+    % Propagates the milestone to relevant simulation agents:
+    [ A ! { onTickMilestone, TickOffset }
+        || A <- ?getAttr(tick_milestone_listeners) ],
 
-	CleanedState = perform_house_keeping( State ),
+    CleanedState = perform_house_keeping( State ),
 
-	wooper:return_state( CleanedState ).
+    wooper:return_state( CleanedState ).
 
 
 
@@ -3842,143 +3839,144 @@ managed, as the parent will have to wait for its child managers anyway.
 -spec onSimulationStallDetected( wooper:state() ) -> oneway_return().
 onSimulationStallDetected( State ) ->
 
-	WaitedChildManagers = ?getAttr(waited_child_managers),
+    WaitedChildManagers = ?getAttr(waited_child_managers),
 
-	WaitedChildManagerCount = set_utils:size( WaitedChildManagers ),
+    WaitedChildManagerCount = set_utils:size( WaitedChildManagers ),
 
-	% See whether the cause is local (a blocked actor) and/or indirect
-	% (a blocked child manager):
-	%
-	ChildManagerMessage = case WaitedChildManagerCount of
+    % See whether the cause is local (a blocked actor) and/or indirect
+    % (a blocked child manager):
+    %
+    ChildManagerMessage = case WaitedChildManagerCount of
 
-		0 ->
-			"not waiting for any child time manager";
+        0 ->
+            "not waiting for any child time manager";
 
-		ChildManagerCount when ChildManagerCount > ?too_many_entries ->
-			text_utils:format( "still waiting for ~B child time managers",
-							   [ ChildManagerCount ] );
+        ChildManagerCount when ChildManagerCount > ?too_many_entries ->
+            text_utils:format( "still waiting for ~B child time managers",
+                               [ ChildManagerCount ] );
 
-		ChildManagerCount ->
+        ChildManagerCount ->
 
-			ManagerDescriptions = [
-				text_utils:format( "~w (on node ~ts)", [ M, node( M ) ] )
-					|| M <- set_utils:to_list( WaitedChildManagers ) ],
+            ManagerDescriptions = [
+                text_utils:format( "~w (on node ~ts)", [ M, node( M ) ] )
+                    || M <- set_utils:to_list( WaitedChildManagers ) ],
 
-			text_utils:format(
-				"still waiting for following ~B child time manager(s): ~ts",
-				[ ChildManagerCount,
-				  text_utils:join( _Sep=", ", ManagerDescriptions ) ] )
+            text_utils:format(
+                "still waiting for following ~B child time manager(s): ~ts",
+                [ ChildManagerCount,
+                  text_utils:join( _Sep=", ", ManagerDescriptions ) ] )
 
-	end,
+    end,
 
-	SpontaneousActors = ?getAttr(waited_spontaneous_actors),
-	SpontaneousActorCount = set_utils:size( SpontaneousActors ),
-	SpontaneousMessage = case SpontaneousActorCount of
+    SpontaneousActors = ?getAttr(waited_spontaneous_actors),
+    SpontaneousActorCount = set_utils:size( SpontaneousActors ),
+    SpontaneousMessage = case SpontaneousActorCount of
 
-		0 ->
-			"not waiting for any actor spontaneously scheduled";
+        0 ->
+            "not waiting for any actor spontaneously scheduled";
 
-		SpontaneousCount when SpontaneousCount > ?too_many_entries ->
-			text_utils:format(
-				"still waiting for ~B actors spontaneously scheduled",
-				[ SpontaneousCount ] );
+        SpontaneousCount when SpontaneousCount > ?too_many_entries ->
+            text_utils:format(
+                "still waiting for ~B actors spontaneously scheduled",
+                [ SpontaneousCount ] );
 
-		SpontaneousCount ->
-			text_utils:format( "still waiting for following ~B actors "
-				"spontaneously scheduled: ~w",
-				[ SpontaneousCount, set_utils:to_list( SpontaneousActors ) ] )
+        SpontaneousCount ->
+            text_utils:format( "still waiting for following ~B actors "
+                "spontaneously scheduled: ~w",
+                [ SpontaneousCount, set_utils:to_list( SpontaneousActors ) ] )
 
-	end,
+    end,
 
-	TriggeredActors = ?getAttr(waited_triggered_actors),
-	TriggeredActorCount = set_utils:size( TriggeredActors ),
-	TriggeredMessage = case TriggeredActorCount of
+    TriggeredActors = ?getAttr(waited_triggered_actors),
+    TriggeredActorCount = set_utils:size( TriggeredActors ),
+    TriggeredMessage = case TriggeredActorCount of
 
-		0 ->
-			"not waiting for any triggered actor";
+        0 ->
+            "not waiting for any triggered actor";
 
-		TriggeredCount when TriggeredCount > ?too_many_entries ->
-			text_utils:format( "still waiting for ~B triggered actors",
-							   [ TriggeredCount ] );
+        TriggeredCount when TriggeredCount > ?too_many_entries ->
+            text_utils:format( "still waiting for ~B triggered actors",
+                               [ TriggeredCount ] );
 
-		TriggeredCount ->
-			text_utils:format( "still waiting for following ~B "
-				"triggered actors: ~w",
-				[ TriggeredCount, set_utils:to_list( TriggeredActors ) ] )
+        TriggeredCount ->
+            text_utils:format( "still waiting for following ~B "
+                "triggered actors: ~ts", [ TriggeredCount,
+                    text_utils:pids_to_short_string(
+                        set_utils:to_list( TriggeredActors ) ) ] )
 
-	end,
+    end,
 
 
-	CurrentTickOffset = ?getAttr(current_tick_offset),
+    CurrentTickOffset = ?getAttr(current_tick_offset),
 
-	WaitedCount = ?getAttr(waited_count),
+    WaitedCount = ?getAttr(waited_count),
 
-	% Even the watchdog can be waited for (yes, this happens):
-	WatchdogMessage = case ?getAttr(watchdog_waited) of
+    % Even the watchdog can be waited for (yes, this happens):
+    WatchdogMessage = case ?getAttr(watchdog_waited) of
 
-		false ->
-			"not waiting for watchdog";
+        false ->
+            "not waiting for watchdog";
 
-		true ->
-			"still waiting for watchdog"
+        true ->
+            "still waiting for watchdog"
 
-	end,
+    end,
 
-	Message = case WaitedCount of
+    Message = case WaitedCount of
 
-		undefined ->
-			"Simulation currently unable to start, "
-			"or unusually long to do so..." ;
+        undefined ->
+            "Simulation currently unable to start, "
+            "or unusually long to do so..." ;
 
-		_Defined ->
-			text_utils:format(
-				"Simulation currently stalled at tick offset #~B (being at "
-				"diasca ~p) for time manager ~w, still waiting for a total of "
-				"~B notification(s) of end of diasca: ~ts",
-				[ CurrentTickOffset, ?getAttr(current_diasca), self(),
-				  WaitedCount, text_utils:strings_to_string(
-					[ ChildManagerMessage, SpontaneousMessage, TriggeredMessage,
-					  WatchdogMessage ] ) ] )
+        _Defined ->
+            text_utils:format(
+                "Simulation currently stalled at tick offset #~B (being at "
+                "diasca ~p) for time manager ~w, still waiting for a total of "
+                "~B notification(s) of end of diasca: ~ts",
+                [ CurrentTickOffset, ?getAttr(current_diasca), self(),
+                  WaitedCount, text_utils:strings_to_string(
+                    [ ChildManagerMessage, SpontaneousMessage, TriggeredMessage,
+                      WatchdogMessage ] ) ] )
 
-	end,
+    end,
 
-	% Mostly a const oneway, state-wise:
-	FinalState = case WaitedCount of
+    % Mostly a const oneway, state-wise:
+    FinalState = case WaitedCount of
 
-		undefined ->
-			?warning( Message ),
-			?display_console( "~n### " ++ Message ++ "~n", [] ),
-			State;
+        undefined ->
+            ?warning( Message ),
+            ?display_console( "~n### " ++ Message ++ "~n", [] ),
+            State;
 
-		WaitedChildManagerCount ->
-			% Only stalled because of children, stay rather mute:
-			?warning( Message ),
-			% Maybe to disable:
-			?display_console( "~n### Overall non-local stall detected "
-							  "at tick offset #~B.", [ CurrentTickOffset ] ),
-			State;
+        WaitedChildManagerCount ->
+            % Only stalled because of children, stay rather mute:
+            ?warning( Message ),
+            % Maybe to disable:
+            ?display_console( "~n### Overall non-local stall detected "
+                              "at tick offset #~B.", [ CurrentTickOffset ] ),
+            State;
 
-		_Other ->
+        _Other ->
 
-			% We are locally stalled (and a root time manager):
-			{ DiagState, Diag } = executeRequest( State, getProgressDiagnosis ),
+            % We are locally stalled (and a root time manager):
+            { DiagState, Diag } = executeRequest( State, getProgressDiagnosis ),
 
-			FormattedDiag = format_nested_diagnoses( Diag ),
+            FormattedDiag = format_nested_diagnoses( Diag ),
 
-			ActorExplanation = text_utils:format( text_utils:join( "~n",
-				[ "~nThe diagnosis about the simulation stall is: "
-					| FormattedDiag ] ) ++ "~n", [] ),
+            ActorExplanation = text_utils:format( text_utils:join( "~n",
+                [ "~nThe diagnosis about the simulation stall is: "
+                    | FormattedDiag ] ) ++ "~n", [] ),
 
-			FullMessage = Message ++ ActorExplanation,
+            FullMessage = Message ++ ActorExplanation,
 
-			?warning( FullMessage ),
+            ?warning( FullMessage ),
 
-			?display_console( "~n### " ++ FullMessage ++ "~n", [] ),
-			DiagState
+            ?display_console( "~n### " ++ FullMessage ++ "~n", [] ),
+            DiagState
 
-	end,
+    end,
 
-	wooper:return_state( FinalState ).
+    wooper:return_state( FinalState ).
 
 
 
@@ -4001,23 +3999,23 @@ That way we go through all the scheduling hierarchy.
 To be called on any time manager (either root or child, at any depth).
 """.
 -spec getProgressDiagnosis( wooper:state() ) -> const_request_return(
-		{ time_manager_pid(), net_utils:atom_node_name(), diagnosis(),
-			[ diagnosis() ] } ).
+        { time_manager_pid(), net_utils:atom_node_name(), diagnosis(),
+            [ diagnosis() ] } ).
 getProgressDiagnosis( State ) ->
 
-	% First, triggers a parallel recursive progress request:
-	Children = ?getAttr(child_managers),
+    % First, triggers a parallel recursive progress request:
+    Children = ?getAttr(child_managers),
 
-	basic_utils:send_to_pid_set( { getProgressDiagnosis, [], self() },
-								 Children ),
+    basic_utils:send_to_pid_set( { getProgressDiagnosis, [], self() },
+                                 Children ),
 
-	LocalDiag = get_local_diagnosis( State ),
+    LocalDiag = get_local_diagnosis( State ),
 
-	ChildDiags = wait_for_diagnoses( Children, _Diagnoses=[] ),
+    ChildDiags = wait_for_diagnoses( Children, _Diagnoses=[] ),
 
-	Res = { self(), net_utils:localnode(), LocalDiag, ChildDiags },
+    Res = { self(), net_utils:localnode(), LocalDiag, ChildDiags },
 
-	wooper:const_return_result( Res ).
+    wooper:const_return_result( Res ).
 
 
 
@@ -4029,17 +4027,17 @@ can be done.
 The root data-exchanger becomes then a simulation listener.
 """.
 -spec declareDataExchanger( wooper:state(), data_exchanger_pid() ) ->
-								oneway_return().
+                                oneway_return().
 declareDataExchanger( State, RootDataExchangerPid ) ->
 
-	% Checking:
-	undefined = ?getAttr(root_data_exchanger_pid),
+    % Checking:
+    undefined = ?getAttr(root_data_exchanger_pid),
 
-	Listeners = ?getAttr(simulation_listeners),
+    Listeners = ?getAttr(simulation_listeners),
 
-	wooper:return_state( setAttributes( State, [
-		{ simulation_listeners, [ RootDataExchangerPid | Listeners ] },
-		{ root_data_exchanger_pid, RootDataExchangerPid } ] ) ).
+    wooper:return_state( setAttributes( State, [
+        { simulation_listeners, [ RootDataExchangerPid | Listeners ] },
+        { root_data_exchanger_pid, RootDataExchangerPid } ] ) ).
 
 
 
@@ -4054,16 +4052,16 @@ be ready for any next tick to come.
 (request, for synchronisation purposes)
 """.
 -spec requestInterDiascaNotification( wooper:state() ) ->
-				request_return( 'interdiasca_tracked' ).
+                request_return( 'interdiasca_tracked' ).
 requestInterDiascaNotification( State ) ->
 
-	% Checking:
-	undefined = ?getAttr(parent_manager_pid),
-	[] = ?getAttr(interdiasca_listeners),
+    % Checking:
+    undefined = ?getAttr(parent_manager_pid),
+    [] = ?getAttr(interdiasca_listeners),
 
-	wooper:return_state_result(
-		appendToAttribute( State, interdiasca_listeners, ?getSender() ),
-		interdiasca_tracked ).
+    wooper:return_state_result(
+        appendToAttribute( State, interdiasca_listeners, ?getSender() ),
+        interdiasca_tracked ).
 
 
 
@@ -4075,7 +4073,7 @@ requestInterDiascaNotification( State ) ->
 -doc "Tells whether this time manager is the root one.".
 -spec is_root_manager( wooper:state() ) -> boolean().
 is_root_manager( State ) ->
-	?getAttr(parent_manager_pid) =:= undefined.
+    ?getAttr(parent_manager_pid) =:= undefined.
 
 
 
@@ -4085,46 +4083,46 @@ Displays all relevant timing information, when the simulation is over.
 -spec display_timing_information( ustring(), wooper:state() ) -> void().
 display_timing_information( Timings, State ) ->
 
-	ElapsedTicks = get_current_tick( State ) - ?getAttr(initial_tick),
+    ElapsedTicks = get_current_tick( State ) - ?getAttr(initial_tick),
 
-	SimDuration = convert_ticks_to_milliseconds( ElapsedTicks, State ),
+    SimDuration = convert_ticks_to_milliseconds( ElapsedTicks, State ),
 
-	SimDurationString = time_utils:duration_to_string( SimDuration ),
+    SimDurationStr = time_utils:duration_to_string( SimDuration ),
 
-	RealDuration =
-		time_utils:get_precise_duration_since( ?getAttr(initial_timestamp) ),
+    RealDuration =
+        time_utils:get_precise_duration_since( ?getAttr(initial_timestamp) ),
 
-	RealDurationString = time_utils:duration_to_string( RealDuration ),
+    RealDurationStr = time_utils:duration_to_string( RealDuration ),
 
-	io:format( "Simulation terminated successfully at ~ts, "
-		"after a duration of ~ts in simulation time (~B ticks), "
-		"computed during a wall-clock duration of ~ts.~n",
-		[ Timings, SimDurationString, ElapsedTicks, RealDurationString ] ),
+    io:format( "Simulation terminated successfully at ~ts, "
+        "after a duration of ~ts in simulation time (~B ticks), "
+        "computed during a wall-clock duration of ~ts.~n",
+        [ Timings, SimDurationStr, ElapsedTicks, RealDurationStr ] ),
 
-	case RealDuration of
+    case RealDuration of
 
-		0 ->
-			?display_console( "Simulation did not last long enough to "
-				"define a clock factor.", [] );
+        0 ->
+            ?display_console( "Simulation did not last long enough to "
+                "define a clock factor.", [] );
 
-		_ ->
+        _ ->
 
-			AccFactor = SimDuration / RealDuration,
+            AccFactor = SimDuration / RealDuration,
 
-			case SimDuration > RealDuration of
+            case SimDuration > RealDuration of
 
-				true ->
-					io:format( "Simulation ran faster than the clock, "
-						"with an acceleration factor of x~.3f.~n~n",
-						[ AccFactor ] );
+                true ->
+                    io:format( "Simulation ran faster than the clock, "
+                        "with an acceleration factor of x~.3f.~n~n",
+                        [ AccFactor ] );
 
-				false ->
-					io:format( "Simulation ran slower than the clock, with an "
-						"acceleration factor of x~.3f.~n~n", [ AccFactor ] )
+                false ->
+                    io:format( "Simulation ran slower than the clock, with an "
+                        "acceleration factor of x~.3f.~n~n", [ AccFactor ] )
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -4136,27 +4134,27 @@ Displays all relevant timing information, when the simulation is over.
 -spec display_concurrency_information( wooper:state() ) -> void().
 display_concurrency_information( State ) ->
 
-	case ?getAttr(diasca_count) of
+    case ?getAttr(diasca_count) of
 
-		0 ->
-			?display_console( "No diasca evaluated, no average concurrency "
-							  "can be computed.", [] );
+        0 ->
+            ?display_console( "No diasca evaluated, no average concurrency "
+                              "can be computed.", [] );
 
-		DiascaCount ->
+        DiascaCount ->
 
-			ScheduleCount = ?getAttr(schedule_count),
+            ScheduleCount = ?getAttr(schedule_count),
 
-			AverageConcurrency = ScheduleCount / DiascaCount,
+            AverageConcurrency = ScheduleCount / DiascaCount,
 
-			io:format( "In the course of this run, a total of "
-				"~B diascas were evaluated, corresponding "
-				"to a total of ~B scheduled instances. "
-				"This corresponds to a potential average "
-				"concurrency of ~.1f instances evaluated per "
-				"diasca (not counting any engine-level activity).~n~n",
-				[ DiascaCount, ScheduleCount, AverageConcurrency ] )
+            io:format( "In the course of this run, a total of "
+                "~B diascas were evaluated, corresponding "
+                "to a total of ~B scheduled instances. "
+                "This corresponds to a potential average "
+                "concurrency of ~.1f instances evaluated per "
+                "diasca (not counting any engine-level activity).~n~n",
+                [ DiascaCount, ScheduleCount, AverageConcurrency ] )
 
-	end.
+    end.
 
 
 
@@ -4167,65 +4165,65 @@ the local actors (if any) managed by this time manager.
 -spec get_local_diagnosis( wooper:state() ) -> diagnosis().
 get_local_diagnosis( State ) ->
 
-	SpontaneousActors = ?getAttr(waited_spontaneous_actors),
-	TriggeredActors = ?getAttr(waited_triggered_actors),
+    SpontaneousActors = ?getAttr(waited_spontaneous_actors),
+    TriggeredActors = ?getAttr(waited_triggered_actors),
 
-	% Avoid creating a huge WaitedActors list if not necessary:
-	WaitedActorCount = set_utils:size( SpontaneousActors )
-		+ set_utils:size( TriggeredActors ),
+    % Avoid creating a huge WaitedActors list if not necessary:
+    WaitedActorCount = set_utils:size( SpontaneousActors )
+        + set_utils:size( TriggeredActors ),
 
-	% Never perform blocking operations with actors from the time manager,
-	% otherwise deadlocks could occur (e.g. with scheduleTrigger/3, which can
-	% happen approximately at any time).
-	%
-	case WaitedActorCount of
+    % Never perform blocking operations with actors from the time manager,
+    % otherwise deadlocks could occur (e.g. with scheduleTrigger/3, which can
+    % happen approximately at any time).
+    %
+    case WaitedActorCount of
 
-		0 ->
-			none_waited;
+        0 ->
+            none_waited;
 
-		L when L < 20 ->
-			WaitedActors =
-				set_utils:union( SpontaneousActors, TriggeredActors ),
-			get_wait_explanation( WaitedActors, L, State );
+        L when L < 20 ->
+            WaitedActors =
+                set_utils:union( SpontaneousActors, TriggeredActors ),
+            get_wait_explanation( WaitedActors, L, State );
 
-		TooLong ->
-			[ text_utils:bin_format( "is still waiting for ~B actors",
-									 [ TooLong ] ) ]
+        TooLong ->
+            [ text_utils:bin_format( "is still waiting for ~B actors",
+                                     [ TooLong ] ) ]
 
-	end.
+    end.
 
 
 % (helper)
 wait_for_diagnoses( Children, Diagnoses ) ->
 
-	case set_utils:is_empty( Children ) of
+    case set_utils:is_empty( Children ) of
 
-		true ->
-			Diagnoses;
+        true ->
+            Diagnoses;
 
-		false ->
+        false ->
 
-			receive
+            receive
 
-				{ wooper_result,
-				  DiagTuple={ ChildPid, _NodeName, _LocalDiag, _SubDiags } } ->
+                { wooper_result,
+                  DiagTuple={ ChildPid, _NodeName, _LocalDiag, _SubDiags } } ->
 
-					case set_utils:member( ChildPid, Children ) of
+                    case set_utils:member( ChildPid, Children ) of
 
-						true ->
-							NewChildren =
-								set_utils:delete( ChildPid, Children ),
-							wait_for_diagnoses( NewChildren,
-												[ DiagTuple | Diagnoses ] );
+                        true ->
+                            NewChildren =
+                                set_utils:delete( ChildPid, Children ),
+                            wait_for_diagnoses( NewChildren,
+                                                [ DiagTuple | Diagnoses ] );
 
-						false ->
-							throw( { unexpected_diagnosis, DiagTuple } )
+                        false ->
+                            throw( { unexpected_diagnosis, DiagTuple } )
 
-					end
+                    end
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -4238,114 +4236,114 @@ Returns a list of binaries, for a more detailed view.
 """.
 get_wait_explanation( WaitedActors, Count, State ) ->
 
-	% They will answer back with 'notifyNudged':
-	basic_utils:send_to_pid_set( { nudge, self() }, WaitedActors ),
+    % They will answer back with 'notifyNudged':
+    basic_utils:send_to_pid_set( { nudge, self() }, WaitedActors ),
 
-	% These actors being local, we already know they are managed by the local
-	% instance tracker:
-	%
-	LocalTrackerPid = ?getAttr(local_instance_tracker_pid),
+    % These actors being local, we already know they are managed by the local
+    % instance tracker:
+    %
+    LocalTrackerPid = ?getAttr(local_instance_tracker_pid),
 
-	% Needed for non-first level waited actors (they may not be local):
-	RootTrackerPid = ?getAttr(root_instance_tracker_pid),
+    % Needed for non-first level waited actors (they may not be local):
+    RootTrackerPid = ?getAttr(root_instance_tracker_pid),
 
-	case Count of
+    case Count of
 
-		L when L > 20 ->
-			text_utils:format( "is still waiting for ~B actors (overloaded?)",
-							   [ L ] );
+        L when L > 20 ->
+            text_utils:format( "is still waiting for ~B actors (overloaded?)",
+                               [ L ] );
 
-		_ ->
+        _ ->
 
-			Header = case Count of
+            Header = case Count of
 
-				% Frequent case:
-				1 ->
-					"is still waiting for following actor:";
+                % Frequent case:
+                1 ->
+                    "is still waiting for following actor:";
 
-				Many when Many > 1 ->
-					text_utils:format( "is still waiting for "
-									   "following ~B actors:", [ Count ] )
+                Many when Many > 1 ->
+                    text_utils:format( "is still waiting for "
+                                       "following ~B actors:", [ Count ] )
 
-			end,
+            end,
 
-			WaitedActorList = set_utils:to_list( WaitedActors ),
+            WaitedActorList = set_utils:to_list( WaitedActors ),
 
-			[ text_utils:string_to_binary( Header ) |
-			  prepare_wait_explanation( WaitedActorList, LocalTrackerPid,
-				RootTrackerPid, ?getAttr(current_tick_offset), _Acc=[] ) ]
+            [ text_utils:string_to_binary( Header ) |
+              prepare_wait_explanation( WaitedActorList, LocalTrackerPid,
+                RootTrackerPid, ?getAttr(current_tick_offset), _Acc=[] ) ]
 
-	end.
+    end.
 
 
 
 % (helper)
 prepare_wait_explanation( _WaitedActors=[], _LocalTrackerPid, _RootTrackerPid,
-						  _TickOffset, Acc ) ->
-	Acc;
+                          _TickOffset, Acc ) ->
+    Acc;
 
 prepare_wait_explanation( [ ActorPid | T ], LocalTrackerPid, RootTrackerPid,
-						  TickOffset, Acc ) ->
+                          TickOffset, Acc ) ->
 
-	% This is by design an actor local to this time manager:
-	ActorNaming = get_best_naming_for( ActorPid, LocalTrackerPid, local ),
+    % This is by design an actor local to this time manager:
+    ActorNaming = get_best_naming_for( ActorPid, LocalTrackerPid, local ),
 
-	ActorInfo = receive
+    ActorInfo = receive
 
-		% The next 'notifyNudged' message was sent by an actor in answer to the
-		% 'nudge' one sent in get_wait_explanation/3.
-		%
-		% We only select the one that what we target; other notifyNudged
-		% messages that will not be popped at the end will result in a call to
-		% the corresponding oneway, which will do nothing.
-		%
-		{ notifyNudged, [ ActorPid, TickOffset, WaitedActors ] } ->
+        % The next 'notifyNudged' message was sent by an actor in answer to the
+        % 'nudge' one sent in get_wait_explanation/3.
+        %
+        % We only select the one that what we target; other notifyNudged
+        % messages that will not be popped at the end will result in a call to
+        % the corresponding oneway, which will do nothing.
+        %
+        { notifyNudged, [ ActorPid, TickOffset, WaitedActors ] } ->
 
-			case length( WaitedActors ) of
+            case length( WaitedActors ) of
 
-				L when L > 5 ->
-					text_utils:format( "~ts, which itself is waiting for "
-									   "~B other actors", [ ActorNaming, L ] );
+                L when L > 5 ->
+                    text_utils:format( "~ts, which itself is waiting for "
+                                       "~B other actors", [ ActorNaming, L ] );
 
-				0 ->
-					text_utils:format(
-						"~ts, not waiting for anyone (still busy?)",
-						[ ActorNaming ] );
+                0 ->
+                    text_utils:format(
+                        "~ts, not waiting for anyone (still busy?)",
+                        [ ActorNaming ] );
 
-				_ ->
+                _ ->
 
-					% The next actors are not necessarily local.
-					%
-					% Here we could either send a request to the root tracker
-					% (and let it ask to the right local tracker), or find
-					% ActorNode = node( Pid ), and then make a local name
-					% look-up on this node for the (local) tracker.
-					%
-					% We preferred here the first solution:
-					%
-					ActorNamings = [
-						get_best_naming_for( Pid, RootTrackerPid, global )
-									|| Pid <- WaitedActors ],
+                    % The next actors are not necessarily local.
+                    %
+                    % Here we could either send a request to the root tracker
+                    % (and let it ask to the right local tracker), or find
+                    % ActorNode = node( Pid ), and then make a local name
+                    % look-up on this node for the (local) tracker.
+                    %
+                    % We preferred here the first solution:
+                    %
+                    ActorNamings = [
+                        get_best_naming_for( Pid, RootTrackerPid, global )
+                                    || Pid <- WaitedActors ],
 
-					ListedActors =
-						text_utils:join( _Sep=", and for ",	ActorNamings ),
+                    ListedActors =
+                        text_utils:join( _Sep=", and for ", ActorNamings ),
 
-					text_utils:format( "~ts, which itself is waiting for ~ts",
-									   [ ActorNaming, ListedActors ] )
+                    text_utils:format( "~ts, which itself is waiting for ~ts",
+                                       [ ActorNaming, ListedActors ] )
 
-			end
+            end
 
-	after 100 ->
+    after 100 ->
 
-			text_utils:format( "~ts did not answer on time (busy?)",
-							   [ ActorNaming ] )
+            text_utils:format( "~ts did not answer on time (busy?)",
+                               [ ActorNaming ] )
 
-	end,
+    end,
 
-	ActorInfoBin = text_utils:string_to_binary( ActorInfo ),
+    ActorInfoBin = text_utils:string_to_binary( ActorInfo ),
 
-	prepare_wait_explanation( T, LocalTrackerPid, RootTrackerPid, TickOffset,
-							  [ ActorInfoBin | Acc ] ).
+    prepare_wait_explanation( T, LocalTrackerPid, RootTrackerPid, TickOffset,
+                              [ ActorInfoBin | Acc ] ).
 
 
 
@@ -4359,59 +4357,59 @@ able to answer) or `global` (it may have to perform a global look-up in its
 hierarchy - generally to be used on the root instance tracker).
 """.
 -spec get_best_naming_for( actor_pid(), instance_tracker_pid(),
-						   'local' | 'global' ) -> ustring().
+                           'local' | 'global' ) -> ustring().
 get_best_naming_for( ActorPid, TrackerPid, LookUpType ) ->
 
-	Request = case LookUpType of
+    Request = case LookUpType of
 
-		local ->
-			getActorInformationLocal;
+        local ->
+            getActorInformationLocal;
 
-		global ->
-			getActorInformationGlobal
+        global ->
+            getActorInformationGlobal
 
-	end,
+    end,
 
-	TrackerPid ! { Request, ActorPid, self() },
+    TrackerPid ! { Request, ActorPid, self() },
 
-	receive
+    receive
 
-		{ wooper_result, { Infos, Node } }
-						when is_record( Infos, actor_info ) ->
+        { wooper_result, { Infos, Node } }
+                        when is_record( Infos, actor_info ) ->
 
-			AAI = Infos#actor_info.aai,
+            AAI = Infos#actor_info.aai,
 
-			ActorName = case Infos#actor_info.name of
+            ActorName = case Infos#actor_info.name of
 
-				undefined ->
+                undefined ->
 
-					% Sends a oneway to this actor, which will update the root
-					% instance tracker later.
-					%
-					% (note: we do not specify self() here, we want the instance
-					% tracking service to be updated instead; and as we do not
-					% know which tracker shall be targeted, we specify the root
-					% one instead):
-					%
-					ActorPid ! { triggerNameNotification, TrackerPid },
+                    % Sends a oneway to this actor, which will update the root
+                    % instance tracker later.
+                    %
+                    % (note: we do not specify self() here, we want the instance
+                    % tracking service to be updated instead; and as we do not
+                    % know which tracker shall be targeted, we specify the root
+                    % one instead):
+                    %
+                    ActorPid ! { triggerNameNotification, TrackerPid },
 
-					% For this time, fall-back to a basic information:
-					text_utils:format( "actor whose AAI is ~B (PID: ~w)",
-									   [ AAI, ActorPid ] );
+                    % For this time, fall-back to a basic information:
+                    text_utils:format( "actor whose AAI is ~B (PID: ~w)",
+                                       [ AAI, ActorPid ] );
 
-				Name ->
-					% Already available, use it:
-					text_utils:format(
-						"actor named '~ts' whose AAI is ~B (PID: ~w)",
-						[ Name, AAI, ActorPid ] )
+                Name ->
+                    % Already available, use it:
+                    text_utils:format(
+                        "actor named '~ts' whose AAI is ~B (PID: ~w)",
+                        [ Name, AAI, ActorPid ] )
 
-			end,
+            end,
 
-			% These information are known to exist:
-			ActorName ++ text_utils:format( " of class ~ts on node ~ts",
-										[ Infos#actor_info.classname, Node ] )
+            % These information are known to exist:
+            ActorName ++ text_utils:format( " of class ~ts on node ~ts",
+                                        [ Infos#actor_info.classname, Node ] )
 
-	end.
+    end.
 
 
 
@@ -4421,50 +4419,50 @@ Returns a textual representation of the nested diagnoses: a list of plain
 strings.
 """.
 format_nested_diagnoses( Diag ) ->
-	% One-element list, to start:
-	format_nested_diagnoses( [ Diag ], _Acc=[], _Level=0 ).
+    % One-element list, to start:
+    format_nested_diagnoses( [ Diag ], _Acc=[], _Level=0 ).
 
 
 format_nested_diagnoses( _Diag=[], Acc, _Level ) ->
-	Acc;
+    Acc;
 
 format_nested_diagnoses( _Diag=[ {TMPid,Node,LocalDiags,ChildDiags} | T ],
-						 Acc, Level ) ->
+                         Acc, Level ) ->
 
-	TMText = get_prefix_for( Level ) ++
-		text_utils:format( "Time manager on ~ts (~w):", [ Node, TMPid ] ),
+    TMText = get_prefix_for( Level ) ++
+        text_utils:format( "Time manager on ~ts (~w):", [ Node, TMPid ] ),
 
-	PrefixBullet = get_prefix_for( Level+1 ),
+    PrefixBullet = get_prefix_for( Level+1 ),
 
-	LocalTextList = case LocalDiags of
+    LocalTextList = case LocalDiags of
 
-		none_waited ->
-			[ PrefixBullet ++ "has no waited local actor" ];
+        none_waited ->
+            [ PrefixBullet ++ "has no waited local actor" ];
 
-		[ Header | ActorList ] ->
-			PrefixSecondBullet = get_prefix_for( Level+2 ),
-			TranslatedBullets = [ PrefixSecondBullet
-				++ text_utils:binary_to_string( B ) || B <- ActorList ],
-			[ PrefixBullet ++ text_utils:binary_to_string( Header )
-					| TranslatedBullets ]
+        [ Header | ActorList ] ->
+            PrefixSecondBullet = get_prefix_for( Level+2 ),
+            TranslatedBullets = [ PrefixSecondBullet
+                ++ text_utils:binary_to_string( B ) || B <- ActorList ],
+            [ PrefixBullet ++ text_utils:binary_to_string( Header )
+                    | TranslatedBullets ]
 
-	end,
+    end,
 
-	StartTextList = [ TMText | LocalTextList ],
-	ChildTextList = case ChildDiags of
+    StartTextList = [ TMText | LocalTextList ],
+    ChildTextList = case ChildDiags of
 
-		[] ->
-			[ PrefixBullet ++ "has no child time manager" ];
+        [] ->
+            [ PrefixBullet ++ "has no child time manager" ];
 
-		DiagList ->
-			% Recurses (depth-first)
-			[ PrefixBullet ++ "has for child managers: "
-				| format_nested_diagnoses( DiagList, Acc, Level+3 ) ]
+        DiagList ->
+            % Recurses (depth-first)
+            [ PrefixBullet ++ "has for child managers: "
+                | format_nested_diagnoses( DiagList, Acc, Level+3 ) ]
 
-	end,
+    end,
 
-	% Continues on this "top-level" list:
-	format_nested_diagnoses( T,  Acc ++ StartTextList ++ ChildTextList, Level ).
+    % Continues on this "top-level" list:
+    format_nested_diagnoses( T,  Acc ++ StartTextList ++ ChildTextList, Level ).
 
 
 
@@ -4473,25 +4471,25 @@ Returns a suitable indentation prefix for the specified nesting level, as a
 plain string.
 """.
 get_prefix_for( _Level=0 ) ->
-	" - ";
+    " - ";
 
 get_prefix_for( _Level=1 ) ->
-	"   * ";
+    "   * ";
 
 get_prefix_for( _Level=2 ) ->
-	"     + ";
+    "     + ";
 
 get_prefix_for( _Level=3 ) ->
-	"       # ";
+    "       # ";
 
 get_prefix_for( _Level=4 ) ->
-	"         ~~ ";
+    "         ~~ ";
 
 get_prefix_for( _Level=5 ) ->
-	"           + ";
+    "           + ";
 
 get_prefix_for( Level ) ->
-	lists:flatten( lists:duplicate( Level*2, " " ) ) ++ " - ".
+    lists:flatten( lists:duplicate( Level*2, " " ) ) ++ " - ".
 
 
 
@@ -4501,10 +4499,10 @@ get_prefix_for( Level ) ->
 
 -doc "Called by the load balancer to update the overall actor count.".
 -spec notifyOverallActorCount( wooper:state(), actor_count() ) ->
-									oneway_return().
+                                    oneway_return().
 notifyOverallActorCount( State, NewValue ) ->
-	wooper:return_state(
-		setAttribute( State, overall_actor_count, NewValue ) ).
+    wooper:return_state(
+        setAttribute( State, overall_actor_count, NewValue ) ).
 
 
 
@@ -4517,46 +4515,46 @@ Returns a textual description of the specified simulation settings record.
 """.
 -spec settings_to_string( simulation_settings() ) -> static_return( ustring() ).
 settings_to_string( #simulation_settings{
-		simulation_name=Name,
-		tick_duration=SubmittedTickDuration,
-		simulation_interactivity_mode=SimInteractivity,
-		evaluation_mode=EvaluationMode }  ) ->
+        simulation_name=Name,
+        tick_duration=SubmittedTickDuration,
+        simulation_interactivity_mode=SimInteractivity,
+        evaluation_mode=EvaluationMode }  ) ->
 
-	NameString = text_utils:format( "simulation name is '~ts'.", [ Name ] ),
+    NameStr = text_utils:format( "simulation name is '~ts'.", [ Name ] ),
 
-	TickDuration = float( SubmittedTickDuration ),
+    TickDuration = float( SubmittedTickDuration ),
 
-	Frequency = 1 / TickDuration,
+    Frequency = 1 / TickDuration,
 
-	DurationString = text_utils:format( "simulation tick duration is exactly "
-		"~f (virtual) seconds, which corresponds to a fundamental frequency of "
-		"approximately ~.3f Hz.", [ TickDuration, Frequency ] ),
+    DurationStr = text_utils:format( "simulation tick duration is exactly "
+        "~f (virtual) seconds, which corresponds to a fundamental frequency of "
+        "approximately ~.3f Hz.", [ TickDuration, Frequency ] ),
 
-	InteractivityString = text_utils:format( "simulation will run in ~ts mode.",
-											 [ SimInteractivity ] ),
+    InteractivityStr = text_utils:format( "simulation will run in ~ts mode.",
+                                          [ SimInteractivity ] ),
 
-	EvaluationModeString = case EvaluationMode of
+    EvaluationModeStr = case EvaluationMode of
 
-		fastest->
-			"evaluation will be done in fastest mode, "
-			"with no message reordering, and using default seed." ;
+        fastest->
+            "evaluation will be done in fastest mode, "
+            "with no message reordering, and using default seed." ;
 
-		reproducible ->
-			"evaluation will be totally reproducible, using default seed." ;
+        reproducible ->
+            "evaluation will be totally reproducible, using default seed." ;
 
-		{ reproducible, Seed } ->
-			text_utils:format( "evaluation will be totally reproducible, "
-							   "using user-specified seed ~p.", [ Seed ] ) ;
+        { reproducible, Seed } ->
+            text_utils:format( "evaluation will be totally reproducible, "
+                               "using user-specified seed ~p.", [ Seed ] ) ;
 
-		ergodic ->
-			"evaluation will be done in ergodic mode."
+        ergodic ->
+            "evaluation will be done in ergodic mode."
 
-	end,
+    end,
 
-	Finalstring = text_utils:strings_to_string( [ NameString, DurationString,
-		InteractivityString, EvaluationModeString ] ),
+    Finalstring = text_utils:strings_to_string( [ NameStr, DurationStr,
+        InteractivityStr, EvaluationModeStr ] ),
 
-	wooper:return_static( Finalstring ).
+    wooper:return_static( Finalstring ).
 
 
 
@@ -4567,18 +4565,18 @@ registered as.
 Note: executed on the caller node.
 """.
 -spec get_registration_name() ->
-						static_return( naming_utils:registration_name() ).
+                        static_return( naming_utils:registration_name() ).
 get_registration_name() ->
 
-	% We used to prefer using unique names (even if they actually remained,
-	% each, node-local).
-	%
-	% For example sim_diasca_time_manager_for_testSimulation@myhost.mydomain.org
-	%list_to_atom( atom_to_list( ?time_manager_name ) ++ "_for_"
-	%   ++ atom_to_list( node() ) ).
+    % We used to prefer using unique names (even if they actually remained,
+    % each, node-local).
+    %
+    % For example sim_diasca_time_manager_for_testSimulation@myhost.mydomain.org
+    %list_to_atom( atom_to_list( ?time_manager_name ) ++ "_for_"
+    %   ++ atom_to_list( node() ) ).
 
-	% Simpler and sufficient in a purely local context:
-	wooper:return_static( ?time_manager_name ).
+    % Simpler and sufficient in a purely local context:
+    wooper:return_static( ?time_manager_name ).
 
 
 
@@ -4590,22 +4588,22 @@ Waits a bit before giving up: useful when client and manager processes are
 launched almost simultaneously.
 """.
 -spec get_any_manager() ->
-		static_return( time_manager_pid() | 'time_manager_not_available' ).
+        static_return( time_manager_pid() | 'time_manager_not_available' ).
 get_any_manager() ->
 
-	% Waits gracefully for the time manager to exist:
-	try naming_utils:wait_for_global_registration_of( get_registration_name() )
-			of
+    % Waits gracefully for the time manager to exist:
+    try naming_utils:wait_for_global_registration_of( get_registration_name() )
+            of
 
-		TimeManagerPid ->
-			wooper:return_static( TimeManagerPid )
+        TimeManagerPid ->
+            wooper:return_static( TimeManagerPid )
 
-	catch
+    catch
 
-		_Exception ->
-			wooper:return_static( time_manager_not_available )
+        _Exception ->
+            wooper:return_static( time_manager_not_available )
 
-	end.
+    end.
 
 
 
@@ -4619,14 +4617,14 @@ Checks that the specified simulation duration is correct, and returns a
 standardised version of it.
 """.
 check_tick_duration( SpecifiedSimulationDuration )
-							when is_integer( SpecifiedSimulationDuration ) ->
-	check_tick_duration( erlang:float( SpecifiedSimulationDuration ) );
+                            when is_integer( SpecifiedSimulationDuration ) ->
+    check_tick_duration( erlang:float( SpecifiedSimulationDuration ) );
 
 check_tick_duration( D ) when is_float( D ) andalso D > 0 ->
-	D;
+    D;
 
 check_tick_duration( D ) ->
-	throw( { invalid_specified_tick_duration, D } ).
+    throw( { invalid_specified_tick_duration, D } ).
 
 
 
@@ -4638,33 +4636,33 @@ information from a child manager.
 Returns an updated state.
 """.
 -spec update_next_action_with( next_manager_action(), wooper:state() ) ->
-									wooper:state().
+                                    wooper:state().
 update_next_action_with( no_planned_action, State ) ->
-	% No change here, already set to the same value:
-	State;
+    % No change here, already set to the same value:
+    State;
 
 update_next_action_with( new_diasca_needed, State ) ->
-	% Nothing sooner can exist, overriding blindly:
-	setAttribute( State, next_action, new_diasca_needed );
+    % Nothing sooner can exist, overriding blindly:
+    setAttribute( State, next_action, new_diasca_needed );
 
 update_next_action_with( NextTickOffset, State ) ->
 
-	SoonestDeadline = case ?getAttr(next_action) of
+    SoonestDeadline = case ?getAttr(next_action) of
 
-		new_diasca_needed ->
-			new_diasca_needed;
+        new_diasca_needed ->
+            new_diasca_needed;
 
-		undefined ->
-			NextTickOffset;
+        undefined ->
+            NextTickOffset;
 
-		FirstNextOffset when FirstNextOffset > NextTickOffset ->
-			NextTickOffset;
+        FirstNextOffset when FirstNextOffset > NextTickOffset ->
+            NextTickOffset;
 
-		SmallerOffset ->
-			SmallerOffset
+        SmallerOffset ->
+            SmallerOffset
 
-	end,
-	setAttribute( State, next_action, SoonestDeadline ).
+    end,
+    setAttribute( State, next_action, SoonestDeadline ).
 
 
 
@@ -4679,25 +4677,25 @@ simulation interactive mode.
 -spec timer_main_loop( time_manager_pid(), milliseconds() ) -> no_return().
 timer_main_loop( TimeManagerPid, PeriodMs ) ->
 
-	receive
+    receive
 
-		delete ->
-			?display_console( "Timer: timer_main_loop requested to stop.", [] ),
-			TimeManagerPid ! timer_stopped
-			% Ended.
+        delete ->
+            ?display_console( "Timer: timer_main_loop requested to stop.", [] ),
+            TimeManagerPid ! timer_stopped
+            % Ended.
 
-	% After following real milliseconds, sends the timer top, and recurses:
-	after PeriodMs ->
+    % After following real milliseconds, sends the timer top, and recurses:
+    after PeriodMs ->
 
-		%trace_utils:debug_fmt( "Sending timerTickFinished (after ~B ms)",
-		%                       [ PeriodMs ] ),
+        %trace_utils:debug_fmt( "Sending timerTickFinished (after ~B ms)",
+        %                       [ PeriodMs ] ),
 
-		% No diasca shall be considered here:
-		TimeManagerPid ! timerTickFinished,
+        % No diasca shall be considered here:
+        TimeManagerPid ! timerTickFinished,
 
-		timer_main_loop( TimeManagerPid, PeriodMs )
+        timer_main_loop( TimeManagerPid, PeriodMs )
 
-	end.
+    end.
 
 
 
@@ -4705,61 +4703,61 @@ timer_main_loop( TimeManagerPid, PeriodMs ) ->
 -spec stop_timer( wooper:state() ) -> wooper:state().
 stop_timer( State ) ->
 
-	UpdatedState = case ?getAttr(simulation_interactivity_mode) of
+    UpdatedState = case ?getAttr(simulation_interactivity_mode) of
 
-		interactive ->
+        interactive ->
 
-			% In simulation interactive mode, the timer has to be stopped:
-			case ?getAttr(timer_pid) of
+            % In simulation interactive mode, the timer has to be stopped:
+            case ?getAttr(timer_pid) of
 
-				undefined ->
-					% Nothing to stop:
-					State;
+                undefined ->
+                    % Nothing to stop:
+                    State;
 
-				TimerPid ->
-					?debug( "Waiting for the simulation timer to stop." ),
-					TimerPid ! delete,
+                TimerPid ->
+                    ?debug( "Waiting for the simulation timer to stop." ),
+                    TimerPid ! delete,
 
-					receive
+                    receive
 
-						timer_stopped ->
-							?debug( "Timer stopped." ),
-							setAttribute( State, timer_pid, undefined )
+                        timer_stopped ->
+                            ?debug( "Timer stopped." ),
+                            setAttribute( State, timer_pid, undefined )
 
-					end
+                    end
 
-			end;
-
-
-		batch ->
-			% In batch mode, no timer to stop:
-			%
-			% (note that a self-sent timer_top message might be still sitting in
-			% the TimeManager mail box)
-			%
-			State
+            end;
 
 
-	end,
+        batch ->
+            % In batch mode, no timer to stop:
+            %
+            % (note that a self-sent timer_top message might be still sitting in
+            % the TimeManager mail box)
+            %
+            State
 
-	% Flushes any remaining timer-top oneway calls/messages (Y-combinator):
-	F = fun( Fun ) ->
-		receive
 
-			timerTickFinished ->
-				Fun( Fun )
+    end,
 
-		after 0 ->
+    % Flushes any remaining timer-top oneway calls/messages (Y-combinator):
+    F = fun( Fun ) ->
+        receive
 
-			ok
+            timerTickFinished ->
+                Fun( Fun )
 
-		end
+        after 0 ->
 
-	end,
+            ok
 
-	F( F ),
+        end
 
-	UpdatedState.
+    end,
+
+    F( F ),
+
+    UpdatedState.
 
 
 
@@ -4775,185 +4773,185 @@ non-suspended watchdog ever kicking in (stale VM?).
 This would just result into a 'noconnection' exception, quite later.
 """.
 -spec watchdog_main_loop( time_manager_pid(), milliseconds(),
-		milliseconds(), milliseconds(), milliseconds(), milliseconds() ) ->
-								no_return().
+        milliseconds(), milliseconds(), milliseconds(), milliseconds() ) ->
+                                no_return().
 watchdog_main_loop( TimeManagerPid, DelayBeforeFirstStall,
-		DelayBetweenNextStalls, DelayBeforeFailed, NextPeriod,
-		AccumulatedDuration ) ->
+        DelayBetweenNextStalls, DelayBeforeFailed, NextPeriod,
+        AccumulatedDuration ) ->
 
-	?display_console( "Watchdog ~w running (first stall delay: ~B ms, then "
-		"~B ms; shutdown delay: ~B ms, next period: ~B ms, "
-		"accumulated: ~B ms).",
-		[ self(), DelayBeforeFirstStall, DelayBetweenNextStalls,
-		  DelayBeforeFailed, NextPeriod, AccumulatedDuration ] ),
+    ?display_console( "Watchdog ~w running (first stall delay: ~B ms, then "
+        "~B ms; shutdown delay: ~B ms, next period: ~B ms, "
+        "accumulated: ~B ms).",
+        [ self(), DelayBeforeFirstStall, DelayBetweenNextStalls,
+          DelayBeforeFailed, NextPeriod, AccumulatedDuration ] ),
 
-	receive
+    receive
 
-		{ beginWatchdogTick, _NewTickOffset=0 } ->
+        { beginWatchdogTick, _NewTickOffset=0 } ->
 
-			?display_console( "Watchdog received a notification of tick begin "
-							  "for tick offset #0.", [] ),
+            ?display_console( "Watchdog received a notification of tick begin "
+                              "for tick offset #0.", [] ),
 
-			% Acknowledges it immediately:
-			TimeManagerPid ! { notifySpontaneousWatchdogCompleted, 0 },
+            % Acknowledges it immediately:
+            TimeManagerPid ! { notifySpontaneousWatchdogCompleted, 0 },
 
-			% Tactic #1: we start with an initial additional margin (actual
-			% total delay: twice the stall one), so that all the initial actors,
-			% even if they were quite numerous, can nevertheless complete their
-			% first diasca (to overcome the typical initial burst load) with not
-			% too many stall notifications.
-			%
-			% Tactic #2: to detect problems earlier, we start with an half
-			% duration.
-			%
-			% Tactif #3: to find a good tradeoff between quickness of problem
-			% spotting and not too many stall messages, we start the very first
-			% tick with no specific margin.
-			%
-			% (unit: milliseconds)
-			%
+            % Tactic #1: we start with an initial additional margin (actual
+            % total delay: twice the stall one), so that all the initial actors,
+            % even if they were quite numerous, can nevertheless complete their
+            % first diasca (to overcome the typical initial burst load) with not
+            % too many stall notifications.
+            %
+            % Tactic #2: to detect problems earlier, we start with an half
+            % duration.
+            %
+            % Tactif #3: to find a good tradeoff between quickness of problem
+            % spotting and not too many stall messages, we start the very first
+            % tick with no specific margin.
+            %
+            % (unit: milliseconds)
+            %
 
-			CreationDurationMarginTacticOne = - DelayBeforeFirstStall,
-			%CreationDurationMarginTacticTwo = DelayBeforeStalled div 2,
-			%CreationDurationMarginTacticThree = 0,
+            CreationDurationMarginTacticOne = - DelayBeforeFirstStall,
+            %CreationDurationMarginTacticTwo = DelayBeforeStalled div 2,
+            %CreationDurationMarginTacticThree = 0,
 
-			% Resets accordingly the idle timer:
-			watchdog_main_loop( TimeManagerPid, DelayBeforeFirstStall,
-				DelayBetweenNextStalls, DelayBeforeFailed,
-				_NextPeriod=DelayBeforeFirstStall,
-				_AccumulatedDuration=CreationDurationMarginTacticOne );
-
-
-		{ beginWatchdogTick, NewTickOffset } ->
-
-			?display_console( "Watchdog received a notification of tick begin "
-							  "for tick offset #~B.", [ NewTickOffset ] ),
-
-			% Acknowledges it immediately:
-			TimeManagerPid !
-				{ notifySpontaneousWatchdogCompleted, NewTickOffset },
-
-			% Resets the idle timer:
-			watchdog_main_loop( TimeManagerPid, DelayBeforeFirstStall,
-				DelayBetweenNextStalls, DelayBeforeFailed,
-				_NextPeriod=DelayBeforeFirstStall, _AccumulatedDuration=0 );
+            % Resets accordingly the idle timer:
+            watchdog_main_loop( TimeManagerPid, DelayBeforeFirstStall,
+                DelayBetweenNextStalls, DelayBeforeFailed,
+                _NextPeriod=DelayBeforeFirstStall,
+                _AccumulatedDuration=CreationDurationMarginTacticOne );
 
 
-		{ beginWatchdogDiasca, [ TickOffset, NewDiasca ] } ->
+        { beginWatchdogTick, NewTickOffset } ->
 
-			?display_console( "Watchdog received a notification of diasca "
-				"begin for tick offset #~B diasca ~B.",
-				[ TickOffset, NewDiasca ] ),
+            ?display_console( "Watchdog received a notification of tick begin "
+                              "for tick offset #~B.", [ NewTickOffset ] ),
 
-			% Acknowledges it immediately:
-			TimeManagerPid ! { notifyTriggeredWatchdogCompleted,
-								[ TickOffset, NewDiasca ] },
+            % Acknowledges it immediately:
+            TimeManagerPid !
+                { notifySpontaneousWatchdogCompleted, NewTickOffset },
 
-			% Resets the idle timer:
-			watchdog_main_loop( TimeManagerPid, DelayBeforeFirstStall,
-				DelayBetweenNextStalls, DelayBeforeFailed,
-				_NextPeriod=DelayBeforeFirstStall, _AccumulatedDuration=0 );
-
-
-		% Useful, for example to let a serialisation occur:
-		suspendWatchdog ->
-
-			trace_utils:notice( "Watchdog suspended." ),
-
-			?notify_debug_cat( "Watchdog suspended.",
-							   ?trace_emitter_categorization ),
-
-			receive
-
-				resumeWatchdog ->
-
-					trace_utils:notice( "Watchdog resumed." ),
-
-					?notify_debug_cat( "Watchdog resumed.",
-									   ?trace_emitter_categorization ),
-
-					watchdog_main_loop( TimeManagerPid, DelayBeforeFirstStall,
-						DelayBetweenNextStalls, DelayBeforeFailed,
-						_NextPeriod=DelayBeforeFirstStall,
-						_AccumulatedDuration=0 )
-
-			end;
+            % Resets the idle timer:
+            watchdog_main_loop( TimeManagerPid, DelayBeforeFirstStall,
+                DelayBetweenNextStalls, DelayBeforeFailed,
+                _NextPeriod=DelayBeforeFirstStall, _AccumulatedDuration=0 );
 
 
-		timeManagerShutdown  ->
-			?display_console( "Watchdog shut down.", [] ),
-			?notify_debug_cat( "Watchdog removed (shutdown).",
-							   ?trace_emitter_categorization );
+        { beginWatchdogDiasca, [ TickOffset, NewDiasca ] } ->
+
+            ?display_console( "Watchdog received a notification of diasca "
+                "begin for tick offset #~B diasca ~B.",
+                [ TickOffset, NewDiasca ] ),
+
+            % Acknowledges it immediately:
+            TimeManagerPid ! { notifyTriggeredWatchdogCompleted,
+                                [ TickOffset, NewDiasca ] },
+
+            % Resets the idle timer:
+            watchdog_main_loop( TimeManagerPid, DelayBeforeFirstStall,
+                DelayBetweenNextStalls, DelayBeforeFailed,
+                _NextPeriod=DelayBeforeFirstStall, _AccumulatedDuration=0 );
 
 
-		delete ->
-			?display_console( "Watchdog deleted.", [] ),
-			?notify_debug_cat( "Watchdog removed (deletion).",
-							   ?trace_emitter_categorization );
+        % Useful, for example to let a serialisation occur:
+        suspendWatchdog ->
+
+            trace_utils:notice( "Watchdog suspended." ),
+
+            ?notify_debug_cat( "Watchdog suspended.",
+                               ?trace_emitter_categorization ),
+
+            receive
+
+                resumeWatchdog ->
+
+                    trace_utils:notice( "Watchdog resumed." ),
+
+                    ?notify_debug_cat( "Watchdog resumed.",
+                                       ?trace_emitter_categorization ),
+
+                    watchdog_main_loop( TimeManagerPid, DelayBeforeFirstStall,
+                        DelayBetweenNextStalls, DelayBeforeFailed,
+                        _NextPeriod=DelayBeforeFirstStall,
+                        _AccumulatedDuration=0 )
+
+            end;
 
 
-		{ synchronous_delete, ListenerPid } ->
-			?display_console( "Watchdog synchronously deleted.", [] ),
-			?notify_debug_cat( "Watchdog removed (synchronous deletion).",
-							   ?trace_emitter_categorization ),
-			ListenerPid ! watchdog_deleted;
+        timeManagerShutdown  ->
+            ?display_console( "Watchdog shut down.", [] ),
+            ?notify_debug_cat( "Watchdog removed (shutdown).",
+                               ?trace_emitter_categorization );
 
 
-		Other ->
-			?notify_warning_fmt_cat(
-				"Watchdog received an unexpected message (~p), ignored.",
-				[ Other ], ?trace_emitter_categorization ),
-
-			watchdog_main_loop( TimeManagerPid, DelayBeforeFirstStall,
-				DelayBetweenNextStalls, DelayBeforeFailed,
-				_NextPeriod=DelayBeforeFirstStall, AccumulatedDuration )
+        delete ->
+            ?display_console( "Watchdog deleted.", [] ),
+            ?notify_debug_cat( "Watchdog removed (deletion).",
+                               ?trace_emitter_categorization );
 
 
-	% After following real (actual) milliseconds:
-	after NextPeriod ->
-
-		case AccumulatedDuration of
-
-			% Deemed to be an orphaned node (thus needing to halt automatically)
-			% if more than DelayBeforeFailed milliseconds elapsed since last
-			% known event:
-
-			TooLong when TooLong > DelayBeforeFailed ->
-
-				DelayString =
-					time_utils:duration_to_string( DelayBeforeFailed ),
-
-				?notify_emergency_fmt_cat(
-					"Warning: watchdog on node '~ts' detected a too long "
-					"inter-diasca duration (more than ~ts), this node is thus "
-					"deemed orphaned, shutting it down now at ~ts.",
-					[ net_utils:localnode(), DelayString,
-					  time_utils:get_textual_timestamp() ],
-					?trace_emitter_categorization ),
-
-				basic_utils:stop_on_failure( 95 );
+        { synchronous_delete, ListenerPid } ->
+            ?display_console( "Watchdog synchronously deleted.", [] ),
+            ?notify_debug_cat( "Watchdog removed (synchronous deletion).",
+                               ?trace_emitter_categorization ),
+            ListenerPid ! watchdog_deleted;
 
 
-			_OtherDuration ->
+        Other ->
+            ?notify_warning_fmt_cat(
+                "Watchdog received an unexpected message (~p), ignored.",
+                [ Other ], ?trace_emitter_categorization ),
 
-				% Output disabled, as anyway the onSimulationStallDetected
-				% oneway will display a message both on the console and in the
-				% traces:
-				%
-				?display_console( " ### Watchdog detected a stalled simulation "
-					"at ~ts, see simulation traces for diagnosis.",
-					[ time_utils:get_textual_timestamp() ] ),
+            watchdog_main_loop( TimeManagerPid, DelayBeforeFirstStall,
+                DelayBetweenNextStalls, DelayBeforeFailed,
+                _NextPeriod=DelayBeforeFirstStall, AccumulatedDuration )
 
-				TimeManagerPid ! onSimulationStallDetected,
 
-				watchdog_main_loop( TimeManagerPid, DelayBeforeFirstStall,
-					DelayBetweenNextStalls, DelayBeforeFailed,
-					_NextPeriod=DelayBetweenNextStalls,
-					AccumulatedDuration + NextPeriod )
+    % After following real (actual) milliseconds:
+    after NextPeriod ->
 
-		end
+        case AccumulatedDuration of
 
-	end.
+            % Deemed to be an orphaned node (thus needing to halt automatically)
+            % if more than DelayBeforeFailed milliseconds elapsed since last
+            % known event:
+
+            TooLong when TooLong > DelayBeforeFailed ->
+
+                DelayStr =
+                    time_utils:duration_to_string( DelayBeforeFailed ),
+
+                ?notify_emergency_fmt_cat(
+                    "Warning: watchdog on node '~ts' detected a too long "
+                    "inter-diasca duration (more than ~ts), this node is thus "
+                    "deemed orphaned, shutting it down now at ~ts.",
+                    [ net_utils:localnode(), DelayStr,
+                      time_utils:get_textual_timestamp() ],
+                    ?trace_emitter_categorization ),
+
+                basic_utils:stop_on_failure( 95 );
+
+
+            _OtherDuration ->
+
+                % Output disabled, as anyway the onSimulationStallDetected
+                % oneway will display a message both on the console and in the
+                % traces:
+                %
+                ?display_console( " ### Watchdog detected a stalled simulation "
+                    "at ~ts, see simulation traces for diagnosis.",
+                    [ time_utils:get_textual_timestamp() ] ),
+
+                TimeManagerPid ! onSimulationStallDetected,
+
+                watchdog_main_loop( TimeManagerPid, DelayBeforeFirstStall,
+                    DelayBetweenNextStalls, DelayBeforeFailed,
+                    _NextPeriod=DelayBetweenNextStalls,
+                    AccumulatedDuration + NextPeriod )
+
+        end
+
+    end.
 
 
 
@@ -4961,51 +4959,51 @@ watchdog_main_loop( TimeManagerPid, DelayBeforeFirstStall,
 -spec stop_watchdog( wooper:state() ) -> wooper:state().
 stop_watchdog( State ) ->
 
-	case ?getAttr(watchdog_pid) of
+    case ?getAttr(watchdog_pid) of
 
-		undefined ->
-			State;
+        undefined ->
+            State;
 
-		WatchdogPid ->
+        WatchdogPid ->
 
-			WatchdogPid ! { synchronous_delete, self() },
+            WatchdogPid ! { synchronous_delete, self() },
 
-			% Otherwise the watchdog could send 'done' messages after the next
-			% flushing:
-			receive
+            % Otherwise the watchdog could send 'done' messages after the next
+            % flushing:
+            receive
 
-				watchdog_deleted ->
-					ok
+                watchdog_deleted ->
+                    ok
 
-			end,
+            end,
 
-			?debug_fmt( "Flushing then any notification(s) "
-				"sent by the watchdog (~w) in-between.", [ WatchdogPid ] ),
+            ?debug_fmt( "Flushing then any notification(s) "
+                "sent by the watchdog (~w) in-between.", [ WatchdogPid ] ),
 
-			% Flushes any remaining messages (Y-combinator):
-			F = fun( Fun ) ->
+            % Flushes any remaining messages (Y-combinator):
+            F = fun( Fun ) ->
 
-				receive
+                receive
 
-					{ notifySpontaneousWatchdogCompleted, _TickOffset } ->
-						Fun( Fun );
+                    { notifySpontaneousWatchdogCompleted, _TickOffset } ->
+                        Fun( Fun );
 
-					{ watchdogDiascaFinished, _TickOffset, _Diasca } ->
-						Fun( Fun )
+                    { watchdogDiascaFinished, _TickOffset, _Diasca } ->
+                        Fun( Fun )
 
-				after 0 ->
+                after 0 ->
 
-					ok
+                    ok
 
-				end
+                end
 
-			end,
+            end,
 
-			F( F ),
+            F( F ),
 
-			setAttribute( State, watchdog_pid, undefined )
+            setAttribute( State, watchdog_pid, undefined )
 
-	end.
+    end.
 
 
 
@@ -5019,24 +5017,24 @@ and is connected to the root time manager.
 Period is in wall-clock milliseconds.
 """.
 -spec wallclock_tracker_main_loop( time_manager_pid(), milliseconds(),
-								   milliseconds() ) -> void().
+                                   milliseconds() ) -> void().
 wallclock_tracker_main_loop( RootTimeManagerPid, Period, TotalDuration ) ->
 
-	receive
+    receive
 
-		delete ->
-			ok
+        delete ->
+            ok
 
-	after Period ->
+    after Period ->
 
-		NewTotalDuration = TotalDuration + Period,
+        NewTotalDuration = TotalDuration + Period,
 
-		RootTimeManagerPid ! { onWallclockMilestone, NewTotalDuration },
+        RootTimeManagerPid ! { onWallclockMilestone, NewTotalDuration },
 
-		wallclock_tracker_main_loop( RootTimeManagerPid, Period,
-									 NewTotalDuration )
+        wallclock_tracker_main_loop( RootTimeManagerPid, Period,
+                                     NewTotalDuration )
 
-	end.
+    end.
 
 
 
@@ -5054,16 +5052,16 @@ Therefore a PDF file can be generated from it, for example thanks to the
 `generate-pdf-from-rst.sh` script.
 """.
 -spec time_tracker_start( load_balancer_pid(), time_manager_pid() ) ->
-								no_return().
+                                no_return().
 time_tracker_start( LoadBalancerPid, RootTimeManagerPid ) ->
 
-	% Interactive, user-targeted processes matter, otherwise many seconds are
-	% missed as soon as the local computer becomes loaded:
+    % Interactive, user-targeted processes matter, otherwise many seconds are
+    % missed as soon as the local computer becomes loaded:
 
-	% Built to force an initial display:
-	time_tracker_main_loop( _PreviousDisplayTime=undefined,
-		_PreviousSimTimestamp=undefined, LoadBalancerPid,
-		RootTimeManagerPid, _WaitTime=?nominal_wait_time ).
+    % Built to force an initial display:
+    time_tracker_main_loop( _PreviousDisplayTime=undefined,
+        _PreviousSimTimestamp=undefined, LoadBalancerPid,
+        RootTimeManagerPid, _WaitTime=?nominal_wait_time ).
 
 
 
@@ -5075,119 +5073,119 @@ Note: PreviousSimTimestamp is useful to report the current timestamp at which
 any diasca may durably remain.
 """.
 -spec time_tracker_main_loop( option( time() ), logical_timestamp(),
-	load_balancer_pid(), time_manager_pid(), milliseconds() ) -> no_return().
+    load_balancer_pid(), time_manager_pid(), milliseconds() ) -> no_return().
 time_tracker_main_loop( PreviousDisplayTime, PreviousSimTimestamp,
-						LoadBalancerPid, RootTimeManagerPid, WaitTime ) ->
+                        LoadBalancerPid, RootTimeManagerPid, WaitTime ) ->
 
-	%?display_console( "Time tracker main loop.~n", [] ),
+    %?display_console( "Time tracker main loop.~n", [] ),
 
-	% (actually most probably useless)
-	%erlang:process_flag( priority, _Level=high ),
+    % (actually most probably useless)
+    %erlang:process_flag( priority, _Level=high ),
 
-	% Most of the time-tracking messages are dropped (roughly only one per
-	% second is kept for displaying, should more of them be received; depending
-	% on the simulation, on the contrary ticks or even diascas may last for very
-	% long), but messages nevertheless arrive mostly already (expensively)
-	% pre-formatted.
-	%
-	% This is not necessarily a waste of resources, as these formattings and
-	% conversions are anyway needed by the traces at each tick and diasca, see
-	% record_progress_message/3.
-	%
-	% The case where a different second is reported with the same simulation
-	% timestamp should never happen (a timestamp is sent only once).
+    % Most of the time-tracking messages are dropped (roughly only one per
+    % second is kept for displaying, should more of them be received; depending
+    % on the simulation, on the contrary ticks or even diascas may last for very
+    % long), but messages nevertheless arrive mostly already (expensively)
+    % pre-formatted.
+    %
+    % This is not necessarily a waste of resources, as these formattings and
+    % conversions are anyway needed by the traces at each tick and diasca, see
+    % record_progress_message/3.
+    %
+    % The case where a different second is reported with the same simulation
+    % timestamp should never happen (a timestamp is sent only once).
 
-	receive
+    receive
 
-		{ delete, CallerPid } ->
+        { delete, CallerPid } ->
 
-			% Not recursing anymore:
+            % Not recursing anymore:
 
-			% Comment for RST output:
-			display_top_row(),
+            % Comment for RST output:
+            display_top_row(),
 
-			io:format( "~n" ),
+            io:format( "~n" ),
 
-			?display_console( "(tick tracker stopped)~n", [] ),
-			CallerPid ! { stopped, self() };
-
-
-		{ RecordTime, _NewTopInfo={ Timings, Counts } } ->
-
-			% We shall display a normal progress line iff :
-			%   PreviousDisplayTime is not defined
-			%     or ( RecordTime > PreviousDisplayTime
-			%                and PreviousDisplayTime != CurrentTime )
-			%
-			% So we display the first progress report we receive for a given
-			% second.
-
-			CurrentTime = time(),
-
-			ShallDisplay = case PreviousDisplayTime of
-
-				CurrentTime ->
-					false;
-
-				undefined ->
-					true;
-
-				_ ->
-					time_utils:get_intertime_duration( PreviousDisplayTime,
-													   RecordTime ) > 0
-
-			end,
-
-			% In all cases (display or not), we update the latest known
-			% simulation timestamp:
-			%
-			{ NewDisplayTime, NewSimTimestamp } = case ShallDisplay of
-
-				true ->
-					DisplayedTimestamp = display_normal_progress_line( Timings,
-						Counts, LoadBalancerPid, RootTimeManagerPid ),
-					{ CurrentTime, DisplayedTimestamp };
-
-				false ->
-					{ _SimDateString, _SimTimeString, CurrentTickOffset,
-					  CurrentDiasca, _RealDateString, _RealTimeString } =
-															Timings,
-
-					NonDisplayedTimestamp =
-						{ CurrentTickOffset, CurrentDiasca },
-
-					{ PreviousDisplayTime, NonDisplayedTimestamp }
-
-			end,
-
-			time_tracker_main_loop( NewDisplayTime, NewSimTimestamp,
-				LoadBalancerPid, RootTimeManagerPid,
-				_WaitTime=?nominal_wait_time );
+            ?display_console( "(tick tracker stopped)~n", [] ),
+            CallerPid ! { stopped, self() };
 
 
-		Unexpected ->
-			throw( { unexpected_time_tracker_message, Unexpected } )
+        { RecordTime, _NewTopInfo={ Timings, Counts } } ->
+
+            % We shall display a normal progress line iff :
+            %   PreviousDisplayTime is not defined
+            %     or ( RecordTime > PreviousDisplayTime
+            %                and PreviousDisplayTime != CurrentTime )
+            %
+            % So we display the first progress report we receive for a given
+            % second.
+
+            CurrentTime = time(),
+
+            ShallDisplay = case PreviousDisplayTime of
+
+                CurrentTime ->
+                    false;
+
+                undefined ->
+                    true;
+
+                _ ->
+                    time_utils:get_intertime_duration( PreviousDisplayTime,
+                                                       RecordTime ) > 0
+
+            end,
+
+            % In all cases (display or not), we update the latest known
+            % simulation timestamp:
+            %
+            { NewDisplayTime, NewSimTimestamp } = case ShallDisplay of
+
+                true ->
+                    DisplayedTimestamp = display_normal_progress_line( Timings,
+                        Counts, LoadBalancerPid, RootTimeManagerPid ),
+                    { CurrentTime, DisplayedTimestamp };
+
+                false ->
+                    { _SimDateStr, _SimTimeStr, CurrentTickOffset,
+                      CurrentDiasca, _RealDateStr, _RealTimeStr } =
+                                                            Timings,
+
+                    NonDisplayedTimestamp =
+                        { CurrentTickOffset, CurrentDiasca },
+
+                    { PreviousDisplayTime, NonDisplayedTimestamp }
+
+            end,
+
+            time_tracker_main_loop( NewDisplayTime, NewSimTimestamp,
+                LoadBalancerPid, RootTimeManagerPid,
+                _WaitTime=?nominal_wait_time );
 
 
-	% A given tick/diasca may last for a lot more than a few seconds, we
-	% nevertheless want to regularly give of sign of liveliness to the user:
-	%
-	after WaitTime ->
+        Unexpected ->
+            throw( { unexpected_time_tracker_message, Unexpected } )
 
-			%?display_console( "after triggered, at ~ts from ~B~n",
-			%    [ time_utils:get_textual_timestamp(), PreviousDisplayTime ] ),
 
-			%io:format( "WaitTime timeout = ~p~n", [ WaitTime ] ),
+    % A given tick/diasca may last for a lot more than a few seconds, we
+    % nevertheless want to regularly give of sign of liveliness to the user:
+    %
+    after WaitTime ->
 
-			%NewDisplayTime = time(),
+            %?display_console( "after triggered, at ~ts from ~B~n",
+            %    [ time_utils:get_textual_timestamp(), PreviousDisplayTime ] ),
 
-			display_diasca_in_progress( PreviousSimTimestamp ),
+            %io:format( "WaitTime timeout = ~p~n", [ WaitTime ] ),
 
-			time_tracker_main_loop( _PreviousDisplayTime=undefined,
-				PreviousSimTimestamp, LoadBalancerPid, RootTimeManagerPid,
-				_WaitTime=?same_diasca_wait_time )
+            %NewDisplayTime = time(),
 
-	end.
+            display_diasca_in_progress( PreviousSimTimestamp ),
+
+            time_tracker_main_loop( _PreviousDisplayTime=undefined,
+                PreviousSimTimestamp, LoadBalancerPid, RootTimeManagerPid,
+                _WaitTime=?same_diasca_wait_time )
+
+    end.
 
 
 
@@ -5197,18 +5195,18 @@ Displays the bar, above and below the per-tick lines, so that the whole looks
 like an array.
 """.
 display_top_row() ->
-	io:format( "+----------------------+----------------+--------+"
-			   "----------------------+--------------+--------------+"
-			   "----------------+~n" ).
+    io:format( "+----------------------+----------------+--------+"
+               "----------------------+--------------+--------------+"
+               "----------------+~n" ).
 
 
 -doc """
 Displays a double bar, so that the whole looks like the header of an array.
 """.
 display_top_row_heavy() ->
-	io:format( "+======================+================+========+"
-			   "======================+==============+==============+"
-			   "================+~n" ).
+    io:format( "+======================+================+========+"
+               "======================+==============+==============+"
+               "================+~n" ).
 
 
 
@@ -5219,92 +5217,92 @@ We defer as much as possible the string construction as very few messages are
 actually displayed, hence needed.
 """.
 -spec display_console_line( timing_info(), count_info() ) ->
-														logical_timestamp().
+                                                        logical_timestamp().
 display_console_line(
-  _Timings={ SimDateString, SimTimeString,
-			 CurrentTickOffset, CurrentDiasca, RealDateString, RealTimeString },
+  _Timings={ SimDateStr, SimTimeStr,
+             CurrentTickOffset, CurrentDiasca, RealDateStr, RealTimeStr },
   _Counts={ TotalActorCount, TotalScheduleCount, TotalProcessCount } ) ->
 
-	% For example '|S:       (not started)|T:             0|D:     0|
-	%  R:   3/9/2012 17:47:39|A:           0|S:           0|P:           34 |
+    % For example '|S:       (not started)|T:             0|D:     0|
+    %  R:   3/9/2012 17:47:39|A:           0|S:           0|P:           34 |
 
-	% Room for 999999999999 actors, i.e. 10^12 actors!
+    % Room for 999999999999 actors, i.e. 10^12 actors!
 
-	TimestampString = text_utils:format(
-		"|S: ~10.s ~8.s|T: ~13.B|D: ~5.B|R: ~10.s ~8.s|",
-		[ SimDateString, SimTimeString, CurrentTickOffset, CurrentDiasca,
-		  RealDateString, RealTimeString ] ),
+    TimestampStr = text_utils:format(
+        "|S: ~10.s ~8.s|T: ~13.B|D: ~5.B|R: ~10.s ~8.s|",
+        [ SimDateStr, SimTimeStr, CurrentTickOffset, CurrentDiasca,
+          RealDateStr, RealTimeStr ] ),
 
-	% We have to compensate for the load-balancer (if any), which is an actor
-	% too:
-	%
-	ActualActorCount = case TotalActorCount of
+    % We have to compensate for the load-balancer (if any), which is an actor
+    % too:
+    %
+    ActualActorCount = case TotalActorCount of
 
-		0 ->
-			0;
+        0 ->
+            0;
 
-		StrictlyPositive ->
-			StrictlyPositive-1
+        StrictlyPositive ->
+            StrictlyPositive-1
 
-	end,
+    end,
 
-	% Total line width: 120 characters.
+    % Total line width: 120 characters.
 
-	io:format( "~tsA: ~11.B|S: ~11.B|P: ~12.B |~n",
-		[ TimestampString, ActualActorCount, TotalScheduleCount,
-		  TotalProcessCount ] ),
+    io:format( "~tsA: ~11.B|S: ~11.B|P: ~12.B |~n",
+        [ TimestampStr, ActualActorCount, TotalScheduleCount,
+          TotalProcessCount ] ),
 
-	% Uncomment for RST output: display_top_row().
+    % Uncomment for RST output: display_top_row().
 
-	{ CurrentTickOffset, CurrentDiasca }.
+    { CurrentTickOffset, CurrentDiasca }.
 
 
 
 
 -doc "Displays a normal (non-stuck at a diasca) progress line on the console.".
 display_normal_progress_line( Timings, Counts, LoadBalancerPid,
-							  RootTimeManagerPid ) ->
+                              RootTimeManagerPid ) ->
 
-	% We take advantage of this per-wallclock second scheduling to program a
-	% lazy, asynchronous, informational only, update of the root time manager by
-	% the load balancer (information will ultimately flow that way, not the
-	% other way round, due to a callback):
-	%
-	LoadBalancerPid ! { getOverallInstanceCount, RootTimeManagerPid },
+    % We take advantage of this per-wallclock second scheduling to program a
+    % lazy, asynchronous, informational only, update of the root time manager by
+    % the load balancer (information will ultimately flow that way, not the
+    % other way round, due to a callback):
+    %
+    LoadBalancerPid ! { getOverallInstanceCount, RootTimeManagerPid },
 
-	display_console_line( Timings, Counts ).
+    display_console_line( Timings, Counts ).
 
 
 
 -doc "Displays that the current diasca is still in progress.".
 display_diasca_in_progress( SimTimestamp ) ->
 
-	BaseText = text_utils:format( "diasca ~p still in progress at ~ts",
-		[ SimTimestamp, time_utils:get_textual_timestamp() ] ),
+    BaseText = text_utils:format( "diasca ~p still in progress at ~ts",
+        [ SimTimestamp, time_utils:get_textual_timestamp() ] ),
 
-	BaseTextWidth = length( BaseText ),
+    BaseTextWidth = length( BaseText ),
 
-	% Full width less two borders:
-	DoubleSpaceWidth = 120 - 2 - BaseTextWidth,
+    % Full width less two borders:
+    DoubleSpaceWidth = 120 - 2 - BaseTextWidth,
 
-	SpaceWidth = DoubleSpaceWidth div 2,
+    SpaceWidth = DoubleSpaceWidth div 2,
 
-	EndingString = case DoubleSpaceWidth rem 2 of
+    EndingStr = case DoubleSpaceWidth rem 2 of
 
-		0 ->
-			"|";
+        0 ->
+            "|";
 
-		1 ->
-			" |"
+        1 ->
+            " |"
 
-	end,
+    end,
 
-	FullText = "|" ++ text_utils:pad_string_right( "--- ", SpaceWidth )
-		++ BaseText ++ text_utils:pad_string_left( " ---", SpaceWidth )
-		++ EndingString,
+    FullText = "|" ++ text_utils:pad_string_right( "--- ", SpaceWidth )
+        ++ BaseText ++ text_utils:pad_string_left( " ---", SpaceWidth )
+        ++ EndingStr,
 
-	% Not basic_utils:display/1, to avoid any possible time-out:
-	io:format( "~ts~n", [ FullText ] ).
+    % Not basic_utils:display/1, to avoid any possible time-out:
+    io:format( "~ts~n", [ FullText ] ).
 
 
 
@@ -5312,20 +5310,20 @@ display_diasca_in_progress( SimTimestamp ) ->
 -spec stop_wallclock_tracker( wooper:state() ) -> wooper:state().
 stop_wallclock_tracker( State ) ->
 
-	% Only the root manager has such a tracker:
-	case ?getAttr(wallclock_tracker_pid) of
+    % Only the root manager has such a tracker:
+    case ?getAttr(wallclock_tracker_pid) of
 
-		undefined ->
-			ok;
+        undefined ->
+            ok;
 
-		Pid ->
-			Pid ! delete
+        Pid ->
+            Pid ! delete
 
-	end,
+    end,
 
-	% Not synchronous.
+    % Not synchronous.
 
-	setAttribute( State, wallclock_tracker_pid, undefined ).
+    setAttribute( State, wallclock_tracker_pid, undefined ).
 
 
 
@@ -5333,28 +5331,28 @@ stop_wallclock_tracker( State ) ->
 -spec stop_time_tracker( wooper:state() ) -> wooper:state().
 stop_time_tracker( State ) ->
 
-	case ?getAttr(time_tracker_pid) of
+    case ?getAttr(time_tracker_pid) of
 
-		undefined ->
-			State;
+        undefined ->
+            State;
 
-		TrackerPid ->
+        TrackerPid ->
 
-			% Blocking to avoid having its last message be displayed after the
-			% "simulation stopped" one:
-			%
-			TrackerPid ! { delete, self() },
+            % Blocking to avoid having its last message be displayed after the
+            % "simulation stopped" one:
+            %
+            TrackerPid ! { delete, self() },
 
-			receive
+            receive
 
-				{ stopped, TrackerPid } ->
-					ok
+                { stopped, TrackerPid } ->
+                    ok
 
-			end,
+            end,
 
-			setAttribute( State, time_tracker_pid, undefined )
+            setAttribute( State, time_tracker_pid, undefined )
 
-	end.
+    end.
 
 
 
@@ -5365,7 +5363,7 @@ Note: the time manager must be started.
 """.
 -spec get_current_tick_offset( wooper:state() ) -> option( tick_offset() ).
 get_current_tick_offset( State ) ->
-	?getAttr(current_tick_offset).
+    ?getAttr(current_tick_offset).
 
 
 
@@ -5376,8 +5374,8 @@ Note: the time manager must be started.
 """.
 -spec get_current_tick( wooper:state() ) -> tick().
 get_current_tick( State ) ->
-	%?display_console( "get_current_tick called." ),
-	?getAttr(initial_tick) + ?getAttr(current_tick_offset).
+    %?display_console( "get_current_tick called." ),
+    ?getAttr(initial_tick) + ?getAttr(current_tick_offset).
 
 
 
@@ -5388,11 +5386,11 @@ Returns the full date and time of the simulation, i.e.:
 -spec get_simulation_time_and_date( wooper:state() ) -> timestamp().
 get_simulation_time_and_date( State ) ->
 
-	CurrentTick = get_current_tick( State ),
+    CurrentTick = get_current_tick( State ),
 
-	RoundedSeconds = convert_ticks_to_rounded_seconds( CurrentTick, State ),
+    RoundedSeconds = convert_ticks_to_rounded_seconds( CurrentTick, State ),
 
-	calendar:gregorian_seconds_to_datetime( RoundedSeconds ).
+    calendar:gregorian_seconds_to_datetime( RoundedSeconds ).
 
 
 
@@ -5403,15 +5401,15 @@ the corresponding absolute tick.
 -spec timestamp_to_ticks( timestamp(), wooper:state() ) -> tick().
 timestamp_to_ticks( Timestamp, State ) ->
 
-	% Seconds since year #0:
-	Secs = calendar:datetime_to_gregorian_seconds( Timestamp ),
+    % Seconds since year #0:
+    Secs = calendar:datetime_to_gregorian_seconds( Timestamp ),
 
-	Ticks = convert_seconds_to_ticks( Secs, State ),
+    Ticks = convert_seconds_to_ticks( Secs, State ),
 
-	%?debug_fmt( "Timestamp ~p converted to ~Bs, thus tick ~B.",
-	%            [ Timestamp, Secs, Ticks ] ),
+    %?debug_fmt( "Timestamp ~p converted to ~Bs, thus tick ~B.",
+    %            [ Timestamp, Secs, Ticks ] ),
 
-	Ticks.
+    Ticks.
 
 
 
@@ -5422,15 +5420,15 @@ time, expressed in virtual time).
 -spec ticks_to_timestamp( tick(), wooper:state() ) -> timestamp().
 ticks_to_timestamp( Tick, State ) ->
 
-	% Seconds since year #0 (rounding necessary):
-	Secs = convert_ticks_to_rounded_seconds( Tick, State ),
+    % Seconds since year #0 (rounding necessary):
+    Secs = convert_ticks_to_rounded_seconds( Tick, State ),
 
-	Timestamp = calendar:gregorian_seconds_to_datetime( Secs ),
+    Timestamp = calendar:gregorian_seconds_to_datetime( Secs ),
 
-	%?debug_fmt( "Tick ~B converted to ~Bs, thus timestamp ~p.",
-	%            [ Tick, Secs, Timestamp ] ),
+    %?debug_fmt( "Tick ~B converted to ~Bs, thus timestamp ~p.",
+    %            [ Tick, Secs, Timestamp ] ),
 
-	Timestamp.
+    Timestamp.
 
 
 
@@ -5438,20 +5436,20 @@ ticks_to_timestamp( Tick, State ) ->
 -spec get_textual_timings( wooper:state() ) -> ustring().
 get_textual_timings( State ) ->
 
-	CurrentTick = get_current_tick( State ),
+    CurrentTick = get_current_tick( State ),
 
-	{ {SimYear,SimMonth,SimDay}, {SimHour,SimMinute,SimSecond} } =
-		calendar:gregorian_seconds_to_datetime(
-			convert_ticks_to_rounded_seconds( CurrentTick, State ) ),
+    { {SimYear,SimMonth,SimDay}, {SimHour,SimMinute,SimSecond} } =
+        calendar:gregorian_seconds_to_datetime(
+            convert_ticks_to_rounded_seconds( CurrentTick, State ) ),
 
-	{ {RealYear,RealMonth,RealDay}, {RealHour,RealMinute,RealSecond} } =
-		{ date(), time() },
+    { {RealYear,RealMonth,RealDay}, {RealHour,RealMinute,RealSecond} } =
+        { date(), time() },
 
-	text_utils:format( "simulation time: "
-		"~B/~B/~B ~B:~2..0B:~2..0B (tick ~B), "
-		"real time: ~B/~B/~B ~B:~2..0B:~2..0B",
-		[ SimDay, SimMonth, SimYear, SimHour, SimMinute, SimSecond, CurrentTick,
-		  RealDay, RealMonth, RealYear, RealHour, RealMinute, RealSecond ] ).
+    text_utils:format( "simulation time: "
+        "~B/~B/~B ~B:~2..0B:~2..0B (tick ~B), "
+        "real time: ~B/~B/~B ~B:~2..0B:~2..0B",
+        [ SimDay, SimMonth, SimYear, SimHour, SimMinute, SimSecond, CurrentTick,
+          RealDay, RealMonth, RealYear, RealHour, RealMinute, RealSecond ] ).
 
 
 
@@ -5465,37 +5463,37 @@ compact textual description of the real and simulated time, for example to be
 used respectively in traces and on the console (through the tick tracker).
 """.
 -spec get_full_textual_timings( tick_offset(), diasca(), wooper:state() ) ->
-										{ ustring(), timing_info(), time() }.
+                                        { ustring(), timing_info(), time() }.
 get_full_textual_timings( TickOffset, Diasca, State ) ->
 
-	Tick = ?getAttr(initial_tick) + TickOffset,
+    Tick = ?getAttr(initial_tick) + TickOffset,
 
-	% gregorian_seconds_to_datetime/1 is probably quite expensive:
-	{ {SimYear,SimMonth,SimDay}, {SimHour,SimMinute,SimSecond} } =
-		calendar:gregorian_seconds_to_datetime(
-			convert_ticks_to_rounded_seconds( Tick, State ) ),
+    % gregorian_seconds_to_datetime/1 is probably quite expensive:
+    { {SimYear,SimMonth,SimDay}, {SimHour,SimMinute,SimSecond} } =
+        calendar:gregorian_seconds_to_datetime(
+            convert_ticks_to_rounded_seconds( Tick, State ) ),
 
-	{ RealDateString, RealTimeString, RealTime } = format_real_time_date(),
+    { RealDateStr, RealTimeStr, RealTime } = format_real_time_date(),
 
-	Detailed = text_utils:format( "simulation time: "
-		"~B/~B/~B ~B:~2..0B:~2..0B (tick ~B), real time: ~ts ~ts",
-		[ SimDay, SimMonth, SimYear, SimHour, SimMinute, SimSecond, Tick,
-		  RealDateString, RealTimeString ] ),
+    Detailed = text_utils:format( "simulation time: "
+        "~B/~B/~B ~B:~2..0B:~2..0B (tick ~B), real time: ~ts ~ts",
+        [ SimDay, SimMonth, SimYear, SimHour, SimMinute, SimSecond, Tick,
+          RealDateStr, RealTimeStr ] ),
 
-	SimDateString = text_utils:format( "~B/~B/~B",
-									   [ SimDay, SimMonth, SimYear ] ),
+    SimDateStr = text_utils:format( "~B/~B/~B",
+                                    [ SimDay, SimMonth, SimYear ] ),
 
-	SimTimeString = text_utils:format( "~B:~2..0B:~2..0B",
-									   [ SimHour, SimMinute, SimSecond ] ),
+    SimTimeStr = text_utils:format( "~B:~2..0B:~2..0B",
+                                    [ SimHour, SimMinute, SimSecond ] ),
 
 
-	% Invests as little as possible in string formatting, as anyway only one
-	% compact message ("exactly") will be displayed per second (on the console):
-	%
-	Compact = { SimDateString, SimTimeString, TickOffset, Diasca,
-				RealDateString, RealTimeString },
+    % Invests as little as possible in string formatting, as anyway only one
+    % compact message ("exactly") will be displayed per second (on the console):
+    %
+    Compact = { SimDateStr, SimTimeStr, TickOffset, Diasca,
+                RealDateStr, RealTimeStr },
 
-	{ Detailed, Compact, RealTime }.
+    { Detailed, Compact, RealTime }.
 
 
 
@@ -5503,15 +5501,15 @@ get_full_textual_timings( TickOffset, Diasca, State ) ->
 -spec format_real_time_date() -> { ustring(), ustring(), time() }.
 format_real_time_date() ->
 
-	{ RealYear, RealMonth, RealDay } = date(),
-	RealDateString = text_utils:format( "~B/~B/~B",
-										[ RealDay, RealMonth, RealYear ] ),
+    { RealYear, RealMonth, RealDay } = date(),
+    RealDateStr = text_utils:format( "~B/~B/~B",
+                                     [ RealDay, RealMonth, RealYear ] ),
 
-	{ RealHour, RealMinute, RealSecond } = Time = time(),
-	RealTimeString = text_utils:format( "~B:~2..0B:~2..0B",
-										[ RealHour, RealMinute, RealSecond ] ),
+    { RealHour, RealMinute, RealSecond } = Time = time(),
+    RealTimeStr = text_utils:format( "~B:~2..0B:~2..0B",
+                                     [ RealHour, RealMinute, RealSecond ] ),
 
-	{ RealDateString, RealTimeString, Time }.
+    { RealDateStr, RealTimeStr, Time }.
 
 
 
@@ -5535,10 +5533,10 @@ For example `TickCount = class_TimeManager:convert_seconds_to_ticks(_Secs=0.001,
 State)`.
 """.
 -spec convert_seconds_to_ticks( any_seconds(), wooper:state() ) ->
-										tick_offset().
+                                        tick_offset().
 convert_seconds_to_ticks( Seconds, State ) ->
-	convert_seconds_to_ticks( Seconds, ?default_max_relative_time_error,
-							  State ).
+    convert_seconds_to_ticks( Seconds, ?default_max_relative_time_error,
+                              State ).
 
 
 
@@ -5550,28 +5548,28 @@ specified maximum relative error.
 For example, to limit the relative error to 5%, `use MaxRelativeError=0.05`.
 """.
 -spec convert_seconds_to_ticks( any_seconds(), math_utils:percent(),
-								wooper:state() ) -> tick_offset().
+                                wooper:state() ) -> tick_offset().
 convert_seconds_to_ticks( Seconds, MaxRelativeError, State )
-										when Seconds >= 0 ->
+                                        when Seconds >= 0 ->
 
-	TickDuration = ?getAttr(simulation_tick_duration),
+    TickDuration = ?getAttr(simulation_tick_duration),
 
-	TickCount = erlang:round( Seconds / TickDuration ),
+    TickCount = erlang:round( Seconds / TickDuration ),
 
-	% Converts back to measure error:
-	CorrespondingSeconds = TickCount * TickDuration,
+    % Converts back to measure error:
+    CorrespondingSeconds = TickCount * TickDuration,
 
-	case math_utils:are_relatively_close( Seconds, CorrespondingSeconds,
-										  MaxRelativeError ) of
+    case math_utils:are_relatively_close( Seconds, CorrespondingSeconds,
+                                          MaxRelativeError ) of
 
-		true ->
-			TickCount;
+        true ->
+            TickCount;
 
-		false ->
-			throw( { too_inaccurate_duration_conversion, TickCount, Seconds,
-					 CorrespondingSeconds, TickDuration } )
+        false ->
+            throw( { too_inaccurate_duration_conversion, TickCount, Seconds,
+                     CorrespondingSeconds, TickDuration } )
 
-	end.
+    end.
 
 
 
@@ -5580,9 +5578,9 @@ Converts the specified tick count into a (floating-point) number of virtual
 seconds.
 """.
 -spec convert_ticks_to_rounded_seconds( tick_offset(), wooper:state() ) ->
-											seconds().
+                                            seconds().
 convert_ticks_to_rounded_seconds( Ticks, State ) ->
-	round( convert_ticks_to_seconds( Ticks, State ) ).
+    round( convert_ticks_to_seconds( Ticks, State ) ).
 
 
 
@@ -5593,7 +5591,7 @@ seconds.
 -spec convert_ticks_to_seconds( tick_offset(), wooper:state() ) ->
                                         virtual_seconds().
 convert_ticks_to_seconds( Ticks, State ) ->
-	Ticks * ?getAttr(simulation_tick_duration).
+    Ticks * ?getAttr(simulation_tick_duration).
 
 
 
@@ -5604,10 +5602,10 @@ milliseconds.
 Note: currently the most precise evaluation of simulated durations.
 """.
 -spec convert_ticks_to_milliseconds( tick(), wooper:state() ) ->
-										milliseconds().
+                                        milliseconds().
 convert_ticks_to_milliseconds( Ticks, State ) ->
-	% We want (integer) milliseconds:
-	erlang:round( Ticks * ?getAttr(simulation_tick_duration) * 1000 ).
+    % We want (integer) milliseconds:
+    erlang:round( Ticks * ?getAttr(simulation_tick_duration) * 1000 ).
 
 
 
@@ -5622,180 +5620,181 @@ Returns an updated state.
 -spec init( wooper:state() ) -> wooper:state().
 init( State ) ->
 
-	% Only first place when we are sure that the initialisation is over:
-	class_PluginManager:notify( on_case_initialisation_stop ),
+    % Only first place when we are sure that the initialisation is over:
+    class_PluginManager:notify( on_case_initialisation_stop ),
 
-	% Initial checkings:
-	?getAttr(started) andalso throw( simulation_already_started ),
+    % Initial checkings:
+    ?getAttr(started) andalso throw( simulation_already_started ),
 
-	wooper:check_all_undefined(
-		[ wallclock_tracker_pid, time_tracker_pid, watchdog_pid ], State ),
+    wooper:check_all_undefined(
+        [ wallclock_tracker_pid, time_tracker_pid, watchdog_pid ], State ),
 
-	% We must be the root time manager:
-	undefined = ?getAttr(parent_manager_pid),
+    % We must be the root time manager:
+    undefined = ?getAttr(parent_manager_pid),
 
-	% Let's take care of the watchdog now:
+    % Let's take care of the watchdog now:
 
-	WatchdogState = launch_watchdog( State ),
+    WatchdogState = launch_watchdog( State ),
 
-	InitialTimestamp = { _FirstTickOffset=0, _FirstDiasca=0 },
+    InitialTimestamp = { _FirstTickOffset=0, _FirstDiasca=0 },
 
-	{ StartedState, { time_manager_started, _Self } } = executeRequest(
-		WatchdogState, simulationStarted,
-		[ ?getAttr(initial_tick), InitialTimestamp ] ),
-
-
-	% stop_tick_offset left as is, might have been updated beforehand.
-	PostStartedState = setAttributes( StartedState, [
-		{ started, true },
-		{ initial_timestamp, time_utils:get_precise_timestamp() },
-
-		% Useless: { next_action, no_planned_action },
-
-		% No '{ overall_actor_count, 0 }', as actors may be created before
-		% simulation start.
-
-		{ scheduled_tracking, 0 },
-		{ diasca_count, 0 },
-		{ schedule_count, 0 },
-
-		% So that the check at the first scheduled tick/diasca does not fail in
-		% batch mode, and since, in simulation interactive mode, the timer main
-		% loop may send a timerTickFinished message even before the first
-		% beginTimeManagerTick is triggered (whereas it is the one setting the
-		% waited count at the first place):
-		%
-		{ waited_count, 0 } ] ),
+    { StartedState, { time_manager_started, _Self } } = executeRequest(
+        WatchdogState, simulationStarted,
+        [ ?getAttr(initial_tick), InitialTimestamp ] ),
 
 
-	StopString = case ?getAttr(stop_tick_offset) of
+    % stop_tick_offset left as is, might have been updated beforehand.
+    PostStartedState = setAttributes( StartedState, [
+        { started, true },
+        { initial_timestamp, time_utils:get_precise_timestamp() },
 
-		undefined ->
-			"Warning: no specific simulation duration (stop tick) "
-			"was specified.";
+        % Useless: { next_action, no_planned_action },
 
-		StopOffset when StopOffset =< 0 ->
-			throw( { unreachable_stop_tick_offset, StopOffset } );
+        % No '{ overall_actor_count, 0 }', as actors may be created before
+        % simulation start.
 
-		StopOffset ->
+        { scheduled_tracking, 0 },
+        { diasca_count, 0 },
+        { schedule_count, 0 },
 
-			AbsoluteStop = ?getAttr(initial_tick) + StopOffset,
-
-			Duration = convert_ticks_to_seconds( StopOffset, PostStartedState ),
-
-			% Expecting milliseconds:
-			TextDuration =
-				time_utils:duration_to_string( round( Duration * 1000 ) ),
-
-			text_utils:format( "Simulation will stop no later than tick ~B "
-				"(i.e. after ~B ticks, which is a duration of ~ts in virtual "
-				"time).", [ AbsoluteStop, StopOffset, TextDuration ] )
-
-	end,
-
-	TickDuration = ?getAttr(simulation_tick_duration),
-
-	% duration_to_string/1 expects milliseconds:
-	TickDurationString =
-		time_utils:duration_to_string( erlang:round( TickDuration * 1000 ) ),
-
-	% Duration not null:
-	Frequency = 1 / TickDuration,
-
-	% We must record current_tick_offset=InitialTick-1 for the engine, but we
-	% want the start outputs to show InitialTick instead:
-	%
-	Timings = get_textual_timings(
-		addToAttribute( PostStartedState, current_tick_offset, 1 ) ),
-
-	?notice_fmt( "Simulation started at ~ts with a simulation frequency "
-		"of approximately ~fHz (period of exactly ~ts). ~ts",
-		[ Timings, Frequency, TickDurationString, StopString ] ),
+        % So that the check at the first scheduled tick/diasca does not fail in
+        % batch mode, and since, in simulation interactive mode, the timer main
+        % loop may send a timerTickFinished message even before the first
+        % beginTimeManagerTick is triggered (whereas it is the one setting the
+        % waited count at the first place):
+        %
+        { waited_count, 0 } ] ),
 
 
-	% The load balancer is indeed a technical component, but it is an actor,
-	% thus counted as such.
-	%
-	?display_console( "Simulation started at ~ts with a simulation frequency "
-		"of approximately ~fHz (period of exactly ~ts). ~ts~n~n"
-		"Meaning of the console tracker columns:~n"
-		" - S: overall [S]imulation time (full time and date)~n"
-		" - T: overall simulation [T]ick (virtual time)~n"
-		" - D: overall simulation [D]iasca "
-		"(in-tick causality progress)~n"
-		" - R: [R]eal (wall-clock) time~n"
-		" - A: total (distributed) [A]ctor count~n"
-		" - S: actor [S]chedulings on last diasca "
-		"(spontaneous/triggered behaviours)~n"
-		" - P: total (distributed) [P]rocess count~n",
-		[ Timings, Frequency, TickDurationString, StopString ] ),
+    StopStr = case ?getAttr(stop_tick_offset) of
 
-	display_top_row(),
+        undefined ->
+            "Warning: no specific simulation duration (stop tick) "
+            "was specified.";
 
-	io:format( "| Simulation Time      | Tick Offset    | Diasca"
-			   " | Real Time           "
-			   " | Actor Count  | Schedulings  | Process Count  |~n" ),
+        StopOffset when StopOffset =< 0 ->
+            throw( { unreachable_stop_tick_offset, StopOffset } );
 
-	display_top_row_heavy(),
+        StopOffset ->
 
-	% Launching the wallclock and tick trackers:
+            AbsoluteStop = ?getAttr(initial_tick) + StopOffset,
 
-	WallclockTrackerState = launch_wallclock_tracker( PostStartedState ),
+            Duration = convert_ticks_to_seconds( StopOffset, PostStartedState ),
 
-	TimeTrackerState = launch_time_tracker( WallclockTrackerState ),
+            % Expecting milliseconds:
+            TextDuration =
+                time_utils:duration_to_string( round( Duration * 1000 ) ),
 
-	?debug( "Notifying result manager." ),
-	case ?getAttr(result_manager_pid) of
+            text_utils:format( "Simulation will stop no later than tick ~B "
+                "(i.e. after ~B ticks, which is a duration of ~ts in virtual "
+                "time).", [ AbsoluteStop, StopOffset, TextDuration ] )
 
-		undefined ->
-			throw( no_result_manager_declared );
+    end,
 
-		ResManPid ->
-			ResManPid ! onSimulationStart
+    TickDuration = ?getAttr(simulation_tick_duration),
 
-	end,
+    % duration_to_string/1 expects milliseconds:
+    TickDurationStr =
+        time_utils:duration_to_string( erlang:round( TickDuration * 1000 ) ),
 
-	?debug( "Notifying time listeners." ),
+    % Duration not null:
+    Frequency = 1 / TickDuration,
 
-	class_PluginManager:notify( on_simulation_start ),
+    % We must record current_tick_offset=InitialTick-1 for the engine, but we
+    % want the start outputs to show InitialTick instead:
+    %
+    Timings = get_textual_timings(
+        addToAttribute( PostStartedState, current_tick_offset, 1 ) ),
 
-	[ L ! simulation_started || L <- ?getAttr(simulation_listeners) ],
-
-	case ?getAttr(simulation_interactivity_mode) of
-
-		interactive ->
-
-			case ?getAttr(timer_pid) of
-
-				undefined ->
-					launch_timer( TimeTrackerState );
-
-				_TimerPid ->
-
-					?warning( "Start request ignored: "
-							  "simulation clock already running." ),
-					% State, not TimeTrackerState:
-					State
-
-			end;
+    ?notice_fmt( "Simulation started at ~ts with a simulation frequency "
+        "of approximately ~fHz (period of exactly ~ts). ~ts",
+        [ Timings, Frequency, TickDurationStr, StopStr ] ),
 
 
-		batch ->
+    % The load balancer is indeed a technical component, but it is an actor,
+    % thus counted as such.
+    %
+    trace_utils:info_fmt(
+        "Simulation started at ~ts with a simulation frequency "
+        "of approximately ~fHz (period of exactly ~ts). ~ts~n~n"
+        "Meaning of the console tracker columns:~n"
+        " - S: overall [S]imulation time (full time and date)~n"
+        " - T: overall simulation [T]ick (virtual time)~n"
+        " - D: overall simulation [D]iasca "
+        "(intra-tick causality progress)~n"
+        " - R: [R]eal (wall-clock) time~n"
+        " - A: total (distributed) [A]ctor count~n"
+        " - S: actor [S]chedulings on last diasca "
+        "(spontaneous/triggered behaviours)~n"
+        " - P: total (distributed) [P]rocess count~n",
+        [ Timings, Frequency, TickDurationStr, StopStr ] ),
 
-			?notify_by_speak( "Starting simulation clock in batch mode." ),
+    display_top_row(),
 
-			?notify_mute_fmt( "Starting simulation clock in batch "
-				"(non-interactive mode) at ~ts with a simulation frequency "
-				"of ~fHz (period of exactly ~ts).",
-				[ get_textual_timings( TimeTrackerState ), Frequency,
-				  TickDurationString ] ),
+    io:format( "| Simulation Time      | Tick Offset    | Diasca"
+               " | Real Time           "
+               " | Actor Count  | Schedulings  | Process Count  |~n" ),
 
-			% Sends the very first top:
-			self() ! { beginTimeManagerTick, _CurrentTickOffset=0 },
+    display_top_row_heavy(),
 
-			TimeTrackerState
+    % Launching the wallclock and tick trackers:
 
-	end.
+    WallclockTrackerState = launch_wallclock_tracker( PostStartedState ),
+
+    TimeTrackerState = launch_time_tracker( WallclockTrackerState ),
+
+    ?debug( "Notifying result manager." ),
+    case ?getAttr(result_manager_pid) of
+
+        undefined ->
+            throw( no_result_manager_declared );
+
+        ResManPid ->
+            ResManPid ! onSimulationStart
+
+    end,
+
+    ?debug( "Notifying time listeners." ),
+
+    class_PluginManager:notify( on_simulation_start ),
+
+    [ L ! simulation_started || L <- ?getAttr(simulation_listeners) ],
+
+    case ?getAttr(simulation_interactivity_mode) of
+
+        interactive ->
+
+            case ?getAttr(timer_pid) of
+
+                undefined ->
+                    launch_timer( TimeTrackerState );
+
+                _TimerPid ->
+
+                    ?warning( "Start request ignored: "
+                              "simulation clock already running." ),
+                    % State, not TimeTrackerState:
+                    State
+
+            end;
+
+
+        batch ->
+
+            ?notify_by_speak( "Starting simulation clock in batch mode." ),
+
+            ?notify_mute_fmt( "Starting simulation clock in batch "
+                "(non-interactive mode) at ~ts with a simulation frequency "
+                "of ~fHz (period of exactly ~ts).",
+                [ get_textual_timings( TimeTrackerState ), Frequency,
+                  TickDurationStr ] ),
+
+            % Sends the very first top:
+            self() ! { beginTimeManagerTick, _CurrentTickOffset=0 },
+
+            TimeTrackerState
+
+    end.
 
 
 
@@ -5815,87 +5814,87 @@ simulation just starts), but later we could imagine that a time manager could
 join the simulation dynamically (i.e. whereas it is already running).
 """.
 -spec simulationStarted( wooper:state(), tick(), logical_timestamp() ) ->
-			request_return( { 'time_manager_started', time_manager_pid() } ).
+            request_return( { 'time_manager_started', time_manager_pid() } ).
 simulationStarted( State, SimulationInitialTick,
-				   InitialTimestamp={ InitialTick, InitialDiasca } ) ->
+                   InitialTimestamp={ InitialTick, InitialDiasca } ) ->
 
-	?notice_fmt( "Time manager to start simulation at tick offset #~B "
-		"diasca ~B, defined relatively to its initial tick, which was ~B.",
-		[ InitialTick, InitialDiasca, SimulationInitialTick ] ),
+    ?notice_fmt( "Time manager to start simulation at tick offset #~B "
+        "diasca ~B, defined relatively to its initial tick, which was ~B.",
+        [ InitialTick, InitialDiasca, SimulationInitialTick ] ),
 
-	% Will be sent to the child managers then to all local actors:
-	% (expressed as a oneway call)
-	%
-	StartMessage = { simulationStarted,
-					[ SimulationInitialTick, InitialTimestamp ], self() },
+    % Will be sent to the child managers then to all local actors:
+    % (expressed as a oneway call)
+    %
+    StartMessage = { simulationStarted,
+                    [ SimulationInitialTick, InitialTimestamp ], self() },
 
-	?debug( "Notifying all child managers that the simulation starts." ),
+    ?debug( "Notifying all child managers that the simulation starts." ),
 
-	ChildManagers = ?getAttr(child_managers),
+    ChildManagers = ?getAttr(child_managers),
 
-	basic_utils:send_to_pid_set( StartMessage, ChildManagers ),
+    basic_utils:send_to_pid_set( StartMessage, ChildManagers ),
 
-	InitialActors = ?getAttr(known_local_actors),
+    InitialActors = ?getAttr(known_local_actors),
 
-	?debug_fmt( "Notifying, based on chunks, all ~B initial actors "
-		"that the simulation starts.", [ set_utils:size( InitialActors ) ] ),
+    ?debug_fmt( "Notifying, based on chunks, all ~B initial actors "
+        "that the simulation starts.", [ set_utils:size( InitialActors ) ] ),
 
-	% We shall break larger lists into chunks, otherwise the select receive used
-	% for the waiting of acknowlegments will be awfully long:
-	%
-	ActorCount = start_actors_by_chunks( InitialActors, StartMessage ),
+    % We shall break larger lists into chunks, otherwise the select receive used
+    % for the waiting of acknowlegments will be awfully long:
+    %
+    ActorCount = start_actors_by_chunks( InitialActors, StartMessage ),
 
-	?debug_fmt( "All ~B actors start acknowledgements received.",
-				[ ActorCount ] ),
+    ?debug_fmt( "All ~B actors start acknowledgements received.",
+                [ ActorCount ] ),
 
-	% To avoid a potential race condition:
+    % To avoid a potential race condition:
 
-	case set_utils:is_empty( ChildManagers ) of
+    case set_utils:is_empty( ChildManagers ) of
 
-		true ->
-			?debug( "No start acknowledgement from child manager "
-					"to be waited." );
+        true ->
+            ?debug( "No start acknowledgement from child manager "
+                    "to be waited." );
 
-		false ->
-			?debug_fmt( "Waiting for the start acknowledgements of the ~B child"
-						" managers.", [ set_utils:size( ChildManagers ) ] ),
+        false ->
+            ?debug_fmt( "Waiting for the start acknowledgements of the ~B child"
+                        " managers.", [ set_utils:size( ChildManagers ) ] ),
 
-			% We could imagine a large number of managers as well:
-			wait_for_start_acknowlegments( time_manager_started, ChildManagers )
+            % We could imagine a large number of managers as well:
+            wait_for_start_acknowlegments( time_manager_started, ChildManagers )
 
-	end,
+    end,
 
-	?debug( "At this level the simulation is now ready to start." ),
+    ?debug( "At this level the simulation is now ready to start." ),
 
-	EmptySet = set_utils:new(),
+    EmptySet = set_utils:new(),
 
-	% Should already be set here: known_local_actors, spontaneous_agenda:
-	StartedState = setAttributes( State, [
-		{ started, true },
-		{ actors_to_trigger_in_one_diasca, EmptySet },
-		{ actors_to_trigger_in_two_diascas, EmptySet },
-		{ terminating_actors, [] },
-		{ terminated_actors, [] },
-		{ waited_child_managers, EmptySet },
-		{ waited_spontaneous_actors, EmptySet },
-		{ waited_triggered_actors, EmptySet },
-		{ initial_tick, SimulationInitialTick },
+    % Should already be set here: known_local_actors, spontaneous_agenda:
+    StartedState = setAttributes( State, [
+        { started, true },
+        { actors_to_trigger_in_one_diasca, EmptySet },
+        { actors_to_trigger_in_two_diascas, EmptySet },
+        { terminating_actors, [] },
+        { terminated_actors, [] },
+        { waited_child_managers, EmptySet },
+        { waited_spontaneous_actors, EmptySet },
+        { waited_triggered_actors, EmptySet },
+        { initial_tick, SimulationInitialTick },
 
-		% Next action is to begin a new tick at InitialTick, this means the
-		% current tick is the one just before:
+        % Next action is to begin a new tick at InitialTick, this means the
+        % current tick is the one just before:
 
-		% (otherwise checkings will fail):
-		{ current_tick_offset, InitialTick-1 },
+        % (otherwise checkings will fail):
+        { current_tick_offset, InitialTick-1 },
 
-		% We also need a valid diasca:
-		{ current_diasca, InitialDiasca },
+        % We also need a valid diasca:
+        { current_diasca, InitialDiasca },
 
-		{ scheduled_tracking, 0 },
-		{ diasca_count, 0 },
-		{ schedule_count, 0 } ] ),
+        { scheduled_tracking, 0 },
+        { diasca_count, 0 },
+        { schedule_count, 0 } ] ),
 
-	wooper:return_state_result( StartedState,
-								{ time_manager_started, self() } ).
+    wooper:return_state_result( StartedState,
+                                { time_manager_started, self() } ).
 
 
 
@@ -5914,64 +5913,64 @@ expensive) computations.
 Returns the count of started actors.
 """.
 -spec start_actors_by_chunks( set( actor_pid() ),
-							  basic_utils:message() ) -> actor_count().
+                              basic_utils:message() ) -> actor_count().
 start_actors_by_chunks( InitialActors, StartMessage ) ->
 
-	ExpectedCount = set_utils:size( InitialActors ),
+    ExpectedCount = set_utils:size( InitialActors ),
 
-	?display_console( "Starting ~B actors by chunks of ~B.",
-					  [ ExpectedCount, ?chunk_size ] ),
+    ?display_console( "Starting ~B actors by chunks of ~B.",
+                      [ ExpectedCount, ?chunk_size ] ),
 
-	Iterator = set_utils:iterator( InitialActors ),
+    Iterator = set_utils:iterator( InitialActors ),
 
-	WaitedSet = set_utils:new(),
+    WaitedSet = set_utils:new(),
 
-	% Yes, we *must* use next/1 even to get the first element (which is thus not
-	% ditched here) of the set:
-	%
-	FinalCount = start_actors_by_chunks( set_utils:next( Iterator ), WaitedSet,
-		_WaitedCount=0, StartMessage, _TotalCount=0 ),
+    % Yes, we *must* use next/1 even to get the first element (which is thus not
+    % ditched here) of the set:
+    %
+    FinalCount = start_actors_by_chunks( set_utils:next( Iterator ), WaitedSet,
+        _WaitedCount=0, StartMessage, _TotalCount=0 ),
 
-	% Checking:
-	ExpectedCount = FinalCount,
+    % Checking:
+    ExpectedCount = FinalCount,
 
-	FinalCount.
+    FinalCount.
 
 
 
 % (helper)
 -spec start_actors_by_chunks( set_utils:iterator(), set( actor_pid() ),
-		actor_count(), basic_utils:message(), actor_count() ) -> actor_count().
+        actor_count(), basic_utils:message(), actor_count() ) -> actor_count().
 % Finished, end of actor list reached:
 start_actors_by_chunks( _InitialActorsIterator=none, WaitedSet, _WaitedCount,
-						_StartMessage, TotalCount ) ->
-	wait_for_start_acknowlegments( actor_started, WaitedSet ),
-	TotalCount;
+                        _StartMessage, TotalCount ) ->
+    wait_for_start_acknowlegments( actor_started, WaitedSet ),
+    TotalCount;
 
 
 % End of chunk reached (not wanting to wait for too many actors at once):
 start_actors_by_chunks( InitialActorsIterator, WaitedSet,
-		_MaxWaitedCount=?chunk_size, StartMessage, TotalCount ) ->
+        _MaxWaitedCount=?chunk_size, StartMessage, TotalCount ) ->
 
-	wait_for_start_acknowlegments( actor_started, WaitedSet ),
+    wait_for_start_acknowlegments( actor_started, WaitedSet ),
 
-	NewWaitedSet = set_utils:new(),
+    NewWaitedSet = set_utils:new(),
 
-	% Then continue with the next chunk:
-	start_actors_by_chunks( InitialActorsIterator, NewWaitedSet,
-							_NewWaitedCount=0, StartMessage, TotalCount ) ;
+    % Then continue with the next chunk:
+    start_actors_by_chunks( InitialActorsIterator, NewWaitedSet,
+                            _NewWaitedCount=0, StartMessage, TotalCount ) ;
 
 
 % Still in chunk:
 start_actors_by_chunks( _InitialActorsIterator={ ActorPid, NewIterator },
-						WaitedSet, WaitedCount, StartMessage, TotalCount ) ->
+                        WaitedSet, WaitedCount, StartMessage, TotalCount ) ->
 
-	ActorPid ! StartMessage,
+    ActorPid ! StartMessage,
 
-	NewWaitedSet = set_utils:add( ActorPid, WaitedSet ),
+    NewWaitedSet = set_utils:add( ActorPid, WaitedSet ),
 
-	start_actors_by_chunks( set_utils:next( NewIterator ), NewWaitedSet,
-							WaitedCount+1, StartMessage, TotalCount+1 ).
+    start_actors_by_chunks( set_utils:next( NewIterator ), NewWaitedSet,
+                            WaitedCount+1, StartMessage, TotalCount+1 ).
 
 
 
@@ -5981,57 +5980,57 @@ start_actors_by_chunks( _InitialActorsIterator={ ActorPid, NewIterator },
 %
 wait_for_start_acknowlegments( WaitedType, WaitedList ) ->
 
-	?display_console( "Waiting for start acknowlegments for ~B processes of "
-		"type ~p.", [ set_utils:size( WaitedList ), WaitedType ] ),
+    ?display_console( "Waiting for start acknowlegments for ~B processes of "
+        "type ~p.", [ set_utils:size( WaitedList ), WaitedType ] ),
 
-	set_utils:is_empty( WaitedList ) orelse
-		receive
+    set_utils:is_empty( WaitedList ) orelse
+        receive
 
-			{ wooper_result, { WaitedType, Pid } } ->
-				DelList = set_utils:delete_existing( Pid, WaitedList ),
-				wait_for_start_acknowlegments( WaitedType, DelList )
+            { wooper_result, { WaitedType, Pid } } ->
+                DelList = set_utils:delete_existing( Pid, WaitedList ),
+                wait_for_start_acknowlegments( WaitedType, DelList )
 
-		end.
+        end.
 
 
 
 -doc "Returns the minimum of the two specified maybe-simulation timestamps.".
 -spec min_timestamp( option( logical_timestamp() ),
-			option( logical_timestamp() ) ) -> option( logical_timestamp() ).
+            option( logical_timestamp() ) ) -> option( logical_timestamp() ).
 min_timestamp( _First=undefined, Second ) ->
-	Second;
+    Second;
 
 min_timestamp( First, _Second=undefined ) ->
-	First;
+    First;
 
 min_timestamp( First={ F1, _ }, _Second={ S1, _} ) when F1 < S1 ->
-	First;
+    First;
 
 min_timestamp( First={ F1, F2 }, _Second={ _S1=F1, S2 } ) when F2 < S2 ->
-	First;
+    First;
 
 min_timestamp( _First, Second ) ->
-	Second.
+    Second.
 
 
 
 -doc "Returns the maximum of the two specified maybe-simulation timestamps.".
 -spec max_timestamp( option( logical_timestamp() ),
-			option( logical_timestamp() ) ) -> option( logical_timestamp() ).
+            option( logical_timestamp() ) ) -> option( logical_timestamp() ).
 max_timestamp( _First=undefined, Second ) ->
-	Second;
+    Second;
 
 max_timestamp( First, _Second=undefined ) ->
-	First;
+    First;
 
 max_timestamp( _First={ F1, _ }, Second={ S1, _} ) when F1 < S1 ->
-	Second;
+    Second;
 
 max_timestamp( _First={ F1, F2 }, Second={ _S1=F1, S2 } ) when F2 < S2 ->
-	Second;
+    Second;
 
 max_timestamp( First, _Second ) ->
-	First.
+    First.
 
 
 
@@ -6042,39 +6041,39 @@ Tries to be parallel.
 """.
 stop_child_managers( State ) ->
 
-	ChildManagers = ?getAttr(child_managers),
+    ChildManagers = ?getAttr(child_managers),
 
-	basic_utils:send_to_pid_set( { stop, [], self() }, ChildManagers ),
+    basic_utils:send_to_pid_set( { stop, [], self() }, ChildManagers ),
 
-	wait_stop_of_child_managers( ChildManagers, State ).
+    wait_stop_of_child_managers( ChildManagers, State ).
 
 
 
 -doc "Waits for all child managers to stop.".
 wait_stop_of_child_managers( ChildManagers, State ) ->
 
-	set_utils:is_empty( ChildManagers ) orelse
-		begin
-			WaitDuration = get_maximum_teardown_duration(),
+    set_utils:is_empty( ChildManagers ) orelse
+        begin
+            WaitDuration = get_maximum_teardown_duration(),
 
-			receive
+            receive
 
-				{ wooper_result, { stopped, ManagerPid } } ->
+                { wooper_result, { stopped, ManagerPid } } ->
 
-					RemainingManagers =
-						set_utils:delete_existing( ManagerPid, ChildManagers ),
+                    RemainingManagers =
+                        set_utils:delete_existing( ManagerPid, ChildManagers ),
 
-					wait_stop_of_child_managers( RemainingManagers, State )
+                    wait_stop_of_child_managers( RemainingManagers, State )
 
-			after WaitDuration ->
+            after WaitDuration ->
 
-				?error_fmt( "Following child time managers failed to report "
-					"on time (after ~B milliseconds) that they stopped: ~p.",
-					[ WaitDuration, set_utils:to_list( ChildManagers ) ] )
+                ?error_fmt( "Following child time managers failed to report "
+                    "on time (after ~B milliseconds) that they stopped: ~p.",
+                    [ WaitDuration, set_utils:to_list( ChildManagers ) ] )
 
-			end
+            end
 
-		end.
+        end.
 
 
 
@@ -6084,48 +6083,48 @@ this time manager.
 """.
 flush_scheduling_messages() ->
 
-	receive
+    receive
 
-		{ beginTimeManagerTick, _TickOffset } ->
-			flush_scheduling_messages();
+        { beginTimeManagerTick, _TickOffset } ->
+            flush_scheduling_messages();
 
-		{ beginTimeManagerDiasca, [ _TickOffset, _Diasca ] } ->
-			flush_scheduling_messages()
+        { beginTimeManagerDiasca, [ _TickOffset, _Diasca ] } ->
+            flush_scheduling_messages()
 
-	after 0 ->
-		ok
+    after 0 ->
+        ok
 
-	end.
+    end.
 
 
 
 -doc "Detects and takes care of any end of diasca.".
 manage_possible_end_of_diasca( State ) ->
 
-	case is_current_diasca_over( State ) of
+    case is_current_diasca_over( State ) of
 
-		true ->
-			case ?getAttr(parent_manager_pid) of
+        true ->
+            case ?getAttr(parent_manager_pid) of
 
-				undefined ->
-					% We are the root time manager here:
-					manage_end_of_diasca_as_root_manager( State );
-
-
-				_ParentManagerPid ->
-					manage_end_of_diasca_as_child_manager( State )
-
-			end;
+                undefined ->
+                    % We are the root time manager here:
+                    manage_end_of_diasca_as_root_manager( State );
 
 
-		false ->
-			% Nothing to do (diasca not finished), still having to wait:
-			?display_console( "Time manager ~w still having to wait.",
-							  [ self() ] ),
+                _ParentManagerPid ->
+                    manage_end_of_diasca_as_child_manager( State )
 
-			State
+            end;
 
-	end.
+
+        false ->
+            % Nothing to do (diasca not finished), still having to wait:
+            ?display_console( "Time manager ~w still having to wait.",
+                              [ self() ] ),
+
+            State
+
+    end.
 
 
 
@@ -6135,110 +6134,110 @@ a new diasca or a new tick.
 """.
 manage_end_of_diasca_as_root_manager( State ) ->
 
-	CurrentTickOffset = ?getAttr(current_tick_offset),
+    CurrentTickOffset = ?getAttr(current_tick_offset),
 
-	CurrentDiasca = ?getAttr(current_diasca),
+    CurrentDiasca = ?getAttr(current_diasca),
 
-	% We insert here the resilience preparation as, if it was implemented among
-	% the inter-diasca listeners above, it would be done on parallel with the
-	% others, hence on a system whose state is still changing.
-	%
-	ResilienceState =
-		manage_resilience( CurrentTickOffset, CurrentDiasca, State ),
+    % We insert here the resilience preparation as, if it was implemented among
+    % the inter-diasca listeners above, it would be done on parallel with the
+    % others, hence on a system whose state is still changing.
+    %
+    ResilienceState =
+        manage_resilience( CurrentTickOffset, CurrentDiasca, State ),
 
-	% Moved after the resilience action, so that a rollback can restart more
-	% easily:
-	%
-	InterState = manage_inter_diasca( ResilienceState ),
+    % Moved after the resilience action, so that a rollback can restart more
+    % easily:
+    %
+    InterState = manage_inter_diasca( ResilienceState ),
 
-	SuspendState = manage_suspension( CurrentTickOffset, InterState ),
+    SuspendState = manage_suspension( CurrentTickOffset, InterState ),
 
-	% Either we have a new diasca to plan, or this tick is finished for good and
-	% we can go to the next:
-	%
-	case ?getAttr(next_action) of
+    % Either we have a new diasca to plan, or this tick is finished for good and
+    % we can go to the next:
+    %
+    case ?getAttr(next_action) of
 
-		new_diasca_needed ->
+        new_diasca_needed ->
 
-			% Next diasca to be scheduled, regardless of the simulation
-			% interactivity mode:
-			%
-			% (a message is sent to ensure tail-recursiveness)
-			%
-			NewDiasca = CurrentDiasca + 1,
+            % Next diasca to be scheduled, regardless of the simulation
+            % interactivity mode:
+            %
+            % (a message is sent to ensure tail-recursiveness)
+            %
+            NewDiasca = CurrentDiasca + 1,
 
-			?display_console( "Root time manager creates a new diasca, "
-							  "{~B,~B}.", [ CurrentTickOffset, NewDiasca ] ),
+            ?display_console( "Root time manager creates a new diasca, "
+                              "{~B,~B}.", [ CurrentTickOffset, NewDiasca ] ),
 
-			self() !
-				{ beginTimeManagerDiasca, [ CurrentTickOffset, NewDiasca ] },
+            self() !
+                { beginTimeManagerDiasca, [ CurrentTickOffset, NewDiasca ] },
 
-			SuspendState;
-
-
-		no_planned_action ->
-
-			?display_console(
-				"Root time manager does not have a planned action.", [] ),
-
-			% We may have to jump to next tick then:
-			case ?getAttr(spontaneous_agenda) of
+            SuspendState;
 
 
-				[] ->
-					% Even locally, no next event, time to stop:
-					?notice_fmt( "At the global level, there is no actor to "
-						"trigger anymore after this diasca (~B) nor spontaneous"
-						" action recorded after this tick (offset #~B), "
-						"therefore no future event could possibly occur. "
-						"Stopping thus now the whole simulation.",
-						[ ?getAttr(current_diasca), CurrentTickOffset ] ),
+        no_planned_action ->
 
-					on_simulation_success( SuspendState ),
+            ?display_console(
+                "Root time manager does not have a planned action.", [] ),
 
-					% However there could be actors terminating, stop will
-					% manage them:
-					%
-					% (we cannot use the stop/1 request on ourselves, as the
-					% result would itself be interpreted as a call)
-					%
-					self() ! selfStop,
-
-					SuspendState;
+            % We may have to jump to next tick then:
+            case ?getAttr(spontaneous_agenda) of
 
 
-				[ { NextOverallTick, _ActorSet } | _T ] ->
-					% New state returned:
-					schedule_new_tick( NextOverallTick, SuspendState )
+                [] ->
+                    % Even locally, no next event, time to stop:
+                    ?notice_fmt( "At the global level, there is no actor to "
+                        "trigger anymore after this diasca (~B) nor spontaneous"
+                        " action recorded after this tick (offset #~B), "
+                        "therefore no future event could possibly occur. "
+                        "Stopping thus now the whole simulation.",
+                        [ ?getAttr(current_diasca), CurrentTickOffset ] ),
 
-			end;
+                    on_simulation_success( SuspendState ),
+
+                    % However there could be actors terminating, stop will
+                    % manage them:
+                    %
+                    % (we cannot use the stop/1 request on ourselves, as the
+                    % result would itself be interpreted as a call)
+                    %
+                    self() ! selfStop,
+
+                    SuspendState;
 
 
-		% Useless guard:
-		TickOffset when TickOffset > CurrentTickOffset ->
+                [ { NextOverallTick, _ActorSet } | _T ] ->
+                    % New state returned:
+                    schedule_new_tick( NextOverallTick, SuspendState )
 
-			?display_console( "Root time manager selecting next "
-							  "scheduling.", [] ),
+            end;
 
-			% As the end of diasca of local actors does not update the next
-			% local action, let's take it into account now:
-			%
-			SoonestTickOffset = case ?getAttr(spontaneous_agenda) of
 
-				[ { FirstAgendaTick, _ActorSet } | _T ]
-							when FirstAgendaTick < TickOffset ->
-					FirstAgendaTick;
+        % Useless guard:
+        TickOffset when TickOffset > CurrentTickOffset ->
 
-				% Either [] or the first agenda tick is in the future:
-				_ ->
-					TickOffset
+            ?display_console( "Root time manager selecting next "
+                              "scheduling.", [] ),
 
-			end,
+            % As the end of diasca of local actors does not update the next
+            % local action, let's take it into account now:
+            %
+            SoonestTickOffset = case ?getAttr(spontaneous_agenda) of
 
-			% Simple jump, new state returned:
-			schedule_new_tick( SoonestTickOffset, SuspendState )
+                [ { FirstAgendaTick, _ActorSet } | _T ]
+                            when FirstAgendaTick < TickOffset ->
+                    FirstAgendaTick;
 
-	end.
+                % Either [] or the first agenda tick is in the future:
+                _ ->
+                    TickOffset
+
+            end,
+
+            % Simple jump, new state returned:
+            schedule_new_tick( SoonestTickOffset, SuspendState )
+
+    end.
 
 
 
@@ -6247,31 +6246,31 @@ manage_end_of_diasca_as_root_manager( State ) ->
                                             wooper:state().
 schedule_new_tick( NextTickOffset, State ) ->
 
-	case ?getAttr(simulation_interactivity_mode) of
+    case ?getAttr(simulation_interactivity_mode) of
 
-		interactive ->
+        interactive ->
 
-			% Do nothing if in simulation interactive mode (as we will be
-			% triggered by the timer, with a timerTickFinished call), except
-			% resetting the safeguard against multi-tick scheduling:
-			%
-			% (next tick will be the incremented current one)
-			%
-			true = ?getAttr(interactive_tick_triggered),
-			setAttribute( State, interactive_tick_triggered, false );
+            % Do nothing if in simulation interactive mode (as we will be
+            % triggered by the timer, with a timerTickFinished call), except
+            % resetting the safeguard against multi-tick scheduling:
+            %
+            % (next tick will be the incremented current one)
+            %
+            true = ?getAttr(interactive_tick_triggered),
+            setAttribute( State, interactive_tick_triggered, false );
 
 
-		batch ->
+        batch ->
 
-			?display_console( "Root time Manager ~w at tick offset #~B "
-				"determined that the next tick should be #~p.",
-				[ self(), ?getAttr(current_tick_offset), NextTickOffset ] ),
+            ?display_console( "Root time Manager ~w at tick offset #~B "
+                "determined that the next tick should be #~p.",
+                [ self(), ?getAttr(current_tick_offset), NextTickOffset ] ),
 
-			% A message is sent to ensure tail-recursiveness:
-			self() ! { beginTimeManagerTick, NextTickOffset },
-			State
+            % A message is sent to ensure tail-recursiveness:
+            self() ! { beginTimeManagerTick, NextTickOffset },
+            State
 
-	end.
+    end.
 
 
 
@@ -6283,80 +6282,80 @@ Manages a possible end of diasca, when being a local, non-root time
                                                 wooper:state().
 manage_end_of_diasca_as_child_manager( State ) ->
 
-	Agenda = ?getAttr(spontaneous_agenda),
+    Agenda = ?getAttr(spontaneous_agenda),
 
-	% We have to update the next action with the information from the agenda:
-	UpdatedNextAction = case ?getAttr(next_action) of
+    % We have to update the next action with the information from the agenda:
+    UpdatedNextAction = case ?getAttr(next_action) of
 
-		new_diasca_needed ->
-			% Cannot be beaten:
-			new_diasca_needed;
+        new_diasca_needed ->
+            % Cannot be beaten:
+            new_diasca_needed;
 
-		% We might have merged the two cases below (based on the Erlang term
-		% ordering between integers and atoms), but it would have been a lot
-		% less clear:
-		%
-		no_planned_action ->
-			case Agenda of
+        % We might have merged the two cases below (based on the Erlang term
+        % ordering between integers and atoms), but it would have been a lot
+        % less clear:
+        %
+        no_planned_action ->
+            case Agenda of
 
-				[] ->
-					no_planned_action;
+                [] ->
+                    no_planned_action;
 
-				[ { SoonestAgendaTickOffset, _ActorSet } | _T ] ->
-					SoonestAgendaTickOffset
+                [ { SoonestAgendaTickOffset, _ActorSet } | _T ] ->
+                    SoonestAgendaTickOffset
 
-			end;
+            end;
 
-		TickOffset ->
-			case Agenda of
+        TickOffset ->
+            case Agenda of
 
-				[] ->
-					TickOffset;
+                [] ->
+                    TickOffset;
 
-				[ { SoonestAgendaTickOffset, _ActorSet } | _T ]
-								when SoonestAgendaTickOffset < TickOffset ->
-					SoonestAgendaTickOffset;
+                [ { SoonestAgendaTickOffset, _ActorSet } | _T ]
+                                when SoonestAgendaTickOffset < TickOffset ->
+                    SoonestAgendaTickOffset;
 
-				_ ->
-					% Here we expect SoonestAgendaTickOffset >= TickOffset:
-					TickOffset
+                _ ->
+                    % Here we expect SoonestAgendaTickOffset >= TickOffset:
+                    TickOffset
 
-			end
+            end
 
-	end,
+    end,
 
-	?display_console(
-		"Child time manager reporting end of diasca ~B for tick offset #~B, "
-		"next action in subtree is ~p.",
-		[ ?getAttr(current_diasca), ?getAttr(current_tick_offset),
-		  UpdatedNextAction ] ),
+    ?display_console(
+        "Child time manager reporting end of diasca ~B for tick offset #~B, "
+        "next action in subtree is ~p.",
+        [ ?getAttr(current_diasca), ?getAttr(current_tick_offset),
+          UpdatedNextAction ] ),
 
-	ParentManagerPid = ?getAttr(parent_manager_pid),
+    ParentManagerPid = ?getAttr(parent_manager_pid),
 
-	% We are a child time manager, we just report the end of diasca for this
-	% subtree:
-	%
-	case ?getAttr(current_diasca) of
+    % We are a child time manager, we just report the end of diasca for this
+    % subtree:
+    %
+    case ?getAttr(current_diasca) of
 
-		0 ->
-			% We have to declare an end of tick here:
-			ParentManagerPid ! { notifySpontaneousSubtreeCompletion,
-				[ ?getAttr(current_tick_offset), self(), UpdatedNextAction,
-				  _TrackingInfo={ ?getAttr(scheduled_tracking),
-								  ?getAttr(process_tracking) } ] };
+        0 ->
+            % We have to declare an end of tick here:
+            ParentManagerPid ! { notifySpontaneousSubtreeCompletion,
+                [ ?getAttr(current_tick_offset), self(), UpdatedNextAction,
+                  _TrackingInfo={ ?getAttr(scheduled_tracking),
+                                  ?getAttr(process_tracking) } ] };
 
-		CurrentDiasca ->
-			% We have to declare an end of tick here:
-			ParentManagerPid ! { notifyTriggerSubtreeCompletion,
-				[ ?getAttr(current_tick_offset), CurrentDiasca, self(),
-				  UpdatedNextAction,
-				  _TrackingInfo={ ?getAttr(scheduled_tracking),
-								  ?getAttr(process_tracking) } ] }
+        CurrentDiasca ->
+            % We have to declare an end of tick here:
+            ParentManagerPid ! { notifyTriggerSubtreeCompletion,
+                [ ?getAttr(current_tick_offset), CurrentDiasca, self(),
+                  UpdatedNextAction,
+                  _TrackingInfo={ ?getAttr(scheduled_tracking),
+                                  ?getAttr(process_tracking) } ] }
 
-	end,
+    end,
 
-	% No need to update next_action.
-	State.
+    % No need to update next_action.
+    State.
 
 
 
@@ -6364,25 +6363,25 @@ manage_end_of_diasca_as_child_manager( State ) ->
 -spec manage_inter_diasca( wooper:state() ) -> wooper:state().
 manage_inter_diasca( State ) ->
 
-	% We are the root time manager, deciding what to do next once having taken
-	% care of inter-diasca listeners (if any):
-	%
-	InterDiascaListeners = ?getAttr(interdiasca_listeners),
+    % We are the root time manager, deciding what to do next once having taken
+    % care of inter-diasca listeners (if any):
+    %
+    InterDiascaListeners = ?getAttr(interdiasca_listeners),
 
-	% This is the first time we know the current diasca is over; we need to
-	% notify any inter-diasca listener (typically the root data-exchanger) as
-	% soon as possible:
-	%
-	InterDiascaMessage = { onInterDiascaBegin, [], self() },
+    % This is the first time we know the current diasca is over; we need to
+    % notify any inter-diasca listener (typically the root data-exchanger) as
+    % soon as possible:
+    %
+    InterDiascaMessage = { onInterDiascaBegin, [], self() },
 
-	[ L ! InterDiascaMessage || L <- InterDiascaListeners ],
+    [ L ! InterDiascaMessage || L <- InterDiascaListeners ],
 
-	% Note: these requests are processed in parallel.
+    % Note: these requests are processed in parallel.
 
-	basic_utils:wait_for( _Msg={ wooper_result, interdiasca_ended },
-						  _MsgCount=length( InterDiascaListeners ) ),
+    basic_utils:wait_for( _Msg={ wooper_result, interdiasca_ended },
+                          _MsgCount=length( InterDiascaListeners ) ),
 
-	setAttribute( State, interdiasca_listeners, [] ).
+    setAttribute( State, interdiasca_listeners, [] ).
 
 
 
@@ -6394,33 +6393,33 @@ stable and will not change until this function did its work.
                                             wooper:state().
 manage_resilience( CurrentTickOffset, CurrentDiasca, State ) ->
 
-	% Note: see the resilience manager to better understand the message
-	% exchange.
+    % Note: see the resilience manager to better understand the message
+    % exchange.
 
-	% We are the root time manager here and the whole simulation is
-	% frozen. Let's act quickly!
-	%
-	case ?getAttr(serialisation_requested) of
+    % We are the root time manager here and the whole simulation is
+    % frozen. Let's act quickly!
+    %
+    case ?getAttr(serialisation_requested) of
 
-		false ->
-			State;
+        false ->
+            State;
 
-		true ->
-			% We are just out of the latency-based critical path:
+        true ->
+            % We are just out of the latency-based critical path:
 
-			% We do not want longer serialisations to trigger spurious
-			% simulation stalls:
-			%
-			?getAttr(watchdog_pid) ! suspendWatchdog,
+            % We do not want longer serialisations to trigger spurious
+            % simulation stalls:
+            %
+            ?getAttr(watchdog_pid) ! suspendWatchdog,
 
-			?getAttr(resilience_manager_pid) ! { triggerSerialisation,
-						[ CurrentTickOffset, CurrentDiasca ], self() },
+            ?getAttr(resilience_manager_pid) ! { triggerSerialisation,
+                        [ CurrentTickOffset, CurrentDiasca ], self() },
 
-			% Will resume the watchdog:
-			wait_for_serialisation_end( _ActorsRequested=false,
-										_Serialised=false, State )
+            % Will resume the watchdog:
+            wait_for_serialisation_end( _ActorsRequested=false,
+                                        _Serialised=false, State )
 
-	end.
+    end.
 
 
 
@@ -6429,61 +6428,61 @@ manage_resilience( CurrentTickOffset, CurrentDiasca, State ) ->
                                             wooper:state().
 wait_for_serialisation_end( _ActorsReturned=true, _Serialised=true, State ) ->
 
-	% Just having to wait passively then:
-	?display_console( "Waiting for serialisation_done.", [] ),
+    % Just having to wait passively then:
+    ?display_console( "Waiting for serialisation_done.", [] ),
 
-	receive
+    receive
 
-		{ wooper_result, serialisation_done } ->
+        { wooper_result, serialisation_done } ->
 
-			?display_console( "Serialisation over, resuming simulation.", [] ),
+            ?display_console( "Serialisation over, resuming simulation.", [] ),
 
-			% Simulation to continue now:
-			?getAttr(watchdog_pid) ! resumeWatchdog,
+            % Simulation to continue now:
+            ?getAttr(watchdog_pid) ! resumeWatchdog,
 
-			setAttribute( State, serialisation_requested, false )
+            setAttribute( State, serialisation_requested, false )
 
-	end;
+    end;
 
 
 % At least one request is still expected:
 wait_for_serialisation_end( ActorsReturned, Serialised, State ) ->
 
-	% Waiting fully idle for the serialisation to finish...
-	%
-	% However, all time managers (including this root one) must take part to the
-	% serialisation action, for example by sending the list of all their local
-	% actors; therefore we must be able to answer them, before waiting for the
-	% serialisation to be performed. Not to mention that this time manager must
-	% also be itself serialised, hence must answer to the corresponding request.
-	%
-	% For that, we hijack the WOOPER main loop of this root time manager:
-	%
-	receive
+    % Waiting fully idle for the serialisation to finish...
+    %
+    % However, all time managers (including this root one) must take part to the
+    % serialisation action, for example by sending the list of all their local
+    % actors; therefore we must be able to answer them, before waiting for the
+    % serialisation to be performed. Not to mention that this time manager must
+    % also be itself serialised, hence must answer to the corresponding request.
+    %
+    % For that, we hijack the WOOPER main loop of this root time manager:
+    %
+    receive
 
-	   % Meant to be sent by the local instance tracker (first received):
-	   { getAllLocalActors, [], CallerPid } ->
+       % Meant to be sent by the local instance tracker (first received):
+       { getAllLocalActors, [], CallerPid } ->
 
-		   { NewState, Res } = executeRequest( State, getAllLocalActors ),
+           { NewState, Res } = executeRequest( State, getAllLocalActors ),
 
-			CallerPid ! { wooper_result, Res },
+            CallerPid ! { wooper_result, Res },
 
-			wait_for_serialisation_end( _ActorsReturned=true, Serialised,
-										NewState );
+            wait_for_serialisation_end( _ActorsReturned=true, Serialised,
+                                        NewState );
 
 
-		% Meant to be sent by the resilience agent (second received):
-		{ serialise, [ EntryTransformer, UserData ], CallerPid } ->
+        % Meant to be sent by the resilience agent (second received):
+        { serialise, [ EntryTransformer, UserData ], CallerPid } ->
 
-			{ NewState, Res } = executeRequest( State, serialise,
-				[ EntryTransformer, UserData ] ),
+            { NewState, Res } = executeRequest( State, serialise,
+                [ EntryTransformer, UserData ] ),
 
-			CallerPid ! { wooper_result, Res },
+            CallerPid ! { wooper_result, Res },
 
-			wait_for_serialisation_end( ActorsReturned, _Serialised=true,
-										NewState )
+            wait_for_serialisation_end( ActorsReturned, _Serialised=true,
+                                        NewState )
 
-	end.
+    end.
 
 
 
@@ -6496,35 +6495,35 @@ To be preferably called at the end of a tick.
 -spec manage_suspension( tick_offset(), wooper:state() ) -> wooper:state().
 manage_suspension( CurrentTickOffset, State ) ->
 
-	% TO-DO: manage correctly the suspension, with regard to simulation
-	% batch/interactive mode, suspending timer, time tracker, watchdog, etc. and
-	% flushing their relevant messages.
+    % TO-DO: manage correctly the suspension, with regard to simulation
+    % batch/interactive mode, suspending timer, time tracker, watchdog, etc. and
+    % flushing their relevant messages.
 
-	case ?getAttr(suspended) of
+    case ?getAttr(suspended) of
 
-		false ->
-			State;
+        false ->
+            State;
 
-		true ->
+        true ->
 
-			?notice_fmt( "Simulation suspended at {~B,~B}, waiting for a "
-				"resume request.",
-				[ CurrentTickOffset, ?getAttr(current_diasca) ] ),
+            ?notice_fmt( "Simulation suspended at {~B,~B}, waiting for a "
+                "resume request.",
+                [ CurrentTickOffset, ?getAttr(current_diasca) ] ),
 
-			% Blocks as long as necessary:
-			receive
+            % Blocks as long as necessary:
+            receive
 
-				resume ->
-					?notice( "Simulation resumed." ),
+                resume ->
+                    ?notice( "Simulation resumed." ),
 
-					[ L ! simulation_resumed
-						|| L <- ?getAttr(simulation_listeners) ],
+                    [ L ! simulation_resumed
+                        || L <- ?getAttr(simulation_listeners) ],
 
-					setAttribute( State, suspended, false )
+                    setAttribute( State, suspended, false )
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -6535,31 +6534,31 @@ is over.
 -spec is_current_diasca_over( wooper:state() ) -> wooper:state().
 is_current_diasca_over( State ) ->
 
-	check_waited_count_consistency( State ),
+    check_waited_count_consistency( State ),
 
-	% Precomputed, not to perform useless checkings of sets and all:
-	case ?getAttr(waited_count) of
+    % Precomputed, not to perform useless checkings of sets and all:
+    case ?getAttr(waited_count) of
 
-		0 ->
-			true;
+        0 ->
+            true;
 
-		% NonNullCount when NonNullCount < 20 ->
+        % NonNullCount when NonNullCount < 20 ->
 
-		%   %?debug_fmt( "(still waiting for a total of ~B "
-		%   %   "end-of-tick notifications of all sorts)", [ NonNullCount ] ),
+        %   %?debug_fmt( "(still waiting for a total of ~B "
+        %   %   "end-of-tick notifications of all sorts)", [ NonNullCount ] ),
 
-		%   ?display_console( "(~w still waiting for a total of ~B "
-		%   %                 "end-of-tick notifications of all sorts).",
-		%   %                 [ self(), NonNullCount ] ),
+        %   ?display_console( "(~w still waiting for a total of ~B "
+        %   %                 "end-of-tick notifications of all sorts).",
+        %   %                 [ self(), NonNullCount ] ),
 
-		%   %display_waiting_reason( State ),
+        %   %display_waiting_reason( State ),
 
-		%   false;
+        %   false;
 
-		_NonNullCount ->
-			false
+        _NonNullCount ->
+            false
 
-	end.
+    end.
 
 
 
@@ -6571,39 +6570,39 @@ the context of a new tick; throws an exception if not.
                                                 wooper:state().
 check_tick_consistency( NewTickOffset, State ) ->
 
-	PreviousTickOffset = ?getAttr(current_tick_offset),
+    PreviousTickOffset = ?getAttr(current_tick_offset),
 
-	JumpDuration = NewTickOffset - PreviousTickOffset,
+    JumpDuration = NewTickOffset - PreviousTickOffset,
 
-	InitialTick = ?getAttr(initial_tick),
+    InitialTick = ?getAttr(initial_tick),
 
-	PreviousTick   = InitialTick + PreviousTickOffset,
-	NewCurrentTick = InitialTick + NewTickOffset,
+    PreviousTick   = InitialTick + PreviousTickOffset,
+    NewCurrentTick = InitialTick + NewTickOffset,
 
-	% Traces sent with the previous timestamp:
-	case JumpDuration of
+    % Traces sent with the previous timestamp:
+    case JumpDuration of
 
-		PositiveOffset when PositiveOffset > 0 ->
+        PositiveOffset when PositiveOffset > 0 ->
 
-			% Normal case, more checkings:
-			%?notice_fmt( "Tick ~B (tick offset #~B, at diasca ~p) was over, "
-			%   "having jumped forward of ~B tick(s) to reach "
-			%   "the new current tick ~B, at diasca 0 "
-			%   "(corresponding tick offset: #~B).",
-			%   [ PreviousTick, PreviousTickOffset, ?getAttr(current_diasca),
-			%     JumpDuration, NewCurrentTick, NewTickOffset ] );
-			ok;
+            % Normal case, more checkings:
+            %?notice_fmt( "Tick ~B (tick offset #~B, at diasca ~p) was over, "
+            %   "having jumped forward of ~B tick(s) to reach "
+            %   "the new current tick ~B, at diasca 0 "
+            %   "(corresponding tick offset: #~B).",
+            %   [ PreviousTick, PreviousTickOffset, ?getAttr(current_diasca),
+            %     JumpDuration, NewCurrentTick, NewTickOffset ] );
+            ok;
 
-		NegativeOrNullOffset ->
-			?emergency_fmt( "Tick ~B ended (tick offset: #~B, at diasca ~p), "
-				"but specified new tick ~B (tick offset #~B) "
-				"is not in its future (offset in the past of ~B tick(s)).",
-				[ PreviousTick, PreviousTickOffset, ?getAttr(current_diasca),
-				  NewCurrentTick, NewTickOffset, - NegativeOrNullOffset ] ),
+        NegativeOrNullOffset ->
+            ?emergency_fmt( "Tick ~B ended (tick offset: #~B, at diasca ~p), "
+                "but specified new tick ~B (tick offset #~B) "
+                "is not in its future (offset in the past of ~B tick(s)).",
+                [ PreviousTick, PreviousTickOffset, ?getAttr(current_diasca),
+                  NewCurrentTick, NewTickOffset, - NegativeOrNullOffset ] ),
 
-			throw( { abnormal_tick_transition, PreviousTick, NewCurrentTick } )
+            throw( { abnormal_tick_transition, PreviousTick, NewCurrentTick } )
 
-	end.
+    end.
 
 
 
@@ -6615,16 +6614,16 @@ previous ones, in the context of a new diasca; throws an exception if not.
                                                 wooper:state().
 check_diasca_consistency( TickOffset, NewDiasca, State ) ->
 
-	PreviousDiasca = ?getAttr(current_diasca),
+    PreviousDiasca = ?getAttr(current_diasca),
 
-	% Checkings:
-	TickOffset = ?getAttr(current_tick_offset),
-	NewDiasca = PreviousDiasca + 1,
-	{ TickOffset, PreviousDiasca } = ?getAttr(previous_timestamp).
+    % Checkings:
+    TickOffset = ?getAttr(current_tick_offset),
+    NewDiasca = PreviousDiasca + 1,
+    { TickOffset, PreviousDiasca } = ?getAttr(previous_timestamp).
 
-	% We are on a non-zero diasca, thus there must be at least one child manager
-	% with at least one actor to schedule (triggered or terminating), but it
-	% cannot be checked here.
+    % We are on a non-zero diasca, thus there must be at least one child manager
+    % with at least one actor to schedule (triggered or terminating), but it
+    % cannot be checked here.
 
 
 
@@ -6633,44 +6632,44 @@ Ensures that the current waiting count is accurate, throws an exception if not.
 """.
 check_waited_count_consistency( State ) ->
 
-	WaitedSpontaneous = set_utils:size( ?getAttr(waited_spontaneous_actors) ),
+    WaitedSpontaneous = set_utils:size( ?getAttr(waited_spontaneous_actors) ),
 
-	WaitedTriggered = set_utils:size( ?getAttr(waited_triggered_actors) ),
+    WaitedTriggered = set_utils:size( ?getAttr(waited_triggered_actors) ),
 
-	% Either we are at diasca 0 or not:
-	( WaitedSpontaneous =/= 0 andalso WaitedTriggered =/= 0 ) andalso
-		throw( { spontaneous_trigger_mismatch, WaitedSpontaneous,
-				 WaitedTriggered } ),
+    % Either we are at diasca 0 or not:
+    ( WaitedSpontaneous =/= 0 andalso WaitedTriggered =/= 0 ) andalso
+        throw( { spontaneous_trigger_mismatch, WaitedSpontaneous,
+                 WaitedTriggered } ),
 
-	WaitedChildren = set_utils:size( ?getAttr(waited_child_managers) ),
+    WaitedChildren = set_utils:size( ?getAttr(waited_child_managers) ),
 
-	WaitedWatchdog = case ?getAttr(watchdog_waited) of
+    WaitedWatchdog = case ?getAttr(watchdog_waited) of
 
-		true ->
-			1;
+        true ->
+            1;
 
-		false ->
-			0
+        false ->
+            0
 
-	end,
+    end,
 
-	RealSum = WaitedSpontaneous + WaitedTriggered + WaitedChildren
-		+ WaitedWatchdog,
+    RealSum = WaitedSpontaneous + WaitedTriggered + WaitedChildren
+        + WaitedWatchdog,
 
-	?display_console( "~w waiting for C=~B, S=~B, T=~B, W=~B.", [ self(),
-		WaitedChildren, WaitedSpontaneous, WaitedTriggered, WaitedWatchdog ] ),
+    ?display_console( "~w waiting for C=~B, S=~B, T=~B, W=~B.", [ self(),
+        WaitedChildren, WaitedSpontaneous, WaitedTriggered, WaitedWatchdog ] ),
 
-	case ?getAttr(waited_count) of
+    case ?getAttr(waited_count) of
 
-		RealSum->
-			ok;
+        RealSum->
+            ok;
 
-		WrongCount ->
-			throw( { inconsistent_waited_count, WrongCount,
-				{ RealSum, { WaitedChildren, WaitedSpontaneous, WaitedTriggered,
-							 WaitedWatchdog } } } )
+        WrongCount ->
+            throw( { inconsistent_waited_count, WrongCount,
+                { RealSum, { WaitedChildren, WaitedSpontaneous, WaitedTriggered,
+                             WaitedWatchdog } } } )
 
-	end.
+    end.
 
 
 
@@ -6681,31 +6680,31 @@ manager.
 -spec display_waiting_reason( wooper:state() ) -> void().
 display_waiting_reason( State ) ->
 
-	WaitedSpontaneous = set_utils:size( ?getAttr(waited_spontaneous_actors) ),
+    WaitedSpontaneous = set_utils:size( ?getAttr(waited_spontaneous_actors) ),
 
-	WaitedTriggered = set_utils:size( ?getAttr(waited_triggered_actors) ),
+    WaitedTriggered = set_utils:size( ?getAttr(waited_triggered_actors) ),
 
-	WaitedChildren = set_utils:size( ?getAttr(waited_child_managers) ),
+    WaitedChildren = set_utils:size( ?getAttr(waited_child_managers) ),
 
-	WaitedWatchdog = case ?getAttr(watchdog_waited) of
+    WaitedWatchdog = case ?getAttr(watchdog_waited) of
 
-		true ->
-			"the";
+        true ->
+            "the";
 
-		false ->
-			"no"
+        false ->
+            "no"
 
-	end,
+    end,
 
-	io:format( "At tick offset #~B, time manager ~w waiting for "
-		"~B spontaneous actor(s), ~B triggered actor(s), "
-		"~B child manager(s) and for ~ts watchdog.",
-		[ ?getAttr(current_tick_offset), self(), WaitedSpontaneous,
-		  WaitedTriggered, WaitedChildren, WaitedWatchdog ] ),
+    io:format( "At tick offset #~B, time manager ~w waiting for "
+        "~B spontaneous actor(s), ~B triggered actor(s), "
+        "~B child manager(s) and for ~ts watchdog.",
+        [ ?getAttr(current_tick_offset), self(), WaitedSpontaneous,
+          WaitedTriggered, WaitedChildren, WaitedWatchdog ] ),
 
-	WaitedSpontaneous > 0 andalso WaitedSpontaneous < 5 andalso
-		?display_console( "Waiting for following spontaneous actors: ~p.",
-			[ set_utils:to_list( ?getAttr(waited_spontaneous_actors) ) ] ).
+    WaitedSpontaneous > 0 andalso WaitedSpontaneous < 5 andalso
+        ?display_console( "Waiting for following spontaneous actors: ~p.",
+            [ set_utils:to_list( ?getAttr(waited_spontaneous_actors) ) ] ).
 
 
 
@@ -6726,200 +6725,200 @@ notification.
 -spec manage_new_tick( tick_offset(), wooper:state() ) -> wooper:state().
 manage_new_tick( NewTickOffset, State ) ->
 
-	% A bit of paranoid checking first:
-	cond_utils:if_defined( sim_diasca_check_time_management,
-		begin
-			0 = ?getAttr(waited_count),
-			false = ?getAttr(watchdog_waited),
-			true = set_utils:is_empty( ?getAttr(waited_child_managers) ),
-			true = set_utils:is_empty( ?getAttr(waited_spontaneous_actors) ),
-			true = set_utils:is_empty( ?getAttr(waited_triggered_actors) )
-		end ),
+    % A bit of paranoid checking first:
+    cond_utils:if_defined( sim_diasca_check_time_management,
+        begin
+            0 = ?getAttr(waited_count),
+            false = ?getAttr(watchdog_waited),
+            true = set_utils:is_empty( ?getAttr(waited_child_managers) ),
+            true = set_utils:is_empty( ?getAttr(waited_spontaneous_actors) ),
+            true = set_utils:is_empty( ?getAttr(waited_triggered_actors) )
+        end ),
 
-	?display_console( "Scheduling new tick, #~B (hence diasca 0), on ~w",
-					  [ NewTickOffset, self() ] ),
+    ?display_console( "Scheduling new tick, #~B (hence diasca 0), on ~w",
+                      [ NewTickOffset, self() ] ),
 
-	ChildManagers = ?getAttr(child_managers),
+    ChildManagers = ?getAttr(child_managers),
 
-	% First of all, recurses in all the scheduling hierarchy, regardless of
-	% whether a child manager has any actor to schedule for this new tick:
-	%
-	ChildManagerCount =
-		notify_child_managers_of_tick( ChildManagers, NewTickOffset ),
+    % First of all, recurses in all the scheduling hierarchy, regardless of
+    % whether a child manager has any actor to schedule for this new tick:
+    %
+    ChildManagerCount =
+        notify_child_managers_of_tick( ChildManagers, NewTickOffset ),
 
-	{ SpontaneousActors, SpontaneousCount, NewAgenda } =
-		notify_spontaneous_actors( NewTickOffset, State ),
+    { SpontaneousActors, SpontaneousCount, NewAgenda } =
+        notify_spontaneous_actors( NewTickOffset, State ),
 
-	% Here we should have escaped from most of the critical path (the parallel
-	% processing has already started).
+    % Here we should have escaped from most of the critical path (the parallel
+    % processing has already started).
 
-	% Notifies the time listeners:
-	[ P ! { onNewTick, NewTickOffset } || P <- ?getAttr(time_listeners) ],
+    % Notifies the time listeners:
+    [ P ! { onNewTick, NewTickOffset } || P <- ?getAttr(time_listeners) ],
 
-	{ WatchedState, _TickHeader, WaitedWatchdog } =
-			case is_root_manager( State ) of
+    { WatchedState, _TickHeader, WaitedWatchdog } =
+            case is_root_manager( State ) of
 
-		true ->
-			% Only the root time manager has a watchdog:
-			?getAttr(watchdog_pid) ! { beginWatchdogTick, NewTickOffset },
+        true ->
+            % Only the root time manager has a watchdog:
+            ?getAttr(watchdog_pid) ! { beginWatchdogTick, NewTickOffset },
 
-			% We now consider that only the root time manager is to report the
-			% progress, and we have only the information for previous diasca:
-			%
-			record_progress_message( NewTickOffset, _NewDiasca=0, State ),
+            % We now consider that only the root time manager is to report the
+            % progress, and we have only the information for previous diasca:
+            %
+            record_progress_message( NewTickOffset, _NewDiasca=0, State ),
 
-			{ setAttribute( State, watchdog_waited, true ),
-			  "Root overall tick", _WatchWaited=1 };
+            { setAttribute( State, watchdog_waited, true ),
+              "Root overall tick", _WatchWaited=1 };
 
-		false ->
-			{ State, "Child local tick", _WatchWaited=0 }
+        false ->
+            { State, "Child local tick", _WatchWaited=0 }
 
-	end,
+    end,
 
-	% No actor triggered yet at this tick:
-	WaitedCount = SpontaneousCount + ChildManagerCount + WaitedWatchdog,
+    % No actor triggered yet at this tick:
+    WaitedCount = SpontaneousCount + ChildManagerCount + WaitedWatchdog,
 
-	?display_console( "Total initial wait summary: ~B, i.e. S=~B, C=~B, W=~B.",
-		[ WaitedCount, SpontaneousCount, ChildManagerCount, WaitedWatchdog ] ),
+    ?display_console( "Total initial wait summary: ~B, i.e. S=~B, C=~B, W=~B.",
+        [ WaitedCount, SpontaneousCount, ChildManagerCount, WaitedWatchdog ] ),
 
-	?display_console( "~ts: ~ts is sent to ~B child time manager(s) and to ~B "
-		"local actor(s) that are scheduled for their spontaneous behaviour "
-		"(waited count, including any watchdog: ~B).",
-		[ TickHeader, get_textual_timings( State ), ChildManagerCount,
-		  SpontaneousCount, WaitedCount ] ),
+    ?display_console( "~ts: ~ts is sent to ~B child time manager(s) and to ~B "
+        "local actor(s) that are scheduled for their spontaneous behaviour "
+        "(waited count, including any watchdog: ~B).",
+        [ TickHeader, get_textual_timings( State ), ChildManagerCount,
+          SpontaneousCount, WaitedCount ] ),
 
-	% Actor termination never occurs at diasca 0.
+    % Actor termination never occurs at diasca 0.
 
-	% We are now at {NewTickOffset, 0}.
-	% We came from {PastTickOffset, Dpast}.
-	%
-	% Some early non-local actors may already have sent actor messages to local
-	% actors; in this case next_timestamp is already at {NewTickOffset,1} and
-	% this should be left as is. Otherwise it must be either 'undefined' or the
-	% previous timestamp, and no next timestamp is thus known. All other cases
-	% mean a scheduling error.
-	%
-	PreviousTimestamp = ?getAttr(previous_timestamp),
+    % We are now at {NewTickOffset, 0}.
+    % We came from {PastTickOffset, Dpast}.
+    %
+    % Some early non-local actors may already have sent actor messages to local
+    % actors; in this case next_timestamp is already at {NewTickOffset,1} and
+    % this should be left as is. Otherwise it must be either 'undefined' or the
+    % previous timestamp, and no next timestamp is thus known. All other cases
+    % mean a scheduling error.
+    %
+    PreviousTimestamp = ?getAttr(previous_timestamp),
 
-	% Let's reset next_timestamp:
-	NewNextTimestamp = case ?getAttr(next_timestamp) of
+    % Let's reset next_timestamp:
+    NewNextTimestamp = case ?getAttr(next_timestamp) of
 
-		PreviousTimestamp ->
-			% Was not changed yet:
-			undefined;
+        PreviousTimestamp ->
+            % Was not changed yet:
+            undefined;
 
-		undefined ->
-			undefined;
+        undefined ->
+            undefined;
 
-		EarlyEntry={ NewTickOffset, 1 } ->
-			% Was already set by an early actor, must be kept:
-			EarlyEntry;
+        EarlyEntry={ NewTickOffset, 1 } ->
+            % Was already set by an early actor, must be kept:
+            EarlyEntry;
 
-		WrongNextTimestamp ->
-			throw( { scheduling_inconsistency_at_new_manager_tick,
-					 NewTickOffset, PreviousTimestamp, WrongNextTimestamp } )
+        WrongNextTimestamp ->
+            throw( { scheduling_inconsistency_at_new_manager_tick,
+                     NewTickOffset, PreviousTimestamp, WrongNextTimestamp } )
 
-	end,
+    end,
 
-	EarlyActorsToTrigger = ?getAttr(actors_to_trigger_in_two_diascas),
+    EarlyActorsToTrigger = ?getAttr(actors_to_trigger_in_two_diascas),
 
-	KnownNextAction = case set_utils:is_empty( EarlyActorsToTrigger ) of
+    KnownNextAction = case set_utils:is_empty( EarlyActorsToTrigger ) of
 
-		true ->
+        true ->
 
-			% Checking:
-			undefined = NewNextTimestamp,
+            % Checking:
+            undefined = NewNextTimestamp,
 
-			% Default:
-			%
-			% (we use the new agenda, otherwise we would pick the current tick)
-			%
-			case NewAgenda of
+            % Default:
+            %
+            % (we use the new agenda, otherwise we would pick the current tick)
+            %
+            case NewAgenda of
 
-				[] ->
-					no_planned_action;
+                [] ->
+                    no_planned_action;
 
-				[ { TickOffset, _ActorSet } | _T ] ->
-					TickOffset
+                [ { TickOffset, _ActorSet } | _T ] ->
+                    TickOffset
 
-			end;
+            end;
 
-		false ->
+        false ->
 
-			% Actors already at diasca 0 managed to send a message before this
-			% time manager even received the new tick notification (possibly
-			% after a jump). Checking:
-			%
-			{ NewTickOffset, 1 } = NewNextTimestamp,
+            % Actors already at diasca 0 managed to send a message before this
+            % time manager even received the new tick notification (possibly
+            % after a jump). Checking:
+            %
+            { NewTickOffset, 1 } = NewNextTimestamp,
 
-			new_diasca_needed
+            new_diasca_needed
 
-	end,
+    end,
 
-	NewDiascaCount = ?getAttr(diasca_count) + 1,
+    NewDiascaCount = ?getAttr(diasca_count) + 1,
 
-	NewScheduledCount = ?getAttr(schedule_count) + SpontaneousCount,
+    NewScheduledCount = ?getAttr(schedule_count) + SpontaneousCount,
 
-	% Newer tick offset and diasca already set:
-	ResetState = setAttributes( WatchedState, [
-		{ spontaneous_agenda, NewAgenda },
-		% previous_timestamp already set.
-		{ next_timestamp, NewNextTimestamp },
-		{ next_action, KnownNextAction },
-		% actors_to_trigger_in_one_diasca kept as is (may have already been
-		% updated by early remote actors)
+    % Newer tick offset and diasca already set:
+    ResetState = setAttributes( WatchedState, [
+        { spontaneous_agenda, NewAgenda },
+        % previous_timestamp already set.
+        { next_timestamp, NewNextTimestamp },
+        { next_action, KnownNextAction },
+        % actors_to_trigger_in_one_diasca kept as is (may have already been
+        % updated by early remote actors)
 
-		% We refresh the list:
-		{ waited_child_managers, ChildManagers },
+        % We refresh the list:
+        { waited_child_managers, ChildManagers },
 
-		{ waited_spontaneous_actors, SpontaneousActors },
-		{ waited_count, WaitedCount },
+        { waited_spontaneous_actors, SpontaneousActors },
+        { waited_count, WaitedCount },
 
-		% We initialize these two total values with the current local ones, as
-		% values reported by child managers will be added during this diasca:
-		%
-		{ scheduled_tracking, SpontaneousCount },
-		{ process_tracking, system_utils:get_process_count() },
+        % We initialize these two total values with the current local ones, as
+        % values reported by child managers will be added during this diasca:
+        %
+        { scheduled_tracking, SpontaneousCount },
+        { process_tracking, system_utils:get_process_count() },
 
-		% Ready for next diasca (1):
-		{ actors_to_trigger_in_one_diasca, EarlyActorsToTrigger },
-		{ actors_to_trigger_in_two_diascas, set_utils:new() },
-		{ diasca_count, NewDiascaCount },
-		{ schedule_count, NewScheduledCount } ] ),
+        % Ready for next diasca (1):
+        { actors_to_trigger_in_one_diasca, EarlyActorsToTrigger },
+        { actors_to_trigger_in_two_diascas, set_utils:new() },
+        { diasca_count, NewDiascaCount },
+        { schedule_count, NewScheduledCount } ] ),
 
-	TickPeriod = ?getAttr(tick_milestone_period),
+    TickPeriod = ?getAttr(tick_milestone_period),
 
-	% Each 1000 simulated ticks (e.g. after 20 seconds of simulated time at 50
-	% Hz), let's trigger a simulation milestone:
-	%
-	% FIXME_WALLCLOCK: we can miss such deadlines if jumping over them...
-	NewTickOffset rem TickPeriod =:= 0 andalso
-		( self() ! { onTickMilestone, NewTickOffset } ),
+    % Each 1000 simulated ticks (e.g. after 20 seconds of simulated time at 50
+    % Hz), let's trigger a simulation milestone:
+    %
+    % FIXME_WALLCLOCK: we can miss such deadlines if jumping over them...
+    NewTickOffset rem TickPeriod =:= 0 andalso
+        ( self() ! { onTickMilestone, NewTickOffset } ),
 
-	% From now, spontaneous actors, child managers and the watchdog are expected
-	% to trigger 'notifySpontaneous*Complet*' methods... if there is at least
-	% one of such agents:
-	%
-	case WaitedCount of
+    % From now, spontaneous actors, child managers and the watchdog are expected
+    % to trigger 'notifySpontaneous*Complet*' methods... if there is at least
+    % one of such agents:
+    %
+    case WaitedCount of
 
-		0 ->
-			% Nobody will ever answer, we must already report an end of tick:
-			manage_possible_end_of_diasca( ResetState );
+        0 ->
+            % Nobody will ever answer, we must already report an end of tick:
+            manage_possible_end_of_diasca( ResetState );
 
 
-		_NonNull ->
+        _NonNull ->
 
-			cond_utils:if_defined( sim_diasca_check_time_management,
-				check_waited_count_consistency( ResetState ) ),
+            cond_utils:if_defined( sim_diasca_check_time_management,
+                check_waited_count_consistency( ResetState ) ),
 
-			% Answers will trigger back an end of diasca when appropriate:
-			%
-			% (due to the watchdog, the root time manager will always go that
-			% route)
-			%
-			ResetState
+            % Answers will trigger back an end of diasca when appropriate:
+            %
+            % (due to the watchdog, the root time manager will always go that
+            % route)
+            %
+            ResetState
 
-	end.
+    end.
 
 
 
@@ -6938,220 +6937,220 @@ being triggered and sending console/trace output before the 'new diasca'
 notification.
 """.
 -spec manage_new_diasca( tick_offset(), diasca(), wooper:state() ) ->
-							wooper:state().
+                            wooper:state().
 manage_new_diasca( TickOffset, NewDiasca, State ) ->
 
-	TerminatingActorList = ?getAttr(terminating_actors),
+    TerminatingActorList = ?getAttr(terminating_actors),
 
-	% A bit of paranoid checking first:
-	cond_utils:if_defined( sim_diasca_check_time_management,
-		begin
-			0 = ?getAttr(waited_count),
-			false = ?getAttr(watchdog_waited),
-			true = set_utils:is_empty( ?getAttr(waited_child_managers) ),
-			true = set_utils:is_empty( ?getAttr(waited_spontaneous_actors) ),
-			true = set_utils:is_empty( ?getAttr(waited_triggered_actors) ),
-			false = list_utils:has_duplicates( TerminatingActorList )
-		end ),
+    % A bit of paranoid checking first:
+    cond_utils:if_defined( sim_diasca_check_time_management,
+        begin
+            0 = ?getAttr(waited_count),
+            false = ?getAttr(watchdog_waited),
+            true = set_utils:is_empty( ?getAttr(waited_child_managers) ),
+            true = set_utils:is_empty( ?getAttr(waited_spontaneous_actors) ),
+            true = set_utils:is_empty( ?getAttr(waited_triggered_actors) ),
+            false = list_utils:has_duplicates( TerminatingActorList )
+        end ),
 
-	?display_console( "~n  + scheduling new diasca, tick offset #~B diasca ~B "
-					  "on ~w~n", [ TickOffset, NewDiasca, self() ] ),
+    ?display_console( "~n  + scheduling new diasca, tick offset #~B diasca ~B "
+                      "on ~w~n", [ TickOffset, NewDiasca, self() ] ),
 
-	ChildManagers = ?getAttr(child_managers),
+    ChildManagers = ?getAttr(child_managers),
 
-	% First of all, recurses in all the scheduling hierarchy, regardless of
-	% whether a child manager has any actor to schedule for this new tick:
-	%
-	ChildManagerCount = notify_child_managers_of_diasca( ChildManagers,
-		TickOffset, NewDiasca ),
+    % First of all, recurses in all the scheduling hierarchy, regardless of
+    % whether a child manager has any actor to schedule for this new tick:
+    %
+    ChildManagerCount = notify_child_managers_of_diasca( ChildManagers,
+        TickOffset, NewDiasca ),
 
-	ScheduledActors = ?getAttr(actors_to_trigger_in_one_diasca),
-
-
-	% Smaller (plain) list on the left:
-	%
-	% A perfectly licit situation is to have a terminating (not terminated)
-	% actor which, during its active termination, receives actor messages;
-	% however we want to have it scheduled only once, so we have to avoid
-	% duplicates, which is a side-effect of using a set:
-	%
-	UniqueTriggeredActors = set_utils:add_element_list( TerminatingActorList,
-														ScheduledActors ),
-
-	TriggeredCount = notify_triggered_actors( TickOffset, NewDiasca,
-											  UniqueTriggeredActors ),
-
-	% From there, we should at last have escaped from most of the critical path,
-	% so we have less time pressure.
-
-	% Notifies the time listeners:
-	[ P ! { onNewDiasca, [ TickOffset, NewDiasca ] }
-		|| P <- ?getAttr(time_listeners) ],
-
-	{ WatchedState, _DiascaHeader, WaitedWatchdog } =
-			case is_root_manager( State ) of
-
-		true ->
-			% Only the root time manager has a watchdog:
-			?getAttr(watchdog_pid) !
-				{ beginWatchdogDiasca, [ TickOffset, NewDiasca ] },
-
-			% We now consider that only the root time manager is to report the
-			% progress, and we have only the information for previous diasca:
-			%
-			record_progress_message(TickOffset, NewDiasca, State ),
-
-			{ setAttribute( State, watchdog_waited, true ),
-			  text_utils:format( "Root overall diasca ~p", [ NewDiasca ] ),
-			  _Waited=1 };
-
-		false ->
-			{ State,
-			  text_utils:format( "Child local diasca ~p", [ NewDiasca ] ),
-			  _Waited=0 }
-
-	end,
-
-	?display_console( "Triggered count at {~p,~p}: ~B~n",
-					  [ TickOffset, NewDiasca, TriggeredCount ] ),
-
-	% By design, no spontaneous actor waited:
-	WaitedCount = TriggeredCount + ChildManagerCount + WaitedWatchdog,
-
-	?display_console( "~n~ts for ~w: ~ts is sent to ~B child time manager(s) "
-		"and to ~B local actor(s) that are triggered "
-		"(waited count, including any watchdog: ~B).",
-		[ DiascaHeader, self(), get_textual_timings( State ),
-		  ChildManagerCount, TriggeredCount, WaitedCount ] ),
-
-	TerminateState = terminate_actors( TickOffset, NewDiasca, WatchedState ),
-
-	% We are now at {TickOffset, D}.
-	% We came from {TickOffset, D-1}.
-	%
-	% Some early non-local actors may already have sent actor messages to local
-	% actors; in this case next_timestamp is already at {TickOffset,D+1} and
-	% this should be left as is. Otherwise it must be either 'undefined' or the
-	% previous timestamp, and no next timestamp is thus known. All other cases
-	% mean a scheduling error.
-
-	CurrentTimestamp = { TickOffset, NewDiasca },
-
-	EarlyTimestamp = { TickOffset, NewDiasca+1 },
-
-	% Let's reset next_timestamp:
-	NewNextTimestamp = case ?getAttr(next_timestamp) of
-
-		CurrentTimestamp ->
-			% Was not changed yet:
-			undefined;
-
-		undefined ->
-			undefined;
-
-		EarlyTimestamp ->
-			% Was already set by an early actor, must be kept:
-			EarlyTimestamp;
-
-		WrongNextTimestamp ->
-			throw( { scheduling_inconsistency_at_new_manager_diasca,
-					 TickOffset, NewDiasca, ?getAttr(previous_timestamp),
-					 CurrentTimestamp, WrongNextTimestamp } )
-
-	end,
-
-	EarlyActors = ?getAttr(actors_to_trigger_in_two_diascas),
-
-	% Either we already know that there will be a next diasca or not:
-	KnownNextAction = case set_utils:is_empty( EarlyActors ) of
-
-		true ->
-
-			% Checking, cannot have been set by an early actor:
-			undefined = NewNextTimestamp,
-
-			% Updates the information if needed:
-			%
-			% (will be overwritten as soon as one actor message is sent
-			% this diasca)
-			%
-			case ?getAttr(spontaneous_agenda) of
-
-				[] ->
-					no_planned_action;
-
-				[ { NextTickOffset, _ActorSet } | _T ] ->
-					NextTickOffset
-
-			end;
+    ScheduledActors = ?getAttr(actors_to_trigger_in_one_diasca),
 
 
-		false ->
+    % Smaller (plain) list on the left:
+    %
+    % A perfectly licit situation is to have a terminating (not terminated)
+    % actor which, during its active termination, receives actor messages;
+    % however we want to have it scheduled only once, so we have to avoid
+    % duplicates, which is a side-effect of using a set:
+    %
+    UniqueTriggeredActors = set_utils:add_element_list( TerminatingActorList,
+                                                        ScheduledActors ),
 
-			?display_console( "Early actor detected, new diasca needed!~n",
-							  [] ),
+    TriggeredCount = notify_triggered_actors( TickOffset, NewDiasca,
+                                              UniqueTriggeredActors ),
 
-			% Checking, must have been set by an early actor:
-			EarlyTimestamp = NewNextTimestamp,
-			new_diasca_needed
+    % From there, we should at last have escaped from most of the critical path,
+    % so we have less time pressure.
 
-	end,
+    % Notifies the time listeners:
+    [ P ! { onNewDiasca, [ TickOffset, NewDiasca ] }
+        || P <- ?getAttr(time_listeners) ],
 
-	NewDiascaCount = ?getAttr(diasca_count) + 1,
+    { WatchedState, _DiascaHeader, WaitedWatchdog } =
+            case is_root_manager( State ) of
 
-	NewScheduleCount = ?getAttr(schedule_count) + TriggeredCount,
+        true ->
+            % Only the root time manager has a watchdog:
+            ?getAttr(watchdog_pid) !
+                { beginWatchdogDiasca, [ TickOffset, NewDiasca ] },
 
-	% Newer tick offset and diasca already set:
-	ResetState = setAttributes( TerminateState, [
-		% previous_timestamp already set.
-		{ next_timestamp, NewNextTimestamp },
-		{ next_action, KnownNextAction },
+            % We now consider that only the root time manager is to report the
+            % progress, and we have only the information for previous diasca:
+            %
+            record_progress_message(TickOffset, NewDiasca, State ),
 
-		% This list is rebuilt each diasca:
-		{ terminating_actors, [] },
+            { setAttribute( State, watchdog_waited, true ),
+              text_utils:format( "Root overall diasca ~p", [ NewDiasca ] ),
+              _Waited=1 };
 
-		% The only place, once processed, where we can reset it without taking
-		% the risk of forgetting early schedule-trigger notifications:
-		%
-		{ actors_to_trigger_in_one_diasca, EarlyActors },
-		{ actors_to_trigger_in_two_diascas, set_utils:new() },
+        false ->
+            { State,
+              text_utils:format( "Child local diasca ~p", [ NewDiasca ] ),
+              _Waited=0 }
 
-		% We refresh the list:
-		{ waited_child_managers, ChildManagers },
+    end,
 
-		% We know we always wait for them all, using most efficient list:
-		{ waited_triggered_actors, UniqueTriggeredActors },
-		{ waited_count, WaitedCount },
+    ?display_console( "Triggered count at {~p,~p}: ~B~n",
+                      [ TickOffset, NewDiasca, TriggeredCount ] ),
 
-		% We initialize these two total values with the current local ones, as
-		% values reported by child managers will be added during this diasca:
-		%
-		{ scheduled_tracking, TriggeredCount },
-		{ process_tracking, system_utils:get_process_count() },
-		{ diasca_count, NewDiascaCount },
+    % By design, no spontaneous actor waited:
+    WaitedCount = TriggeredCount + ChildManagerCount + WaitedWatchdog,
 
-		% We add first the local actors:
-		{ schedule_count, NewScheduleCount } ] ),
+    ?display_console( "~n~ts for ~w: ~ts is sent to ~B child time manager(s) "
+        "and to ~B local actor(s) that are triggered "
+        "(waited count, including any watchdog: ~B).",
+        [ DiascaHeader, self(), get_textual_timings( State ),
+          ChildManagerCount, TriggeredCount, WaitedCount ] ),
+
+    TerminateState = terminate_actors( TickOffset, NewDiasca, WatchedState ),
+
+    % We are now at {TickOffset, D}.
+    % We came from {TickOffset, D-1}.
+    %
+    % Some early non-local actors may already have sent actor messages to local
+    % actors; in this case next_timestamp is already at {TickOffset,D+1} and
+    % this should be left as is. Otherwise it must be either 'undefined' or the
+    % previous timestamp, and no next timestamp is thus known. All other cases
+    % mean a scheduling error.
+
+    CurrentTimestamp = { TickOffset, NewDiasca },
+
+    EarlyTimestamp = { TickOffset, NewDiasca+1 },
+
+    % Let's reset next_timestamp:
+    NewNextTimestamp = case ?getAttr(next_timestamp) of
+
+        CurrentTimestamp ->
+            % Was not changed yet:
+            undefined;
+
+        undefined ->
+            undefined;
+
+        EarlyTimestamp ->
+            % Was already set by an early actor, must be kept:
+            EarlyTimestamp;
+
+        WrongNextTimestamp ->
+            throw( { scheduling_inconsistency_at_new_manager_diasca,
+                     TickOffset, NewDiasca, ?getAttr(previous_timestamp),
+                     CurrentTimestamp, WrongNextTimestamp } )
+
+    end,
+
+    EarlyActors = ?getAttr(actors_to_trigger_in_two_diascas),
+
+    % Either we already know that there will be a next diasca or not:
+    KnownNextAction = case set_utils:is_empty( EarlyActors ) of
+
+        true ->
+
+            % Checking, cannot have been set by an early actor:
+            undefined = NewNextTimestamp,
+
+            % Updates the information if needed:
+            %
+            % (will be overwritten as soon as one actor message is sent
+            % this diasca)
+            %
+            case ?getAttr(spontaneous_agenda) of
+
+                [] ->
+                    no_planned_action;
+
+                [ { NextTickOffset, _ActorSet } | _T ] ->
+                    NextTickOffset
+
+            end;
 
 
-	% No 'onDiascaMilestone' event deemed useful yet.
+        false ->
 
-	% From now, triggered actors, child managers and the watchdog are expected
-	% to trigger 'notifyTrigger*Complet*' methods... if there is at least one
-	% of such agents:
-	%
-	case WaitedCount of
+            ?display_console( "Early actor detected, new diasca needed!~n",
+                              [] ),
 
-		0 ->
-			% Nobody will ever answer, we must already report an end of tick:
-			manage_possible_end_of_diasca( ResetState );
+            % Checking, must have been set by an early actor:
+            EarlyTimestamp = NewNextTimestamp,
+            new_diasca_needed
 
-		_NonNull ->
-			check_waited_count_consistency( ResetState ),
-			% Answers will trigger back an end of diasca when appropriate:
-			ResetState
+    end,
 
-	end.
+    NewDiascaCount = ?getAttr(diasca_count) + 1,
+
+    NewScheduleCount = ?getAttr(schedule_count) + TriggeredCount,
+
+    % Newer tick offset and diasca already set:
+    ResetState = setAttributes( TerminateState, [
+        % previous_timestamp already set.
+        { next_timestamp, NewNextTimestamp },
+        { next_action, KnownNextAction },
+
+        % This list is rebuilt each diasca:
+        { terminating_actors, [] },
+
+        % The only place, once processed, where we can reset it without taking
+        % the risk of forgetting early schedule-trigger notifications:
+        %
+        { actors_to_trigger_in_one_diasca, EarlyActors },
+        { actors_to_trigger_in_two_diascas, set_utils:new() },
+
+        % We refresh the list:
+        { waited_child_managers, ChildManagers },
+
+        % We know we always wait for them all, using most efficient list:
+        { waited_triggered_actors, UniqueTriggeredActors },
+        { waited_count, WaitedCount },
+
+        % We initialize these two total values with the current local ones, as
+        % values reported by child managers will be added during this diasca:
+        %
+        { scheduled_tracking, TriggeredCount },
+        { process_tracking, system_utils:get_process_count() },
+        { diasca_count, NewDiascaCount },
+
+        % We add first the local actors:
+        { schedule_count, NewScheduleCount } ] ),
+
+
+    % No 'onDiascaMilestone' event deemed useful yet.
+
+    % From now, triggered actors, child managers and the watchdog are expected
+    % to trigger 'notifyTrigger*Complet*' methods... if there is at least one
+    % of such agents:
+    %
+    case WaitedCount of
+
+        0 ->
+            % Nobody will ever answer, we must already report an end of tick:
+            manage_possible_end_of_diasca( ResetState );
+
+        _NonNull ->
+            check_waited_count_consistency( ResetState ),
+            % Answers will trigger back an end of diasca when appropriate:
+            ResetState
+
+    end.
 
 
 
@@ -7171,91 +7170,91 @@ information actually relate to the previous timestamp).
 Does not return anything useful.
 """.
 -spec record_progress_message( tick_offset(), diasca(), wooper:state() ) ->
-										void().
+                                        void().
 record_progress_message( TickOffset, Diasca, State ) ->
 
-	case ?getAttr(time_tracker_pid) of
+    case ?getAttr(time_tracker_pid) of
 
-		undefined ->
-			ok;
+        undefined ->
+            ok;
 
-		TimeTrackerPid ->
-			report_progress_to( TickOffset, Diasca, TimeTrackerPid, State )
+        TimeTrackerPid ->
+            report_progress_to( TickOffset, Diasca, TimeTrackerPid, State )
 
-	end.
+    end.
 
 
 
 % (helper)
 report_progress_to( TickOffset, Diasca, TimeTrackerPid, State ) ->
 
-	% We have delayed these processings once the 'begin tick/diasca' message has
-	% been sent (i.e. when we are no more on the critical path), while still
-	% hoping to *display* this 'top' message (about previous diasca) first,
-	% before any message sent in the context of current (next) diasca:
-	%
-	% (date conversion in messages might be a bit expensive, but, if the console
-	% tracker only uses actually very few of them, all may be used in traces,
-	% hence are useful)
-	%
-	{ _DetailedTopMessage, _CompactTopMessageElements=Timings, RealTime } =
-		get_full_textual_timings( TickOffset, Diasca, State ),
+    % We have delayed these processings once the 'begin tick/diasca' message has
+    % been sent (i.e. when we are no more on the critical path), while still
+    % hoping to *display* this 'top' message (about previous diasca) first,
+    % before any message sent in the context of current (next) diasca:
+    %
+    % (date conversion in messages might be a bit expensive, but, if the console
+    % tracker only uses actually very few of them, all may be used in traces,
+    % hence are useful)
+    %
+    { _DetailedTopMessage, _CompactTopMessageElements=Timings, RealTime } =
+        get_full_textual_timings( TickOffset, Diasca, State ),
 
-	%trace_utils:debug_fmt( "Reporting progress for {~p,~p} at ~p.~n",
-	%                       [ TickOffset, Diasca, RealTime ] ),
+    %trace_utils:debug_fmt( "Reporting progress for {~p,~p} at ~p.~n",
+    %                       [ TickOffset, Diasca, RealTime ] ),
 
-	% Here we use the information gathered on the last diasca, relative to the
-	% scheduling subtree of this manager:
-	%
-	OverallSchedulingCount = ?getAttr(scheduled_tracking),
-	OverallProcessCount = ?getAttr(process_tracking),
+    % Here we use the information gathered on the last diasca, relative to the
+    % scheduling subtree of this manager:
+    %
+    OverallSchedulingCount = ?getAttr(scheduled_tracking),
+    OverallProcessCount = ?getAttr(process_tracking),
 
-	OverallActorCount = ?getAttr(overall_actor_count),
+    OverallActorCount = ?getAttr(overall_actor_count),
 
-	Counts = { OverallActorCount, OverallSchedulingCount, OverallProcessCount },
+    Counts = { OverallActorCount, OverallSchedulingCount, OverallProcessCount },
 
-	NewTopInfo = { Timings, Counts },
+    NewTopInfo = { Timings, Counts },
 
-	% We probably should give overall information like total actor count in the
-	% root time manager only, as the child ones are not notified of that actual
-	% value.
+    % We probably should give overall information like total actor count in the
+    % root time manager only, as the child ones are not notified of that actual
+    % value.
 
-	%?notice_fmt(
-	%   "~ts: sent at ~ts to ~B child time manager(s) and to ~B local "
-	%   "actor(s). "
-	%   "During last diasca, for this scheduling subtree, "
-	%   "we had a total of ~B actors that were scheduled, "
-	%   "with ~B processes alive.",
-	%   [ Header, DetailedTopMessage, ChildManagerCount, ScheduledCount,
-	%     OverallSchedulingCount, OverallProcessCount ] ).
+    %?notice_fmt(
+    %   "~ts: sent at ~ts to ~B child time manager(s) and to ~B local "
+    %   "actor(s). "
+    %   "During last diasca, for this scheduling subtree, "
+    %   "we had a total of ~B actors that were scheduled, "
+    %   "with ~B processes alive.",
+    %   [ Header, DetailedTopMessage, ChildManagerCount, ScheduledCount,
+    %     OverallSchedulingCount, OverallProcessCount ] ).
 
-	TimeTrackerPid ! { RealTime, NewTopInfo }.
+    TimeTrackerPid ! { RealTime, NewTopInfo }.
 
 
 
 -doc "Updates the specified spontaneous agenda accordingly.".
 -spec update_agenda( [ tick_offset() ], [ tick_offset() ], tick_offset(),
-					 actor_pid(), wooper:state() ) -> wooper:state().
+                     actor_pid(), wooper:state() ) -> wooper:state().
 update_agenda( AddedSpontaneousTicks, WithdrawnSpontaneousTicks,
-			   CurrentTickOffset, ActorPid, State ) ->
+               CurrentTickOffset, ActorPid, State ) ->
 
-	Agenda = ?getAttr(spontaneous_agenda),
+    Agenda = ?getAttr(spontaneous_agenda),
 
-	% We withdraw before adding, hence if a never-specified tick is to be added
-	% and withdrawn *at the same diasca*, the operation will fail (as considered
-	% abnormal):
-	%
-	WithdrawAgenda = withdraw_from_agenda( ActorPid, WithdrawnSpontaneousTicks,
-										   CurrentTickOffset, Agenda ),
+    % We withdraw before adding, hence if a never-specified tick is to be added
+    % and withdrawn *at the same diasca*, the operation will fail (as considered
+    % abnormal):
+    %
+    WithdrawAgenda = withdraw_from_agenda( ActorPid, WithdrawnSpontaneousTicks,
+                                           CurrentTickOffset, Agenda ),
 
-	AddAgenda = add_to_agenda( ActorPid, AddedSpontaneousTicks,
-							   CurrentTickOffset, WithdrawAgenda ),
+    AddAgenda = add_to_agenda( ActorPid, AddedSpontaneousTicks,
+                               CurrentTickOffset, WithdrawAgenda ),
 
-	cond_utils:if_defined( sim_diasca_debug_time_management,
-		trace_utils:debug_fmt( "New agenda for ~w: ~ts.",
-							   [ ActorPid, agenda_to_string( AddAgenda ) ] ) ),
+    cond_utils:if_defined( sim_diasca_debug_time_management,
+        trace_utils:debug_fmt( "New agenda for ~w: ~ts.",
+                               [ ActorPid, agenda_to_string( AddAgenda ) ] ) ),
 
-	setAttribute( State, spontaneous_agenda, AddAgenda ).
+    setAttribute( State, spontaneous_agenda, AddAgenda ).
 
 
 
@@ -7264,71 +7263,71 @@ Withdraws the specified tick offsets for the specified actor from specified
 agenda.
 """.
 withdraw_from_agenda( _ActorPid, _WithdrawnSpontaneousTicks=[],
-					  _CurrentTickOffset, Agenda ) ->
-	Agenda;
+                      _CurrentTickOffset, Agenda ) ->
+    Agenda;
 
 
 % Must be in the future:
 withdraw_from_agenda( ActorPid, _WithdrawnSpontaneousTicks=[ TickOffset | T ],
-			CurrentTickOffset, Agenda ) when TickOffset > CurrentTickOffset ->
+            CurrentTickOffset, Agenda ) when TickOffset > CurrentTickOffset ->
 
-	NewAgenda = withdraw_from_agenda_helper( ActorPid, TickOffset, Agenda,
-											 _Acc=[] ),
+    NewAgenda = withdraw_from_agenda_helper( ActorPid, TickOffset, Agenda,
+                                             _Acc=[] ),
 
-	withdraw_from_agenda( ActorPid, T, CurrentTickOffset, NewAgenda );
+    withdraw_from_agenda( ActorPid, T, CurrentTickOffset, NewAgenda );
 
 
 withdraw_from_agenda( ActorPid, _WithdrawnSpontaneousTicks=[ TickOffset | _T ],
-					  CurrentTickOffset, _Agenda ) ->
-	throw( { tick_to_withdraw_in_the_past, ActorPid, TickOffset,
-			 CurrentTickOffset } ).
+                      CurrentTickOffset, _Agenda ) ->
+    throw( { tick_to_withdraw_in_the_past, ActorPid, TickOffset,
+             CurrentTickOffset } ).
 
 
 
 -doc "Withdraws the specified actor at specified offset from agenda.".
 withdraw_from_agenda_helper( ActorPid, TickOffset, _Agenda=[], _Acc ) ->
-	% Agenda exhausted, tick not found:
-	throw( { no_spontaneous_tick_to_withdraw, TickOffset, ActorPid } );
+    % Agenda exhausted, tick not found:
+    throw( { no_spontaneous_tick_to_withdraw, TickOffset, ActorPid } );
 
 withdraw_from_agenda_helper( ActorPid, TickOffset,
-							 _Agenda=[ { TickOffset, ActorSet } | T ], Acc ) ->
+                             _Agenda=[ { TickOffset, ActorSet } | T ], Acc ) ->
 
-	% Tick found, was already declared:
-	%
-	% (search and remove could be done in one pass)
-	%
-	case set_utils:member( ActorPid, ActorSet ) of
+    % Tick found, was already declared:
+    %
+    % (search and remove could be done in one pass)
+    %
+    case set_utils:member( ActorPid, ActorSet ) of
 
-		false ->
-			throw( { no_spontaneous_tick_to_withdraw, TickOffset, ActorPid } );
+        false ->
+            throw( { no_spontaneous_tick_to_withdraw, TickOffset, ActorPid } );
 
-		true ->
-			% The set might end up being empty, let's remove it in this case:
-			NewActorSet = set_utils:delete( ActorPid, ActorSet ),
+        true ->
+            % The set might end up being empty, let's remove it in this case:
+            NewActorSet = set_utils:delete( ActorPid, ActorSet ),
 
-			% Agenda is sorted by ascending offsets:
-			case set_utils:is_empty( NewActorSet ) of
+            % Agenda is sorted by ascending offsets:
+            case set_utils:is_empty( NewActorSet ) of
 
-				true ->
-					lists:reverse( Acc ) ++ T;
+                true ->
+                    lists:reverse( Acc ) ++ T;
 
-				false ->
-					lists:reverse( Acc ) ++ [ { TickOffset, NewActorSet } | T ]
+                false ->
+                    lists:reverse( Acc ) ++ [ { TickOffset, NewActorSet } | T ]
 
-			end
+            end
 
-	end;
+    end;
 
 withdraw_from_agenda_helper( ActorPid, TickOffset,
-						_Agenda=[ E={ TOffset, _ActorSet } | T ], Acc )
-										when TOffset < TickOffset ->
+                        _Agenda=[ E={ TOffset, _ActorSet } | T ], Acc )
+                                        when TOffset < TickOffset ->
 
-	% Offset not reached yet, continue iterating:
-	withdraw_from_agenda_helper( ActorPid, TickOffset, T, [ E | Acc ] );
+    % Offset not reached yet, continue iterating:
+    withdraw_from_agenda_helper( ActorPid, TickOffset, T, [ E | Acc ] );
 
 withdraw_from_agenda_helper( ActorPid, TickOffset, _Agenda, _Acc ) ->
-	% Tick not found (neither higher nor equal here):
-	throw( { no_spontaneous_tick_to_withdraw, TickOffset, ActorPid } ).
+    % Tick not found (neither higher nor equal here):
+    throw( { no_spontaneous_tick_to_withdraw, TickOffset, ActorPid } ).
 
 
 
@@ -7336,20 +7335,20 @@ withdraw_from_agenda_helper( ActorPid, TickOffset, _Agenda, _Acc ) ->
 Adds the specified tick offsets for the specified actor to the specified agenda.
 """.
 add_to_agenda( _ActorPid, _AddedSpontaneousTicks=[], _CurrentTickOffset,
-			   Agenda ) ->
-	Agenda;
+               Agenda ) ->
+    Agenda;
 
 add_to_agenda( ActorPid, _AddedSpontaneousTicks=[ TickOffset | T ],
-		CurrentTickOffset, Agenda ) when TickOffset > CurrentTickOffset ->
+        CurrentTickOffset, Agenda ) when TickOffset > CurrentTickOffset ->
 
-	NewAgenda = add_to_agenda_helper( ActorPid, TickOffset, Agenda, _Acc=[] ),
+    NewAgenda = add_to_agenda_helper( ActorPid, TickOffset, Agenda, _Acc=[] ),
 
-	add_to_agenda( ActorPid, T, CurrentTickOffset, NewAgenda );
+    add_to_agenda( ActorPid, T, CurrentTickOffset, NewAgenda );
 
 add_to_agenda( ActorPid, _AddedSpontaneousTicks=[ TickOffset | _T ],
-		CurrentTickOffset, _Agenda ) when TickOffset > CurrentTickOffset ->
-	throw( { tick_to_add_in_the_past, ActorPid, TickOffset,
-			 CurrentTickOffset } ).
+        CurrentTickOffset, _Agenda ) when TickOffset > CurrentTickOffset ->
+    throw( { tick_to_add_in_the_past, ActorPid, TickOffset,
+             CurrentTickOffset } ).
 
 
 
@@ -7358,42 +7357,42 @@ Adds the specified actor at specified offset in agenda. Returns an updated
 agenda.
 """.
 add_to_agenda_helper( ActorPid, TickOffset, _Agenda=[], Acc ) ->
-	% Agenda exhausted, tick to be added last:
-	NewActorSet = set_utils:singleton( ActorPid ),
-	lists:reverse( [ { TickOffset, NewActorSet } | Acc ] );
+    % Agenda exhausted, tick to be added last:
+    NewActorSet = set_utils:singleton( ActorPid ),
+    lists:reverse( [ { TickOffset, NewActorSet } | Acc ] );
 
 add_to_agenda_helper( ActorPid, TickOffset,
-					  _Agenda=[ { TickOffset, ActorSet } | T ], Acc ) ->
+                      _Agenda=[ { TickOffset, ActorSet } | T ], Acc ) ->
 
-	% Tick found, as was already declared: actor just to be added to the
-	% pre-existing list here.
-	%
-	% We allow here an actor to declare the same spontaneous tick more than
-	% once; in any case its PID will be listed only once (if any); we could have
-	% also checked the presence of the PID before adding it, just to notify
-	% (warning or error) that it was included multiple times, but we allow
-	% multiple declarations (not considered as an error; more convenient for
-	% model developers).
-	%
-	NewActorSet = set_utils:add( ActorPid, ActorSet ),
-	lists:reverse( Acc ) ++ [ { TickOffset, NewActorSet } | T ];
-
-add_to_agenda_helper( ActorPid, TickOffset,
-					  _Agenda=[ E={ SmallerOffset, _ActorSet } | T ], Acc )
-									when TickOffset > SmallerOffset ->
-	% Still in smaller offsets here, let's continue iterating:
-	add_to_agenda_helper( ActorPid, TickOffset, T, [ E | Acc ] );
+    % Tick found, as was already declared: actor just to be added to the
+    % pre-existing list here.
+    %
+    % We allow here an actor to declare the same spontaneous tick more than
+    % once; in any case its PID will be listed only once (if any); we could have
+    % also checked the presence of the PID before adding it, just to notify
+    % (warning or error) that it was included multiple times, but we allow
+    % multiple declarations (not considered as an error; more convenient for
+    % model developers).
+    %
+    NewActorSet = set_utils:add( ActorPid, ActorSet ),
+    lists:reverse( Acc ) ++ [ { TickOffset, NewActorSet } | T ];
 
 add_to_agenda_helper( ActorPid, TickOffset,
-		% Clearer: Agenda=[ { _HigherOffset, _ActorSet } | _T ], Acc ) ->
-		Agenda, Acc ) ->
+                      _Agenda=[ E={ SmallerOffset, _ActorSet } | T ], Acc )
+                                    when TickOffset > SmallerOffset ->
+    % Still in smaller offsets here, let's continue iterating:
+    add_to_agenda_helper( ActorPid, TickOffset, T, [ E | Acc ] );
 
-	% Implicitly here we went past the last smaller (i.e. HigherOffset >
-	% TickOffset), so we have to add a new set, at the relevant place
-	% (i.e. just before):
-	%
-	NewActorSet = set_utils:singleton( ActorPid ),
-	lists:reverse( Acc ) ++ [ { TickOffset, NewActorSet } | Agenda ].
+add_to_agenda_helper( ActorPid, TickOffset,
+        % Clearer: Agenda=[ { _HigherOffset, _ActorSet } | _T ], Acc ) ->
+        Agenda, Acc ) ->
+
+    % Implicitly here we went past the last smaller (i.e. HigherOffset >
+    % TickOffset), so we have to add a new set, at the relevant place
+    % (i.e. just before):
+    %
+    NewActorSet = set_utils:singleton( ActorPid ),
+    lists:reverse( Acc ) ++ [ { TickOffset, NewActorSet } | Agenda ].
 
 
 
@@ -7404,24 +7403,24 @@ Returns the number of child managers.
 """.
 notify_child_managers_of_tick( ChildManagers, NewTickOffset ) ->
 
-	?display_console( "Notifying at tick offset #~B following "
-		"child managers: ~p.",
-		[ NewTickOffset, set_utils:to_list( ChildManagers ) ] ),
+    ?display_console( "Notifying at tick offset #~B following "
+        "child managers: ~p.",
+        [ NewTickOffset, set_utils:to_list( ChildManagers ) ] ),
 
-	% case ChildManagers of
+    % case ChildManagers of
 
-	%   [] ->
-	%      ?display_console( "No child manager to notify of new tick "
-	%                        "offset #~B.", [ NewTickOffset ] );
+    %   [] ->
+    %      ?display_console( "No child manager to notify of new tick "
+    %                        "offset #~B.", [ NewTickOffset ] );
 
-	%   _Children ->
-	%      ?display_console( "Notifying child managers ~w of new tick "
-	%                        "offset #~B.", [ ChildManagers, NewTickOffset ] )
+    %   _Children ->
+    %      ?display_console( "Notifying child managers ~w of new tick "
+    %                        "offset #~B.", [ ChildManagers, NewTickOffset ] )
 
-	% end,
+    % end,
 
-	basic_utils:send_to_pid_set( { beginTimeManagerTick, NewTickOffset },
-								 ChildManagers ).
+    basic_utils:send_to_pid_set( { beginTimeManagerTick, NewTickOffset },
+                                 ChildManagers ).
 
 
 
@@ -7430,26 +7429,26 @@ Notifies all the specified child managers that the specified diasca is to begin.
 """.
 notify_child_managers_of_diasca( ChildManagers, TickOffset, NewDiasca ) ->
 
-	?display_console( "Notifying at diasca ~B in tick offset #~B "
-		"following child managers: ~p.",
-		[ NewDiasca, TickOffset, set_utils:to_list( ChildManagers ) ] ),
+    ?display_console( "Notifying at diasca ~B in tick offset #~B "
+        "following child managers: ~p.",
+        [ NewDiasca, TickOffset, set_utils:to_list( ChildManagers ) ] ),
 
-	% case ChildManagers of
+    % case ChildManagers of
 
-	%   [] ->
-	%      ?display_console( "No child manager to notify of new diasca ~B "
-	%                   "at tick offset #~B.", [ NewDiasca, TickOffset ] );
+    %   [] ->
+    %      ?display_console( "No child manager to notify of new diasca ~B "
+    %                   "at tick offset #~B.", [ NewDiasca, TickOffset ] );
 
-	%   _Children ->
-	%      ?display_console( "Notifying child managers ~w of new diasca ~B "
-	%          "at tick offset #~B.",
-	%          [ ChildManagers, NewDiasca, TickOffset ] )
+    %   _Children ->
+    %      ?display_console( "Notifying child managers ~w of new diasca ~B "
+    %          "at tick offset #~B.",
+    %          [ ChildManagers, NewDiasca, TickOffset ] )
 
-	% end,
+    % end,
 
-	% Returns the number of child managers:
-	basic_utils:send_to_pid_set(
-		{ beginTimeManagerDiasca, [ TickOffset, NewDiasca ] }, ChildManagers ).
+    % Returns the number of child managers:
+    basic_utils:send_to_pid_set(
+        { beginTimeManagerDiasca, [ TickOffset, NewDiasca ] }, ChildManagers ).
 
 
 
@@ -7462,29 +7461,29 @@ corresponding spontaneous actors (as a set), their count and of the new agenda.
 """.
 notify_spontaneous_actors( NewTickOffset, State ) ->
 
-	Agenda = ?getAttr(spontaneous_agenda),
+    Agenda = ?getAttr(spontaneous_agenda),
 
-	% Then only, manages the local actors that must be scheduled:
-	case get_spontaneous_for( NewTickOffset, Agenda ) of
+    % Then only, manages the local actors that must be scheduled:
+    case get_spontaneous_for( NewTickOffset, Agenda ) of
 
-		none ->
-			?display_console( "No spontaneous actor to notify at "
-							  "tick offset #~B.", [ NewTickOffset ] ),
-			{ set_utils:new(), 0, Agenda };
+        none ->
+            ?display_console( "No spontaneous actor to notify at "
+                              "tick offset #~B.", [ NewTickOffset ] ),
+            { set_utils:new(), 0, Agenda };
 
-		{ ActorSet, NewSpontaneousAgenda } ->
+        { ActorSet, NewSpontaneousAgenda } ->
 
-			?display_console( "Notifying at tick offset #~B "
-				"following spontaneous actors: ~p.",
-				[ NewTickOffset, set_utils:to_list( ActorSet ) ] ),
+            ?display_console( "Notifying at tick offset #~B "
+                "following spontaneous actors: ~p.",
+                [ NewTickOffset, set_utils:to_list( ActorSet ) ] ),
 
-			% Oneway:
-			Count = basic_utils:send_to_pid_set( { beginTick, NewTickOffset },
-												 ActorSet ),
+            % Oneway:
+            Count = basic_utils:send_to_pid_set( { beginTick, NewTickOffset },
+                                                 ActorSet ),
 
-			{ ActorSet, Count, NewSpontaneousAgenda }
+            { ActorSet, Count, NewSpontaneousAgenda }
 
-	end.
+    end.
 
 
 
@@ -7495,8 +7494,8 @@ are actively terminating, that a new diasca began.
 Returns the number of triggered actors.
 """.
 notify_triggered_actors( TickOffset, NewDiasca, TriggeredActors ) ->
-	basic_utils:send_to_pid_set(
-		{ beginDiasca, [ TickOffset, NewDiasca ] }, TriggeredActors ).
+    basic_utils:send_to_pid_set(
+        { beginDiasca, [ TickOffset, NewDiasca ] }, TriggeredActors ).
 
 
 
@@ -7504,25 +7503,25 @@ notify_triggered_actors( TickOffset, NewDiasca, TriggeredActors ) ->
 -spec on_simulation_success( wooper:state() ) -> void().
 on_simulation_success( State ) ->
 
-	?debug( "Applying the simulation success procedure." ),
+    ?debug( "Applying the simulation success procedure." ),
 
-	% As deleted actors may need to have the actual (final) timestamp in order
-	% to perform operations (e.g. send a closing sample to a probe) before
-	% having their destructor called (they can then just override the
-	% class_Actor:synchroniseTo/3 oneway):
+    % As deleted actors may need to have the actual (final) timestamp in order
+    % to perform operations (e.g. send a closing sample to a probe) before
+    % having their destructor called (they can then just override the
+    % class_Actor:synchroniseTo/3 oneway):
 
-	SyncMsg = { synchroniseTo,
-				[ ?getAttr(current_tick_offset), ?getAttr(current_diasca) ] },
+    SyncMsg = { synchroniseTo,
+                [ ?getAttr(current_tick_offset), ?getAttr(current_diasca) ] },
 
-	[ [ APid ! SyncMsg || APid <- AList ] || AList <-
-		[ ?getAttr(actors_to_delete_at_next_tick),
-		  ?getAttr(terminated_actors),
-		   set_utils:to_list( ?getAttr(known_local_actors) ) ] ],
+    [ [ APid ! SyncMsg || APid <- AList ] || AList <-
+        [ ?getAttr(actors_to_delete_at_next_tick),
+          ?getAttr(terminated_actors),
+           set_utils:to_list( ?getAttr(known_local_actors) ) ] ],
 
-	% Note that the triggered agents will act concurrently with the actor
-	% synchronisation and deletion:
-	%
-	[ L ! simulation_succeeded || L <- ?getAttr(simulation_listeners) ].
+    % Note that the triggered agents will act concurrently with the actor
+    % synchronisation and deletion:
+    %
+    [ L ! simulation_succeeded || L <- ?getAttr(simulation_listeners) ].
 
 
 
@@ -7531,33 +7530,33 @@ Terminates the actors that already notified this time manager on the previous
 diasca that they were terminating.
 """.
 -spec terminate_actors( tick_offset(), diasca(), wooper:state() ) ->
-							wooper:state().
+                            wooper:state().
 terminate_actors( TickOffset, NewDiasca, State ) ->
 
-	ActorList = ?getAttr(terminated_actors),
+    ActorList = ?getAttr(terminated_actors),
 
-	?display_console( "Terminated actors: ~w.", [ ActorList ] ),
+    ?display_console( "Terminated actors: ~w.", [ ActorList ] ),
 
-	% Rush for maximum parallelism:
-	TerminationMessage = { beginTerminationDiasca, [ TickOffset, NewDiasca ] },
-	[ Actor ! TerminationMessage || Actor <- ActorList ],
+    % Rush for maximum parallelism:
+    TerminationMessage = { beginTerminationDiasca, [ TickOffset, NewDiasca ] },
+    [ Actor ! TerminationMessage || Actor <- ActorList ],
 
-	% Then take care of the internal administrative details:
-	TerminatedState = lists:foldl(
-		fun( Actor, FoldedState ) ->
-			actual_unsubscribing( Actor, FoldedState )
-		end,
-		_InitialAcc=State,
-		ActorList ),
+    % Then take care of the internal administrative details:
+    TerminatedState = lists:foldl(
+        fun( Actor, FoldedState ) ->
+            actual_unsubscribing( Actor, FoldedState )
+        end,
+        _InitialAcc=State,
+        ActorList ),
 
-	% As a result, these terminated actors are not anymore among the known,
-	% local ones.
+    % As a result, these terminated actors are not anymore among the known,
+    % local ones.
 
-	ActorsToDelete = ActorList ++ ?getAttr(actors_to_delete_at_next_tick),
+    ActorsToDelete = ActorList ++ ?getAttr(actors_to_delete_at_next_tick),
 
-	setAttributes( TerminatedState, [
-		{ terminated_actors, [] },
-		{ actors_to_delete_at_next_tick, ActorsToDelete } ] ).
+    setAttributes( TerminatedState, [
+        { terminated_actors, [] },
+        { actors_to_delete_at_next_tick, ActorsToDelete } ] ).
 
 
 
@@ -7569,74 +7568,74 @@ Typically used whenever the simulation (normally) ends for any reason whereas
 there are still non-terminating actors.
 """.
 -spec terminate_running_actors( [ actor_pid() ], wooper:state() ) ->
-									wooper:state().
+                                    wooper:state().
 terminate_running_actors( ActorsToSkip, State ) ->
 
-	SkipActorSet = set_utils:from_list( ActorsToSkip ),
+    SkipActorSet = set_utils:from_list( ActorsToSkip ),
 
-	% Not calling their simulationEnded/1 here, as we want to delete them
-	% synchronously (e.g. otherwise their could be a race condition in which the
-	% local instance tracker would alreagy be deleted, hence unregistered, where
-	% actors are still being deleted)
+    % Not calling their simulationEnded/1 here, as we want to delete them
+    % synchronously (e.g. otherwise their could be a race condition in which the
+    % local instance tracker would alreagy be deleted, hence unregistered, where
+    % actors are still being deleted)
 
-	BaseActorSet = ?getAttr(known_local_actors),
+    BaseActorSet = ?getAttr(known_local_actors),
 
-	% Eliminates the actors to skip from the local ones that will be deleted:
-	ToDelSet = set_utils:difference( BaseActorSet, SkipActorSet ),
+    % Eliminates the actors to skip from the local ones that will be deleted:
+    ToDelSet = set_utils:difference( BaseActorSet, SkipActorSet ),
 
-	TargetActors = set_utils:to_list( ToDelSet ),
+    TargetActors = set_utils:to_list( ToDelSet ),
 
-	case TargetActors of
+    case TargetActors of
 
-		[] ->
-			?debug( "No still running actor to delete." ),
-			State;
+        [] ->
+            ?debug( "No still running actor to delete." ),
+            State;
 
-		_ ->
-			?debug_fmt( "Trying to delete synchronously ~B still running "
-				"actors: ~ts.",
-				[ length( TargetActors ),
-				  text_utils:pids_to_short_string( TargetActors ) ] ),
+        _ ->
+            ?debug_fmt( "Trying to delete synchronously ~B still running "
+                "actors: ~ts.",
+                [ length( TargetActors ),
+                  text_utils:pids_to_short_string( TargetActors ) ] ),
 
-			% We used to rely on synchronous deletions, however, typically at
-			% simulation tear-down, among all these actors they may exist some
-			% that own others in that TargetActors list (e.g. a planning owning
-			% plannable elements, since they must be deallocated whenever their
-			% planning is itself deallocated); as a result these owned actors
-			% would be deleted twice: one because they belong to this
-			% TargetActors list, and one because their owner (also in that list)
-			% is itself deallocated.
-			%
-			% So using a synchronous deletion here would result in synchronous
-			% deletion time-outs ("Stopped waiting for the deletion of..."),
-			% triggered when waiting for an already deleted owned actor, which
-			% is not satisfactory.
-			%
-			% We therefore rely here on asynchronous deletions now (this is not
-			% a too serious problem as we are at simulation teardown, yet we
-			% lose the certainty that all actors will be deallocated for sure;
-			% most probably that the VM will halt whereas actors remain; a
-			% solution would be for a given time manager to wait/poll for some
-			% time for the local instance tracker (which is not an actor, and is
-			% the only one notified by an actor whenever it is deleted) until,
-			% hopefully, it tells that it is not tracking actors anymore.
+            % We used to rely on synchronous deletions, however, typically at
+            % simulation tear-down, among all these actors they may exist some
+            % that own others in that TargetActors list (e.g. a planning owning
+            % plannable elements, since they must be deallocated whenever their
+            % planning is itself deallocated); as a result these owned actors
+            % would be deleted twice: one because they belong to this
+            % TargetActors list, and one because their owner (also in that list)
+            % is itself deallocated.
+            %
+            % So using a synchronous deletion here would result in synchronous
+            % deletion time-outs ("Stopped waiting for the deletion of..."),
+            % triggered when waiting for an already deleted owned actor, which
+            % is not satisfactory.
+            %
+            % We therefore rely here on asynchronous deletions now (this is not
+            % a too serious problem as we are at simulation teardown, yet we
+            % lose the certainty that all actors will be deallocated for sure;
+            % most probably that the VM will halt whereas actors remain; a
+            % solution would be for a given time manager to wait/poll for some
+            % time for the local instance tracker (which is not an actor, and is
+            % the only one notified by an actor whenever it is deleted) until,
+            % hopefully, it tells that it is not tracking actors anymore.
 
-			% Too strict (risk of deadlock if any owned actor deleted before
-			% owning one):
-			%
-			%wooper:delete_synchronously_instances( TargetActors ),
+            % Too strict (risk of deadlock if any owned actor deleted before
+            % owning one):
+            %
+            %wooper:delete_synchronously_instances( TargetActors ),
 
-			% To permissive :
-			%[ APid ! delete || APid <- TargetActors ],
+            % To permissive :
+            %[ APid ! delete || APid <- TargetActors ],
 
-			% To let them a "fair" chance of nevertheless finishing:
-			%TargetActors =:= [] orelse timer:sleep( 5000 ),
+            % To let them a "fair" chance of nevertheless finishing:
+            %TargetActors =:= [] orelse timer:sleep( 5000 ),
 
-			wooper:safe_delete_synchronously_instances( TargetActors ),
+            wooper:safe_delete_synchronously_instances( TargetActors ),
 
-			setAttribute( State, known_local_actors, set_utils:new() )
+            setAttribute( State, known_local_actors, set_utils:new() )
 
-	end.
+    end.
 
 
 
@@ -7648,26 +7647,26 @@ Note: placed in a dedicated function, as used from more than one place.
 -spec actual_unsubscribing( actor_pid(), wooper:state() ) -> wooper:state().
 actual_unsubscribing( ActorPid, State ) ->
 
-	%?display_console( "############ Unsubscribing actor ~w.", [ ActorPid ] ),
+    %?display_console( "############ Unsubscribing actor ~w.", [ ActorPid ] ),
 
-	LocalActors = ?getAttr(known_local_actors),
+    LocalActors = ?getAttr(known_local_actors),
 
-	case set_utils:member( ActorPid, LocalActors ) of
+    case set_utils:member( ActorPid, LocalActors ) of
 
-		true ->
-			?debug_fmt( "Unsubscribing actor ~w.", [ ActorPid ] ),
+        true ->
+            ?debug_fmt( "Unsubscribing actor ~w.", [ ActorPid ] ),
 
-			PurgedState = ensure_actor_never_scheduled_anymore( ActorPid,
-																State ),
+            PurgedState = ensure_actor_never_scheduled_anymore( ActorPid,
+                                                                State ),
 
-			UpdatedLocalActors = set_utils:delete( ActorPid, LocalActors ),
+            UpdatedLocalActors = set_utils:delete( ActorPid, LocalActors ),
 
-			setAttribute( PurgedState, known_local_actors, UpdatedLocalActors );
+            setAttribute( PurgedState, known_local_actors, UpdatedLocalActors );
 
-		false ->
-			throw( { unknown_actor_to_unsubscribe, ActorPid } )
+        false ->
+            throw( { unknown_actor_to_unsubscribe, ActorPid } )
 
-	end.
+    end.
 
 
 
@@ -7680,23 +7679,23 @@ A mere (expensive) checking that can be disabled as a whole.
                                                 wooper:state().
 ensure_actor_never_scheduled_anymore( ActorPid, State ) ->
 
-	% We go through all the agenda:
-	%
-	% (we could as well maintain a list of terminated actors to better spot
-	% life-cycle errors, based on the instance tracker)
-	%
-	[ check_not_in_slot( ActorPid, S ) || S <- ?getAttr(spontaneous_agenda) ],
+    % We go through all the agenda:
+    %
+    % (we could as well maintain a list of terminated actors to better spot
+    % life-cycle errors, based on the instance tracker)
+    %
+    [ check_not_in_slot( ActorPid, S ) || S <- ?getAttr(spontaneous_agenda) ],
 
-	State.
+    State.
 
 
 
 -doc "Checks that the specified actor is not in specified slot.".
 -spec check_not_in_slot( actor_pid(), term() ) -> void().
 check_not_in_slot( ActorPid, { TickOffset, ActorSet } ) ->
-	set_utils:member( ActorPid, ActorSet ) andalso
-		throw( { future_schedule_for_terminating_actor, ActorPid,
-				 TickOffset } ).
+    set_utils:member( ActorPid, ActorSet ) andalso
+        throw( { future_schedule_for_terminating_actor, ActorPid,
+                 TickOffset } ).
 
 
 
@@ -7719,28 +7718,28 @@ its head.
 Note: the third clause and the guard of the second could be removed.
 """.
 get_spontaneous_for( TickOffset,
-		_SpontaneousAgenda=[ { TickOffset, ActorSet } | T ] ) ->
-	% Found, and returned popped:
-	{ ActorSet, _NewSpontaneousAgenda=T };
+        _SpontaneousAgenda=[ { TickOffset, ActorSet } | T ] ) ->
+    % Found, and returned popped:
+    { ActorSet, _NewSpontaneousAgenda=T };
 
 get_spontaneous_for( _TickOffset, _SpontaneousAgenda=[] ) ->
-	% Nothing is planned at all (local agenda exhausted), but it does not mean
-	% the simulation will remain idle until the end of time, as other time
-	% managers may have a non-empty agenda.
-	%
-	none;
+    % Nothing is planned at all (local agenda exhausted), but it does not mean
+    % the simulation will remain idle until the end of time, as other time
+    % managers may have a non-empty agenda.
+    %
+    none;
 
 get_spontaneous_for( TickOffset,
-		_SpontaneousAgenda=[ { OtherTickOffset, _ActorSet } | _T ] )
-			when OtherTickOffset > TickOffset ->
-	% Other tick already in the future, thus nothing to do currently:
-	none;
+        _SpontaneousAgenda=[ { OtherTickOffset, _ActorSet } | _T ] )
+            when OtherTickOffset > TickOffset ->
+    % Other tick already in the future, thus nothing to do currently:
+    none;
 
 get_spontaneous_for( TickOffset, SpontaneousAgenda ) ->
-	% Here we must have found in the agenda a tick offset smaller than the
-	% specified one: spontaneous entry in the past, abnormal!
-	%
-	throw( { spontaneous_entry_in_the_past, TickOffset, SpontaneousAgenda } ).
+    % Here we must have found in the agenda a tick offset smaller than the
+    % specified one: spontaneous entry in the past, abnormal!
+    %
+    throw( { spontaneous_entry_in_the_past, TickOffset, SpontaneousAgenda } ).
 
 
 
@@ -7751,8 +7750,8 @@ scheduled on specified tick offset, if not already present.
 Returns an updated schedule agenda.
 """.
 schedule_as_spontaneous_for( TickOffset, Actor, SpontaneousAgenda ) ->
-	insert_as_spontaneous_for( TickOffset, Actor, SpontaneousAgenda,
-							   _ReversedEndList=[] ).
+    insert_as_spontaneous_for( TickOffset, Actor, SpontaneousAgenda,
+                               _ReversedEndList=[] ).
 
 
 
@@ -7773,41 +7772,41 @@ so to rebuild the list we use: `lists:reverse(ReversedEndList) ++ BeginList`.
 """.
 % We arrived at the end of the list, not found, insert at last position:
 insert_as_spontaneous_for( Tick, Actor, _BeginList=[], ReversedEndList ) ->
-	lists:reverse(
-		[ { Tick, set_utils:singleton( Actor ) } | ReversedEndList ] );
+    lists:reverse(
+        [ { Tick, set_utils:singleton( Actor ) } | ReversedEndList ] );
 
 
 % The tick has already an entry; adding this actor (in a set, hence this actor
 % will be there only once, even if it was already present)
 %
 insert_as_spontaneous_for( Tick, Actor,
-		_CurrentList=[ { Tick, ActorSet } | RemainderOfBeginList ],
-		ReversedEndList ) ->
+        _CurrentList=[ { Tick, ActorSet } | RemainderOfBeginList ],
+        ReversedEndList ) ->
 
-	NewActorSet = set_utils:add( Actor, ActorSet ),
+    NewActorSet = set_utils:add( Actor, ActorSet ),
 
-	lists:reverse( [ { Tick, NewActorSet } | ReversedEndList ] )
-		++ RemainderOfBeginList;
+    lists:reverse( [ { Tick, NewActorSet } | ReversedEndList ] )
+        ++ RemainderOfBeginList;
 
 
 insert_as_spontaneous_for( Tick, Actor,
-		BeginList=[ { CurrentTick, _ActorSet } | _RemainderOfBeginList ],
-		ReversedEndList ) when CurrentTick > Tick ->
+        BeginList=[ { CurrentTick, _ActorSet } | _RemainderOfBeginList ],
+        ReversedEndList ) when CurrentTick > Tick ->
 
-	% Here we just went past the correct tick, which had no actor list yet,
-	% adding it:
-	%
-	lists:reverse( [ { Tick, set_utils:singleton( Actor ) }
-						|  ReversedEndList ] ) ++ BeginList;
+    % Here we just went past the correct tick, which had no actor list yet,
+    % adding it:
+    %
+    lists:reverse( [ { Tick, set_utils:singleton( Actor ) }
+                        |  ReversedEndList ] ) ++ BeginList;
 
 insert_as_spontaneous_for( Tick, Actor, [ Entry | BeginList ],
-						   ReversedEndList ) ->
+                           ReversedEndList ) ->
 
-	% Here implicitly we have still CurrentTick < Tick, therefore just
-	% recursing:
-	%
-	insert_as_spontaneous_for( Tick, Actor, BeginList,
-							   [ Entry | ReversedEndList ] ).
+    % Here implicitly we have still CurrentTick < Tick, therefore just
+    % recursing:
+    %
+    insert_as_spontaneous_for( Tick, Actor, BeginList,
+                               [ Entry | ReversedEndList ] ).
 
 
 
@@ -7819,7 +7818,7 @@ specified one.
 """.
 -spec merge_agendas( agenda(), agenda() ) -> agenda().
 merge_agendas( _FirstAgenda=[], SecondAgenda ) ->
-	SecondAgenda;
+    SecondAgenda;
 
 % We iterate over the first, and complement the second:
 %
@@ -7827,9 +7826,9 @@ merge_agendas( _FirstAgenda=[], SecondAgenda ) ->
 %
 merge_agendas( _FirstAgenda=[ Entry | T ], SecondAgenda ) ->
 
-	UpdatedSecondAgenda = insert_schedule_list_for( Entry, SecondAgenda ),
+    UpdatedSecondAgenda = insert_schedule_list_for( Entry, SecondAgenda ),
 
-	merge_agendas( T, UpdatedSecondAgenda ).
+    merge_agendas( T, UpdatedSecondAgenda ).
 
 
 
@@ -7840,35 +7839,35 @@ returns the resulting agenda.
 Quite similar to `insert_as_spontaneous_for/4`.
 """.
 insert_schedule_list_for( Entry, Agenda ) ->
-	insert_schedule_list_for( Entry, Agenda, _ReversedEndAgenda=[] ).
+    insert_schedule_list_for( Entry, Agenda, _ReversedEndAgenda=[] ).
 
 
 
 % (helper)
 % We arrived at the end of the list, not found, insert at last position:
 insert_schedule_list_for( Entry, _Agenda=[], ReversedEndAgenda ) ->
-	lists:reverse( [ Entry | ReversedEndAgenda ] );
+    lists:reverse( [ Entry | ReversedEndAgenda ] );
 
 
 % Tick already defined, just adding our entry there:
 insert_schedule_list_for( _Entry={ Tick, ActorSet },
-		_Agenda=[ { Tick, CurrentSet } | T ], ReversedEndAgenda ) ->
-	% Complementing that tick with both sets:
-	MergedSet = set_utils:union( ActorSet, CurrentSet ),
-	lists:reverse( [ { Tick, MergedSet } | ReversedEndAgenda ] ) ++ T;
+        _Agenda=[ { Tick, CurrentSet } | T ], ReversedEndAgenda ) ->
+    % Complementing that tick with both sets:
+    MergedSet = set_utils:union( ActorSet, CurrentSet ),
+    lists:reverse( [ { Tick, MergedSet } | ReversedEndAgenda ] ) ++ T;
 
 
 % Here we just went past the correct tick, which had no actor set yet, adding
 % it:
 %
 insert_schedule_list_for( Entry={ ETick, _ActorSet },
-		Agenda=[ { ATick, _CurrentSet } | _T ], ReversedEndAgenda )
-										when ATick > ETick ->
-	lists:reverse( [ Entry | ReversedEndAgenda ] ) ++ Agenda;
+        Agenda=[ { ATick, _CurrentSet } | _T ], ReversedEndAgenda )
+                                        when ATick > ETick ->
+    lists:reverse( [ Entry | ReversedEndAgenda ] ) ++ Agenda;
 
 insert_schedule_list_for( Entry, _Agenda=[ AEntry | T ], ReversedEndAgenda ) ->
-	% Here implicitly ATick < ETick, therefore just recursing:
-	insert_schedule_list_for( Entry, T, [ AEntry | ReversedEndAgenda ] ).
+    % Here implicitly ATick < ETick, therefore just recursing:
+    insert_schedule_list_for( Entry, T, [ AEntry | ReversedEndAgenda ] ).
 
 
 
@@ -7876,46 +7875,46 @@ insert_schedule_list_for( Entry, _Agenda=[ AEntry | T ], ReversedEndAgenda ) ->
 -spec launch_watchdog( wooper:state() ) -> wooper:state().
 launch_watchdog( State ) ->
 
-	%WatchdogDuration = ?watchdog_wait_duration,
+    %WatchdogDuration = ?watchdog_wait_duration,
 
-	% Needed, as a self() in a closure would be evaluated by the spawned
-	% process:
-	%
-	RootTimeManagerPid = self(),
+    % Needed, as a self() in a closure would be evaluated by the spawned
+    % process:
+    %
+    RootTimeManagerPid = self(),
 
-	% They depend on the execution target:
-	DelayBeforeFirstStall =
-		get_max_inter_diasca_duration_until_first_stall_detected(),
+    % They depend on the execution target:
+    DelayBeforeFirstStall =
+        get_max_inter_diasca_duration_until_first_stall_detected(),
 
-	DelayBetweenNextStalls =
-		get_max_inter_diasca_duration_until_next_stall_detected(),
+    DelayBetweenNextStalls =
+        get_max_inter_diasca_duration_until_next_stall_detected(),
 
-	DelayBeforeFailed = get_max_inter_diasca_duration_until_failure_triggered(),
+    DelayBeforeFailed = get_max_inter_diasca_duration_until_failure_triggered(),
 
-	% The watchdog ensures the manager does not get stuck:
-	% (closure used to avoid exporting the function)
-	%
-	WatchdogPid = ?myriad_spawn_link(
-		fun() ->
-			watchdog_main_loop( RootTimeManagerPid, DelayBeforeFirstStall,
-				DelayBetweenNextStalls, DelayBeforeFailed,
-				_NextPeriod=DelayBeforeFirstStall, _AccumulatedDuration=0 )
-		end ),
+    % The watchdog ensures the manager does not get stuck:
+    % (closure used to avoid exporting the function)
+    %
+    WatchdogPid = ?myriad_spawn_link(
+        fun() ->
+            watchdog_main_loop( RootTimeManagerPid, DelayBeforeFirstStall,
+                DelayBetweenNextStalls, DelayBeforeFailed,
+                _NextPeriod=DelayBeforeFirstStall, _AccumulatedDuration=0 )
+        end ),
 
-	?debug_fmt( "Watchdog ~w created and running, with a time-out duration "
-		"of ~B ms (~ts) for any initial stall, then ~B ms (~ts) for next ones, "
-		"and of ~B ms (~ts) for automatic shutdowns; "
-		"notifying now initial actors that the simulation started.",
-		[ WatchdogPid, DelayBeforeFirstStall,
-		  time_utils:duration_to_string( DelayBeforeFirstStall ),
-		  DelayBetweenNextStalls,
-		  time_utils:duration_to_string( DelayBetweenNextStalls ),
-		  DelayBeforeFailed,
-		  time_utils:duration_to_string( DelayBeforeFailed ) ] ),
+    ?debug_fmt( "Watchdog ~w created and running, with a time-out duration "
+        "of ~B ms (~ts) for any initial stall, then ~B ms (~ts) for next ones, "
+        "and of ~B ms (~ts) for automatic shutdowns; "
+        "notifying now initial actors that the simulation started.",
+        [ WatchdogPid, DelayBeforeFirstStall,
+          time_utils:duration_to_string( DelayBeforeFirstStall ),
+          DelayBetweenNextStalls,
+          time_utils:duration_to_string( DelayBetweenNextStalls ),
+          DelayBeforeFailed,
+          time_utils:duration_to_string( DelayBeforeFailed ) ] ),
 
-	setAttributes( State, [
-		{ watchdog_pid, WatchdogPid },
-		{ watchdog_waited, false } ] ).
+    setAttributes( State, [
+        { watchdog_pid, WatchdogPid },
+        { watchdog_waited, false } ] ).
 
 
 
@@ -7923,43 +7922,43 @@ launch_watchdog( State ) ->
 -spec launch_timer( wooper:state() ) -> wooper:state().
 launch_timer( State ) ->
 
-	?notify_by_speak( "Starting simulation clock in "
-					  "simulation-interactive mode." ),
+    ?notify_by_speak( "Starting simulation clock in "
+                      "simulation-interactive mode." ),
 
-	TickDuration = ?getAttr(simulation_tick_duration),
+    TickDuration = ?getAttr(simulation_tick_duration),
 
-	( is_float( TickDuration ) andalso TickDuration > 0 ) orelse
-		throw( { invalid_tick_duration, TickDuration } ),
+    ( is_float( TickDuration ) andalso TickDuration > 0 ) orelse
+        throw( { invalid_tick_duration, TickDuration } ),
 
-	% duration_to_string/1 expects milliseconds:
-	TickDurationString =
-		time_utils:duration_to_string( erlang:round( TickDuration * 1000 ) ),
+    % duration_to_string/1 expects milliseconds:
+    TickDurationStr =
+        time_utils:duration_to_string( erlang:round( TickDuration * 1000 ) ),
 
-	Frequency = 1 / TickDuration,
+    Frequency = 1 / TickDuration,
 
-	TimerTimeOut = ?getAttr(simulation_tick_waiting),
+    TimerTimeOut = ?getAttr(simulation_tick_waiting),
 
-	( is_integer( TimerTimeOut ) andalso TimerTimeOut > 0 ) orelse
-		throw( { invalid_tick_waiting, TimerTimeOut } ),
+    ( is_integer( TimerTimeOut ) andalso TimerTimeOut > 0 ) orelse
+        throw( { invalid_tick_waiting, TimerTimeOut } ),
 
-	?notify_mute_fmt( "Starting global simulation clock in "
-		"simulation-interactive mode at ~ts with a requested simulation "
-		"frequency of approximately ~fHz (period of exactly ~ts), with "
-		"~B ms expected between simulation ticks.",
-		[ get_textual_timings( State ), Frequency, TickDurationString,
-		  TimerTimeOut ] ),
+    ?notify_mute_fmt( "Starting global simulation clock in "
+        "simulation-interactive mode at ~ts with a requested simulation "
+        "frequency of approximately ~fHz (period of exactly ~ts), with "
+        "~B ms expected between simulation ticks.",
+        [ get_textual_timings( State ), Frequency, TickDurationStr,
+          TimerTimeOut ] ),
 
-	% Closure used to avoid exporting the function:
+    % Closure used to avoid exporting the function:
 
-	RootTimeManagerPid = self(),
+    RootTimeManagerPid = self(),
 
-	TimerPid = ?myriad_spawn_link(
-		fun() ->
-			timer_main_loop( RootTimeManagerPid, TimerTimeOut )
-		end ),
+    TimerPid = ?myriad_spawn_link(
+        fun() ->
+            timer_main_loop( RootTimeManagerPid, TimerTimeOut )
+        end ),
 
-	setAttributes( State, [ { interactive_tick_triggered, false },
-							{ timer_pid, TimerPid } ] ).
+    setAttributes( State, [ { interactive_tick_triggered, false },
+                            { timer_pid, TimerPid } ] ).
 
 
 
@@ -7967,58 +7966,58 @@ launch_timer( State ) ->
 -spec launch_wallclock_tracker( wooper:state() ) -> wooper:state().
 launch_wallclock_tracker( State ) ->
 
-	RootTimeManagerPid = self(),
+    RootTimeManagerPid = self(),
 
-	WallclockTrakerPid = ?myriad_spawn_link(
-		fun() ->
-			wallclock_tracker_main_loop( RootTimeManagerPid,
-				?getAttr(wallclock_milestone_period), _TotalDuration=0 )
-		end ),
+    WallclockTrakerPid = ?myriad_spawn_link(
+        fun() ->
+            wallclock_tracker_main_loop( RootTimeManagerPid,
+                ?getAttr(wallclock_milestone_period), _TotalDuration=0 )
+        end ),
 
-	setAttribute( State, wallclock_tracker_pid, WallclockTrakerPid ).
+    setAttribute( State, wallclock_tracker_pid, WallclockTrakerPid ).
 
 
 % (helper)
 launch_time_tracker( State ) ->
 
-	RootTimeManagerPid = self(),
+    RootTimeManagerPid = self(),
 
-	?debug( "Creating simulation-time tracker." ),
+    ?debug( "Creating simulation-time tracker." ),
 
-	TimeTrakerPid = ?myriad_spawn_link( fun() ->
-		time_tracker_start( ?getAttr(load_balancer_pid), RootTimeManagerPid )
-										end ),
+    TimeTrakerPid = ?myriad_spawn_link( fun() ->
+        time_tracker_start( ?getAttr(load_balancer_pid), RootTimeManagerPid )
+                                        end ),
 
-	setAttribute( State, time_tracker_pid, TimeTrakerPid ).
+    setAttribute( State, time_tracker_pid, TimeTrakerPid ).
 
 
 
 -doc "Returns a textual description of the specified agenda.".
 -spec agenda_to_string( agenda() ) -> ustring().
 agenda_to_string( _Agenda=[] ) ->
-	"empty agenda";
+    "empty agenda";
 
 agenda_to_string( Agenda ) ->
-	text_utils:format( "agenda over ~B tick(s): ~ts",
-		[ length( Agenda ), text_utils:strings_to_string(
-			[ begin
-				  Actors = set_utils:to_list( ActorSet ),
-				  case Actors of
+    text_utils:format( "agenda over ~B tick(s): ~ts",
+        [ length( Agenda ), text_utils:strings_to_string(
+            [ begin
+                  Actors = set_utils:to_list( ActorSet ),
+                  case Actors of
 
-					[ SinglePid ] ->
-						text_utils:format( "an actor for tick offset #~B: ~ts",
-							[ Tick, text_utils:pid_to_short_string(
+                    [ SinglePid ] ->
+                        text_utils:format( "an actor for tick offset #~B: ~ts",
+                            [ Tick, text_utils:pid_to_short_string(
                                         SinglePid ) ] );
 
-					  _ ->
-						text_utils:format( "~B actors for tick offset #~B: "
-							"~ts", [ length( Actors ), Tick,
-									 text_utils:pids_to_short_string(
-										Actors ) ] )
+                      _ ->
+                        text_utils:format( "~B actors for tick offset #~B: "
+                            "~ts", [ length( Actors ), Tick,
+                                     text_utils:pids_to_short_string(
+                                        Actors ) ] )
 
-				  end
+                  end
 
-			  end || { Tick, ActorSet } <- Agenda ] ) ] ).
+              end || { Tick, ActorSet } <- Agenda ] ) ] ).
 
 
 
@@ -8038,19 +8037,19 @@ actual instance state is not impacted by serialisation and thus this request is
 often const).
 """.
 -spec onPreSerialisation( wooper:state(), user_data() ) ->
-				const_request_return( { wooper:state(), user_data() } ).
+                const_request_return( { wooper:state(), user_data() } ).
 onPreSerialisation( State, UserData ) ->
 
-	PidToMute = [ parent_manager_pid, time_tracker_pid, timer_pid,
-				  wallclock_tracker_pid, watchdog_pid ],
+    PidToMute = [ parent_manager_pid, time_tracker_pid, timer_pid,
+                  wallclock_tracker_pid, watchdog_pid ],
 
-	% In this state forged for serialisation, we keep only the interesting bits
-	% (for example private processes are silenced, as they could not be resolved
-	% by instance trackers):
-	%
-	NoTransientState = wooper_serialisation:mute_attributes( PidToMute, State ),
+    % In this state forged for serialisation, we keep only the interesting bits
+    % (for example private processes are silenced, as they could not be resolved
+    % by instance trackers):
+    %
+    NoTransientState = wooper_serialisation:mute_attributes( PidToMute, State ),
 
-	wooper:const_return_result( { NoTransientState, UserData } ).
+    wooper:const_return_result( { NoTransientState, UserData } ).
 
 
 
@@ -8059,9 +8058,9 @@ This hook is actually never used, as we do not deserialise time managers as they
 are, we merge them with redeployed, local ones.
 """.
 -spec onPostDeserialisation( wooper:state(), user_data() ) ->
-										request_return( user_data() ).
+                                        request_return( user_data() ).
 onPostDeserialisation( _State, _UserData ) ->
-	throw( not_directly_deserialisable ).
+    throw( not_directly_deserialisable ).
 
 
 
@@ -8072,19 +8071,19 @@ manager.
 -spec merge_local_with( [ attribute_entry() ] ) -> void().
 merge_local_with( SerialisedEntries ) ->
 
-	RegistrationName = get_registration_name(),
+    RegistrationName = get_registration_name(),
 
-	LocalManagerPid =
-		naming_utils:get_registered_pid_for( RegistrationName, _Scope=local ),
+    LocalManagerPid =
+        naming_utils:get_registered_pid_for( RegistrationName, _Scope=local ),
 
-	LocalManagerPid ! { mergeWith, [ SerialisedEntries ], self() },
+    LocalManagerPid ! { mergeWith, [ SerialisedEntries ], self() },
 
-	receive
+    receive
 
-		{ wooper_result, merged } ->
-			ok
+        { wooper_result, merged } ->
+            ok
 
-	end.
+    end.
 
 
 
@@ -8096,31 +8095,31 @@ Using atoms instead of PIDs.
 -spec test_spontaneous_lists() -> void().
 test_spontaneous_lists() ->
 
-	% Starts with an empty list:
-	L1 = schedule_as_spontaneous_for( 5, first, [] ),
-	?display_console( "Result is ~p.", [ L1 ] ),
+    % Starts with an empty list:
+    L1 = schedule_as_spontaneous_for( 5, first, [] ),
+    ?display_console( "Result is ~p.", [ L1 ] ),
 
-	L2 = schedule_as_spontaneous_for( 4, second, L1 ),
-	?display_console( "Result is ~p.", [ L2 ] ),
+    L2 = schedule_as_spontaneous_for( 4, second, L1 ),
+    ?display_console( "Result is ~p.", [ L2 ] ),
 
-	L3 = schedule_as_spontaneous_for( 6, third, L2 ),
-	?display_console( "Result is ~p.", [ L3 ] ),
+    L3 = schedule_as_spontaneous_for( 6, third, L2 ),
+    ?display_console( "Result is ~p.", [ L3 ] ),
 
-	L4 = schedule_as_spontaneous_for( 5, fourth, L3 ),
-	?display_console( "Result is ~p.", [ L4 ] ),
+    L4 = schedule_as_spontaneous_for( 5, fourth, L3 ),
+    ?display_console( "Result is ~p.", [ L4 ] ),
 
-	L5 = schedule_as_spontaneous_for( 10, fifth, L4 ),
-	?display_console( "Result is ~p.", [ L5 ] ),
+    L5 = schedule_as_spontaneous_for( 10, fifth, L4 ),
+    ?display_console( "Result is ~p.", [ L5 ] ),
 
-	L6 = schedule_as_spontaneous_for( 0, sixth, L5 ),
-	?display_console( "Result is ~p.", [ L6 ] ),
+    L6 = schedule_as_spontaneous_for( 0, sixth, L5 ),
+    ?display_console( "Result is ~p.", [ L6 ] ),
 
-	% Check:
-	L6 = [ { 0,  set_utils:from_list( [ sixth ] ) },
-		   { 4,  set_utils:from_list( [ second ] ) },
-		   { 5,  set_utils:from_list( [ fourth, first ] ) },
-		   { 6,  set_utils:from_list( [ third ] ) },
-		   { 10, set_utils:from_list( [ fifth ] ) } ].
+    % Check:
+    L6 = [ { 0,  set_utils:from_list( [ sixth ] ) },
+           { 4,  set_utils:from_list( [ second ] ) },
+           { 5,  set_utils:from_list( [ fourth, first ] ) },
+           { 6,  set_utils:from_list( [ third ] ) },
+           { 10, set_utils:from_list( [ fifth ] ) } ].
 
 
 
@@ -8130,35 +8129,35 @@ Helper function to test the minimum and maximum comparisons over timestamps.
 -spec test_min_max_timestamps() -> void().
 test_min_max_timestamps() ->
 
-	Z = { 0, 0 },
-	O = { 1, 1 },
+    Z = { 0, 0 },
+    O = { 1, 1 },
 
-	A = { 1, 0 },
-	B = { 0, 1 },
+    A = { 1, 0 },
+    B = { 0, 1 },
 
-	io:format( "Testing min." ),
+    io:format( "Testing min." ),
 
-	undefined = min_timestamp( undefined, undefined ),
-	Z = min_timestamp( undefined, Z ),
-	Z = min_timestamp( Z, undefined ),
-	Z = min_timestamp( Z, Z ),
-	Z = min_timestamp( Z, O ),
-	Z = min_timestamp( O, Z ),
-	Z = min_timestamp( Z, B ),
-	B = min_timestamp( B, A ),
-	A = min_timestamp( A, O ),
+    undefined = min_timestamp( undefined, undefined ),
+    Z = min_timestamp( undefined, Z ),
+    Z = min_timestamp( Z, undefined ),
+    Z = min_timestamp( Z, Z ),
+    Z = min_timestamp( Z, O ),
+    Z = min_timestamp( O, Z ),
+    Z = min_timestamp( Z, B ),
+    B = min_timestamp( B, A ),
+    A = min_timestamp( A, O ),
 
-	io:format( "Testing max." ),
+    io:format( "Testing max." ),
 
-	undefined = max_timestamp( undefined, undefined ),
-	Z = max_timestamp( undefined, Z ),
-	Z = max_timestamp( Z, undefined ),
-	Z = max_timestamp( Z, Z ),
-	O = max_timestamp( Z, O ),
-	O = max_timestamp( O, Z ),
-	B = max_timestamp( Z, B ),
-	A = max_timestamp( B, A ),
-	O = max_timestamp( O, A ).
+    undefined = max_timestamp( undefined, undefined ),
+    Z = max_timestamp( undefined, Z ),
+    Z = max_timestamp( Z, undefined ),
+    Z = max_timestamp( Z, Z ),
+    O = max_timestamp( Z, O ),
+    O = max_timestamp( O, Z ),
+    B = max_timestamp( Z, B ),
+    A = max_timestamp( B, A ),
+    O = max_timestamp( O, A ).
 
 
 
@@ -8168,12 +8167,12 @@ Performs some house-keeping, to enhance the mode of operation of this manager.
 -spec perform_house_keeping( wooper:state() ) -> wooper:state().
 perform_house_keeping( State ) ->
 
-	% Not much to be done here currently.
+    % Not much to be done here currently.
 
-	% In no way necessary, but maybe useful:
-	erlang:garbage_collect(),
+    % In no way necessary, but maybe useful:
+    erlang:garbage_collect(),
 
-	State.
+    State.
 
 
 
@@ -8183,19 +8182,19 @@ diasca is lasting, for the first time, for too long and that a notification
 about a (first) simulation stall shall be send to the user.
 """.
 -spec get_max_inter_diasca_duration_until_first_stall_detected() ->
-													milliseconds().
+                                                    milliseconds().
 
 -ifdef(exec_target_is_production).
 
 get_max_inter_diasca_duration_until_first_stall_detected() ->
-	% 2 minutes ("early") before a first stall message is issued:
-	2 * 60 * 1000.
+    % 2 minutes ("early") before a first stall message is issued:
+    2 * 60 * 1000.
 
 -else. % exec_target_is_production
 
 get_max_inter_diasca_duration_until_first_stall_detected() ->
-	% 15 seconds ("early") before a first stall message is issued:
-	15 * 1000.
+    % 15 seconds ("early") before a first stall message is issued:
+    15 * 1000.
 
 -endif. % exec_target_is_production
 
@@ -8209,21 +8208,21 @@ detected, and that new notifications about the simulation stall shall be send to
 the user.
 """.
 -spec get_max_inter_diasca_duration_until_next_stall_detected() ->
-													milliseconds().
+                                                    milliseconds().
 
 -ifdef(exec_target_is_production).
 
 get_max_inter_diasca_duration_until_next_stall_detected() ->
-	% 8 minutes (relaxed) between next stall messages:
-	8 * 60 * 1000.
+    % 8 minutes (relaxed) between next stall messages:
+    8 * 60 * 1000.
 
 -else. % exec_target_is_production
 
 get_max_inter_diasca_duration_until_next_stall_detected() ->
-	% 1 minute between next stall messages may be quite tight, but it helps the
-	% debugging:
-	%
-	60 * 1000.
+    % 1 minute between next stall messages may be quite tight, but it helps the
+    % debugging:
+    %
+    60 * 1000.
 
 -endif. % exec_target_is_production
 
@@ -8236,31 +8235,31 @@ diasca is lasting for too long and that the simulation shall be stopped on
 failure.
 """.
 -spec get_max_inter_diasca_duration_until_failure_triggered() ->
-													milliseconds().
+                                                    milliseconds().
 
 -ifdef(exec_target_is_production).
 
 get_max_inter_diasca_duration_until_failure_triggered() ->
 
-	?display_console( "(in production mode, thus ~w will be using "
-		"extended time-outs for simulation progress)~n", [ self() ] ),
+    ?display_console( "(in production mode, thus ~w will be using "
+        "extended time-outs for simulation progress)~n", [ self() ] ),
 
-	% Up to 12 hours for one single diasca (!) should be enough in general:
+    % Up to 12 hours for one single diasca (!) should be enough in general:
 
-	% (note: such a huge duration might actually be useful, notably for
-	% large-scale executions of instances whose first tick (tick offset #1)
-	% involves a significantly lengthy initialization; we have seen a diasca of
-	% this tick last for more than 4 hours on an HPC cluster)
-	%
-	12 * 60 * 60 * 1000.
+    % (note: such a huge duration might actually be useful, notably for
+    % large-scale executions of instances whose first tick (tick offset #1)
+    % involves a significantly lengthy initialization; we have seen a diasca of
+    % this tick last for more than 4 hours on an HPC cluster)
+    %
+    12 * 60 * 60 * 1000.
 
 -else. % exec_target_is_production
 
 get_max_inter_diasca_duration_until_failure_triggered() ->
-	% 2 hours were already quite comfortable, yet did not suffice on all cases
-	% (so, now: 6 hours):
-	%
-	6 * 60 * 60 * 1000.
+    % 2 hours were already quite comfortable, yet did not suffice on all cases
+    % (so, now: 6 hours):
+    %
+    6 * 60 * 60 * 1000.
 
 -endif. % exec_target_is_production
 
@@ -8276,14 +8275,14 @@ time managers.
 -ifdef(exec_target_is_production).
 
 get_maximum_teardown_duration() ->
-	% 2 minutes is already quite a lot:
-	2 * 60 * 1000.
+    % 2 minutes is already quite a lot:
+    2 * 60 * 1000.
 
 
 -else. % exec_target_is_production
 
 get_maximum_teardown_duration() ->
-	% 30 seconds is a lot:
-	30 * 1000.
+    % 30 seconds is a lot:
+    30 * 1000.
 
 -endif. % exec_target_is_production

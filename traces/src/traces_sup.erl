@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2025 Olivier Boudeville
+% Copyright (C) 2019-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -32,7 +32,7 @@ Module implementing the **root OTP supervisor** of Traces.
 
 In practice, it will supervise a single process, the one of the (singleton)
 trace aggregator, through a dedicated supervision bridge, defined in the
-traces_bridge_sup module.
+`traces_bridge_sup` module.
 
 Refer to the documentation of the supervisor_bridge module for further details.
 """.
@@ -65,7 +65,7 @@ Refer to the documentation of the supervisor_bridge module for further details.
 -export_type([ init_args/0, init_arg_list/0 ]).
 
 
-% Type shorthands:
+% Type shorthands
 
 -type registration_scope() :: naming_utils:registration_scope().
 
@@ -75,66 +75,66 @@ Refer to the documentation of the supervisor_bridge module for further details.
 Starts and links the Traces root supervisor, creating in turn a proper
 supervision bridge.
 
-Note: typically called by traces_app:start/2, hence generally triggered by the
+Note: typically called by `traces_app:start/2`, hence generally triggered by the
 application initialisation.
 """.
 -spec start_link( init_args() ) -> supervisor:startlink_ret().
 start_link( TraceInitArgs ) ->
 
-	trace_utils:debug_fmt( "Starting the Traces root supervisor, from ~w.",
-						   [ self() ] ),
+    trace_utils:debug_fmt( "Starting the Traces root supervisor, from ~w.",
+                           [ self() ] ),
 
-	% A local registration of the supervisor is better in order to avoid
-	% inter-node clashes:
-	%
-	supervisor:start_link( _Reg={ local, ?root_supervisor_name },
-						   _Mod=?MODULE, TraceInitArgs ).
+    % A local registration of the supervisor is better in order to avoid
+    % inter-node clashes:
+    %
+    supervisor:start_link( _Reg={ local, ?root_supervisor_name },
+                           _Mod=?MODULE, TraceInitArgs ).
 
 
 
 -doc """
 Callback to initialise the Traces supervisor bridge (supervised by this root
-supervisor), typically in answer to start_link/1 above being executed.
+supervisor), typically in answer to `start_link/1` above being executed.
 """.
 -spec init( { boolean() | registration_scope() } ) ->
-	{ 'ok', { supervisor:sup_flags(), [ supervisor:child_spec() ] } }.
+    { 'ok', { supervisor:sup_flags(), [ supervisor:child_spec() ] } }.
 init( { TraceSupervisorWanted, RegScope } ) ->
 
-	trace_utils:info_fmt( "Initialising the Traces root supervisor ~w "
-		"(trace supervisor wanted: ~ts).", [ self(), TraceSupervisorWanted ] ),
+    trace_utils:info_fmt( "Initialising the Traces root supervisor ~w "
+        "(trace supervisor wanted: ~ts).", [ self(), TraceSupervisorWanted ] ),
 
-	ExecTarget = traces:get_execution_target(),
+    ExecTarget = traces:get_execution_target(),
 
-	% Restart only children that terminate.
-	% Never expected to fail, though:
-	%
-	SupSettings = otp_utils:get_supervisor_settings(
-		_RestartStrategy=one_for_one, ExecTarget ),
+    % Restart only children that terminate.
+    % Never expected to fail, though:
+    %
+    SupSettings = otp_utils:get_supervisor_settings(
+        _RestartStrategy=one_for_one, ExecTarget ),
 
-	% One child, a supervisor bridge in charge of the trace aggregator:
-	BridgeChildSpec = #{
+    % One child, a supervisor bridge in charge of the trace aggregator:
+    BridgeChildSpec = #{
 
-		id => traces_bridge_id,
+        id => traces_bridge_id,
 
-		start => { _Mod=traces_bridge_sup, _Fun=start_link,
-				   _Args=[ TraceSupervisorWanted, RegScope ] },
+        start => { _Mod=traces_bridge_sup, _Fun=start_link,
+                   _Args=[ TraceSupervisorWanted, RegScope ] },
 
-		% Always restarted in production:
-		restart => otp_utils:get_restart_setting( ExecTarget ),
+        % Always restarted in production:
+        restart => otp_utils:get_restart_setting( ExecTarget ),
 
-		% This child process is of the 'supervisor' type, and, in
-		% https://erlang.org/doc, the
-		% design_principles/sup_princ.html#child-specification page explains
-		% that 'infinity' is required here (rather than, say, a 2-second
-		% termination was allowed before brutal killing):
-		%
-		shutdown => infinity,
+        % This child process is of the 'supervisor' type, and, in
+        % https://erlang.org/doc, the
+        % design_principles/sup_princ.html#child-specification page explains
+        % that 'infinity' is required here (rather than, say, a 2-second
+        % termination was allowed before brutal killing):
+        %
+        shutdown => infinity,
 
-		% As it is a WOOPER instance (not for example a gen_server):
-		type => supervisor,
+        % As it is a WOOPER instance (not for example a gen_server):
+        type => supervisor,
 
-		modules => [ traces_bridge_sup ] },
+        modules => [ traces_bridge_sup ] },
 
-	ChildrenSpec = [ BridgeChildSpec ],
+    ChildrenSpec = [ BridgeChildSpec ],
 
-	{ ok, { SupSettings, ChildrenSpec } }.
+    { ok, { SupSettings, ChildrenSpec } }.

@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -88,138 +88,138 @@
 % Allows to store most of the general simulation settings.
 -record( simulation_settings, {
 
-	% The name of that simulation, as a plain string (otherwise as a module
-	% name).
-	%
-	% For example: simulation_name="My Simulation"
-	%
-	% (if left undefined, will automatically adopt the module name of the case
-	% being run)
-	%
-	simulation_name = ?MODULE ::
-		text_utils:ustring() | basic_utils:module_name(),
+    % The name of that simulation, as a plain string (otherwise as a module
+    % name).
+    %
+    % For example: simulation_name="My Simulation"
+    %
+    % (if left undefined, will automatically adopt the module name of the case
+    % being run)
+    %
+    simulation_name = ?MODULE ::
+        text_utils:ustring() | basic_utils:module_name(),
 
 
-	% The duration (in floating-point virtual seconds) of a fundamental tick in
-	% the simulation.
-	%
-	% Default frequency (50Hz, i.e. a duration of 0.02s) is fine for a large
-	% number of uses.
-	%
-	tick_duration = ?default_tick_duration
-								:: class_TimeManager:virtual_seconds(),
+    % The duration (in floating-point virtual seconds) of a fundamental tick in
+    % the simulation.
+    %
+    % Default frequency (50Hz, i.e. a duration of 0.02s) is fine for a large
+    % number of uses.
+    %
+    tick_duration = ?default_tick_duration
+                                :: class_TimeManager:virtual_seconds(),
 
 
-	% Whether the simulation should run in interactive or batch mode:
-	%
-	% Note: dictates whether the simulation tries to remain on par with real,
-	% user time, or to run as fast as possible.
-	%
-	% Not to be mixed up with the '--batch' command-line option, which relates
-	% to the interactivity of the user-interface, and allows to select whether
-	% the simulator is to run in a console, with neither user input nor
-	% graphical outputs (if --batch is used), or interactively.
-	%
-	simulation_interactivity_mode = batch ::
-		class_TimeManager:simulation_interactivity_mode(),
+    % Whether the simulation should run in interactive or batch mode:
+    %
+    % Note: dictates whether the simulation tries to remain on par with real,
+    % user time, or to run as fast as possible.
+    %
+    % Not to be mixed up with the '--batch' command-line option, which relates
+    % to the interactivity of the user-interface, and allows to select whether
+    % the simulator is to run in a console, with neither user input nor
+    % graphical outputs (if --batch is used), or interactively.
+    %
+    simulation_interactivity_mode = batch ::
+        class_TimeManager:simulation_interactivity_mode(),
 
 
-	% Whether targeting reproducibility (with or without a seed) or ergodicity:
-	evaluation_mode = reproducible :: evaluation_requested_properties(),
+    % Whether targeting reproducibility (with or without a seed) or ergodicity:
+    evaluation_mode = reproducible :: evaluation_requested_properties(),
 
 
-	% Lists the files (if any) that will be read in order to create at least at
-	% part of the initial state of the simulation:
-	%
-	initialisation_files = [] :: [ file_utils:path() ],
+    % Lists the files (if any) that will be read in order to create at least at
+    % part of the initial state of the simulation:
+    %
+    initialisation_files = [] :: [ file_utils:path() ],
 
 
-	% The outputs that this simulation regards as results that are actually
-	% needed are the ones that correspond to the result specification for that
-	% simulation.
-	%
-	% It is:
-	%
-	% - either 'all_outputs', to retrieve results from all producers, with their
-	% default settings (for larger simulations the volume of the results is
-	% quickly overwhelming and a waste of resource)
-	%
-	% - or 'no_output' to retrieve no result from any producer (should be used
-	% for debugging only, as a simulation exhibiting no result is of little
-	% interest)
-	%
-	% - or 'all_basic_probes_only', to retrieve results from all plain probes
-	% (with default basic probe settings), and only from them
-	%
-	% - or 'all_virtual_probes_only', to retrieve results from all virtual
-	% probes (with default virtual proble settings) hosted by data-logger(s),
-	% and only from these probes
-	%
-	% - or, in the general case, a list of options, among:
-	%
-	%  - {targeted_patterns, TargetPatterns} where TargetPatterns is a list of
-	%  elements, each being:
-	%
-	%   - either a standalone regular expression pattern, expressed as a plain
-	%    string, that allows to select which outputs are to be promoted to
-	%    results; no option is specified here, thus default ones will be used
-	%
-	%    - or a pair, whose first element is such a regular expression pattern,
-	%    and second one is either a standalone option (specified as an atom,
-	%    among 'data_only', 'rendering_only', and 'data_and_rendering',
-	%    depending on what is requested by the user) or a list of such
-	%    corresponding producer options
-	%
-	%  - {blacklisted_patterns, BlacklistPatterns} where BlacklistPatterns is
-	%  a list of regular expression patterns, expressed as plain strings,
-	%  allowing to remove elements among the ones that the previous targeted
-	%  patterns selected
-	%
-	% As a consequence, each output in turn will be matched against each
-	% targeted pattern; as soon as the name of this output matches one of these
-	% patterns, it will be selected, with the corresponding options (if any);
-	% then it will be matched in turn against each of the blacklisted patterns;
-	% as soon as the output name matches one of these patterns, it will be
-	% removed.
-	%
-	% At the end, the selected results are the targeted non-blacklisted outputs,
-	% and only them.
-	%
-	% For example: result_specification = [
-	%
-	%   {targeted_patterns, [{"*-case-A-*",rendering_only}, "*-case-B-*",
-	%                           {"my-test-probe", [data_and_rendering]}]},
-	%
-	%   {blacklisted_patterns, ["*-emitter-(first|second)-*"]}]
-	%
-	% Note that if strings are not separated by commas (e.g. ["aaa" "bbb"],
-	% instead of ["aaa", "bbb"]), then they will be concatenated by the
-	% preprocessor and be equivalent to "aaabbb" (which, in the general case,
-	% leads to different selections than ["aaa", "bbb"]).
-	%
-	% Note also that the patterns are checked against the name of the output
-	% (e.g. "my interesting probe"), not against its translation to be a proper
-	% filename (e.g. "my_interesting_probe"). As a result, the corresponding
-	% pattern should target the former, not the latter, as it would not match
-	% otherwise.
-	%
-	% Patterns are to be expressed according to the “Perl Compatible Regular
-	% Expressions” conventions, or PCRE for short.
-	% For more information, see following cheat sheet:
-	% www.bitcetera.com/page_attachments/0000/0030/regex_in_a_nutshell.pdf
-	%
-	% See also: http://erlang.org/doc/man/re.html
-	%
-	result_specification = all_outputs
+    % The outputs that this simulation regards as results that are actually
+    % needed are the ones that correspond to the result specification for that
+    % simulation.
+    %
+    % It is:
+    %
+    % - either 'all_outputs', to retrieve results from all producers, with their
+    % default settings (for larger simulations the volume of the results is
+    % quickly overwhelming and a waste of resource)
+    %
+    % - or 'no_output' to retrieve no result from any producer (should be used
+    % for debugging only, as a simulation exhibiting no result is of little
+    % interest)
+    %
+    % - or 'all_basic_probes_only', to retrieve results from all plain probes
+    % (with default basic probe settings), and only from them
+    %
+    % - or 'all_virtual_probes_only', to retrieve results from all virtual
+    % probes (with default virtual proble settings) hosted by data-logger(s),
+    % and only from these probes
+    %
+    % - or, in the general case, a list of options, among:
+    %
+    %  - {targeted_patterns, TargetPatterns} where TargetPatterns is a list of
+    %  elements, each being:
+    %
+    %   - either a standalone regular expression pattern, expressed as a plain
+    %    string, that allows to select which outputs are to be promoted to
+    %    results; no option is specified here, thus default ones will be used
+    %
+    %    - or a pair, whose first element is such a regular expression pattern,
+    %    and second one is either a standalone option (specified as an atom,
+    %    among 'data_only', 'rendering_only', and 'data_and_rendering',
+    %    depending on what is requested by the user) or a list of such
+    %    corresponding producer options
+    %
+    %  - {blacklisted_patterns, BlacklistPatterns} where BlacklistPatterns is
+    %  a list of regular expression patterns, expressed as plain strings,
+    %  allowing to remove elements among the ones that the previous targeted
+    %  patterns selected
+    %
+    % As a consequence, each output in turn will be matched against each
+    % targeted pattern; as soon as the name of this output matches one of these
+    % patterns, it will be selected, with the corresponding options (if any);
+    % then it will be matched in turn against each of the blacklisted patterns;
+    % as soon as the output name matches one of these patterns, it will be
+    % removed.
+    %
+    % At the end, the selected results are the targeted non-blacklisted outputs,
+    % and only them.
+    %
+    % For example: result_specification = [
+    %
+    %   {targeted_patterns, [{"*-case-A-*",rendering_only}, "*-case-B-*",
+    %                           {"my-test-probe", [data_and_rendering]}]},
+    %
+    %   {blacklisted_patterns, ["*-emitter-(first|second)-*"]}]
+    %
+    % Note that if strings are not separated by commas (e.g. ["aaa" "bbb"],
+    % instead of ["aaa", "bbb"]), then they will be concatenated by the
+    % preprocessor and be equivalent to "aaabbb" (which, in the general case,
+    % leads to different selections than ["aaa", "bbb"]).
+    %
+    % Note also that the patterns are checked against the name of the output
+    % (e.g. "my interesting probe"), not against its translation to be a proper
+    % filename (e.g. "my_interesting_probe"). As a result, the corresponding
+    % pattern should target the former, not the latter, as it would not match
+    % otherwise.
+    %
+    % Patterns are to be expressed according to the “Perl Compatible Regular
+    % Expressions” conventions, or PCRE for short.
+    % For more information, see following cheat sheet:
+    % www.bitcetera.com/page_attachments/0000/0030/regex_in_a_nutshell.pdf
+    %
+    % See also: http://erlang.org/doc/man/re.html
+    %
+    result_specification = all_outputs
                                 :: class_ResultManager:result_specification(),
 
 
-	% Tells whether the troubleshooting mode for models is to be enabled. If
-	% yes, then for example a more exhaustive information table about model
-	% instances will be kept, so that information about a faulty instance can be
-	% retrieved despite its lack of cooperation.
-	%
-	troubleshooting_mode = enabled :: troubleshooting_mode() } ).
+    % Tells whether the troubleshooting mode for models is to be enabled. If
+    % yes, then for example a more exhaustive information table about model
+    % instances will be kept, so that information about a faulty instance can be
+    % retrieved despite its lack of cooperation.
+    %
+    troubleshooting_mode = enabled :: troubleshooting_mode() } ).
 
 
 -doc "Allows to store most general simulation settings.".

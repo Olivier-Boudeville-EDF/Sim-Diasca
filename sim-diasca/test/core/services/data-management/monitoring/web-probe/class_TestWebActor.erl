@@ -1,4 +1,4 @@
-% Copyright (C) 2019-2025 EDF R&D
+% Copyright (C) 2019-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -35,8 +35,8 @@
 % The class-specific attributes of this test actor are:
 -define( class_attributes, [
 
-	{ web_probe_ref, class_WebProbe:probe_ref(),
-	  "the tested web probe (if any)" } ] ).
+    { web_probe_ref, class_WebProbe:probe_ref(),
+      "the tested web probe (if any)" } ] ).
 
 
 
@@ -63,19 +63,19 @@ Constructs a test actor:
 - ActorName the name of the actor
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-				 class_Actor:name() ) -> wooper:state().
+                 class_Actor:name() ) -> wooper:state().
 construct( State, ActorSettings, ActorName ) ->
 
-	% First the direct mother classes, then this class-specific actions:
-	ActorState = class_Actor:construct( State, ActorSettings,
-										?trace_categorize(ActorName) ),
+    % First the direct mother classes, then this class-specific actions:
+    ActorState = class_Actor:construct( State, ActorSettings,
+                                        ?trace_categorize(ActorName) ),
 
-	ProbeName = text_utils:format( "Test probe for ~ts", [ ActorName ] ),
+    ProbeName = text_utils:format( "Test probe for ~ts", [ ActorName ] ),
 
-	ProbeRef = class_TestWebProbe:declare_result_probe( ProbeName ),
+    ProbeRef = class_TestWebProbe:declare_result_probe( ProbeName ),
 
-	setAttributes( ActorState, [ { web_probe_ref, ProbeRef },
-								 { termination_tick_offset, 150 } ] ).
+    setAttributes( ActorState, [ { web_probe_ref, ProbeRef },
+                                 { termination_tick_offset, 150 } ] ).
 
 
 
@@ -90,22 +90,22 @@ construct( State, ActorSettings, ActorName ) ->
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
-	CurrentTickOffset = ?getAttr(current_tick_offset),
-	TerminationOffset = ?getAttr(termination_tick_offset),
+    CurrentTickOffset = ?getAttr(current_tick_offset),
+    TerminationOffset = ?getAttr(termination_tick_offset),
 
-	% Terminates if the termination offset is reached or exceeded:
-	NewState = case CurrentTickOffset of
+    % Terminates if the termination offset is reached or exceeded:
+    NewState = case CurrentTickOffset of
 
-		PastOffset when PastOffset >= TerminationOffset ->
-			executeOneway( State, declareTermination );
+        PastOffset when PastOffset >= TerminationOffset ->
+            executeOneway( State, declareTermination );
 
-		CurrentOffset ->
-			% Non-termination behaviour:
-			behave_normally( CurrentOffset, State )
+        CurrentOffset ->
+            % Non-termination behaviour:
+            behave_normally( CurrentOffset, State )
 
-	end,
+    end,
 
-	wooper:return_state( NewState ).
+    wooper:return_state( NewState ).
 
 
 
@@ -114,12 +114,12 @@ Overridden, in order to synchronise correctly the internal planning that this
 test actor maintains, and to start its behaviour.
 """.
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-											actor_oneway_return().
+                                            actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
-	UpdatedState = executeOneway( State, scheduleNextSpontaneousTick ),
+    UpdatedState = executeOneway( State, scheduleNextSpontaneousTick ),
 
-	actor:return_state( UpdatedState ).
+    actor:return_state( UpdatedState ).
 
 
 
@@ -127,22 +127,22 @@ onFirstDiasca( State, _SendingActorPid ) ->
 -spec behave_normally( tick_offset(), wooper:state() ) -> wooper:state().
 behave_normally( CurrentOffset, State ) ->
 
-	?debug( "Acting spontaneously." ),
+    ?debug( "Acting spontaneously." ),
 
-	case ?getAttr(web_probe_ref) of
+    case ?getAttr(web_probe_ref) of
 
-		non_wanted_probe ->
-			ok;
+        non_wanted_probe ->
+            ok;
 
-		ProbeRef ->
-			ProbeRef ! { update, CurrentOffset, self() },
-			receive
+        ProbeRef ->
+            ProbeRef ! { update, CurrentOffset, self() },
+            receive
 
-				{ wooper_result, probe_updated } ->
-					ok
+                { wooper_result, probe_updated } ->
+                    ok
 
-			end
+            end
 
-	end,
+    end,
 
-	executeOneway( State, addSpontaneousTick, CurrentOffset + 5 ).
+    executeOneway( State, addSpontaneousTick, CurrentOffset + 5 ).

@@ -64,7 +64,7 @@ If wanting to create two instances that have to know each other, one may use, po
 
  A = class_Actor:create_initial_actor( class_Foo, [ Xa, Ya ] ),
  B = class_Actor:create_initial_actor( class_Bar, [ Xb, Yb, Zb ],
-	"My placement hint" ),
+    "My placement hint" ),
 
  A ! { declareBar, B, self() },
  B ! { declareFoo, A, self() },
@@ -257,9 +257,9 @@ Indeed, with data-based initialisations, placement derives naturally from user i
 
   - if no placement hint is specified either:
 
-	- if no user identifier is referenced either (e.g. ``{class_Foo,["Hello world!",1.4]}.``), then the corresponding instance will be placed according to the default policy of the load balancer
+    - if no user identifier is referenced either (e.g. ``{class_Foo,["Hello world!",1.4]}.``), then the corresponding instance will be placed according to the default policy of the load balancer
 
-	- if at least one user identifier is referenced (e.g. ``{class_Foo,[2,{user_id,"AA"},0.0,{user_id,"BB"}, my_atom]}.``), then the corresponding instance will be placed according to the first user identifier found when parsing the construction parameters; so, in this example, this ``class_Foo`` instance would be created on the same computing node on which the instance designated by user identifier ``"AA"`` will be
+    - if at least one user identifier is referenced (e.g. ``{class_Foo,[2,{user_id,"AA"},0.0,{user_id,"BB"}, my_atom]}.``), then the corresponding instance will be placed according to the first user identifier found when parsing the construction parameters; so, in this example, this ``class_Foo`` instance would be created on the same computing node on which the instance designated by user identifier ``"AA"`` will be
 
 This allows an automatic, implicit placement of instances which by design are likely to interact.
 

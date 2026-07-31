@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -55,22 +55,22 @@ Here the main loop just has to remember the frame whose closing is awaited for.
 
 register_display( Text, Family, Style, Weight, Sizer, Panel ) ->
 
-	Font = gui_font:create( ?test_font_size, Family, Style, Weight ),
+    Font = gui_font:create( ?test_font_size, Family, Style, Weight ),
 
-	FullText = text_utils:format( Text, [ Family, Style, Weight,
-		gui_font:get_platform_dependent_description( Font ),
-		gui_font:get_user_friendly_description( Font ) ] ),
+    FullText = text_utils:format( Text, [ Family, Style, Weight,
+        gui_font:get_platform_dependent_description( Font ),
+        gui_font:get_user_friendly_description( Font ) ] ),
 
-	Display = gui_text_display:create( FullText, _Parent=Panel ),
+    Display = gui_text_display:create( FullText, _Parent=Panel ),
 
-	gui_widget:set_font( Display, Font ),
+    gui_widget:set_font( Display, Font ),
 
-	% Allows to check text extent:
-	gui_widget:set_background_color( Display, yellow ),
+    % Allows to check text extent:
+    gui_widget:set_background_color( Display, yellow ),
 
-	gui_sizer:add_element( Sizer, Display, [ { proportion, 0 } ] ),
+    gui_sizer:add_element( Sizer, Display, [ { proportion, 0 } ] ),
 
-	gui_font:destruct( Font ).
+    gui_font:destruct( Font ).
 
 
 
@@ -78,82 +78,82 @@ register_display( Text, Family, Style, Weight, Sizer, Panel ) ->
 -spec run_gui_test() -> void().
 run_gui_test() ->
 
-	test_facilities:display( "~nStarting the text test." ),
+    test_facilities:display( "~nStarting the text test." ),
 
-	gui:start(),
+    gui:start(),
 
 
-	AutoPos = auto,
+    AutoPos = auto,
 
-	% Not defining scrollbars here (e.g. with with_vertical_scrollbar), as would
-	% do nothing on such a top-level window:
-	%
-	Frame = gui_frame:create( "This is the overall frame for text testing",
-		AutoPos, _Sizing={ 1280, 1024 }, _FrameStyles=[ default ] ),
+    % Not defining scrollbars here (e.g. with with_vertical_scrollbar), as would
+    % do nothing on such a top-level window:
+    %
+    Frame = gui_frame:create( "This is the overall frame for text testing",
+        AutoPos, _Sizing={ 1280, 1024 }, _FrameStyles=[ default ] ),
 
-	ScrollablePanel =
-		gui_scrollable:create( _Inc=?test_font_size, _Parent=Frame ),
+    ScrollablePanel =
+        gui_scrollable:create( _Inc=?test_font_size, _Parent=Frame ),
 
-	VertSizer = gui_sizer:create( _Orientation=vertical ),
+    VertSizer = gui_sizer:create( _Orientation=vertical ),
 
-	Text = "This is an example of text for the '~ts' family "
-		   "of style '~ts' and weight '~ts': it is '~ts' (a.k.a. '~ts').",
+    Text = "This is an example of text for the '~ts' family "
+           "of style '~ts' and weight '~ts': it is '~ts' (a.k.a. '~ts').",
 
-	Families = gui_font:list_families(),
+    Families = gui_font:list_families(),
 
-	Styles =  gui_font:list_styles(),
+    Styles =  gui_font:list_styles(),
 
-	Weights = gui_font:list_weights(),
+    Weights = gui_font:list_weights(),
 
-	test_facilities:display( "Sampling following fonts: "
-		"~n - ~B families: ~p~n - ~B styles: ~p~n - ~B weights: ~p",
-		[ length( Families ), Families, length( Styles ), Styles,
-		  length( Weights ), Weights ] ),
+    test_facilities:display( "Sampling following fonts: "
+        "~n - ~B families: ~p~n - ~B styles: ~p~n - ~B weights: ~p",
+        [ length( Families ), Families, length( Styles ), Styles,
+          length( Weights ), Weights ] ),
 
-	IntroDisplay = gui_text_display:create(
-		_Text="Note that this content is scrollable horizontally "
-			  "and vertically.", _P=ScrollablePanel ),
+    IntroDisplay = gui_text_display:create(
+        _Text="Note that this content is scrollable horizontally "
+              "and vertically.", _P=ScrollablePanel ),
 
-	gui_sizer:add_element( VertSizer, IntroDisplay, [ { proportion, 0 } ] ),
+    gui_sizer:add_element( VertSizer, IntroDisplay, [ { proportion, 0 } ] ),
 
-	render_fonts( Text, Families, Styles, Weights, VertSizer, ScrollablePanel ),
+    render_fonts( Text, Families, Styles, Weights, VertSizer, ScrollablePanel ),
 
-	gui_widget:set_sizer( ScrollablePanel, VertSizer ),
+    gui_widget:set_sizer( ScrollablePanel, VertSizer ),
 
-	gui:subscribe_to_events( { onWindowClosed, Frame } ),
+    gui:subscribe_to_events( { onWindowClosed, Frame } ),
 
-	gui_frame:show( Frame ),
+    gui_frame:show( Frame ),
 
-	test_main_loop( _InitialState=Frame ).
+    test_main_loop( _InitialState=Frame ).
 
 
 
 % Add a text display to render each font setting in turn.
 render_fonts( _Text, _Families=[], _Styles, _Weights, _Sizer,
-			  _ScrollablePanel ) ->
-	ok;
+              _ScrollablePanel ) ->
+    ok;
 
 render_fonts( Text, _Families=[ F | T ], Styles, Weights, Sizer,
-			  ScrollablePanel ) ->
+              ScrollablePanel ) ->
 
-	Font = gui_font:create( _FontSize=?test_font_size + 2, F,
-							_Style=normal, _Weight=normal ),
+    Font = gui_font:create( _FontSize=?test_font_size + 2, F,
+                            _Style=normal, _Weight=normal ),
 
-	FirstText = text_utils:format(
-		"~n  I am a rendering example of font '~ts'.",
-		[ gui_font:get_platform_dependent_description( Font ) ] ),
+    FirstText = text_utils:format(
+        "~n  I am a rendering example of font '~ts'.",
+        [ gui_font:get_platform_dependent_description( Font ) ] ),
 
-	FirstDisplay = gui_text_display:create( FirstText,
-											_Parent=ScrollablePanel ),
+    FirstDisplay = gui_text_display:create( FirstText,
+                                            _Parent=ScrollablePanel ),
 
-	gui_widget:set_font( FirstDisplay, Font ),
+    gui_widget:set_font( FirstDisplay, Font ),
 
-	gui_sizer:add_element( Sizer, FirstDisplay, [ { proportion, 0 } ] ),
+    gui_sizer:add_element( Sizer, FirstDisplay, [ { proportion, 0 } ] ),
 
-	[ register_display( Text, F, S, W, Sizer, ScrollablePanel )
-		|| S <- Styles, W <- Weights ],
+    [ register_display( Text, F, S, W, Sizer, ScrollablePanel )
+        || S <- Styles, W <- Weights ],
 
-	render_fonts( Text, _Fs=T, Styles, Weights, Sizer, ScrollablePanel ).
+    render_fonts( Text, _Fs=T, Styles, Weights, Sizer, ScrollablePanel ).
 
 
 
@@ -165,26 +165,26 @@ corresponding to the frame that shall be closed to stop the test
 -spec test_main_loop( my_test_state() ) -> no_return().
 test_main_loop( State=Frame ) ->
 
-	trace_utils:info( "Test main loop running..." ),
+    trace_utils:info( "Test main loop running..." ),
 
-	receive
+    receive
 
-		{ onWindowClosed, [ Frame, _FrameId, _EventContext ] } ->
-			trace_utils:info( "Main frame has been closed." ),
-			stop( Frame );
+        { onWindowClosed, [ Frame, _FrameId, _EventContext ] } ->
+            trace_utils:info( "Main frame has been closed." ),
+            stop( Frame );
 
-		Other ->
-			trace_utils:warning_fmt( "Test main loop ignored following "
-									 "message: ~p.", [ Other ] ),
-			test_main_loop( State )
+        Other ->
+            trace_utils:warning_fmt( "Test main loop ignored following "
+                                     "message: ~p.", [ Other ] ),
+            test_main_loop( State )
 
-	end.
+    end.
 
 
 stop( Frame ) ->
-	trace_utils:info( "Test success, stopping." ),
-	gui_frame:destruct( Frame ),
-	gui:stop().
+    trace_utils:info( "Test success, stopping." ),
+    gui_frame:destruct( Frame ),
+    gui:stop().
 
 
 
@@ -192,17 +192,17 @@ stop( Frame ) ->
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	case executable_utils:is_batch() of
+    case executable_utils:is_batch() of
 
-		true ->
-			test_facilities:display(
-				"(not running the MyriadGUI test, being in batch mode)" );
+        true ->
+            test_facilities:display(
+                "(not running the MyriadGUI test, being in batch mode)" );
 
-		false ->
-			run_gui_test()
+        false ->
+            run_gui_test()
 
-	end,
+    end,
 
-	test_facilities:stop().
+    test_facilities:stop().

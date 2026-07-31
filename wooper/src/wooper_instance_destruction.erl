@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 Olivier Boudeville
+% Copyright (C) 2014-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -61,57 +61,57 @@ Returns an updated pair thereof.
 -spec manage_destructor( compose_pair() ) -> compose_pair().
 manage_destructor( { FunctionTable, ClassInfo } ) ->
 
-	FunIdInfos = table:enumerate( FunctionTable ),
+    FunIdInfos = table:enumerate( FunctionTable ),
 
-	% First, check that no destruct/N with N =/= 1 exists:
-	{ DestructFunInfo, FilteredFunIdInfos } =
-		case scan_for_destructors( FunIdInfos ) of
+    % First, check that no destruct/N with N =/= 1 exists:
+    { DestructFunInfo, FilteredFunIdInfos } =
+        case scan_for_destructors( FunIdInfos ) of
 
-			undefined ->
-				MarkerTable = ClassInfo#class_info.markers,
-				% None defined, adding thus a basic, do-nothing one:
-				{ get_default_destructor_info( MarkerTable ), FunIdInfos };
+            undefined ->
+                MarkerTable = ClassInfo#class_info.markers,
+                % None defined, adding thus a basic, do-nothing one:
+                { get_default_destructor_info( MarkerTable ), FunIdInfos };
 
 
-			% Found and extracted as:
-			{ DestrFunInfo, OtherFunIdInfos } ->
+            % Found and extracted as:
+            { DestrFunInfo, OtherFunIdInfos } ->
 
-				% Here the developer has defined destruct/1, yet may or may not
-				% have exported it:
-				%
-				NewDestrFunInfo = case DestrFunInfo#function_info.exported of
+                % Here the developer has defined destruct/1, yet may or may not
+                % have exported it:
+                %
+                NewDestrFunInfo = case DestrFunInfo#function_info.exported of
 
-					[] ->
-						% Never exported, so exporting it at the standard
-						% location:
-						MarkerTable = ClassInfo#class_info.markers,
+                    [] ->
+                        % Never exported, so exporting it at the standard
+                        % location:
+                        MarkerTable = ClassInfo#class_info.markers,
 
-						ExportLocation =
-							ast_info:get_default_export_function_location(
-								MarkerTable ),
+                        ExportLocation =
+                            ast_info:get_default_export_function_location(
+                                MarkerTable ),
 
-						DestrFunInfo#function_info{
-							exported=[ ExportLocation ] };
+                        DestrFunInfo#function_info{
+                            exported=[ ExportLocation ] };
 
-					_ ->
-						DestrFunInfo
+                    _ ->
+                        DestrFunInfo
 
-				end,
+                end,
 
-				{ NewDestrFunInfo, OtherFunIdInfos }
+                { NewDestrFunInfo, OtherFunIdInfos }
 
-		end,
+        end,
 
-	ShrunkFunctionTable = table:new( FilteredFunIdInfos ),
+    ShrunkFunctionTable = table:new( FilteredFunIdInfos ),
 
-	% In all cases a destructor is defined then:
-	NewClassInfo = ClassInfo#class_info{ destructor=DestructFunInfo },
+    % In all cases a destructor is defined then:
+    NewClassInfo = ClassInfo#class_info{ destructor=DestructFunInfo },
 
-	%trace_utils:debug_fmt( "Destructor info: ~ts",
-	%   [ wooper_info:destructor_to_string( DestructFunInfo,
-	%     _DoIncludeForms=true, _IndentationLevel=1 ) ] ),
+    %trace_utils:debug_fmt( "Destructor info: ~ts",
+    %   [ wooper_info:destructor_to_string( DestructFunInfo,
+    %     _DoIncludeForms=true, _IndentationLevel=1 ) ] ),
 
-	{ ShrunkFunctionTable, NewClassInfo }.
+    { ShrunkFunctionTable, NewClassInfo }.
 
 
 
@@ -123,43 +123,43 @@ remaining pairs, if found, otherwise undefined.
 
 """.
 scan_for_destructors( FunIdInfos ) ->
-	scan_for_destructors( FunIdInfos, _Acc={ undefined, [] } ).
+    scan_for_destructors( FunIdInfos, _Acc={ undefined, [] } ).
 
 
 
 % (helper)
 scan_for_destructors( _FunIdInfos=[], _Acc={ undefined, _AllFunIdInfos } ) ->
-	% No need to return a list of pairs already known of the caller:
-	undefined;
+    % No need to return a list of pairs already known of the caller:
+    undefined;
 
 
 % Here Acc is { DestFunInfo, RemainingFunIdInfos }:
 scan_for_destructors( _FunIdInfos=[], Acc ) ->
-	Acc;
+    Acc;
 
 
 scan_for_destructors( _FunIdInfos=[ { { destruct, 1 },
-									  #function_info{ clauses=[],
-													  spec=S } } | _T ],
-					  _Acc ) when S =/= undefined ->
-	wooper_internals:raise_usage_error( "destructor (destruct/1) has a spec, "
-										"yet it has never been defined." );
+                                      #function_info{ clauses=[],
+                                                      spec=S } } | _T ],
+                      _Acc ) when S =/= undefined ->
+    wooper_internals:raise_usage_error( "destructor (destruct/1) has a spec, "
+                                        "yet it has never been defined." );
 
 
 scan_for_destructors( _FunIdInfos=[ { { destruct, 1 }, DestFunInfo } | T ],
-					  _Acc={ undefined, AccFunIdInfos } ) ->
-	scan_for_destructors( T, { DestFunInfo, AccFunIdInfos } );
+                      _Acc={ undefined, AccFunIdInfos } ) ->
+    scan_for_destructors( T, { DestFunInfo, AccFunIdInfos } );
 
 
 scan_for_destructors( _FunIdInfos=[ { { destruct, N }, _DestFunInfo } | _T ],
-					  _Acc ) ->
-	wooper_internals:raise_usage_error(
-		"wrong arity for destructor (destruct/1): expected 1, got ~B.", [ N ] );
+                      _Acc ) ->
+    wooper_internals:raise_usage_error(
+        "wrong arity for destructor (destruct/1): expected 1, got ~B.", [ N ] );
 
 
 scan_for_destructors( _FunIdInfos=[ Other | T ],
-					  _Acc={ DestElem, OtherFunIdInfos } ) ->
-	scan_for_destructors( T, { DestElem, [ Other | OtherFunIdInfos ] } ).
+                      _Acc={ DestElem, OtherFunIdInfos } ) ->
+    scan_for_destructors( T, { DestElem, [ Other | OtherFunIdInfos ] } ).
 
 
 
@@ -177,49 +177,49 @@ destruct( State ) ->
 -spec get_default_destructor_info( marker_table() ) -> function_info().
 get_default_destructor_info( MarkerTable ) ->
 
-	FileLoc = 0,
+    FileLoc = 0,
 
-	% First, let's define the destructor spec, which is:
-	%   -spec destruct( wooper:state() ) -> wooper:state().
+    % First, let's define the destructor spec, which is:
+    %   -spec destruct( wooper:state() ) -> wooper:state().
 
-	% Corresponds to wooper:state():
-	StateType = wooper_parse_utils:get_state_type(),
+    % Corresponds to wooper:state():
+    StateType = wooper_parse_utils:get_state_type(),
 
-	SpecForm = { attribute, FileLoc, spec, { {destruct,1},
-		[ { type, FileLoc, 'fun',
-			[ { type, FileLoc, product, _Params=[ StateType ] },
-			  _Result=StateType ]
-		  } ] } },
+    SpecForm = { attribute, FileLoc, spec, { {destruct,1},
+        [ { type, FileLoc, 'fun',
+            [ { type, FileLoc, product, _Params=[ StateType ] },
+              _Result=StateType ]
+          } ] } },
 
-	% Then let's define the destructor function itself, based on:
-	%   destruct( State ) ->
-	%     State.
+    % Then let's define the destructor function itself, based on:
+    %   destruct( State ) ->
+    %     State.
 
-	StateVar = wooper_parse_utils:get_state_var(),
+    StateVar = wooper_parse_utils:get_state_var(),
 
-	% In AST, we shall have:
-	% {function, FileLoc, destruct, 1, [ DestructClause ]}:
-	%
-	DestructClause = { clause, FileLoc, _Pattern=[ StateVar ], [],
-					   _Body=[ StateVar ] },
+    % In AST, we shall have:
+    % {function, FileLoc, destruct, 1, [ DestructClause ]}:
+    %
+    DestructClause = { clause, FileLoc, _Pattern=[ StateVar ], [],
+                       _Body=[ StateVar ] },
 
-	% The spec and definition are to be placed together at this definition
-	% marker:
-	%
-	DefASTLoc =
-		ast_info:get_default_definition_function_location( MarkerTable ),
+    % The spec and definition are to be placed together at this definition
+    % marker:
+    %
+    DefASTLoc =
+        ast_info:get_default_definition_function_location( MarkerTable ),
 
-	% While the export is to be done in (and will be automatically declared in
-	% that export form):
-	%
-	ExportLocation =
-		ast_info:get_default_export_function_location( MarkerTable ),
+    % While the export is to be done in (and will be automatically declared in
+    % that export form):
+    %
+    ExportLocation =
+        ast_info:get_default_export_function_location( MarkerTable ),
 
-	#function_info{ name=destruct,
-					arity=1,
-					ast_location=DefASTLoc,
-					file_location=FileLoc,
-					clauses=[ DestructClause ],
-					spec={ DefASTLoc, SpecForm },
-					callback=false,
-					exported=[ ExportLocation ] }.
+    #function_info{ name=destruct,
+                    arity=1,
+                    ast_location=DefASTLoc,
+                    file_location=FileLoc,
+                    clauses=[ DestructClause ],
+                    spec={ DefASTLoc, SpecForm },
+                    callback=false,
+                    exported=[ ExportLocation ] }.

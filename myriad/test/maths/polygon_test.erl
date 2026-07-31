@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2025 Olivier Boudeville
+% Copyright (C) 2010-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -44,87 +44,87 @@ See the polygon tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	MyTriangle = polygon:update_bounding_surface( lazy_circle,
-		polygon:set_edge_color( yellow,
-			polygon:get_triangle( {110,110}, {250,155}, {120,335} ) ) ),
+    MyTriangle = polygon:update_bounding_surface( lazy_circle,
+        polygon:set_edge_color( yellow,
+            polygon:get_triangle( {110,110}, {250,155}, {120,335} ) ) ),
 
-	test_facilities:display( "Triangle description:~n~ts",
-							 [ polygon:to_string( MyTriangle ) ] ),
-
-
-	MyUprightSquare = polygon:update_bounding_surface( lazy_circle,
-		polygon:set_fill_color( red,
-			polygon:get_upright_square( _Center={250,250},
-										_EdgeLength=50 ) ) ),
-
-	test_facilities:display( "Upright square description:~n~ts",
-							 [ polygon:to_string( MyUprightSquare ) ] ),
+    test_facilities:display( "Triangle description:~n~ts",
+                             [ polygon:to_string( MyTriangle ) ] ),
 
 
-	% Simplest concave polygone has 4 vertices (clockwise defined):
-	MyConcavePolygon =
-		polygon:get_polygon( [ {0,0}, {20,0}, {10,20}, {14,14} ] ),
+    MyUprightSquare = polygon:update_bounding_surface( lazy_circle,
+        polygon:set_fill_color( red,
+            polygon:get_upright_square( _Center={250,250},
+                                        _EdgeLength=50 ) ) ),
 
-	test_facilities:display( "Concave polygon description:~n~ts",
-							 [ polygon:to_string( MyConcavePolygon ) ] ),
-
-
-	test_facilities:display( "Diameter information ({P1,P2,SquareDistance}):~n"
-		"  - for the triangle, we have: ~w~n"
-		"  - for the upright square, we have: ~w~n"
-		"  - for the concave polygon, we have: ~w~n",
-		[ polygon:get_diameter( MyTriangle ),
-		  polygon:get_diameter( MyUprightSquare ),
-		  polygon:get_diameter( MyConcavePolygon ) ] ),
-
-	test_facilities:display( "Smallest enclosing rectangle "
-		"({TopLeftCorner,BottomRightCorner}):~n"
-		"  - for the triangle, we have: ~w~n"
-		"  - for the upright square, we have: ~w~n"
-		"  - for the concave polygon, we have: ~w~n",
-		[ polygon:get_smallest_enclosing_rectangle( MyTriangle ),
-			polygon:get_smallest_enclosing_rectangle( MyUprightSquare ),
-			polygon:get_smallest_enclosing_rectangle( MyConcavePolygon ) ] ),
+    test_facilities:display( "Upright square description:~n~ts",
+                             [ polygon:to_string( MyUprightSquare ) ] ),
 
 
-	test_facilities:display( "Areas:~n"
-		"  - for the triangle, we have: ~w~n"
-		"  - for the upright square, we have: ~w~n"
-		"  - for the concave polygon, we have: ~w~n",
-		[ polygon:get_area( MyTriangle ),
-		  polygon:get_area( MyUprightSquare ),
-		  polygon:get_area( MyConcavePolygon ) ] ),
+    % Simplest concave polygone has 4 vertices (clockwise defined):
+    MyConcavePolygon =
+        polygon:get_polygon( [ {0,0}, {20,0}, {10,20}, {14,14} ] ),
+
+    test_facilities:display( "Concave polygon description:~n~ts",
+                             [ polygon:to_string( MyConcavePolygon ) ] ),
 
 
-	% Clockwise order:
-	MySimpleTriangle = polygon:get_triangle( {0,0}, {0,5}, {10,0} ),
+    test_facilities:display( "Diameter information ({P1,P2,SquareDistance}):~n"
+        "  - for the triangle, we have: ~w~n"
+        "  - for the upright square, we have: ~w~n"
+        "  - for the concave polygon, we have: ~w~n",
+        [ polygon:get_diameter( MyTriangle ),
+          polygon:get_diameter( MyUprightSquare ),
+          polygon:get_diameter( MyConcavePolygon ) ] ),
 
-	test_facilities:display( "Clockwise test:~n"
-		"  - is the triangle defined in clockwise order: ~w~n"
-		"  - is the upright square defined in clockwise order: ~w~n"
-		"  - is the concave polygon defined in clockwise order: ~w~n",
-		[ polygon:is_in_clockwise_order( MyTriangle ),
-		  polygon:is_in_clockwise_order( MyUprightSquare ),
-		  polygon:is_in_clockwise_order( MyConcavePolygon ) ] ),
+    test_facilities:display( "Smallest enclosing rectangle "
+        "({TopLeftCorner,BottomRightCorner}):~n"
+        "  - for the triangle, we have: ~w~n"
+        "  - for the upright square, we have: ~w~n"
+        "  - for the concave polygon, we have: ~w~n",
+        [ polygon:get_smallest_enclosing_rectangle( MyTriangle ),
+            polygon:get_smallest_enclosing_rectangle( MyUprightSquare ),
+            polygon:get_smallest_enclosing_rectangle( MyConcavePolygon ) ] ),
 
 
-	% Area would be negative if its absolute value was not selected:
-	AreaSimple = 25.0 = polygon:get_area( MySimpleTriangle ),
+    test_facilities:display( "Areas:~n"
+        "  - for the triangle, we have: ~w~n"
+        "  - for the upright square, we have: ~w~n"
+        "  - for the concave polygon, we have: ~w~n",
+        [ polygon:get_area( MyTriangle ),
+          polygon:get_area( MyUprightSquare ),
+          polygon:get_area( MyConcavePolygon ) ] ),
 
-	test_facilities:display( "Area of simple triangle:~n~ts is: ~f.",
-		[ polygon:to_string( MySimpleTriangle ), AreaSimple ] ),
+
+    % Clockwise order:
+    MySimpleTriangle = polygon:get_triangle( {0,0}, {0,5}, {10,0} ),
+
+    test_facilities:display( "Clockwise test:~n"
+        "  - is the triangle defined in clockwise order: ~w~n"
+        "  - is the upright square defined in clockwise order: ~w~n"
+        "  - is the concave polygon defined in clockwise order: ~w~n",
+        [ polygon:is_in_clockwise_order( MyTriangle ),
+          polygon:is_in_clockwise_order( MyUprightSquare ),
+          polygon:is_in_clockwise_order( MyConcavePolygon ) ] ),
 
 
-	test_facilities:display( "Convexity test:~n"
-		"  - is the triangle convex: ~w~n"
-		"  - is the upright square convex: ~w~n"
-		"  - is the concave polygon convex: ~w~n",
-		[ polygon:is_convex( MyTriangle ),
-		  polygon:is_convex( MyUprightSquare ),
-		  polygon:is_convex( MyConcavePolygon ) ] ),
+    % Area would be negative if its absolute value was not selected:
+    AreaSimple = 25.0 = polygon:get_area( MySimpleTriangle ),
 
-	% Rendering tests: see gui_*test.erl.
+    test_facilities:display( "Area of simple triangle:~n~ts is: ~f.",
+        [ polygon:to_string( MySimpleTriangle ), AreaSimple ] ),
 
-	test_facilities:stop().
+
+    test_facilities:display( "Convexity test:~n"
+        "  - is the triangle convex: ~w~n"
+        "  - is the upright square convex: ~w~n"
+        "  - is the concave polygon convex: ~w~n",
+        [ polygon:is_convex( MyTriangle ),
+          polygon:is_convex( MyUprightSquare ),
+          polygon:is_convex( MyConcavePolygon ) ] ),
+
+    % Rendering tests: see gui_*test.erl.
+
+    test_facilities:stop().

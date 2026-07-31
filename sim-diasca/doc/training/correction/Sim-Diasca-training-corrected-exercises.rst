@@ -30,12 +30,12 @@ Correction of the Exercises of the ``Sim-Diasca`` Training
 :Version: 0.4
 :Dedication:
 
-	For people attending to the Sim-Diasca training.
+    For people attending to the Sim-Diasca training.
 
 
 :Abstract:
 
-	Here are presented all the corrected versions of the exercises to be made in the course of the Sim-Diasca training.
+    Here are presented all the corrected versions of the exercises to be made in the course of the Sim-Diasca training.
 
 
 
@@ -46,7 +46,7 @@ Correction of the Exercises of the ``Sim-Diasca`` Training
 :raw-latex:`\pagebreak`
 
 .. contents:: Sim-Diasca Corrected Exercises
-	:depth: 2
+    :depth: 2
 
 .. section-numbering::
 
@@ -78,12 +78,12 @@ Exercise ex_make
 Every target should be correctly executed::
 
   > make clean all test
-	   Cleaning all in $PREFIX/myriad
-	   Cleaning all in $PREFIX/myriad/src
-	   [..]
+       Cleaning all in $PREFIX/myriad
+       Cleaning all in $PREFIX/myriad/src
+       [..]
   --> End of test for module net_utils.
-	 Building all in $PREFIX/myriad/doc
-	 Testing all in doc
+     Building all in $PREFIX/myriad/doc
+     Testing all in doc
 
 
 
@@ -96,8 +96,8 @@ Exercise ex_compiler
 Output should be like::
 
  > make clean hashtable.beam
-	Cleaning all in $PREFIX/myriad/src
-	 Compiling module hashtable.erl
+    Cleaning all in $PREFIX/myriad/src
+     Compiling module hashtable.erl
   `PATH=~/Software/Erlang/Erlang-current-install/bin:$PATH which erlc` -b beam -I. -I../src -v -W2 +debug_info -o hashtable.beam hashtable.erl
 
 Options are:
@@ -125,24 +125,24 @@ Exercise ex_interpreter
 We should have::
 
   > make hashtable_run
-	   Compiling module hashtable_test.erl
-	   Running unitary test hashtable_run (second form) from hashtable_test hashtable.beam
+       Compiling module hashtable_test.erl
+       Running unitary test hashtable_run (second form) from hashtable_test hashtable.beam
   ../src/launch-erl.sh -v -c Ceylan-myriad --ln ceylan_test --fqdn `hostname -f` --beam-dir . --beam-dir ../src --ln hashtable_run  --
 
-	+ Bucket with 1 element(s):
-	   * MyFirstKey -> MyFirstValue
+    + Bucket with 1 element(s):
+       * MyFirstKey -> MyFirstValue
   --> End of test for module hashtable.
 
 
 Change in ``hashtable_test.erl`` ``{value,"MyFirstValue"}`` by ``{value,"AWrongValue"}``, rerun the test::
 
   > make hashtable_run
-	   Compiling module hashtable_test.erl
-	   Running unitary test hashtable_run (second form) from hashtable_test hashtable.beam
+       Compiling module hashtable_test.erl
+       Running unitary test hashtable_run (second form) from hashtable_test hashtable.beam
   ../src/launch-erl.sh -v -c Ceylan-myriad --ln ceylan_test --fqdn `hostname -f` --beam-dir . --beam-dir ../src --ln hashtable_run  --
   [..]
   + Bucket with 1 element(s):
-	 * MyFirstKey -> MyFirstValue
+     * MyFirstKey -> MyFirstValue
 
    Looking up for MyFirstKey: {value,"MyFirstValue"}
    {"init terminating in do_boot",{{badmatch,{value,"MyFirstValue"}},[{hashtable_test,run,0},{erl_eval,do_apply,5},{init,start_it,1},{init,start_em,1}]}}
@@ -218,37 +218,37 @@ Exercise ex_wooper
 
 Recommended actions::
 
-	cd wooper/examples
-	cp class_Template.erl.sample class_PinkFlamingo.erl
-	nedit class_PinkFlamingo.erl
-	cp class_Template_test.erl.sample class_PinkFlamingo_test.erl
-	nedit class_PinkFlamingo_test.erl
-	make class_PinkFlamingo.beam class_PinkFlamingo_test.beam
-	make class_PinkFlamingo_run
+    cd wooper/examples
+    cp class_Template.erl.sample class_PinkFlamingo.erl
+    nedit class_PinkFlamingo.erl
+    cp class_Template_test.erl.sample class_PinkFlamingo_test.erl
+    nedit class_PinkFlamingo_test.erl
+    make class_PinkFlamingo.beam class_PinkFlamingo_test.beam
+    make class_PinkFlamingo_run
 
 
 Example of result::
 
   > make class_PinkFlamingo_run
 
-	 Running unitary test class_PinkFlamingo_run (second form) from class_PinkFlamingo_test class_PinkFlamingo.beam
-	 ../../myriad/src/launch-erl.sh -v -c WOOPER --ln wooper_test --fqdn `hostname -f` --beam-dir ../src --beam-dir . --beam-dir ../../myriad/src --ln class_PinkFlamingo_run  --eval `echo class_PinkFlamingo_run | sed 's|_run|_test:run()|1'`
-	 Launching: erl +W w -pz  ../src . ../../myriad/src -smp auto +K true +A 8 +P 120000  -setcookie WOOPER -eval class_PinkFlamingo_test:run()  -name class_PinkFlamingo_run
-	 Erlang R16B (erts-5.10.1) [source] [rq:1] [async-threads:8] [hipe] [kernel-poll:true]
+     Running unitary test class_PinkFlamingo_run (second form) from class_PinkFlamingo_test class_PinkFlamingo.beam
+     ../../myriad/src/launch-erl.sh -v -c WOOPER --ln wooper_test --fqdn `hostname -f` --beam-dir ../src --beam-dir . --beam-dir ../../myriad/src --ln class_PinkFlamingo_run  --eval `echo class_PinkFlamingo_run | sed 's|_run|_test:run()|1'`
+     Launching: erl +W w -pz  ../src . ../../myriad/src -smp auto +K true +A 8 +P 120000  -setcookie WOOPER -eval class_PinkFlamingo_test:run()  -name class_PinkFlamingo_run
+     Erlang R16B (erts-5.10.1) [source] [rq:1] [async-threads:8] [hipe] [kernel-poll:true]
 
-	 Eshell V5.10.1  (abort with ^G)
-	 (class_PinkFlamingo_run@localhost.localdomain)1> --> Testing module class_PinkFlamingo.
-	 --> Debug mode: true.
-	 --> Statically, class name is class_PinkFlamingo, superclasses are [class_ViviparousBeing].
-	 --> After constructor, getClassname returned 'class_PinkFlamingo' as expected.
-	 --> After constructor, getSuperclasses returned [class_ViviparousBeing] as expected.
-	 --> On average a flamingo has 1.700000 children.
-	 [Syd] Glouglou, gouglou, my height is now 122.500000 cm.
-	 [Syd] Glouglou, gouglou, my height is now 125.000000 cm.
-	 [Syd] Gobble, gobble, my height is now 126.000000 cm.
-	 [Syd] Glouglou, gouglou, my height is now 128.500000 cm.
-	 --> The flamingo is pink, as expected.
-	 --> End of test for module class_PinkFlamingo.
+     Eshell V5.10.1  (abort with ^G)
+     (class_PinkFlamingo_run@localhost.localdomain)1> --> Testing module class_PinkFlamingo.
+     --> Debug mode: true.
+     --> Statically, class name is class_PinkFlamingo, superclasses are [class_ViviparousBeing].
+     --> After constructor, getClassname returned 'class_PinkFlamingo' as expected.
+     --> After constructor, getSuperclasses returned [class_ViviparousBeing] as expected.
+     --> On average a flamingo has 1.700000 children.
+     [Syd] Glouglou, gouglou, my height is now 122.500000 cm.
+     [Syd] Glouglou, gouglou, my height is now 125.000000 cm.
+     [Syd] Gobble, gobble, my height is now 126.000000 cm.
+     [Syd] Glouglou, gouglou, my height is now 128.500000 cm.
+     --> The flamingo is pink, as expected.
+     --> End of test for module class_PinkFlamingo.
 
 
 
@@ -288,8 +288,8 @@ Regarding messages:
 
  - acknowledgement message
 
-	- is *not* needed "because some message could be lost"
-	- it is needed since it is the only way of forcing the overall tick to last as long as all actor messages have not finished being exchanged for sure, with no assumption about their propagation time (not bounded on a network)
+    - is *not* needed "because some message could be lost"
+    - it is needed since it is the only way of forcing the overall tick to last as long as all actor messages have not finished being exchanged for sure, with no assumption about their propagation time (not bounded on a network)
 
  - sending ``done`` either immediately, if no actor message was sent, or after having waited for all actor message acknowledgements to have been received: otherwise an actor could receive a message from the past: already at tick T+1, it would discover it should have managed a message at tick T
 
@@ -333,8 +333,8 @@ Bugs to be removed are:
 
   - in the machine code:
 
-	- the module should be named ``class_FaultySodaVendingMachine``, not ``class_FlamingoSodaVendingMachine``
-	- in the ``orderSoda`` oneway, the first clause of the pattern-matching always succeeds (clauses were reversed)
+    - the module should be named ``class_FaultySodaVendingMachine``, not ``class_FlamingoSodaVendingMachine``
+    - in the ``orderSoda`` oneway, the first clause of the pattern-matching always succeeds (clauses were reversed)
 
   - in the customer code, ``set_next_thirsty_tick`` is called with a wrong arity, the ``State`` variable should be specified
 
@@ -359,13 +359,13 @@ Bugs to be removed are:
 
   - in the code for the deterministic thirsty customer, for the ``actSpontaneous/1`` oneway:
 
-	- the type specification  should mention a return type of ``oneway_return()`` rather than ``wooper_state()`` (both are true, but the former is more informative than the latter); note that, for actor oneways, it would have been ``class_Actor:actor_oneway_return()``
+    - the type specification  should mention a return type of ``oneway_return()`` rather than ``wooper_state()`` (both are true, but the former is more informative than the latter); note that, for actor oneways, it would have been ``class_Actor:actor_oneway_return()``
 
-	- ``NewState`` should be returned instead of ``State``
+    - ``NewState`` should be returned instead of ``State``
 
 
  - in the test case:
 
-	- synchronous creations of actors should be used, otherwise the time manager could have already reached its termination tick even before these actors have subscribed (race condition)
+    - synchronous creations of actors should be used, otherwise the time manager could have already reached its termination tick even before these actors have subscribed (race condition)
 
-	- ``test_receive/0`` should be used instead of ``receive..end`` clauses in tests, lest unexpected message are intercepted
+    - ``test_receive/0`` should be used instead of ``receive..end`` clauses in tests, lest unexpected message are intercepted

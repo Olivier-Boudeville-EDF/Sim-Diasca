@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -25,7 +25,7 @@
 
 
 -define( class_description,
-		 "Test of the datalogger facilities, from a simulation actor." ).
+         "Test of the datalogger facilities, from a simulation actor." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -35,20 +35,20 @@
 % The class-specific attributes of a datalogging actor instance:
 -define( class_attributes, [
 
-	{ first_probe_ref, virtual_probe_reference(),
-	  "reference onto the first virtual probe created" },
+    { first_probe_ref, virtual_probe_reference(),
+      "reference onto the first virtual probe created" },
 
-	{ second_probe_ref, virtual_probe_reference(),
-	  "reference onto the second virtual probe created" },
+    { second_probe_ref, virtual_probe_reference(),
+      "reference onto the second virtual probe created" },
 
-	{ listener_pid, option( pid() ),
-	  "the PID of any process (e.g. the test case) listening to this test "
-	  "actor; allows to notify it that the report generation is over" },
+    { listener_pid, option( pid() ),
+      "the PID of any process (e.g. the test case) listening to this test "
+      "actor; allows to notify it that the report generation is over" },
 
-	{ talkative, boolean(), "tells whether this actor is talkative" },
+    { talkative, boolean(), "tells whether this actor is talkative" },
 
-	{ termination_tick_offset, tick_offset(),
-	  "the tick offset at which this test actor will terminate" } ] ).
+    { termination_tick_offset, tick_offset(),
+      "the tick offset at which this test actor will terminate" } ] ).
 
 
 
@@ -83,53 +83,53 @@ by the load-balancer
 This test actor creates two (virtual) probes.
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-		class_Actor:name(), tick_offset(), pid() ) -> wooper:state().
+        class_Actor:name(), tick_offset(), pid() ) -> wooper:state().
 construct( State, ActorSettings, ActorName, TerminationTickOffset,
-		   ListenerPid ) ->
+           ListenerPid ) ->
 
-	% Cannot use 'output' yet (no talkative attribute):
-	%trace_utils:debug_fmt( "Creating a test actor named '~ts'.",
-	%   [ ActorName ] ),
+    % Cannot use 'output' yet (no talkative attribute):
+    %trace_utils:debug_fmt( "Creating a test actor named '~ts'.",
+    %   [ ActorName ] ),
 
-	% First the direct mother classes, then this class-specific actions:
-	ActorState = class_Actor:construct( State, ActorSettings,
-										?trace_categorize(ActorName) ),
+    % First the direct mother classes, then this class-specific actions:
+    ActorState = class_Actor:construct( State, ActorSettings,
+                                        ?trace_categorize(ActorName) ),
 
-	% Will be used as probe name as well:
-	FirstTitle = text_utils:format( "Curves A for actor ~w", [ self() ] ),
+    % Will be used as probe name as well:
+    FirstTitle = text_utils:format( "Curves A for actor ~w", [ self() ] ),
 
-	FirstVirtualProbePair = class_DataLogger:create_virtual_probe(
-		_FirstProbeName=FirstTitle,
-		_FirstCurveNames=[ "Curve A1", "Curve A2" ],
-		_FirstZones=[],
-		_FirstTitle=FirstTitle,
-		_FirstXLabel="Simulation tick",
-		_FirstYLabel="Curve A values" ),
+    FirstVirtualProbePair = class_DataLogger:create_virtual_probe(
+        _FirstProbeName=FirstTitle,
+        _FirstCurveNames=[ "Curve A1", "Curve A2" ],
+        _FirstZones=[],
+        _FirstTitle=FirstTitle,
+        _FirstXLabel="Simulation tick",
+        _FirstYLabel="Curve A values" ),
 
-	SecondTitle = text_utils:format( "Curves B for actor ~w", [ self() ] ),
+    SecondTitle = text_utils:format( "Curves B for actor ~w", [ self() ] ),
 
-	SecondVirtualProbePair = class_DataLogger:create_virtual_probe(
-		_SecondProbeName=SecondTitle,
-		_SecondCurveNames=[ "Curve B1", "Curve B2", "Curve B3" ],
-		_SecondZones=[],
-		_SecondTitle=SecondTitle,
-		_SecondXLabel="Simulation tick",
-		_SecondYLabel="Curve B values" ),
+    SecondVirtualProbePair = class_DataLogger:create_virtual_probe(
+        _SecondProbeName=SecondTitle,
+        _SecondCurveNames=[ "Curve B1", "Curve B2", "Curve B3" ],
+        _SecondZones=[],
+        _SecondTitle=SecondTitle,
+        _SecondXLabel="Simulation tick",
+        _SecondYLabel="Curve B values" ),
 
-	?send_notice_fmt( ActorState, "Creating a datalogging test actor, "
-		"terminating no sooner than tick offset #~w.",
-		[ TerminationTickOffset ] ),
+    ?send_notice_fmt( ActorState, "Creating a datalogging test actor, "
+        "terminating no sooner than tick offset #~w.",
+        [ TerminationTickOffset ] ),
 
-	setAttributes( ActorState, [
-		{ first_probe_ref, FirstVirtualProbePair },
-		{ second_probe_ref, SecondVirtualProbePair },
-		{ listener_pid, ListenerPid },
+    setAttributes( ActorState, [
+        { first_probe_ref, FirstVirtualProbePair },
+        { second_probe_ref, SecondVirtualProbePair },
+        { listener_pid, ListenerPid },
 
-		% Useful to select console verbosity:
-		{ talkative, false },
-		%{ talkative, true},
+        % Useful to select console verbosity:
+        { talkative, false },
+        %{ talkative, true},
 
-		{ termination_tick_offset, TerminationTickOffset } ] ).
+        { termination_tick_offset, TerminationTickOffset } ] ).
 
 
 
@@ -137,13 +137,13 @@ construct( State, ActorSettings, ActorName, TerminationTickOffset,
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
-	% Class-specific actions:
-	?notice( "Deleting datalogging test actor." ),
+    % Class-specific actions:
+    ?notice( "Deleting datalogging test actor." ),
 
-	% No specific probe deletion.
+    % No specific probe deletion.
 
-	% Then allow chaining:
-	State.
+    % Then allow chaining:
+    State.
 
 
 
@@ -158,32 +158,32 @@ destruct( State ) ->
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
-	TerminationOffset = ?getAttr(termination_tick_offset),
+    TerminationOffset = ?getAttr(termination_tick_offset),
 
-	% Terminates if the termination offset is reached or exceeded:
-	NewState = case ?getAttr(current_tick_offset) of
+    % Terminates if the termination offset is reached or exceeded:
+    NewState = case ?getAttr(current_tick_offset) of
 
-		PastOffset when PastOffset >= TerminationOffset ->
+        PastOffset when PastOffset >= TerminationOffset ->
 
-			?notice( "Test Actor preparing termination." ),
+            ?notice( "Test Actor preparing termination." ),
 
-			TerminatingState = executeOneway( State, declareTermination ),
+            TerminatingState = executeOneway( State, declareTermination ),
 
-			output( "~w terminating at #~B", [ self(), PastOffset ], State ),
+            output( "~w terminating at #~B", [ self(), PastOffset ], State ),
 
-			TerminatingState;
+            TerminatingState;
 
-		CurrentOffset ->
+        CurrentOffset ->
 
-			output( "~w acting spontaneously at #~B on ~ts",
-					[ self(), CurrentOffset, net_utils:localnode() ], State ),
+            output( "~w acting spontaneously at #~B on ~ts",
+                    [ self(), CurrentOffset, net_utils:localnode() ], State ),
 
-			send_probe_data( CurrentOffset, State ),
+            send_probe_data( CurrentOffset, State ),
 
-			executeOneway( State, addSpontaneousTick, CurrentOffset + 7 )
+            executeOneway( State, addSpontaneousTick, CurrentOffset + 7 )
 
-	end,
-	wooper:return_state( NewState ).
+    end,
+    wooper:return_state( NewState ).
 
 
 
@@ -191,13 +191,13 @@ actSpontaneous( State ) ->
 
 
 -spec onFirstDiasca( wooper:state(), sending_actor_pid() ) ->
-							actor_oneway_return().
+                            actor_oneway_return().
 onFirstDiasca( State, _SendingActorPid ) ->
 
-	% Let's simply schedule this actor for the next tick:
-	NewState = executeOneway( State, scheduleNextSpontaneousTick ),
+    % Let's simply schedule this actor for the next tick:
+    NewState = executeOneway( State, scheduleNextSpontaneousTick ),
 
-	actor:return_state( NewState ).
+    actor:return_state( NewState ).
 
 
 
@@ -211,13 +211,13 @@ Outputs specified message in console, iff talkative.
 (helper)
 """.
 -spec output( text_utils:format_string(), text_utils:format_values(),
-			  wooper:state() ) -> void().
+              wooper:state() ) -> void().
 output( MessageFormat, FormatValues, State ) ->
-	?getAttr(talkative) andalso
+    ?getAttr(talkative) andalso
         begin
-			TickOffset = class_Actor:get_current_tick_offset( State ),
-			trace_utils:debug_fmt( "[~ts (~w) at ~p] " ++ MessageFormat,
-				[ ?getAttr(name), self(), TickOffset ] ++ FormatValues )
+            TickOffset = class_Actor:get_current_tick_offset( State ),
+            trace_utils:debug_fmt( "[~ts (~w) at ~p] " ++ MessageFormat,
+                [ ?getAttr(name), self(), TickOffset ] ++ FormatValues )
         end.
 
 
@@ -225,17 +225,17 @@ output( MessageFormat, FormatValues, State ) ->
 -doc "Sends data to the virtual probes (if any was selected).".
 send_probe_data( CurrentOffset, State ) ->
 
-	% Depending on the result specification, one probe may be wanted while the
-	% other not.
-	%
-	% In both cases, should a (virtual) probe be not wanted, automatically no
-	% sample will be sent to it:
+    % Depending on the result specification, one probe may be wanted while the
+    % other not.
+    %
+    % In both cases, should a (virtual) probe be not wanted, automatically no
+    % sample will be sent to it:
 
-	class_DataLogger:send_data( ?getAttr(first_probe_ref), CurrentOffset,
-		_FirstSample={ random_utils:get_uniform_value( 50 ),
-					   random_utils:get_uniform_value( 30 ) } ),
+    class_DataLogger:send_data( ?getAttr(first_probe_ref), CurrentOffset,
+        _FirstSample={ random_utils:get_uniform_value( 50 ),
+                       random_utils:get_uniform_value( 30 ) } ),
 
-	class_DataLogger:send_data( ?getAttr(second_probe_ref), CurrentOffset,
-		_SecondSample={ random_utils:get_uniform_value( 100 ),
-						random_utils:get_uniform_value( 30 ),
-						random_utils:get_uniform_value( 150 ) } ).
+    class_DataLogger:send_data( ?getAttr(second_probe_ref), CurrentOffset,
+        _SecondSample={ random_utils:get_uniform_value( 100 ),
+                        random_utils:get_uniform_value( 30 ),
+                        random_utils:get_uniform_value( 150 ) } ).

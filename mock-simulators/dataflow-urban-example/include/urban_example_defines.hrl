@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 EDF R&D
+% Copyright (C) 2016-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -87,35 +87,35 @@
 % Case-specific glossary (centralisation of the definitions of semantics).
 
 -define( adult_count_semantics,
-		 "http://foobar.org/urban/1.1/population/count/adults" ).
+         "http://foobar.org/urban/1.1/population/count/adults" ).
 
 -define( child_count_semantics,
-		 %"http://foobar.org/urban/1.1/population/count/children" ).
+         %"http://foobar.org/urban/1.1/population/count/children" ).
 
-		 % To test whether two semantics almost identically named are rejected
-		 % (now: not anymore)
-		 "http://foobar.org/urban/1.1/population/count/adult" ).
+         % To test whether two semantics almost identically named are rejected
+         % (now: not anymore)
+         "http://foobar.org/urban/1.1/population/count/adult" ).
 
 -define( average_population_gain,
-		 "http://foobar.org/urban/1.1/population/average_gain" ).
+         "http://foobar.org/urban/1.1/population/average_gain" ).
 
 -define( average_savings,
-		 "http://foobar.org/urban/1.1/finance/average_savings" ).
+         "http://foobar.org/urban/1.1/finance/average_savings" ).
 
 -define( area_type_semantics,
-		 "http://foobar.org/urban/1.1/area/type" ).
+         "http://foobar.org/urban/1.1/area/type" ).
 
 -define( path_length_semantics,
-		 "http://foobar.org/urban/1.1/path/length" ).
+         "http://foobar.org/urban/1.1/path/length" ).
 
 -define( energy_demand_semantics,
-		 "http://foobar.org/urban/1.1/energy/demand" ).
+         "http://foobar.org/urban/1.1/energy/demand" ).
 
 -define( pollution_emission_semantics,
-		 "http://foobar.org/urban/1.1/pollution/emission" ).
+         "http://foobar.org/urban/1.1/pollution/emission" ).
 
 -define( transformation_efficiency_semantics,
-		 "http://foobar.org/urban/1.1/transformation/efficiency" ).
+         "http://foobar.org/urban/1.1/transformation/efficiency" ).
 
 -define( address_semantics, "http://foobar.org/urban/1.1/postal_address" ).
 

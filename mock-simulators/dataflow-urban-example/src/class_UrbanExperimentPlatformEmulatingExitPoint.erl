@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 EDF R&D
+% Copyright (C) 2016-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -25,11 +25,11 @@
 
 
 -define( class_description,
-		 "This example of experiment exit point starts, as at least most exit "
-		 "points, each step of this urban case experiment."
-		 "It introduces changesets as if it had fetched them from an overall, "
-		 "unspecified platform (e.g. through REST calls directly done from "
-		 "here)." ).
+         "This example of experiment exit point starts, as at least most exit "
+         "points, each step of this urban case experiment."
+         "It introduces changesets as if it had fetched them from an overall, "
+         "unspecified platform (e.g. through REST calls directly done from "
+         "here)." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -42,7 +42,7 @@
 
 % Must be included before class_TraceEmitter header:
 -define( trace_emitter_categorization,
-		 "Core.Dataflow.Urban-Example.ExitPoint" ).
+         "Core.Dataflow.Urban-Example.ExitPoint" ).
 
 
 % For types and shorthands:
@@ -57,7 +57,7 @@
 -define( class_attributes, [
 
     { exit_probe_ref, probe_ref(), "a basic probe allowing to monitor the data "
-	  "extracted by this exit point from the dataflow" } ] ).
+      "extracted by this exit point from the dataflow" } ] ).
 
 
 
@@ -90,33 +90,33 @@ from (e.g. first year)
 - WorldManagerPid is the PID of the world manager
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-	[ dataflow_pid() ], step_count(),step_count(),
-	experiment_entry_point_pid(), experiment_manager_pid(),
-	world_manager_pid() ) -> wooper:state().
+    [ dataflow_pid() ], step_count(),step_count(),
+    experiment_entry_point_pid(), experiment_manager_pid(),
+    world_manager_pid() ) -> wooper:state().
 construct( State, ActorSettings, Dataflows, ExperimentStepStart,
-		   ExperimentStepStop, ExperimentEntryPointPid,
-		   ExperimentManagerPid, WorldManagerPid ) ->
+           ExperimentStepStop, ExperimentEntryPointPid,
+           ExperimentManagerPid, WorldManagerPid ) ->
 
-	% First the direct mother class:
-	ExitState = class_ExperimentExitPoint:construct( State, ActorSettings,
-		Dataflows, ExperimentEntryPointPid, ExperimentManagerPid,
-		WorldManagerPid ),
+    % First the direct mother class:
+    ExitState = class_ExperimentExitPoint:construct( State, ActorSettings,
+        Dataflows, ExperimentEntryPointPid, ExperimentManagerPid,
+        WorldManagerPid ),
 
-	ProbeName = "Monitoring the setting of output ports over the dataflow, "
-		"thanks to a probe attached to the urban experiment exit point",
+    ProbeName = "Monitoring the setting of output ports over the dataflow, "
+        "thanks to a probe attached to the urban experiment exit point",
 
-	CurveNames = [
-		"'total\_energy\_demand' output port of the energy demand unit" ],
+    CurveNames = [
+        "'total\_energy\_demand' output port of the energy demand unit" ],
 
-	ExitProbeRef = class_Probe:declare_result_probe( ProbeName, CurveNames,
-		_Zones=[], _Title=ProbeName, _XLabel="Simulated Year",
-		_YLabel="Output as energy (in kW.h)" ),
+    ExitProbeRef = class_Probe:declare_result_probe( ProbeName, CurveNames,
+        _Zones=[], _Title=ProbeName, _XLabel="Simulated Year",
+        _YLabel="Output as energy (in kW.h)" ),
 
-	% Then the class-specific actions:
-	setAttributes( ExitState, [
-		{ current_step, ExperimentStepStart },
-		{ max_step, ExperimentStepStop },
-		{ exit_probe_ref, ExitProbeRef } ] ).
+    % Then the class-specific actions:
+    setAttributes( ExitState, [
+        { current_step, ExperimentStepStart },
+        { max_step, ExperimentStepStop },
+        { exit_probe_ref, ExitProbeRef } ] ).
 
 
 
@@ -132,33 +132,33 @@ Overrides the default behaviour, yet reuses it.
 -spec actSpontaneous( wooper:state() ) -> oneway_return().
 actSpontaneous( State ) ->
 
-	CurrentStep = ?getAttr(current_step) + 1,
+    CurrentStep = ?getAttr(current_step) + 1,
 
-	MaxStep = ?getAttr(max_step),
+    MaxStep = ?getAttr(max_step),
 
-	UpdatedState = case CurrentStep of
+    UpdatedState = case CurrentStep of
 
-		S when S >= MaxStep ->
+        S when S >= MaxStep ->
 
-			?notice_fmt( "Maximum step (~B) reached, terminating the "
-						 "simulation.", [ S ] ),
+            ?notice_fmt( "Maximum step (~B) reached, terminating the "
+                         "simulation.", [ S ] ),
 
-			setAttribute( State, phase, termination );
+            setAttribute( State, phase, termination );
 
-		_ ->
-			State
+        _ ->
+            State
 
-	end,
+    end,
 
-	% We call our direct mother class (e.g. so that the *entry* point is
-	% triggered at the next diasca):
-	%
-	ScheduleState = executeOnewayAs( UpdatedState, class_ExperimentExitPoint,
-									 actSpontaneous ),
+    % We call our direct mother class (e.g. so that the *entry* point is
+    % triggered at the next diasca):
+    %
+    ScheduleState = executeOnewayAs( class_ExperimentExitPoint, UpdatedState,
+                                     actSpontaneous ),
 
-	FinalState = setAttribute( ScheduleState, current_step, CurrentStep ),
+    FinalState = setAttribute( ScheduleState, current_step, CurrentStep ),
 
-	wooper:return_state( FinalState ).
+    wooper:return_state( FinalState ).
 
 
 
@@ -169,28 +169,28 @@ actSpontaneous( State ) ->
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
-	ExitString = class_ExperimentExitPoint:to_string( State ),
+    ExitString = class_ExperimentExitPoint:to_string( State ),
 
-	EnergyDemandString = case ?getAttr(energy_demand_units) of
+    EnergyDemandString = case ?getAttr(energy_demand_units) of
 
-		[] ->
-			"not referencing any energy demand unit";
+        [] ->
+            "not referencing any energy demand unit";
 
-		EnergyDemandUnits ->
-			text_utils:format( "referencing ~B energy demand units: ~p",
-				[ length( EnergyDemandUnits ), EnergyDemandUnits ] )
+        EnergyDemandUnits ->
+            text_utils:format( "referencing ~B energy demand units: ~p",
+                [ length( EnergyDemandUnits ), EnergyDemandUnits ] )
 
-	end,
+    end,
 
-	ProbeString = case ?getAttr(exit_probe_ref) of
+    ProbeString = case ?getAttr(exit_probe_ref) of
 
-		non_wanted_probe ->
-			"not using a probe";
+        non_wanted_probe ->
+            "not using a probe";
 
-		ProbePid ->
-			text_utils:format( "using probe ~p", [ ProbePid ] )
+        ProbePid ->
+            text_utils:format( "using probe ~p", [ ProbePid ] )
 
-	end,
+    end,
 
-	text_utils:format( "Urban ~ts, ~ts, ~ts",
-					   [ ExitString, EnergyDemandString, ProbeString ] ).
+    text_utils:format( "Urban ~ts, ~ts, ~ts",
+                       [ ExitString, EnergyDemandString, ProbeString ] ).

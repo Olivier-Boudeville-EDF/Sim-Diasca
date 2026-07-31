@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Traces library.
 %
@@ -73,16 +73,16 @@
 % TraceAggregatorPid voluntarily exported from test_start, for test_stop:
 
 -define( test_start,
-		 % true is for InitTraceSupervisor (not even binding a mute variable for
-		 % that); test_stop/2 to be consistent with it.
-		 %
-		 TraceAggregatorPid = traces_for_tests:test_start( ?MODULE, true )
+         % true is for InitTraceSupervisor (not even binding a mute variable for
+         % that); test_stop/2 to be consistent with it.
+         %
+         TraceAggregatorPid = traces_for_tests:test_start( ?MODULE, true )
 ).
 
 
 -define( test_stop,
-		 % true is for WaitForTraceSupervisor, in accordance with test_start/2.
-		 traces_for_tests:test_stop( ?MODULE, TraceAggregatorPid, true )
+         % true is for WaitForTraceSupervisor, in accordance with test_start/2.
+         traces_for_tests:test_stop( ?MODULE, TraceAggregatorPid, true )
 ).
 
 
@@ -90,23 +90,23 @@
 
 
 -define( test_start,
-		 % Here, even if the trace sending is deactivated, a trace aggregator is
-		 % created, as some processes nevertheless expect to find one at
-		 % start-up, or some of them may have been recompiled to be
-		 % trace-enabled.
-		 %
-		 % However no trace supervisor is needed here.
-		 %
-		 % false is for InitTraceSupervisor (not even binding a mute variable
-		 % for that); test_stop/2 to be consistent with it.
-		 %
-		 TraceAggregatorPid = traces_for_tests:test_start( ?MODULE, false )
+         % Here, even if the trace sending is deactivated, a trace aggregator is
+         % created, as some processes nevertheless expect to find one at
+         % start-up, or some of them may have been recompiled to be
+         % trace-enabled.
+         %
+         % However no trace supervisor is needed here.
+         %
+         % false is for InitTraceSupervisor (not even binding a mute variable
+         % for that); test_stop/2 to be consistent with it.
+         %
+         TraceAggregatorPid = traces_for_tests:test_start( ?MODULE, false )
 ).
 
 
 -define( test_stop,
-		 % false is for WaitForTraceSupervisor, in accordance with test_start/2.
-		 traces_for_tests:test_stop( ?MODULE, TraceAggregatorPid, false )
+         % false is for WaitForTraceSupervisor, in accordance with test_start/2.
+         traces_for_tests:test_stop( ?MODULE, TraceAggregatorPid, false )
 ).
 
 
@@ -117,12 +117,12 @@
 % Valid whether or not tracing is activated:
 
 -define( test_stop_without_waiting_for_trace_supervisor,
-		 traces_for_tests:test_immediate_stop( ?MODULE, TraceAggregatorPid )
+         traces_for_tests:test_immediate_stop( ?MODULE, TraceAggregatorPid )
 ).
 
 
 -define( test_stop_on_shell,
-		 traces_for_tests:test_stop_on_shell( ?MODULE, TraceAggregatorPid )
+         traces_for_tests:test_stop_on_shell( ?MODULE, TraceAggregatorPid )
 ).
 
 
@@ -153,7 +153,7 @@ Pid ! {getBaz, [], self()},
 receive
 
   {wooper_result, V} ->
-		V
+        V
 
 end,
 ...
@@ -161,7 +161,7 @@ end,
 """.
 -spec test_receive() -> any().
 test_receive() ->
-	traces:receive_applicative_message().
+    traces:receive_applicative_message().
 
 
 
@@ -172,7 +172,7 @@ control message that the test code should remain unware of.
 """.
 -spec test_receive( any() ) -> void().
 test_receive( Message ) ->
-	traces:receive_applicative_message( Message ).
+    traces:receive_applicative_message( Message ).
 
 
 
@@ -190,20 +190,20 @@ Handles a test failure, using specified string as advertised reason.
 -spec test_failed( text_utils:ustring() ) -> no_return().
 test_failed( Reason ) ->
 
-	% For some reason erlang:error is unable to interpret strings as strings,
-	% they are always output as unreadable lists.
+    % For some reason erlang:error is unable to interpret strings as strings,
+    % they are always output as unreadable lists.
 
-	Message = text_utils:format( "Test ~ts failed, reason: ~ts.",
-								 [ ?MODULE, Reason ] ),
+    Message = text_utils:format( "Test ~ts failed, reason: ~ts.",
+                                 [ ?MODULE, Reason ] ),
 
-	trace_utils:error( Message ),
+    trace_utils:error( Message ),
 
-	?test_emergency( Message ),
+    ?test_emergency( Message ),
 
-	% Needed, otherwise error_logger may not display anything:
-	system_utils:await_output_completion(),
+    % Needed, otherwise error_logger may not display anything:
+    system_utils:await_output_completion(),
 
-	erlang:error( "Test ~ts failed.", [ ?MODULE ] ).
+    erlang:error( "Test ~ts failed.", [ ?MODULE ] ).
 
 
 
@@ -213,6 +213,6 @@ with format characters (e.g. '~w') and specified list as actual values to be
 formatted.
 """.
 -spec test_failed( text_utils:format_string(), text_utils:format_values() ) ->
-												no_return().
+                                                no_return().
 test_failed( FormatReason, FormatValues ) ->
-	test_failed( text_utils:format( FormatReason, FormatValues ) ).
+    test_failed( text_utils:format( FormatReason, FormatValues ) ).

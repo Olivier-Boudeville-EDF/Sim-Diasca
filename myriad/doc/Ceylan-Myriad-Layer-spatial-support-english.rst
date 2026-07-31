@@ -74,11 +74,11 @@ Let's consider a :math:`m × n` matrix (m rows, n columns):
 
 .. math::
  M = \begin{bmatrix}
-		a11 & a12 & ... & a1n \\
-		a21 & a22 & ... & a2n \\
-		... & ... & ... & ... \\
-		am1 & am2 & ... & amn \\
-	 \end{bmatrix}
+        a11 & a12 & ... & a1n \\
+        a21 & a22 & ... & a2n \\
+        ... & ... & ... & ... \\
+        am1 & am2 & ... & amn \\
+     \end{bmatrix}
 
 
 .. _`matrix conventions`:
@@ -95,9 +95,9 @@ Taking as an example a 2x2 matrix like:
 
 .. math::
  M = \begin{bmatrix}
-		a11 & a12 \\
-		a21 & a22 \\
-	 \end{bmatrix}
+        a11 & a12 \\
+        a21 & a22 \\
+     \end{bmatrix}
 
 it can be created as an arbitrary ``matrix/0`` with:
 
@@ -131,22 +131,22 @@ In practice the actual, internal terms corresponding to all these matrices would
  % For arbitrary ones:
  % (supposing that all Axy coordinates are already floats):
  M1 = M6 = [ [A11,A12],
-			 [A21,A22] ]
+             [A21,A22] ]
 
  % For specialised ones:
  M2 = M3 = M4 = M5 = #matrix2{ m11=A11, m12=A12,
-							   m21=A21, m22=A22 }
+                               m21=A21, m22=A22 }
 
 
 Finally, **quaternions** are also supported (see ``quaternion.erl``). They can be defined from 4 numbers, or as a 3D rotation. They are stored as quadruplets of floats, and can be added, multiplied, negated, scaled, normalised, conjugated, inversed, etc., and may be represented either as
 
 .. math::
  Q = \begin{vmatrix}
-		A \\
-		B \\
-		C \\
-		D \\
-	 \end{vmatrix}
+        A \\
+        B \\
+        C \\
+        D \\
+     \end{vmatrix}
 
 or as:
 
@@ -210,7 +210,7 @@ In 2D, typically for on-screen coordinates (e.g. when drawing in a canvas), the 
 
 .. [#] This 2D coordinate system corresponds to the base space-time one, when the viewpoint is located in the negative Z axis and looks at the origin.
 
-	   One may also refer to ``gui_opengl:enter_2d_mode/1`` to apply these conventions.
+       One may also refer to ``gui_opengl:enter_2d_mode/1`` to apply these conventions.
 
 
 For each of the spatial dimensions of interest, generally ``1.0`` corresponds to 1 meter, otherwise to 1 `light-second <https://en.wikipedia.org/wiki/Light-second>`_ (i.e. roughly 300 000 km [#]_).

@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -33,7 +33,7 @@
 
 
 -define( class_description, "Test class, defined notably in relationship with "
-							"inheritance (see class_BaseTestClass)." ).
+                            "inheritance (see class_BaseTestClass)." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -56,8 +56,7 @@
 -type age() :: non_neg_integer().
 
 
-% Type shorthands:
-
+% Type shorthand:
 -type ustring() :: text_utils:ustring().
 
 
@@ -65,9 +64,9 @@
 -doc "Constructs a child test instance.".
 -spec construct( wooper:state(), age(), gender() ) -> wooper:state().
 construct( State, Age, Gender ) ->
-	% No mother class.
-	setAttributes( State,
-				   [ { name, "Bob" }, { age, Age }, { gender, Gender } ] ).
+    % No mother class.
+    setAttributes( State,
+                   [ { name, "Bob" }, { age, Age }, { gender, Gender } ] ).
 
 
 %-doc "Allows to test also the automatic destructor generation."
@@ -83,51 +82,51 @@ construct( State, Age, Gender ) ->
 -doc "Returns the name of this creature.".
 -spec getName( wooper:state() ) -> const_request_return( name() ).
 getName( State ) ->
-	wooper:const_return_result( ?getAttr(name) ).
+    wooper:const_return_result( ?getAttr(name) ).
 
 
 -doc "Sets the name of this creature.".
 -spec setName( wooper:state(), name() ) -> oneway_return().
 setName( State, NewName ) ->
-	% Mother implementation chosen faulty to check override:
-	wooper:return_state( setAttribute( State, name, NewName ) ).
+    % Mother implementation chosen faulty to check override:
+    wooper:return_state( setAttribute( State, name, NewName ) ).
 
 
 
 -doc "Returns the age of this creature.".
 -spec getAge( wooper:state() ) -> const_request_return( age() ).
 getAge( State ) ->
-	wooper:const_return_result( ?getAttr(age) ).
+    wooper:const_return_result( ?getAttr(age) ).
 
 
 
 -doc "Sets the age of this creature.".
 -spec setAge( wooper:state(), age() ) -> oneway_return().
 setAge( State, _NewAge ) ->
-	% Mother implementation chosen faulty to check override:
-	wooper:return_state( setAttribute( State, age, 36 ) ).
+    % Mother implementation chosen faulty to check override:
+    wooper:return_state( setAttribute( State, age, 36 ) ).
 
 
 
 -doc "Increments the age of this creature.".
 -spec declareBirthday( wooper:state() ) -> oneway_return().
 declareBirthday( State ) ->
-	wooper:return_state(
-		setAttribute( State, age, ?getAttr(age)+1 ) ).
+    wooper:return_state(
+        setAttribute( State, age, ?getAttr(age)+1 ) ).
 
 
 
 -doc "Returns the gender of this creature.".
 -spec getGender( wooper:state() ) -> const_request_return( gender() ).
 getGender( State ) ->
-	wooper:const_return_result( ?getAttr(gender) ).
+    wooper:const_return_result( ?getAttr(gender) ).
 
 
 
 -doc "Returns a class-specific arbitrary number.".
 -spec getArbitraryNumber( wooper:state() ) -> const_request_return( number() ).
 getArbitraryNumber( State ) ->
-	wooper:const_return_result( 10 ).
+    wooper:const_return_result( 10 ).
 
 
 
@@ -142,34 +141,34 @@ Must not be called from the Creature test, otherwise will fail.
 -spec testDirectMethodExecution( wooper:state(), age() ) -> oneway_return().
 testDirectMethodExecution( State, NewAge ) ->
 
-	io:format( "Testing executeOneway.~n" ),
+    io:format( "Testing executeOneway.~n" ),
 
-	% Note: the version of setAge called in the context of a Creature sets in on
-	% purpose to a fixed value (36), regardless of the specified age, whereas
-	% the Mammal version of setAge behaves as expected:
-	%
-	NewState = executeOneway( State, setAge, NewAge ),
+    % Note: the version of setAge called in the context of a Creature sets in on
+    % purpose to a fixed value (36), regardless of the specified age, whereas
+    % the Mammal version of setAge behaves as expected:
+    %
+    NewState = executeOneway( State, setAge, NewAge ),
 
-	% Use this instead to test error management:
-	%NewState = executeOneway(test_not_a_state,setAge,NewAge),
-	%NewState = executeOneway(State,42,NewAge),
+    % Use this instead to test error management:
+    %NewState = executeOneway(test_not_a_state,setAge,NewAge),
+    %NewState = executeOneway(State,42,NewAge),
 
-	% NewAge is expected to be 347:
-	NewAge = getAttribute( NewState, age ),
+    % NewAge is expected to be 347:
+    NewAge = getAttribute( NewState, age ),
 
-	io:format( "Testing executeRequest.~n" ),
-	% 15 from Mammal child classes, not 10 from here:
+    io:format( "Testing executeRequest.~n" ),
+    % 15 from Mammal child classes, not 10 from here:
 
-	{ OtherState, 15 } = executeRequest( NewState, getArbitraryNumber ,[] ),
+    { OtherState, 15 } = executeRequest( NewState, getArbitraryNumber ,[] ),
 
-	%{ OtherState, 15 } = executeRequest( test_not_a_state, getArbitraryNumber,
-	% [] ),
+    %{ OtherState, 15 } = executeRequest( test_not_a_state, getArbitraryNumber,
+    % [] ),
 
-	%{ OtherState, 15 } = executeRequest( NewState, 43, [] ),
+    %{ OtherState, 15 } = executeRequest( NewState, 43, [] ),
 
-	io:format( "Direct self-invocation success.~n" ),
+    io:format( "Direct self-invocation success.~n" ),
 
-	wooper:return_state( OtherState ).
+    wooper:return_state( OtherState ).
 
 
 
@@ -185,79 +184,79 @@ triggered by f (sending a message, writing a trace, etc.) happened twice.
 """.
 -spec testSingleExecution( wooper:state() ) -> oneway_return().
 testSingleExecution( State ) ->
-	wooper:return_state( setAttribute( side_effect_function( State ),
-		age, 10 ) ).
+    wooper:return_state( setAttribute( side_effect_function( State ),
+                                       age, 10 ) ).
 
 
 test_of_const_req_as( State ) ->
 
-	% Not 50!
-	17 = executeConstRequestAs( State, class_BaseTestClass, someRequest, 10 ),
+    % Not 50!
+    17 = executeConstRequestAs( class_BaseTestClass, State, someRequest, 10 ),
 
-	wooper:const_return().
+    wooper:const_return().
 
 
 
 -spec side_effect_function( wooper:state() ) -> wooper:state().
 side_effect_function( State ) ->
-	io:format( "~n### This message must not be displayed more than once.~n" ),
-	State.
+    io:format( "~n### This message must not be displayed more than once.~n" ),
+    State.
 
 
 -spec test_multi_clause_const_request( wooper:state(), integer(), integer() ) ->
-											const_request_return( integer() ).
+                                            const_request_return( integer() ).
 test_multi_clause_const_request( State, _X=1, _Y ) ->
-	wooper:const_return_result( 1 );
+    wooper:const_return_result( 1 );
 
 test_multi_clause_const_request( State, _X, _Y ) ->
-	wooper:const_return_result( 2 ).
+    wooper:const_return_result( 2 ).
 
 
 
 -spec test_multi_clause_non_const_request( wooper:state(), integer(),
-								   integer() ) -> request_return( integer() ).
+                                   integer() ) -> request_return( integer() ).
 test_multi_clause_non_const_request( State, _X=1, _Y ) ->
-	wooper:const_return_result( 1 );
+    wooper:const_return_result( 1 );
 
 test_multi_clause_non_const_request( State, X=2, _Y ) ->
-	NewState = setAttribute( State, age, 1 ),
-	wooper:return_state_result( NewState, X );
+    NewState = setAttribute( State, age, 1 ),
+    wooper:return_state_result( NewState, X );
 
 test_multi_clause_non_const_request( State, _X, _Y ) ->
-	wooper:const_return_result( 3 ).
+    wooper:const_return_result( 3 ).
 
 
 
 -spec test_multi_clause_const_oneway( wooper:state(), integer(),
-									  integer() ) -> const_oneway_return().
+                                      integer() ) -> const_oneway_return().
 test_multi_clause_const_oneway( State, _X=1, _Y ) ->
-	% Do some side-effect.
-	wooper:const_return();
+    % Do some side-effect.
+    wooper:const_return();
 
 test_multi_clause_const_oneway( State, _X, _Y ) ->
-	wooper:const_return().
+    wooper:const_return().
 
 
 
 -spec test_multi_clause_non_const_oneway( wooper:state(), integer(),
-										  integer() ) -> oneway_return().
+                                          integer() ) -> oneway_return().
 test_multi_clause_non_const_oneway( State, _X=1, _Y ) ->
-	wooper:const_return();
+    wooper:const_return();
 
 test_multi_clause_non_const_oneway( State, X=2, _Y ) ->
-	NewState = setAttribute( State, age, X ),
-	wooper:return_state( NewState );
+    NewState = setAttribute( State, age, X ),
+    wooper:return_state( NewState );
 
 test_multi_clause_non_const_oneway( State, _X, _Y ) ->
-	wooper:const_return().
+    wooper:const_return().
 
 
 
 -doc "Overridden request.".
 -spec someRequest( wooper:state(), integer() ) ->
-						const_request_return( integer() ).
+                        const_request_return( integer() ).
 someRequest( State, _Arg ) ->
-		wooper:const_return_result( 50 ).
+        wooper:const_return_result( 50 ).
 
 
 
@@ -265,9 +264,9 @@ someRequest( State, _Arg ) ->
 -spec get_static_info( integer(), integer() ) -> static_return( integer() ).
 get_static_info( A, B ) ->
 
-	trace_utils:info( "get_static_info/2 called" ),
+    trace_utils:info( "get_static_info/2 called" ),
 
-	wooper:return_static( A + B + 10 ).
+    wooper:return_static( A + B + 10 ).
 
 
 
@@ -277,10 +276,10 @@ get_static_info( A, B ) ->
 -doc "Just to show that it can exist.".
 -spec example_fun() -> 'ok'.
 example_fun() ->
-	ok.
+    ok.
 
 
 -doc "This looks like a method, but it is not (returning only a string).".
 -spec toString( wooper:state() ) -> ustring().
 toString( State ) ->
-	table:to_string( State#state_holder.attribute_table ).
+    table:to_string( State#state_holder.attribute_table ).

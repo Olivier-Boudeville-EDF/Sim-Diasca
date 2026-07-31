@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2025 Olivier Boudeville
+% Copyright (C) 2010-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -29,20 +29,20 @@
 % Describes a polygon, convex or not, simple or not.
 -record( polygon, {
 
-	% The points defining that polygon:
-	vertices = [] :: [ point2:any_vertex2() ],
+    % The points defining that polygon:
+    vertices = [] :: [ point2:any_vertex2() ],
 
 
-	% Rendering information, if any, as an option list.
-	%
-	% Supported options:
-	% - edge_color :: gui_color:color_by_decimal()
-	% - fill_color :: gui_color:color_by_decimal()
-	%
-	rendering = [] :: option_list:option_list(),
+    % Rendering information, if any, as an option list.
+    %
+    % Supported options:
+    % - edge_color :: gui_color:color_by_decimal()
+    % - fill_color :: gui_color:color_by_decimal()
+    %
+    rendering = [] :: option_list:option_list(),
 
 
-	% Bounding surface information:
-	% (can be for example a rectangle or a circle)
-	%
-	bounding_surface :: option( bounding_surface:bounding_surface() ) } ).
+    % Bounding surface information:
+    % (can be for example a rectangle or a circle)
+    %
+    bounding_surface :: option( bounding_surface:bounding_surface() ) } ).

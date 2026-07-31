@@ -1,4 +1,4 @@
-% Copyright (C) 2022-2025 Olivier Boudeville
+% Copyright (C) 2022-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -50,8 +50,8 @@ See hash_utils_test.erl for testing.
 
 % For more cryptographic-related term hashing:
 -export([ start_crypto_hashing/0, stop_crypto_hashing/0,
-		  get_hash/2, get_recommended_hash/1,
-		  list_hash_algorithms/0, check_hash_algorithm/1 ]).
+          get_hash/2, get_recommended_hash/1,
+          list_hash_algorithms/0, check_hash_algorithm/1 ]).
 
 
 
@@ -138,23 +138,23 @@ exported); mostly translated from 'openssl list -1 -digest-algorithms'.
 """.
 -type hash_algorithm() :: 'md5'
 
-						% Not used: | 'sha0'
+                        % Not used: | 'sha0'
 
-						| 'sha1'
+                        | 'sha1'
 
-						  % SHA2 family:
-						| 'sha2_224'
-						| 'sha2_256'
-						| 'sha2_384'
-						| 'sha2_512'
-						| 'sha2_512_224'
-						| 'sha2_512_256'
+                          % SHA2 family:
+                        | 'sha2_224'
+                        | 'sha2_256'
+                        | 'sha2_384'
+                        | 'sha2_512'
+                        | 'sha2_512_224'
+                        | 'sha2_512_256'
 
-						  % SHA3 family:
-						| 'sha3_224'
-						| 'sha3_256'
-						| 'sha3_384'
-						| 'sha3_512'.
+                          % SHA3 family:
+                        | 'sha3_224'
+                        | 'sha3_256'
+                        | 'sha3_384'
+                        | 'sha3_512'.
 
 
 
@@ -275,11 +275,11 @@ different locations.
 
 
 -export_type([ hash_algorithm/0, integer_hash/0, portable_integer_hash/0,
-			   binary_hash/0,
-			   md5_sum/0, sha1_sum/0, sha2_sum/0, sha2_512_sum/0, sha3_sum/0,
-			   sha_sum/0,
-			   any_hash/0,
-			   passphrase_hash/0, salt_value/0 ]).
+               binary_hash/0,
+               md5_sum/0, sha1_sum/0, sha2_sum/0, sha2_512_sum/0, sha3_sum/0,
+               sha_sum/0,
+               any_hash/0,
+               passphrase_hash/0, salt_value/0 ]).
 
 
 
@@ -300,8 +300,8 @@ As a result, that algorithm is a moving target, it will be updated over time.
 """.
 -spec get_recommended_algorithm() -> hash_algorithm().
 get_recommended_algorithm() ->
-	% Currently:
-	sha2_512.
+    % Currently:
+    sha2_512.
 
 
 
@@ -312,57 +312,57 @@ on the specified cryptographic algorithm for hashing.
 -spec get_file_hash( file_path(), hash_algorithm() ) -> binary_hash().
 get_file_hash( FilePath, Alg ) ->
 
-	%trace_utils:info_fmt( "Computing the '~ts' hash of file '~ts'.",
-	%                      [ Alg, FilePath ] ),
+    %trace_utils:info_fmt( "Computing the '~ts' hash of file '~ts'.",
+    %                      [ Alg, FilePath ] ),
 
-	% 'utf8' expected as terminal default:
-	%trace_utils:debug_fmt( "FilePath encoding mode: ~ts",
-	%                       [ file:native_name_encoding() ] ),
+    % 'utf8' expected as terminal default:
+    %trace_utils:debug_fmt( "FilePath encoding mode: ~ts",
+    %                       [ file:native_name_encoding() ] ),
 
-	file_utils:is_existing_file( FilePath ) orelse
-		throw( { file_to_hash_not_found, FilePath } ),
+    file_utils:is_existing_file( FilePath ) orelse
+        throw( { file_to_hash_not_found, FilePath } ),
 
-	% Using OpenSSL for files; already a full, resolved executable path:
-	OpenSSLExecPath = executable_utils:get_default_openssl_executable_path(),
+    % Using OpenSSL for files; already a full, resolved executable path:
+    OpenSSLExecPath = executable_utils:get_default_openssl_executable_path(),
 
-	OpenSSLAlg = get_openssl_algorithm( Alg ),
+    OpenSSLAlg = get_openssl_algorithm( Alg ),
 
-	% (not using '++' anymore, as (raw) filenames might have to be binaries;
-	% using bin_format/2 to follow Unicode hint in open_port/2:
-	%
-	% ('hex' rather than 'binary'; '-r' to print the digest in the most
-	% convenient coreutils format)
-	%
-	Args = [ "dgst", "-hex", "-r", [ $- | OpenSSLAlg ],
-			 % By design no need for quoting here:
-			 %cmd_line_utils:protect_from_shell( FilePath )
-			 FilePath ],
+    % (not using '++' anymore, as (raw) filenames might have to be binaries;
+    % using bin_format/2 to follow Unicode hint in open_port/2:
+    %
+    % ('hex' rather than 'binary'; '-r' to print the digest in the most
+    % convenient coreutils format)
+    %
+    Args = [ "dgst", "-hex", "-r", [ $- | OpenSSLAlg ],
+             % By design no need for quoting here:
+             %cmd_line_utils:protect_from_shell( FilePath )
+             FilePath ],
 
-	%trace_utils:debug_fmt( "OpenSSL executable is: '~ts', arguments are ~p.",
-	%                       [ OpenSSLExecPath, Args ] ),
+    %trace_utils:debug_fmt( "OpenSSL executable is: '~ts', arguments are ~p.",
+    %                       [ OpenSSLExecPath, Args ] ),
 
-	case system_utils:run_executable( OpenSSLExecPath, Args ) of
+    case system_utils:run_executable( OpenSSLExecPath, Args ) of
 
-		{ _ExitCode=0, OutputString } ->
+        { _ExitCode=0, OutputString } ->
 
-			% Removes the filename just after the digest:
-			{ HashStr, _Rest } =
-				text_utils:split_at_first( $ , OutputString ),
-
-
-			% Formerly an integer hash was returned; now returning a binary
-			% (better):
-			%
-			text_utils:hexastring_to_binary( HashStr );
+            % Removes the filename just after the digest:
+            { HashStr, _Rest } =
+                text_utils:split_at_first( $ , OutputString ),
 
 
-		{ ExitCode, ErrorOutput } ->
-			trace_utils:error_fmt( "Hash computation failed for '~ts' and "
-				"algorithm ~ts: ~ts.", [ FilePath, Alg, ErrorOutput ] ),
-			throw( { hash_computation_failed, ExitCode, ErrorOutput,
-					 FilePath, Alg } )
+            % Formerly an integer hash was returned; now returning a binary
+            % (better):
+            %
+            text_utils:hexastring_to_binary( HashStr );
 
-	end.
+
+        { ExitCode, ErrorOutput } ->
+            trace_utils:error_fmt( "Hash computation failed for '~ts' and "
+                "algorithm ~ts: ~ts.", [ FilePath, Alg, ErrorOutput ] ),
+            throw( { hash_computation_failed, ExitCode, ErrorOutput,
+                     FilePath, Alg } )
+
+    end.
 
 
 
@@ -374,7 +374,7 @@ As a result, that algorithm is a moving target, it will be updated over time.
 """.
 -spec get_file_recommended_hash( any_file_path() ) -> binary_hash().
 get_file_recommended_hash( FilePath ) ->
-	get_file_hash( FilePath, get_recommended_algorithm() ).
+    get_file_hash( FilePath, get_recommended_algorithm() ).
 
 
 
@@ -391,11 +391,11 @@ algorithm efficient, fair, yet not suitable for cryptographic uses.
 """.
 -spec get_insecure_hash( term() ) -> portable_integer_hash().
 get_insecure_hash( Term ) ->
-	% Mostly to protect from any next change/version to happen:
-	%
-	% (range is 2^27 here)
-	%
-	erlang:phash2( Term ).
+    % Mostly to protect from any next change/version to happen:
+    %
+    % (range is 2^27 here)
+    %
+    erlang:phash2( Term ).
 
 
 
@@ -410,16 +410,16 @@ Ensures that a support for cryptographic hashing is available and ready to use.
 -spec start_crypto_hashing() -> void().
 start_crypto_hashing() ->
 
-	% Better than crypto:start/0, as FIPS-mode compliant:
-	case application:start( crypto ) of
+    % Better than crypto:start/0, as FIPS-mode compliant:
+    case application:start( crypto ) of
 
-		ok ->
-			ok;
+        ok ->
+            ok;
 
-		{ error, Reason } ->
-			throw( { cannot_start_crypto_hashing, Reason } )
+        { error, Reason } ->
+            throw( { cannot_start_crypto_hashing, Reason } )
 
-	end.
+    end.
 
 
 
@@ -431,16 +431,16 @@ Never fails.
 -spec stop_crypto_hashing() -> void().
 stop_crypto_hashing() ->
 
-	case application:stop( crypto ) of
+    case application:stop( crypto ) of
 
-		ok ->
-			ok;
+        ok ->
+            ok;
 
-		{ error, Reason } ->
-			trace_bridge:error_fmt( "The stopping of the crypto hashing "
-									"service failed: ~p.", [ Reason ] )
+        { error, Reason } ->
+            trace_bridge:error_fmt( "The stopping of the crypto hashing "
+                                    "service failed: ~p.", [ Reason ] )
 
-	end.
+    end.
 
 
 
@@ -455,12 +455,12 @@ Raises a triplet exception on error.
 -spec get_hash( term(), hash_algorithm() ) -> binary_hash().
 get_hash( Term, Alg ) ->
 
-	%trace_utils:info_fmt( "Computing the '~ts' hash of term '~p'.",
-	%                      [ Alg, Term ] ),
+    %trace_utils:info_fmt( "Computing the '~ts' hash of term '~p'.",
+    %                      [ Alg, Term ] ),
 
-	CryptoAlg = get_crypto_algorithm( Alg ),
+    CryptoAlg = get_crypto_algorithm( Alg ),
 
-	crypto:hash( _Type=CryptoAlg, _Data=Term ).
+    crypto:hash( _Type=CryptoAlg, _Data=Term ).
 
 
 
@@ -472,17 +472,17 @@ As a result, that algorithm is a moving target, it will be updated over time.
 """.
 -spec get_recommended_hash( term() ) -> binary_hash().
 get_recommended_hash( Term ) ->
-	get_hash( Term, get_recommended_algorithm() ).
+    get_hash( Term, get_recommended_algorithm() ).
 
 
 
 -doc "Returns a list of the supported hashing algorithms.".
 -spec list_hash_algorithms() -> [ hash_algorithm() ].
 list_hash_algorithms() ->
-	% See the hash_algorithm() type:
-	[ md5, sha1,
-	  sha2_224, sha2_256, sha2_384, sha2_512, sha2_512_224, sha2_512_256,
-	  sha3_224, sha3_256, sha3_384, sha3_512 ].
+    % See the hash_algorithm() type:
+    [ md5, sha1,
+      sha2_224, sha2_256, sha2_384, sha2_512, sha2_512_224, sha2_512_256,
+      sha3_224, sha3_256, sha3_384, sha3_512 ].
 
 
 
@@ -492,15 +492,15 @@ if yes, returns it, otherwise raises an exception.
 """.
 -spec check_hash_algorithm( atom() ) -> hash_algorithm().
 check_hash_algorithm( Alg ) ->
-	case lists:member( Alg, list_hash_algorithms() ) of
+    case lists:member( Alg, list_hash_algorithms() ) of
 
-		true ->
-			Alg;
+        true ->
+            Alg;
 
-		false ->
-			throw( { unsupported_hash_algorithm, Alg } )
+        false ->
+            throw( { unsupported_hash_algorithm, Alg } )
 
-	end.
+    end.
 
 
 
@@ -529,7 +529,7 @@ get_openssl_algorithm( _Alg=sha3_256 ) -> "sha3-256";
 get_openssl_algorithm( _Alg=sha3_384 ) -> "sha3-384";
 get_openssl_algorithm( _Alg=sha3_512 ) -> "sha3-512";
 get_openssl_algorithm( Alg ) ->
-	throw( { unsupported_hashing_algorithm_for_openssl, Alg } ).
+    throw( { unsupported_hashing_algorithm_for_openssl, Alg } ).
 
 
 
@@ -538,8 +538,8 @@ Converts an hashing algorithm into one known of the 'crypto' Erlang module
 (typically used for the hashing of terms).
 """.
 -spec get_crypto_algorithm( hash_algorithm() ) ->
-	% Not exported yet: crypto:hash_algorithm().
-	hash_algorithm().
+    % Not exported yet: crypto:hash_algorithm().
+    hash_algorithm().
 get_crypto_algorithm( _Alg=md5 ) -> md5;
 get_crypto_algorithm( _Alg=sha1 ) -> sha;
 
@@ -555,4 +555,4 @@ get_crypto_algorithm( _Alg=sha3_256 ) -> sha3_256;
 get_crypto_algorithm( _Alg=sha3_384 ) -> sha3_384;
 get_crypto_algorithm( _Alg=sha3_512 ) -> sha3_512;
 get_crypto_algorithm( Alg ) ->
-	throw( { unsupported_hashing_algorithm_for_crypto, Alg } ).
+    throw( { unsupported_hashing_algorithm_for_crypto, Alg } ).

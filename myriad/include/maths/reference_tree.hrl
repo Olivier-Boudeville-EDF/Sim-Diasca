@@ -1,4 +1,4 @@
-% Copyright (C) 2024-2025 Olivier Boudeville
+% Copyright (C) 2024-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -45,16 +45,16 @@
 %
 -record( reference_tree, {
 
-	% The main table of this tree, concentrating all known reference frames,
-	% based on their identifier.
-	%
-	ref_table :: reference_tree:ref_table(),
+    % The main table of this tree, concentrating all known reference frames,
+    % based on their identifier.
+    %
+    ref_table :: reference_tree:ref_table(),
 
-	% A table caching the computed paths from on frame to another:
-	path_table :: reference_tree:path_table(),
+    % A table caching the computed paths from on frame to another:
+    path_table :: reference_tree:path_table(),
 
-	% The identifier to be allocated at the next registered frame:
-	next_ref_id = ?root_ref_id + 1 :: reference_tree:ref_id() } ).
+    % The identifier to be allocated at the next registered frame:
+    next_ref_id = ?root_ref_id + 1 :: reference_tree:ref_id() } ).
 
 
 -endif. % myriad_maths_reference_tree_hrl_guard

@@ -1,4 +1,4 @@
-% Copyright (C) 2011-2025 Olivier Boudeville
+% Copyright (C) 2011-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -40,9 +40,9 @@ all support them correctly.
 -spec exec() -> no_return().
 exec() ->
 
-	app_facilities:start( ?MODULE ),
+    app_facilities:start( ?MODULE ),
 
-	io:format( "This is certainly one of the simplest applications "
-			   "possible!~n" ),
+    io:format( "This is certainly one of the simplest applications "
+               "possible!~n" ),
 
-	app_facilities:stop().
+    app_facilities:stop().

@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -38,79 +38,79 @@ default placement policy.
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+    ?case_start,
 
-	% Default simulation settings (50Hz, batch reproducible) are used, except
-	% for the name:
-	%
-	SimulationSettings = #simulation_settings{
-		simulation_name="Scheduling initial placement hint test" },
-
-
-	% Default deployment settings (unavailable nodes allowed, on-the-fly
-	% generation of the deployment package requested), but computing hosts are
-	% specified (to be updated depending on your environment):
-	% (note that localhost is implied)
-	%
-	DeploymentSettings = #deployment_settings{
-
-		computing_hosts=
-			{ use_host_file_otherwise_local, "sim-diasca-host-candidates.etf" },
-
-		perform_initial_node_cleanup=true },
+    % Default simulation settings (50Hz, batch reproducible) are used, except
+    % for the name:
+    %
+    SimulationSettings = #simulation_settings{
+        simulation_name="Scheduling initial placement hint test" },
 
 
-	% Default load balancing settings (round-robin placement heuristic):
-	LoadBalancingSettings = #load_balancing_settings{},
+    % Default deployment settings (unavailable nodes allowed, on-the-fly
+    % generation of the deployment package requested), but computing hosts are
+    % specified (to be updated depending on your environment):
+    % (note that localhost is implied)
+    %
+    DeploymentSettings = #deployment_settings{
+
+        computing_hosts=
+            { use_host_file_otherwise_local, "sim-diasca-host-candidates.etf" },
+
+        perform_initial_node_cleanup=true },
 
 
-	?test_notice_fmt( "This test will deploy a distributed simulation "
-		"based on computing hosts specified as ~p.",
-		[ DeploymentSettings#deployment_settings.computing_hosts ] ),
+    % Default load balancing settings (round-robin placement heuristic):
+    LoadBalancingSettings = #load_balancing_settings{},
 
 
-	sim_diasca:init( SimulationSettings, DeploymentSettings,
-					 LoadBalancingSettings ),
+    ?test_notice_fmt( "This test will deploy a distributed simulation "
+        "based on computing hosts specified as ~p.",
+        [ DeploymentSettings#deployment_settings.computing_hosts ] ),
 
 
-	?test_info( "Deployment manager created." ),
+    sim_diasca:init( SimulationSettings, DeploymentSettings,
+                     LoadBalancingSettings ),
 
 
-	?test_info( "Requesting the creation of the placed initial test actors." ),
-
-	SchedulingSettings = none_applicable,
-	CreationSettings = no_creation,
-	TerminationTickOffset = 80,
-
-	FirstActorPid = class_Actor:create_initial_placed_actor( class_TestActor,
-		[ "First test actor", SchedulingSettings, CreationSettings,
-		  TerminationTickOffset ], this_is_my_placement_hint ),
-
-	SecondActorPid = class_Actor:create_initial_placed_actor( class_TestActor,
-		[ "Second test actor", SchedulingSettings, CreationSettings,
-		  TerminationTickOffset ], this_is_my_placement_hint ),
-
-	ThirdActorPid = class_Actor:create_initial_placed_actor( class_TestActor,
-		[ "Third test actor", SchedulingSettings, CreationSettings,
-		  TerminationTickOffset ], this_is_my_placement_hint ),
+    ?test_info( "Deployment manager created." ),
 
 
-	FirstActorPid ! { getHostingNode, [], self() },
-	% Assignment:
-	ActorNode = test_receive(),
+    ?test_info( "Requesting the creation of the placed initial test actors." ),
 
-	SecondActorPid ! { getHostingNode, [], self() },
-	ThirdActorPid  ! { getHostingNode, [], self() },
+    SchedulingSettings = none_applicable,
+    CreationSettings = no_creation,
+    TerminationTickOffset = 80,
+
+    FirstActorPid = class_Actor:create_initial_placed_actor( class_TestActor,
+        [ "First test actor", SchedulingSettings, CreationSettings,
+          TerminationTickOffset ], this_is_my_placement_hint ),
+
+    SecondActorPid = class_Actor:create_initial_placed_actor( class_TestActor,
+        [ "Second test actor", SchedulingSettings, CreationSettings,
+          TerminationTickOffset ], this_is_my_placement_hint ),
+
+    ThirdActorPid = class_Actor:create_initial_placed_actor( class_TestActor,
+        [ "Third test actor", SchedulingSettings, CreationSettings,
+          TerminationTickOffset ], this_is_my_placement_hint ),
 
 
-	% Pattern matching:
-	ActorNode = test_receive(),
-	ActorNode = test_receive(),
+    FirstActorPid ! { getHostingNode, [], self() },
+    % Assignment:
+    ActorNode = test_receive(),
 
-	?test_notice_fmt( "Common node for initial actors is ~w.", [ ActorNode ] ),
+    SecondActorPid ! { getHostingNode, [], self() },
+    ThirdActorPid  ! { getHostingNode, [], self() },
 
-	?test_info( "No need to start the simulation." ),
 
-	sim_diasca:shutdown(),
+    % Pattern matching:
+    ActorNode = test_receive(),
+    ActorNode = test_receive(),
 
-	?case_stop.
+    ?test_notice_fmt( "Common node for initial actors is ~w.", [ ActorNode ] ),
+
+    ?test_info( "No need to start the simulation." ),
+
+    sim_diasca:shutdown(),
+
+    ?case_stop.

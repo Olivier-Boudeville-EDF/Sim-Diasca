@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -41,52 +41,52 @@ that it creates its initial instances programmatically
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+    ?case_start,
 
-	% Use default simulation settings (50Hz, batch reproducible):
-	SimulationSettings = #simulation_settings{
+    % Use default simulation settings (50Hz, batch reproducible):
+    SimulationSettings = #simulation_settings{
 
-		simulation_name="Soda Integral Loading Test",
+        simulation_name="Soda Integral Loading Test",
 
-		initialisation_files=[ "soda-integral-loading-test.init" ] },
-
-
-	DeploymentSettings = #deployment_settings{
-
-		% Note that the configuration file below has not to be declared above as
-		% well:
-		%
-		enable_data_exchanger = { true, [ "soda_parameters.cfg" ] } },
+        initialisation_files=[ "soda-integral-loading-test.init" ] },
 
 
-	% A deployment manager is created directly on the user node:
-	DeploymentManagerPid =
-		sim_diasca:init( SimulationSettings, DeploymentSettings ),
+    DeploymentSettings = #deployment_settings{
 
-	StopTick = 50000,
+        % Note that the configuration file below has not to be declared above as
+        % well:
+        %
+        enable_data_exchanger = { true, [ "soda_parameters.cfg" ] } },
 
-	DeploymentManagerPid ! { getRootTimeManager, [], self() },
-	RootTimeManagerPid = test_receive(),
 
-	?test_info_fmt( "Starting simulation, "
-					"for a stop at tick offset ~B.", [ StopTick ] ),
+    % A deployment manager is created directly on the user node:
+    DeploymentManagerPid =
+        sim_diasca:init( SimulationSettings, DeploymentSettings ),
 
-	RootTimeManagerPid ! { start, [ StopTick, self() ] },
+    StopTick = 50000,
 
-	?test_info( "Waiting for the simulation to end, "
-				"since having been declared as a simulation listener." ),
+    DeploymentManagerPid ! { getRootTimeManager, [], self() },
+    RootTimeManagerPid = test_receive(),
 
-	receive
+    ?test_info_fmt( "Starting simulation, "
+                    "for a stop at tick offset ~B.", [ StopTick ] ),
 
-		simulation_stopped ->
-			?test_info( "Simulation stopped spontaneously, "
-						"specified stop tick must have been reached." )
+    RootTimeManagerPid ! { start, [ StopTick, self() ] },
 
-	end,
+    ?test_info( "Waiting for the simulation to end, "
+                "since having been declared as a simulation listener." ),
 
-	?test_info( "Browsing the report results, if in batch mode." ),
-	class_ResultManager:browse_reports(),
+    receive
 
-	sim_diasca:shutdown(),
+        simulation_stopped ->
+            ?test_info( "Simulation stopped spontaneously, "
+                        "specified stop tick must have been reached." )
 
-	?case_stop.
+    end,
+
+    ?test_info( "Browsing the report results, if in batch mode." ),
+    class_ResultManager:browse_reports(),
+
+    sim_diasca:shutdown(),
+
+    ?case_stop.

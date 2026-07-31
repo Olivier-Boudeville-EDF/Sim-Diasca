@@ -1,4 +1,4 @@
-% Copyright (C) 2008-2025 EDF R&D
+% Copyright (C) 2008-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -26,17 +26,17 @@
 
 
 -define( class_description,
-		 "Management of random number generation. "
-		 "Now all actors (of course including stochastic ones) have their "
-		 "own (private, well-initialised) random generator, while still "
-		 "being able to preserve reproducibility. "
-		 "As a consequence, the random manager module is now mostly useful "
-		 "for the (static) functions for stochastic laws that it exports."
-		 "Inspired from http://www.trapexit.org/Random_Numbers_Biased. "
-		 "Note: it is possible to request only a seed from a RandomManager, "
-		 "and to generate afterwards one's own random series. That is what the "
-		 "class_Actor instances do, indirectly. "
-		 "See also: the random_utils module." ).
+         "Management of random number generation. "
+         "Now all actors (of course including stochastic ones) have their "
+         "own (private, well-initialised) random generator, while still "
+         "being able to preserve reproducibility. "
+         "As a consequence, the random manager module is now mostly useful "
+         "for the (static) functions for stochastic laws that it exports."
+         "Inspired from http://www.trapexit.org/Random_Numbers_Biased. "
+         "Note: it is possible to request only a seed from a RandomManager, "
+         "and to generate afterwards one's own random series. That is what the "
+         "class_Actor instances do, indirectly. "
+         "See also: the random_utils module." ).
 
 
 
@@ -47,8 +47,8 @@
 % The class-specific attributes of a random manager:
 -define( class_attributes, [
 
-	{ is_private, boolean(),
-	  "tells whether this manager is private to an actor" } ] ).
+    { is_private, boolean(),
+      "tells whether this manager is private to an actor" } ] ).
 
 
 
@@ -120,8 +120,8 @@
 
 
 -type seed_info() :: random_utils:random_state()
-				   | 'default_seed'
-				   | 'time_based_seed'.
+                   | 'default_seed'
+                   | 'time_based_seed'.
 
 
 % Type shorthands:
@@ -141,7 +141,7 @@ Construction parameters:
 
 - SeedInformations allows to choose the random seed to be used, it can be:
 
-  - a triplet {A,B,C}, to set explicitly the seed, to be tailored for
+  - a triplet `{A,B,C}`, to set explicitly the seed, to be tailored for
   reproducibility or for ergodic mode
 
   - default_seed, to use default (fixed) values in the process dictionary
@@ -156,51 +156,51 @@ should not be registered in naming service) or if it is a (registered) singleton
 -spec construct( wooper:state(), seed_info(), boolean() ) -> wooper:state().
 construct( State, SeedInformations, IsPrivate ) ->
 
-	% First the direct mother classes:
-	TraceState = class_EngineBaseObject:construct( State,
-		?trace_categorize("RandomManager") ),
+    % First the direct mother classes:
+    TraceState = class_EngineBaseObject:construct( State,
+        ?trace_categorize("RandomManager") ),
 
-	class_InstanceTracker:register_agent( State ),
+    class_InstanceTracker:register_agent( State ),
 
-	% Then the class-specific actions:
-	StartingState = setAttribute( TraceState, is_private, IsPrivate ),
+    % Then the class-specific actions:
+    StartingState = setAttribute( TraceState, is_private, IsPrivate ),
 
-	case IsPrivate of
+    case IsPrivate of
 
-		true ->
-			?send_info( StartingState, "Creating a private random manager." );
+        true ->
+            ?send_info( StartingState, "Creating a private random manager." );
 
-		false ->
-			?send_info( StartingState, "Creating a public random manager." ),
+        false ->
+            ?send_info( StartingState, "Creating a public random manager." ),
 
-			try
+            try
 
-				naming_utils:register_as( ?random_manager_name,
-										  ?registration_scope )
+                naming_utils:register_as( ?random_manager_name,
+                                          ?registration_scope )
 
-			catch
+            catch
 
-				Exception ->
-					?send_error( StartingState,
-								 "Random manager could not be registered." ),
-					throw( { random_manager_could_not_register, Exception } )
+                Exception ->
+                    ?send_error( StartingState,
+                                 "Random manager could not be registered." ),
+                    throw( { random_manager_could_not_register, Exception } )
 
-			end,
+            end,
 
-			?send_debug_fmt( StartingState, "Random manager registered as ~w.",
-							 [ ?registration_scope ] )
+            ?send_debug_fmt( StartingState, "Random manager registered as ~w.",
+                             [ ?registration_scope ] )
 
-	end,
+    end,
 
-	?send_info_fmt( StartingState,
-		"Random manager will use following seed information: ~w.",
-		[ SeedInformations ] ),
+    ?send_info_fmt( StartingState,
+        "Random manager will use following seed information: ~w.",
+        [ SeedInformations ] ),
 
-	random_utils:start_random_source( SeedInformations ),
+    random_utils:start_random_source( SeedInformations ),
 
-	?send_debug( StartingState, "Random manager constructed." ),
+    ?send_debug( StartingState, "Random manager constructed." ),
 
-	StartingState.
+    StartingState.
 
 
 
@@ -208,21 +208,21 @@ construct( State, SeedInformations, IsPrivate ) ->
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
-	% Class-specific actions:
-	?notice( "Deleting random manager." ),
+    % Class-specific actions:
+    ?notice( "Deleting random manager." ),
 
-	% Private random managers not owned.
-	random_utils:stop_random_source(),
+    % Private random managers not owned.
+    random_utils:stop_random_source(),
 
-	?getAttr(is_private) orelse
-		naming_utils:unregister( ?random_manager_name, ?registration_scope ),
+    ?getAttr(is_private) orelse
+        naming_utils:unregister( ?random_manager_name, ?registration_scope ),
 
-	class_InstanceTracker:unregister_agent(),
+    class_InstanceTracker:unregister_agent(),
 
-	?debug( "Random manager deleted." ),
+    ?debug( "Random manager deleted." ),
 
-	% Then allow chaining:
-	State.
+    % Then allow chaining:
+    State.
 
 
 
@@ -256,14 +256,14 @@ Therefore true and false are equally likely to be returned.
 """.
 -spec get_boolean() -> static_return( boolean() ).
 get_boolean() ->
-	wooper:return_static( random_utils:get_boolean() ).
+    wooper:return_static( random_utils:get_boolean() ).
 
 
 
 -doc "Returns a randomly-selected element of the specified list.".
 -spec one_of( [ any() ] ) -> static_return( any() ).
 one_of( ListOfThings ) ->
-	wooper:return_static( random_utils:one_of( ListOfThings ) ).
+    wooper:return_static( random_utils:one_of( ListOfThings ) ).
 
 
 
@@ -276,14 +276,14 @@ between these two bounds (both included), updating the random state in the
 process dictionary.
 """.
 -spec getUniformValue( wooper:state(), integer(), integer() ) ->
-				const_request_return( { 'uniform_value', integer() } ).
+                const_request_return( { 'uniform_value', integer() } ).
 getUniformValue( State, Nmin, Nmax ) ->
 
-	Value = random_utils:get_uniform_value( Nmin, Nmax ),
+    Value = random_utils:get_uniform_value( Nmin, Nmax ),
 
-	%?debug_fmt( "Returning uniform value ~w.", [ Value ] ),
+    %?debug_fmt( "Returning uniform value ~w.", [ Value ] ),
 
-	wooper:const_return_result( { uniform_value, Value } ).
+    wooper:const_return_result( { uniform_value, Value } ).
 
 
 
@@ -294,14 +294,14 @@ Given an integer N >= 1, returns a random integer uniformly distributed between
 1 and N (both included), updating the random state in the process dictionary.
 """.
 -spec getUniformValue( wooper:state(), pos_integer() ) ->
-				const_request_return( { 'uniform_value', pos_integer() } ).
+                const_request_return( { 'uniform_value', pos_integer() } ).
 getUniformValue( State, N ) ->
 
-	Value = random_utils:get_uniform_value( N ),
+    Value = random_utils:get_uniform_value( N ),
 
-	%?debug_fmt( "Returning uniform value ~w.", [ Value ] ),
+    %?debug_fmt( "Returning uniform value ~w.", [ Value ] ),
 
-	wooper:const_return_result( { uniform_value, Value } ).
+    wooper:const_return_result( { uniform_value, Value } ).
 
 
 
@@ -313,7 +313,7 @@ Given an integer N >= 1, returns a random integer uniformly distributed between
 """.
 -spec get_uniform_value( pos_integer() ) -> static_return( pos_integer() ).
 get_uniform_value( N ) ->
-	wooper:return_static( random_utils:get_uniform_value( N ) ).
+    wooper:return_static( random_utils:get_uniform_value( N ) ).
 
 
 
@@ -327,7 +327,7 @@ process dictionary.
 """.
 -spec get_uniform_value( integer(), integer() ) -> static_return( integer() ).
 get_uniform_value( Nmin, Nmax ) ->
-	wooper:return_static( random_utils:get_uniform_value( Nmin, Nmax ) ).
+    wooper:return_static( random_utils:get_uniform_value( Nmin, Nmax ) ).
 
 
 
@@ -338,9 +338,9 @@ Given an integer N >= 1, returns random integers uniformly distributed between 1
 and N, updating the random state in the process dictionary.
 """.
 -spec get_uniform_values( pos_integer(), count() ) ->
-								static_return( [ pos_integer() ] ).
+                                static_return( [ pos_integer() ] ).
 get_uniform_values( N, Count ) ->
-	wooper:return_static( random_utils:get_uniform_values( N, Count ) ).
+    wooper:return_static( random_utils:get_uniform_values( N, Count ) ).
 
 
 
@@ -349,15 +349,15 @@ Returns a list of Count integer uniform values in `[Nmin,Nmax]` (both included),
 updating the random state in the process dictionary.
 """.
 -spec get_uniform_values( integer(), integer(), count() ) ->
-								static_return( [ integer() ] ).
+                                static_return( [ integer() ] ).
 get_uniform_values( Nmin, Nmax, Count ) ->
-	wooper:return_static(
-		random_utils:get_uniform_values( Nmin, Nmax, Count ) ).
+    wooper:return_static(
+        random_utils:get_uniform_values( Nmin, Nmax, Count ) ).
 
 
 
 -doc """
-Returns a floating-point random value in [0.0;N[ generated from an uniform
+Returns a floating-point random value in `[0.0;N[` generated from an uniform
 distribution.
 
 Given a number (integer or float) N (positive or not), returns a random
@@ -366,14 +366,14 @@ floating-point value uniformly distributed between 0.0 (included) and N
 """.
 -spec get_uniform_floating_point_value( number() ) -> static_return( float() ).
 get_uniform_floating_point_value( N ) ->
-	V = random_utils:get_uniform_floating_point_value( N ),
-	wooper:return_static( V ).
+    V = random_utils:get_uniform_floating_point_value( N ),
+    wooper:return_static( V ).
 
 
 
 -doc """
-Returns a floating-point random value in [Nmin, Nmax[ generated from an uniform
-distribution.
+Returns a floating-point random value in `[Nmin, Nmax[` generated from an
+uniform distribution.
 
 Given two numbers (integer or float) Nmin and Nmax (each being positive or not),
 returns a random floating-point value uniformly distributed between Nmin
@@ -381,10 +381,10 @@ returns a random floating-point value uniformly distributed between Nmin
 dictionary.
 """.
 -spec get_uniform_floating_point_value( number(), number() ) ->
-												static_return( float() ).
+                                                static_return( float() ).
 get_uniform_floating_point_value( Nmin, Nmax ) ->
-	V = random_utils:get_uniform_floating_point_value( Nmin, Nmax ),
-	wooper:return_static( V ).
+    V = random_utils:get_uniform_floating_point_value( Nmin, Nmax ),
+    wooper:return_static( V ).
 
 
 
@@ -400,17 +400,17 @@ get_uniform_floating_point_value( Nmin, Nmax ) ->
 Returns an exponential floating-point random value with Lambda being the rate
 parameter.
 
-See the random_utils module for further details.
+See the `random_utils` module for further details.
 """.
 -spec getExponentialValue( wooper:state(), rate() ) ->
-				const_request_return( { 'exponential_value', float() } ).
+                const_request_return( { 'exponential_value', float() } ).
 getExponentialValue( State, Lambda ) ->
 
-	Value = random_utils:get_exponential_1p_value( Lambda ),
+    Value = random_utils:get_exponential_1p_value( Lambda ),
 
-	%?debug_fmt( "Returning exponential value ~w.", [ Value ] ),
+    %?debug_fmt( "Returning exponential value ~w.", [ Value ] ),
 
-	wooper:const_return_result( { exponential_value, Value } ).
+    wooper:const_return_result( { exponential_value, Value } ).
 
 
 
@@ -418,12 +418,12 @@ getExponentialValue( State, Lambda ) ->
 Returns an exponential random value according to the specified Lambda rate
 parameter.
 
-See the random_utils module for further details.
+See the `random_utils` module for further details.
 """.
 -spec get_exponential_1p_value( rate() ) -> static_return( float() ).
 get_exponential_1p_value( Lambda ) ->
-	Value = random_utils:get_exponential_1p_value( Lambda ),
-	wooper:return_static( Value ).
+    Value = random_utils:get_exponential_1p_value( Lambda ),
+    wooper:return_static( Value ).
 
 
 
@@ -431,20 +431,20 @@ get_exponential_1p_value( Lambda ) ->
 Returns an exponential (positive) integer random value with Lambda being the
 rate parameter.
 
-See the random_utils module for further details.
+See the `random_utils` module for further details.
 """.
 -spec getPositiveIntegerExponentialValue( wooper:state(), rate() ) ->
-	const_request_return(
-		{ 'positive_integer_exponential_1p_value', non_neg_integer() } ).
+    const_request_return(
+        { 'positive_integer_exponential_1p_value', non_neg_integer() } ).
 getPositiveIntegerExponentialValue( State, Lambda ) ->
 
-	Value = random_utils:get_positive_integer_exponential_1p_value( Lambda ),
+    Value = random_utils:get_positive_integer_exponential_1p_value( Lambda ),
 
-	%?debug_fmt( "Returning positive integer exponential value ~w.",
-	%            [ Value ] ),
+    %?debug_fmt( "Returning positive integer exponential value ~w.",
+    %            [ Value ] ),
 
-	wooper:const_return_result(
-		{ positive_integer_exponential_1p_value, Value } ).
+    wooper:const_return_result(
+        { positive_integer_exponential_1p_value, Value } ).
 
 
 
@@ -452,13 +452,13 @@ getPositiveIntegerExponentialValue( State, Lambda ) ->
 Returns an exponential (positive) integer random value with Lambda being the
 rate parameter.
 
-See the random_utils module for further details.
+See the `random_utils` module for further details.
 """.
 -spec get_positive_integer_exponential_1p_value( rate() ) ->
-									static_return( non_neg_integer() ).
+                                    static_return( non_neg_integer() ).
 get_positive_integer_exponential_1p_value( Lambda ) ->
-	Value = random_utils:get_positive_integer_exponential_1p_value( Lambda ),
-	wooper:return_static( Value ).
+    Value = random_utils:get_positive_integer_exponential_1p_value( Lambda ),
+    wooper:return_static( Value ).
 
 
 
@@ -466,13 +466,13 @@ get_positive_integer_exponential_1p_value( Lambda ) ->
 Returns a list of Count exponential values according to the specified Lambda
 rate parameter.
 
-See the random_utils module for further details.
+See the `random_utils` module for further details.
 """.
 -spec get_exponential_1p_values( rate(), count() ) ->
-									static_return( [ float() ] ).
+                                    static_return( [ float() ] ).
 get_exponential_1p_values( Lambda, Count ) ->
-	V = random_utils:get_exponential_1p_values( Lambda, Count ),
-	wooper:return_static( V ).
+    V = random_utils:get_exponential_1p_values( Lambda, Count ),
+    wooper:return_static( V ).
 
 
 
@@ -481,11 +481,11 @@ Returns a list of Count (positive) integer exponential values according to the
 specified Lambda rate parameter.
 """.
 -spec get_positive_integer_exponential_1p_values( rate(), count() ) ->
-									static_return( [ pos_integer() ] ).
+                                    static_return( [ pos_integer() ] ).
 get_positive_integer_exponential_1p_values( Lambda, Count ) ->
-	V = random_utils:get_positive_integer_exponential_1p_values( Lambda,
-																 Count ),
-	wooper:return_static( V ).
+    V = random_utils:get_positive_integer_exponential_1p_values( Lambda,
+                                                                 Count ),
+    wooper:return_static( V ).
 
 
 
@@ -514,14 +514,14 @@ value drawn according to the corresponding Gaussian law, updating the state in
 the process dictionary.
 """.
 -spec getGaussianValue( wooper:state(), mean(), standard_deviation() ) ->
-							const_request_return( { gaussian_value, float() } ).
+                            const_request_return( { gaussian_value, float() } ).
 getGaussianValue( State, Mu, Sigma ) ->
 
-	Value = random_utils:get_gaussian_value( Mu, Sigma ),
+    Value = random_utils:get_gaussian_value( Mu, Sigma ),
 
-	%?debug_fmt( "Returning Gaussian value ~w.", [ Value ] ),
+    %?debug_fmt( "Returning Gaussian value ~w.", [ Value ] ),
 
-	wooper:const_return_result( { gaussian_value, Value } ).
+    wooper:const_return_result( { gaussian_value, Value } ).
 
 
 
@@ -534,10 +534,10 @@ value drawn according to the corresponding Gaussian law, updating the state in
 the process dictionary.
 """.
 -spec get_gaussian_value( mean(), standard_deviation() ) ->
-									static_return( float() ).
+                                    static_return( float() ).
 get_gaussian_value( Mu, Sigma ) ->
-	Value = random_utils:get_gaussian_value( Mu, Sigma ),
-	wooper:return_static( Value ).
+    Value = random_utils:get_gaussian_value( Mu, Sigma ),
+    wooper:return_static( Value ).
 
 
 
@@ -555,17 +555,17 @@ they are non-negative.
 
 """.
 -spec getPositiveIntegerGaussianValue( wooper:state(), mean(),
-									   standard_deviation() ) ->
-	const_request_return( { positive_integer_gaussian_value,
-							non_neg_integer() } ).
+                                       standard_deviation() ) ->
+    const_request_return( { positive_integer_gaussian_value,
+                            non_neg_integer() } ).
 getPositiveIntegerGaussianValue( State, Mu, Sigma ) ->
 
-	Value = random_utils:get_positive_integer_gaussian_value( Mu, Sigma ),
+    Value = random_utils:get_positive_integer_gaussian_value( Mu, Sigma ),
 
-	%?debug_fmt( "Returning positive integer Gaussian value ~w.", [ Value ] ),
+    %?debug_fmt( "Returning positive integer Gaussian value ~w.", [ Value ] ),
 
-	wooper:const_return_result(
-		{ positive_integer_gaussian_value, Value } ).
+    wooper:const_return_result(
+        { positive_integer_gaussian_value, Value } ).
 
 
 
@@ -581,10 +581,10 @@ The result is a non-negative integer (not a float). Values will be drawn until
 they are non-negative.
 """.
 -spec get_positive_integer_gaussian_value( mean(), standard_deviation() ) ->
-									static_return( pos_integer() ).
+                                    static_return( pos_integer() ).
 get_positive_integer_gaussian_value( Mu, Sigma ) ->
-	V = random_utils:get_positive_integer_gaussian_value( Mu, Sigma ),
-	wooper:return_static( V ).
+    V = random_utils:get_positive_integer_gaussian_value( Mu, Sigma ),
+    wooper:return_static( V ).
 
 
 
@@ -596,10 +596,10 @@ values drawn according the corresponding Gaussian law, updating the state in the
 process dictionary.
 """.
 -spec get_gaussian_values( mean(), standard_deviation(), count() ) ->
-									static_return( [ float() ] ).
+                                    static_return( [ float() ] ).
 get_gaussian_values( Mu, Sigma, Count ) ->
-	Values = random_utils:get_gaussian_values( Mu, Sigma, Count ),
-	wooper:return_static( Values ).
+    Values = random_utils:get_gaussian_values( Mu, Sigma, Count ),
+    wooper:return_static( Values ).
 
 
 
@@ -611,20 +611,20 @@ according the corresponding Gaussian law, updating the state in the process
 dictionary.
 """.
 -spec get_positive_integer_gaussian_values( mean(), standard_deviation(),
-						count() ) -> static_return( [ non_neg_integer() ] ).
+                        count() ) -> static_return( [ non_neg_integer() ] ).
 get_positive_integer_gaussian_values( Mu, Sigma, Count ) ->
 
-	Values = random_utils:get_positive_integer_gaussian_values( Mu, Sigma,
-																Count ),
+    Values = random_utils:get_positive_integer_gaussian_values( Mu, Sigma,
+                                                                Count ),
 
-	wooper:return_static( Values ).
+    wooper:return_static( Values ).
 
 
 
 -doc "Returns a new seed triplet.".
 -spec get_new_seed() -> static_return( random_utils:seed() ).
 get_new_seed() ->
-	wooper:return_static( random_utils:get_random_seed() ).
+    wooper:return_static( random_utils:get_random_seed() ).
 
 
 
@@ -635,10 +635,10 @@ sigma of 1).
 -spec create() -> static_return( manager_pid() ).
 create() ->
 
-	% Not created here as an actor:
-	ManagerPid = new_link( _SeedInformations=default_seed, _IsPrivate=false ),
+    % Not created here as an actor:
+    ManagerPid = new_link( _SeedInformations=default_seed, _IsPrivate=false ),
 
-	wooper:return_static( ManagerPid ).
+    wooper:return_static( ManagerPid ).
 
 
 
@@ -652,11 +652,11 @@ launched almost simultaneously.
 -spec getManager() -> static_return( manager_pid() ).
 getManager() ->
 
-	% Waits gracefully for the random manager to exist:
-	ManagerPid = naming_utils:wait_for_global_registration_of(
-		?random_manager_name ),
+    % Waits gracefully for the random manager to exist:
+    ManagerPid = naming_utils:wait_for_global_registration_of(
+        ?random_manager_name ),
 
-	wooper:return_static( ManagerPid ).
+    wooper:return_static( ManagerPid ).
 
 
 
@@ -664,14 +664,14 @@ getManager() ->
 -spec remove() -> static_return( 'ok' | 'random_manager_not_found' ).
 remove() ->
 
-	case global:whereis_name( ?random_manager_name ) of
+    case global:whereis_name( ?random_manager_name ) of
 
-		undefined ->
-			wooper:return_static( random_manager_not_found );
+        undefined ->
+            wooper:return_static( random_manager_not_found );
 
-		RandomManagerPid ->
-			RandomManagerPid ! delete,
-			% It will unregister itself.
-			wooper:return_static( ok )
+        RandomManagerPid ->
+            RandomManagerPid ! delete,
+            % It will unregister itself.
+            wooper:return_static( ok )
 
-	end.
+    end.

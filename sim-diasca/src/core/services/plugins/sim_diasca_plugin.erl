@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 EDF R&D
+% Copyright (C) 2014-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -53,21 +53,21 @@ may happen before 'on_simulation_stop': race conditions are tolerated here, for
 plugins)
 """.
 -type plugin_event() ::  'on_simulator_start'
-					   | 'on_deployment_start'
-					   | 'on_deployment_stop'
-					   | 'on_technical_settings_available'
-					   | 'on_case_initialisation_start'
-					   | 'on_case_initialisation_stop'
-					   | 'on_simulation_start'
-					   | 'on_simulation_bootstrap_start'
-					   | 'on_simulation_bootstrap_stop'
-					   | 'on_simulation_wallclock_milestone_met'
-					   | 'on_simulation_tick_milestone_met'
-					   | 'on_simulation_stop'
-					   | 'on_result_gathering_start'
-					   | 'on_result_gathering_stop'
-					   | 'on_simulator_stop'
-					   | 'on_case_specific_event'.
+                       | 'on_deployment_start'
+                       | 'on_deployment_stop'
+                       | 'on_technical_settings_available'
+                       | 'on_case_initialisation_start'
+                       | 'on_case_initialisation_stop'
+                       | 'on_simulation_start'
+                       | 'on_simulation_bootstrap_start'
+                       | 'on_simulation_bootstrap_stop'
+                       | 'on_simulation_wallclock_milestone_met'
+                       | 'on_simulation_tick_milestone_met'
+                       | 'on_simulation_stop'
+                       | 'on_result_gathering_start'
+                       | 'on_result_gathering_stop'
+                       | 'on_simulator_stop'
+                       | 'on_case_specific_event'.
 
 
 -doc "Case-specific events can be used additionally.".
@@ -88,7 +88,7 @@ plugins)
 
 
 -export_type([ plugin_data/0, plugin_event/0, case_specific_event/0,
-			   configuration_changes/0, technical_settings/0, event_data/0 ]).
+               configuration_changes/0, technical_settings/0, event_data/0 ]).
 
 
 
@@ -106,7 +106,7 @@ The `on_technical_settings_available/2` callback could allow to check the
 effectiveness of this request (e.g. if plugins requested incompatible changes).
 """.
 -callback on_simulator_start( configuration_changes(), plugin_data() ) ->
-								{ configuration_changes(), plugin_data() }.
+                                { configuration_changes(), plugin_data() }.
 
 
 
@@ -123,7 +123,7 @@ Callback triggered when the simulation technical settings are available, notably
 once the deployment phase is over.
 """.
 -callback on_technical_settings_available( technical_settings(),
-										   plugin_data() ) -> plugin_data().
+                                           plugin_data() ) -> plugin_data().
 
 
 
@@ -176,7 +176,7 @@ Callback triggered when a tick milestone is met (i.e. when a given number of
 ticks have been evaluated).
 """.
 -callback on_simulation_tick_milestone_met( class_TimeManager:tick_offset(),
-										plugin_data() ) -> plugin_data().
+                                        plugin_data() ) -> plugin_data().
 
 
 
@@ -212,4 +212,4 @@ circumstances (i.e. not crashing).
 Callback triggered iff a case decided to notify the plugins of a specific event.
 """.
 -callback on_case_specific_event( case_specific_event(), event_data(),
-								  plugin_data() ) -> plugin_data().
+                                  plugin_data() ) -> plugin_data().

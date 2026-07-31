@@ -2,7 +2,7 @@ MYRIAD_TOP = ../..
 
 
 .PHONY: test-local prepare-otp-test test-distributions test-interactive-shell \
-		archive info-archive clean-distribution-files
+		archive info-archive clean clean-distribution-files real-clean
 
 
 PLOT_ARCHIVE := $$(date '+%Y%m%d')-probability-density-functions.zip
@@ -30,7 +30,7 @@ test-interactive-shell:
 
 
 archive: random_utils_run
-	@zip $(PLOT_ARCHIVE) compare_test_pdf_sampling_for_* test_*.dat test_*.p test_*.png
+	@zip $(PLOT_ARCHIVE) compare_test_pdf_sampling* test_*.dat test_*.p test_*.png *.png
 
 
 info: info-archive
@@ -41,8 +41,14 @@ info-archive:
 
 clean: clean-distribution-files
 
+
+# Not wanting to remove compare_test_pdf_sampling.p.template:
 clean-distribution-files:
-	-@/bin/rm -f test_*.dat compare_test_pdf_sampling_for_*.p test_*.png 2>/dev/null
+	-@/bin/rm -f GNUmakefile.xz test_*.dat test_*.png *.png 2>/dev/null
+
+
+real-clean:
+	-@/bin/rm -rf *-probability-density-functions.zip
 
 
 include $(MYRIAD_TOP)/GNUmakesettings.inc

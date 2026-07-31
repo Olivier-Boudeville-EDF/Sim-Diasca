@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2025 EDF R&D
+% Copyright (C) 2012-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -38,11 +38,12 @@ simulation cases.
 
 
 -export([ case_start/2, case_start/3,
-		  case_stop/3, case_immediate_stop/2,
-		  case_stop_on_shell/2 ]).
+          case_stop/3, case_immediate_stop/2,
+          case_stop_on_shell/2 ]).
 
 
--define( trace_emitter_categorization, "case.life-cycle" ).
+% Preferring inherinting the one from next traces_case_header.hrl:
+%-define( trace_emitter_categorization, "case.life-cycle" ).
 
 
 % For case_notice_fmt and al:
@@ -70,7 +71,7 @@ simulation cases.
 -type trace_aggregator_pid() :: class_TraceAggregator:trace_aggregator_pid().
 
 -type initialise_supervision() ::
-	class_TraceAggregator:initialise_supervision().
+    class_TraceAggregator:initialise_supervision().
 
 
 -doc """
@@ -87,49 +88,49 @@ the mailbox of the case process).
                                         trace_aggregator_pid().
 case_start( ModuleName, InitTraceSupervisor ) ->
 
-	% Allows to support both OTP conventions and ad hoc, automatic ones:
-	%sim_diasca:start_for_test(),
+    % Allows to support both OTP conventions and ad hoc, automatic ones:
+    %sim_diasca:start_for_test(),
 
-	% Here, no trace type has been specified, looking for any option specified
-	% on the command-line:
+    % Here, no trace type has been specified, looking for any option specified
+    % on the command-line:
 
-	% The actual option is: "--trace-type XXX":
-	TraceType = case cmd_line_utils:get_command_arguments_for_option(
-			'-trace-type' ) of
+    % The actual option is: "--trace-type XXX":
+    TraceType = case cmd_line_utils:get_command_arguments_for_option(
+            '-trace-type' ) of
 
-		undefined ->
-			trace_utils:info( "No trace type specified, defaulting "
-							  "to advanced type." ),
-			advanced_traces;
+        undefined ->
+            trace_utils:info( "No trace type specified, defaulting "
+                              "to advanced type." ),
+            advanced_traces;
 
-		% Single option expected:
-		[ [ SpecifiedTraceType ] ] ->
-			case SpecifiedTraceType of
+        % Single option expected:
+        [ [ SpecifiedTraceType ] ] ->
+            case SpecifiedTraceType of
 
-				"advanced" ->
-					advanced_traces;
+                "advanced" ->
+                    advanced_traces;
 
-				"text" ->
-					{ text_traces, text_only };
+                "text" ->
+                    { text_traces, text_only };
 
-				"pdf" ->
-					{ text_traces, pdf };
+                "pdf" ->
+                    { text_traces, pdf };
 
-				Other ->
-					trace_utils:error_fmt(
-						"Unexpected trace type specified: '~p'.", [ Other ] ),
-					throw( { unexpected_trace_type_specified, Other } )
+                Other ->
+                    trace_utils:error_fmt(
+                        "Unexpected trace type specified: '~p'.", [ Other ] ),
+                    throw( { unexpected_trace_type_specified, Other } )
 
-			end;
+            end;
 
-		OtherTraceTypeArg ->
-			trace_utils:error_fmt( "Invalid trace type option specified: '~p'.",
-								   [ OtherTraceTypeArg ] ),
-			throw( { invalid_trace_type_option, OtherTraceTypeArg } )
+        OtherTraceTypeArg ->
+            trace_utils:error_fmt( "Invalid trace type option specified: '~p'.",
+                                   [ OtherTraceTypeArg ] ),
+            throw( { invalid_trace_type_option, OtherTraceTypeArg } )
 
-	end,
+    end,
 
-	case_start( ModuleName, InitTraceSupervisor, TraceType ).
+    case_start( ModuleName, InitTraceSupervisor, TraceType ).
 
 
 
@@ -144,43 +145,43 @@ probably remain unnoticed (just leading to an EXIT message happily sitting in
 the mailbox of the case process).
 """.
 -spec case_start( module_name(), initialise_supervision(),
-				  traces:trace_supervision_type() ) -> trace_aggregator_pid().
+                  traces:trace_supervision_type() ) -> trace_aggregator_pid().
 % Clause generally not used by simulation cases:
 case_start( ModuleName, _InitTraceSupervisor=true, TraceType ) ->
 
-	% First jump to the other clause:
-	TraceAggregatorPid = case_start( ModuleName, _InitTraceSuperv=false,
-									 TraceType ),
+    % First jump to the other clause:
+    TraceAggregatorPid = case_start( ModuleName, _InitTraceSuperv=false,
+                                     TraceType ),
 
-	% For a simulation case, we do not consider to launch the trace supervisor
-	% this early, as we would need to change its trace filename, which is not
-	% supported on some back-ends (e.g. LogMX).
+    % For a simulation case, we do not consider to launch the trace supervisor
+    % this early, as we would need to change its trace filename, which is not
+    % supported on some back-ends (e.g. LogMX).
 
-	?case_notice_fmt( "Starting case ~ts.", [ ModuleName ] ),
+    ?case_notice_fmt( "Starting case ~ts.", [ ModuleName ] ),
 
-	% So we trigger the supervisor launch by ourselves:
-	case executable_utils:is_batch() of
+    % So we trigger the supervisor launch by ourselves:
+    case executable_utils:is_batch() of
 
-		true ->
-			%trace_utils:debug(
-			%  "In batch mode, so no trace supervisor launched." ),
-			ok;
+        true ->
+            %trace_utils:debug(
+            %  "In batch mode, so no trace supervisor launched." ),
+            ok;
 
-		false ->
-			%trace_utils:debug(
-			%  "Not in batch mode, so launching trace supervisor." ),
+        false ->
+            %trace_utils:debug(
+            %  "Not in batch mode, so launching trace supervisor." ),
 
-			TraceAggregatorPid ! { launchTraceSupervisor, [], self() },
-			receive
+            TraceAggregatorPid ! { launchTraceSupervisor, [], self() },
+            receive
 
-				{ wooper_result, _SupervisorPid } ->
-					ok
+                { wooper_result, _SupervisorPid } ->
+                    ok
 
-			end
+            end
 
-	end,
+    end,
 
-	TraceAggregatorPid;
+    TraceAggregatorPid;
 
 
 % This is the clause typically directly called by actual simulation cases, as
@@ -189,34 +190,34 @@ case_start( ModuleName, _InitTraceSupervisor=true, TraceType ) ->
 %
 case_start( ModuleName, _InitTraceSupervisor=false, TraceType ) ->
 
-	% See comments above about:
-	erlang:process_flag( trap_exit, false ),
+    % See comments above about:
+    erlang:process_flag( trap_exit, false ),
 
-	% Create first, synchronously (to avoid race conditions), a trace aggregator
-	% (false is to specify a non-private i.e. global aggregator).
-	%
-	% Race conditions could occur at least with trace emitters (they would
-	% create their own aggregator, should none by found) and with trace
-	% supervisor (which expects a trace file to be already created at start-up).
+    % Create first, synchronously (to avoid race conditions), a trace aggregator
+    % (false is to specify a non-private i.e. global aggregator).
+    %
+    % Race conditions could occur at least with trace emitters (they would
+    % create their own aggregator, should none by found) and with trace
+    % supervisor (which expects a trace file to be already created at start-up).
 
-	CaseIsBatch = executable_utils:is_batch(),
+    CaseIsBatch = executable_utils:is_batch(),
 
-	TraceFilename = traces:get_trace_filename( ModuleName ),
+    TraceFilename = traces:get_trace_filename( ModuleName ),
 
-	% Not wanting the trace aggregator to initialize the trace supervisor, as
-	% otherwise the latter would notify that its monitoring is over to the
-	% former, whereas we want instead the calling process (i.e. the case) to be
-	% notified of it (see case_stop/2):
-	%
-	TraceAggregatorPid = class_TraceAggregator:synchronous_new_link(
-		TraceFilename, TraceType, ?TraceTitle,
-		_MaybeRegistrationScope=global_only, CaseIsBatch,
-		_AggInitTraceSupervisor=false ),
+    % Not wanting the trace aggregator to initialize the trace supervisor, as
+    % otherwise the latter would notify that its monitoring is over to the
+    % former, whereas we want instead the calling process (i.e. the case) to be
+    % notified of it (see case_stop/2):
+    %
+    TraceAggregatorPid = class_TraceAggregator:synchronous_new_link(
+        TraceFilename, TraceType, ?TraceTitle,
+        _MaybeRegistrationScope=global_only, CaseIsBatch,
+        _AggInitTraceSupervisor=false ),
 
-	?case_notice_fmt( "Starting case ~ts (batch mode: ~ts).0", 
+    ?case_notice_fmt( "Starting case ~ts (batch mode: ~ts).",
                       [ ModuleName, CaseIsBatch ] ),
 
-	TraceAggregatorPid.
+    TraceAggregatorPid.
 
 
 
@@ -227,51 +228,51 @@ case_start( ModuleName, _InitTraceSupervisor=false, TraceType ) ->
 
 -doc "To be called from the counterpart macro.".
 -spec case_stop( module_name(), trace_aggregator_pid(), boolean() ) ->
-													no_return().
+                                                    no_return().
 case_stop( ModuleName, TraceAggregatorPid, WaitForTraceSupervisor ) ->
 
-	%trace_utils:info_fmt( "Case stopping (aggregator: ~w, wait supervisor: "
-	%    "~ts).", [ TraceAggregatorPid, WaitForTraceSupervisor] ),
+    %trace_utils:info_fmt( "Case stopping (aggregator: ~w, wait supervisor: "
+    %    "~ts).", [ TraceAggregatorPid, WaitForTraceSupervisor] ),
 
-	WaitForTraceSupervisor andalso class_TraceSupervisor:wait_for(),
+    WaitForTraceSupervisor andalso class_TraceSupervisor:wait_for(),
 
-	%trace_utils:info( "Going for immediate stop." ),
+    %trace_utils:info( "Going for immediate stop." ),
 
-	% Stop trace sent there:
-	case_immediate_stop( ModuleName, TraceAggregatorPid ).
+    % Stop trace sent there:
+    case_immediate_stop( ModuleName, TraceAggregatorPid ).
 
 
 
 -doc "To be called from the counterpart macro.".
 -spec case_immediate_stop( module_name(), trace_aggregator_pid() ) ->
-													no_return().
+                                                    no_return().
 case_immediate_stop( ModuleName, TraceAggregatorPid ) ->
 
-	case_stop_on_shell( ModuleName, TraceAggregatorPid ),
+    case_stop_on_shell( ModuleName, TraceAggregatorPid ),
 
-	case_facilities:finished().
+    case_facilities:finished().
 
 
 
 -doc "To be called from the counterpart macro.".
 -spec case_stop_on_shell( module_name(), trace_aggregator_pid() ) ->
-													no_return().
+                                                    no_return().
 case_stop_on_shell( ModuleName, TraceAggregatorPid ) ->
 
-	?case_notice_fmt( "Stopping case ~ts.", [ ModuleName ] ),
+    ?case_notice_fmt( "Stopping case ~ts.", [ ModuleName ] ),
 
-	% Variable shared through macro use:
-	TraceAggregatorPid ! { synchronous_delete, self() },
+    % Variable shared through macro use:
+    TraceAggregatorPid ! { synchronous_delete, self() },
 
-	receive
+    receive
 
-		{ deleted, TraceAggregatorPid } ->
-			ok
+        { deleted, TraceAggregatorPid } ->
+            ok
 
-	end,
+    end,
 
-	traces:check_pending_wooper_results(),
+    traces:check_pending_wooper_results(),
 
-	class_TraceAggregator:remove(),
+    class_TraceAggregator:remove(),
 
-	case_facilities:display( "End of case ~ts", [ ModuleName ] ).
+    case_facilities:display( "End of case ~ts", [ ModuleName ] ).

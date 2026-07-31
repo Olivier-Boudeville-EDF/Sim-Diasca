@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 Olivier Boudeville
+% Copyright (C) 2014-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -33,9 +33,9 @@ Class introduced notably to test **inheritance**.
 
 
 -define( class_description,
-		 "Class introduced notably to test inheritance: tests the base "
-		 "services and also serves as a mother class "
-		 "(see class_ChildTestClass)." ).
+         "Class introduced notably to test inheritance: tests the base "
+         "services and also serves as a mother class "
+         "(see class_ChildTestClass)." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -55,11 +55,11 @@ Class introduced notably to test **inheritance**.
 % Class-specific attributes:
 -define( class_attributes, [
 
-	{ name, name(), [ const, protected ], "Name of this instance" },
+    { name, name(), [ const, protected ], "Name of this instance" },
 
-	{ gender, gender(), "Gender of this instance" },
+    { gender, gender(), "Gender of this instance" },
 
-	{ age, integer(), { initial, 0 }, "The current age of this instance" } ] ).
+    { age, integer(), { initial, 0 }, "The current age of this instance" } ] ).
 
 
 
@@ -71,8 +71,8 @@ Class introduced notably to test **inheritance**.
 -doc "Constructs an instance of this class.".
 -spec construct( wooper:state(), name(), gender() ) -> wooper:state().
 construct( State, Name, Gender ) ->
-	% No mother class.
-	setAttributes( State, [ { name, Name }, { gender, Gender } ] ).
+    % No mother class.
+    setAttributes( State, [ { name, Name }, { gender, Gender } ] ).
 
 
 % No specific destruct/1.
@@ -87,53 +87,53 @@ construct( State, Name, Gender ) ->
 -spec getName( wooper:state() ) -> const_request_return( name() ).
 getName( State ) ->
 
-	Name = ?getAttr(name),
+    Name = ?getAttr(name),
 
-	%trace_utils:debug_fmt( "getName/1 request called by ~w.",
-	%                       [ ?getSender() ] ),
+    %trace_utils:debug_fmt( "getName/1 request called by ~w.",
+    %                       [ ?getSender() ] ),
 
-	wooper:const_return_result( Name ).
+    wooper:const_return_result( Name ).
 
 
 
 -doc "Sets the name of this instance.".
 setName( State, Name ) ->
-	NewState = setAttribute( State, name, Name ),
-	wooper:return_state( NewState ).
+    NewState = setAttribute( State, name, Name ),
+    wooper:return_state( NewState ).
 
 
 
 -doc "A request not meant to be overridden.".
 -spec aRequest( wooper:state(), integer() ) ->
-						const_request_return( integer() ).
+                        const_request_return( integer() ).
 aRequest( State, Arg ) ->
-	wooper:const_return_result( Arg + 5 ).
+    wooper:const_return_result( Arg + 5 ).
 
 
 
 -doc "A request meant to be overridden.".
 -spec someRequest( wooper:state(), integer() ) ->
-							const_request_return( integer() ).
+                            const_request_return( integer() ).
 someRequest( State, Arg ) ->
-	wooper:const_return_result( Arg + 7 ).
+    wooper:const_return_result( Arg + 7 ).
 
 
 
 -doc "Used to mask to WOOPER an actual throw.".
 -spec my_throw_helper() -> no_return().
 my_throw_helper() ->
-	throw( report_exception ).
+    throw( report_exception ).
 
 
 
 -doc "To test wooper:throwing/1.".
 -spec testThrow( wooper:state() ) -> const_oneway_return().
 testThrow( _State ) ->
-	%wooper:const_return().
-	wooper:throwing( my_throw_helper() ).
+    %wooper:const_return().
+    wooper:throwing( my_throw_helper() ).
 
 
 
 -doc "Returns some mean count.".
 get_some_mean_count() ->
-	wooper:return_static( 6 ).
+    wooper:return_static( 6 ).

@@ -1,4 +1,4 @@
-% Copyright (C) 2020-2025 Olivier Boudeville
+% Copyright (C) 2020-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -48,7 +48,7 @@
 
 -doc """
 Returns the execution target this module (hence, probably, that layer as a
-whole) was compiled with, that is either the atom 'development' or 'production'.
+whole) was compiled with, that is either the atom `development` or `production`.
 """.
 % Dispatched in actual clauses, otherwise Dialyzer will detect an
 % underspecification:
@@ -59,12 +59,12 @@ whole) was compiled with, that is either the atom 'development' or 'production'.
 
 -spec get_execution_target() -> 'production'.
 get_execution_target() ->
-	production.
+    production.
 
 -else. % exec_target_is_production
 
 -spec get_execution_target() -> 'development'.
 get_execution_target() ->
-	development.
+    development.
 
 -endif. % exec_target_is_production

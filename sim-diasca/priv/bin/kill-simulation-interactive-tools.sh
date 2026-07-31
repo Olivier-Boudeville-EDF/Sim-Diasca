@@ -84,4 +84,8 @@ if [ $spare_graph -eq 1 ]; then
 
 fi
 
-killall geeqie
+
+# Typically to be kept in sync with
+# executable_utils:get_default_image_browser_name/0:
+#
+killall geeqie loupe 2>/dev/null

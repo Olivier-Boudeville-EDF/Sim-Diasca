@@ -1,4 +1,4 @@
-% Copyright (C) 2024-2025 Olivier Boudeville
+% Copyright (C) 2024-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -71,7 +71,7 @@ matrix4 from world to camera space.
 
 % Operations on cameras:
 -export([ get_view_matrix/1, get_view_matrix_inverse/1,
-		  to_string/1, to_string/2 ]).
+          to_string/1, to_string/2 ]).
 
 
 
@@ -121,7 +121,7 @@ from the position and the target point).
 """.
 -spec create( point3(), point3(), vector3() ) -> camera().
 create( Position, TargetPoint, UpDir ) ->
-	look_at( Position, TargetPoint, UpDir ).
+    look_at( Position, TargetPoint, UpDir ).
 
 
 
@@ -131,7 +131,7 @@ accordingly, so that it points to the same position.
 """.
 -spec set_position( point3(), camera() ) -> camera().
 set_position( NewPos, #camera{ target=TargetPoint, up=Up } ) ->
-	look_at( NewPos, TargetPoint, Up ).
+    look_at( NewPos, TargetPoint, Up ).
 
 
 
@@ -149,38 +149,38 @@ conventions.
 -spec look_at( point3(), point3(), vector3() ) -> camera().
 look_at( Position, TargetPoint, Up ) ->
 
-	% Needed as such anyway:
-	Aim = point3:unit_vectorize( Position, TargetPoint ),
+    % Needed as such anyway:
+    Aim = point3:unit_vectorize( Position, TargetPoint ),
 
-	% Knowing that with OpenGL the camera shall point to its -Z axis, Aim
-	% corresponds to -Z:
-	%
-	Z = vector3:negate( Aim ),
+    % Knowing that with OpenGL the camera shall point to its -Z axis, Aim
+    % corresponds to -Z:
+    %
+    Z = vector3:negate( Aim ),
 
 
-	% To obtain Y, knowing that Up is not necessarily orthogonal to Aim, so
-	% Y = Up - (Up.Aim).Aim (and then normalised):
-	%
-	% (Up does not need to be unit)
-	Y = vector3:get_unit_orthogonal( Up, Aim ),
+    % To obtain Y, knowing that Up is not necessarily orthogonal to Aim, so
+    % Y = Up - (Up.Aim).Aim (and then normalised):
+    %
+    % (Up does not need to be unit)
+    Y = vector3:get_unit_orthogonal( Up, Aim ),
 
-	X = vector3:cross_product( Y, Z ),
+    X = vector3:cross_product( Y, Z ),
 
-	% Now we have the position and axes of the camera coordinate system in the
-	% world one, and we need notably to determine the transition matrix from
-	% world to coordinate, Pwc; knowing that Pcw is straightforward to obtain,
-	% we go for the Tcw={reference=Pcw, inverse=Pwc} transformation (thus for
-	% which R1=c, R2=w):
-	%
-	Tcw = transform4:basis_change( _O1InR2=Position, _FwdDir1InR2=X,
-								   _UpDir1InR2=Z ),
+    % Now we have the position and axes of the camera coordinate system in the
+    % world one, and we need notably to determine the transition matrix from
+    % world to coordinate, Pwc; knowing that Pcw is straightforward to obtain,
+    % we go for the Tcw={reference=Pcw, inverse=Pwc} transformation (thus for
+    % which R1=c, R2=w):
+    %
+    Tcw = transform4:basis_change( _O1InR2=Position, _FwdDir1InR2=X,
+                                   _UpDir1InR2=Z ),
 
-	#camera{ position=Position,
-			 target=TargetPoint,
-			 aim=Aim,
-			 up=Y,
-			 left=X,
-			 view_transf4=Tcw }.
+    #camera{ position=Position,
+             target=TargetPoint,
+             aim=Aim,
+             up=Y,
+             left=X,
+             view_transf4=Tcw }.
 
 
 
@@ -193,51 +193,51 @@ look_at( Position, TargetPoint, Up ) ->
 % """.
 % -spec compute_view_matrix( camera() ) -> { view_matrix4(), camera() }.
 % compute_view_matrix( Cam=#camera{ position=_Position={ Px, Py, Pz },
-%								  aim=UnitAimVec=[ Ax, Ay, Az ],
-%								  up=UnitUpVec=[ Ux, Uy, Uz ],
-%								  right=MaybeUnitRightVec } ) ->
+%                                 aim=UnitAimVec=[ Ax, Ay, Az ],
+%                                 up=UnitUpVec=[ Ux, Uy, Uz ],
+%                                 right=MaybeUnitRightVec } ) ->
 
-%	UnitRightVec=[ Rx, Ry, Rz ] = case MaybeUnitRightVec of
+%   UnitRightVec=[ Rx, Ry, Rz ] = case MaybeUnitRightVec of
 
-%		undefined ->
-%			RV = vector3:cross_product( UnitUpVec, UnitAimVec ),
-%			cond_utils:if_defined( myriad_check_linear,
-%								   vector:is_unitary( RV ) ),
-%			RV;
+%       undefined ->
+%           RV = vector3:cross_product( UnitUpVec, UnitAimVec ),
+%           cond_utils:if_defined( myriad_check_linear,
+%                                  vector:is_unitary( RV ) ),
+%           RV;
 
-%		RV ->
-%			RV
+%       RV ->
+%           RV
 
-%	end,
+%   end,
 
-%	% Could be done based on a quaternion, or as
-%	% https://learnopengl.com/Getting-started/Camera, or as glm (see
-%	% ext/matrix_transform.inl); knowing that 'up' is already supposed to be
-%	% orthogonal to 'aim', we preferred directly computing the transition matrix
-%	% from world (w) to camera (c) coordinates, Pw->c, that can easily be
-%	% computed from the coordinates of the axes of the world system in the
-%	% camera one. Unfortunately we have only the reciprocal information (the
-%	% coordinates of the camera in the world), and can only describe directly
-%	% the inverse, Pc->w.
-%	%
-%	% However, using the naming conventions specified in the camera record:
-%	% ViewMat4 = Ma.Mb where Ma:matrix([Rx,Ry,Rz,0], [Ux,Uy,Uz,0], [Ax,Ay,Az,0],
-%	% [0,0,0,1]) and Mb:matrix([1,0,0,-Px], [0,1,0,-Py], [0,0,1,-Pz],
-%	% [0,0,0,1]); so:
-%	% ViewMat4 = matrix([Rx, Ry, Rz, Pz*Rz-Py*Ry-Px*Rx],
-%	%                   [Ux, Uy, Uz, Pz*Uz-Py*Uy-Px*Ux],
-%	%                   [Ax, Ay, Az, Az*Pz-Ay*Py-Ax*Px],
-%	%                   [ 0,  0,  0,                 1])
-%	%
-%	% So:
+%   % Could be done based on a quaternion, or as
+%   % https://learnopengl.com/Getting-started/Camera, or as glm (see
+%   % ext/matrix_transform.inl); knowing that 'up' is already supposed to be
+%   % orthogonal to 'aim', we preferred directly computing the transition matrix
+%   % from world (w) to camera (c) coordinates, Pw->c, that can easily be
+%   % computed from the coordinates of the axes of the world system in the
+%   % camera one. Unfortunately we have only the reciprocal information (the
+%   % coordinates of the camera in the world), and can only describe directly
+%   % the inverse, Pc->w.
+%   %
+%   % However, using the naming conventions specified in the camera record:
+%   % ViewMat4 = Ma.Mb where Ma:matrix([Rx,Ry,Rz,0], [Ux,Uy,Uz,0], [Ax,Ay,Az,0],
+%   % [0,0,0,1]) and Mb:matrix([1,0,0,-Px], [0,1,0,-Py], [0,0,1,-Pz],
+%   % [0,0,0,1]); so:
+%   % ViewMat4 = matrix([Rx, Ry, Rz, Pz*Rz-Py*Ry-Px*Rx],
+%   %                   [Ux, Uy, Uz, Pz*Uz-Py*Uy-Px*Ux],
+%   %                   [Ax, Ay, Az, Az*Pz-Ay*Py-Ax*Px],
+%   %                   [ 0,  0,  0,                 1])
+%   %
+%   % So:
 
-%	Tx = Pz*Rz - Py*Ry - Px*Rx,
-%	Ty = Pz*Uz - Py*Uy - Px*Ux,
-%	Tz = Az*Pz - Ay*Py - Ax*Px,
+%   Tx = Pz*Rz - Py*Ry - Px*Rx,
+%   Ty = Pz*Uz - Py*Uy - Px*Ux,
+%   Tz = Az*Pz - Ay*Py - Ax*Px,
 
-%	ViewMat4 = #compact_matrix4{ m11=Rx, m12=Ry, m13=Rz, tx=Tx,
-%								 m21=Ux, m22=Uy, m23=Uz, ty=Ty,
-%								 m31=Ax, m32=Ay, m33=Az, tz=Tz },
+%   ViewMat4 = #compact_matrix4{ m11=Rx, m12=Ry, m13=Rz, tx=Tx,
+%                                m21=Ux, m22=Uy, m23=Uz, ty=Ty,
+%                                m31=Ax, m32=Ay, m33=Az, tz=Tz },
 % % For a camera located at
 % % { 0.0 }
 % % { 0.0 }
@@ -256,10 +256,10 @@ look_at( Position, TargetPoint, Up ) ->
 % % [ 0.0  0.0  -1.0 -0.0 ]
 % % [ 0.0  0.0  0.0  1.0  ]
 
-%	NewCam = Cam#camera{ right=UnitRightVec,
-%						 view_transf4=ViewMat4 },
+%   NewCam = Cam#camera{ right=UnitRightVec,
+%                        view_transf4=ViewMat4 },
 
-%	{ ViewMat4, NewCam }.
+%   { ViewMat4, NewCam }.
 
 
 
@@ -269,7 +269,7 @@ from world to camera space.
 """.
 -spec get_view_matrix( camera() ) -> view_matrix4().
 get_view_matrix( #camera{ view_transf4=#transform4{ inverse=InvM } } ) ->
-	InvM.
+    InvM.
 
 
 -doc """
@@ -278,8 +278,8 @@ transition matrix4 from camera to world space.
 """.
 -spec get_view_matrix_inverse( camera() ) -> view_matrix4().
 get_view_matrix_inverse( #camera{
-		view_transf4=#transform4{ reference=RefM } } ) ->
-	RefM.
+        view_transf4=#transform4{ reference=RefM } } ) ->
+    RefM.
 
 
 
@@ -287,7 +287,7 @@ get_view_matrix_inverse( #camera{
 -doc "Returns a textual description of the specified camera.".
 -spec to_string( camera() ) -> ustring().
 to_string( Camera ) ->
-	to_string( Camera, _Verbose=false ).
+    to_string( Camera, _Verbose=false ).
 
 
 
@@ -297,24 +297,24 @@ verbosity.
 """.
 -spec to_string( camera(), boolean() ) -> ustring().
 to_string( #camera{ position=Pos,
-					target=TargetPoint
-					%aim=UnitAimVec
-				  }, _Verbose=false ) ->
-	text_utils:format( "camera located at ~ts, aimed at ~ts",
-		[ point3:to_compact_string( Pos ),
-		  point3:to_compact_string( TargetPoint )
-		  %vector3:to_compact_string( UnitAimVec )
-		] );
+                    target=TargetPoint
+                    %aim=UnitAimVec
+                  }, _Verbose=false ) ->
+    text_utils:format( "camera located at ~ts, aimed at ~ts",
+        [ point3:to_compact_string( Pos ),
+          point3:to_compact_string( TargetPoint )
+          %vector3:to_compact_string( UnitAimVec )
+        ] );
 
 to_string( #camera{ position=Pos,
-					target=TargetPoint,
-					%aim=UnitAimVec,
-					up=UpVec,
-					view_transf4=Transf4 }, _Verbose=true ) ->
-	text_utils:format( "camera located at ~ts, aimed at ~ts, "
-		"whose up vector is ~ts, with a ~ts",
-		[ point3:to_compact_string( Pos ),
-		  point3:to_compact_string( TargetPoint ),
-		  %vector3:to_compact_string( UnitAimVec ),
-		  vector3:to_compact_string( UpVec ),
-		  transform4:to_string( Transf4 ) ] ).
+                    target=TargetPoint,
+                    %aim=UnitAimVec,
+                    up=UpVec,
+                    view_transf4=Transf4 }, _Verbose=true ) ->
+    text_utils:format( "camera located at ~ts, aimed at ~ts, "
+        "whose up vector is ~ts, with a ~ts",
+        [ point3:to_compact_string( Pos ),
+          point3:to_compact_string( TargetPoint ),
+          %vector3:to_compact_string( UnitAimVec ),
+          vector3:to_compact_string( UpVec ),
+          transform4:to_string( Transf4 ) ] ).

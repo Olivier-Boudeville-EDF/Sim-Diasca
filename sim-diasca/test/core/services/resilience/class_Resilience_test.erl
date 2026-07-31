@@ -1,4 +1,4 @@
-% Copyright (C) 2012-2025 EDF R&D
+% Copyright (C) 2012-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -28,8 +28,8 @@ See the `class_ResilienceManager` module.
 """.
 
 
-% For facilities common to all cases:
--include("sim_diasca_for_cases.hrl").
+% Not a simulation case, just a test:
+-include("traces_for_tests.hrl").
 
 
 % For result_manager_name:
@@ -45,77 +45,78 @@ See the `class_ResilienceManager` module.
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+    % Not a simulation case:
+    ?test_start,
 
-	FirstResilienceLevel = 5,
+    FirstResilienceLevel = 5,
 
-	FirstProtectedNodes = [ a, b, c, d, e, f ],
+    FirstProtectedNodes = [ a, b, c, d, e, f ],
 
-	?test_notice_fmt( "Creating first a ~B-map on nodes ~p.",
-					  [ FirstResilienceLevel, FirstProtectedNodes ] ),
+    ?test_notice_fmt( "Creating first a ~B-map on nodes ~p.",
+                      [ FirstResilienceLevel, FirstProtectedNodes ] ),
 
-	FirstTestKMap = class_ResilienceManager:build_k_map( FirstResilienceLevel,
-														 FirstProtectedNodes ),
+    FirstTestKMap = class_ResilienceManager:build_k_map( FirstResilienceLevel,
+                                                         FirstProtectedNodes ),
 
-	?test_notice_fmt( "For a resilience level of ~B, result is: ~ts",
-		[ FirstResilienceLevel,
-		  class_ResilienceManager:k_map_to_string( FirstTestKMap ) ] ),
-
-
-	SecondResilienceLevel = 5,
-
-	NodeCount = length( FirstProtectedNodes ),
-	%NodeCount = 20,
+    ?test_notice_fmt( "For a resilience level of ~B, result is: ~ts",
+        [ FirstResilienceLevel,
+          class_ResilienceManager:k_map_to_string( FirstTestKMap ) ] ),
 
 
-	?test_notice_fmt( "Creating now a ~B-map on ~B nodes.",
-					  [ SecondResilienceLevel, NodeCount ] ),
+    SecondResilienceLevel = 5,
 
-	SecondProtectedNodes = [ class_Graphable:new_link( [
-		{ label, text_utils:format( "Node ~ts", [ N ] ) } ] )
-		 || N <- FirstProtectedNodes ],
-		%|| N <- lists:seq( 1, NodeCount ) ],
+    NodeCount = length( FirstProtectedNodes ),
+    %NodeCount = 20,
 
 
-	?test_notice_fmt( "Building a k-map for k=~B and ~B nodes (~p).",
-		[ SecondResilienceLevel, NodeCount, SecondProtectedNodes ] ),
+    ?test_notice_fmt( "Creating now a ~B-map on ~B nodes.",
+                      [ SecondResilienceLevel, NodeCount ] ),
 
-	SecondTestKMap = class_ResilienceManager:build_k_map( SecondResilienceLevel,
-		SecondProtectedNodes ),
+    SecondProtectedNodes = [ class_Graphable:new_link( [
+        { label, text_utils:format( "Node ~ts", [ N ] ) } ] )
+         || N <- FirstProtectedNodes ],
+        %|| N <- lists:seq( 1, NodeCount ) ],
 
 
-	% Can be cyclic, and better displayed with nodes on a circle:
-	ResilienceMesh = class_Mesh:new_link(
-		text_utils:format( "Resilience ~B-map for ~B nodes",
-						   [ SecondResilienceLevel, NodeCount ] ),
-		_Opts=[ { layout, circo } ] ),
+    ?test_notice_fmt( "Building a k-map for k=~B and ~B nodes (~p).",
+        [ SecondResilienceLevel, NodeCount, SecondProtectedNodes ] ),
 
-	KPairs = table:enumerate( SecondTestKMap ),
+    SecondTestKMap = class_ResilienceManager:build_k_map( SecondResilienceLevel,
+        SecondProtectedNodes ),
 
-	% Two passes are needed, as all nodes must be declared first:
-	[ ResilienceMesh ! { addNode, [ N ] } || { N, _KRecord } <- KPairs ],
 
-	[ begin
-		  [ begin
-				Link = class_Graphable:new_link( [ { label, "" } ] ),
-				ResilienceMesh ! { addLink, [ Link, N, Secured ] }
-			end || Secured <- KRecord#k_record.securing ]
+    % Can be cyclic, and better displayed with nodes on a circle:
+    ResilienceMesh = class_Mesh:new_link(
+        text_utils:format( "Resilience ~B-map for ~B nodes",
+                           [ SecondResilienceLevel, NodeCount ] ),
+        _Opts=[ { layout, circo } ] ),
 
-	  end || { N, KRecord } <- KPairs ],
+    KPairs = table:enumerate( SecondTestKMap ),
 
-	% Prerequisite may not be available locally:
-	case executable_utils:can_generate_png_from_graph() of
+    % Two passes are needed, as all nodes must be declared first:
+    [ ResilienceMesh ! { addNode, [ N ] } || { N, _KRecord } <- KPairs ],
 
-		true ->
-			class_Mesh:generate_topological_view_for( ResilienceMesh );
+    [ begin
+          [ begin
+                Link = class_Graphable:new_link( [ { label, "" } ] ),
+                ResilienceMesh ! { addLink, [ Link, N, Secured ] }
+            end || Secured <- KRecord#k_record.securing ]
 
-		Hint ->
-			?test_warning_fmt(
-				"No support found for the rendering of a graph: ~ts.",
-				[ Hint ] )
+      end || { N, KRecord } <- KPairs ],
 
-	end,
+    % Prerequisite may not be available locally:
+    case executable_utils:can_generate_png_from_graph() of
 
-	wooper:delete_synchronously_instance( ResilienceMesh ),
+        true ->
+            class_Mesh:generate_topological_view_for( ResilienceMesh );
 
-	?case_stop.
+        Hint ->
+            ?test_warning_fmt(
+                "No support found for the rendering of a graph: ~ts.",
+                [ Hint ] )
+
+    end,
+
+    wooper:delete_synchronously_instance( ResilienceMesh ),
+
+    ?test_stop.

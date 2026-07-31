@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -43,49 +43,49 @@ See the quaternion tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	NullQ = quaternion:null(),
+    NullQ = quaternion:null(),
 
-	% Octave: Q = quaternion(2, 3, 4, 1)
-	% The 'quaternion' must have been installed beforehand, for example with:
-	% pkg install -forge quaternion
-	%
-	% (beware that the real part is to be specified last)
-	Q = quaternion:new( 1, 2, 3, 4 ),
+    % Octave: Q = quaternion(2, 3, 4, 1)
+    % The 'quaternion' must have been installed beforehand, for example with:
+    % pkg install -forge quaternion
+    %
+    % (beware that the real part is to be specified last)
+    Q = quaternion:new( 1, 2, 3, 4 ),
 
-	test_facilities:display( "Base textual representation for Q = ~w: ~ts",
-							 [ Q, quaternion:to_string( Q ) ] ),
+    test_facilities:display( "Base textual representation for Q = ~w: ~ts",
+                             [ Q, quaternion:to_string( Q ) ] ),
 
-	test_facilities:display( "Base textual representation for NullQ = ~w: ~ts",
-							 [ NullQ, quaternion:to_string( NullQ ) ] ),
+    test_facilities:display( "Base textual representation for NullQ = ~w: ~ts",
+                             [ NullQ, quaternion:to_string( NullQ ) ] ),
 
-	test_facilities:display( "Compact textual representation for Q = ~w: ~ts",
-							 [ Q, quaternion:to_compact_string( Q ) ] ),
+    test_facilities:display( "Compact textual representation for Q = ~w: ~ts",
+                             [ Q, quaternion:to_compact_string( Q ) ] ),
 
-	test_facilities:display( "User-friendly textual representation "
-		"for Q = ~w: ~ts", [ Q, quaternion:to_user_string( Q ) ] ),
+    test_facilities:display( "User-friendly textual representation "
+        "for Q = ~w: ~ts", [ Q, quaternion:to_user_string( Q ) ] ),
 
-	% Octave: Q1 = quaternion(7, -3, 4.0, 0)
-	Q1 = quaternion:new( 0, 7, -3, 4.0 ),
+    % Octave: Q1 = quaternion(7, -3, 4.0, 0)
+    Q1 = quaternion:new( 0, 7, -3, 4.0 ),
 
-	AddQ = quaternion:add( Q, Q1 ),
-	AddQ = { 1.0, 9.0, 0.0, 8.0 },
+    AddQ = quaternion:add( Q, Q1 ),
+    AddQ = { 1.0, 9.0, 0.0, 8.0 },
 
-	Axis = [ 12.0, 1.0, 2.0 ],
-	UnitAxis = vector3:normalise( Axis ),
+    Axis = [ 12.0, 1.0, 2.0 ],
+    UnitAxis = vector3:normalise( Axis ),
 
-	RadAngle = math:pi() / 7,
+    RadAngle = math:pi() / 7,
 
-	DirectRot3 = matrix3:rotation( UnitAxis, RadAngle ),
+    DirectRot3 = matrix3:rotation( UnitAxis, RadAngle ),
 
-	UnitQ = quaternion:rotation( UnitAxis, RadAngle ),
+    UnitQ = quaternion:rotation( UnitAxis, RadAngle ),
 
-	Rot3FromQ = quaternion:to_rot_matrix3( UnitQ ),
+    Rot3FromQ = quaternion:to_rot_matrix3( UnitQ ),
 
-	true = matrix3:are_equal( DirectRot3, Rot3FromQ ),
+    true = matrix3:are_equal( DirectRot3, Rot3FromQ ),
 
-	true = matrix3:are_equal( DirectRot3,
-							  quaternion:to_rot_matrix3( UnitAxis, RadAngle ) ),
+    true = matrix3:are_equal( DirectRot3,
+                              quaternion:to_rot_matrix3( UnitAxis, RadAngle ) ),
 
-	test_facilities:stop().
+    test_facilities:stop().

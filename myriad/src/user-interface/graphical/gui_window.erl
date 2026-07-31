@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -67,8 +67,8 @@ instead.
 
 -doc "Window-specific options (quite common).".
 -type window_option() :: { 'position', point() }
-					   | { 'size', size() }
-					   | { 'style', [ window_style() ] }.
+                       | { 'size', size() }
+                       | { 'style', [ window_style() ] }.
 
 
 
@@ -78,7 +78,7 @@ A style element of a window.
 See also <http://docs.wxwidgets.org/stable/classwx_window.html>.
 """.
 -type window_style() ::
-	'default_border'
+    'default_border'
   | 'simple_border'
   | 'sunken_border'
   | 'raised_border'
@@ -115,7 +115,7 @@ See also <http://docs.wxwidgets.org/stable/classwx_window.html>.
 
 -doc "The name identifiers of the standard icons.".
 -type standard_icon_name_id() ::
-	'asterisk_icon' | 'stop_icon' | 'information_icon'
+    'asterisk_icon' | 'stop_icon' | 'information_icon'
   | 'question_icon' | 'error_icon' | 'warning_icon' | 'hand_icon'
   | 'exclamation_icon'.
 
@@ -140,7 +140,7 @@ window is typically any frame (including any main one) or any dialog.
 
 % For standard, basic windows:
 -export([ create/0, create/1, create/2, create/5,
-		  destruct/1 ]).
+          destruct/1 ]).
 
 
 % For any kind of window:
@@ -149,16 +149,16 @@ window is typically any frame (including any main one) or any dialog.
 
 % For top-level windows:
 -export([ set_title/2, get_title/1,
-		  set_icon/2,
-		  center_on_screen/1, center_on_screen/2,
-		  is_maximised/1, maximize/1,
-		  is_fullscreen/1, set_fullscreen/2,
-		  is_active/1 ]).
+          set_icon/2,
+          center_on_screen/1, center_on_screen/2,
+          is_maximised/1, maximize/1,
+          is_fullscreen/1, set_fullscreen/2,
+          is_active/1 ]).
 
 
 % Wx-level:
 -export([ window_styles_to_bitmask/1, to_wx_window_options/1,
-		  to_wx_icon_id/1 ]).
+          to_wx_icon_id/1 ]).
 
 
 
@@ -222,7 +222,7 @@ Creates a basic window.
 """.
 -spec create() -> window().
 create() ->
-	wxWindow:new().
+    wxWindow:new().
 
 
 
@@ -234,15 +234,15 @@ Creates a basic window having the specified identifier.
 -spec create( id(), parent() ) -> window().
 create( Id, Parent ) ->
 
-	ActualId = gui_id:declare_any_id( Id ),
+    ActualId = gui_id:declare_any_id( Id ),
 
-	% Should not be 'undefined', otherwise: "wxWidgets Assert failure:
-	% ./src/gtk/window.cpp(2586): \"parent\" in PreCreation() : Must have
-	% non-NULL parent"}
-	%
-	ActualParent = gui_wx_backend:to_wx_parent( Parent ),
+    % Should not be 'undefined', otherwise: "wxWidgets Assert failure:
+    % ./src/gtk/window.cpp(2586): \"parent\" in PreCreation() : Must have
+    % non-NULL parent"}
+    %
+    ActualParent = gui_wx_backend:to_wx_parent( Parent ),
 
-	wxWindow:new( ActualParent, ActualId ).
+    wxWindow:new( ActualParent, ActualId ).
 
 
 
@@ -254,38 +254,38 @@ Creates a basic window of the specified size.
 -spec create( sizing() ) -> window().
 create( Size ) ->
 
-	ActualId = gui_id:declare_any_id( undefined ),
-	ActualParent = gui_wx_backend:to_wx_parent( undefined ),
+    ActualId = gui_id:declare_any_id( undefined ),
+    ActualParent = gui_wx_backend:to_wx_parent( undefined ),
 
-	WxOpts = [ gui_wx_backend:to_wx_size( Size ) ],
+    WxOpts = [ gui_wx_backend:to_wx_size( Size ) ],
 
-	wxWindow:new( ActualParent, ActualId, WxOpts ).
+    wxWindow:new( ActualParent, ActualId, WxOpts ).
 
 
 
 -doc "Creates a basic window from the specified settings.".
 -spec create( position(), sizing(), [ window_style() ],
-			  id(), parent() ) -> window().
+              id(), parent() ) -> window().
 create( Position, Sizing, Styles, Id, Parent ) ->
 
-	WxOpts = [ gui_wx_backend:to_wx_position( Position ),
-			   gui_wx_backend:to_wx_size( Sizing ),
-			   { style, window_styles_to_bitmask( Styles ) } ],
+    WxOpts = [ gui_wx_backend:to_wx_position( Position ),
+               gui_wx_backend:to_wx_size( Sizing ),
+               { style, window_styles_to_bitmask( Styles ) } ],
 
-	ActualId = gui_id:declare_any_id( Id ),
-	ActualParent = gui_wx_backend:to_wx_parent( Parent ),
+    ActualId = gui_id:declare_any_id( Id ),
+    ActualParent = gui_wx_backend:to_wx_parent( Parent ),
 
-	%trace_utils:debug_fmt( "Creating a window with backend options ~w, "
-	%   "identifier ~w and parent ~w.", [ WxOpts, ActualId, ActualParent ] ),
+    %trace_utils:debug_fmt( "Creating a window with backend options ~w, "
+    %   "identifier ~w and parent ~w.", [ WxOpts, ActualId, ActualParent ] ),
 
-	wxWindow:new( ActualParent, ActualId, WxOpts ).
+    wxWindow:new( ActualParent, ActualId, WxOpts ).
 
 
 
 -doc "Destructs the specified window.".
 -spec destruct( window() ) -> void().
 destruct( Window ) ->
-	wxWindow:destroy( Window ).
+    wxWindow:destroy( Window ).
 
 
 
@@ -299,34 +299,34 @@ This is the place where all widgets resolve their positions, sizes and contents.
 -spec show( window() | [ window() ] ) -> boolean().
 show( Windows ) when is_list( Windows )->
 
-	% Note: onShown used to be sent to the MyriadGUI loop, as some widgets had
-	% to be adjusted then, but it is no longer useful.
+    % Note: onShown used to be sent to the MyriadGUI loop, as some widgets had
+    % to be adjusted then, but it is no longer useful.
 
-	%trace_utils:debug_fmt( "Showing windows ~p.", [ Windows ] ),
-	Res = show_helper( Windows, _Acc=false ),
-	%get_main_loop_pid() ! { onShown, [ Windows ] },
+    %trace_utils:debug_fmt( "Showing windows ~p.", [ Windows ] ),
+    Res = show_helper( Windows, _Acc=false ),
+    %get_main_loop_pid() ! { onShown, [ Windows ] },
 
-	show_fix(),
+    show_fix(),
 
-	Res;
+    Res;
 
 show( Window ) ->
-	%trace_utils:debug_fmt( "Showing window ~p.", [ Window ] ),
-	Res = wxWindow:show( Window ),
-	%get_main_loop_pid() ! { onShown, [ [ Window ] ] },
-	show_fix(),
+    %trace_utils:debug_fmt( "Showing window ~p.", [ Window ] ),
+    Res = wxWindow:show( Window ),
+    %get_main_loop_pid() ! { onShown, [ [ Window ] ] },
+    show_fix(),
 
-	Res.
+    Res.
 
 
 % (helper)
 show_helper( _Windows=[], Acc ) ->
-	show_fix(),
-	Acc;
+    show_fix(),
+    Acc;
 
 show_helper( _Windows=[ W | T ], Acc ) ->
-	NewAcc = wxWindow:show( W ) orelse Acc,
-	show_helper( T, NewAcc ).
+    NewAcc = wxWindow:show( W ) orelse Acc,
+    show_helper( T, NewAcc ).
 
 
 % This is certainly a strange fix. It was observed with gui_image_test.erl that
@@ -336,8 +336,8 @@ show_helper( _Windows=[ W | T ], Acc ) ->
 % remained blank until the frame was redrawn for any reason (e.g. resize).
 %
 show_fix() ->
-	timer:sleep( 10 ).
-	%ok.
+    timer:sleep( 10 ).
+    %ok.
 
 
 
@@ -349,7 +349,7 @@ Returns whether anything had to be done.
 
 -spec hide( window() ) -> boolean().
 hide( Window ) ->
-	wxWindow:show( Window, [ { show, false } ] ).
+    wxWindow:show( Window, [ { show, false } ] ).
 
 
 
@@ -360,14 +360,14 @@ hide( Window ) ->
 -doc "Sets the title of the specified top-level window.".
 -spec set_title( top_level_window(), title() ) -> void().
 set_title( TopLevelWindow, Title ) ->
-	wxTopLevelWindow:setTitle( TopLevelWindow, Title ).
+    wxTopLevelWindow:setTitle( TopLevelWindow, Title ).
 
 
 
 -doc "Returns the title of the specified top-level window.".
 -spec get_title( top_level_window() ) -> title().
 get_title( TopLevelWindow ) ->
-	wxTopLevelWindow:getTitle( TopLevelWindow ).
+    wxTopLevelWindow:getTitle( TopLevelWindow ).
 
 
 
@@ -375,32 +375,32 @@ get_title( TopLevelWindow ) ->
 -spec set_icon( top_level_window(), any_file_path() ) -> void().
 set_icon( TopLvlWin, IconPath ) ->
 
-	%trace_utils:debug_fmt( "Setting icon of ~w to '~ts'.",
-	%                       [ TopLvlWin, IconPath ] ),
+    %trace_utils:debug_fmt( "Setting icon of ~w to '~ts'.",
+    %                       [ TopLvlWin, IconPath ] ),
 
-	% Supported image formats documented as being only BMP by default, yet test
-	% on PNG succeeded.
+    % Supported image formats documented as being only BMP by default, yet test
+    % on PNG succeeded.
 
-	% Current no wx_image:initAllImageHandlers/* (for other formats than BMP),
-	% just wx_image:initStandardHandlers/0.
+    % Current no wx_image:initAllImageHandlers/* (for other formats than BMP),
+    % just wx_image:initStandardHandlers/0.
 
-	cond_utils:if_defined( myriad_debug_resources,
-						   file_utils:check_existing_file_or_link( IconPath ) ),
+    cond_utils:if_defined( myriad_debug_resources,
+                           file_utils:check_existing_file_or_link( IconPath ) ),
 
-	% Apparently 'Icon = wxIcon:new(IconPath),' could have sufficed:
-	Img = wxImage:new( IconPath ),
-	Bitmap = wxBitmap:new( Img ),
-	Icon = wxIcon:new(),
-	wxIcon:copyFromBitmap( Icon, Bitmap ),
+    % Apparently 'Icon = wxIcon:new(IconPath),' could have sufficed:
+    Img = wxImage:new( IconPath ),
+    Bitmap = wxBitmap:new( Img ),
+    Icon = wxIcon:new(),
+    wxIcon:copyFromBitmap( Icon, Bitmap ),
 
-	wxTopLevelWindow:setIcon( TopLvlWin, Icon ).
+    wxTopLevelWindow:setIcon( TopLvlWin, Icon ).
 
 
 
 -doc "Centers the specified top-level window on screen.".
 -spec center_on_screen( top_level_window() ) -> void().
 center_on_screen( TopLvlWin ) ->
-	wxTopLevelWindow:centerOnScreen( TopLvlWin ).
+    wxTopLevelWindow:centerOnScreen( TopLvlWin ).
 
 
 
@@ -410,29 +410,29 @@ orientation(s).
 """.
 -spec center_on_screen( top_level_window(), orientation() ) -> void().
 center_on_screen( TopLvlWin, Orientation ) ->
-	wxTopLevelWindow:centerOnScreen( TopLvlWin,
-		gui_wx_backend:to_wx_orientation( Orientation ) ).
+    wxTopLevelWindow:centerOnScreen( TopLvlWin,
+        gui_wx_backend:to_wx_orientation( Orientation ) ).
 
 
 
 -doc "Tells whether the specified top-level window is maximised.".
 -spec is_maximised( top_level_window() ) -> boolean().
 is_maximised( TopLevelWindow ) ->
-	wxTopLevelWindow:isMaximized( TopLevelWindow ).
+    wxTopLevelWindow:isMaximized( TopLevelWindow ).
 
 
 
 -doc "Maximises the specified top-level window.".
 -spec maximize( top_level_window() ) -> void().
 maximize( TopLevelWindow ) ->
-	wxTopLevelWindow:maximize( TopLevelWindow ).
+    wxTopLevelWindow:maximize( TopLevelWindow ).
 
 
 
 -doc "Returns whether the specified top-level window is fullscreen.".
 -spec is_fullscreen( top_level_window() ) -> boolean().
 is_fullscreen( TopLvlWin ) ->
-	wxTopLevelWindow:isFullScreen( TopLvlWin ).
+    wxTopLevelWindow:isFullScreen( TopLvlWin ).
 
 
 
@@ -447,7 +447,7 @@ Returns (supposedly) whether the operation succeeded.
 """.
 -spec set_fullscreen( top_level_window(), boolean() ) -> void().
 set_fullscreen( TopLvlWin, ForceFullscreen ) ->
-	wxTopLevelWindow:showFullScreen( TopLvlWin, ForceFullscreen ).
+    wxTopLevelWindow:showFullScreen( TopLvlWin, ForceFullscreen ).
 
 
 
@@ -457,7 +457,7 @@ the user is currently interacting with it.
 """.
 -spec is_active( top_level_window() ) -> boolean().
 is_active( TopLvlWin ) ->
-	wxTopLevelWindow:isActive( TopLvlWin ).
+    wxTopLevelWindow:isActive( TopLvlWin ).
 
 
 
@@ -471,15 +471,15 @@ to have it recorded as such by MyriadGUI.
 """.
 -spec record_as_top_level( top_level_window() ) -> void().
 record_as_top_level( Window ) ->
-	environment:set( _K=top_level_window, _V=Window,
-					 _Designator=?gui_env_reg_name ).
+    environment:set( _K=top_level_window, _V=Window,
+                     _Designator=?gui_env_reg_name ).
 
 
 
 -doc "Assigns the specified menu bar to the specified window.".
 -spec set_menu_bar( window(), menu_bar() ) -> void().
 set_menu_bar( Window, MenuBar ) ->
-	wxWindow:setMenuBar( Window, MenuBar ).
+    wxWindow:setMenuBar( Window, MenuBar ).
 
 
 
@@ -491,11 +491,11 @@ wx-specific bit mask.
 """.
 -spec window_styles_to_bitmask( maybe_list( window_style() ) ) -> bit_mask().
 window_styles_to_bitmask( StyleOpts ) when is_list( StyleOpts ) ->
-	lists:foldl( fun( S, Acc ) ->
-					gui_generated:get_second_for_window_style( S ) bor Acc
-				 end,
-				 _InitialAcc=0,
-				 _List=StyleOpts ).
+    lists:foldl( fun( S, Acc ) ->
+                    gui_generated:get_second_for_window_style( S ) bor Acc
+                 end,
+                 _InitialAcc=0,
+                 _List=StyleOpts ).
 
 % Styles are better not maybe_lists (only options are):
 %window_styles_to_bitmask( StyleOpt ) ->
@@ -510,38 +510,38 @@ wx-specific options.
 (exported helper)
 """.
 -spec to_wx_window_options( maybe_list( window_option() ) ) ->
-								[ wx_window_option() ].
+                                [ wx_window_option() ].
 to_wx_window_options( Options ) when is_list( Options ) ->
-	to_wx_window_options( Options, _Acc=[] );
+    to_wx_window_options( Options, _Acc=[] );
 
 to_wx_window_options( Option ) ->
-	to_wx_window_options( [ Option ] ).
+    to_wx_window_options( [ Option ] ).
 
 
 
 % (helper)
 to_wx_window_options( _Options=[], Acc ) ->
-	Acc;
+    Acc;
 
 to_wx_window_options( _Options=[ { style, Style } | T ], Acc ) ->
-	to_wx_window_options( T,
-		[ { style, window_styles_to_bitmask( Style ) } | Acc ] );
+    to_wx_window_options( T,
+        [ { style, window_styles_to_bitmask( Style ) } | Acc ] );
 
 % Unchanged:
 to_wx_window_options( _Options=[ H | T ], Acc ) ->
-	to_wx_window_options( T, [ H | Acc ] ).
+    to_wx_window_options( T, [ H | Acc ] ).
 
 
 
 -doc "Converts the specified icon identifier into a backend-specific one.".
 -spec to_wx_icon_id( icon_name_id() ) -> backend_bitmap_id().
 to_wx_icon_id( IconId ) ->
-	case gui_generated:get_maybe_second_for_icon_name_id( IconId ) of
+    case gui_generated:get_maybe_second_for_icon_name_id( IconId ) of
 
-		undefined ->
-			throw( { unknown_icon_id, IconId } );
+        undefined ->
+            throw( { unknown_icon_id, IconId } );
 
-		WxIconId ->
-			WxIconId
+        WxIconId ->
+            WxIconId
 
-	end.
+    end.

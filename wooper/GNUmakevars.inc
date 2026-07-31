@@ -56,6 +56,7 @@ endif
 #  - construction: for the creation of instances
 #  - destruction: for the deletion of instances
 #  - embodiment: to delegate the hosting of an instance to an existing process
+#  - concurrent_requests: the management of concurrent requests
 #  - serialisation: for the serialisation of instances
 #  - deserialisation: for the deserialisation of instances
 #  - hot_update: for the hot-code update of classes
@@ -65,6 +66,7 @@ ifeq ($(ENABLE_DEBUG),true)
 	#WOOPER_DEBUG_FLAGS += -Dwooper_debug_construction
 	#WOOPER_DEBUG_FLAGS += -Dwooper_debug_destruction
 	#WOOPER_DEBUG_FLAGS += -Dwooper_debug_embodiment
+	#WOOPER_DEBUG_FLAGS += -Dwooper_debug_concurrent_requests
 	#WOOPER_DEBUG_FLAGS += -Dwooper_debug_serialisation
 	#WOOPER_DEBUG_FLAGS += -Dwooper_debug_deserialisation
 	#WOOPER_DEBUG_FLAGS += -Dwooper_debug_hot_update
@@ -75,6 +77,7 @@ ifeq ($(EXECUTION_TARGET),development)
 	WOOPER_CHECK_FLAGS += -Dwooper_check_construction
 	WOOPER_CHECK_FLAGS += -Dwooper_check_destruction
 	WOOPER_CHECK_FLAGS += -Dwooper_check_embodiment
+	WOOPER_CHECK_FLAGS += -Dwooper_check_concurrent_requests
 	WOOPER_CHECK_FLAGS += -Dwooper_check_serialisation
 	WOOPER_CHECK_FLAGS += -Dwooper_check_deserialisation
 	WOOPER_CHECK_FLAGS += -Dwooper_check_hot_update

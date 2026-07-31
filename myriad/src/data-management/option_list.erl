@@ -1,4 +1,4 @@
-% Copyright (C) 2010-2025 Olivier Boudeville
+% Copyright (C) 2010-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -51,7 +51,7 @@ future.
 
 
 -export([ new/0, new/1, set/2, get/2, lookup/2, update_with/2,
-		  extract/2, enumerate/1, to_string/1 ]).
+          extract/2, enumerate/1, to_string/1 ]).
 
 
 -type key() :: hashtable:key().
@@ -70,14 +70,14 @@ future.
 
 
 -export_type([ key/0, value/0, entry/0, entries/0,
-			   option_list/0, option_list/2 ]).
+               option_list/0, option_list/2 ]).
 
 
 
 -doc "Returns an empty option list.".
 -spec new() -> option_list().
 new() ->
-	[].
+    [].
 
 
 
@@ -86,8 +86,8 @@ Creates an option list from specified list containing {Key,Value} pairs.
 """.
 -spec new( entries() ) -> option_list().
 new( Entries ) ->
-	% The internal representation happens to be the same:
-	Entries.
+    % The internal representation happens to be the same:
+    Entries.
 
 
 
@@ -103,21 +103,21 @@ If none is found, the specified entry is put as first element.
 """.
 -spec set( entry(), option_list() ) -> option_list().
 set( Entry, OptionList ) ->
-	set( Entry, OptionList, _Acc=[] ).
+    set( Entry, OptionList, _Acc=[] ).
 
 
 % (helper)
 set( Entry, _OptionList=[], Acc ) ->
-	% Here no key matched:
-	[ Entry | lists:reverse( Acc ) ];
+    % Here no key matched:
+    [ Entry | lists:reverse( Acc ) ];
 
 set( Entry={ Key, _Value }, [ { Key, _AnyValue } | T ], Acc ) ->
-	% Same key found, recursion is over:
-	lists:reverse( Acc ) ++ [ Entry | T ];
+    % Same key found, recursion is over:
+    lists:reverse( Acc ) ++ [ Entry | T ];
 
 set( Entry, [ NonMatchingEntry | T ], Acc ) ->
-	% Different key found:
-	set( Entry, T, [ NonMatchingEntry | Acc ] ).
+    % Different key found:
+    set( Entry, T, [ NonMatchingEntry | Acc ] ).
 
 
 
@@ -129,15 +129,15 @@ Throws an exception if an entry with that key could not be found.
 -spec get( key(), option_list() ) -> value().
 get( Key, OptionList ) ->
 
-	case proplists:get_value( Key, OptionList ) of
+    case proplists:get_value( Key, OptionList ) of
 
-		undefined ->
-			throw( { key_not_found, Key, OptionList } );
+        undefined ->
+            throw( { key_not_found, Key, OptionList } );
 
-		Value ->
-			Value
+        Value ->
+            Value
 
-	end.
+    end.
 
 
 
@@ -151,7 +151,7 @@ management.
 """.
 -spec lookup( key(), option_list() ) -> option( value() ).
 lookup( Key, OptionList ) ->
-	proplists:get_value( Key, OptionList ).
+    proplists:get_value( Key, OptionList ).
 
 
 
@@ -164,10 +164,10 @@ defined in the second, UpdatingOptionList.
 """.
 -spec update_with( option_list(), option_list() ) -> option_list().
 update_with( BaseOptionList, _UpdatingOptionList=[] ) ->
-	BaseOptionList;
+    BaseOptionList;
 
 update_with( BaseOptionList, [ H | T ] ) ->
-	update_with( set( H, BaseOptionList ), T ).
+    update_with( set( H, BaseOptionList ), T ).
 
 
 
@@ -180,17 +180,17 @@ found with the specified key) has been removed (order preserved).
 """.
 -spec extract( key(), option_list() ) -> { value(), option_list() }.
 extract( Key, OptionList ) ->
-	extract( Key, OptionList, _Acc=[] ).
+    extract( Key, OptionList, _Acc=[] ).
 
 
 extract( Key, _OptionList=[], Acc ) ->
-	throw( { extract_key_not_found, Key, lists:reverse( Acc ) } );
+    throw( { extract_key_not_found, Key, lists:reverse( Acc ) } );
 
 extract( Key, _OptionList=[ { Key, Value } | T ], Acc ) ->
-	{ Value, lists:reverse( Acc ) ++ T };
+    { Value, lists:reverse( Acc ) ++ T };
 
 extract( Key, _OptionList=[ E | T ], Acc ) ->
-	extract( Key, T, [ E | Acc ] ).
+    extract( Key, T, [ E | Acc ] ).
 
 
 
@@ -200,7 +200,7 @@ pairs, possibly with duplicates.
 """.
 -spec enumerate( option_list() ) -> entries().
 enumerate( OptionList ) ->
-	OptionList.
+    OptionList.
 
 
 
@@ -208,7 +208,7 @@ enumerate( OptionList ) ->
 -spec to_string( option_list() ) -> text_utils:ustring().
 to_string( OptionList ) ->
 
-	Strings = [ text_utils:format( "~p: ~p", [ K, V ] )
-					|| { K, V } <- OptionList ],
+    Strings = [ text_utils:format( "~p: ~p", [ K, V ] )
+                    || { K, V } <- OptionList ],
 
-	text_utils:strings_to_string( Strings ).
+    text_utils:strings_to_string( Strings ).

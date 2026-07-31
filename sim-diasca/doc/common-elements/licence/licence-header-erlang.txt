@@ -17,5 +17,3 @@
 % If not, see <http://www.gnu.org/licenses/>.
 
 % Author: Olivier Boudeville (olivier.boudeville@edf.fr)
-
-

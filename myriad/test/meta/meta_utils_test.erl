@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 Olivier Boudeville
+% Copyright (C) 2014-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -30,7 +30,7 @@
 -moduledoc """
 Unit tests for the **meta_utils** toolbox.
 
-See the meta_utils.erl tested module.
+See the `meta_utils` tested module.
 """.
 
 
@@ -47,97 +47,98 @@ See the meta_utils.erl tested module.
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	test_facilities:display( "Testing typing information." ),
+    test_facilities:display( "Testing typing information." ),
 
-	boolean = type_utils:get_type_of( true ),
+    boolean = type_utils:get_type_of( true ),
 
-	atom = type_utils:get_type_of( 'an atom' ),
+    atom = type_utils:get_type_of( 'an atom' ),
 
-	binary = type_utils:get_type_of( <<1>> ),
+    binary = type_utils:get_type_of( <<1>> ),
 
-	float = type_utils:get_type_of( 1.0 ),
+    float = type_utils:get_type_of( 1.0 ),
 
-	function = type_utils:get_type_of( fun( X ) -> X + 1 end ),
+    function = type_utils:get_type_of( fun( X ) -> X + 1 end ),
 
-	integer = type_utils:get_type_of( 42 ),
+    integer = type_utils:get_type_of( 42 ),
 
-	pid = type_utils:get_type_of( self() ),
+    pid = type_utils:get_type_of( self() ),
 
-	list = type_utils:get_type_of( [ hello, self() ] ),
+    list = type_utils:get_type_of( [ hello, self() ] ),
 
-	string = type_utils:get_type_of( "Hello world!" ),
+    string = type_utils:get_type_of( "Hello world!" ),
 
-	%port = type_utils:get_type_of( APort ),
+    %port = type_utils:get_type_of( APort ),
 
-	tuple = type_utils:get_type_of( { a, b } ),
+    tuple = type_utils:get_type_of( { a, b } ),
 
-	reference = type_utils:get_type_of( make_ref() ),
-
-
-	{ false, { boolean, float } } =
-		type_utils:is_homogeneous( { true, 1.0, false } ),
-
-	{ true, integer } = type_utils:is_homogeneous( [ 0, -4, 47, 12 ] ),
+    reference = type_utils:get_type_of( make_ref() ),
 
 
-	test_facilities:display( "Testing term recursive transformation." ),
+    { false, { boolean, float } } =
+        type_utils:is_homogeneous( { true, 1.0, false } ),
 
-	% This term transformer does not change anything in the terms it scans, and
-	% just comment the traversal it does:
-	%
-	IdTermTransformer = fun( Term, UserData ) ->
-
-		NewUserData =
-			[ io_lib:format( "Inspected '~p', ", [ Term ] ) | UserData ],
-
-		{ Term, NewUserData }
-
-						end,
-
-	TermToTraverse = { pseudo_record, [], { a, 1.0 },
-					   [ { b, 42 }, "hello", [ <<"foo">> ] ], self() },
-
-	{ TraversedTerm, InspectData } = meta_utils:transform_term(
-		TermToTraverse, _Type=atom, IdTermTransformer, _UserData=[] ),
-
-	test_facilities:display( "Traversal of term:~n'~p' with "
-		"id term transformer yielded:~n'~p', producing user data '~ts'",
-		[ TermToTraverse, TraversedTerm, lists:reverse( InspectData ) ] ),
+    { true, integer } = type_utils:is_homogeneous( [ 0, -4, 47, 12 ] ),
 
 
-	% This term transformer changes a term into a textual representation, and
-	% does not do anything with user data:
-	%
-	TextTermTransformer = fun( Term, UserData ) ->
-								{ io_lib:format( "~w", [ Term ] ), UserData }
-						  end,
+    test_facilities:display( "Testing term recursive transformation." ),
 
-	% Requested to operate only on PIDs:
-	{ NewTraversedTerm, _UselessData } = meta_utils:transform_term(
-		TermToTraverse, _OtherType=pid, TextTermTransformer,
-		_OtherUserData=undefined ),
+    % This term transformer does not change anything in the terms it scans, and
+    % just comment the traversal it does:
+    %
+    IdTermTransformer = fun( Term, UserData ) ->
 
-	test_facilities:display( "Traversal of term:~n'~p' with "
-		"text term transformer yielded:~n'~p'.",
-		[ TermToTraverse, NewTraversedTerm ] ),
+        NewUserData =
+            [ io_lib:format( "Inspected '~p', ", [ Term ] ) | UserData ],
 
-	% For the fun of being very meta:
-	%BeamFilename = "meta_utils_test.beam",
-	%BeamFilename = "../utils/basic_utils.beam",
-	BeamFilename = "simple_parse_transform_target.beam",
+        { Term, NewUserData }
 
-	ModuleAST = ast_utils:beam_to_ast( BeamFilename ),
+                        end,
 
-	test_facilities:display( "AST= ~p", [ ModuleAST ] ),
+    TermToTraverse = { pseudo_record, [], { a, 1.0 },
+                       [ { b, 42 }, "hello", [ <<"foo">> ] ], self() },
 
-	ModuleInfo = ast_info:extract_module_info_from_ast( ModuleAST ),
+    { TraversedTerm, InspectData } = meta_utils:transform_term(
+        TermToTraverse, _Type=atom, IdTermTransformer, _UserData=[] ),
 
-	TermString = "[ {tiger, [lion, leopard]} ]",
+    test_facilities:display( "Traversal of term:~n'~p' with "
+        "id term transformer yielded:~n'~p', producing user data '~ts'",
+        [ TermToTraverse, TraversedTerm, lists:reverse( InspectData ) ] ),
 
-	[ { tiger, [ lion, leopard ] } ] = ast_utils:string_to_value( TermString ),
 
-	test_facilities:display( ast_info:module_info_to_string( ModuleInfo ) ),
+    % This term transformer changes a term into a textual representation, and
+    % does not do anything with user data:
+    %
+    TextTermTransformer = fun( Term, UserData ) ->
+                                { io_lib:format( "~w", [ Term ] ), UserData }
+                          end,
 
-	test_facilities:stop().
+    % Requested to operate only on PIDs:
+    { NewTraversedTerm, _UselessData } = meta_utils:transform_term(
+        TermToTraverse, _OtherType=pid, TextTermTransformer,
+        _OtherUserData=undefined ),
+
+    test_facilities:display( "Traversal of term:~n'~p' with "
+        "text term transformer yielded:~n'~p'.",
+        [ TermToTraverse, NewTraversedTerm ] ),
+
+    % For the fun of being very meta:
+    %BeamFilename = "meta_utils_test.beam",
+    %BeamFilename = "../utils/basic_utils.beam",
+    BeamFilename = "simple_parse_transform_target.beam",
+
+    ModuleAST = ast_utils:beam_to_ast( BeamFilename ),
+
+    test_facilities:display( "AST= ~p", [ ModuleAST ] ),
+
+    ModuleInfo = ast_info:extract_module_info_from_ast( ModuleAST ),
+
+    TermString = "[ {tiger, [lion, leopard]} ]",
+
+    { ok, [ { tiger, [ lion, leopard ] } ] } =
+        ast_utils:string_to_value( TermString ),
+
+    test_facilities:display( ast_info:module_info_to_string( ModuleInfo ) ),
+
+    test_facilities:stop().

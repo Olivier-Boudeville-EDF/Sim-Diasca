@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 Olivier Boudeville
+% Copyright (C) 2016-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -43,63 +43,63 @@ See the text_ui.erl tested module.
 % The actual test:
 run_test_ui() ->
 
-	test_facilities:display( "Testing the text_ui services.~n" ),
+    test_facilities:display( "Testing the text_ui services.~n" ),
 
-	text_ui:start(),
+    text_ui:start(),
 
-	text_ui:set( [ { backtitle, "Test of text_ui" }, { title, "A title" } ] ),
+    text_ui:set( [ { backtitle, "Test of text_ui" }, { title, "A title" } ] ),
 
-	text_ui:display( "My text to display!" ),
+    text_ui:display( "My text to display!" ),
 
-	text_ui:display_instant( "A non-modal (auto-disappearing) display!" ),
-	timer:sleep( 1500 ),
+    text_ui:display_instant( "A non-modal (auto-disappearing) display!" ),
+    timer:sleep( 1500 ),
 
-	text_ui:display_error( "My error to display!" ),
+    text_ui:display_error( "My error to display!" ),
 
 
-	text_ui:unset( [ backtitle, title ] ),
+    text_ui:unset( [ backtitle, title ] ),
 
-	text_ui:display_numbered_list( "My numbered list is:",
-								   [ "Foo", "Bar", "Baz" ] ),
+    text_ui:display_numbered_list( "My numbered list is:",
+                                   [ "Foo", "Bar", "Baz" ] ),
 
-	FirstChoice = text_ui:choose_designated_item(
-					[ { choice_1, "Choice 1" },
-					  { choice_2, "Choice 2" },
-					  { choice_3, "Choice 3" },
-					  { choice_4, "Choice 4" } ] ),
+    FirstChoice = text_ui:choose_designated_item(
+                    [ { choice_1, "Choice 1" },
+                      { choice_2, "Choice 2" },
+                      { choice_3, "Choice 3" },
+                      { choice_4, "Choice 4" } ] ),
 
-	text_ui:display( "Choice has been ~p", [ FirstChoice ] ),
+    text_ui:display( "Choice has been ~p", [ FirstChoice ] ),
 
-	text_ui:add_separation(),
+    text_ui:add_separation(),
 
-	SecondChoice = text_ui:choose_numbered_item_with_default(
-		"This is my label; just choose below:",
-		[ "Choice 1", "Choice 2", "Choice 3", "Choice 4" ], 2 ),
+    SecondChoice = text_ui:choose_numbered_item_with_default(
+        "This is my label; just choose below:",
+        [ "Choice 1", "Choice 2", "Choice 3", "Choice 4" ], 2 ),
 
-	text_ui:display( "Second choice has been ~p", [ SecondChoice ] ),
+    text_ui:display( "Second choice has been ~p", [ SecondChoice ] ),
 
-	text_ui:trace( "My UI trace" ),
+    text_ui:trace( "My UI trace" ),
 
-	text_ui:display( "Text UI state: ~ts", [ text_ui:to_string() ] ),
+    text_ui:display( "Text UI state: ~ts", [ text_ui:to_string() ] ),
 
-	text_ui:stop().
+    text_ui:stop().
 
 
 
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	case executable_utils:is_batch() of
+    case executable_utils:is_batch() of
 
-		true ->
-			test_facilities:display(
-			  "(not running the text_ui test, being in batch mode)" );
+        true ->
+            test_facilities:display(
+              "(not running the text_ui test, being in batch mode)" );
 
-		false ->
-			run_test_ui()
+        false ->
+            run_test_ui()
 
-	end,
+    end,
 
-	test_facilities:stop().
+    test_facilities:stop().

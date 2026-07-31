@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER examples.
 %
@@ -25,267 +25,267 @@ See the class_Cat.erl tested module.
 
 -spec run() -> no_return().
 run() ->
-	run( class_Cat:is_wooper_debug() ).
+    run( class_Cat:is_wooper_debug() ).
 
 
 -spec run( boolean() ) -> no_return().
 run( IsDebug ) ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	% Allows to support both OTP conventions and ad hoc, automatic ones:
-	wooper_utils:start_for_test(),
+    % Allows to support both OTP conventions and ad hoc, automatic ones:
+    wooper_utils:start_for_test(),
 
-	test_facilities:display( "Debug mode: ~ts.",
-							 [ class_Cat:is_wooper_debug() ] ),
+    test_facilities:display( "Debug mode: ~ts.",
+                             [ class_Cat:is_wooper_debug() ] ),
 
-	% General tests.
+    % General tests.
 
-	MyC = class_Cat:new_link( 3, female, sand, white ),
+    MyC = class_Cat:new_link( 3, female, sand, white ),
 
-	MyC ! { getClassname, [], self() },
-	receive
+    MyC ! { getClassname, [], self() },
+    receive
 
-		{ wooper_result, class_Cat } ->
-			test_facilities:display(
-				"After constructor, getClassname/1 returned 'class_Cat' "
-				"as expected." );
+        { wooper_result, class_Cat } ->
+            test_facilities:display(
+                "After constructor, getClassname/1 returned 'class_Cat' "
+                "as expected." );
 
-		{ wooper_result, UnexpectedClass } ->
-			test_facilities:fail( "wrong class: ~p", [ UnexpectedClass ] )
+        { wooper_result, UnexpectedClass } ->
+            test_facilities:fail( "wrong class: ~p", [ UnexpectedClass ] )
 
-	end,
+    end,
 
-	MyC ! { getSuperclasses, [], self() },
-	receive
+    MyC ! { getSuperclasses, [], self() },
+    receive
 
-		{ wooper_result, Classes=[ class_Mammal, class_ViviparousBeing,
-								   class_Serialisable ] } ->
-			test_facilities:display( "After constructor, getSuperclasses/1 "
-									 "returned ~p as expected.", [ Classes ] );
+        { wooper_result, Classes=[ class_Mammal, class_ViviparousBeing,
+                                   class_Serialisable ] } ->
+            test_facilities:display( "After constructor, getSuperclasses/1 "
+                                     "returned ~p as expected.", [ Classes ] );
 
-		{ wooper_result, UnexpectedSuperclasses } ->
-			test_facilities:fail( "wrong superclasses: ~p",
-								  [ UnexpectedSuperclasses ] )
+        { wooper_result, UnexpectedSuperclasses } ->
+            test_facilities:fail( "wrong superclasses: ~p",
+                                  [ UnexpectedSuperclasses ] )
 
-	end,
+    end,
 
 
-	% Tests related to Mammals and Creatures.
+    % Tests related to Mammals and Creatures.
 
-	MyC ! { getAge, [], self() },
-	receive
+    MyC ! { getAge, [], self() },
+    receive
 
-		{ wooper_result, 3 } ->
-			test_facilities:display(
-				"After constructor, getAge/1 returned 3 as expected." );
+        { wooper_result, 3 } ->
+            test_facilities:display(
+                "After constructor, getAge/1 returned 3 as expected." );
 
-		{ wooper_result, UnexpectedAge } ->
-			test_facilities:fail( "wrong age: ~p", [ UnexpectedAge ] )
+        { wooper_result, UnexpectedAge } ->
+            test_facilities:fail( "wrong age: ~p", [ UnexpectedAge ] )
 
-	end,
+    end,
 
-	MyC ! { getGender, [], self() },
-	receive
+    MyC ! { getGender, [], self() },
+    receive
 
-		{ wooper_result, female } ->
-			test_facilities:display(
-				"After constructor, getGender/1 returned female as expected." );
+        { wooper_result, female } ->
+            test_facilities:display(
+                "After constructor, getGender/1 returned female as expected." );
 
-		{ wooper_result, UnexpectedGender } ->
-			test_facilities:fail( "wrong gender: ~p", [ UnexpectedGender ] )
+        { wooper_result, UnexpectedGender } ->
+            test_facilities:fail( "wrong gender: ~p", [ UnexpectedGender ] )
 
-	end,
+    end,
 
-	% If wanting to test request/oneway mismatches: MyC ! { setAge, 5, self() },
-	MyC ! { setAge, 5 },
+    % If wanting to test request/oneway mismatches: MyC ! { setAge, 5, self() },
+    MyC ! { setAge, 5 },
 
-	MyC ! { getAge, [], self() },
-	receive
+    MyC ! { getAge, [], self() },
+    receive
 
-		{ wooper_result, 5 }->
-			test_facilities:display(
-				"After setAge, getAge/1 returned 5 as expected." );
+        { wooper_result, 5 }->
+            test_facilities:display(
+                "After setAge, getAge/1 returned 5 as expected." );
 
-		{ wooper_result, UnexpectedNewAge } ->
-			test_facilities:fail( "wrong age: ~p", [ UnexpectedNewAge ] )
+        { wooper_result, UnexpectedNewAge } ->
+            test_facilities:fail( "wrong age: ~p", [ UnexpectedNewAge ] )
 
-	end,
+    end,
 
-	MyC ! declareBirthday,
+    MyC ! declareBirthday,
 
-	MyC ! { getAge, [], self() },
-	receive
+    MyC ! { getAge, [], self() },
+    receive
 
-		{ wooper_result, 6 }->
-			test_facilities:display(
-				"After declareBirthday/1, getAge/1 returned 6 as expected." );
+        { wooper_result, 6 }->
+            test_facilities:display(
+                "After declareBirthday/1, getAge/1 returned 6 as expected." );
 
-		{ wooper_result, UnexpectedLastAge } ->
-			test_facilities:fail( "wrong age: ~p", [ UnexpectedLastAge ] )
+        { wooper_result, UnexpectedLastAge } ->
+            test_facilities:fail( "wrong age: ~p", [ UnexpectedLastAge ] )
 
-	end,
+    end,
 
-	MyC ! declareBirthday,
+    MyC ! declareBirthday,
 
-	MyC ! { isHotBlooded, [], self() },
-	receive
+    MyC ! { isHotBlooded, [], self() },
+    receive
 
-		{ wooper_result, true }->
-			test_facilities:display(
-				"isHotBlooded/1 returned true as expected." );
+        { wooper_result, true }->
+            test_facilities:display(
+                "isHotBlooded/1 returned true as expected." );
 
-		{ wooper_result, UnexpectedBlood } ->
-			test_facilities:fail( "wrong blood type: ~p", [ UnexpectedBlood ] )
+        { wooper_result, UnexpectedBlood } ->
+            test_facilities:fail( "wrong blood type: ~p", [ UnexpectedBlood ] )
 
-	end,
+    end,
 
-	MyC ! { getFurColor, [], self() },
-	receive
+    MyC ! { getFurColor, [], self() },
+    receive
 
-		{ wooper_result, sand }->
-			test_facilities:display(
-				"getFurColor/1 returned sand as expected." );
+        { wooper_result, sand }->
+            test_facilities:display(
+                "getFurColor/1 returned sand as expected." );
 
-		{ wooper_result, UnexpectedFurColor } ->
-			test_facilities:fail( "wrong fur color: ~p",
-								  [ UnexpectedFurColor ] )
+        { wooper_result, UnexpectedFurColor } ->
+            test_facilities:fail( "wrong fur color: ~p",
+                                  [ UnexpectedFurColor ] )
 
-	end,
+    end,
 
 
-	% Tests related to ViviparousBeings.
+    % Tests related to ViviparousBeings.
 
-	MyC ! { getMeanChildrenCount, [], self() },
-	receive
+    MyC ! { getMeanChildrenCount, [], self() },
+    receive
 
-		{ wooper_result, 4 } ->
-			test_facilities:display(
-				"After constructor, getMeanChildrenCount/1 returned 4 "
-				"as expected." );
+        { wooper_result, 4 } ->
+            test_facilities:display(
+                "After constructor, getMeanChildrenCount/1 returned 4 "
+                "as expected." );
 
-		{ wooper_result, UnexpectedMeanCount } ->
-			test_facilities:fail( "wrong mean children count: ~p",
-								  [ UnexpectedMeanCount ] )
+        { wooper_result, UnexpectedMeanCount } ->
+            test_facilities:fail( "wrong mean children count: ~p",
+                                  [ UnexpectedMeanCount ] )
 
-	end,
+    end,
 
-	MyC ! { getBirthGivenCount, [], self() },
-	receive
+    MyC ! { getBirthGivenCount, [], self() },
+    receive
 
-		{ wooper_result, 0 } ->
-			test_facilities:display(
-				"After constructor, getBirthGivenCount/1 returned 0 "
-				"as expected." );
+        { wooper_result, 0 } ->
+            test_facilities:display(
+                "After constructor, getBirthGivenCount/1 returned 0 "
+                "as expected." );
 
-		{ wooper_result, UnexpectedFirstCount } ->
-			test_facilities:fail( "wrong first children count: ~p",
-				[ UnexpectedFirstCount ] )
+        { wooper_result, UnexpectedFirstCount } ->
+            test_facilities:fail( "wrong first children count: ~p",
+                [ UnexpectedFirstCount ] )
 
-	end,
+    end,
 
-	MyC ! { giveBirth, 5 },
+    MyC ! { giveBirth, 5 },
 
-	MyC ! { getBirthGivenCount, [], self() },
-	receive
+    MyC ! { getBirthGivenCount, [], self() },
+    receive
 
-		{ wooper_result, 5 }->
-			test_facilities:display(
-				"After giveBirth/2, getBirthGivenCount/1 returned 5 "
-				"as expected." );
+        { wooper_result, 5 }->
+            test_facilities:display(
+                "After giveBirth/2, getBirthGivenCount/1 returned 5 "
+                "as expected." );
 
-		{ wooper_result, UnexpectedSecondCount } ->
-			test_facilities:fail( "wrong second children count: ~p",
-								  [ UnexpectedSecondCount ] )
+        { wooper_result, UnexpectedSecondCount } ->
+            test_facilities:fail( "wrong second children count: ~p",
+                                  [ UnexpectedSecondCount ] )
 
-	end,
+    end,
 
 
-	% Tests related to Cats.
+    % Tests related to Cats.
 
-	MyC ! { getTeatCount, [], self() },
-	receive
+    MyC ! { getTeatCount, [], self() },
+    receive
 
-		{ wooper_result, 6 }->
-			test_facilities:display( "getTeatCount/1 returned 6 as expected." );
+        { wooper_result, 6 }->
+            test_facilities:display( "getTeatCount/1 returned 6 as expected." );
 
-		{ wooper_result, UnexpectedTeatCount } ->
-			test_facilities:fail( "wrong teat count: ~p",
-								  [ UnexpectedTeatCount ] )
+        { wooper_result, UnexpectedTeatCount } ->
+            test_facilities:fail( "wrong teat count: ~p",
+                                  [ UnexpectedTeatCount ] )
 
-	end,
+    end,
 
-	MyC ! { canEat, soup, self() },
-	receive
+    MyC ! { canEat, soup, self() },
+    receive
 
-		{ wooper_result, true }->
-			test_facilities:display( "This cat can eat soup, as expected." );
+        { wooper_result, true }->
+            test_facilities:display( "This cat can eat soup, as expected." );
 
-		{ wooper_result, UnexpectedFoodPreference } ->
-			test_facilities:fail( "wrong food preference: ~p",
-								  [ UnexpectedFoodPreference ] )
+        { wooper_result, UnexpectedFoodPreference } ->
+            test_facilities:fail( "wrong food preference: ~p",
+                                  [ UnexpectedFoodPreference ] )
 
-	end,
+    end,
 
-	MyC ! { canEat, tangerine, self() },
-	receive
+    MyC ! { canEat, tangerine, self() },
+    receive
 
-		{ wooper_result, false }->
-			test_facilities:display(
-				"This cat cannot eat tangerine, as expected." );
+        { wooper_result, false }->
+            test_facilities:display(
+                "This cat cannot eat tangerine, as expected." );
 
-		{ wooper_result, UnexpectedOtherFoodPreference } ->
-			test_facilities:fail( "wrong food preference: ~p",
-								  [ UnexpectedOtherFoodPreference ] );
+        { wooper_result, UnexpectedOtherFoodPreference } ->
+            test_facilities:fail( "wrong food preference: ~p",
+                                  [ UnexpectedOtherFoodPreference ] );
 
-		UnexpectedReturn ->
-			test_facilities:fail( "unexpected method return: ~p",
-								  [ UnexpectedReturn ] )
+        UnexpectedReturn ->
+            test_facilities:fail( "unexpected method return: ~p",
+                                  [ UnexpectedReturn ] )
 
-	end,
+    end,
 
-	MyC ! { getWhiskerColor, [], self() },
-	receive
+    MyC ! { getWhiskerColor, [], self() },
+    receive
 
-		{ wooper_result, white }->
-			test_facilities:display(
-				"This cat has white whiskers, as expected." );
+        { wooper_result, white }->
+            test_facilities:display(
+                "This cat has white whiskers, as expected." );
 
-		{ wooper_result, UnexpectedWhiskerColor } ->
-			test_facilities:fail( "wrong whisker color: ~p",
-								  [ UnexpectedWhiskerColor ] );
+        { wooper_result, UnexpectedWhiskerColor } ->
+            test_facilities:fail( "wrong whisker color: ~p",
+                                  [ UnexpectedWhiskerColor ] );
 
-		AUnexpectedReturn ->
-			test_facilities:fail( "unexpected method return: ~p",
-								  [ AUnexpectedReturn ] )
+        AUnexpectedReturn ->
+            test_facilities:fail( "unexpected method return: ~p",
+                                  [ AUnexpectedReturn ] )
 
-	end,
+    end,
 
-	18 = class_Cat:get_mean_life_expectancy(),
+    18 = class_Cat:get_mean_life_expectancy(),
 
-	IsDebug andalso
-		begin
-			MyC ! { wooper_get_instance_description,[], self() },
-			receive
+    IsDebug andalso
+        begin
+            MyC ! { wooper_get_instance_description,[], self() },
+            receive
 
-				{ wooper_result, InspectString } ->
-					test_facilities:display( "Instance description: ~ts",
-											 [ InspectString ] )
-			end
-		end,
+                { wooper_result, InspectString } ->
+                    test_facilities:display( "Instance description: ~ts",
+                                             [ InspectString ] )
+            end
+        end,
 
-	% Some waiting could be needed in cases where the interpreter is to stop
-	% immediately afterwards, so that the actions performed in the destructor
-	% can be performed:
-	%
-	MyC ! delete,
+    % Some waiting could be needed in cases where the interpreter is to stop
+    % immediately afterwards, so that the actions performed in the destructor
+    % can be performed:
+    %
+    MyC ! delete,
 
-	MyOtherC = class_Cat:new_link( 3, male, black, white ),
+    MyOtherC = class_Cat:new_link( 3, male, black, white ),
 
-	% No race condition with the end of this test process:
-	wooper:delete_synchronously_instance( MyOtherC ),
+    % No race condition with the end of this test process:
+    wooper:delete_synchronously_instance( MyOtherC ),
 
-	test_facilities:display( "This cat could be created and "
-							 "be synchronously deleted, as expected." ),
+    test_facilities:display( "This cat could be created and "
+                             "be synchronously deleted, as expected." ),
 
-	test_facilities:stop().
+    test_facilities:stop().

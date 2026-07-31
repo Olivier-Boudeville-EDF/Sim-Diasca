@@ -1,4 +1,4 @@
-% Copyright (C) 2023-2025 Olivier Boudeville
+% Copyright (C) 2023-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -29,45 +29,45 @@
 % The parameters defining an orthographic projection.
 -record( orthographic_settings, {
 
-	% The coordinate of the left vertical clipping plane:
-	left :: linear:coordinate(),
+    % The coordinate of the left vertical clipping plane:
+    left :: linear:coordinate(),
 
-	% The coordinate of the right vertical clipping plane:
-	right :: linear:coordinate(),
+    % The coordinate of the right vertical clipping plane:
+    right :: linear:coordinate(),
 
-	% The coordinate of the bottom horizontal clipping plane:
-	bottom :: linear:coordinate(),
+    % The coordinate of the bottom horizontal clipping plane:
+    bottom :: linear:coordinate(),
 
-	% The coordinate of the top horizontal clipping plane:
-	top :: linear:coordinate(),
+    % The coordinate of the top horizontal clipping plane:
+    top :: linear:coordinate(),
 
-	% The (signed) distance to the nearer depth clipping plane; negative if the
-	% plane is to be behind the viewer.
-	%
-	z_near :: linear:signed_distance(),
+    % The (signed) distance to the nearer depth clipping plane; negative if the
+    % plane is to be behind the viewer.
+    %
+    z_near :: linear:signed_distance(),
 
-	% The (signed) distance to the farther depth clipping plane; negative if the
-	% plane is to be behind the viewer.
-	%
-	z_far :: linear:signed_distance() } ).
+    % The (signed) distance to the farther depth clipping plane; negative if the
+    % plane is to be behind the viewer.
+    %
+    z_far :: linear:signed_distance() } ).
 
 
 
 % The parameters defining a perspective projection.
 -record( perspective_settings, {
 
-	% The field of view angle in the Y (vertical) direction:
-	fov_y_angle :: unit_utils:radians(),
+    % The field of view angle in the Y (vertical) direction:
+    fov_y_angle :: unit_utils:radians(),
 
-	% Determines the field of view in the X (horizontal) direction:
-	% AspectRatio = Width/Height.
-	%
-	aspect_ratio :: math_utils:ratio(),
+    % Determines the field of view in the X (horizontal) direction:
+    % AspectRatio = Width/Height.
+    %
+    aspect_ratio :: math_utils:ratio(),
 
-	% The distance from the viewer to the near clipping plane (always strictly
-	% positive).
-	%
-	z_near :: linear:distance(),
+    % The distance from the viewer to the near clipping plane (always strictly
+    % positive).
+    %
+    z_near :: linear:distance(),
 
-	% The distance from the viewer to the far clipping plane (always positive).
-	z_far :: linear:distance() } ).
+    % The distance from the viewer to the far clipping plane (always positive).
+    z_far :: linear:distance() } ).

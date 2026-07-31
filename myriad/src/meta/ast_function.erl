@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2025 Olivier Boudeville
+% Copyright (C) 2018-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -37,18 +37,18 @@ Note: function clauses are managed in the ast_clause module.
 % Checking:
 -export([ check_function_name/1, check_function_name/2,
 
-		  check_function_id/1, check_function_id/2,
-		  check_function_ids/1, check_function_ids/2,
+          check_function_id/1, check_function_id/2,
+          check_function_ids/1, check_function_ids/2,
 
-		  check_function_type/2, check_function_type/3,
-		  check_function_types/2, check_function_types/3 ]).
+          check_function_type/2, check_function_type/3,
+          check_function_types/2, check_function_types/3 ]).
 
 
 % Transformation:
 -export([ transform_functions/2, transform_function/2,
-		  transform_function_spec/2,
-		  transform_spec/2, transform_function_type/2,
-		  transform_function_constraints/2, transform_function_constraint/2 ]).
+          transform_function_spec/2,
+          transform_spec/2, transform_function_type/2,
+          transform_function_constraints/2, transform_function_constraint/2 ]).
 
 
 % Recomposition:
@@ -102,17 +102,17 @@ Note: function clauses are managed in the ast_clause module.
 -doc "Checks that the specified function name is legit.".
 -spec check_function_name( term() ) -> function_name().
 check_function_name( Name ) ->
-	check_function_name( Name, _Context=undefined ).
+    check_function_name( Name, _Context=undefined ).
 
 
 
 -doc "Checks that the specified function name is legit.".
 -spec check_function_name( term(), form_context() ) -> function_name().
 check_function_name( Name, _Context ) when is_atom( Name ) ->
-	Name;
+    Name;
 
 check_function_name( Other, Context ) ->
-	ast_utils:raise_error( [ invalid_function_name, Other ], Context ).
+    ast_utils:raise_error( [ invalid_function_name, Other ], Context ).
 
 
 
@@ -120,52 +120,52 @@ check_function_name( Other, Context ) ->
 -doc "Checks that the specified function identifier is legit.".
 -spec check_function_id( term() ) -> function_id().
 check_function_id( Id ) ->
-	check_function_id( Id, _Context=undefined ).
+    check_function_id( Id, _Context=undefined ).
 
 
 -doc "Checks that the specified function identifier is legit.".
 -spec check_function_id( term(), form_context() ) -> function_id().
 check_function_id( FunctionId={ FunctionName, FunctionArity }, Context ) ->
-	check_function_name( FunctionName, Context ),
-	ast_utils:check_arity( FunctionArity, Context ),
-	FunctionId;
+    check_function_name( FunctionName, Context ),
+    ast_utils:check_arity( FunctionArity, Context ),
+    FunctionId;
 
 check_function_id( Other, Context ) ->
-	ast_utils:raise_error( [ invalid_function_identifier, Other ], Context ).
+    ast_utils:raise_error( [ invalid_function_identifier, Other ], Context ).
 
 
 
 -doc "Checks that the specified function identifiers are legit.".
 -spec check_function_ids( term() ) -> [ function_id() ].
 check_function_ids( Ids ) ->
-	check_function_ids( Ids, _Context=undefined ).
+    check_function_ids( Ids, _Context=undefined ).
 
 
 -doc "Checks that the specified function identifiers are legit.".
 -spec check_function_ids( term(), form_context() ) -> [ function_id() ].
 check_function_ids( List, Context ) when is_list( List ) ->
-	[ check_function_id( Id, Context ) || Id <- List ];
+    [ check_function_id( Id, Context ) || Id <- List ];
 
 check_function_ids( Other, Context ) ->
-	ast_utils:raise_error( [ invalid_function_identifier_list, Other ],
-						   Context ).
+    ast_utils:raise_error( [ invalid_function_identifier_list, Other ],
+                           Context ).
 
 
 
 -doc "Checks that the specified function type is legit.".
 -spec check_function_type( term(), function_arity() ) -> function_type().
 check_function_type( Type, FunctionArity ) ->
-	check_function_type( Type, FunctionArity, _Context=undefined ).
+    check_function_type( Type, FunctionArity, _Context=undefined ).
 
 
 -doc "Checks that the specified function type is legit.".
 -spec check_function_type( term(), function_arity(), form_context() ) ->
-									function_type().
+                                    function_type().
 check_function_type( _FunctionType, _FunctionArity, _Context ) ->
-	%display_warning( "Function type ~p not checked (context: ~p).",
-	%                 [ FunctionType, Context ] ).
-	%raise_error( [ fixme_function_type ], Context ).
-	ok.
+    %display_warning( "Function type ~p not checked (context: ~p).",
+    %                 [ FunctionType, Context ] ).
+    %raise_error( [ fixme_function_type ], Context ).
+    ok.
 
 %check_function_type( Other, _FunctionArity, Context ) ->
 %   raise_error( [ invalid_function_type, Other ], Context ).
@@ -175,17 +175,17 @@ check_function_type( _FunctionType, _FunctionArity, _Context ) ->
 -doc "Checks that the specified function types are legit.".
 -spec check_function_types( term(), function_arity() ) -> [ function_type() ].
 check_function_types( Types, FunctionArity ) ->
-	check_function_types( Types, FunctionArity, _Context=undefined ).
+    check_function_types( Types, FunctionArity, _Context=undefined ).
 
 
 -doc "Checks that the specified function types are legit.".
 -spec check_function_types( term(), function_arity(), form_context() ) ->
-								[ function_type() ].
+                                [ function_type() ].
 check_function_types( List, FunctionArity, Context ) when is_list( List ) ->
-	[ check_function_type( Type, FunctionArity, Context ) || Type <- List ];
+    [ check_function_type( Type, FunctionArity, Context ) || Type <- List ];
 
 check_function_types( Other, _FunctionArity, Context ) ->
-	ast_utils:raise_error( [ invalid_function_type_list, Other ], Context ).
+    ast_utils:raise_error( [ invalid_function_type_list, Other ], Context ).
 
 
 
@@ -194,20 +194,20 @@ Transforms the functions in the specified table, based on the specified
 transforms.
 """.
 -spec transform_functions( function_table(), ast_transforms() ) ->
-									{ function_table(), ast_transforms() }.
+                                    { function_table(), ast_transforms() }.
 transform_functions( FunctionTable, Transforms ) ?rec_guard ->
 
-	%?display_debug( "Transforming all functions" ),
+    %?display_debug( "Transforming all functions" ),
 
-	FunIdInfoPairs = ?table:enumerate( FunctionTable ),
+    FunIdInfoPairs = ?table:enumerate( FunctionTable ),
 
-	{ NewFunIdInfoPairs, NewTransforms } = lists:mapfoldl(
-		fun transform_function_pair/2, _Acc0=Transforms,
-		_List=FunIdInfoPairs ),
+    { NewFunIdInfoPairs, NewTransforms } = lists:mapfoldl(
+        fun transform_function_pair/2, _Acc0=Transforms,
+        _List=FunIdInfoPairs ),
 
-	NewFunctionTable = ?table:new( NewFunIdInfoPairs ),
+    NewFunctionTable = ?table:new( NewFunIdInfoPairs ),
 
-	{ NewFunctionTable, NewTransforms }.
+    { NewFunctionTable, NewTransforms }.
 
 
 
@@ -218,51 +218,51 @@ Allows to keep around the function identifier, to recreate the function table
 more easily.
 """.
 -spec transform_function_pair( function_pair(), ast_transforms() ) ->
-										{ function_pair(), ast_transforms() }.
+                                        { function_pair(), ast_transforms() }.
 transform_function_pair( { FunId, FunctionInfo }, Transforms ) ?rec_guard ->
 
-	?display_debug( "Transforming function ~p.", [ FunId ] ),
+    ?display_debug( "Transforming function ~p.", [ FunId ] ),
 
-	{ NewFunctionInfo, NewTransforms } =
-		transform_function( FunctionInfo, Transforms ),
+    { NewFunctionInfo, NewTransforms } =
+        transform_function( FunctionInfo, Transforms ),
 
-	{ { FunId, NewFunctionInfo }, NewTransforms }.
+    { { FunId, NewFunctionInfo }, NewTransforms }.
 
 
 
 -doc "Transforms the specified function.".
 -spec transform_function( function_info(), ast_transforms() ) ->
-								{ function_info(), ast_transforms() }.
+                                { function_info(), ast_transforms() }.
 transform_function( FunctionInfo=#function_info{ clauses=ClauseDefs,
-												 spec=MaybeLocFunSpec },
-					Transforms ) ?rec_guard ->
+                                                 spec=MaybeLocFunSpec },
+                    Transforms ) ?rec_guard ->
 
-	% We have to transform the clauses (first) and the spec (second):
+    % We have to transform the clauses (first) and the spec (second):
 
-	?display_debug( "Transforming clauses." ),
+    ?display_debug( "Transforming clauses." ),
 
-	{ NewClauseDefs, ClauseTransforms } = lists:mapfoldl(
-		fun ast_clause:transform_function_clause/2, _Acc0=Transforms,
-		_List=ClauseDefs ),
+    { NewClauseDefs, ClauseTransforms } = lists:mapfoldl(
+        fun ast_clause:transform_function_clause/2, _Acc0=Transforms,
+        _List=ClauseDefs ),
 
 
-	{ NewLocFunSpec, FunSpecTransforms } = case MaybeLocFunSpec of
+    { NewLocFunSpec, FunSpecTransforms } = case MaybeLocFunSpec of
 
-		undefined ->
-			{ undefined, ClauseTransforms } ;
+        undefined ->
+            { undefined, ClauseTransforms } ;
 
-		{ Loc, FunSpec } ->
-			?display_debug( "Transforming function spec." ),
-			{ NewFunSpec, NewTransforms } =
-				transform_function_spec( FunSpec, Transforms ),
-			{ { Loc, NewFunSpec }, NewTransforms }
+        { Loc, FunSpec } ->
+            ?display_debug( "Transforming function spec." ),
+            { NewFunSpec, NewTransforms } =
+                transform_function_spec( FunSpec, Transforms ),
+            { { Loc, NewFunSpec }, NewTransforms }
 
-	end,
+    end,
 
-	FinalFunctionInfo = FunctionInfo#function_info{ clauses=NewClauseDefs,
-													spec=NewLocFunSpec },
+    FinalFunctionInfo = FunctionInfo#function_info{ clauses=NewClauseDefs,
+                                                    spec=NewLocFunSpec },
 
-	{ FinalFunctionInfo, FunSpecTransforms }.
+    { FinalFunctionInfo, FunSpecTransforms }.
 
 
 
@@ -276,25 +276,25 @@ then Rep(F) = {attribute, FileLoc, Spec, {{Name,Arity}, [Rep(Ft_1), ...,
 Rep(Ft_k)]}}.
 """.
 -spec transform_function_spec( function_spec(), ast_transforms() ) ->
-										{ function_spec(), ast_transforms() }.
+                                        { function_spec(), ast_transforms() }.
 transform_function_spec( { 'attribute', FileLoc, SpecType,
-						   { FunId, SpecList } }, Transforms ) ?rec_guard ->
+                           { FunId, SpecList } }, Transforms ) ?rec_guard ->
 
-	% For example for '-spec f(type_a()) -> type_b().':
+    % For example for '-spec f(type_a()) -> type_b().':
 
-	% SpecList = [ {type,652,'fun',
-	% [{type,652,product,[{user_type,652,type_a,[]}]},
-	% {user_type,652,type_b,[]}] } ]
+    % SpecList = [ {type,652,'fun',
+    % [{type,652,product,[{user_type,652,type_a,[]}]},
+    % {user_type,652,type_b,[]}] } ]
 
-	%?display_debug( "SpecList = ~p", [ SpecList ] ),
+    %?display_debug( "SpecList = ~p", [ SpecList ] ),
 
-	{ NewSpecList, NewTransforms } =
-		lists:mapfoldl( fun transform_spec/2, _Acc0=Transforms,
-		_List=SpecList ),
+    { NewSpecList, NewTransforms } =
+        lists:mapfoldl( fun transform_spec/2, _Acc0=Transforms,
+        _List=SpecList ),
 
-	NewFunSpec = { 'attribute', FileLoc, SpecType, { FunId, NewSpecList } },
+    NewFunSpec = { 'attribute', FileLoc, SpecType, { FunId, NewSpecList } },
 
-	{ NewFunSpec, NewTransforms }.
+    { NewFunSpec, NewTransforms }.
 
 
 
@@ -308,22 +308,22 @@ type and Fc is a function constraint, then Rep(T) = {type, FILE_LOC,
 bounded_fun, [Rep(Ft_1), Rep(Fc)]}."
 """.
 transform_spec( { 'type', FileLoc, 'bounded_fun',
-			[ FunctionType, FunctionConstraint ] }, Transforms ) ?rec_guard ->
+            [ FunctionType, FunctionConstraint ] }, Transforms ) ?rec_guard ->
 
-	{ NewFunctionType, TypeTransforms } =
-		transform_function_type( FunctionType, Transforms ),
+    { NewFunctionType, TypeTransforms } =
+        transform_function_type( FunctionType, Transforms ),
 
-	{ NewFunctionConstraint, ConstTransforms } =
-		transform_function_constraints( FunctionConstraint, TypeTransforms ),
+    { NewFunctionConstraint, ConstTransforms } =
+        transform_function_constraints( FunctionConstraint, TypeTransforms ),
 
-	NewSpec = { 'type', FileLoc, 'bounded_fun',
-				[ NewFunctionType, NewFunctionConstraint ] },
+    NewSpec = { 'type', FileLoc, 'bounded_fun',
+                [ NewFunctionType, NewFunctionConstraint ] },
 
-	{ NewSpec, ConstTransforms };
+    { NewSpec, ConstTransforms };
 
 
 transform_spec( OtherSpec, Transforms ) ?rec_guard ->
-	transform_function_type( OtherSpec, Transforms ).
+    transform_function_type( OtherSpec, Transforms ).
 
 
 
@@ -337,20 +337,20 @@ then Rep(Ft) = {type, FILE_LOC, 'fun', [{type, FILE_LOC, product, [Rep(T_1),
 ..., Rep(T_n)]}, Rep(T_0)]}."
 """.
 transform_function_type( { 'type', FileLocFirst, 'fun',
-		[ { 'type', FileLocSecond, 'product', ParamTypes }, ResultType ] },
-						 Transforms ) ?rec_guard ->
+        [ { 'type', FileLocSecond, 'product', ParamTypes }, ResultType ] },
+                         Transforms ) ?rec_guard ->
 
-	{ [ NewResultType | NewParamTypes ], NewTransforms } =
-		ast_type:transform_types( [ ResultType | ParamTypes ], Transforms ),
+    { [ NewResultType | NewParamTypes ], NewTransforms } =
+        ast_type:transform_types( [ ResultType | ParamTypes ], Transforms ),
 
-	NewTypeSpec = { 'type', FileLocFirst, 'fun',
-		[ { 'type', FileLocSecond, 'product', NewParamTypes },
-		  NewResultType ] },
+    NewTypeSpec = { 'type', FileLocFirst, 'fun',
+        [ { 'type', FileLocSecond, 'product', NewParamTypes },
+          NewResultType ] },
 
-	{ NewTypeSpec, NewTransforms };
+    { NewTypeSpec, NewTransforms };
 
 transform_function_type( UnexpectedFunType, _Transforms ) ->
-	ast_utils:raise_error( [ unexpected_function_type, UnexpectedFunType ] ).
+    ast_utils:raise_error( [ unexpected_function_type, UnexpectedFunType ] ).
 
 
 
@@ -363,8 +363,8 @@ Transforms the specified function constraints.
 and Rep(Fc) = [Rep(C_1), ..., Rep(C_k)]."
 """.
 transform_function_constraints( FunctionConstraints, Transforms ) ?rec_guard ->
-	lists:mapfoldl( fun transform_function_constraint/2, _Acc0=Transforms,
-					_List=FunctionConstraints ).
+    lists:mapfoldl( fun transform_function_constraint/2, _Acc0=Transforms,
+                    _List=FunctionConstraints ).
 
 
 
@@ -376,18 +376,18 @@ Rep(C) = {type, FILE_LOC, constraint,[{atom, FILE_LOC, is_subtype},[Rep(V),
 Rep(T)]]}."
 """.
 transform_function_constraint( { 'type', FileLoc, 'constraint',
-		[ AtomConstraint={ atom, _FileLocAtom, _SomeAtom },
-		  [ TypeVar, Type ] ] }, Transforms ) ?rec_guard ->
+        [ AtomConstraint={ atom, _FileLocAtom, _SomeAtom },
+          [ TypeVar, Type ] ] }, Transforms ) ?rec_guard ->
 
-	{ NewTypeVar, VarTransforms } =
-		ast_type:transform_type( TypeVar, Transforms ),
+    { NewTypeVar, VarTransforms } =
+        ast_type:transform_type( TypeVar, Transforms ),
 
-	{ NewType, NewTransforms } = ast_type:transform_type( Type, VarTransforms ),
+    { NewType, NewTransforms } = ast_type:transform_type( Type, VarTransforms ),
 
-	NewTypeSpec = { 'type', FileLoc, 'constraint',
-					[ AtomConstraint, [ NewTypeVar, NewType ] ] },
+    NewTypeSpec = { 'type', FileLoc, 'constraint',
+                    [ AtomConstraint, [ NewTypeVar, NewType ] ] },
 
-	{ NewTypeSpec, NewTransforms }.
+    { NewTypeSpec, NewTransforms }.
 
 
 
@@ -403,95 +403,95 @@ are described in the specified function export table
 function table
 """.
 -spec get_located_forms_for( function_export_table(), function_table() ) ->
-									{ [ located_form() ], [ located_form() ] }.
+                                    { [ located_form() ], [ located_form() ] }.
 get_located_forms_for( FunctionExportTable, FunctionTable ) ->
 
-	% Dropping the keys (the function_id(), ie function identifiers), focusing
-	% on their associated function_info():
-	%
-	FunInfos = ?table:values( FunctionTable ),
+    % Dropping the keys (the function_id(), ie function identifiers), focusing
+    % on their associated function_info():
+    %
+    FunInfos = ?table:values( FunctionTable ),
 
-	{ FunctionLocDefs, NewFunctionExportTable } = lists:foldl(
+    { FunctionLocDefs, NewFunctionExportTable } = lists:foldl(
 
-		% We used to filter out/report as errors these entries, as they are
-		% exported but never defined; but the compiler will take care of that,
-		% with better, more standard messages:
-		%
-		fun( #function_info{ file_location=undefined,
-							 clauses=[],
-							 spec=MaybeSpec },
-			 { AccLocDefs, AccExportTable } ) ->
+        % We used to filter out/report as errors these entries, as they are
+        % exported but never defined; but the compiler will take care of that,
+        % with better, more standard messages:
+        %
+        fun( #function_info{ file_location=undefined,
+                             clauses=[],
+                             spec=MaybeSpec },
+             { AccLocDefs, AccExportTable } ) ->
 
-				NewAccLocDefs = case MaybeSpec of
+                NewAccLocDefs = case MaybeSpec of
 
-					% Happens if this function is only exported, with neither a
-					% spec nor a definition (will be caught by the compiler and
-					% reported with a relevant diagnosis:
-					%
-					undefined ->
-						AccLocDefs;
+                    % Happens if this function is only exported, with neither a
+                    % spec nor a definition (will be caught by the compiler and
+                    % reported with a relevant diagnosis:
+                    %
+                    undefined ->
+                        AccLocDefs;
 
-							% We already know that compilation will fail, but we
-							% prefer letting the compiler report that by itself
-							% later, with its own error messages, so we still
-							% include that lone spec form:
-							%
-					LocSpecForm ->
-						[ LocSpecForm | AccLocDefs ]
+                            % We already know that compilation will fail, but we
+                            % prefer letting the compiler report that by itself
+                            % later, with its own error messages, so we still
+                            % include that lone spec form:
+                            %
+                    LocSpecForm ->
+                        [ LocSpecForm | AccLocDefs ]
 
-				end,
-				{ NewAccLocDefs, AccExportTable };
-
-
-				% Only potentially correct configuration:
-			( #function_info{ name=Name,
-							  arity=Arity,
-							  ast_location=ASTLoc,
-							  file_location=FileLoc,
-							  clauses=Clauses,
-							  spec=MaybeSpec,
-							  exported=ExportLocs },
-			  { AccLocDefs, AccExportTable } ) ->
-
-				ASTLoc =:= undefined andalso
-					throw( { ast_location_not_defined_for, { Name, Arity } } ),
-
-				FileLoc =:= undefined andalso
-					throw( { file_location_not_defined_for, { Name, Arity } } ),
-
-				ast_utils:check_file_loc( FileLoc ),
-
-				LocFunForm = { ASTLoc,
-							   { function, FileLoc, Name, Arity, Clauses } },
-
-				NewAccLocDefs = case MaybeSpec of
-
-					undefined ->
-						[ LocFunForm | AccLocDefs ];
-
-					LocSpecForm ->
-						[ LocSpecForm, LocFunForm | AccLocDefs ]
-
-				end,
-
-				% Should a function declare that it is exported as a given
-				% location that happens to correspond to a registered export
-				% declaration (e.g. the default one), we ensure that this
-				% function is indeed exported there (auto-export):
-				%
-				NewAccExportTable = update_export_table( Name, Arity,
-					ExportLocs, AccExportTable ),
-
-				{ NewAccLocDefs, NewAccExportTable }
+                end,
+                { NewAccLocDefs, AccExportTable };
 
 
-		end,
-		_Acc0={ [], FunctionExportTable },
-		_List=FunInfos ),
+                % Only potentially correct configuration:
+            ( #function_info{ name=Name,
+                              arity=Arity,
+                              ast_location=ASTLoc,
+                              file_location=FileLoc,
+                              clauses=Clauses,
+                              spec=MaybeSpec,
+                              exported=ExportLocs },
+              { AccLocDefs, AccExportTable } ) ->
 
-	FunExportLocDefs = get_function_export_forms( NewFunctionExportTable ),
+                ASTLoc =:= undefined andalso
+                    throw( { ast_location_not_defined_for, { Name, Arity } } ),
 
-	{ FunExportLocDefs, FunctionLocDefs }.
+                FileLoc =:= undefined andalso
+                    throw( { file_location_not_defined_for, { Name, Arity } } ),
+
+                ast_utils:check_file_loc( FileLoc ),
+
+                LocFunForm = { ASTLoc,
+                               { function, FileLoc, Name, Arity, Clauses } },
+
+                NewAccLocDefs = case MaybeSpec of
+
+                    undefined ->
+                        [ LocFunForm | AccLocDefs ];
+
+                    LocSpecForm ->
+                        [ LocSpecForm, LocFunForm | AccLocDefs ]
+
+                end,
+
+                % Should a function declare that it is exported as a given
+                % location that happens to correspond to a registered export
+                % declaration (e.g. the default one), we ensure that this
+                % function is indeed exported there (auto-export):
+                %
+                NewAccExportTable = update_export_table( Name, Arity,
+                    ExportLocs, AccExportTable ),
+
+                { NewAccLocDefs, NewAccExportTable }
+
+
+        end,
+        _Acc0={ [], FunctionExportTable },
+        _List=FunInfos ),
+
+    FunExportLocDefs = get_function_export_forms( NewFunctionExportTable ),
+
+    { FunExportLocDefs, FunctionLocDefs }.
 
 
 
@@ -501,42 +501,42 @@ Ensures that the specified function is as expected exported in the specified
 (supposedly export) locations.
 """.
 -spec update_export_table( function_name(), arity(),
-		[ ast_info:ast_location() ], function_export_table() ) ->
-													function_export_table().
+        [ ast_info:ast_location() ], function_export_table() ) ->
+                                                    function_export_table().
 update_export_table( _FunctionName, _Arity, _ExportLocs=[], ExportTable ) ->
-	ExportTable;
+    ExportTable;
 
 update_export_table( FunctionName, Arity, _ExportLocs=[ ASTLoc | H ],
-					 ExportTable ) ->
+                     ExportTable ) ->
 
-	FunId = { FunctionName, Arity },
+    FunId = { FunctionName, Arity },
 
-	case ?table:lookup_entry( ASTLoc, ExportTable ) of
+    case ?table:lookup_entry( ASTLoc, ExportTable ) of
 
-		key_not_found ->
-			% If there is not even an export declaration at this location, it is
-			% abnormal:
-			%
-			throw( { no_export_declaration_at, ASTLoc, FunId } );
+        key_not_found ->
+            % If there is not even an export declaration at this location, it is
+            % abnormal:
+            %
+            throw( { no_export_declaration_at, ASTLoc, FunId } );
 
-		{ value, { FileLoc, FunIds } } ->
+        { value, { FileLoc, FunIds } } ->
 
-			NewFunIds = case lists:member( FunId, FunIds ) of
+            NewFunIds = case lists:member( FunId, FunIds ) of
 
-				true ->
-					FunIds;
+                true ->
+                    FunIds;
 
-				false ->
-					[ FunId | FunIds ]
+                false ->
+                    [ FunId | FunIds ]
 
-			end,
+            end,
 
-			NewExportTable = ?table:add_entry( ASTLoc, { FileLoc, NewFunIds },
-											   ExportTable ),
+            NewExportTable = ?table:add_entry( ASTLoc, { FileLoc, NewFunIds },
+                                               ExportTable ),
 
-			update_export_table( FunctionName, Arity, H, NewExportTable )
+            update_export_table( FunctionName, Arity, H, NewExportTable )
 
-	end.
+    end.
 
 
 
@@ -545,16 +545,16 @@ Returns located forms corresponding to the known function exports, generated
 from the specified table.
 """.
 -spec get_function_export_forms( function_export_table() ) ->
-										[ located_form() ].
+                                        [ located_form() ].
 get_function_export_forms( FunctionExportTable ) ->
 
-	FunExportInfos = ?table:enumerate( FunctionExportTable ),
+    FunExportInfos = ?table:enumerate( FunctionExportTable ),
 
-	%ast_utils:display_debug( "FunExportInfos = ~p",
-	%  [ FunExportInfos ] ),
+    %ast_utils:display_debug( "FunExportInfos = ~p",
+    %  [ FunExportInfos ] ),
 
-	[ { ASTLoc, { attribute, FileLoc, export, FunIds } }
-			|| { ASTLoc, { FileLoc, FunIds } } <- FunExportInfos ].
+    [ { ASTLoc, { attribute, FileLoc, export, FunIds } }
+            || { ASTLoc, { FileLoc, FunIds } } <- FunExportInfos ].
 
 
 
@@ -563,12 +563,12 @@ Returns a textual description of the specified function clauses, using the
 specified indentation level.
 """.
 -spec clauses_to_string( [ meta_utils:clause_def() ],
-						 text_utils:indentation_level() ) -> ustring().
+                         text_utils:indentation_level() ) -> ustring().
 clauses_to_string( _Clauses=[], _IndentationLevel ) ->
-	"no function clause defined";
+    "no function clause defined";
 
 clauses_to_string( Clauses, IndentationLevel ) ->
-	text_utils:format( "~B function clauses defined: ~ts", [ length( Clauses ),
-		text_utils:strings_to_string(
-			[ text_utils:format( "~p", [ C ] ) || C <- Clauses ],
-			IndentationLevel ) ] ).
+    text_utils:format( "~B function clauses defined: ~ts", [ length( Clauses ),
+        text_utils:strings_to_string(
+            [ text_utils:format( "~p", [ C ] ) || C <- Clauses ],
+            IndentationLevel ) ] ).

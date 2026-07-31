@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 EDF R&D
+% Copyright (C) 2016-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -25,8 +25,8 @@
 
 
 -define( class_description,
-		 "Example dataflow object corresponding to a household, in the context "
-		 "of the 'Dataflow Urban Example' case." ).
+         "Example dataflow object corresponding to a household, in the context "
+         "of the 'Dataflow Urban Example' case." ).
 
 
 % Determines what are the direct mother classes of this class (if any):
@@ -36,8 +36,8 @@
 % The plain (standard) attributes specific to a household object are:
 -define( class_attributes, [
 
-	{ building_pid, option( building_pid() ), "the PID of the parent building "
-	  "hosting that household (i.e. comprising its dwelling)" } ] ).
+    { building_pid, option( building_pid() ), "the PID of the parent building "
+      "hosting that household (i.e. comprising its dwelling)" } ] ).
 
 
 % Helpers:
@@ -46,7 +46,7 @@
 
 % Must be included before class_TraceEmitter header:
 -define( trace_emitter_categorization,
-		 "Core.Dataflow.Urban-Example.Household" ).
+         "Core.Dataflow.Urban-Example.Household" ).
 
 
 % Allows to use macros for trace sending:
@@ -102,27 +102,27 @@ household
 - DataflowPid is the PID of the dataflow instance
 """.
 -spec construct( wooper:state(), class_Actor:actor_settings(),
-	household_name(),
-	[ family_name() | adult_count() | child_count() | income()
-	  | distance() | building_pid() ],
-	dataflow_pid() ) -> wooper:state().
+    household_name(),
+    [ family_name() | adult_count() | child_count() | income()
+      | distance() | building_pid() ],
+    dataflow_pid() ) -> wooper:state().
 construct( State, ActorSettings, HouseholdName,
-		   [ FamilyName, AdultCount, ChildCount, DisposableIncome,
-			 MeanDistanceCovered, BuildingPid ], DataflowPid ) ->
+           [ FamilyName, AdultCount, ChildCount, DisposableIncome,
+             MeanDistanceCovered, BuildingPid ], DataflowPid ) ->
 
-	AttributeSpecs = get_dataflow_attribute_specs(),
+    AttributeSpecs = get_dataflow_attribute_specs(),
 
-	InitialAttributeValues = [ FamilyName, AdultCount, ChildCount,
-							   DisposableIncome, MeanDistanceCovered ],
+    InitialAttributeValues = [ FamilyName, AdultCount, ChildCount,
+                               DisposableIncome, MeanDistanceCovered ],
 
-	% First the direct mother class:
-	ObjectState = class_DataflowObject:construct( State, ActorSettings,
-		?trace_categorize(HouseholdName), AttributeSpecs,
-		InitialAttributeValues, _SpecForUniquePeers=[],
-		_SpecForMultiplePeers=[], DataflowPid ),
+    % First the direct mother class:
+    ObjectState = class_DataflowObject:construct( State, ActorSettings,
+        ?trace_categorize(HouseholdName), AttributeSpecs,
+        InitialAttributeValues, _SpecForUniquePeers=[],
+        _SpecForMultiplePeers=[], DataflowPid ),
 
-	% Then the class-specific actions:
-	setAttribute( ObjectState, building_pid, BuildingPid ).
+    % Then the class-specific actions:
+    setAttribute( ObjectState, building_pid, BuildingPid ).
 
 
 
@@ -130,22 +130,22 @@ construct( State, ActorSettings, HouseholdName,
 -spec destruct( wooper:state() ) -> wooper:state().
 destruct( State ) ->
 
-	% Class-specific actions:
+    % Class-specific actions:
 
-	case ?getAttr(building_pid) of
+    case ?getAttr(building_pid) of
 
-		undefined ->
-			ok;
+        undefined ->
+            ok;
 
-		BuildingPid ->
-			% Normal if no disassociation event was specified:
-			?info_fmt( "Destructed, yet still referencing the parent "
-					   "building ~w.", [ BuildingPid ] )
+        BuildingPid ->
+            % Normal if no disassociation event was specified:
+            ?info_fmt( "Destructed, yet still referencing the parent "
+                       "building ~w.", [ BuildingPid ] )
 
-	end,
+    end,
 
-	% Then allow chaining:
-	State.
+    % Then allow chaining:
+    State.
 
 
 
@@ -159,16 +159,16 @@ building.
 -spec setBuilding( wooper:state(), building_pid(), sending_actor_pid() ) ->
                                             actor_oneway_return().
 setBuilding( State, BuildingPid, _SendingActorPid )
-						when is_pid( BuildingPid ) ->
+                        when is_pid( BuildingPid ) ->
 
-	% No reassignment permitted:
-	undefined = ?getAttr(building_pid),
+    % No reassignment permitted:
+    undefined = ?getAttr(building_pid),
 
-	?info_fmt( "Setting parent building to ~w.", [ BuildingPid ] ),
+    ?info_fmt( "Setting parent building to ~w.", [ BuildingPid ] ),
 
-	NewState = setAttribute( State, building_pid, BuildingPid ),
+    NewState = setAttribute( State, building_pid, BuildingPid ),
 
-	actor:return_state( NewState ).
+    actor:return_state( NewState ).
 
 
 
@@ -177,18 +177,18 @@ Unsets the parent building of this household: this household will no more
 live-in in this building.
 """.
 -spec unsetBuilding( wooper:state(), building_pid(), sending_actor_pid() ) ->
-							actor_oneway_return().
+                            actor_oneway_return().
 unsetBuilding( State, BuildingPid, _SendingActorPid )
                                         when is_pid( BuildingPid ) ->
 
-	% Check:
-	BuildingPid = ?getAttr(building_pid),
+    % Check:
+    BuildingPid = ?getAttr(building_pid),
 
-	?info_fmt( "Unsetting parent building (was ~w).", [ BuildingPid ] ),
+    ?info_fmt( "Unsetting parent building (was ~w).", [ BuildingPid ] ),
 
-	NewState = setAttribute( State, building_pid, undefined ),
+    NewState = setAttribute( State, building_pid, undefined ),
 
-	actor:return_state( NewState ).
+    actor:return_state( NewState ).
 
 
 
@@ -200,39 +200,39 @@ unsetBuilding( State, BuildingPid, _SendingActorPid )
                             static_return( [ dataflow_attribute_spec() ] ).
 get_dataflow_attribute_specs() ->
 
-	wooper:return_static( [
+    wooper:return_static( [
 
-	 #dataflow_attribute_spec{
-		attribute_name="family_name",
-		semantics=[ ?name_semantics ],
-		unit="dimensionless",
-		type_description="string" },
+     #dataflow_attribute_spec{
+        attribute_name="family_name",
+        semantics=[ ?name_semantics ],
+        unit="dimensionless",
+        text_type="string()" },
 
-	 #dataflow_attribute_spec{
-		attribute_name="adult_count",
-		semantics=[ ?adult_count_semantics ],
-		unit="dimensionless",
-		type_description="integer",
-		constraints = [ positive ] },
+     #dataflow_attribute_spec{
+        attribute_name="adult_count",
+        semantics=[ ?adult_count_semantics ],
+        unit="dimensionless",
+        text_type="integer()",
+        constraints = [ positive ] },
 
-	 #dataflow_attribute_spec{
-		attribute_name="child_count",
-		semantics=[ ?child_count_semantics ],
-		unit="dimensionless",
-		type_description="integer",
-		constraints = [ positive ] },
+     #dataflow_attribute_spec{
+        attribute_name="child_count",
+        semantics=[ ?child_count_semantics ],
+        unit="dimensionless",
+        text_type="integer()",
+        constraints = [ positive ] },
 
-	 #dataflow_attribute_spec{
-		attribute_name="disposable_income",
-		semantics=[ ?income_semantics ],
-		unit="dimensionless",
-		type_description="float" },
+     #dataflow_attribute_spec{
+        attribute_name="disposable_income",
+        semantics=[ ?income_semantics ],
+        unit="dimensionless",
+        text_type="float()" },
 
-	 #dataflow_attribute_spec{
-		attribute_name="mean_distance_covered",
-		semantics=[ ?path_length_semantics ],
-		unit="km",
-		type_description="float" } ] ).
+     #dataflow_attribute_spec{
+        attribute_name="mean_distance_covered",
+        semantics=[ ?path_length_semantics ],
+        unit="km",
+        text_type="float()" } ] ).
 
 
 
@@ -242,33 +242,33 @@ get_dataflow_attribute_specs() ->
 
 -doc "Returns the (indirect) parent district of this household.".
 -spec getParentDistrict( wooper:state() ) ->
-				const_request_return( { 'parent_district', district_pid() } ).
+                const_request_return( { 'parent_district', district_pid() } ).
 getParentDistrict( State ) ->
 
-	Res = case ?getAttr(building_pid) of
+    Res = case ?getAttr(building_pid) of
 
-		undefined ->
-			throw( no_parent_building );
+        undefined ->
+            throw( no_parent_building );
 
-		ParentBuildingPid ->
-			{ parent_district, _DistrictPid } =
-				wooper:execute_request( ParentBuildingPid, getParentDistrict )
+        ParentBuildingPid ->
+            { parent_district, _DistrictPid } =
+                wooper:execute_request( ParentBuildingPid, getParentDistrict )
 
-	end,
+    end,
 
-	wooper:const_return_result( Res ).
+    wooper:const_return_result( Res ).
 
 
 
 -doc "Returns the (direct) parent building of this household.".
 -spec getParentBuilding( wooper:state() ) ->
-		const_request_return( { 'parent_building', option( building_pid() ) } ).
+        const_request_return( { 'parent_building', option( building_pid() ) } ).
 getParentBuilding( State ) ->
 
-	% Possibly 'undefined':
-	ParentBuildingPid = ?getAttr(building_pid),
+    % Possibly 'undefined':
+    ParentBuildingPid = ?getAttr(building_pid),
 
-	wooper:const_return_result( { parent_building, ParentBuildingPid } ).
+    wooper:const_return_result( { parent_building, ParentBuildingPid } ).
 
 
 
@@ -276,16 +276,16 @@ getParentBuilding( State ) ->
 -spec to_string( wooper:state() ) -> ustring().
 to_string( State ) ->
 
-	BuildingString = case ?getAttr(building_pid) of
+    BuildingString = case ?getAttr(building_pid) of
 
-		undefined ->
-			"not living in any building";
+        undefined ->
+            "not living in any building";
 
-		BuildingPid ->
-			text_utils:format( "living in building ~w", [ BuildingPid ] )
+        BuildingPid ->
+            text_utils:format( "living in building ~w", [ BuildingPid ] )
 
-	end,
+    end,
 
-	text_utils:format( "Household object named '~ts', ~ts and having ~ts",
-		[ ?getAttr(name), BuildingString,
-		  class_DataflowObject:attributes_to_string( State ) ] ).
+    text_utils:format( "Household object named '~ts', ~ts and having ~ts",
+        [ ?getAttr(name), BuildingString,
+          class_DataflowObject:attributes_to_string( State ) ] ).

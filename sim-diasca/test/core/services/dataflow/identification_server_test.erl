@@ -1,4 +1,4 @@
-% Copyright (C) 2017-2025 EDF R&D
+% Copyright (C) 2017-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -22,15 +22,15 @@
 -module(identification_server_test).
 
 -moduledoc """
-The purpose of this module is to test the support provided by the identification
-server.
+The purpose of this module is to test the support provided by the
+**identification server**.
 
-See also class_IdentificationServer.erl.
+See also the `class_IdentificationServer` module.
 """.
 
 
-% For facilities common to all cases:
--include("sim_diasca_for_cases.hrl").
+% Not a simulation case, just a test:
+-include("traces_for_tests.hrl").
 
 
 
@@ -46,71 +46,70 @@ defaults.
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+    ?test_start,
 
-	IdentificationServerPid = class_IdentificationServer:start(),
+    IdSrvPid = class_IdentificationServer:start(),
 
-	IdentificationServerPid ! { getStatus, [], self() },
-	InitialStatusString = test_receive(),
+    IdSrvPid ! { getStatus, [], self() },
+    InitialStatusString = test_receive(),
 
-	?test_notice_fmt( "Initial status of server: ~ts",
-					  [ InitialStatusString ] ),
+    ?test_notice_fmt( "Initial status of server: ~ts",
+                      [ InitialStatusString ] ),
 
-	FirstBlockPid = self(),
+    FirstBlockPid = self(),
 
-	FirstExternalID = class_IdentificationServer:forge_external_identifier(
-		FirstBlockPid ),
+    FirstExtId = class_IdentificationServer:forge_external_identifier(
+                                            FirstBlockPid ),
 
-	IdentificationServerPid ! { declareIdentifierAssociation,
-								[ FirstBlockPid, FirstExternalID ], self() },
+    IdSrvPid ! { declareIdentifierAssociation,
+                 [ FirstBlockPid, FirstExtId ], self() },
 
-	identifier_association_declared = test_receive(),
-
-
-	IdentificationServerPid !
-		{ getExternalIdentifier, [ FirstBlockPid ], self() },
-
-	FirstExternalID = test_receive(),
-
-	IdentificationServerPid ! { getBlockPID, [ FirstExternalID ], self() },
-
-	FirstBlockPid = test_receive(),
-
-	IdentificationServerPid ! { getStatus, [], self() },
-	IntermediateStatusString = test_receive(),
-
-	?test_notice_fmt( "Intermediate status of server: ~ts",
-					  [ IntermediateStatusString ] ),
+    identifier_association_declared = test_receive(),
 
 
+    IdSrvPid ! { getExternalIdentifier, [ FirstBlockPid ], self() },
 
-	% To have a different (quickly dead) PID:
-	SecondBlockPid = ?myriad_spawn( fun() -> ok end ),
+    FirstExtId = test_receive(),
 
-	SecondExternalID =
-		class_IdentificationServer:forge_external_identifier( SecondBlockPid ),
+    IdSrvPid ! { getBlockPID, [ FirstExtId ], self() },
 
-	IdAssociations = [ { FirstBlockPid, FirstExternalID },
-					   { SecondBlockPid, SecondExternalID } ],
+    FirstBlockPid = test_receive(),
 
-	IdentificationServerPid !
-		{ declareIdentifierAssociations, [ IdAssociations ], self() },
+    IdSrvPid ! { getStatus, [], self() },
+    IntermediateStatusString = test_receive(),
 
-	identifier_associations_declared = test_receive(),
-
-	BlockPids = [ SecondBlockPid, FirstBlockPid ],
-
-	IdentificationServerPid ! { getExternalIdentifiers, [ BlockPids ], self() },
-
-	[ SecondExternalID, FirstExternalID ] = test_receive(),
+    ?test_notice_fmt( "Intermediate status of server: ~ts",
+                      [ IntermediateStatusString ] ),
 
 
-	% Also useful for synchronous operation of the test:
-	IdentificationServerPid ! { getStatus, [], self() },
-	FinalStatusString = test_receive(),
 
-	?test_notice_fmt( "Final status of server: ~ts", [ FinalStatusString ] ),
+    % To have a different (quickly dead) PID:
+    SecondBlockPid = ?myriad_spawn( fun() -> ok end ),
 
-	class_IdentificationServer:stop(),
+    SecondExtId =
+        class_IdentificationServer:forge_external_identifier( SecondBlockPid ),
 
-	?case_stop.
+    IdAssociations = [ { FirstBlockPid, FirstExtId },
+                       { SecondBlockPid, SecondExtId } ],
+
+    IdSrvPid !
+        { declareIdentifierAssociations, [ IdAssociations ], self() },
+
+    identifier_associations_declared = test_receive(),
+
+    BlockPids = [ SecondBlockPid, FirstBlockPid ],
+
+    IdSrvPid ! { getExternalIdentifiers, [ BlockPids ], self() },
+
+    [ SecondExtId, FirstExtId ] = test_receive(),
+
+
+    % Also useful for synchronous operation of the test:
+    IdSrvPid ! { getStatus, [], self() },
+    FinalStatusString = test_receive(),
+
+    ?test_notice_fmt( "Final status of server: ~ts", [ FinalStatusString ] ),
+
+    class_IdentificationServer:stop(),
+
+    ?test_stop.

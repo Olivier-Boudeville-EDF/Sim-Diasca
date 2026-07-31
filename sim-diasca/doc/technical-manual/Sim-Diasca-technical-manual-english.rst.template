@@ -26,7 +26,7 @@ Technical Manual of the **Sim-Diasca** Simulation Engine
 :raw-latex:`\begin{center} \begin{tabular}{c c c} \multicolumn{2}{c}{\includegraphics[scale=0.3]{sim-diasca.png}} \\  \includegraphics[scale=0.4]{logo-EDF-english.png} & \includegraphics[scale=0.8]{lgpl-v3-logo-bordered.png} \\ \end{tabular} \end{center}`
 
 
-:raw-html:`<div class="banner"><p><em>Sim-Diasca Technical Manual</em> <a href="https://olivier-boudeville-edf.github.io/Sim-Diasca/">browse latest</a> <a href="Sim-Diasca-technical-manual-english.pdf">get PDF</a> <a href="#sim_diasca_top">go to top</a> <a href="#sim_diasca_toc">go to toc</a> <a href="#sim_diasca_bottom">go to bottom</a> <a href="api-doc/index.html">browse API</a> <a href="https://github.com/Olivier-Boudeville-EDF/Sim-Diasca/">go to project</a> <a href="mailto:olivier(dot)boudeville(at)edf(dot)fr?subject=[Sim-Diasca]%20Remark">email us</a></p></div>`
+:raw-html:`<div class="banner"><p><em>Sim-Diasca Technical Manual</em> <a href="https://edf-lab.github.io/Sim-Diasca/">browse latest</a> <a href="Sim-Diasca-technical-manual-english.pdf">get PDF</a> <a href="#sim_diasca_top">go to top</a> <a href="#sim_diasca_toc">go to toc</a> <a href="#sim_diasca_bottom">go to bottom</a> <a href="api-doc/index.html">browse API</a> <a href="https://github.com/EDF-Lab/Sim-Diasca/">go to project</a> <a href="mailto:olivier(dot)boudeville(at)edf(dot)fr?subject=[Sim-Diasca]%20Remark">email us</a></p></div>`
 
 
 
@@ -93,7 +93,7 @@ Sim-Diasca is a lightweight simulation platform, released by EDF R&D under the G
 This class of simulation encompasses a wide range of target systems, from ecosystems to information systems, i.e. it could be used for most applications in the so-called `Complex systems <http://en.wikipedia.org/wiki/Complex_systems>`_ scientific field.
 
 
-Before entering in the details of the present manual, we recommend the reader to go first through the `Sim-Diasca general-purpose presentation <https://raw.githubusercontent.com/wiki/Olivier-Boudeville-EDF/Sim-Diasca/documents/sim-diasca-general-purpose-english.pdf>`_ in order to benefit from a general overview.
+Before entering in the details of the present manual, we recommend the reader to go first through the `Sim-Diasca general-purpose presentation <https://raw.githubusercontent.com/wiki/EDF-Lab/Sim-Diasca/documents/sim-diasca-general-purpose-english.pdf>`_ in order to benefit from a general overview.
 
 As a matter of fact, a classical use case for Sim-Diasca is the simulation of industrial distributed systems federating a large number of networked devices.
 

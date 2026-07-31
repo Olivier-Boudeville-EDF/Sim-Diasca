@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -38,9 +38,9 @@ See `naming_utils_test.erl` for the corresponding test.
 
 % Registration functions.
 -export([ register_as/2, register_as/3, register_or_return_registered/2,
-		  unregister/2,
+          unregister/2,
 
-		  vet_registration_name/1, check_registration_name/1,
+          vet_registration_name/1, check_registration_name/1,
           vet_registration_scope/1, check_registration_scope/1 ]).
 
 
@@ -48,24 +48,24 @@ See `naming_utils_test.erl` for the corresponding test.
 % Lookup-related functions.
 -export([ vet_lookup_scope/1, check_lookup_scope/1,
 
-		  registration_to_lookup_scope/1,
+          registration_to_lookup_scope/1,
 
-		  get_registered_pid_for/1, get_maybe_registered_pid_for/1,
+          get_registered_pid_for/1, get_maybe_registered_pid_for/1,
           get_registered_pid_for/2, get_maybe_registered_pid_for/2,
 
-		  get_locally_registered_pid_for/2,
+          get_locally_registered_pid_for/2,
           get_maybe_locally_registered_pid_for/2,
 
           get_registered_pid_from/2, get_maybe_registered_pid_from/2,
 
-		  get_registered_names/1,
+          get_registered_names/1,
 
-		  is_registered/1, is_registered/2,
-		  wait_for_registration_of/2,
-		  wait_for_global_registration_of/1, wait_for_global_registration_of/2,
-		  wait_for_local_registration_of/1, wait_for_local_registration_of/2,
-		  wait_for_remote_local_registrations_of/2,
-		  display_registered/0, lookup_info_to_string/1 ]).
+          is_registered/1, is_registered/2,
+          wait_for_registration_of/1, wait_for_registration_of/2,
+          wait_for_global_registration_of/1, wait_for_global_registration_of/2,
+          wait_for_local_registration_of/1, wait_for_local_registration_of/2,
+          wait_for_remote_local_registrations_of/2,
+          display_registered/0, lookup_info_to_string/1 ]).
 
 
 
@@ -90,9 +90,9 @@ Tells where/how a given process shall be registered.
 Not to be mixed up with a look-up scope.
 """.
 -type registration_scope() :: 'global_only' % Registers only globally.
-							| 'local_only'  % Registers only locally.
-							| 'local_and_global' % Registers on both scopes.
-							| 'none'. % Do not register at all.
+                            | 'local_only'  % Registers only locally.
+                            | 'local_and_global' % Registers on both scopes.
+                            | 'none'. % Do not register at all.
 
 
 
@@ -117,7 +117,7 @@ Not to be mixed up with a registration scope.
 
 
 -export_type([ registration_name/0, local_designator/0,
-			   registration_scope/0, lookup_scope/0, lookup_info/0 ]).
+               registration_scope/0, lookup_scope/0, lookup_info/0 ]).
 
 
 
@@ -163,7 +163,7 @@ Throws an exception on failure (e.g. if that name is already registered).
 """.
 -spec register_as( registration_name(), registration_scope() ) -> void().
 register_as( RegName, RegScope ) ->
-	register_as( self(), RegName, RegScope ).
+    register_as( self(), RegName, RegScope ).
 
 
 
@@ -179,62 +179,62 @@ Throws an exception on failure.
 -spec register_as( pid(), registration_name(), registration_scope() ) -> void().
 register_as( Pid, RegName, local_only ) when is_atom( RegName ) ->
 
-	%trace_utils:debug_fmt( "register_as: local_only, "
-	%                       "with PID=~w and RegName='~p'.", [ Pid, RegName ] ),
+    %trace_utils:debug_fmt( "register_as: local_only, "
+    %                       "with PID=~w and RegName='~p'.", [ Pid, RegName ] ),
 
-	try erlang:register( RegName, Pid ) of
+    try erlang:register( RegName, Pid ) of
 
-		true ->
-			ok
+        true ->
+            ok
 
-	catch
+    catch
 
-		error:badarg ->
+        error:badarg ->
 
-			case is_registered( RegName, _RegScope=local ) of
+            case is_registered( RegName, _RegScope=local ) of
 
-				% No more information obtained:
-				not_registered ->
-					throw( { local_registration_failed, RegName,
-							 { error, badarg } } );
+                % No more information obtained:
+                not_registered ->
+                    throw( { local_registration_failed, RegName,
+                             { error, badarg } } );
 
-				Pid ->
-					throw( { local_registration_failed, RegName,
-							 already_registered, Pid } );
+                Pid ->
+                    throw( { local_registration_failed, RegName,
+                             already_registered, Pid } );
 
-				RegPid ->
-					throw( { local_registration_failed, RegName,
-							 already_registered, { Pid, RegPid } } )
+                RegPid ->
+                    throw( { local_registration_failed, RegName,
+                             already_registered, { Pid, RegPid } } )
 
-			end;
+            end;
 
-		ExceptionType:Exception ->
-			throw( { local_registration_failed, RegName,
-					 { ExceptionType, Exception } } )
+        ExceptionType:Exception ->
+            throw( { local_registration_failed, RegName,
+                     { ExceptionType, Exception } } )
 
-	end;
+    end;
 
 
 register_as( Pid, RegName, global_only ) when is_atom( RegName ) ->
 
-	%trace_utils:debug_fmt( "register_as: global_only, with PID=~w "
-	%                       "and RegName='~p'.", [ Pid, RegName ] ),
+    %trace_utils:debug_fmt( "register_as: global_only, with PID=~w "
+    %                       "and RegName='~p'.", [ Pid, RegName ] ),
 
-	global:register_name( RegName, Pid ) =:= yes orelse
-		throw( { global_registration_failed, RegName } );
+    global:register_name( RegName, Pid ) =:= yes orelse
+        throw( { global_registration_failed, RegName } );
 
 register_as( Pid, RegName, local_and_global ) when is_atom( RegName ) ->
-	register_as( Pid, RegName, local_only ),
-	register_as( Pid, RegName, global_only );
+    register_as( Pid, RegName, local_only ),
+    register_as( Pid, RegName, global_only );
 
 register_as( _Pid, _RegName, none ) ->
-	ok;
+    ok;
 
 register_as( _Pid, RegName, Other ) when is_atom( RegName ) ->
-	throw( { invalid_registration_scope, Other } );
+    throw( { invalid_registration_scope, Other } );
 
 register_as( _Pid, RegName, _Other ) ->
-	throw( { invalid_type_for_name, RegName } ).
+    throw( { invalid_type_for_name, RegName } ).
 
 
 
@@ -250,42 +250,42 @@ register: the first will succeed, all the others will get its PID, none will
 fail.
 """.
 -spec register_or_return_registered( registration_name(),
-	'global_only' | 'local_only' ) -> 'registered' | pid().
+    'global_only' | 'local_only' ) -> 'registered' | pid().
 register_or_return_registered( RegName, RegScope ) when is_atom( RegName ) ->
 
-	% Minor annoyance: we ensured that looking up a process relied generally on
-	% a different atom than registering it (e.g. 'global' vs 'global_only').
-	%
-	% Here, we expect the user to specify a registration atom; we need to
-	% convert it for look-up purposes:
-	%
-	LookUpScope = registration_to_lookup_scope( RegScope ),
+    % Minor annoyance: we ensured that looking up a process relied generally on
+    % a different atom than registering it (e.g. 'global' vs 'global_only').
+    %
+    % Here, we expect the user to specify a registration atom; we need to
+    % convert it for look-up purposes:
+    %
+    LookUpScope = registration_to_lookup_scope( RegScope ),
 
-	case is_registered( RegName, LookUpScope ) of
+    case is_registered( RegName, LookUpScope ) of
 
-		not_registered ->
+        not_registered ->
 
-			try
-				register_as( RegName, RegScope ),
-				registered
+            try
+                register_as( RegName, RegScope ),
+                registered
 
-			catch
+            catch
 
-				throw:_ ->
-					% Another process must have registered in-between, let's
-					% restart:
-					%
-					% (a small random waiting could be added here)
-					%
-					register_or_return_registered( RegName, RegScope )
+                throw:_ ->
+                    % Another process must have registered in-between, let's
+                    % restart:
+                    %
+                    % (a small random waiting could be added here)
+                    %
+                    register_or_return_registered( RegName, RegScope )
 
-			end;
+            end;
 
 
-		Pid ->
-			Pid
+        Pid ->
+            Pid
 
-	end.
+    end.
 
 
 
@@ -300,49 +300,49 @@ from all scopes.
 -spec unregister( registration_name(), registration_scope() ) -> void().
 unregister( RegName, local_only ) ->
 
-	try erlang:unregister( RegName ) of
+    try erlang:unregister( RegName ) of
 
-		true ->
-			ok
+        true ->
+            ok
 
-	catch
+    catch
 
-		ExceptionType:Exception ->
-			throw( { local_unregistration_failed, RegName,
-						{ ExceptionType, Exception } } )
+        ExceptionType:Exception ->
+            throw( { local_unregistration_failed, RegName,
+                        { ExceptionType, Exception } } )
 
-	end;
+    end;
 
 unregister( RegName, global_only ) ->
-	% Documentation says it returns "void" (actually 'ok'):
-	try
+    % Documentation says it returns "void" (actually 'ok'):
+    try
 
-		global:unregister_name( RegName )
+        global:unregister_name( RegName )
 
-	catch
+    catch
 
-		ExceptionType:Exception ->
-			throw( { global_unregistration_failed, RegName,
-					 { ExceptionType, Exception } } )
+        ExceptionType:Exception ->
+            throw( { global_unregistration_failed, RegName,
+                     { ExceptionType, Exception } } )
 
-	end;
+    end;
 
 unregister( RegName, local_and_global ) ->
-	unregister( RegName, local_only ),
-	unregister( RegName, global_only );
+    unregister( RegName, local_only ),
+    unregister( RegName, global_only );
 
 unregister( _RegName, none ) ->
-	ok.
+    ok.
 
 
 
 -doc "Tells whether the specified term is a legit registration name.".
 -spec vet_registration_name( term() ) -> boolean().
 vet_registration_name( RegName ) when is_atom( RegName ) ->
-	true;
+    true;
 
 vet_registration_name( _Other ) ->
-	false.
+    false.
 
 
 -doc "Checks that the specified term is a legit registration name.".
@@ -355,19 +355,19 @@ check_registration_name( Term ) ->
 -doc "Tells whether the specified term is a legit registration scope.".
 -spec vet_registration_scope( term() ) -> boolean().
 vet_registration_scope( global_only ) ->
-	true;
+    true;
 
 vet_registration_scope( local_only ) ->
-	true;
+    true;
 
 vet_registration_scope( local_and_global ) ->
-	true;
+    true;
 
 vet_registration_scope( none ) ->
-	true;
+    true;
 
 vet_registration_scope( _Other ) ->
-	false.
+    false.
 
 
 
@@ -382,22 +382,22 @@ check_registration_scope( Term ) ->
 -doc "Tells whether the specified term is a legit lookup scope.".
 -spec vet_lookup_scope( term() ) -> boolean().
 vet_lookup_scope( global ) ->
-	true;
+    true;
 
 vet_lookup_scope( local ) ->
-	true;
+    true;
 
 vet_lookup_scope( local_and_global ) ->
-	true;
+    true;
 
 vet_lookup_scope( local_otherwise_global ) ->
-	true;
+    true;
 
 vet_lookup_scope( global_otherwise_local ) ->
-	true;
+    true;
 
 vet_lookup_scope( _Other ) ->
-	false.
+    false.
 
 
 -doc "Checks that the specified term is a legit lookup scope.".
@@ -416,16 +416,16 @@ clause is triggered.
 """.
 -spec registration_to_lookup_scope( registration_scope() ) -> lookup_scope().
 registration_to_lookup_scope( _RegScope=global_only ) ->
-	global;
+    global;
 
 registration_to_lookup_scope( _RegScope=local_only ) ->
-	local;
+    local;
 
 registration_to_lookup_scope( _RegScope=local_and_global ) ->
-	local_and_global;
+    local_and_global;
 
 registration_to_lookup_scope( _RegScope=none ) ->
-	throw( no_possible_lookup_for_none ).
+    throw( no_possible_lookup_for_none ).
 
 
 
@@ -439,7 +439,7 @@ in which case a local registering will be tried first, and if not found a global
 one will be tried then.
 
 No specific waiting for registration will be performed, see
-`wait_for_*_registration_of` instead.
+`wait_for_*_registration_of/*` instead.
 """.
 -spec get_maybe_registered_pid_for( lookup_info() | registration_name() ) ->
                                                 option( pid() ).
@@ -447,7 +447,7 @@ get_maybe_registered_pid_for( _LookUpInfo={ RegName, LookupScope } ) ->
      get_maybe_registered_pid_for( RegName, LookupScope );
 
 get_maybe_registered_pid_for( RegName ) ->
-	get_maybe_registered_pid_for( RegName,
+    get_maybe_registered_pid_for( RegName,
                                   _LookupScope=local_otherwise_global ).
 
 
@@ -461,14 +461,14 @@ be tried then.
 Throws an exception on failure.
 
 No specific waiting for registration will be performed, see
-`wait_for_*_registration_of` instead.
+`wait_for_*_registration_of/*` instead.
 """.
 -spec get_registered_pid_for( lookup_info() | registration_name() ) -> pid().
 get_registered_pid_for( _LookUpInfo={ RegName, LookupScope } ) ->
     get_registered_pid_for( RegName, LookupScope );
 
 get_registered_pid_for( RegName ) ->
-	get_registered_pid_for( RegName, _LookupScope=local_otherwise_global ).
+    get_registered_pid_for( RegName, _LookupScope=local_otherwise_global ).
 
 
 
@@ -485,10 +485,10 @@ No specific waiting for registration will be performed, see
 -spec get_maybe_registered_pid_for( registration_name(), lookup_scope() ) ->
                                                 option( pid() ).
 get_maybe_registered_pid_for( RegName, _LookupScope=global ) ->
-	global:whereis_name( RegName );
+    global:whereis_name( RegName );
 
 get_maybe_registered_pid_for( RegName, _LookupScope=local ) ->
-	erlang:whereis( RegName );
+    erlang:whereis( RegName );
 
 get_maybe_registered_pid_for( RegName, _LookupScope=local_and_global ) ->
     % We have the choice, and local must be cheaper:
@@ -553,9 +553,9 @@ specified node.
                                 atom_node_name() ) -> option( pid() ).
 get_maybe_locally_registered_pid_for( RegName, TargetNode ) ->
 
-	case rpc:call( TargetNode, _Mod=erlang, _Fun=whereis, _Args=[ RegName ] ) of
+    case rpc:call( TargetNode, _Mod=erlang, _Fun=whereis, _Args=[ RegName ] ) of
 
-		{ badrpc, _Reason } ->
+        { badrpc, _Reason } ->
 
             %trace_utils:format( "No process found registered locally as '~ts' "
             %    "on node '~ts'; reason: ~w.",
@@ -564,10 +564,10 @@ get_maybe_locally_registered_pid_for( RegName, TargetNode ) ->
             undefined;
 
         % option(pid()):
-		Res  ->
-			Res
+        Res  ->
+            Res
 
-	end.
+    end.
 
 
 
@@ -579,7 +579,7 @@ specified node (which thus may not be the current one).
 Throws an exception on failure.
 """.
 -spec get_locally_registered_pid_for( registration_name(), atom_node_name() ) ->
-											pid().
+                                            pid().
 get_locally_registered_pid_for( RegName, TargetNode ) ->
     case get_maybe_locally_registered_pid_for( RegName, TargetNode ) of
 
@@ -682,73 +682,73 @@ local look-up scope.
 -spec get_registered_names( lookup_scope() ) -> [ registration_name() ].
 % Preferring not matching other look-up scopes:
 get_registered_names( _LookUpScope=global ) ->
-	global:registered_names();
+    global:registered_names();
 
 get_registered_names( _LookUpScope=local ) ->
-	erlang:registered().
+    erlang:registered().
 
 
 
 -doc """
-Tells whether specified name is registered in the specified local/global
-context: if no, returns the `not_registered` atom, otherwise returns the
+Tells whether the specified name is registered in a local otherwise global
+context: if not, returns the `not_registered` atom, otherwise returns the
 corresponding PID.
 
 Local registering will be requested first, if not found global one will be
 tried.
 
 No specific waiting for registration will be performed, see
-`wait_for_*_registration_of` instead.
+`wait_for_*_registration_of/*` instead.
 """.
 -spec is_registered( registration_name() ) -> pid() | 'not_registered'.
 is_registered( Name ) ->
-	is_registered( Name, _RegScope=local_otherwise_global ).
+    is_registered( Name, _RegScope=local_otherwise_global ).
 
 
 
 -doc """
-Tells whether specified name is registered in the specified scope: if no,
+Tells whether the specified name is registered in the specified scope: if not,
 returns the `not_registered` atom, otherwise returns the corresponding PID.
 
 No specific waiting for registration will be performed, see
 `wait_for_*_registration_of` instead.
 """.
 -spec is_registered( registration_name(), lookup_scope() ) ->
-						pid() | 'not_registered'.
+                        pid() | 'not_registered'.
 is_registered( Name, _LookUpScope=global ) ->
 
-	case global:whereis_name( Name ) of
+    case global:whereis_name( Name ) of
 
-		undefined ->
-			cond_utils:if_defined( myriad_debug_registration,
-				trace_utils:debug_fmt( "The name '~ts' is not globally "
-					"registered; the ones that are are:~n  ~p",
-					[ Name, get_registered_names( global ) ] ) ),
+        undefined ->
+            cond_utils:if_defined( myriad_debug_registration,
+                trace_utils:debug_fmt( "The name '~ts' is not globally "
+                    "registered; the ones that are are:~n  ~p",
+                    [ Name, get_registered_names( global ) ] ) ),
 
-			not_registered ;
+            not_registered ;
 
-		Pid ->
-			Pid
+        Pid ->
+            Pid
 
-	end;
+    end;
 
 
 is_registered( Name, _LookUpScope=local ) ->
 
-	case erlang:whereis( Name ) of
+    case erlang:whereis( Name ) of
 
-		undefined ->
-			cond_utils:if_defined( myriad_debug_registration,
-				trace_utils:debug_fmt( "The name '~ts' is not locally "
-					"registered; the ones that are are:~n  ~p",
-					[ Name, get_registered_names( local ) ] ) ),
+        undefined ->
+            cond_utils:if_defined( myriad_debug_registration,
+                trace_utils:debug_fmt( "The name '~ts' is not locally "
+                    "registered; the ones that are are:~n  ~p",
+                    [ Name, get_registered_names( local ) ] ) ),
 
-			not_registered;
+            not_registered;
 
-		Pid ->
-			Pid
+        Pid ->
+            Pid
 
-	end;
+    end;
 
 
 % Returns a PID iff both local and global look-ups returns a PID, and the same
@@ -756,69 +756,69 @@ is_registered( Name, _LookUpScope=local ) ->
 %
 is_registered( Name, _LookUpScope=local_and_global ) ->
 
-	case is_registered( Name, local ) of
+    case is_registered( Name, local ) of
 
-		not_registered ->
-			cond_utils:if_defined( myriad_debug_registration,
-				trace_utils:debug_fmt( "First, the name '~ts' is not locally "
-					"registered; the ones that are are:~n  ~p",
-					[ Name, get_registered_names( local ) ] ) ),
+        not_registered ->
+            cond_utils:if_defined( myriad_debug_registration,
+                trace_utils:debug_fmt( "First, the name '~ts' is not locally "
+                    "registered; the ones that are are:~n  ~p",
+                    [ Name, get_registered_names( local ) ] ) ),
 
-			not_registered;
+            not_registered;
 
-		Pid ->
-			case is_registered( Name, global ) of
+        Pid ->
+            case is_registered( Name, global ) of
 
-				% Already bound!
-				Pid ->
-					Pid;
+                % Already bound!
+                Pid ->
+                    Pid;
 
-				not_registered ->
-					cond_utils:if_defined( myriad_debug_registration,
-						trace_utils:debug_fmt( "Second, the name '~ts' is not "
-							"globally registered; the ones that are are:~n  ~p",
-							[ Name, get_registered_names( global ) ] ) ),
+                not_registered ->
+                    cond_utils:if_defined( myriad_debug_registration,
+                        trace_utils:debug_fmt( "Second, the name '~ts' is not "
+                            "globally registered; the ones that are are:~n  ~p",
+                            [ Name, get_registered_names( global ) ] ) ),
 
-					not_registered;
+                    not_registered;
 
-				OtherPid ->
-					cond_utils:if_defined( myriad_debug_registration,
-						trace_utils:warning_fmt( "The name '~ts' is "
-							"globally registered, but to a PID (~w) different "
-							"from the local one (~w), hence considered NOT "
-							"registered.", [ Name, OtherPid, Pid ] ),
-						basic_utils:ignore_unused( OtherPid	) ),
+                OtherPid ->
+                    cond_utils:if_defined( myriad_debug_registration,
+                        trace_utils:warning_fmt( "The name '~ts' is "
+                            "globally registered, but to a PID (~w) different "
+                            "from the local one (~w), hence considered NOT "
+                            "registered.", [ Name, OtherPid, Pid ] ),
+                        basic_utils:ignore_unused( OtherPid ) ),
 
-					not_registered
+                    not_registered
 
-			end
+            end
 
-	end;
+    end;
 
 
 is_registered( Name, _LookUpScope=local_otherwise_global ) ->
 
-	case is_registered( Name, local ) of
+    case is_registered( Name, local ) of
 
-		not_registered ->
-			is_registered( Name, global );
+        not_registered ->
+            is_registered( Name, global );
 
-		Pid ->
-			Pid
+        Pid ->
+            Pid
 
-	end;
+    end;
 
 is_registered( Name, _LookUpScope=global_otherwise_local ) ->
 
-	case is_registered( Name, global ) of
+    case is_registered( Name, global ) of
 
-		not_registered ->
-			is_registered( Name, local );
+        not_registered ->
+            is_registered( Name, local );
 
-		Pid ->
-			Pid
+        Pid ->
+            Pid
 
-	end;
+    end;
 
 % Normally, 'local_only', 'global_only' and 'none' should only be specified for
 % registration (not for looking-up); nevertheless the following clauses allow to
@@ -829,42 +829,54 @@ is_registered( Name, _LookUpScope=global_otherwise_local ) ->
 % notably in static methods (see the registration_scope defines).
 %
 is_registered( Name, _LookUpScope=local_only ) ->
-	is_registered( Name, local );
+    is_registered( Name, local );
 
 is_registered( Name, _LookUpScope=global_only ) ->
-	is_registered( Name, global ).
+    is_registered( Name, global ).
 
 
 
 -doc """
-Waits (up to a few seconds) until specified name is registered, within specified
-scope.
+Waits (up to a few seconds) until the specified name is registered, within
+specified scope.
+
+Returns the resolved PID, or throws an exception.
+""".
+-spec wait_for_registration_of( lookup_info() ) -> pid().
+wait_for_registration_of( _LookUpInfo={ RegName, LookupScope } ) ->
+    wait_for_registration_of( RegName, LookupScope ).
+
+
+
+-doc """
+Waits (up to a few seconds) until the specified name is registered, within
+specified scope.
 
 Returns the resolved PID, or throws an exception.
 """.
 -spec wait_for_registration_of( registration_name(), lookup_scope() ) -> pid().
 wait_for_registration_of( Name, _LookUpScope=global ) ->
-	wait_for_global_registration_of( Name );
+    wait_for_global_registration_of( Name );
 
 wait_for_registration_of( Name, _LookUpScope=local ) ->
-	wait_for_local_registration_of( Name );
+    wait_for_local_registration_of( Name );
 
 wait_for_registration_of( Name, _LookUpScope=local_and_global ) ->
-	% Then we go for the cheapest, the local one:
-	wait_for_local_registration_of( Name );
+    % Then we go for the cheapest, the local one:
+    wait_for_local_registration_of( Name );
 
 wait_for_registration_of( Name, _LookUpScope=local_otherwise_global ) ->
-	wait_for_local_otherwise_global_registration_of( Name );
+    wait_for_local_otherwise_global_registration_of( Name );
 
 wait_for_registration_of( Name, _LookUpScope=global_otherwise_local ) ->
-	wait_for_global_otherwise_local_registration_of( Name );
+    wait_for_global_otherwise_local_registration_of( Name );
 
 wait_for_registration_of( Name, _LookUpScope=none ) ->
-	throw( { no_lookup_scope_for, Name } );
+    throw( { no_lookup_scope_for, Name } );
 
 wait_for_registration_of( Name, InvalidLookUpScope ) ->
-	% Probably a registration one:
-	throw( { invalid_lookup_scope, InvalidLookUpScope, Name } ).
+    % Probably a registration one:
+    throw( { invalid_lookup_scope, InvalidLookUpScope, Name } ).
 
 
 
@@ -876,7 +888,7 @@ Name}` exception.
 """.
 -spec wait_for_global_registration_of( registration_name() ) -> pid().
 wait_for_global_registration_of( Name ) ->
-	wait_for_global_registration_of( Name, _Seconds=10 ).
+    wait_for_global_registration_of( Name, _Seconds=10 ).
 
 
 
@@ -889,25 +901,25 @@ Name}` exception.
 """.
 wait_for_global_registration_of( Name, _Seconds=0 ) ->
 
-	cond_utils:if_defined( myriad_debug_registration,
-		trace_utils:error_fmt( "Global registration of '~ts' timed-out; "
-			"globally registered processes: ~w",
-			[ Name, lists:sort(
-				get_registered_names( _LookUpScope=global ) ) ] ) ),
+    cond_utils:if_defined( myriad_debug_registration,
+        trace_utils:error_fmt( "Global registration of '~ts' timed-out; "
+            "globally registered processes: ~w",
+            [ Name, lists:sort(
+                get_registered_names( _LookUpScope=global ) ) ] ) ),
 
-	throw( { registration_waiting_timeout, Name, global } );
+    throw( { registration_waiting_timeout, Name, global } );
 
 wait_for_global_registration_of( Name, SecondsToWait ) ->
-	case global:whereis_name( Name ) of
+    case global:whereis_name( Name ) of
 
-		undefined ->
-			timer:sleep( 1000 ),
-			wait_for_global_registration_of( Name, SecondsToWait-1 );
+        undefined ->
+            timer:sleep( 1000 ),
+            wait_for_global_registration_of( Name, SecondsToWait-1 );
 
-		Pid ->
-			Pid
+        Pid ->
+            Pid
 
-	end.
+    end.
 
 
 
@@ -919,7 +931,7 @@ Name}`.
 """.
 -spec wait_for_local_registration_of( registration_name() ) -> pid() | port().
 wait_for_local_registration_of( Name ) ->
-	wait_for_local_registration_of( Name, _Seconds=5 ).
+    wait_for_local_registration_of( Name, _Seconds=5 ).
 
 
 
@@ -932,26 +944,26 @@ Name}`.
 """.
 wait_for_local_registration_of( Name, _Seconds=0 ) ->
 
-	cond_utils:if_defined( myriad_debug_registration,
-		trace_utils:error_fmt( "Local registration of '~ts' timed-out; "
-			"locally registered processes: ~w",
-			[ Name, lists:sort(
-				get_registered_names( _LookUpScope=local ) ) ] ) ),
+    cond_utils:if_defined( myriad_debug_registration,
+        trace_utils:error_fmt( "Local registration of '~ts' timed-out; "
+            "locally registered processes: ~w",
+            [ Name, lists:sort(
+                get_registered_names( _LookUpScope=local ) ) ] ) ),
 
-	throw( { registration_waiting_timeout, Name, local } );
+    throw( { registration_waiting_timeout, Name, local } );
 
 wait_for_local_registration_of( Name, SecondsToWait ) ->
 
-	case erlang:whereis( Name ) of
+    case erlang:whereis( Name ) of
 
-		undefined ->
-			timer:sleep( 1000 ),
-			wait_for_local_registration_of( Name, SecondsToWait-1 );
+        undefined ->
+            timer:sleep( 1000 ),
+            wait_for_local_registration_of( Name, SecondsToWait-1 );
 
-		Pid ->
-			Pid
+        Pid ->
+            Pid
 
-	end.
+    end.
 
 
 
@@ -963,9 +975,9 @@ Returns the resolved PID, or throws a `{registration_waiting_timeout, RegScope,
 Name}` exception.
 """.
 -spec wait_for_local_otherwise_global_registration_of( registration_name() ) ->
-																pid().
+                                                                pid().
 wait_for_local_otherwise_global_registration_of( Name ) ->
-	wait_for_local_otherwise_global_registration_of( Name, _Seconds=10 ).
+    wait_for_local_otherwise_global_registration_of( Name, _Seconds=10 ).
 
 
 
@@ -977,28 +989,28 @@ Returns the resolved PID, or throws a `{registration_waiting_timeout, RegScope,
 Name}` exception.
 """.
 wait_for_local_otherwise_global_registration_of( Name, _Seconds=0 ) ->
-	throw( { registration_waiting_timeout, Name, local_otherwise_global } );
+    throw( { registration_waiting_timeout, Name, local_otherwise_global } );
 
 wait_for_local_otherwise_global_registration_of( Name, SecondsToWait ) ->
-	case erlang:whereis( Name ) of
+    case erlang:whereis( Name ) of
 
-		undefined ->
-			case global:whereis_name( Name ) of
+        undefined ->
+            case global:whereis_name( Name ) of
 
-				undefined ->
-					timer:sleep( 1000 ),
-					wait_for_local_otherwise_global_registration_of( Name,
-						SecondsToWait-1 );
+                undefined ->
+                    timer:sleep( 1000 ),
+                    wait_for_local_otherwise_global_registration_of( Name,
+                        SecondsToWait-1 );
 
-				Pid ->
-					Pid
+                Pid ->
+                    Pid
 
-			end;
+            end;
 
-		Pid ->
-			Pid
+        Pid ->
+            Pid
 
-	end.
+    end.
 
 
 
@@ -1010,9 +1022,9 @@ Returns the resolved PID, or throws a `{registration_waiting_timeout, Scope,
 Name}` exception.
 """.
 -spec wait_for_global_otherwise_local_registration_of( registration_name() ) ->
-																pid().
+                                                                pid().
 wait_for_global_otherwise_local_registration_of( Name ) ->
-	wait_for_global_otherwise_local_registration_of( Name, _Seconds=10 ).
+    wait_for_global_otherwise_local_registration_of( Name, _Seconds=10 ).
 
 
 
@@ -1024,28 +1036,28 @@ Returns the resolved PID, or throws a `{registration_waiting_timeout, RegScope,
 Name}` exception.
 """.
 wait_for_global_otherwise_local_registration_of( Name, _Seconds=0 ) ->
-	throw( { registration_waiting_timeout, Name, global_otherwise_local } );
+    throw( { registration_waiting_timeout, Name, global_otherwise_local } );
 
 wait_for_global_otherwise_local_registration_of( Name, SecondsToWait ) ->
-	case global:whereis_name( Name ) of
+    case global:whereis_name( Name ) of
 
-		undefined ->
-			case erlang:whereis( Name ) of
+        undefined ->
+            case erlang:whereis( Name ) of
 
-				undefined ->
-					timer:sleep( 1000 ),
-					wait_for_global_otherwise_local_registration_of( Name,
-						SecondsToWait-1 );
+                undefined ->
+                    timer:sleep( 1000 ),
+                    wait_for_global_otherwise_local_registration_of( Name,
+                        SecondsToWait-1 );
 
-				Pid ->
-					Pid
+                Pid ->
+                    Pid
 
-			end;
+            end;
 
-		Pid ->
-			Pid
+        Pid ->
+            Pid
 
-	end.
+    end.
 
 
 
@@ -1056,47 +1068,47 @@ all specified nodes before returning.
 A time-out is triggered if the waited duration exceeds 10 seconds.
 """.
 -spec wait_for_remote_local_registrations_of( registration_name(),
-											  [ atom_node_name() ] ) -> void().
+                                              [ atom_node_name() ] ) -> void().
 wait_for_remote_local_registrations_of( RegisteredName, Nodes ) ->
 
-	% Up to 10 seconds, 0.5 seconds of waiting between two, thus 20 attempts:
-	RemainingAttempts = round( 10 / 0.5 ),
+    % Up to 10 seconds, 0.5 seconds of waiting between two, thus 20 attempts:
+    RemainingAttempts = round( 10 / 0.5 ),
 
-	wait_for_remote_local_registrations_of( RegisteredName, Nodes,
-											RemainingAttempts ).
+    wait_for_remote_local_registrations_of( RegisteredName, Nodes,
+                                            RemainingAttempts ).
 
 
 % Helper function.
 wait_for_remote_local_registrations_of( RegisteredName, Nodes,
-										_RemainingAttempts=0 ) ->
-	throw( { time_out_while_waiting_remote_registration, local, RegisteredName,
-			 Nodes } );
+                                        _RemainingAttempts=0 ) ->
+    throw( { time_out_while_waiting_remote_registration, local, RegisteredName,
+             Nodes } );
 
 wait_for_remote_local_registrations_of( RegisteredName, Nodes,
-										RemainingAttempts ) ->
+                                        RemainingAttempts ) ->
 
-	{ ResList, BadNodes } = rpc:multicall( Nodes, erlang, whereis,
-										   [ RegisteredName  ], _Timeout=2000 ),
+    { ResList, BadNodes } = rpc:multicall( Nodes, erlang, whereis,
+                                           [ RegisteredName  ], _Timeout=2000 ),
 
-	BadNodes =/= [] andalso
-			throw( { bad_nodes_while_waiting_remote_registration, local,
-					 RegisteredName, BadNodes } ),
+    BadNodes =/= [] andalso
+            throw( { bad_nodes_while_waiting_remote_registration, local,
+                     RegisteredName, BadNodes } ),
 
-	lists:member( undefined, ResList ) andalso
-		begin
+    lists:member( undefined, ResList ) andalso
+        begin
 
-			% Happens regularly on some settings:
-			%trace_utils:debug_fmt( "wait_for_remote_local_registrations_of: "
-			%   "for ~p, retry needed.", [ Nodes ] ),
+            % Happens regularly on some settings:
+            %trace_utils:debug_fmt( "wait_for_remote_local_registrations_of: "
+            %   "for ~p, retry needed.", [ Nodes ] ),
 
-			% At least one node not ready (we do not know which one), waiting a
-			% bit for it:
-			%
-			timer:sleep( 500 ),
-			wait_for_remote_local_registrations_of( RegisteredName, Nodes,
-													RemainingAttempts - 1 )
+            % At least one node not ready (we do not know which one), waiting a
+            % bit for it:
+            %
+            timer:sleep( 500 ),
+            wait_for_remote_local_registrations_of( RegisteredName, Nodes,
+                                                    RemainingAttempts - 1 )
 
-		end.
+        end.
 
 
 
@@ -1104,30 +1116,30 @@ wait_for_remote_local_registrations_of( RegisteredName, Nodes,
 -spec display_registered() -> void().
 display_registered() ->
 
-	io:format( "On a total of ~B existing processes on node '~ts':~n",
-			   [ length( processes() ), node() ] ),
+    io:format( "On a total of ~B existing processes on node '~ts':~n",
+               [ length( processes() ), node() ] ),
 
-	case global:registered_names() of
+    case global:registered_names() of
 
-		[] ->
-			io:format( " - no process is globally-registered~n" );
+        [] ->
+            io:format( " - no process is globally-registered~n" );
 
-		Globals ->
-			io:format( " - ~B processes are globally-registered:~n~p~n",
-					   [ length( Globals ), Globals ] )
+        Globals ->
+            io:format( " - ~B processes are globally-registered:~n~p~n",
+                       [ length( Globals ), Globals ] )
 
-	end,
+    end,
 
-	case registered() of
+    case registered() of
 
-		[] ->
-			io:format( " - no process is locally-registered~n" );
+        [] ->
+            io:format( " - no process is locally-registered~n" );
 
-		Locals ->
-			io:format( " - ~B processes are locally-registered:~n~p~n",
-					   [ length( Locals ), Locals ] )
+        Locals ->
+            io:format( " - ~B processes are locally-registered:~n~p~n",
+                       [ length( Locals ), Locals ] )
 
-	end.
+    end.
 
 
 

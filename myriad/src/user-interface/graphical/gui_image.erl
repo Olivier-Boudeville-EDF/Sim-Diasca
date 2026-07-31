@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -62,18 +62,18 @@ opposed to bitmaps).
 
 -doc "Designates a supported file format able to store bitmap images.".
 -type image_bitmap_format() :: 'png'
-							 | 'jpeg'
-							 | 'bmp'
-							 | 'gif'
-							 | 'pcx'
-							 | 'tiff'
-							 | 'tga'
-							 | 'pnm'
-							 | 'iff'
-							 | 'xpm'
-							 | 'ico'
-							 | 'cur'
-							 | 'ani'.
+                             | 'jpeg'
+                             | 'bmp'
+                             | 'gif'
+                             | 'pcx'
+                             | 'tiff'
+                             | 'tga'
+                             | 'pnm'
+                             | 'iff'
+                             | 'xpm'
+                             | 'ico'
+                             | 'cur'
+                             | 'ani'.
 
 
 
@@ -129,25 +129,25 @@ A small rectangular bitmap usually used for denoting a minimised application.
 
 
 -export_type([ image/0,
-			   image_bitmap_format/0, image_vector_format/0, image_format/0,
-			   image_quality/0,
-			   image_path/0, bin_image_path/0, any_image_path/0,
-			   icon/0 ]).
+               image_bitmap_format/0, image_vector_format/0, image_format/0,
+               image_quality/0,
+               image_path/0, bin_image_path/0, any_image_path/0,
+               icon/0 ]).
 
 
 % For images:
 -export([ image_format_to_extension/1,
-		  load_from_file/1, load_from_file/2,
-		  destruct/1, destruct_multiple/1,
+          load_from_file/1, load_from_file/2,
+          destruct/1, destruct_multiple/1,
 
-		  get_width/1, get_height/1, get_size/1,
+          get_width/1, get_height/1, get_size/1,
 
-		  has_alpha/1,
-		  load/2, load/3, save/2, save/3,
-		  scale/3, scale/4, mirror/2,
-		  colorize/2,
-		  to_bitmap/1,
-		  to_string/1 ]).
+          has_alpha/1,
+          load/2, load/3, save/2, save/3,
+          scale/3, scale/4, mirror/2,
+          colorize/2,
+          to_bitmap/1,
+          to_string/1 ]).
 
 
 % Other functions:
@@ -209,24 +209,24 @@ to auto-detect the image format of that file.
 -spec load_from_file( any_image_path() ) -> image().
 load_from_file( AnyImagePath ) ->
 
-	ImagePath = text_utils:ensure_string( AnyImagePath ),
+    ImagePath = text_utils:ensure_string( AnyImagePath ),
 
-	check_image_path( ImagePath ),
+    check_image_path( ImagePath ),
 
-	Image = wxImage:new( ImagePath ),
+    Image = wxImage:new( ImagePath ),
 
-	%trace_utils:debug_fmt( "Image has alpha channel: ~ts.",
-	%                       [ has_alpha( Image ) ] ),
+    %trace_utils:debug_fmt( "Image has alpha channel: ~ts.",
+    %                       [ has_alpha( Image ) ] ),
 
-	case wxImage:isOk( Image ) of
+    case wxImage:isOk( Image ) of
 
-		true ->
-			Image;
+        true ->
+            Image;
 
-		false ->
-			throw( { image_loading_failed, ImagePath } )
+        false ->
+            throw( { image_loading_failed, ImagePath } )
 
-	end.
+    end.
 
 
 
@@ -239,21 +239,21 @@ expecting the image format of the file to be specified one.
 % translated as a Mimetype):
 load_from_file( ImageFormat, AnyImagePath ) ->
 
-	ImagePath = text_utils:ensure_string( AnyImagePath ),
+    ImagePath = text_utils:ensure_string( AnyImagePath ),
 
-	check_image_path( ImagePath ),
+    check_image_path( ImagePath ),
 
-	Image = wxImage:new( ImagePath ),
+    Image = wxImage:new( ImagePath ),
 
-	case wxImage:isOk( Image ) of
+    case wxImage:isOk( Image ) of
 
-		true ->
-			Image;
+        true ->
+            Image;
 
-		false ->
-			throw( { image_loading_failed, ImagePath, ImageFormat } )
+        false ->
+            throw( { image_loading_failed, ImagePath, ImageFormat } )
 
-	end.
+    end.
 
 
 
@@ -265,7 +265,7 @@ deallocation.
 """.
 -spec destruct( maybe_list( image() ) ) -> void().
 destruct( Image ) ->
-	wxImage:destroy( Image ).
+    wxImage:destroy( Image ).
 
 
 
@@ -277,35 +277,35 @@ deallocations.
 """.
 -spec destruct_multiple( [ image() ] ) -> void().
 destruct_multiple( Images ) ->
-	[ wxImage:destroy( Img ) || Img <- Images ].
+    [ wxImage:destroy( Img ) || Img <- Images ].
 
 
 
 -doc "Returns the width of the specified image.".
 -spec get_width( image() ) -> width().
 get_width( Image ) ->
-	wxImage:getWidth( Image ).
+    wxImage:getWidth( Image ).
 
 
 
 -doc "Returns the height of the specified image.".
 -spec get_height( image() ) -> height().
 get_height( Image ) ->
-	wxImage:getHeight( Image ).
+    wxImage:getHeight( Image ).
 
 
 
 -doc "Returns the size of the specified image.".
 -spec get_size( image() ) -> dimensions().
 get_size( Image ) ->
-	{ wxImage:getWidth( Image ), wxImage:getHeight( Image ) }.
+    { wxImage:getWidth( Image ), wxImage:getHeight( Image ) }.
 
 
 
 -doc "Tells whether the specified image has an alpha channel.".
 -spec has_alpha( image() ) -> boolean().
 has_alpha( Image ) ->
-	wxImage:hasAlpha( Image ).
+    wxImage:hasAlpha( Image ).
 
 
 
@@ -314,8 +314,8 @@ Scales the specified image to the specified dimensions, with a default quality.
 """.
 -spec scale( image(), width(), height() ) -> void().
 scale( Image, Width, Height ) ->
-	% In-place; default, unknown quality:
-	wxImage:rescale( Image, Width, Height ).
+    % In-place; default, unknown quality:
+    wxImage:rescale( Image, Width, Height ).
 
 
 
@@ -325,8 +325,8 @@ quality.
 """.
 -spec scale( image(), width(), height(), image_quality() ) -> void().
 scale( Image, Width, Height, Quality ) ->
-	WxQuality = to_wx_image_quality( Quality ),
-	wxImage:rescale( Image, Width, Height, _Opts=[ { quality, WxQuality } ] ).
+    WxQuality = to_wx_image_quality( Quality ),
+    wxImage:rescale( Image, Width, Height, _Opts=[ { quality, WxQuality } ] ).
 
 
 
@@ -336,10 +336,10 @@ one once mirrored as requested.
 """.
 -spec mirror( image(), orientation() ) -> image().
 mirror( Image, _Orientation=horizontal ) ->
-	wxImage:mirror( Image, [ { horizontally, true } ] );
+    wxImage:mirror( Image, [ { horizontally, true } ] );
 
 mirror( Image, _Orientation=vertical ) ->
-	wxImage:mirror( Image, [ { horizontally, false } ] ).
+    wxImage:mirror( Image, [ { horizontally, false } ] ).
 
 
 
@@ -350,10 +350,10 @@ trying to auto-detect the image format of that file.
 -spec load( image(), any_image_path() ) -> void().
 load( Image, ImagePath ) ->
 
-	check_image_path( ImagePath ),
+    check_image_path( ImagePath ),
 
-	wxImage:loadFile( Image, ImagePath ) orelse
-		throw( { image_loading_failed, ImagePath } ).
+    wxImage:loadFile( Image, ImagePath ) orelse
+        throw( { image_loading_failed, ImagePath } ).
 
 
 
@@ -364,13 +364,13 @@ expecting the image format of the file to be the specified one.
 -spec load( image(), image_format(), any_image_path() ) -> void().
 load( Image, ImageFormat, ImagePath ) ->
 
-	check_image_path( ImagePath ),
+    check_image_path( ImagePath ),
 
-	WxImageFormat = to_wx_image_format( ImageFormat ),
+    WxImageFormat = to_wx_image_format( ImageFormat ),
 
-	wxImage:loadFile( Image, ImagePath,
-					  _Opts=[ { type, WxImageFormat } ] ) orelse
-		throw( { image_loading_failed, ImagePath, ImageFormat } ).
+    wxImage:loadFile( Image, ImagePath,
+                      _Opts=[ { type, WxImageFormat } ] ) orelse
+        throw( { image_loading_failed, ImagePath, ImageFormat } ).
 
 
 
@@ -381,10 +381,10 @@ trying to auto-detect the image format for that file, based on its extension.
 -spec save( image(), any_image_path() ) -> void().
 save( Image, ImagePath ) ->
 
-	wxImage:saveFile( Image, ImagePath ) orelse
-		throw( { image_saving_failed, ImagePath } ).
+    wxImage:saveFile( Image, ImagePath ) orelse
+        throw( { image_saving_failed, ImagePath } ).
 
-	% Could be added: check_image_path( ImagePath ).
+    % Could be added: check_image_path( ImagePath ).
 
 
 
@@ -395,12 +395,12 @@ according to the specified image format.
 -spec save( image(), image_format(), any_image_path() ) -> void().
 save( Image, ImageFormat, ImagePath ) ->
 
-	WxImageFormat = to_wx_image_format( ImageFormat ),
+    WxImageFormat = to_wx_image_format( ImageFormat ),
 
-	wxImage:saveFile( Image, ImagePath, WxImageFormat ) orelse
-		throw( { image_saving_failed, ImagePath, ImageFormat } ).
+    wxImage:saveFile( Image, ImagePath, WxImageFormat ) orelse
+        throw( { image_saving_failed, ImagePath, ImageFormat } ).
 
-	% Could be added: check_image_path( ImagePath ).
+    % Could be added: check_image_path( ImagePath ).
 
 
 
@@ -409,12 +409,12 @@ Returns a colorized image, that is an image of the specified color, modulated by
 the alpha coordinates found in the specified RGBA buffer.
 """.
 -spec colorize( rgba_color_buffer(), color_by_decimal() ) ->
-										rgba_color_buffer().
+                                        rgba_color_buffer().
 colorize( SrcBuffer, _Color={ R, G, B } ) ->
-	% Binary comprehension (and wxImage:setData/3 tells that alpha buffer size
-	% is width*height*3, hence dropping 2 out of the 3 elements):
-	%
-	<< <<R:8, G:8, B:8, A:8>> || <<A:8, _:8, _:8>> <= SrcBuffer >>.
+    % Binary comprehension (and wxImage:setData/3 tells that alpha buffer size
+    % is width*height*3, hence dropping 2 out of the 3 elements):
+    %
+    << <<R:8, G:8, B:8, A:8>> || <<A:8, _:8, _:8>> <= SrcBuffer >>.
 
 
 
@@ -425,10 +425,10 @@ Does not alter that image.
 """.
 -spec to_bitmap( image() ) -> bitmap().
 to_bitmap( Image ) ->
-	ImgBitmap = wxBitmap:new( Image ),
-	wxBitmap:isOk( ImgBitmap ) orelse
-		throw( { conversion_to_bitmap_failed, Image } ),
-	ImgBitmap.
+    ImgBitmap = wxBitmap:new( Image ),
+    wxBitmap:isOk( ImgBitmap ) orelse
+        throw( { conversion_to_bitmap_failed, Image } ),
+    ImgBitmap.
 
 
 
@@ -436,18 +436,18 @@ to_bitmap( Image ) ->
 -spec to_string( image() ) -> ustring().
 to_string( Image ) ->
 
-	AlphaStr = case wxImage:hasAlpha( Image ) of
+    AlphaStr = case wxImage:hasAlpha( Image ) of
 
-		true ->
-			"RGBA";
+        true ->
+            "RGBA";
 
-		false ->
-			"RGB"
+        false ->
+            "RGB"
 
-	end,
+    end,
 
-	text_utils:format( "~Bx~B ~ts image",
-		[ wxImage:getWidth( Image ), wxImage:getHeight( Image ), AlphaStr ] ).
+    text_utils:format( "~Bx~B ~ts image",
+        [ wxImage:getWidth( Image ), wxImage:getHeight( Image ), AlphaStr ] ).
 
 
 
@@ -455,20 +455,20 @@ to_string( Image ) ->
 -spec get_standard_icon( standard_icon_name_id() ) -> icon().
 get_standard_icon( StdIconId ) ->
 
-	WxArtId = gui_wx_backend:to_wx_icon_id( StdIconId ),
+    WxArtId = gui_wx_backend:to_wx_icon_id( StdIconId ),
 
-	% Computed (not a literal constant):
-	NullIcon = ?wxNullIcon,
+    % Computed (not a literal constant):
+    NullIcon = ?wxNullIcon,
 
-	case wxArtProvider:getIcon( WxArtId ) of
+    case wxArtProvider:getIcon( WxArtId ) of
 
-		NullIcon ->
-			throw( { standard_icon_not_available, StdIconId, WxArtId } );
+        NullIcon ->
+            throw( { standard_icon_not_available, StdIconId, WxArtId } );
 
-		Icon ->
-			Icon
+        Icon ->
+            Icon
 
-	end.
+    end.
 
 
 
@@ -476,24 +476,24 @@ get_standard_icon( StdIconId ) ->
 -spec create_bitmap( any_image_path() ) -> bitmap().
 create_bitmap( ImagePath ) ->
 
-	check_image_path( ImagePath ),
+    check_image_path( ImagePath ),
 
-	Image = wxImage:new( ImagePath ),
+    Image = wxImage:new( ImagePath ),
 
-	% Not using to_bitmap/1 to offer a more precise exception if needed:
-	ImgBitmap = wxBitmap:new( Image ),
-	wxImage:destroy( Image ),
-	case wxBitmap:isOk( ImgBitmap ) of
+    % Not using to_bitmap/1 to offer a more precise exception if needed:
+    ImgBitmap = wxBitmap:new( Image ),
+    wxImage:destroy( Image ),
+    case wxBitmap:isOk( ImgBitmap ) of
 
-		true ->
-			ImgBitmap;
+        true ->
+            ImgBitmap;
 
-		false ->
-			% No more information found:
-			throw( { bitmap_creation_failed,
-					 text_utils:ensure_string( ImagePath ) } )
+        false ->
+            % No more information found:
+            throw( { bitmap_creation_failed,
+                     text_utils:ensure_string( ImagePath ) } )
 
-	end.
+    end.
 
 
 
@@ -505,67 +505,67 @@ corresponding plain string.
 """.
 -spec image_format_to_extension( image_format() ) -> extension().
 image_format_to_extension( ImgFormat ) ->
-	% Currently sufficient:
-	text_utils:atom_to_string( ImgFormat ).
+    % Currently sufficient:
+    text_utils:atom_to_string( ImgFormat ).
 
 
 
 -doc "Converts the specified MyriadGUI image format into a wx one.".
 -spec to_wx_image_format( image_format() ) -> media_type().
 to_wx_image_format( png ) ->
-	?wxBITMAP_TYPE_PNG;
+    ?wxBITMAP_TYPE_PNG;
 
 to_wx_image_format( jpeg ) ->
-	?wxBITMAP_TYPE_JPEG;
+    ?wxBITMAP_TYPE_JPEG;
 
 to_wx_image_format( bmp ) ->
-	?wxBITMAP_TYPE_BMP;
+    ?wxBITMAP_TYPE_BMP;
 
 to_wx_image_format( gif ) ->
-	?wxBITMAP_TYPE_GIF;
+    ?wxBITMAP_TYPE_GIF;
 
 to_wx_image_format( pcx ) ->
-	?wxBITMAP_TYPE_PCX;
+    ?wxBITMAP_TYPE_PCX;
 
 to_wx_image_format( tiff ) ->
-	?wxBITMAP_TYPE_TIFF;
+    ?wxBITMAP_TYPE_TIFF;
 
 to_wx_image_format( tga ) ->
-	?wxBITMAP_TYPE_TGA;
+    ?wxBITMAP_TYPE_TGA;
 
 to_wx_image_format( pnm ) ->
-	?wxBITMAP_TYPE_PNM;
+    ?wxBITMAP_TYPE_PNM;
 
 to_wx_image_format( iff  ) ->
-	?wxBITMAP_TYPE_IFF;
+    ?wxBITMAP_TYPE_IFF;
 
 to_wx_image_format( xpm ) ->
-	?wxBITMAP_TYPE_XPM;
+    ?wxBITMAP_TYPE_XPM;
 
 to_wx_image_format( ico ) ->
-	?wxBITMAP_TYPE_ICO;
+    ?wxBITMAP_TYPE_ICO;
 
 to_wx_image_format( cur ) ->
-	?wxBITMAP_TYPE_CUR;
+    ?wxBITMAP_TYPE_CUR;
 
 to_wx_image_format( ani ) ->
-	?wxBITMAP_TYPE_ANI;
+    ?wxBITMAP_TYPE_ANI;
 
 to_wx_image_format( Other ) ->
-	throw( { unknown_image_format, Other } ).
+    throw( { unknown_image_format, Other } ).
 
 
 
 -doc "Converts the specified MyriadGUI image format into a wx one.".
 -spec to_wx_image_quality( image_quality() ) -> wx_enum().
 to_wx_image_quality( normal ) ->
-	?wxIMAGE_QUALITY_NORMAL;
+    ?wxIMAGE_QUALITY_NORMAL;
 
 to_wx_image_quality( high ) ->
-	?wxIMAGE_QUALITY_HIGH;
+    ?wxIMAGE_QUALITY_HIGH;
 
 to_wx_image_quality( Other ) ->
-	throw( { unknown_image_quality, Other } ).
+    throw( { unknown_image_quality, Other } ).
 
 
 
@@ -574,16 +574,16 @@ to_wx_image_quality( Other ) ->
 -spec check_image_path( any_image_path() ) -> void().
 check_image_path( ImagePath ) ->
 
-	file_utils:is_existing_file_or_link( ImagePath ) orelse
-		begin
-			% Useful for relative paths:
-			CurrentDir = file_utils:get_current_directory(),
+    file_utils:is_existing_file_or_link( ImagePath ) orelse
+        begin
+            % Useful for relative paths:
+            CurrentDir = file_utils:get_current_directory(),
 
-			trace_utils:error_fmt( "The image path '~ts' "
-				"does not exist as a file or a symbolic link "
-				"(while current directory is '~ts').",
-				[ ImagePath, CurrentDir ] ),
+            trace_utils:error_fmt( "The image path '~ts' "
+                "does not exist as a file or a symbolic link "
+                "(while current directory is '~ts').",
+                [ ImagePath, CurrentDir ] ),
 
-			throw( { non_existing_image_path, ImagePath } )
+            throw( { non_existing_image_path, ImagePath } )
 
-		end.
+        end.

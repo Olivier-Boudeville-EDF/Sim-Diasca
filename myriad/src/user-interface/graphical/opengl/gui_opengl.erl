@@ -1,4 +1,4 @@
-% Copyright (C) 2017-2025 Olivier Boudeville
+% Copyright (C) 2017-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -131,8 +131,8 @@ information.
 
 -doc "The OpenGL base numerical types.".
 -type gl_base_type() :: ?GL_BYTE | ?GL_UNSIGNED_BYTE | ?GL_UNSIGNED_SHORT
-					  | ?GL_SHORT | ?GL_UNSIGNED_INT | ?GL_INT
-					  | ?GL_FLOAT | ?GL_DOUBLE.
+                      | ?GL_SHORT | ?GL_UNSIGNED_INT | ?GL_INT
+                      | ?GL_FLOAT | ?GL_DOUBLE.
 
 
 -doc "A value belonging to an OpenGL enumeration.".
@@ -162,9 +162,9 @@ responsible for the corresponding OpenGL implementation.
 Useful to trigger vendor-specific fixes.
 """.
 -type vendor() :: 'nvidia'
-				| 'amd' % Ex-ATI
-				| 'intel'
-				| 'unknown'.
+                | 'amd' % Ex-ATI
+                | 'intel'
+                | 'unknown'.
 
 
 
@@ -200,7 +200,7 @@ relatively to a particular version of OpenGL.
 Apparently the 'compatibility' profile is the default one.
 """.
 -type gl_profile() :: 'core'           % Deprecated functions are disabled
-					| 'compatibility'. % Deprecated functions are allowed
+                    | 'compatibility'. % Deprecated functions are allowed
 
 
 
@@ -247,42 +247,42 @@ example the WX_GL_DEBUG define does exist and is indeed managed.
 """.
 -type device_context_attribute() ::
 
-	% Use true color (the default if no attributes at all are specified); do not
-	% use a palette. Then each element contains all four components, each of
-	% which is clamped to the range [0,1]:
-	%
-	'rgba' | 'bgra'
+    % Use true color (the default if no attributes at all are specified); do not
+    % use a palette. Then each element contains all four components, each of
+    % which is clamped to the range [0,1]:
+    %
+    'rgba' | 'bgra'
 
-	% To enable double-buffering if present:
+    % To enable double-buffering if present:
   | 'double_buffer'
 
-	% Use red buffer with at least this number of bits:
+    % Use red buffer with at least this number of bits:
   | { 'min_red_size', bit_size() }
 
-	% Use green buffer with at least this number of bits:
+    % Use green buffer with at least this number of bits:
   | { 'min_green_size', bit_size() }
 
-	% Use blue buffer with at least this number of bits:
+    % Use blue buffer with at least this number of bits:
   | { 'min_blue_size', bit_size() }
 
-	% The number of bits for Z-buffer (typically 0, 16 or 32):
+    % The number of bits for Z-buffer (typically 0, 16 or 32):
   | { 'depth_buffer_size', bit_size() }
 
-	% Enable MSAA, i.e. Multisample anti-aliasing; one should check it is
-	% available beforehand (see is_msaa_available/0), otherwise GPUs (e.g. Intel
-	% ones, if MSAA driver management has been turned off on Intel Control
-	% Panel) may crash (refer to wings_gl.erl for more details).
-	%
+    % Enable MSAA, i.e. Multisample anti-aliasing; one should check it is
+    % available beforehand (see is_msaa_available/0), otherwise GPUs (e.g. Intel
+    % ones, if MSAA driver management has been turned off on Intel Control
+    % Panel) may crash (refer to wings_gl.erl for more details).
+    %
   | 'msaa'
 
-	% Request the use of an OpenGL core profile (as opposed to a mere
-	% compatibility one); note that is implies requesting at least OpenGL
-	% version 3.0; at least in some settings, this attribute seems to be ignored
-	% (a compatibility profile being returned).
-	%
+    % Request the use of an OpenGL core profile (as opposed to a mere
+    % compatibility one); note that is implies requesting at least OpenGL
+    % version 3.0; at least in some settings, this attribute seems to be ignored
+    % (a compatibility profile being returned).
+    %
   | 'use_core_profile'
 
-	% Use an OpenGL debug context:
+    % Use an OpenGL debug context:
   | 'debug_context'.
 
 
@@ -292,7 +292,7 @@ Options of an OpenGL canvas.
 Not limited to the GL attributes.
 ".
 -type gl_canvas_option() :: { 'gl_attributes', [ device_context_attribute() ] }
-						  | gui_wx_backend:other_wx_device_context_attribute().
+                          | gui_wx_backend:other_wx_device_context_attribute().
 
 
 
@@ -332,9 +332,9 @@ This is the coordinate type of UV coordinates.
 
 -doc "The various matrix stacks available, a.k.a. the current matrix mode.".
 -type matrix_stack() :: ?GL_MODELVIEW
-					  | ?GL_PROJECTION
-					  | ?GL_TEXTURE
-					  | ?GL_COLOR.
+                      | ?GL_PROJECTION
+                      | ?GL_TEXTURE
+                      | ?GL_COLOR.
 
 
 
@@ -362,26 +362,26 @@ This enables the GL implementation to possibly make more intelligent decisions
 that may significantly impact buffer object performance.
 """.
 -type buffer_usage_hint() ::
-		{ buffer_access_usage(), buffer_access_pattern() }.
+        { buffer_access_usage(), buffer_access_pattern() }.
 
 
 
 -doc "The expected access usage for an OpenGL buffer.".
 -type buffer_access_usage() ::
-	'draw'  % The buffer will be modified by the application, and used as
-			% the source for GL drawing and image specification commands.
+    'draw'  % The buffer will be modified by the application, and used as
+            % the source for GL drawing and image specification commands.
 
   | 'read'  % The buffer will be modified by reading data from OpenGL, and
-			% used to return that data when queried by the application.
+            % used to return that data when queried by the application.
 
   | 'copy'. % The buffer is modified by reading data from OpenGL, and used
-			% to return that data when queried by the application.
+            % to return that data when queried by the application.
 
 
 
 -doc "The expected access pattern for an OpenGL buffer.".
 -type buffer_access_pattern() ::
-	'stream'   % The buffer will be modified once, and used at most a few times.
+    'stream'   % The buffer will be modified once, and used at most a few times.
   | 'static'   % The buffer will be modified once, and used many times.
   | 'dynamic'. % The buffer will be modified repeatedly, and used many times.
 
@@ -410,7 +410,7 @@ allocate the object.
 
 -doc "A selection of polygons, based on how they face the viewpoint (winding).".
 -type polygon_facing_mode() ::
-	'front_facing'           % for front-facing polygons
+    'front_facing'           % for front-facing polygons
   | 'back_facing'            % for back-facing polygons
   | 'front_and_back_facing'. % for front- and back-facing polygons
 
@@ -423,10 +423,10 @@ For example:
 gl:enable(?GL_CULL_FACE), % Enables the culling of faces.
 gl:cullFace(?GL_BACK),    % Culls the back faces.
 gl:frontFace(?GL_CW),     % Front faces are here the ones whose vertices
-						  % are listed clockwise.
+                          % are listed clockwise.
 """.
 -type gl_polygon_facing_mode() ::
-	?GL_FRONT           % for front-facing polygons
+    ?GL_FRONT           % for front-facing polygons
   | ?GL_BACK            % for back-facing polygons
   | ?GL_FRONT_AND_BACK. % for front- and back-facing polygons
 
@@ -434,16 +434,16 @@ gl:frontFace(?GL_CW),     % Front faces are here the ones whose vertices
 
 -doc "Specifies how polygons are to be rasterized.".
 -type rasterization_mode() ::
-	'raster_as_points'
+    'raster_as_points'
   | 'raster_as_lines' % Segments.
   | 'raster_filled'.  % The interior of the polygon is filled; the default, for
-					  % both front- and back-facing polygons
+                      % both front- and back-facing polygons
 
 
 
 -doc "The (low-level) rasterization mode.".
 -type gl_rasterization_mode() ::
-	?GL_POINT
+    ?GL_POINT
   | ?GL_LINE
   | ?GL_FILL.
 
@@ -452,16 +452,16 @@ gl:frontFace(?GL_CW),     % Front faces are here the ones whose vertices
 
 -doc "The source of a debug message.".
 -type actual_debug_source() :: 'api'
-							 | 'window_system'
-							 | 'shader_compiler'
-							 | 'third_party'
-							 | 'application'
-							 | 'other'.
+                             | 'window_system'
+                             | 'shader_compiler'
+                             | 'third_party'
+                             | 'application'
+                             | 'other'.
 
 
 -doc "The specification of debug source(s).".
 -type debug_source() :: actual_debug_source()
-					  | 'all'.
+                      | 'all'.
 
 
 -doc """
@@ -469,63 +469,63 @@ A (low-level) OpenGL source of debug messages, typically specified in order to
 be enabled or disabled.
 """.
 -type gl_debug_source() :: ?GL_DEBUG_SOURCE_API
-						 | ?GL_DEBUG_SOURCE_WINDOW_SYSTEM
-						 | ?GL_DEBUG_SOURCE_SHADER_COMPILER
-						 | ?GL_DEBUG_SOURCE_THIRD_PARTY
-						 | ?GL_DEBUG_SOURCE_APPLICATION
-						 | ?GL_DEBUG_SOURCE_OTHER
-						 | ?GL_DONT_CARE. % all of them
+                         | ?GL_DEBUG_SOURCE_WINDOW_SYSTEM
+                         | ?GL_DEBUG_SOURCE_SHADER_COMPILER
+                         | ?GL_DEBUG_SOURCE_THIRD_PARTY
+                         | ?GL_DEBUG_SOURCE_APPLICATION
+                         | ?GL_DEBUG_SOURCE_OTHER
+                         | ?GL_DONT_CARE. % all of them
 
 
 
 -doc "The type of an actual OpenGL debug message.".
 -type actual_debug_type() :: 'type_error'
-						   | 'deprecated_behaviour'
-						   | 'undefined_behaviour'
-						   | 'portability'
-						   | 'performance'
-						   | 'marker'
-						   | 'push_group'
-						   | 'pop_group'
-						   | 'other'.
+                           | 'deprecated_behaviour'
+                           | 'undefined_behaviour'
+                           | 'portability'
+                           | 'performance'
+                           | 'marker'
+                           | 'push_group'
+                           | 'pop_group'
+                           | 'other'.
 
 
 -doc "The specification of type(s) of an actual OpenGL debug message.".
 -type debug_type() :: actual_debug_type()
-					| 'all'.
+                    | 'all'.
 
 
 -doc "The (low-level) type of debug messages to enable or disable.".
 -type gl_debug_type() :: ?GL_DEBUG_TYPE_ERROR
-					   | ?GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR
-					   | ?GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR
-					   | ?GL_DEBUG_TYPE_PORTABILITY
-					   | ?GL_DEBUG_TYPE_PERFORMANCE
-					   | ?GL_DEBUG_TYPE_MARKER
-					   | ?GL_DEBUG_TYPE_PUSH_GROUP
-					   | ?GL_DEBUG_TYPE_POP_GROUP
-					   | ?GL_DEBUG_TYPE_OTHER
-					   | ?GL_DONT_CARE. % all of them
+                       | ?GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR
+                       | ?GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR
+                       | ?GL_DEBUG_TYPE_PORTABILITY
+                       | ?GL_DEBUG_TYPE_PERFORMANCE
+                       | ?GL_DEBUG_TYPE_MARKER
+                       | ?GL_DEBUG_TYPE_PUSH_GROUP
+                       | ?GL_DEBUG_TYPE_POP_GROUP
+                       | ?GL_DEBUG_TYPE_OTHER
+                       | ?GL_DONT_CARE. % all of them
 
 
 
 -doc "The severity of debug messages to enable or disable.".
 -type actual_debug_severity() :: 'low'
-							   | 'medium'
-							   | 'high'.
+                               | 'medium'
+                               | 'high'.
 
 
 
 -doc "The overall severity of debug messages to enable or disable.".
 -type debug_severity() :: actual_debug_severity()
-						| 'all'.
+                        | 'all'.
 
 
 -doc "The (low-level) severity of debug messages to enable or disable.".
 -type gl_debug_severity() :: ?GL_DEBUG_SEVERITY_LOW
-						   | ?GL_DEBUG_SEVERITY_MEDIUM
-						   | ?GL_DEBUG_SEVERITY_HIGH
-						   | ?GL_DONT_CARE. % all of them
+                           | ?GL_DEBUG_SEVERITY_MEDIUM
+                           | ?GL_DEBUG_SEVERITY_HIGH
+                           | ?GL_DONT_CARE. % all of them
 
 
 -doc "To filter debug messages.".
@@ -593,105 +593,105 @@ A 4x4 (float) matrix (hence with 16 elements), according to the conventions of
 the gl module.
 """.
 -type gl_matrix4() :: { f(), f(), f(), f(), f(), f(), f(), f(), f(),
-						f(), f(), f(), f(), f(), f(), f() }.
+                        f(), f(), f(), f(), f(), f(), f() }.
 
 
 
 -doc "A message in the debug context, with its metadata.".
 -type debug_context_message() :: { debug_message_id(), Message :: bin_string(),
-	actual_debug_severity(), actual_debug_source(), actual_debug_type() }.
+    actual_debug_severity(), actual_debug_source(), actual_debug_type() }.
 
 
 -export_type([ gl_base_type/0, enum/0, glxinfo_report/0,
-			   vendor_name/0, renderer_name/0, platform_identifier/0,
-			   gl_version/0, gl_profile/0, gl_extension/0, info_table_id/0,
-			   gl_canvas/0, gl_canvas_option/0,
-			   device_context_attribute/0, gl_context/0,
+               vendor_name/0, renderer_name/0, platform_identifier/0,
+               gl_version/0, gl_profile/0, gl_extension/0, info_table_id/0,
+               gl_canvas/0, gl_canvas_option/0,
+               device_context_attribute/0, gl_context/0,
 
-			   factor/0, length_factor/0,
-			   gl_boolean/0,
-			   matrix_stack/0, gl_buffer/0, gl_buffer_id/0,
+               factor/0, length_factor/0,
+               gl_boolean/0,
+               matrix_stack/0, gl_buffer/0, gl_buffer_id/0,
 
-			   gl_error/0, glu_error/0, any_error/0,
-			   glu_id/0,
+               gl_error/0, glu_error/0, any_error/0,
+               glu_id/0,
 
-			   polygon_facing_mode/0, gl_polygon_facing_mode/0,
-			   rasterization_mode/0, gl_rasterization_mode/0 ]).
+               polygon_facing_mode/0, gl_polygon_facing_mode/0,
+               rasterization_mode/0, gl_rasterization_mode/0 ]).
 
 
 % For gl linear types:
 -export_type([ gl_vector2/0, gl_vector3/0, gl_vector4/0,
-			   gl_matrix2/0, gl_matrix3/0, gl_matrix4/0 ]).
+               gl_matrix2/0, gl_matrix3/0, gl_matrix4/0 ]).
 
 
 % For the debug context:
 -export_type([ actual_debug_source/0, debug_source/0, gl_debug_source/0,
-			   actual_debug_type/0, debug_type/0, gl_debug_type/0,
-			   actual_debug_severity/0, debug_severity/0, gl_debug_severity/0,
-			   debug_selector/0, debug_message_id/0, debug_context_message/0 ]).
+               actual_debug_type/0, debug_type/0, gl_debug_type/0,
+               actual_debug_severity/0, debug_severity/0, gl_debug_severity/0,
+               debug_selector/0, debug_message_id/0, debug_context_message/0 ]).
 
 
 % General OpenGL information:
 -export([ get_vendor_name/0, get_vendor/0,
-		  get_renderer_name/0, get_platform_identifier/0,
-		  get_version_string/0, get_version/0, get_version/1,
-		  get_supported_profile/0, get_supported_profile/1,
-		  get_supported_extensions/0, get_support_description/0,
+          get_renderer_name/0, get_platform_identifier/0,
+          get_version_string/0, get_version/0, get_version/1,
+          get_supported_profile/0, get_supported_profile/1,
+          get_supported_extensions/0, get_support_description/0,
 
-		  init_info_table/0, secure_info_table/0,
-		  is_version_compatible_with/1, is_version_compatible_with/2,
-		  is_extension_supported/1, is_extension_supported/2,
-		  are_extensions_supported/1, are_extensions_supported/2,
-		  get_unsupported_extensions/1, get_unsupported_extensions/2,
+          init_info_table/0, secure_info_table/0,
+          is_version_compatible_with/1, is_version_compatible_with/2,
+          is_extension_supported/1, is_extension_supported/2,
+          are_extensions_supported/1, are_extensions_supported/2,
+          get_unsupported_extensions/1, get_unsupported_extensions/2,
 
-		  check_requirements/1, check_requirements/2, check_requirements/3,
+          check_requirements/1, check_requirements/2, check_requirements/3,
 
-		  is_hardware_accelerated/0, is_hardware_accelerated/1,
-		  get_glxinfo_strings/0,
+          is_hardware_accelerated/0, is_hardware_accelerated/1,
+          get_glxinfo_strings/0,
 
-		  get_component_size/1, gl_type_to_string/1,
+          get_component_size/1, gl_type_to_string/1,
 
-		  get_base_path/0 ]).
+          get_base_path/0 ]).
 
 
 % Error-related operations:
 -export([ check_error/0, check_error/1,
-		  check_gl_error/0, check_gl_error/1,
-		  check_gl_debug_context_error/0, check_gl_debug_context_error/1,
-		  interpret_error/1 ]).
+          check_gl_error/0, check_gl_error/1,
+          check_gl_debug_context_error/0, check_gl_debug_context_error/1,
+          interpret_error/1 ]).
 
 
 % Support of the OpenGL debug context:
 -export([ is_debug_context_supported/0, is_debug_context_enabled/0,
 
-		  enable_all_debug_context_reporting/0,
-		  disable_all_debug_context_reporting/0,
+          enable_all_debug_context_reporting/0,
+          disable_all_debug_context_reporting/0,
 
-		  enable_debug_context_reporting/3, disable_debug_context_reporting/3,
+          enable_debug_context_reporting/3, disable_debug_context_reporting/3,
 
-		  set_debug_context_reporting/4, insert_debug_context_message/5,
-		  get_debug_context_messages/0, get_debug_context_messages/3,
+          set_debug_context_reporting/4, insert_debug_context_message/5,
+          get_debug_context_messages/0, get_debug_context_messages/3,
 
-		  debug_context_message_to_string/1, debug_context_messages_to_string/1
+          debug_context_message_to_string/1, debug_context_messages_to_string/1
 
-		]).
+        ]).
 
 
 % Rendering-related operations:
 -export([ get_default_canvas_attributes/0,
-		  create_canvas/1, create_canvas/2,
-		  create_context/1, set_context_on_shown/2, set_context/2,
-		  swap_buffers/1,
+          create_canvas/1, create_canvas/2,
+          create_context/1, set_context_on_shown/2, set_context/2,
+          swap_buffers/1,
 
-		  set_polygon_raster_mode/2,
+          set_polygon_raster_mode/2,
 
-		  render_mesh/1,
+          render_mesh/1,
 
-		  enter_2d_mode/1, leave_2d_mode/0,
+          enter_2d_mode/1, leave_2d_mode/0,
 
-		  set_matrix/1, get_matrix/1,
+          set_matrix/1, get_matrix/1,
 
-		  boolean_to_gl/1, buffer_usage_hint_to_gl/1 ]).
+          boolean_to_gl/1, buffer_usage_hint_to_gl/1 ]).
 
 
 % API for module generation:
@@ -707,7 +707,7 @@ the gl module.
 -type three_digit_version() :: basic_utils:three_digit_version().
 
 -type two_or_three_digit_version() :: two_digit_version()
-									| three_digit_version().
+                                    | three_digit_version().
 
 -type ustring() :: text_utils:ustring().
 -type bin_string() :: text_utils:bin_string().
@@ -748,10 +748,10 @@ Only available if a current OpenGL context is set.
 """.
 -spec get_vendor_name() -> vendor_name().
 get_vendor_name() ->
-	Res= gl:getString( ?GL_VENDOR ),
-	cond_utils:if_defined( myriad_check_opengl, check_error() ),
+    Res= gl:getString( ?GL_VENDOR ),
+    cond_utils:if_defined( myriad_check_opengl, check_error() ),
 
-	text_utils:string_to_binary( Res ).
+    text_utils:string_to_binary( Res ).
 
 
 
@@ -765,39 +765,39 @@ Only available if a current OpenGL context is set.
 """.
 -spec get_vendor() -> vendor().
 get_vendor() ->
-	VendorName = get_vendor_name(),
-	CanonicalName = text_utils:to_lowercase( VendorName ),
-	Elems = text_utils:split_at_whitespaces( CanonicalName ),
+    VendorName = get_vendor_name(),
+    CanonicalName = text_utils:to_lowercase( VendorName ),
+    Elems = text_utils:split_at_whitespaces( CanonicalName ),
 
-	% By decreasing discrimination power:
-	case lists:member( "nvidia", Elems ) of
+    % By decreasing discrimination power:
+    case lists:member( "nvidia", Elems ) of
 
-		true ->
-			nvidia;
+        true ->
+            nvidia;
 
-		false ->
-			case lists:member( "intel" , Elems ) of
+        false ->
+            case lists:member( "intel" , Elems ) of
 
-				true ->
-					intel;
+                true ->
+                    intel;
 
-				false ->
-					case lists:member( "amd", Elems ) of
+                false ->
+                    case lists:member( "amd", Elems ) of
 
-						true ->
-							amd;
+                        true ->
+                            amd;
 
-						false ->
-							trace_utils:warning_fmt( "Unable to determine the "
-								"OpenGL vendor corresponding to '~ts'.",
-								[ VendorName ] ),
-							unknown
+                        false ->
+                            trace_utils:warning_fmt( "Unable to determine the "
+                                "OpenGL vendor corresponding to '~ts'.",
+                                [ VendorName ] ),
+                            unknown
 
-					end
+                    end
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -811,10 +811,10 @@ Only available if a current OpenGL context is set.
 """.
 -spec get_renderer_name() -> renderer_name().
 get_renderer_name() ->
-	Res = gl:getString( ?GL_RENDERER ),
-	cond_utils:if_defined( myriad_check_opengl, check_error() ),
+    Res = gl:getString( ?GL_RENDERER ),
+    cond_utils:if_defined( myriad_check_opengl, check_error() ),
 
-	text_utils:string_to_binary( Res ).
+    text_utils:string_to_binary( Res ).
 
 
 
@@ -828,7 +828,7 @@ Only available if a current OpenGL context is set.
 """.
 -spec get_platform_identifier() -> platform_identifier().
  get_platform_identifier() ->
-	{ get_vendor_name(), get_renderer_name() }.
+    { get_vendor_name(), get_renderer_name() }.
 
 
 
@@ -843,21 +843,21 @@ Only available if a current OpenGL context is set.
 """.
 -spec get_version_string() -> option( ustring() ).
 get_version_string() ->
-	MaybeRes = try gl:getString( ?GL_VERSION ) of
+    MaybeRes = try gl:getString( ?GL_VERSION ) of
 
-		Str ->
-			Str
+        Str ->
+            Str
 
-	catch E ->
-		trace_utils:warning_fmt( "Unable to obtain the OpenGL version "
-								 "string: ~p.", [ E ] ),
-		undefined
+    catch E ->
+        trace_utils:warning_fmt( "Unable to obtain the OpenGL version "
+                                 "string: ~p.", [ E ] ),
+        undefined
 
-	end,
+    end,
 
-	cond_utils:if_defined( myriad_check_opengl, check_error() ),
+    cond_utils:if_defined( myriad_check_opengl, check_error() ),
 
-	MaybeRes.
+    MaybeRes.
 
 
 
@@ -875,68 +875,68 @@ Only available if a current OpenGL context is set.
 -spec get_version() -> gl_version().
 get_version() ->
 
-	% Instead of single-element lists, extra (garbage?) elements are returned by
-	% gl:getIntegerv/1:
-	%
-	% (disabled, as the third version number, 'release', is not available that
-	% way)
-	%
-	%Major = hd( gl:getIntegerv( ?GL_MAJOR_VERSION ) ),
-	%Minor = hd( gl:getIntegerv( ?GL_MINOR_VERSION ) ),
+    % Instead of single-element lists, extra (garbage?) elements are returned by
+    % gl:getIntegerv/1:
+    %
+    % (disabled, as the third version number, 'release', is not available that
+    % way)
+    %
+    %Major = hd( gl:getIntegerv( ?GL_MAJOR_VERSION ) ),
+    %Minor = hd( gl:getIntegerv( ?GL_MINOR_VERSION ) ),
 
-	case get_version_string() of
+    case get_version_string() of
 
-		undefined ->
-			AssumedVersion = { 1, 1, 0 },
-			trace_utils:warning_fmt( "Unable to determine the OpenGL version, "
-				"assuming ~ts",
-				[ text_utils:version_to_string( AssumedVersion ) ] ),
-			AssumedVersion;
+        undefined ->
+            AssumedVersion = { 1, 1, 0 },
+            trace_utils:warning_fmt( "Unable to determine the OpenGL version, "
+                "assuming ~ts",
+                [ text_utils:version_to_string( AssumedVersion ) ] ),
+            AssumedVersion;
 
-		VersionStr ->
+        VersionStr ->
 
-			%trace_utils:debug_fmt( "OpenGL version string: '~ts'.",
-			%                       [ VersionStr ] ),
+            %trace_utils:debug_fmt( "OpenGL version string: '~ts'.",
+            %                       [ VersionStr ] ),
 
-			% Parsing "4.6.0 FOOBAR 495.44" for example:
-			{ MajStr, MinStr, Release } = case text_utils:split( VersionStr,
-					_Delimiters=[ $., $ ] ) of
+            % Parsing "4.6.0 FOOBAR 495.44" for example:
+            { MajStr, MinStr, Release } = case text_utils:split( VersionStr,
+                    _Delimiters=[ $., $ ] ) of
 
-				% Assuming a release version 0 if not having better information:
-				[ MajorStr, MinorStr ] ->
-					trace_utils:warning( "No release version for OpenGL "
-										 "returned, assuming 0."),
-					{ MajorStr, MinorStr, _ReleaseI=0 };
+                % Assuming a release version 0 if not having better information:
+                [ MajorStr, MinorStr ] ->
+                    trace_utils:warning( "No release version for OpenGL "
+                                         "returned, assuming 0."),
+                    { MajorStr, MinorStr, _ReleaseI=0 };
 
-				% Typically Mesa:
-				[ MajorStr, MinorStr, "(Compatibility" | _ ] ->
-					{ MajorStr, MinorStr, 0 };
+                % Typically Mesa:
+                [ MajorStr, MinorStr, "(Compatibility" | _ ] ->
+                    { MajorStr, MinorStr, 0 };
 
-				[ MajorStr, MinorStr, ReleaseStr | _ ] ->
-					ReleaseI = case text_utils:try_string_to_integer(
-							ReleaseStr ) of
+                [ MajorStr, MinorStr, ReleaseStr | _ ] ->
+                    ReleaseI = case text_utils:try_string_to_integer(
+                            ReleaseStr ) of
 
-						undefined ->
-							trace_utils:warning_fmt( "No release version for "
-								"OpenGL can be parsed from '~ts', assuming 0.",
-								[ ReleaseStr ] ),
-							0;
+                        undefined ->
+                            trace_utils:warning_fmt( "No release version for "
+                                "OpenGL can be parsed from '~ts', assuming 0.",
+                                [ ReleaseStr ] ),
+                            0;
 
-						ReleaseInt ->
-							ReleaseInt
+                        ReleaseInt ->
+                            ReleaseInt
 
-						end,
+                        end,
 
-				{ MajorStr, MinorStr, ReleaseI }
+                { MajorStr, MinorStr, ReleaseI }
 
-				end,
+                end,
 
-			Major = text_utils:string_to_integer( MajStr ),
-			Minor = text_utils:string_to_integer( MinStr ),
+            Major = text_utils:string_to_integer( MajStr ),
+            Minor = text_utils:string_to_integer( MinStr ),
 
-			{ Major, Minor, Release }
+            { Major, Minor, Release }
 
-	end.
+    end.
 
 
 
@@ -953,8 +953,8 @@ Only available if a current OpenGL context is set.
 """.
 -spec get_version( info_table_id() ) -> gl_version().
 get_version( Tid ) ->
-	[ { _VKey, CurrentGLVersion } ] = ets:lookup( Tid, gl_version ),
-	CurrentGLVersion.
+    [ { _VKey, CurrentGLVersion } ] = ets:lookup( Tid, gl_version ),
+    CurrentGLVersion.
 
 
 
@@ -967,7 +967,7 @@ Only available if a current OpenGL context is set.
 """.
 -spec get_supported_profile() -> gl_profile().
 get_supported_profile() ->
-	get_supported_profile( _Tid=secure_info_table() ).
+    get_supported_profile( _Tid=secure_info_table() ).
 
 
 
@@ -981,55 +981,55 @@ Only available if a current OpenGL context is set.
 -spec get_supported_profile( info_table_id()) -> gl_profile().
 get_supported_profile( Tid ) ->
 
-	% Apparently one cannot know a priori whether a given profile is supported:
-	% an attempt of context creation shall be made, and if it succeeds then that
-	% profile was available, and is used.
+    % Apparently one cannot know a priori whether a given profile is supported:
+    % an attempt of context creation shall be made, and if it succeeds then that
+    % profile was available, and is used.
 
-	% An option is to detect the GL_ARB_compatibility extension, which is found
-	% iff being in a compatibility profile, as it is exclusive with the core
-	% one. Indeed both profiles cannot be supported by the same context (since
-	% the core profile mandates functional restrictions not present in the
-	% compatibility profile); so:
+    % An option is to detect the GL_ARB_compatibility extension, which is found
+    % iff being in a compatibility profile, as it is exclusive with the core
+    % one. Indeed both profiles cannot be supported by the same context (since
+    % the core profile mandates functional restrictions not present in the
+    % compatibility profile); so:
 
-	ProfileFromExt = case is_extension_supported( 'GL_ARB_compatibility',
-												  Tid ) of
+    ProfileFromExt = case is_extension_supported( 'GL_ARB_compatibility',
+                                                  Tid ) of
 
-		true ->
-			compatibility;
+        true ->
+            compatibility;
 
-		false ->
-			core
+        false ->
+            core
 
-	end,
+    end,
 
-	% Another option is to rely on glGetIntegerv(GL_CONTEXT_PROFILE_MASK). It
-	% will return a bitmask that contains either GL_CONTEXT_CORE_PROFILE_BIT or
-	% GL_CONTEXT_COMPATIBILITY_PROFILE_BIT - but apparently these
-	% characteristics require at least OpenGL 3.2.
+    % Another option is to rely on glGetIntegerv(GL_CONTEXT_PROFILE_MASK). It
+    % will return a bitmask that contains either GL_CONTEXT_CORE_PROFILE_BIT or
+    % GL_CONTEXT_COMPATIBILITY_PROFILE_BIT - but apparently these
+    % characteristics require at least OpenGL 3.2.
 
-	% Only a single (the first) element is of interest (others are garbage
-	% bytes):
-	%
-	[ ProfMask | _ ] = gl:getIntegerv( ?GL_CONTEXT_PROFILE_MASK ),
-	cond_utils:if_defined( myriad_check_opengl, check_error() ),
+    % Only a single (the first) element is of interest (others are garbage
+    % bytes):
+    %
+    [ ProfMask | _ ] = gl:getIntegerv( ?GL_CONTEXT_PROFILE_MASK ),
+    cond_utils:if_defined( myriad_check_opengl, check_error() ),
 
-	IsCoreFromMask = ProfMask band ?GL_CONTEXT_CORE_PROFILE_BIT =/= 0,
+    IsCoreFromMask = ProfMask band ?GL_CONTEXT_CORE_PROFILE_BIT =/= 0,
 
-	IsCompatibilityFromMask =
-		ProfMask band ?GL_CONTEXT_COMPATIBILITY_PROFILE_BIT =/= 0,
+    IsCompatibilityFromMask =
+        ProfMask band ?GL_CONTEXT_COMPATIBILITY_PROFILE_BIT =/= 0,
 
-	case { ProfileFromExt, IsCoreFromMask, IsCompatibilityFromMask } of
+    case { ProfileFromExt, IsCoreFromMask, IsCompatibilityFromMask } of
 
-		{ core, true, false } ->
-			core;
+        { core, true, false } ->
+            core;
 
-		{ compatibility, false, true } ->
-			compatibility;
+        { compatibility, false, true } ->
+            compatibility;
 
-		Other ->
-			throw( { inconsistent_opengl_profile_found, Other } )
+        Other ->
+            throw( { inconsistent_opengl_profile_found, Other } )
 
-	end.
+    end.
 
 
 
@@ -1045,25 +1045,25 @@ cards/drivers.
 """.
 -spec get_supported_extensions() -> [ gl_extension() ].
 get_supported_extensions() ->
-	ExtStr = gl:getString( ?GL_EXTENSIONS ),
-	cond_utils:if_defined( myriad_check_opengl, check_error() ),
+    ExtStr = gl:getString( ?GL_EXTENSIONS ),
+    cond_utils:if_defined( myriad_check_opengl, check_error() ),
 
-	%trace_utils:debug_fmt( "Extension string: ~ts", [ ExtStr ] ),
+    %trace_utils:debug_fmt( "Extension string: ~ts", [ ExtStr ] ),
 
-	% Wanting to avoid a final space that would result in the '' atom:
-	% (a trim would be at least as relevant)
-	FilteredExtStr = case list_utils:extract_last_element( ExtStr ) of
+    % Wanting to avoid a final space that would result in the '' atom:
+    % (a trim would be at least as relevant)
+    FilteredExtStr = case list_utils:extract_last_element( ExtStr ) of
 
-		{ $ , PrefixStr } ->
-			PrefixStr;
+        { $ , PrefixStr } ->
+            PrefixStr;
 
-		_ ->
-			ExtStr
+        _ ->
+            ExtStr
 
-	end,
+    end,
 
-	ExtStrs = text_utils:split( FilteredExtStr, _Delimiter=$ ),
-	text_utils:strings_to_atoms( ExtStrs ).
+    ExtStrs = text_utils:split( FilteredExtStr, _Delimiter=$ ),
+    text_utils:strings_to_atoms( ExtStrs ).
 
 
 
@@ -1074,55 +1074,55 @@ as the current GL connection.
 -spec get_support_description() -> ustring().
 get_support_description() ->
 
-	% So that it is requested only once:
-	Exts = get_supported_extensions(),
+    % So that it is requested only once:
+    Exts = get_supported_extensions(),
 
-	% get_supported_profile/0 will use it:
-	TId = init_info_table( Exts ),
+    % get_supported_profile/0 will use it:
+    TId = init_info_table( Exts ),
 
-	VendStr = text_utils:format( "driver vendor: ~ts", [ get_vendor_name() ] ),
+    VendStr = text_utils:format( "driver vendor: ~ts", [ get_vendor_name() ] ),
 
-	RendStr = text_utils:format( "driver renderer: ~ts",
-								 [ get_renderer_name() ] ),
+    RendStr = text_utils:format( "driver renderer: ~ts",
+                                 [ get_renderer_name() ] ),
 
-	% Checks that a proper version could be obtained indeed:
-	ImplStr = text_utils:format( "implementation version: described as '~ts', "
-		"i.e. ~ts", [ get_version_string(),
-					  text_utils:version_to_string( get_version( TId ) ) ] ),
+    % Checks that a proper version could be obtained indeed:
+    ImplStr = text_utils:format( "implementation version: described as '~ts', "
+        "i.e. ~ts", [ get_version_string(),
+                      text_utils:version_to_string( get_version( TId ) ) ] ),
 
-	ProfStr = text_utils:format( "supported profile: ~ts",
-		[ get_supported_profile() ] ),
+    ProfStr = text_utils:format( "supported profile: ~ts",
+        [ get_supported_profile() ] ),
 
-	DebugStr = "debug context: " ++ case is_debug_context_supported() of
+    DebugStr = "debug context: " ++ case is_debug_context_supported() of
 
-		true ->
-			"supported " ++ case is_debug_context_enabled() of
+        true ->
+            "supported " ++ case is_debug_context_enabled() of
 
-				true ->
-					"and enabled";
+                true ->
+                    "and enabled";
 
-				false ->
-					"but not enabled"
+                false ->
+                    "but not enabled"
 
-							end;
+                            end;
 
-		false ->
-			"not supported"
+        false ->
+            "not supported"
 
-	end,
+    end,
 
-	ShadStr = text_utils:format( "shading language version: ~ts",
-		[ gui_shader:get_shading_language_version() ] ),
+    ShadStr = text_utils:format( "shading language version: ~ts",
+        [ gui_shader:get_shading_language_version() ] ),
 
-	% Way too long (e.g. 390 extensions returned):
-	%ExtStr = text_utils:format( "~B OpenGL extensions: ~ts", [ length( Exts ),
-	%   text_utils:atoms_to_listed_string( Exts ) ] ),
+    % Way too long (e.g. 390 extensions returned):
+    %ExtStr = text_utils:format( "~B OpenGL extensions: ~ts", [ length( Exts ),
+    %   text_utils:atoms_to_listed_string( Exts ) ] ),
 
-	ExtStr = text_utils:format( "~B OpenGL extensions supported",
-								[ length( Exts ) ] ),
+    ExtStr = text_utils:format( "~B OpenGL extensions supported",
+                                [ length( Exts ) ] ),
 
-	text_utils:strings_to_string(
-		[ VendStr, RendStr, ImplStr, ProfStr, DebugStr, ShadStr, ExtStr ] ).
+    text_utils:strings_to_string(
+        [ VendStr, RendStr, ImplStr, ProfStr, DebugStr, ShadStr, ExtStr ] ).
 
 
 
@@ -1132,7 +1132,7 @@ versions, profiles and extensions.
 """.
 -spec init_info_table() -> info_table_id().
 init_info_table() ->
-	init_info_table( _SupportedExts=get_supported_extensions() ).
+    init_info_table( _SupportedExts=get_supported_extensions() ).
 
 
 
@@ -1143,22 +1143,22 @@ versions, profiles and extensions.
 -spec init_info_table( [ gl_extension() ] ) -> info_table_id().
 init_info_table( SupportedExts ) ->
 
-	TableId = ets:new( ?gl_info_ets_name,
-					   [ named_table, public, ordered_set ] ),
+    TableId = ets:new( ?gl_info_ets_name,
+                       [ named_table, public, ordered_set ] ),
 
-	ExtsAsMonoTuples = [ { E } || E <- SupportedExts ],
+    ExtsAsMonoTuples = [ { E } || E <- SupportedExts ],
 
-	Elems = [ { gl_version, get_version() } | ExtsAsMonoTuples ],
+    Elems = [ { gl_version, get_version() } | ExtsAsMonoTuples ],
 
-	ets:insert( TableId, Elems ),
+    ets:insert( TableId, Elems ),
 
-	% Two passes needed as table used here:
-	GlProf = get_supported_profile( TableId ),
+    % Two passes needed as table used here:
+    GlProf = get_supported_profile( TableId ),
 
-	ets:insert( TableId, { gl_profile, GlProf } ),
+    ets:insert( TableId, { gl_profile, GlProf } ),
 
-	% Actually is just ?gl_info_ets_name:
-	TableId.
+    % Actually is just ?gl_info_ets_name:
+    TableId.
 
 
 
@@ -1169,15 +1169,15 @@ necessary.
 -spec secure_info_table() -> info_table_id().
 secure_info_table() ->
 
-	case ets:whereis( ?gl_info_ets_name ) of
+    case ets:whereis( ?gl_info_ets_name ) of
 
-		undefined ->
-			init_info_table();
+        undefined ->
+            init_info_table();
 
-		Tid ->
-			Tid
+        Tid ->
+            Tid
 
-	end.
+    end.
 
 
 
@@ -1188,7 +1188,7 @@ one.
 """.
 -spec is_version_compatible_with( two_or_three_digit_version() ) -> boolean().
 is_version_compatible_with( TargetVersion ) ->
-	is_version_compatible_with( TargetVersion, secure_info_table() ).
+    is_version_compatible_with( TargetVersion, secure_info_table() ).
 
 
 
@@ -1198,62 +1198,62 @@ that is whether the current one matches, or is more recent than, the specified
 one.
 """.
 -spec is_version_compatible_with( two_or_three_digit_version(),
-								  info_table_id() ) -> boolean().
+                                  info_table_id() ) -> boolean().
 is_version_compatible_with( { Major, Minor }, Tid ) ->
-	is_version_compatible_with( { Major, Minor, _Release=0 }, Tid );
+    is_version_compatible_with( { Major, Minor, _Release=0 }, Tid );
 
 is_version_compatible_with( TargetThreeDigitVersion, Tid ) ->
-	[ { _VKey, CurrentGLVersion } ] = ets:lookup( Tid, gl_version ),
-	case basic_utils:compare_versions( CurrentGLVersion,
-									   TargetThreeDigitVersion ) of
+    [ { _VKey, CurrentGLVersion } ] = ets:lookup( Tid, gl_version ),
+    case basic_utils:compare_versions( CurrentGLVersion,
+                                       TargetThreeDigitVersion ) of
 
-		second_bigger ->
-			false;
+        second_bigger ->
+            false;
 
-		_EqualOrFirstBigger ->
-			true
+        _EqualOrFirstBigger ->
+            true
 
-	end.
+    end.
 
 
 
 -doc "Tells whether the specified OpenGL extension is supported.".
 -spec is_extension_supported( gl_extension() ) -> boolean().
 is_extension_supported( Extension ) ->
-	is_extension_supported( Extension, _Tid=secure_info_table() ).
+    is_extension_supported( Extension, _Tid=secure_info_table() ).
 
 
 
 -doc "Tells whether the specified OpenGL extension is supported.".
 -spec is_extension_supported( gl_extension(), info_table_id() ) -> boolean().
 is_extension_supported( Extension, Tid ) when is_atom( Extension ) ->
-	ets:member( Tid, Extension ).
+    ets:member( Tid, Extension ).
 
 
 
 -doc "Tells whether the specified OpenGL extensions are (all) supported.".
 -spec are_extensions_supported( [ gl_extension() ] ) -> boolean().
 are_extensions_supported( Extensions ) ->
-	are_extensions_supported( Extensions, secure_info_table() ).
+    are_extensions_supported( Extensions, secure_info_table() ).
 
 
 
 -doc "Tells whether the specified OpenGL extensions are (all) supported.".
 -spec are_extensions_supported( [ gl_extension() ], info_table_id() ) ->
-											boolean().
+                                            boolean().
 are_extensions_supported( _Exts=[], _Tid ) ->
-	true;
+    true;
 
 are_extensions_supported( _Exts=[ Ext | T ], Tid ) ->
-	case is_extension_supported( Ext, Tid ) of
+    case is_extension_supported( Ext, Tid ) of
 
-		true ->
-			are_extensions_supported( T, Tid );
+        true ->
+            are_extensions_supported( T, Tid );
 
-		false ->
-			false
+        false ->
+            false
 
-	end.
+    end.
 
 
 
@@ -1262,7 +1262,7 @@ Returns a list of the specified OpenGL extensions that are not supported.
 """.
 -spec get_unsupported_extensions( [ gl_extension() ] ) -> [ gl_extension() ].
 get_unsupported_extensions( Extensions ) ->
-	get_unsupported_extensions( Extensions, secure_info_table() ).
+    get_unsupported_extensions( Extensions, secure_info_table() ).
 
 
 
@@ -1270,9 +1270,9 @@ get_unsupported_extensions( Extensions ) ->
 Returns a list of the specified OpenGL extensions that are not supported.
 """.
 -spec get_unsupported_extensions( [ gl_extension() ], info_table_id() ) ->
-												[ gl_extension() ].
+                                                [ gl_extension() ].
 get_unsupported_extensions( Extensions, Tid ) ->
-	[ E || E <- Extensions, not is_extension_supported( E, Tid ) ].
+    [ E || E <- Extensions, not is_extension_supported( E, Tid ) ].
 
 
 
@@ -1286,32 +1286,32 @@ Always true with OpenGL version 4.3 or higher.
 """.
 -spec is_debug_context_supported() -> boolean().
 is_debug_context_supported() ->
-	is_extension_supported( 'GL_ARB_debug_output' ) orelse
-		is_extension_supported( 'AMD_debug_output' ).
+    is_extension_supported( 'GL_ARB_debug_output' ) orelse
+        is_extension_supported( 'AMD_debug_output' ).
 
 
 
 -doc "Tells whether the OpenGL debug context is enabled on this host.".
 -spec is_debug_context_enabled() -> boolean().
 is_debug_context_enabled() ->
-	Flags = hd( gl:getIntegerv( ?GL_CONTEXT_FLAGS ) ),
-	Flags band ?GL_CONTEXT_FLAG_DEBUG_BIT =/= 0.
+    Flags = hd( gl:getIntegerv( ?GL_CONTEXT_FLAGS ) ),
+    Flags band ?GL_CONTEXT_FLAG_DEBUG_BIT =/= 0.
 
 
 
 -doc "Enables all reporting regarding the OpenGL debug context.".
 -spec enable_all_debug_context_reporting() -> void().
 enable_all_debug_context_reporting() ->
-	enable_debug_context_reporting( _DebugSrc=all, _DebugType=all,
-									_DebugSeverity=all ).
+    enable_debug_context_reporting( _DebugSrc=all, _DebugType=all,
+                                    _DebugSeverity=all ).
 
 
 
 -doc "Disables all reporting regarding the OpenGL debug context.".
 -spec disable_all_debug_context_reporting() -> void().
 disable_all_debug_context_reporting() ->
-	disable_debug_context_reporting( _DebugSrc=all, _DebugType=all,
-									 _DebugSeverity=all ).
+    disable_debug_context_reporting( _DebugSrc=all, _DebugType=all,
+                                     _DebugSeverity=all ).
 
 
 
@@ -1325,17 +1325,17 @@ context. In particular, a valid implementation of the debug message queue in a
 non-debug context may produce no messages at all.
 """.
 -spec enable_debug_context_reporting( debug_source(), debug_type(),
-									  debug_severity() ) -> void().
+                                      debug_severity() ) -> void().
 enable_debug_context_reporting( TargetSource, MessageType, MessageSeverity ) ->
 
-	gl:enable( ?GL_DEBUG_OUTPUT ),
-	cond_utils:if_defined( myriad_check_opengl, check_error() ),
+    gl:enable( ?GL_DEBUG_OUTPUT ),
+    cond_utils:if_defined( myriad_check_opengl, check_error() ),
 
-	gl:enable( ?GL_DEBUG_OUTPUT_SYNCHRONOUS ),
-	cond_utils:if_defined( myriad_check_opengl, check_error() ),
+    gl:enable( ?GL_DEBUG_OUTPUT_SYNCHRONOUS ),
+    cond_utils:if_defined( myriad_check_opengl, check_error() ),
 
-	set_debug_context_reporting( TargetSource, MessageType, MessageSeverity,
-								 _DebugSelector=enable ).
+    set_debug_context_reporting( TargetSource, MessageType, MessageSeverity,
+                                 _DebugSelector=enable ).
 
 
 
@@ -1349,10 +1349,10 @@ context. In particular, a valid implementation of the debug message queue in a
 non-debug context may produce no messages at all.
 """.
 -spec disable_debug_context_reporting( debug_source(), debug_type(),
-								   debug_severity() ) -> void().
+                                   debug_severity() ) -> void().
 disable_debug_context_reporting( TargetSource, MessageType, MessageSeverity ) ->
-	set_debug_context_reporting( TargetSource, MessageType, MessageSeverity,
-								 _DebugSelector=disable ).
+    set_debug_context_reporting( TargetSource, MessageType, MessageSeverity,
+                                 _DebugSelector=disable ).
 
 
 
@@ -1366,36 +1366,36 @@ context. In particular, a valid implementation of the debug message queue in a
 non-debug context may produce no messages at all.
 """.
 -spec set_debug_context_reporting( debug_source(), debug_type(),
-			debug_severity(), debug_selector() ) -> void().
+            debug_severity(), debug_selector() ) -> void().
 set_debug_context_reporting( TargetSource, MessageType, MessageSeverity,
-							 DebugSelector ) ->
+                             DebugSelector ) ->
 
-	GLTargetSource =
-		gui_opengl_generated:get_second_for_debug_source( TargetSource ),
+    GLTargetSource =
+        gui_opengl_generated:get_second_for_debug_source( TargetSource ),
 
-	GLMessageType =
-		gui_opengl_generated:get_second_for_debug_type( MessageType ),
+    GLMessageType =
+        gui_opengl_generated:get_second_for_debug_type( MessageType ),
 
-	GLMessageSeverity =
-		gui_opengl_generated:get_second_for_debug_severity( MessageSeverity ),
+    GLMessageSeverity =
+        gui_opengl_generated:get_second_for_debug_severity( MessageSeverity ),
 
-	IsEnabled = case DebugSelector of
+    IsEnabled = case DebugSelector of
 
-		enable ->
-			?GL_TRUE;
+        enable ->
+            ?GL_TRUE;
 
-		disable ->
-			?GL_FALSE
+        disable ->
+            ?GL_FALSE
 
-	end,
+    end,
 
-	% Supposedly meaning all message identifiers (like NULL):
-	CtrlIds = [],
+    % Supposedly meaning all message identifiers (like NULL):
+    CtrlIds = [],
 
-	gl:debugMessageControl( GLTargetSource, GLMessageType, GLMessageSeverity,
-		CtrlIds, IsEnabled ),
+    gl:debugMessageControl( GLTargetSource, GLMessageType, GLMessageSeverity,
+        CtrlIds, IsEnabled ),
 
-	cond_utils:if_defined( myriad_check_opengl, check_error() ).
+    cond_utils:if_defined( myriad_check_opengl, check_error() ).
 
 
 
@@ -1406,23 +1406,23 @@ User-specified messages shall be, in terms of source, either 'application' or
 'third_party'.
 """.
 -spec insert_debug_context_message( debug_message_id(), ustring(),
-	actual_debug_severity(), actual_debug_source(), actual_debug_type() ) ->
-			void().
+    actual_debug_severity(), actual_debug_source(), actual_debug_type() ) ->
+            void().
 insert_debug_context_message( MsgId, Msg, MsgSeverity, MsgSource, MsgType ) ->
 
-	GLMsgSeverity =
-		gui_opengl_generated:get_second_for_debug_severity( MsgSeverity ),
+    GLMsgSeverity =
+        gui_opengl_generated:get_second_for_debug_severity( MsgSeverity ),
 
-	GLMsgSource = gui_opengl_generated:get_second_for_debug_source( MsgSource ),
+    GLMsgSource = gui_opengl_generated:get_second_for_debug_source( MsgSource ),
 
-	GLMsgType = gui_opengl_generated:get_second_for_debug_type( MsgType ),
+    GLMsgType = gui_opengl_generated:get_second_for_debug_type( MsgType ),
 
-	gl:debugMessageInsert( GLMsgSource, GLMsgType, MsgId, GLMsgSeverity, Msg ),
+    gl:debugMessageInsert( GLMsgSource, GLMsgType, MsgId, GLMsgSeverity, Msg ),
 
-	% Only pure GL checked, not its debug context as of course it has a message
-	% now:
-	%
-	cond_utils:if_defined( myriad_check_opengl, check_gl_error() ).
+    % Only pure GL checked, not its debug context as of course it has a message
+    % now:
+    %
+    cond_utils:if_defined( myriad_check_opengl, check_gl_error() ).
 
 
 
@@ -1432,8 +1432,8 @@ source, type and severity.
 """.
 -spec get_debug_context_messages() -> [ debug_context_message() ].
 get_debug_context_messages() ->
-	get_debug_context_messages( _MsgSource=all, _MsgType=all,
-								_MsgSeverity=all ).
+    get_debug_context_messages( _MsgSource=all, _MsgType=all,
+                                _MsgSeverity=all ).
 
 
 
@@ -1445,99 +1445,99 @@ To sort the returned messages by application identifiers, just use
 `lists:sort(_Index=1, DbcContextMsgs)`.
 """.
 -spec get_debug_context_messages( debug_source(), debug_type(),
-		debug_severity() ) -> [ debug_context_message() ].
+        debug_severity() ) -> [ debug_context_message() ].
 get_debug_context_messages( MsgSource, MsgType, MsgSeverity ) ->
 
-	GLMsgSource =
-		gui_opengl_generated:get_second_for_debug_source( MsgSource ),
+    GLMsgSource =
+        gui_opengl_generated:get_second_for_debug_source( MsgSource ),
 
-	GLMsgType = gui_opengl_generated:get_second_for_debug_type( MsgType ),
+    GLMsgType = gui_opengl_generated:get_second_for_debug_type( MsgType ),
 
-	GLMsgSeverity =
-		gui_opengl_generated:get_second_for_debug_severity( MsgSeverity ),
+    GLMsgSeverity =
+        gui_opengl_generated:get_second_for_debug_severity( MsgSeverity ),
 
 
-	BufferByteCount = 5000,
+    BufferByteCount = 5000,
 
-	% Actually not created by the caller:
-	%Buffer = bin_utils:create_binary( ByteCount ),
+    % Actually not created by the caller:
+    %Buffer = bin_utils:create_binary( ByteCount ),
 
-	MaxMsgCount = 10,
+    MaxMsgCount = 10,
 
-	fetch_debug_context_messages( BufferByteCount, MaxMsgCount,
-		GLMsgSource, GLMsgType, GLMsgSeverity, _Acc=[] ).
+    fetch_debug_context_messages( BufferByteCount, MaxMsgCount,
+        GLMsgSource, GLMsgType, GLMsgSeverity, _Acc=[] ).
 
 
 % (helper)
 fetch_debug_context_messages( BufferByteCount, MaxMsgCount, GLMsgSource,
-							  GLMsgType, GLMsgSeverity, Acc ) ->
+                              GLMsgType, GLMsgSeverity, Acc ) ->
 
-	{ FetchCount, GLSources, GLTypes, Ids, Severities, MessageLogs } =
-		gl:getDebugMessageLog( MaxMsgCount, BufferByteCount ),
+    { FetchCount, GLSources, GLTypes, Ids, Severities, MessageLogs } =
+        gl:getDebugMessageLog( MaxMsgCount, BufferByteCount ),
 
-	% Not done, otherwise infinite recursion:
-	%cond_utils:if_defined( myriad_check_opengl, check_error() ),
-	cond_utils:if_defined( myriad_check_opengl, check_gl_error() ),
+    % Not done, otherwise infinite recursion:
+    %cond_utils:if_defined( myriad_check_opengl, check_error() ),
+    cond_utils:if_defined( myriad_check_opengl, check_gl_error() ),
 
-	% Testing the 'gl' implementation actually:
-	cond_utils:if_defined( myriad_check_opengl,
-		list_utils:check_equal( [ FetchCount, length( GLSources ),
-			length( GLTypes ), length( Ids ), length( Severities ),
-			length( MessageLogs ) ] ),
-		basic_utils:ignore_unused( FetchCount ) ),
+    % Testing the 'gl' implementation actually:
+    cond_utils:if_defined( myriad_check_opengl,
+        list_utils:check_equal( [ FetchCount, length( GLSources ),
+            length( GLTypes ), length( Ids ), length( Severities ),
+            length( MessageLogs ) ] ),
+        basic_utils:ignore_unused( FetchCount ) ),
 
-	case debug_context_messages( GLSources, GLTypes, Ids, Severities,
-								 MessageLogs, _AccMsg=[] ) of
+    case debug_context_messages( GLSources, GLTypes, Ids, Severities,
+                                 MessageLogs, _AccMsg=[] ) of
 
-		[] ->
-			Acc;
+        [] ->
+            Acc;
 
-		CtxtMsgs ->
-			fetch_debug_context_messages( BufferByteCount, MaxMsgCount,
-				GLMsgSource, GLMsgType, GLMsgSeverity, CtxtMsgs ++ Acc )
+        CtxtMsgs ->
+            fetch_debug_context_messages( BufferByteCount, MaxMsgCount,
+                GLMsgSource, GLMsgType, GLMsgSeverity, CtxtMsgs ++ Acc )
 
-	end.
+    end.
 
 
 
 % (helper)
 debug_context_messages( _GLSources=[], _GLTypes=[], _Ids=[], _Severities=[],
-						_MessageLogs=[], AccMsg ) ->
-	% Preferring chronological insertion order:
-	lists:reverse( AccMsg );
+                        _MessageLogs=[], AccMsg ) ->
+    % Preferring chronological insertion order:
+    lists:reverse( AccMsg );
 
 debug_context_messages( _GLSources=[ HSrc | TSrc ], _GLTypes=[ HTyp | TTyp ],
-		_Ids=[ HId | TId ], _Severities=[ HSev | TSev ],
-		_MessageLogs=[ Msg | T ], AccMsg ) ->
+        _Ids=[ HId | TId ], _Severities=[ HSev | TSev ],
+        _MessageLogs=[ Msg | T ], AccMsg ) ->
 
-	BinMsg = text_utils:string_to_binary( Msg ),
+    BinMsg = text_utils:string_to_binary( Msg ),
 
-	% First is MyriadGUI version, second is GL one:
-	Src = gui_opengl_generated:get_first_for_debug_source( HSrc ),
-	Type = gui_opengl_generated:get_first_for_debug_type( HTyp ),
-	Sev = gui_opengl_generated:get_first_for_debug_severity( HSev ),
+    % First is MyriadGUI version, second is GL one:
+    Src = gui_opengl_generated:get_first_for_debug_source( HSrc ),
+    Type = gui_opengl_generated:get_first_for_debug_type( HTyp ),
+    Sev = gui_opengl_generated:get_first_for_debug_severity( HSev ),
 
-	FullMsg = { HId, BinMsg, Sev, Src, Type },
+    FullMsg = { HId, BinMsg, Sev, Src, Type },
 
-	debug_context_messages( TSrc, TTyp, TId, TSev, T, [ FullMsg | AccMsg ] ).
+    debug_context_messages( TSrc, TTyp, TId, TSev, T, [ FullMsg | AccMsg ] ).
 
 
 
 -doc "Returns a textual description of the specified debug context message.".
 -spec debug_context_message_to_string( debug_context_message() ) -> ustring().
 debug_context_message_to_string(
-		{ MsgId, Msg, MsgSeverity, MsgSource, MsgType } ) ->
-	text_utils:format( "[~ts][~ts][~ts][~B] ~ts",
-					   [ MsgSource, MsgType, MsgSeverity, MsgId, Msg ] ).
+        { MsgId, Msg, MsgSeverity, MsgSource, MsgType } ) ->
+    text_utils:format( "[~ts][~ts][~ts][~B] ~ts",
+                       [ MsgSource, MsgType, MsgSeverity, MsgId, Msg ] ).
 
 
 
 -doc "Returns a textual description of the specified debug context messages.".
 -spec debug_context_messages_to_string( [ debug_context_message() ] ) ->
-												ustring().
+                                                ustring().
 debug_context_messages_to_string( Msgs ) ->
-	text_utils:strings_to_string(
-		[ debug_context_message_to_string( M ) || M <- Msgs ] ).
+    text_utils:strings_to_string(
+        [ debug_context_message_to_string( M ) || M <- Msgs ] ).
 
 
 
@@ -1548,7 +1548,7 @@ exception if this requirement is not met.
 """.
 -spec check_requirements( two_or_three_digit_version() ) -> void().
 check_requirements( MinOpenGLVersion ) ->
-	check_requirements( MinOpenGLVersion, _RequiredProfile=core ).
+    check_requirements( MinOpenGLVersion, _RequiredProfile=core ).
 
 
 
@@ -1558,10 +1558,10 @@ regarding the minimum OpenGL version and the specified profile; displays an
 error message and throws an exception if a requirement is not met.
 """.
 -spec check_requirements( two_or_three_digit_version(), gl_profile() ) ->
-															void().
+                                                            void().
 check_requirements( MinOpenGLVersion, RequiredProfile ) ->
-	check_requirements( MinOpenGLVersion, RequiredProfile,
-						_RequiredExtensions=[] ).
+    check_requirements( MinOpenGLVersion, RequiredProfile,
+                        _RequiredExtensions=[] ).
 
 
 
@@ -1571,58 +1571,58 @@ regarding the minimum OpenGL version, the specified profile and extensions;
 displays an error message and throws an exception if a requirement is not met.
 """.
 -spec check_requirements( two_or_three_digit_version(), gl_profile(),
-						  [ gl_extension() ] ) -> void().
+                          [ gl_extension() ] ) -> void().
 check_requirements( MinOpenGLVersion, RequiredProfile, RequiredExtensions ) ->
 
-	Tid = secure_info_table(),
+    Tid = secure_info_table(),
 
-	is_version_compatible_with( MinOpenGLVersion, Tid ) orelse
-		begin
+    is_version_compatible_with( MinOpenGLVersion, Tid ) orelse
+        begin
 
-			LocalVersion = get_version( Tid ),
+            LocalVersion = get_version( Tid ),
 
-			trace_utils:error_fmt( "The local OpenGL version, ~ts, is not "
-				"compatible with the necessary one, ~ts. Drivers may have "
-				"to be updated.",
-				[ text_utils:version_to_string( LocalVersion ),
-				  text_utils:version_to_string( MinOpenGLVersion ) ] ),
+            trace_utils:error_fmt( "The local OpenGL version, ~ts, is not "
+                "compatible with the necessary one, ~ts. Drivers may have "
+                "to be updated.",
+                [ text_utils:version_to_string( LocalVersion ),
+                  text_utils:version_to_string( MinOpenGLVersion ) ] ),
 
-			throw( { incompatible_opengl_version, LocalVersion,
-					 MinOpenGLVersion } )
+            throw( { incompatible_opengl_version, LocalVersion,
+                     MinOpenGLVersion } )
 
-		end,
-
-
-	get_supported_profile() =:= RequiredProfile orelse
-		begin
-
-			trace_utils:error_fmt( "The local OpenGL driver does not support "
-				"the '~ts' profile. Drivers may have to be updated.",
-				[ RequiredProfile ] ),
-
-			throw( { unsupported_opengl_profile, RequiredProfile } )
-
-		end,
+        end,
 
 
-	case get_unsupported_extensions( RequiredExtensions, Tid ) of
+    get_supported_profile() =:= RequiredProfile orelse
+        begin
 
-		[] ->
-			ok;
+            trace_utils:error_fmt( "The local OpenGL driver does not support "
+                "the '~ts' profile. Drivers may have to be updated.",
+                [ RequiredProfile ] ),
 
-		[ LackingExt ] ->
-			trace_utils:error_fmt( "An OpenGL extension, '~ts', is lacking. "
-				"Drivers may have to be updated.", [ LackingExt ] ),
-			throw( { unsupported_opengl_extensions, [ LackingExt ] } );
+            throw( { unsupported_opengl_profile, RequiredProfile } )
 
-		LackingExts ->
-			trace_utils:error_fmt( "~B OpenGL extensions are not found "
-				"available: ~ts~nDrivers may have to be updated.",
-				[ length( LackingExts ),
-				  text_utils:atoms_to_string( LackingExts ) ] ),
-			throw( { unsupported_opengl_extensions, LackingExts } )
+        end,
 
-	end.
+
+    case get_unsupported_extensions( RequiredExtensions, Tid ) of
+
+        [] ->
+            ok;
+
+        [ LackingExt ] ->
+            trace_utils:error_fmt( "An OpenGL extension, '~ts', is lacking. "
+                "Drivers may have to be updated.", [ LackingExt ] ),
+            throw( { unsupported_opengl_extensions, [ LackingExt ] } );
+
+        LackingExts ->
+            trace_utils:error_fmt( "~B OpenGL extensions are not found "
+                "available: ~ts~nDrivers may have to be updated.",
+                [ length( LackingExts ),
+                  text_utils:atoms_to_string( LackingExts ) ] ),
+            throw( { unsupported_opengl_extensions, LackingExts } )
+
+    end.
 
 
 
@@ -1632,63 +1632,63 @@ Returns the size of a component the specified GL type, once it is serialised
 """.
 -spec get_component_size( gl_base_type() ) -> byte_size().
 get_component_size( _GLType=?GL_UNSIGNED_BYTE ) ->
-	1;
+    1;
 
 get_component_size( _GLType=?GL_BYTE ) ->
-	1;
+    1;
 
 get_component_size( _GLType=?GL_UNSIGNED_SHORT ) ->
-	2;
+    2;
 
 get_component_size( _GLType=?GL_SHORT ) ->
-	2;
+    2;
 
 get_component_size( _GLType=?GL_UNSIGNED_INT ) ->
-	4;
+    4;
 
 get_component_size( _GLType=?GL_INT ) ->
-	4;
+    4;
 
 get_component_size( _GLType=?GL_FLOAT ) ->
-	4;
+    4;
 
 get_component_size( _GLType=?GL_DOUBLE ) ->
-	8.
+    8.
 
 
 
 -doc "Returns a textual description of the specified GL type.".
 -spec gl_type_to_string( gl_base_type() ) -> ustring().
 gl_type_to_string( _GLType=?GL_UNSIGNED_BYTE ) ->
-	"GL unsigned byte";
+    "GL unsigned byte";
 
 gl_type_to_string( _GLType=?GL_BYTE ) ->
-	"GL signed byte";
+    "GL signed byte";
 
 gl_type_to_string( _GLType=?GL_UNSIGNED_SHORT ) ->
-	"GL unsigned short";
+    "GL unsigned short";
 
 gl_type_to_string( _GLType=?GL_SHORT ) ->
-	"GL signed short";
+    "GL signed short";
 
 gl_type_to_string( _GLType=?GL_UNSIGNED_INT ) ->
-	"GL unsigned int";
+    "GL unsigned int";
 
 gl_type_to_string( _GLType=?GL_INT ) ->
-	"GL signed int";
+    "GL signed int";
 
 gl_type_to_string( _GLType=?GL_FLOAT ) ->
-	"GL float";
+    "GL float";
 
 gl_type_to_string( _GLType=?GL_DOUBLE ) ->
-	"GL double".
+    "GL double".
 
 
 
 -doc "Returns the root path of the MyriadGUI OpenGL-related sources.".
 -spec get_base_path() -> directory_path().
 get_base_path() ->
-	file_utils:join( gui:get_base_path(), "opengl" ).
+    file_utils:join( gui:get_base_path(), "opengl" ).
 
 
 
@@ -1699,17 +1699,17 @@ the glxinfo executable.
 -spec is_hardware_accelerated() -> boolean().
 is_hardware_accelerated() ->
 
-	case get_glxinfo_strings() of
+    case get_glxinfo_strings() of
 
-		undefined ->
-			trace_utils:warning( "No glxinfo status obtained, supposing that "
-				"no OpenGL hardware acceleration is available." ),
-			false;
+        undefined ->
+            trace_utils:warning( "No glxinfo status obtained, supposing that "
+                "no OpenGL hardware acceleration is available." ),
+            false;
 
-		GlxinfoStrs ->
-			is_hardware_accelerated( GlxinfoStrs )
+        GlxinfoStrs ->
+            is_hardware_accelerated( GlxinfoStrs )
 
-	end.
+    end.
 
 
 
@@ -1720,27 +1720,27 @@ the specified glxinfo report.
 -spec is_hardware_accelerated( glxinfo_report() ) -> boolean().
 is_hardware_accelerated( GlxinfoStrs ) ->
 
-	% For example "direct rendering: Yes"
-	case list_utils:get_element_at( GlxinfoStrs, _Index=3 ) of
+    % For example "direct rendering: Yes"
+    case list_utils:get_element_at( GlxinfoStrs, _Index=3 ) of
 
-		"direct rendering: " ++ Next ->
-			case Next of
+        "direct rendering: " ++ Next ->
+            case Next of
 
-				"Yes" ->
-					true;
+                "Yes" ->
+                    true;
 
-				"No" ->
-					false
+                "No" ->
+                    false
 
-			end;
+            end;
 
-		OtherAnswer ->
-			trace_utils:warning_fmt( "Unexpected status ('~ts') for "
-				"direct rendering, supposing that no OpenGL hardware "
-				"acceleration is available.", [ OtherAnswer ] ),
-			false
+        OtherAnswer ->
+            trace_utils:warning_fmt( "Unexpected status ('~ts') for "
+                "direct rendering, supposing that no OpenGL hardware "
+                "acceleration is available.", [ OtherAnswer ] ),
+            false
 
-	end.
+    end.
 
 
 
@@ -1754,33 +1754,33 @@ Arch Linux with `pacman -S mesa-utils`).
 -spec get_glxinfo_strings() -> option( glxinfo_report() ).
 get_glxinfo_strings() ->
 
-	% Best diagnosis we know:
-	Tool = "glxinfo",
+    % Best diagnosis we know:
+    Tool = "glxinfo",
 
-	case executable_utils:lookup_executable( Tool ) of
+    case executable_utils:lookup_executable( Tool ) of
 
-		false ->
-			trace_utils:warning_fmt( "No '~ts' tool found, "
-									 "no OpenGL status reported.", [ Tool ] ),
-			undefined;
+        false ->
+            trace_utils:warning_fmt( "No '~ts' tool found, "
+                                     "no OpenGL status reported.", [ Tool ] ),
+            undefined;
 
-		ExecPath ->
-			% -B: brief output, print only the basics.
-			case system_utils:run_executable( ExecPath, [ "-B" ] ) of
+        ExecPath ->
+            % -B: brief output, print only the basics.
+            case system_utils:run_executable( ExecPath, [ "-B" ] ) of
 
-				{ _ReturnCode=0, ReturnedStr } ->
-					text_utils:remove_empty_lines(
-						text_utils:split( ReturnedStr, _Delimiter=$\n ) );
+                { _ReturnCode=0, ReturnedStr } ->
+                    text_utils:remove_empty_lines(
+                        text_utils:split( ReturnedStr, _Delimiter=$\n ) );
 
-				{ ErrorCode, ReturnedStr } ->
-					trace_utils:error_fmt( "The ~ts query returned an error "
-						"(code: ~B, message: '~ts'), no status reported.",
-						[ Tool, ErrorCode, ReturnedStr ] ),
-					undefined
+                { ErrorCode, ReturnedStr } ->
+                    trace_utils:error_fmt( "The ~ts query returned an error "
+                        "(code: ~B, message: '~ts'), no status reported.",
+                        [ Tool, ErrorCode, ReturnedStr ] ),
+                    undefined
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -1792,30 +1792,30 @@ To be used with create_canvas/*.
 -spec get_default_canvas_attributes() -> [ device_context_attribute() ].
 get_default_canvas_attributes() ->
 
-	% At least this number of bits per RGB component:
-	MinSize = 8,
+    % At least this number of bits per RGB component:
+    MinSize = 8,
 
-	MSAAAttrs = case is_msaa_available() of
+    MSAAAttrs = case is_msaa_available() of
 
-		true ->
-			[ msaa ];
+        true ->
+            [ msaa ];
 
-		false ->
-			[]
+        false ->
+            []
 
-	end,
+    end,
 
-	MSAAAttrs ++ [ rgba, double_buffer, { min_red_size, MinSize },
-				   { min_green_size, MinSize }, { min_blue_size, MinSize },
-				   { depth_buffer_size, 24 } ].
+    MSAAAttrs ++ [ rgba, double_buffer, { min_red_size, MinSize },
+                   { min_green_size, MinSize }, { min_blue_size, MinSize },
+                   { depth_buffer_size, 24 } ].
 
 
 
 -doc "Tells whether MSAA (Multisample anti-aliasing) is available.".
 -spec is_msaa_available() -> boolean().
 is_msaa_available() ->
-	gui_wx_backend:are_gl_attributes_supported(
-		gui_wx_backend:get_msaa_attributes() ).
+    gui_wx_backend:are_gl_attributes_supported(
+        gui_wx_backend:get_msaa_attributes() ).
 
 
 
@@ -1829,10 +1829,10 @@ Note: not to be mixed up with gui:create_canvas/1, which creates a basic
 -spec create_canvas( widget() ) -> gl_canvas().
 create_canvas( Parent ) ->
 
-	% Might be added: the {style, full_repaint_on_resize} option.
-	CanvasOpts = [ { gl_attributes, get_default_canvas_attributes() } ],
+    % Might be added: the {style, full_repaint_on_resize} option.
+    CanvasOpts = [ { gl_attributes, get_default_canvas_attributes() } ],
 
-	create_canvas( CanvasOpts, Parent ).
+    create_canvas( CanvasOpts, Parent ).
 
 
 
@@ -1850,44 +1850,44 @@ Note also that using the use_core_profile attribute will result in also
 requesting OpenGL at least version 3.0.
 """.
 -spec create_canvas( maybe_list( gl_canvas_option() ), widget() ) ->
-											gl_canvas().
+                                            gl_canvas().
 create_canvas( CanvasOpts, Parent ) ->
 
-	cond_utils:if_defined( myriad_debug_opengl,
-		trace_utils:debug_fmt( "Creating a GL canvas from user options:~n ~p.",
-							   [ CanvasOpts ] ) ),
+    cond_utils:if_defined( myriad_debug_opengl,
+        trace_utils:debug_fmt( "Creating a GL canvas from user options:~n ~p.",
+                               [ CanvasOpts ] ) ),
 
-	% Not using list_table:extract_entry_with_default/3, as Opts may contain
-	% single atoms:
-	%
-	{ Attrs, OtherOpts } = tagged_list:extract_pair_with_default(
-		_K=gl_attributes, _Def=[ rgba, double_buffer ],
-		tagged_list:ensure_tagged_list( CanvasOpts ) ),
+    % Not using list_table:extract_entry_with_default/3, as Opts may contain
+    % single atoms:
+    %
+    { Attrs, OtherOpts } = tagged_list:extract_pair_with_default(
+        _K=gl_attributes, _Def=[ rgba, double_buffer ],
+        tagged_list:ensure_tagged_list( CanvasOpts ) ),
 
-	%trace_utils:debug_fmt( "Creating a GL canvas from options:~n ~p,~n "
-	%   "hence with Attrs = ~p~n and OtherOpts = ~p.",
-	%   [ CanvasOpts, Attrs, OtherOpts ] ),
+    %trace_utils:debug_fmt( "Creating a GL canvas from options:~n ~p,~n "
+    %   "hence with Attrs = ~p~n and OtherOpts = ~p.",
+    %   [ CanvasOpts, Attrs, OtherOpts ] ),
 
-	WxAttrs = gui_wx_backend:to_wx_device_context_attributes( Attrs ),
+    WxAttrs = gui_wx_backend:to_wx_device_context_attributes( Attrs ),
 
-	OtherWxOpts = gui_window:to_wx_window_options( OtherOpts ),
+    OtherWxOpts = gui_window:to_wx_window_options( OtherOpts ),
 
-	WxOpts = [ { attribList, WxAttrs } | OtherWxOpts ],
+    WxOpts = [ { attribList, WxAttrs } | OtherWxOpts ],
 
-	%trace_utils:debug_fmt( "WxOpts = ~p", [ WxOpts ] ),
+    %trace_utils:debug_fmt( "WxOpts = ~p", [ WxOpts ] ),
 
-	% Using newer wxGL API (of arity 2, not 3); no error case to handle:
-	Res = wxGLCanvas:new( Parent, WxOpts ),
+    % Using newer wxGL API (of arity 2, not 3); no error case to handle:
+    Res = wxGLCanvas:new( Parent, WxOpts ),
 
-	% Commented-out, as not relevant (an OpenGL context may not already exist at
-	% this point):
-	%
-	%cond_utils:if_defined( myriad_check_opengl, check_error() ),
+    % Commented-out, as not relevant (an OpenGL context may not already exist at
+    % this point):
+    %
+    %cond_utils:if_defined( myriad_check_opengl, check_error() ),
 
-	% For example, {wx_ref,157,wxGLCanvas,[]}:
-	%trace_utils:debug_fmt( "Canvas creation result: ~p", [ Res ] ),
+    % For example, {wx_ref,157,wxGLCanvas,[]}:
+    %trace_utils:debug_fmt( "Canvas creation result: ~p", [ Res ] ),
 
-	Res.
+    Res.
 
 
 
@@ -1899,21 +1899,21 @@ command can be issued yet).
 -spec create_context( gl_canvas() ) -> gl_context().
 create_context( Canvas ) ->
 
-	% No specific, relevant option applies, like to create first an OpenGL 2.1
-	% context, possibly enable a GLEW-like service, and use an extension for the
-	% creation of an OpenGL 3.x context like with
-	% WGL_CONTEXT_{MAJOR,MINOR}_VERSION_ARB,
-	% WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB and WGL_ARB_create_context:
-	%
-	% (nevertheless we still have OpenGL 4.6.0 when querying it, see
-	% get_version/1)
-	%
-	Res = wxGLContext:new( Canvas ),
+    % No specific, relevant option applies, like to create first an OpenGL 2.1
+    % context, possibly enable a GLEW-like service, and use an extension for the
+    % creation of an OpenGL 3.x context like with
+    % WGL_CONTEXT_{MAJOR,MINOR}_VERSION_ARB,
+    % WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB and WGL_ARB_create_context:
+    %
+    % (nevertheless we still have OpenGL 4.6.0 when querying it, see
+    % get_version/1)
+    %
+    Res = wxGLContext:new( Canvas ),
 
-	% Commented-out, as the OpenGL context is not set as current yet:
-	%cond_utils:if_defined( myriad_check_opengl, check_error() ),
+    % Commented-out, as the OpenGL context is not set as current yet:
+    %cond_utils:if_defined( myriad_check_opengl, check_error() ),
 
-	Res.
+    Res.
 
 
 
@@ -1930,13 +1930,13 @@ See also gui_widget:sync/1 for another synchronisation need.
 -spec set_context_on_shown( gl_canvas(), gl_context() ) -> void().
 set_context_on_shown( Canvas, Context ) ->
 
-	% According to Wings3D (wings_gl.erl), wxGLCanvas:setCurrent/2 may fail (on
-	% GTK) as the 'show' event may be received before the window is actually
-	% displayed; so:
-	%
-	timer:sleep( 250 ),
+    % According to Wings3D (wings_gl.erl), wxGLCanvas:setCurrent/2 may fail (on
+    % GTK) as the 'show' event may be received before the window is actually
+    % displayed; so:
+    %
+    timer:sleep( 250 ),
 
-	set_context( Canvas, Context ).
+    set_context( Canvas, Context ).
 
 
 
@@ -1947,11 +1947,11 @@ applies to the next operations (OpenGL calls) made on it.
 -spec set_context( gl_canvas(), gl_context() ) -> void().
 set_context( Canvas, Context ) ->
 
-	% Using wx API 3.0 (not supporting older ones such as 2.8):
-	wxGLCanvas:setCurrent( Canvas, Context ) orelse
-		throw( failed_to_set_opengl_context ),
+    % Using wx API 3.0 (not supporting older ones such as 2.8):
+    wxGLCanvas:setCurrent( Canvas, Context ) orelse
+        throw( failed_to_set_opengl_context ),
 
-	cond_utils:if_defined( myriad_check_opengl, check_error() ).
+    cond_utils:if_defined( myriad_check_opengl, check_error() ).
 
 
 
@@ -1968,20 +1968,20 @@ Includes a gl:flush/0.
 -spec swap_buffers( gl_canvas() ) -> void().
 swap_buffers( Canvas ) ->
 
-	% wxGLCanvas:swapBuffers/1 may or may not include any kind of gl:flush/0; so
-	% it is preferable to trigger one by ourselves.
+    % wxGLCanvas:swapBuffers/1 may or may not include any kind of gl:flush/0; so
+    % it is preferable to trigger one by ourselves.
 
-	% Ensures that the drawing commands are actually directly triggered
-	% (i.e. started, not necessarily completed; use gl:finish/0 to make this
-	% operation synchronous, i.e. to wait for its end) rather than stored in a
-	% buffer awaiting additional OpenGL commands:
-	%
-	gl:flush(),
-	% More expensive, as blocks: gl:finish(),
+    % Ensures that the drawing commands are actually directly triggered
+    % (i.e. started, not necessarily completed; use gl:finish/0 to make this
+    % operation synchronous, i.e. to wait for its end) rather than stored in a
+    % buffer awaiting additional OpenGL commands:
+    %
+    gl:flush(),
+    % More expensive, as blocks: gl:finish(),
 
-	wxGLCanvas:swapBuffers( Canvas ) orelse throw( failed_to_swap_buffers ),
+    wxGLCanvas:swapBuffers( Canvas ) orelse throw( failed_to_swap_buffers ),
 
-	cond_utils:if_defined( myriad_check_opengl, check_error() ).
+    cond_utils:if_defined( myriad_check_opengl, check_error() ).
 
 
 
@@ -1994,17 +1994,17 @@ Useful for wireframe rendering.
 See <https://registry.khronos.org/OpenGL-Refpages/gl4/html/glPolygonMode.xhtml>.
 """.
 -spec set_polygon_raster_mode( polygon_facing_mode(),
-							   rasterization_mode() ) -> void().
+                               rasterization_mode() ) -> void().
 set_polygon_raster_mode( FacingMode, RasterMode ) ->
 
-	GlFacingMode = gui_opengl_generated:get_second_for_polygon_facing_mode(
-		FacingMode ),
+    GlFacingMode = gui_opengl_generated:get_second_for_polygon_facing_mode(
+        FacingMode ),
 
-	GlRasterMode = gui_opengl_generated:get_second_for_rasterization_mode(
-		RasterMode ),
+    GlRasterMode = gui_opengl_generated:get_second_for_rasterization_mode(
+        RasterMode ),
 
-	gl:polygonMode( GlFacingMode, GlRasterMode ),
-	cond_utils:if_defined( myriad_check_opengl, check_error() ).
+    gl:polygonMode( GlFacingMode, GlRasterMode ),
+    cond_utils:if_defined( myriad_check_opengl, check_error() ).
 
 
 
@@ -2020,18 +2020,18 @@ It supports only per-vertex colors (not per-face).
 """.
 -spec render_mesh( mesh() ) -> void().
 render_mesh( #mesh{ vertices=Vertices,
-					face_type=FaceType,
-					faces=IndexedFaces,
-					normal_type=per_face,
-					normals=Normals,
-					rendering_info={ colored, per_vertex, Colors } } ) ->
+                    face_type=FaceType,
+                    faces=IndexedFaces,
+                    normal_type=per_face,
+                    normals=Normals,
+                    rendering_info={ colored, per_vertex, Colors } } ) ->
 
-	% We could batch the commands sent to the GUI backend (e.g. with wx:batch/1
-	% or wx:foreach/2).
+    % We could batch the commands sent to the GUI backend (e.g. with wx:batch/1
+    % or wx:foreach/2).
 
-	cond_utils:if_defined( myriad_check_opengl, check_error() ),
+    cond_utils:if_defined( myriad_check_opengl, check_error() ),
 
-	render_faces( FaceType, IndexedFaces, Vertices, Normals, Colors ).
+    render_faces( FaceType, IndexedFaces, Vertices, Normals, Colors ).
 
 
 
@@ -2047,71 +2047,71 @@ more details.
 -spec enter_2d_mode( widget() ) -> void().
 enter_2d_mode( Widget ) ->
 
-	% Directly deriving from lib/wx/examples/demo/ex_gl.erl:
+    % Directly deriving from lib/wx/examples/demo/ex_gl.erl:
 
-	{ Width, Height } = wxWindow:getClientSize( Widget ),
+    { Width, Height } = wxWindow:getClientSize( Widget ),
 
-	% General state changes; depending on the current OpenGL state, other
-	% elements may have to be updated:
+    % General state changes; depending on the current OpenGL state, other
+    % elements may have to be updated:
 
-	gl:pushAttrib( ?GL_ENABLE_BIT ),
-	%cond_utils:if_defined( myriad_check_opengl, check_error() ),
+    gl:pushAttrib( ?GL_ENABLE_BIT ),
+    %cond_utils:if_defined( myriad_check_opengl, check_error() ),
 
-	gl:disable( ?GL_DEPTH_TEST ),
-	gl:disable( ?GL_CULL_FACE ),
-	gl:enable( ?GL_TEXTURE_2D ),
+    gl:disable( ?GL_DEPTH_TEST ),
+    gl:disable( ?GL_CULL_FACE ),
+    gl:enable( ?GL_TEXTURE_2D ),
 
-	%cond_utils:if_defined( myriad_check_opengl, check_error() ),
+    %cond_utils:if_defined( myriad_check_opengl, check_error() ),
 
-	% This allows the alpha blending of 2D textures with the scene:
-	gl:enable( ?GL_BLEND ),
-	gl:blendFunc( ?GL_SRC_ALPHA, ?GL_ONE_MINUS_SRC_ALPHA ),
+    % This allows the alpha blending of 2D textures with the scene:
+    gl:enable( ?GL_BLEND ),
+    gl:blendFunc( ?GL_SRC_ALPHA, ?GL_ONE_MINUS_SRC_ALPHA ),
 
-	% Updating first the projection matrix for 2D:
+    % Updating first the projection matrix for 2D:
 
-	gl:matrixMode( ?GL_PROJECTION ),
-	gl:pushMatrix(),
-	gl:loadIdentity(),
+    gl:matrixMode( ?GL_PROJECTION ),
+    gl:pushMatrix(),
+    gl:loadIdentity(),
 
-	%cond_utils:if_defined( myriad_check_opengl, check_error() ),
+    %cond_utils:if_defined( myriad_check_opengl, check_error() ),
 
-	% In all MyriadGUI coordinate systems mentioned, abscissas are to increase
-	% when going from left to right.
-	%
-	% As for ordinates, with the Myriad 2D coordinate system (refer to the
-	% 'Geometric Conventions' in Myriad's technical manual), like for the
-	% backend coordinates (e.g. SDL, wxWidgets), they are to increase when going
-	% from top to bottom.
-	%
-	% It is the opposite by default with OpenGL (increasing from bottom to top;
-	% the elements would therefore be upside-down in the OpenGL world), so in
-	% the next orthogonal projection bottom and top coordinates used to be
-	% mirrored; then OpenGL complied with the previous convention.
-	%
-	% Doing so may be more relevant than flipping the textures/images
-	% themselves, as the projection also applies to mouse coordinates.
-	%
-	% Yet now we prefer directly flipping vertically (upside-down) the textures
-	% at creation.
+    % In all MyriadGUI coordinate systems mentioned, abscissas are to increase
+    % when going from left to right.
+    %
+    % As for ordinates, with the Myriad 2D coordinate system (refer to the
+    % 'Geometric Conventions' in Myriad's technical manual), like for the
+    % backend coordinates (e.g. SDL, wxWidgets), they are to increase when going
+    % from top to bottom.
+    %
+    % It is the opposite by default with OpenGL (increasing from bottom to top;
+    % the elements would therefore be upside-down in the OpenGL world), so in
+    % the next orthogonal projection bottom and top coordinates used to be
+    % mirrored; then OpenGL complied with the previous convention.
+    %
+    % Doing so may be more relevant than flipping the textures/images
+    % themselves, as the projection also applies to mouse coordinates.
+    %
+    % Yet now we prefer directly flipping vertically (upside-down) the textures
+    % at creation.
 
-	% Multiplies the projection matrix with this orthographic one, assuming that
-	% the eye is located at (0, 0, 0); implements the MyriadGUI 2D conventions,
-	% with pixel-level coordinates (another option could have been to rely on
-	% normalised, definition-independent coordinates, ranging in [0.0, 1.0]):
-	%
-	% (corresponds to glu:ortho2D/4)
-	%
-	%gl:ortho( _Left=0.0, _Right=float( Width ), _Bottom=float( Height ),
-	%          _Top=0.0, _Near=-1.0, _Far=1.0 ),
-	gl:ortho( _Left=0.0, _Right=float( Width ), _Bottom=0.0,
-			  _Top=float( Height ), _Near=-1.0, _Far=1.0 ),
+    % Multiplies the projection matrix with this orthographic one, assuming that
+    % the eye is located at (0, 0, 0); implements the MyriadGUI 2D conventions,
+    % with pixel-level coordinates (another option could have been to rely on
+    % normalised, definition-independent coordinates, ranging in [0.0, 1.0]):
+    %
+    % (corresponds to glu:ortho2D/4)
+    %
+    %gl:ortho( _Left=0.0, _Right=float( Width ), _Bottom=float( Height ),
+    %          _Top=0.0, _Near=-1.0, _Far=1.0 ),
+    gl:ortho( _Left=0.0, _Right=float( Width ), _Bottom=0.0,
+              _Top=float( Height ), _Near=-1.0, _Far=1.0 ),
 
-	% Then reseting the modelview matrix:
-	gl:matrixMode( ?GL_MODELVIEW ),
-	gl:pushMatrix(),
-	gl:loadIdentity(),
+    % Then reseting the modelview matrix:
+    gl:matrixMode( ?GL_MODELVIEW ),
+    gl:pushMatrix(),
+    gl:loadIdentity(),
 
-	cond_utils:if_defined( myriad_check_opengl, check_error() ).
+    cond_utils:if_defined( myriad_check_opengl, check_error() ).
 
 
 
@@ -2121,15 +2121,15 @@ attributes.
 """.
 -spec leave_2d_mode() -> void().
 leave_2d_mode() ->
-	gl:matrixMode( ?GL_MODELVIEW ),
-	gl:popMatrix(),
+    gl:matrixMode( ?GL_MODELVIEW ),
+    gl:popMatrix(),
 
-	gl:matrixMode( ?GL_PROJECTION ),
-	gl:popMatrix(),
+    gl:matrixMode( ?GL_PROJECTION ),
+    gl:popMatrix(),
 
-	gl:popAttrib(),
+    gl:popAttrib(),
 
-	cond_utils:if_defined( myriad_check_opengl, check_error() ).
+    cond_utils:if_defined( myriad_check_opengl, check_error() ).
 
 
 
@@ -2139,22 +2139,22 @@ matrix_stack/0) with the specified matrix4 instance.
 """.
 -spec set_matrix( matrix4() ) -> void().
 set_matrix( M=identity_4  )  ->
-	set_matrix( matrix4:to_canonical( M ) );
+    set_matrix( matrix4:to_canonical( M ) );
 
 % Works both for canonical_matrix4 and compact_matrix4:
 set_matrix( M ) ->
 
-	% Removes the record tag, resulting in a tuple of 16 or 12 coordinates
-	% respectively:
-	%
-	ShrunkTuple = erlang:delete_element( _Index=1, M ),
+    % Removes the record tag, resulting in a tuple of 16 or 12 coordinates
+    % respectively:
+    %
+    ShrunkTuple = erlang:delete_element( _Index=1, M ),
 
-	% 'f' float suffix, not 'd' by definition of matrix4.
-	%
-	% Transpose, as gl:loadMatrixf expects column-major order, not row-major
-	% one:
-	%
-	gl:loadTransposeMatrixf( ShrunkTuple ).
+    % 'f' float suffix, not 'd' by definition of matrix4.
+    %
+    % Transpose, as gl:loadMatrixf expects column-major order, not row-major
+    % one:
+    %
+    gl:loadTransposeMatrixf( ShrunkTuple ).
 
 
 
@@ -2164,10 +2164,10 @@ matrix4 instance.
 """.
 -spec get_matrix( matrix_stack() ) -> matrix4().
 get_matrix( _Stack ) ->
-	% Not relevant: gl:getDoublev( Stack )
-	% and gl:get/1 not available through NIF.
-	% gl:get( Stack ).
-	throw( not_implemented ).
+    % Not relevant: gl:getDoublev( Stack )
+    % and gl:get/1 not available through NIF.
+    % gl:get( Stack ).
+    throw( not_implemented ).
 
 
 
@@ -2179,10 +2179,10 @@ Converts a MyriadGUI hint about buffer usage to OpenGL conventions.
 """.
 -spec boolean_to_gl( boolean() ) -> gl_boolean().
 boolean_to_gl( true ) ->
-	?GL_TRUE;
+    ?GL_TRUE;
 
 boolean_to_gl( false ) ->
-	?GL_FALSE.
+    ?GL_FALSE.
 
 
 
@@ -2193,36 +2193,36 @@ See <https://registry.khronos.org/OpenGL-Refpages/gl4/html/glBufferData.xhtml>.
 """.
 -spec buffer_usage_hint_to_gl( buffer_usage_hint() ) -> enum().
 buffer_usage_hint_to_gl( _UsageHint={ _Usage=draw, _Access=stream } ) ->
-	% In gl.hrl:
-	?GL_STREAM_DRAW;
+    % In gl.hrl:
+    ?GL_STREAM_DRAW;
 
 buffer_usage_hint_to_gl( _UsageHint={ _Usage=read, _Access=stream } ) ->
-	?GL_STREAM_READ;
+    ?GL_STREAM_READ;
 
 buffer_usage_hint_to_gl( _UsageHint={ _Usage=copy, _Access=stream } ) ->
-	?GL_STREAM_COPY;
+    ?GL_STREAM_COPY;
 
 
 buffer_usage_hint_to_gl( _UsageHint={ _Usage=draw, _Access=static } ) ->
-	% In gl.hrl:
-	?GL_STATIC_DRAW;
+    % In gl.hrl:
+    ?GL_STATIC_DRAW;
 
 buffer_usage_hint_to_gl( _UsageHint={ _Usage=read, _Access=static } ) ->
-	?GL_STATIC_READ;
+    ?GL_STATIC_READ;
 
 buffer_usage_hint_to_gl( _UsageHint={ _Usage=copy, _Access=static } ) ->
-	?GL_STATIC_COPY;
+    ?GL_STATIC_COPY;
 
 
 buffer_usage_hint_to_gl( _UsageHint={ _Usage=draw, _Access=dynamic } ) ->
-	% In gl.hrl:
-	?GL_DYNAMIC_DRAW;
+    % In gl.hrl:
+    ?GL_DYNAMIC_DRAW;
 
 buffer_usage_hint_to_gl( _UsageHint={ _Usage=read, _Access=dynamic } ) ->
-	?GL_DYNAMIC_READ;
+    ?GL_DYNAMIC_READ;
 
 buffer_usage_hint_to_gl( _UsageHint={ _Usage=copy, _Access=dynamic } ) ->
-	?GL_DYNAMIC_COPY.
+    ?GL_DYNAMIC_COPY.
 
 
 
@@ -2236,18 +2236,18 @@ to any prior resizing of the texture so that its dimensions are powers of two,
 the texture will occupy only a fraction of the target surface), not the whole.
 """.
 -spec render_faces( face_type(), [ indexed_face() ], [ any_vertex3() ],
-					[ unit_normal3() ], [ render_rgb_color() ] ) -> void().
+                    [ unit_normal3() ], [ render_rgb_color() ] ) -> void().
 render_faces( _FaceType=triangle, IndexedFaces, Vertices, Normals, Colors ) ->
-	gl:'begin'( ?GL_TRIANGLES ),
-	render_triangles( IndexedFaces, _FaceCount=1, Vertices, Normals, Colors ),
-	gl:'end'(),
-	cond_utils:if_defined( myriad_check_opengl, check_error() );
+    gl:'begin'( ?GL_TRIANGLES ),
+    render_triangles( IndexedFaces, _FaceCount=1, Vertices, Normals, Colors ),
+    gl:'end'(),
+    cond_utils:if_defined( myriad_check_opengl, check_error() );
 
 render_faces( _FaceType=quad, IndexedFaces, Vertices, Normals, Colors ) ->
-	gl:'begin'( ?GL_QUADS ),
-	render_quads( IndexedFaces, _FaceCount=1, Vertices, Normals, Colors ),
-	gl:'end'(),
-	cond_utils:if_defined( myriad_check_opengl, check_error() ).
+    gl:'begin'( ?GL_QUADS ),
+    render_quads( IndexedFaces, _FaceCount=1, Vertices, Normals, Colors ),
+    gl:'end'(),
+    cond_utils:if_defined( myriad_check_opengl, check_error() ).
 
 
 
@@ -2255,38 +2255,38 @@ render_faces( _FaceType=quad, IndexedFaces, Vertices, Normals, Colors ) ->
 %
 % (helper)
 render_triangles( _IndexedFaces=[], _FaceCount, _Vertices, _Normals,
-				  _Colors ) ->
-	ok;
+                  _Colors ) ->
+    ok;
 
 render_triangles( _IndexedFaces=[ { V1Idx, V2Idx, V3Idx } | T ], FaceCount,
-		Vertices, Normals, _Colors=[ { V1Col, V2Col, V3Col } | TCol ] ) ->
+        Vertices, Normals, _Colors=[ { V1Col, V2Col, V3Col } | TCol ] ) ->
 
-	%trace_utils:debug_fmt( "Rendering triangle face:~n ~p",
-	%   [ mesh:get_vertices_from_ids( [ V1Idx, V2Idx, V3Idx ], Vertices ) ] ),
+    %trace_utils:debug_fmt( "Rendering triangle face:~n ~p",
+    %   [ mesh:get_vertices_from_ids( [ V1Idx, V2Idx, V3Idx ], Vertices ) ] ),
 
-	% A single normal (per-face normals implied here):
-	gl:normal3fv( point3:from_vector(
-		mesh:get_element_from_id( _NId=FaceCount, Normals ) ) ),
+    % A single normal (per-face normals implied here):
+    gl:normal3fv( point3:from_vector(
+        mesh:get_element_from_id( _NId=FaceCount, Normals ) ) ),
 
-	% Colors used to be indexed:
-	%gl:color3fv( lists:nth( V1Idx, Colors ) ),
+    % Colors used to be indexed:
+    %gl:color3fv( lists:nth( V1Idx, Colors ) ),
 
-	% With older OpenGL with plain colors, we do not bother pre-converting
-	% color_by_decimal() into render_rgb_color(), we do it on the fly.
+    % With older OpenGL with plain colors, we do not bother pre-converting
+    % color_by_decimal() into render_rgb_color(), we do it on the fly.
 
-	gl:color3fv( gui_color:decimal_to_render( V1Col ) ),
-	gl:texCoord2f( 0.0, 0.0 ),
-	gl:vertex3fv( mesh:get_vertex_from_id( V1Idx, Vertices ) ),
+    gl:color3fv( gui_color:decimal_to_render( V1Col ) ),
+    gl:texCoord2f( 0.0, 0.0 ),
+    gl:vertex3fv( mesh:get_vertex_from_id( V1Idx, Vertices ) ),
 
-	gl:color3fv( gui_color:decimal_to_render( V2Col ) ),
-	gl:texCoord2f( 1.0, 0.0 ),
-	gl:vertex3fv( mesh:get_vertex_from_id( V2Idx, Vertices ) ),
+    gl:color3fv( gui_color:decimal_to_render( V2Col ) ),
+    gl:texCoord2f( 1.0, 0.0 ),
+    gl:vertex3fv( mesh:get_vertex_from_id( V2Idx, Vertices ) ),
 
-	gl:color3fv( gui_color:decimal_to_render( V3Col ) ),
-	gl:texCoord2f( 1.0, 1.0 ),
-	gl:vertex3fv( mesh:get_vertex_from_id( V3Idx, Vertices ) ),
+    gl:color3fv( gui_color:decimal_to_render( V3Col ) ),
+    gl:texCoord2f( 1.0, 1.0 ),
+    gl:vertex3fv( mesh:get_vertex_from_id( V3Idx, Vertices ) ),
 
-	render_triangles( T, FaceCount+1, Vertices, Normals, TCol ).
+    render_triangles( T, FaceCount+1, Vertices, Normals, TCol ).
 
 
 
@@ -2294,45 +2294,45 @@ render_triangles( _IndexedFaces=[ { V1Idx, V2Idx, V3Idx } | T ], FaceCount,
 %
 % (helper)
 render_quads( _IndexedFaces=[], _FaceCount, _Vertices, _Normals, _Colors ) ->
-	ok;
+    ok;
 
 render_quads( _IndexedFaces=[ { V1Idx, V2Idx, V3Idx, V4Idx } | T ], FaceCount,
-			  Vertices, Normals,
-			  _Colors=[ { V1Col, V2Col, V3Col, V4Col } | TCol ] ) ->
+              Vertices, Normals,
+              _Colors=[ { V1Col, V2Col, V3Col, V4Col } | TCol ] ) ->
 
-	%trace_utils:debug_fmt( "Rendering quad face:~n ~p",
-	%   [ mesh:get_vertices_from_ids( [ V1Idx, V2Idx, V3Idx, V4Idx ],
-	%                                 Vertices ) ] ),
+    %trace_utils:debug_fmt( "Rendering quad face:~n ~p",
+    %   [ mesh:get_vertices_from_ids( [ V1Idx, V2Idx, V3Idx, V4Idx ],
+    %                                 Vertices ) ] ),
 
-	% A single normal (per-face normals implied here):
-	gl:normal3fv( point3:from_vector(
-		mesh:get_element_from_id( _NId=FaceCount, Normals ) ) ),
+    % A single normal (per-face normals implied here):
+    gl:normal3fv( point3:from_vector(
+        mesh:get_element_from_id( _NId=FaceCount, Normals ) ) ),
 
-	% With older OpenGL with plain colors, we do not bother pre-converting
-	% color_by_decimal() into render_rgb_color(), we do it on the fly.
-	%
-	gl:color3fv( gui_color:decimal_to_render( V1Col ) ),
+    % With older OpenGL with plain colors, we do not bother pre-converting
+    % color_by_decimal() into render_rgb_color(), we do it on the fly.
+    %
+    gl:color3fv( gui_color:decimal_to_render( V1Col ) ),
 
-	% For some reason, instead of scaling the current texture so that it covers
-	% each face, apparently the texture is displayed as it is, without
-	% distorting it to exactly fit in quads:
+    % For some reason, instead of scaling the current texture so that it covers
+    % each face, apparently the texture is displayed as it is, without
+    % distorting it to exactly fit in quads:
 
-	gl:texCoord2f( 0.0, 0.0 ),
-	gl:vertex3fv( mesh:get_vertex_from_id( V1Idx, Vertices ) ),
+    gl:texCoord2f( 0.0, 0.0 ),
+    gl:vertex3fv( mesh:get_vertex_from_id( V1Idx, Vertices ) ),
 
-	gl:color3fv( gui_color:decimal_to_render( V2Col ) ),
-	gl:texCoord2f( 1.0, 0.0 ),
-	gl:vertex3fv( mesh:get_vertex_from_id( V2Idx, Vertices ) ),
+    gl:color3fv( gui_color:decimal_to_render( V2Col ) ),
+    gl:texCoord2f( 1.0, 0.0 ),
+    gl:vertex3fv( mesh:get_vertex_from_id( V2Idx, Vertices ) ),
 
-	gl:color3fv( gui_color:decimal_to_render( V3Col ) ),
-	gl:texCoord2f( 1.0, 1.0 ),
-	gl:vertex3fv( mesh:get_vertex_from_id( V3Idx, Vertices ) ),
+    gl:color3fv( gui_color:decimal_to_render( V3Col ) ),
+    gl:texCoord2f( 1.0, 1.0 ),
+    gl:vertex3fv( mesh:get_vertex_from_id( V3Idx, Vertices ) ),
 
-	gl:color3fv( gui_color:decimal_to_render( V4Col ) ),
-	gl:texCoord2f( 0.0, 1.0 ),
-	gl:vertex3fv( mesh:get_vertex_from_id( V4Idx, Vertices ) ),
+    gl:color3fv( gui_color:decimal_to_render( V4Col ) ),
+    gl:texCoord2f( 0.0, 1.0 ),
+    gl:vertex3fv( mesh:get_vertex_from_id( V4Idx, Vertices ) ),
 
-	render_quads( T, FaceCount+1, Vertices, Normals, TCol ).
+    render_quads( T, FaceCount+1, Vertices, Normals, TCol ).
 
 
 
@@ -2357,7 +2357,7 @@ set_context*/2), otherwise a no_gl_context error will be triggered.
 """.
 -spec check_error() -> void().
 check_error() ->
-	check_error( _DoThrowOnError=true ).
+    check_error( _DoThrowOnError=true ).
 
 
 
@@ -2373,129 +2373,129 @@ set_context*/2), otherwise a no_gl_context error will be triggered.
 """.
 -spec check_error( boolean() ) -> void().
 check_error( DoThrowOnError ) ->
-	check_gl_error( DoThrowOnError ),
-	check_gl_debug_context_error( DoThrowOnError ).
+    check_gl_error( DoThrowOnError ),
+    check_gl_debug_context_error( DoThrowOnError ).
 
 
 % (helper)
 -spec check_gl_error() -> void().
 check_gl_error() ->
-	check_gl_error( _DoThrowOnError=true ).
+    check_gl_error( _DoThrowOnError=true ).
 
 
 -spec check_gl_error( boolean() ) -> void().
 check_gl_error( DoThrowOnError ) ->
 
-	%DoTrace = true,
-	DoTrace = false,
+    %DoTrace = true,
+    DoTrace = false,
 
-	DoTrace andalso
-		begin
+    DoTrace andalso
+        begin
 
-			{ TMod, TFunc, TArity, [ { file, TSrcFile },
-									 { line, TLine } ] } =
-				hd( code_utils:get_stacktrace( _SkipLastElemCount=3 ) ),
+            { TMod, TFunc, TArity, [ { file, TSrcFile },
+                                     { line, TLine } ] } =
+                hd( code_utils:get_stacktrace( _SkipLastElemCount=3 ) ),
 
-			trace_utils:debug_fmt( "Check in ~ts:~ts/~B (file ~ts, "
-				"line ~B)", [ TMod, TFunc, TArity, TSrcFile, TLine ] )
+            trace_utils:debug_fmt( "Check in ~ts:~ts/~B (file ~ts, "
+                "line ~B)", [ TMod, TFunc, TArity, TSrcFile, TLine ] )
 
-		end,
+        end,
 
-	% Reset the error status when returning:
-	case gl:getError() of
+    % Reset the error status when returning:
+    case gl:getError() of
 
-		?GL_NO_ERROR ->
-			ok;
+        ?GL_NO_ERROR ->
+            ok;
 
-		GlError ->
-			Diagnosis = interpret_error( GlError ),
-			% Stacktrace expected, as bound to be useful (even if the error
-			% might have happened some time before, any time between the
-			% previous check and this one):
-			%
-			SkipLastElemCount = 2,
+        GlError ->
+            Diagnosis = interpret_error( GlError ),
+            % Stacktrace expected, as bound to be useful (even if the error
+            % might have happened some time before, any time between the
+            % previous check and this one):
+            %
+            SkipLastElemCount = 2,
 
-			case DoThrowOnError of
+            case DoThrowOnError of
 
-				true ->
-					{ Mod, Func, Arity, [ { file, SrcFile },
-										  { line, Line } ] } =
-						hd( code_utils:get_stacktrace( SkipLastElemCount ) ),
+                true ->
+                    { Mod, Func, Arity, [ { file, SrcFile },
+                                          { line, Line } ] } =
+                        hd( code_utils:get_stacktrace( SkipLastElemCount ) ),
 
-					trace_utils:error_fmt( "OpenGL error reported (~B): ~ts; "
-						"this error was detected in ~ts:~ts/~B (file ~ts, "
-						"line ~B); aborting.",
-						[ GlError, Diagnosis, Mod, Func, Arity, SrcFile,
-						  Line ] ),
+                    trace_utils:error_fmt( "OpenGL error reported (~B): ~ts; "
+                        "this error was detected in ~ts:~ts/~B (file ~ts, "
+                        "line ~B); aborting.",
+                        [ GlError, Diagnosis, Mod, Func, Arity, SrcFile,
+                          Line ] ),
 
-					throw( { opengl_error, GlError, Diagnosis } );
+                    throw( { opengl_error, GlError, Diagnosis } );
 
-				false ->
-					trace_utils:error_fmt( "OpenGL error detected (~B): ~ts; "
-						"stacktrace:~n  ~p.", [ GlError, Diagnosis,
-							code_utils:get_stacktrace( SkipLastElemCount ) ] ),
+                false ->
+                    trace_utils:error_fmt( "OpenGL error detected (~B): ~ts; "
+                        "stacktrace:~n  ~p.", [ GlError, Diagnosis,
+                            code_utils:get_stacktrace( SkipLastElemCount ) ] ),
 
-					% Recursing until having ?GL_NO_ERROR, knowing that, when
-					% OpenGL is run in distributed mode (like frequently found
-					% on X11 systems), calling gl:getError/0 only resets *a
-					% single* error code flag (instead of all of them):
-					%
-					check_gl_error( DoThrowOnError )
+                    % Recursing until having ?GL_NO_ERROR, knowing that, when
+                    % OpenGL is run in distributed mode (like frequently found
+                    % on X11 systems), calling gl:getError/0 only resets *a
+                    % single* error code flag (instead of all of them):
+                    %
+                    check_gl_error( DoThrowOnError )
 
-			end
+            end
 
-	end.
+    end.
 
 
 % (helper)
 -spec check_gl_debug_context_error() -> void().
 check_gl_debug_context_error() ->
-	check_gl_debug_context_error( _DoThrowOnError=true ).
+    check_gl_debug_context_error( _DoThrowOnError=true ).
 
 
 % (helper)
 -spec check_gl_debug_context_error( boolean() ) -> void().
 check_gl_debug_context_error( DoThrowOnError ) ->
 
-	% There might still be messages even if the debug context is not
-	% specifically enabled:
-	%
-	case get_debug_context_messages() of
+    % There might still be messages even if the debug context is not
+    % specifically enabled:
+    %
+    case get_debug_context_messages() of
 
-		[] ->
-			ok;
+        [] ->
+            ok;
 
-		Msgs ->
-			% Similar as for gl:getError/0:
-			SkipLastElemCount = 2,
+        Msgs ->
+            % Similar as for gl:getError/0:
+            SkipLastElemCount = 2,
 
-			case DoThrowOnError of
+            case DoThrowOnError of
 
-				true ->
-					{ Mod, Func, Arity, [ { file, SrcFile },
-										  { line, Line } ] } =
-						hd( code_utils:get_stacktrace( SkipLastElemCount ) ),
+                true ->
+                    { Mod, Func, Arity, [ { file, SrcFile },
+                                          { line, Line } ] } =
+                        hd( code_utils:get_stacktrace( SkipLastElemCount ) ),
 
-					trace_utils:error_fmt( "~B OpenGL error(s) reported "
-						"through its debug context: ~ts~n"
-						"Detected in ~ts:~ts/~B (file ~ts, "
-						"line ~B); aborting.",
-						[ length( Msgs ),
-						  debug_context_messages_to_string( Msgs ),
-						  Mod, Func, Arity, SrcFile, Line ] ),
+                    trace_utils:error_fmt( "~B OpenGL error(s) reported "
+                        "through its debug context: ~ts~n"
+                        "Detected in ~ts:~ts/~B (file ~ts, "
+                        "line ~B); aborting.",
+                        [ length( Msgs ),
+                          debug_context_messages_to_string( Msgs ),
+                          Mod, Func, Arity, SrcFile, Line ] ),
 
-					throw( { opengl_error_from_debug_context, Msgs } );
+                    throw( { opengl_error_from_debug_context, Msgs } );
 
-				false ->
-					trace_utils:error_fmt( "~B OpenGL error(s) detected "
-						"through its debug context: ~ts~nStacktrace:~n  ~p.",
-						[ length( Msgs ),
-						  debug_context_messages_to_string( Msgs ),
-						  code_utils:get_stacktrace( SkipLastElemCount ) ] )
+                false ->
+                    trace_utils:error_fmt( "~B OpenGL error(s) detected "
+                        "through its debug context: ~ts~nStacktrace:~n  ~p.",
+                        [ length( Msgs ),
+                          debug_context_messages_to_string( Msgs ),
+                          code_utils:get_stacktrace( SkipLastElemCount ) ] )
 
-			end
+            end
 
-	end.
+    end.
 
 
 
@@ -2507,35 +2507,35 @@ GLU) error.
 % Reference being
 % https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glGetError.xhtml:
 interpret_error( ?GL_INVALID_ENUM ) ->
-	"invalid value specified for an enumerated argument (GL_INVALID_ENUM)";
+    "invalid value specified for an enumerated argument (GL_INVALID_ENUM)";
 
 interpret_error( ?GL_INVALID_VALUE ) ->
-	"out-of-range numeric argument (GL_INVALID_VALUE)";
+    "out-of-range numeric argument (GL_INVALID_VALUE)";
 
 interpret_error( ?GL_INVALID_OPERATION ) ->
-	"a specified operation is not allowed in the current state "
-	"(GL_INVALID_OPERATION)";
+    "a specified operation is not allowed in the current state "
+    "(GL_INVALID_OPERATION)";
 
 interpret_error( ?GL_INVALID_FRAMEBUFFER_OPERATION ) ->
-	"the framebuffer object is not complete (GL_INVALID_FRAMEBUFFER_OPERATION)";
+    "the framebuffer object is not complete (GL_INVALID_FRAMEBUFFER_OPERATION)";
 
 interpret_error( ?GL_OUT_OF_MEMORY ) ->
-	"there is not enough memory left to execute the command (GL_OUT_OF_MEMORY)";
+    "there is not enough memory left to execute the command (GL_OUT_OF_MEMORY)";
 
 interpret_error( ?GL_STACK_UNDERFLOW ) ->
-	"an attempt has been made to perform an operation that would cause "
-	"an internal stack to underflow (GL_STACK_UNDERFLOW)";
+    "an attempt has been made to perform an operation that would cause "
+    "an internal stack to underflow (GL_STACK_UNDERFLOW)";
 
 interpret_error( ?GL_STACK_OVERFLOW ) ->
-	"an attempt has been made to perform an operation that would cause "
-	"an internal stack to overflow (GL_STACK_OVERFLOW)";
+    "an attempt has been made to perform an operation that would cause "
+    "an internal stack to overflow (GL_STACK_OVERFLOW)";
 
 interpret_error( ?GL_NO_ERROR ) ->
-	"no OpenGL error reported (GL_NO_ERROR)";
+    "no OpenGL error reported (GL_NO_ERROR)";
 
 interpret_error( OtherCode ) ->
-	text_utils:format( "OpenGL-related error of code ~B, interpreted as '~ts'.",
-		[ OtherCode, glu:errorString( OtherCode ) ] ).
+    text_utils:format( "OpenGL-related error of code ~B, interpreted as '~ts'.",
+        [ OtherCode, glu:errorString( OtherCode ) ] ).
 
 
 
@@ -2549,16 +2549,16 @@ to generate, here, a (single) module to share the MyriadGUI OpenGL constants.
 -spec generate_support_modules() -> no_return().
 generate_support_modules() ->
 
-	TargetModName = gui_opengl_generated,
+    TargetModName = gui_opengl_generated,
 
-	%trace_bridge:info_fmt( "Generating module '~ts'...", [ TargetModName ] ),
+    %trace_bridge:info_fmt( "Generating module '~ts'...", [ TargetModName ] ),
 
-	TopicSpecs = [ gui_opengl_constants:F()
-					|| F <- gui_opengl_constants:list_topic_spec_functions() ],
+    TopicSpecs = [ gui_opengl_constants:F()
+                    || F <- gui_opengl_constants:list_topic_spec_functions() ],
 
-	_ModFilename =
-		const_bijective_topics:generate_in_file( TargetModName, TopicSpecs ),
+    _ModFilename =
+        const_bijective_topics:generate_in_file( TargetModName, TopicSpecs ),
 
-	%trace_bridge:info_fmt( "File '~ts' generated.", [ ModFilename ] ),
+    %trace_bridge:info_fmt( "File '~ts' generated.", [ ModFilename ] ),
 
-	erlang:halt().
+    erlang:halt().

@@ -207,9 +207,9 @@ Main changes were:
 
    - thanks to the previous element, a mock Sim-Diasca-based simulator has been added (see the ``mock-simulator`` top-level directory), as a complete example, to help the development of further SimDiasca-based simulators; two tests are already supported, and they will improve and grow over time:
 
-	 - *Soda-vending machine* test: simple test to show actor creation and interaction (ported from the training material)
+     - *Soda-vending machine* test: simple test to show actor creation and interaction (ported from the training material)
 
-	 -  [not ready yet] *SSI* test, for *Sim-Diasca Scalable Integration Test*: first version of the business-free test simulation case, a tiny ecosystem made to load the engine for scalability assessment purpose
+     -  [not ready yet] *SSI* test, for *Sim-Diasca Scalable Integration Test*: first version of the business-free test simulation case, a tiny ecosystem made to load the engine for scalability assessment purpose
 
  - no more pending nodes rejected when running again a simulation that just crashed on the same computing hosts
 
@@ -450,7 +450,7 @@ Most significant changes were:
 
    - similarly, result directories are more unique now, e.g.:
 
-	``Sim-Diasca_My_Test-on-2012-12-10-at-10h-05m-31s-by-boudevil-1f793a6ba507``
+    ``Sim-Diasca_My_Test-on-2012-12-10-at-10h-05m-31s-by-boudevil-1f793a6ba507``
 
    - k-crash resistance being prepared
 

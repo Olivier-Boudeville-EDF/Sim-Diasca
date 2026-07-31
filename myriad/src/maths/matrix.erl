@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -113,8 +113,8 @@ A square matrix, that is whose number of rows is equal to its number of columns.
 
 -doc "Regroups all types of specialised (square) matrices.".
 -type specialised_matrix() :: matrix2:matrix2()
-							| matrix3:matrix3()
-							| matrix4:matrix4().
+                            | matrix3:matrix3()
+                            | matrix4:matrix4().
 
 
 
@@ -148,28 +148,28 @@ A square matrix, that is whose number of rows is equal to its number of columns.
 
 
 -export_type([ user_row/0, row/0, column/0,
-			   user_matrix/0, matrix/0, rot_matrix/0, square_matrix/0,
-			   specialised_matrix/0, specialised_module/0,
-			   row_index/0, column_index/0,
-			   row_count/0, column_count/0,
-			   dimensions/0 ]).
+               user_matrix/0, matrix/0, rot_matrix/0, square_matrix/0,
+               specialised_matrix/0, specialised_module/0,
+               row_index/0, column_index/0,
+               row_count/0, column_count/0,
+               dimensions/0 ]).
 
 
 -export([ new/1, null/1, null/2, identity/1, rotation/2,
-		  from_columns/1, from_rows/1,
-		  from_coordinates/2, to_coordinates/1,
-		  dimensions/1,
-		  row/2, column/2,
-		  get_element/3, set_element/4,
-		  transpose/1,
-		  scale/2,
-		  add/2, sub/2, mult/2, apply/2,
-		  are_equal/2,
-		  determinant/1, comatrix/1, inverse/1,
-		  get_specialised_module_of/1, get_specialised_module_for/1,
-		  specialise/1, unspecialise/1,
-		  check/1,
-		  to_string/1, to_basic_string/1, to_user_string/1 ] ).
+          from_columns/1, from_rows/1,
+          from_coordinates/2, to_coordinates/1,
+          dimensions/1,
+          row/2, column/2,
+          get_element/3, set_element/4,
+          transpose/1,
+          scale/2,
+          add/2, sub/2, mult/2, apply/2,
+          are_equal/2,
+          determinant/1, comatrix/1, inverse/1,
+          get_specialised_module_of/1, get_specialised_module_for/1,
+          specialise/1, unspecialise/1,
+          check/1,
+          to_string/1, to_basic_string/1, to_user_string/1 ] ).
 
 
 % To avoid clash with BIF:
@@ -205,32 +205,32 @@ of dimensions could correspond. See from_coordinates/2.
 -spec new( matrix() ) -> matrix().
 new( UserMatrix ) ->
 
-	M = [ vector:new( UR ) || UR <- UserMatrix ],
+    M = [ vector:new( UR ) || UR <- UserMatrix ],
 
-	cond_utils:if_defined( myriad_check_linear, check( M ), M ).
+    cond_utils:if_defined( myriad_check_linear, check( M ), M ).
 
 
 
 -doc "Returns a null, square (arbitrary) matrix of the specified dimension.".
 -spec null( dimension() ) -> square_matrix().
 null( SquareDim ) ->
-	null( SquareDim, SquareDim ).
+    null( SquareDim, SquareDim ).
 
 
 
 -doc "Returns a null (arbitrary) matrix of the specified dimensions.".
 -spec null( dimension(), dimension() ) -> matrix().
 null( RowCount, ColumnCount ) ->
-	NullRow = lists:duplicate( ColumnCount, 0.0 ),
-	lists:duplicate( RowCount, NullRow ).
+    NullRow = lists:duplicate( ColumnCount, 0.0 ),
+    lists:duplicate( RowCount, NullRow ).
 
 
 
 -doc "Returns the identity (square) matrix of the specified dimension.".
 -spec identity( dimension() ) -> square_matrix().
 identity( Dim ) ->
-	[ [ case R of C -> 1.0; _ -> 0.0 end
-			|| C <- lists:seq( 1, Dim ) ] || R <- lists:seq( 1, Dim ) ].
+    [ [ case R of C -> 1.0; _ -> 0.0 end
+            || C <- lists:seq( 1, Dim ) ] || R <- lists:seq( 1, Dim ) ].
 
 
 
@@ -247,19 +247,19 @@ specified axis points towards it.
 """.
 -spec rotation( unit_vector(), radians() ) -> matrix().
 rotation( UnitAxis, RadAngle ) ->
-	SpecialisedM = case vector:dimension( UnitAxis ) of
+    SpecialisedM = case vector:dimension( UnitAxis ) of
 
-		2 ->
-			matrix2:rotation( RadAngle );
+        2 ->
+            matrix2:rotation( RadAngle );
 
-		3 ->
-			matrix3:rotation( UnitAxis, RadAngle );
+        3 ->
+            matrix3:rotation( UnitAxis, RadAngle );
 
-		4 ->
-			matrix4:rotation( UnitAxis, RadAngle )
+        4 ->
+            matrix4:rotation( UnitAxis, RadAngle )
 
-	end,
-	unspecialise( SpecialisedM ).
+    end,
+    unspecialise( SpecialisedM ).
 
 
 
@@ -276,8 +276,8 @@ Returns thus:
 """.
 -spec from_columns( [ vector() ] ) -> matrix().
 from_columns( Columns ) ->
-	M = transpose( Columns ),
-	cond_utils:if_defined( myriad_check_linear, check( M ), M ).
+    M = transpose( Columns ),
+    cond_utils:if_defined( myriad_check_linear, check( M ), M ).
 
 
 
@@ -295,7 +295,7 @@ Returns thus:
 """.
 -spec from_rows( [ vector() ] ) -> matrix().
 from_rows( M=_Rows ) ->
-	cond_utils:if_defined( myriad_check_linear, check( M ), M ).
+    cond_utils:if_defined( myriad_check_linear, check( M ), M ).
 
 
 
@@ -307,16 +307,16 @@ Row count is implicit.
 """.
 -spec from_coordinates( [ coordinate() ], dimension() ) -> matrix().
 from_coordinates( Coords, ColumnCount ) ->
-	from_coordinates( Coords, ColumnCount, _AccM=[] ).
+    from_coordinates( Coords, ColumnCount, _AccM=[] ).
 
 
 % (helper)
 from_coordinates( _Coords=[], _ColumnCount, AccM ) ->
-	lists:reverse( AccM );
+    lists:reverse( AccM );
 
 from_coordinates( Coords, ColumnCount, AccM ) ->
-	{ Row, RestCoords } = lists:split( _N=ColumnCount, Coords ),
-	from_coordinates( RestCoords, ColumnCount, [ Row | AccM ] ).
+    { Row, RestCoords } = lists:split( _N=ColumnCount, Coords ),
+    from_coordinates( RestCoords, ColumnCount, [ Row | AccM ] ).
 
 
 
@@ -328,35 +328,35 @@ Dimensions are not specifically reported.
 """.
 -spec to_coordinates( matrix() ) -> [ coordinate() ].
 to_coordinates( Matrix ) ->
-	list_utils:flatten_once( Matrix ).
+    list_utils:flatten_once( Matrix ).
 
 
 
 -doc "Returns the dimensions of the specified matrix.".
 -spec dimensions( matrix() ) -> dimensions().
 dimensions( M ) ->
-	{ length( M ), length( hd( M ) ) }.
+    { length( M ), length( hd( M ) ) }.
 
 
 
 -doc "Returns the specified row of the specified matrix.".
 -spec row( dimension(), matrix() ) -> vector().
 row( RowCount, Matrix ) ->
-	lists:nth( RowCount, Matrix ).
+    lists:nth( RowCount, Matrix ).
 
 
 
 -doc "Returns the specified column of the specified matrix.".
 -spec column( dimension(), matrix() ) -> vector().
 column( ColCount, Matrix ) ->
-	[ lists:nth( ColCount, R ) || R <- Matrix ].
+    [ lists:nth( ColCount, R ) || R <- Matrix ].
 
 
 
 -doc "Returns the element at specified row and column of the specified matrix.".
 -spec get_element( dimension(), dimension(), matrix() ) -> coordinate().
 get_element( R, C, Matrix ) ->
-	lists:nth( C, row( R, Matrix ) ).
+    lists:nth( C, row( R, Matrix ) ).
 
 
 
@@ -365,10 +365,10 @@ Returns a matrix identical to the specified one except that its specified
 element at specified location has been set to the specified value.
 """.
 -spec set_element( dimension(), dimension(), coordinate(), matrix() ) ->
-									matrix().
+                                    matrix().
 set_element( R, C, Value, Matrix ) ->
-	NewRow = list_utils:set_element_at( Value, row( R, Matrix ), _Index=C ),
-	list_utils:set_element_at( NewRow, Matrix, R ).
+    NewRow = list_utils:set_element_at( Value, row( R, Matrix ), _Index=C ),
+    list_utils:set_element_at( NewRow, Matrix, R ).
 
 
 
@@ -383,7 +383,7 @@ of the rows of the transpose matrix).
 %transpose( _M=[ _FirstRow=[ FirstElem | OtherElems ] | OtherRows ] ) ->
 %   [ [ E | || E <- FirstRow ].
 transpose( M ) ->
-	transpose( M, _AccTranspose=[] ).
+    transpose( M, _AccTranspose=[] ).
 
 
 % (helper)
@@ -395,12 +395,12 @@ transpose( M ) ->
 % well)
 %
 transpose( _Rows=[ [] | _T ], AccTranspose ) ->
-	% So that rows are enumerated in the right FIFO order:
-	lists:reverse( AccTranspose );
+    % So that rows are enumerated in the right FIFO order:
+    lists:reverse( AccTranspose );
 
 transpose( NonExhaustedRows, AccTranspose ) ->
-	{ TransposeRow, ChoppedRows } = extract_first_elements( NonExhaustedRows ),
-	transpose( ChoppedRows, [ TransposeRow | AccTranspose ] ).
+    { TransposeRow, ChoppedRows } = extract_first_elements( NonExhaustedRows ),
+    transpose( ChoppedRows, [ TransposeRow | AccTranspose ] ).
 
 
 
@@ -409,21 +409,21 @@ transpose( NonExhaustedRows, AccTranspose ) ->
 %
 % (helper)
 extract_first_elements( Rows ) ->
-	extract_first_elements( Rows, _AccElems=[], _AccRows=[] ).
+    extract_first_elements( Rows, _AccElems=[], _AccRows=[] ).
 
 
 extract_first_elements( _Rows=[], AccElems, AccRows ) ->
-	{ lists:reverse( AccElems ), lists:reverse( AccRows ) };
+    { lists:reverse( AccElems ), lists:reverse( AccRows ) };
 
 extract_first_elements( _Rows=[ [ H | T ] | OtherRows ], AccElems, AccRows ) ->
-	extract_first_elements( OtherRows, [ H | AccElems ], [ T | AccRows ] ).
+    extract_first_elements( OtherRows, [ H | AccElems ], [ T | AccRows ] ).
 
 
 
 -doc "Scales each coordinate of the specified matrix of the specified factor.".
 -spec scale( matrix(), factor() ) -> matrix().
 scale( Matrix, Factor ) ->
-	[ vector:scale( R, Factor ) || R <- Matrix ].
+    [ vector:scale( R, Factor ) || R <- Matrix ].
 
 
 
@@ -433,10 +433,10 @@ dimensions: `M = Ma + Mb`..
 """.
 -spec add( matrix(), matrix() ) -> matrix().
 add( Ma, Mb ) ->
-	lists:zipwith( fun( Ra, Rb ) ->
-						vector:add( Ra, Rb )
-				   end,
-				   Ma, Mb ).
+    lists:zipwith( fun( Ra, Rb ) ->
+                        vector:add( Ra, Rb )
+                   end,
+                   Ma, Mb ).
 
 
 
@@ -446,10 +446,10 @@ dimensions: `M = Ma - Mb`.
 """.
 -spec sub( matrix(), matrix() ) -> matrix().
 sub( Ma, Mb ) ->
-	lists:zipwith( fun( Ra, Rb ) ->
-						vector:sub( Ra, Rb )
-				   end,
-				   Ma, Mb ).
+    lists:zipwith( fun( Ra, Rb ) ->
+                        vector:sub( Ra, Rb )
+                   end,
+                   Ma, Mb ).
 
 
 
@@ -460,17 +460,17 @@ of the other, and reciprocally): returns `M = Ma.Mb`.
 """.
 -spec mult( matrix(), matrix() ) -> matrix().
 mult( Ma, Mb ) ->
-	TranspMb = transpose( Mb ),
-	mult( Ma, TranspMb, _AccRows=[] ).
+    TranspMb = transpose( Mb ),
+    mult( Ma, TranspMb, _AccRows=[] ).
 
 
 % (helper)
 mult( _Ma=[], _Mb, AccRows ) ->
-	lists:reverse( AccRows );
+    lists:reverse( AccRows );
 
 mult( _Ma=[ Ra | Ta ], TranspMb, AccRows ) ->
-	MultRow = apply_columns( Ra, TranspMb, _Acc=[] ),
-	mult( Ta, TranspMb, [ MultRow | AccRows ] ).
+    MultRow = apply_columns( Ra, TranspMb, _Acc=[] ),
+    mult( Ta, TranspMb, [ MultRow | AccRows ] ).
 
 
 
@@ -482,7 +482,7 @@ Not a clause of mult/2 for an increased clarity.
 """.
 -spec apply( matrix(), vector() ) -> vector().
 apply( _M=Rows, V ) ->
-	[ vector:dot_product( R, V ) || R <- Rows ].
+    [ vector:dot_product( R, V ) || R <- Rows ].
 
 
 
@@ -490,11 +490,11 @@ apply( _M=Rows, V ) ->
 % transposed matrix.
 %
 apply_columns( _R, _Columns=[], Acc ) ->
-	lists:reverse( Acc );
+    lists:reverse( Acc );
 
 apply_columns( R, _Columns=[ Col | T ], Acc ) ->
-	Coord = vector:dot_product( R, Col ),
-	apply_columns( R, T, [ Coord | Acc ] ).
+    Coord = vector:dot_product( R, Col ),
+    apply_columns( R, T, [ Coord | Acc ] ).
 
 
 
@@ -503,61 +503,61 @@ Returns the determinant of the specified (square) matrix.
 
 Relies on <https://en.wikipedia.org/wiki/Laplace_expansion> for which we choose
  i=1 (first row) and iterate on j, so:
-	  `det(M) = sum(j=1..n, (-1)^(j+1).M1j.Minor1j)`
+      `det(M) = sum(j=1..n, (-1)^(j+1).M1j.Minor1j)`
 """.
 -spec determinant( square_matrix() ) -> scalar().
 % Final base cases; shamelessly extracted from matrix{2,3,4}:
 determinant( _M=[ FirstRow | OtherRows ] ) ->
-	case length( FirstRow ) of
+    case length( FirstRow ) of
 
-		0 ->
-			1.0;
+        0 ->
+            1.0;
 
-		1 ->
-			hd( FirstRow );
+        1 ->
+            hd( FirstRow );
 
-		2 ->
-			[ M11, M12] = FirstRow,
-			[ [ M21, M22 ] ] = OtherRows,
-			M11 * M22 - M12 * M21;
+        2 ->
+            [ M11, M12] = FirstRow,
+            [ [ M21, M22 ] ] = OtherRows,
+            M11 * M22 - M12 * M21;
 
-		3 ->
-			[ M11, M12, M13 ] = FirstRow,
-			[ [ M21, M22, M23 ],
-			  [ M31, M32, M33 ] ] = OtherRows,
-			M11*M22*M33 + M12*M23*M31 + M13*M21*M32
-				- M13*M22*M31 - M12*M21*M33 - M11*M23*M32;
+        3 ->
+            [ M11, M12, M13 ] = FirstRow,
+            [ [ M21, M22, M23 ],
+              [ M31, M32, M33 ] ] = OtherRows,
+            M11*M22*M33 + M12*M23*M31 + M13*M21*M32
+                - M13*M22*M31 - M12*M21*M33 - M11*M23*M32;
 
-		4 ->
-			[ M11, M12, M13, M14 ] = FirstRow,
-			[ [ M21, M22, M23, M24 ],
-			  [ M31, M32, M33, M34 ],
-			  [ M41, M42, M43, M44 ] ] = OtherRows,
-			M11*M22*M33*M44 - M11*M22*M34*M43 - M11*M23*M32*M44
-				+ M11*M23*M34*M42 + M11*M24*M32*M43 - M11*M24*M33*M42
-				- M12*M21*M33*M44 + M12*M21*M34*M43 + M12*M23*M31*M44
-				- M12*M23*M34*M41 - M12*M24*M31*M43 + M12*M24*M33*M41
-				+ M13*M21*M32*M44 - M13*M21*M34*M42 - M13*M22*M31*M44
-				+ M13*M22*M34*M41 + M13*M24*M31*M42 - M13*M24*M32*M41
-				- M14*M21*M32*M43 + M14*M21*M33*M42 + M14*M22*M31*M43
-				- M14*M22*M33*M41 - M14*M23*M31*M42 + M14*M23*M32*M41;
+        4 ->
+            [ M11, M12, M13, M14 ] = FirstRow,
+            [ [ M21, M22, M23, M24 ],
+              [ M31, M32, M33, M34 ],
+              [ M41, M42, M43, M44 ] ] = OtherRows,
+            M11*M22*M33*M44 - M11*M22*M34*M43 - M11*M23*M32*M44
+                + M11*M23*M34*M42 + M11*M24*M32*M43 - M11*M24*M33*M42
+                - M12*M21*M33*M44 + M12*M21*M34*M43 + M12*M23*M31*M44
+                - M12*M23*M34*M41 - M12*M24*M31*M43 + M12*M24*M33*M41
+                + M13*M21*M32*M44 - M13*M21*M34*M42 - M13*M22*M31*M44
+                + M13*M22*M34*M41 + M13*M24*M31*M42 - M13*M24*M32*M41
+                - M14*M21*M32*M43 + M14*M21*M33*M42 + M14*M22*M31*M43
+                - M14*M22*M33*M41 - M14*M23*M31*M42 + M14*M23*M32*M41;
 
-		_ ->
-			determinant( FirstRow, OtherRows, _ColIndexJ=1, _InitialSign=1,
-						 _Acc=0 )
+        _ ->
+            determinant( FirstRow, OtherRows, _ColIndexJ=1, _InitialSign=1,
+                         _Acc=0 )
 
-	end.
+    end.
 
 
 % (helper)
 determinant( _FirstRow=[], _OtherRows, _ColIndexJ, _CurrentSign, Acc ) ->
-	Acc;
+    Acc;
 
 determinant( _FirstRow=[ M1J | T ], OtherRows, ColIndexJ, CurrentSign, Acc ) ->
-	% Square again, as was already lacking its first row:
-	SubMatrix = remove_column( ColIndexJ, OtherRows ),
-	NewAcc = Acc + CurrentSign * M1J * determinant( SubMatrix ),
-	determinant( T, OtherRows, ColIndexJ+1, -CurrentSign, NewAcc ).
+    % Square again, as was already lacking its first row:
+    SubMatrix = remove_column( ColIndexJ, OtherRows ),
+    NewAcc = Acc + CurrentSign * M1J * determinant( SubMatrix ),
+    determinant( T, OtherRows, ColIndexJ+1, -CurrentSign, NewAcc ).
 
 
 
@@ -567,35 +567,35 @@ cofactors).
 """.
 -spec comatrix( matrix() ) -> matrix().
 comatrix( M ) ->
-	comatrix( M, _Rows=M, _CurrentRowIndex=1, _InitialSign=1, _Acc=[] ).
+    comatrix( M, _Rows=M, _CurrentRowIndex=1, _InitialSign=1, _Acc=[] ).
 
 
 % (helper)
 comatrix( _M, _Rows=[], _CurrentRowIndex, _CurrentSign, Acc ) ->
-	lists:reverse( Acc );
+    lists:reverse( Acc );
 
 comatrix( M, _Rows=[ Row | T ], CurrentRowIndex, CurrentSign, Acc ) ->
-	Cofactors = compute_row_cofactors( M, Row, CurrentRowIndex, CurrentSign ),
-	comatrix( M, T, CurrentRowIndex+1, -CurrentSign, [ Cofactors | Acc ] ).
+    Cofactors = compute_row_cofactors( M, Row, CurrentRowIndex, CurrentSign ),
+    comatrix( M, T, CurrentRowIndex+1, -CurrentSign, [ Cofactors | Acc ] ).
 
 
 % (helper)
 compute_row_cofactors( M, Row, CurrentRowIndex, CurrentSign ) ->
-	compute_row_cofactors( M, Row, CurrentRowIndex, _CurrentColumnIndex=1,
-						   CurrentSign, _Acc=[] ).
+    compute_row_cofactors( M, Row, CurrentRowIndex, _CurrentColumnIndex=1,
+                           CurrentSign, _Acc=[] ).
 
 
 compute_row_cofactors( _M, _Row=[], _CurrentRowIndex, _CurrentColumnIndex,
-					   _CurrentSign, Acc ) ->
-	lists:reverse( Acc );
+                       _CurrentSign, Acc ) ->
+    lists:reverse( Acc );
 
 compute_row_cofactors( M, _Row=[ _C | T ], CurrentRowIndex, CurrentColumnIndex,
-					   CurrentSign, Acc ) ->
-	RowShrunkM = remove_row( CurrentRowIndex, M ),
-	ShrunkM = remove_column( CurrentColumnIndex, RowShrunkM ),
-	Cofactor = CurrentSign * determinant( ShrunkM ),
-	compute_row_cofactors( M, T, CurrentRowIndex, CurrentColumnIndex+1,
-						   -CurrentSign, [ Cofactor | Acc ] ).
+                       CurrentSign, Acc ) ->
+    RowShrunkM = remove_row( CurrentRowIndex, M ),
+    ShrunkM = remove_column( CurrentColumnIndex, RowShrunkM ),
+    Cofactor = CurrentSign * determinant( ShrunkM ),
+    compute_row_cofactors( M, T, CurrentRowIndex, CurrentColumnIndex+1,
+                           -CurrentSign, [ Cofactor | Acc ] ).
 
 
 
@@ -609,18 +609,18 @@ elimination), or can be replaced by a mere lower–upper (LU) decomposition.
 """.
 -spec inverse( square_matrix() ) -> option( square_matrix() ).
 inverse( M ) ->
-	Det = determinant( M ),
+    Det = determinant( M ),
 
-	case math_utils:is_null( Det ) of
+    case math_utils:is_null( Det ) of
 
-		true ->
-			undefined;
+        true ->
+            undefined;
 
-		false ->
-			% See 'Implementation notes' for further details:
-			scale( transpose( comatrix( M ) ), 1/Det )
+        false ->
+            % See 'Implementation notes' for further details:
+            scale( transpose( comatrix( M ) ), 1/Det )
 
-	end.
+    end.
 
 
 
@@ -629,8 +629,8 @@ Returns the specified matrix once its row of specified index has been removed.
 """.
 -spec remove_row( row_index(), matrix() ) -> matrix().
 remove_row( RowIndex, Matrix ) ->
-	{ _Row, OtherRows } = list_utils:extract_element_at( Matrix, RowIndex ),
-	OtherRows.
+    { _Row, OtherRows } = list_utils:extract_element_at( Matrix, RowIndex ),
+    OtherRows.
 
 
 
@@ -640,29 +640,29 @@ removed.
 """.
 -spec remove_column( column_index(), matrix() ) -> matrix().
 remove_column( ColumnIndex, Matrix ) ->
-	[ begin
-		{ _Coord, ShrunkRow } =
-			list_utils:extract_element_at( R, ColumnIndex ),
-		ShrunkRow
-	  end || R <- Matrix ].
+    [ begin
+        { _Coord, ShrunkRow } =
+            list_utils:extract_element_at( R, ColumnIndex ),
+        ShrunkRow
+      end || R <- Matrix ].
 
 
 
 -doc "Returns true iff the two specified matrices are considered equal.".
 -spec are_equal( matrix(), matrix() ) -> boolean().
 are_equal( _M1=[], _M2=[] ) ->
-	true;
+    true;
 
 are_equal( _M1=[ R1 | T1 ], _M2=[ R2 | T2 ] ) ->
-	case vector:are_equal( R1, R2 ) of
+    case vector:are_equal( R1, R2 ) of
 
-		true ->
-			are_equal( T1, T2 );
+        true ->
+            are_equal( T1, T2 );
 
-		false ->
-			false
+        false ->
+            false
 
-	end.
+    end.
 
 
 
@@ -672,9 +672,9 @@ Returns a specialised matrix corresponding to the specified arbitrary matrix.
 -spec specialise( matrix() ) -> specialised_matrix().
 specialise( M ) ->
 
-	MatMod = get_specialised_module_for( M ),
+    MatMod = get_specialised_module_for( M ),
 
-	MatMod:from_arbitrary( M ).
+    MatMod:from_arbitrary( M ).
 
 
 
@@ -689,35 +689,35 @@ Returns an arbitrary matrix corresponding to the specified specialised matrix.
 % records:
 %
 unspecialise( M ) when is_tuple( M ) ->
-	% Fetch the tag:
-	case element( _RecordTagIndex=1, M ) of
+    % Fetch the tag:
+    case element( _RecordTagIndex=1, M ) of
 
-		Dim4 when Dim4 =:= matrix4 orelse Dim4 =:= compact_matrix4 ->
-			matrix4:to_arbitrary( M );
+        Dim4 when Dim4 =:= matrix4 orelse Dim4 =:= compact_matrix4 ->
+            matrix4:to_arbitrary( M );
 
-		Dim3 when Dim3 =:= matrix3 orelse Dim3 =:= compact_matrix3 ->
-			matrix3:to_arbitrary( M );
+        Dim3 when Dim3 =:= matrix3 orelse Dim3 =:= compact_matrix3 ->
+            matrix3:to_arbitrary( M );
 
-		Dim2 when Dim2 =:= matrix2 orelse Dim2 =:= compact_matrix2 ->
-			matrix2:to_arbitrary( M )
+        Dim2 when Dim2 =:= matrix2 orelse Dim2 =:= compact_matrix2 ->
+            matrix2:to_arbitrary( M )
 
-	end;
+    end;
 
 unspecialise( _M=identity_4 ) ->
-	identity( 4 );
+    identity( 4 );
 
 unspecialise( _M=identity_3 ) ->
-	identity( 3 );
+    identity( 3 );
 
 unspecialise( _M=identity_2 ) ->
-	identity( 2 ).
+    identity( 2 ).
 
 
 
 -doc "Returns the module corresponding to the specified specialised matrix.".
 -spec get_specialised_module_of( specialised_matrix() ) -> specialised_module().
 get_specialised_module_of( M )  ->
-	element( _RecordTagIndex=1, M ).
+    element( _RecordTagIndex=1, M ).
 
 
 
@@ -744,13 +744,13 @@ get_specialised_module_for( M ) ->
 -doc "Checks that the specified matrix is legit, and returns it.".
 -spec check( matrix() ) -> matrix().
 check( M=[ FirstRow | OtherRows ] ) ->
-	vector:check( FirstRow ),
-	RowElemCount = length( FirstRow ),
-	[ begin
-		RowElemCount = length( R ),
-		vector:check( R )
-	  end || R <- OtherRows ],
-	M.
+    vector:check( FirstRow ),
+    RowElemCount = length( FirstRow ),
+    [ begin
+        RowElemCount = length( R ),
+        vector:check( R )
+      end || R <- OtherRows ],
+    M.
 
 
 
@@ -760,7 +760,7 @@ precision is shown.
 """.
 -spec to_string( matrix() ) -> ustring().
 to_string( Matrix ) ->
-	to_user_string( Matrix ).
+    to_user_string( Matrix ).
 
 
 
@@ -774,20 +774,20 @@ to_user_string/1.
 -spec to_basic_string( matrix() ) -> ustring().
 to_basic_string( Matrix ) ->
 
-	RowElemCount = length( hd( Matrix ) ),
+    RowElemCount = length( hd( Matrix ) ),
 
-	RowFormatStr = "[" ++
-		text_utils:duplicate( RowElemCount, ?coord_float_format ) ++ " ]~n",
+    RowFormatStr = "[" ++
+        text_utils:duplicate( RowElemCount, ?coord_float_format ) ++ " ]~n",
 
-	%trace_utils:debug_fmt( "RowFormatStr = '~w'.", [ RowFormatStr ] ),
+    %trace_utils:debug_fmt( "RowFormatStr = '~w'.", [ RowFormatStr ] ),
 
-	RowCount = length( Matrix ),
+    RowCount = length( Matrix ),
 
-	FormatStr = "~n" ++ text_utils:duplicate( RowCount, RowFormatStr ),
+    FormatStr = "~n" ++ text_utils:duplicate( RowCount, RowFormatStr ),
 
-	AllCoords = to_coordinates( Matrix ),
+    AllCoords = to_coordinates( Matrix ),
 
-	text_utils:format( FormatStr, AllCoords ).
+    text_utils:format( FormatStr, AllCoords ).
 
 
 
@@ -803,18 +803,18 @@ Another version where minimal widths would be determined per-column.
 -spec to_user_string( matrix() ) -> ustring().
 to_user_string( Matrix ) ->
 
-	%  Here we ensure that all coordinates use the same width:
-	AllCoords = to_coordinates( Matrix ),
+    %  Here we ensure that all coordinates use the same width:
+    AllCoords = to_coordinates( Matrix ),
 
-	Strs = linear:coords_to_best_width_strings( AllCoords ),
+    Strs = linear:coords_to_best_width_strings( AllCoords ),
 
-	RowLen = length( hd( Matrix ) ),
+    RowLen = length( hd( Matrix ) ),
 
-	% No need for ~ts here:
-	RowFormatStr = "[ " ++ text_utils:duplicate( RowLen, "~s " ) ++ "]~n",
+    % No need for ~ts here:
+    RowFormatStr = "[ " ++ text_utils:duplicate( RowLen, "~s " ) ++ "]~n",
 
-	RowCount = length( Matrix ),
+    RowCount = length( Matrix ),
 
-	FormatStr = "~n" ++ text_utils:duplicate( RowCount, RowFormatStr ),
+    FormatStr = "~n" ++ text_utils:duplicate( RowCount, RowFormatStr ),
 
-	text_utils:format( FormatStr, Strs ).
+    text_utils:format( FormatStr, Strs ).

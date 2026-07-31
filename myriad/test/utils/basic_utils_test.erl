@@ -1,4 +1,4 @@
-% Copyright (C) 2007-2025 Olivier Boudeville
+% Copyright (C) 2007-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -47,171 +47,171 @@ See the `basic_utils` tested module.
 -spec check_process_specific_values( integer(), integer() ) -> void().
 check_process_specific_values( Min, Max ) ->
 
-	Self = self(),
+    Self = self(),
 
-	F = fun() ->
-			Self ! basic_utils:get_process_specific_value( Min, Max )
-		end,
+    F = fun() ->
+            Self ! basic_utils:get_process_specific_value( Min, Max )
+        end,
 
-	[ spawn( F ) || _X <- lists:seq( 1, 10 ) ],
+    [ spawn( F ) || _X <- lists:seq( 1, 10 ) ],
 
-	G = fun() ->
-			receive V ->
-					V
-			end
-		end,
+    G = fun() ->
+            receive V ->
+                    V
+            end
+        end,
 
-	[ test_facilities:display(
-		"Generating a process-specific value in [~B;~B[: ~p.",
-		[ Min, Max, G() ] ) || _Y <- lists:seq( 1, 10 ) ].
+    [ test_facilities:display(
+        "Generating a process-specific value in [~B;~B[: ~p.",
+        [ Min, Max, G() ] ) || _Y <- lists:seq( 1, 10 ) ].
 
 
 
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	test_facilities:display( "Testing the display of a static test message." ),
+    test_facilities:display( "Testing the display of a static test message." ),
 
-	test_facilities:display( "Testing the display of a ~ts test message.",
-							 [ dynamic ] ),
+    test_facilities:display( "Testing the display of a ~ts test message.",
+                             [ dynamic ] ),
 
     % To check that a ill-formatted message is caught at compilation time:
-	%test_facilities:display( "I am a faulty message: ~B and ~B.",
+    %test_facilities:display( "I am a faulty message: ~B and ~B.",
     %                         [ _SingleValue=1 ] ),
 
-	basic_utils:checkpoint( 1 ),
+    basic_utils:checkpoint( 1 ),
 
-	basic_utils:checkpoint( 2 ),
+    basic_utils:checkpoint( 2 ),
 
-	basic_utils:display( "standalone normal display" ),
+    basic_utils:display( "standalone normal display" ),
 
-	basic_utils:display( "normal display ~ts", [ "with a format string" ] ),
+    basic_utils:display( "normal display ~ts", [ "with a format string" ] ),
 
-	basic_utils:display_error( "standalone error display" ),
+    basic_utils:display_error( "standalone error display" ),
 
-	basic_utils:display_error( "error display ~ts",
-							   [ "with a format string" ] ),
+    basic_utils:display_error( "error display ~ts",
+                               [ "with a format string" ] ),
 
-	test_facilities:display( "The version of this currently tested Myriad "
-		"library is ~ts (i.e. ~w).", [ basic_utils:get_myriad_version_string(),
-									   basic_utils:get_myriad_version() ] ),
+    test_facilities:display( "The version of this currently tested Myriad "
+        "library is ~ts (i.e. ~w).", [ basic_utils:get_myriad_version_string(),
+                                       basic_utils:get_myriad_version() ] ),
 
-	FirstVersion  = { 0, 0, 0 },
-	SecondVersion = { 0, 0, 1 },
-	ThirdVersion  = { 0, 1, 0 },
-	FourthVersion = { 1, 0, 0 },
-	FifthVersion  = { 1, 1, 1 },
+    FirstVersion  = { 0, 0, 0 },
+    SecondVersion = { 0, 0, 1 },
+    ThirdVersion  = { 0, 1, 0 },
+    FourthVersion = { 1, 0, 0 },
+    FifthVersion  = { 1, 1, 1 },
 
-	first_bigger = basic_utils:compare_versions( SecondVersion, FirstVersion ),
-	first_bigger = basic_utils:compare_versions( ThirdVersion, SecondVersion ),
-	first_bigger = basic_utils:compare_versions( FifthVersion, FirstVersion ),
+    first_bigger = basic_utils:compare_versions( SecondVersion, FirstVersion ),
+    first_bigger = basic_utils:compare_versions( ThirdVersion, SecondVersion ),
+    first_bigger = basic_utils:compare_versions( FifthVersion, FirstVersion ),
 
-	second_bigger = basic_utils:compare_versions( FirstVersion, FourthVersion ),
-	second_bigger = basic_utils:compare_versions( ThirdVersion, FourthVersion ),
-	second_bigger = basic_utils:compare_versions( SecondVersion, ThirdVersion ),
+    second_bigger = basic_utils:compare_versions( FirstVersion, FourthVersion ),
+    second_bigger = basic_utils:compare_versions( ThirdVersion, FourthVersion ),
+    second_bigger = basic_utils:compare_versions( SecondVersion, ThirdVersion ),
 
-	equal = basic_utils:compare_versions( FirstVersion, FirstVersion ),
-	equal = basic_utils:compare_versions( ThirdVersion, ThirdVersion ),
-	equal = basic_utils:compare_versions( FifthVersion, FifthVersion ),
+    equal = basic_utils:compare_versions( FirstVersion, FirstVersion ),
+    equal = basic_utils:compare_versions( ThirdVersion, ThirdVersion ),
+    equal = basic_utils:compare_versions( FifthVersion, FifthVersion ),
 
-	test_facilities:display( "Comparisons of versions like ~ts succeeded.",
-							 [ text_utils:version_to_string( ThirdVersion ) ] ),
-
-
-	FirstShortVersion  = { 0, 0 },
-	SecondShortVersion = { 0, 1 },
-	ThirdShortVersion  = { 1, 0 },
-
-	first_bigger = basic_utils:compare_versions( SecondShortVersion,
-												 FirstShortVersion ),
-
-	first_bigger = basic_utils:compare_versions( ThirdShortVersion,
-												 SecondShortVersion ),
-
-	first_bigger = basic_utils:compare_versions( ThirdShortVersion,
-												 FirstShortVersion ),
+    test_facilities:display( "Comparisons of versions like ~ts succeeded.",
+                             [ text_utils:version_to_string( ThirdVersion ) ] ),
 
 
-	second_bigger = basic_utils:compare_versions( FirstShortVersion,
-												  SecondShortVersion ),
+    FirstShortVersion  = { 0, 0 },
+    SecondShortVersion = { 0, 1 },
+    ThirdShortVersion  = { 1, 0 },
 
-	second_bigger = basic_utils:compare_versions( SecondShortVersion,
-												  ThirdShortVersion ),
+    first_bigger = basic_utils:compare_versions( SecondShortVersion,
+                                                 FirstShortVersion ),
 
-	second_bigger = basic_utils:compare_versions( FirstShortVersion,
-												  ThirdShortVersion ),
+    first_bigger = basic_utils:compare_versions( ThirdShortVersion,
+                                                 SecondShortVersion ),
 
-
-	equal = basic_utils:compare_versions( FirstShortVersion,
-										  FirstShortVersion ),
-
-	equal = basic_utils:compare_versions( SecondShortVersion,
-										  SecondShortVersion ),
-
-	equal = basic_utils:compare_versions( ThirdShortVersion,
-										  ThirdShortVersion ),
+    first_bigger = basic_utils:compare_versions( ThirdShortVersion,
+                                                 FirstShortVersion ),
 
 
-	test_facilities:display( "Comparisons of versions like ~ts succeeded.",
-		[ text_utils:version_to_string( ThirdVersion ) ] ),
+    second_bigger = basic_utils:compare_versions( FirstShortVersion,
+                                                  SecondShortVersion ),
+
+    second_bigger = basic_utils:compare_versions( SecondShortVersion,
+                                                  ThirdShortVersion ),
+
+    second_bigger = basic_utils:compare_versions( FirstShortVersion,
+                                                  ThirdShortVersion ),
 
 
-	{ 4, 22, 11 } = basic_utils:parse_version( "4.22.11" ),
+    equal = basic_utils:compare_versions( FirstShortVersion,
+                                          FirstShortVersion ),
 
-	test_facilities:display( "Generating a process-specific value: ~w.",
-		[ basic_utils:get_process_specific_value() ] ),
+    equal = basic_utils:compare_versions( SecondShortVersion,
+                                          SecondShortVersion ),
 
-	{ Min, Max } = { 3, 16 },
-	check_process_specific_values( Min, Max ),
-
-	basic_utils:display_process_info( self() ),
-
-
-	PSize = basic_utils:get_process_size( self() ),
-
-	test_facilities:display( "Size of current process: ~B bytes, i.e. ~ts.",
-		[ PSize, system_utils:interpret_byte_size( PSize ) ] ),
+    equal = basic_utils:compare_versions( ThirdShortVersion,
+                                          ThirdShortVersion ),
 
 
-	Self = self(),
-
-	test_facilities:display( "Testing myriad_spawn, based on a ~ts.",
-							 [ ?myriad_spawn_info ] ),
-
-	?myriad_spawn( fun() ->
-						% Closure:
-						Self ! myriad_spawned
-				   end ),
-
-	receive
-
-		myriad_spawned ->
-			ok
-
-	end,
+    test_facilities:display( "Comparisons of versions like ~ts succeeded.",
+        [ text_utils:version_to_string( ThirdVersion ) ] ),
 
 
-	test_facilities:display( "Testing myriad_spawn_link, based on a ~ts.",
-							 [ ?myriad_spawn_info ] ),
+    { 4, 22, 11 } = basic_utils:parse_version( "4.22.11" ),
 
-	?myriad_spawn_link( fun() ->
-							% Closure:
-							Self ! myriad_spawned_linked
-						end ),
+    test_facilities:display( "Generating a process-specific value: ~w.",
+        [ basic_utils:get_process_specific_value() ] ),
 
-	receive
+    { Min, Max } = { 3, 16 },
+    check_process_specific_values( Min, Max ),
 
-		myriad_spawned_linked ->
-			ok
-
-	end,
+    basic_utils:display_process_info( self() ),
 
 
-	test_facilities:display( "This test was compiled with the execution target "
-		"set to '~ts', and debug mode is ~ts.",
-		[ basic_utils:get_execution_target(),
-		  basic_utils:is_debug_mode_enabled() ] ),
+    PSize = basic_utils:get_process_size( self() ),
 
-	test_facilities:stop().
+    test_facilities:display( "Size of current process: ~B bytes, i.e. ~ts.",
+        [ PSize, system_utils:interpret_byte_size( PSize ) ] ),
+
+
+    Self = self(),
+
+    test_facilities:display( "Testing myriad_spawn, based on a ~ts.",
+                             [ ?myriad_spawn_info ] ),
+
+    ?myriad_spawn( fun() ->
+                        % Closure:
+                        Self ! myriad_spawned
+                   end ),
+
+    receive
+
+        myriad_spawned ->
+            ok
+
+    end,
+
+
+    test_facilities:display( "Testing myriad_spawn_link, based on a ~ts.",
+                             [ ?myriad_spawn_info ] ),
+
+    ?myriad_spawn_link( fun() ->
+                            % Closure:
+                            Self ! myriad_spawned_linked
+                        end ),
+
+    receive
+
+        myriad_spawned_linked ->
+            ok
+
+    end,
+
+
+    test_facilities:display( "This test was compiled with the execution target "
+        "set to '~ts', and debug mode is ~ts.",
+        [ basic_utils:get_execution_target(),
+          basic_utils:is_debug_mode_enabled() ] ),
+
+    test_facilities:stop().

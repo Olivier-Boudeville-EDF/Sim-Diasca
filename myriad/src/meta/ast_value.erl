@@ -1,4 +1,4 @@
-% Copyright (C) 2018-2025 Olivier Boudeville
+% Copyright (C) 2018-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -58,10 +58,10 @@ location information (line/column).
 For example: nil, in {nil,{33,2}} for [] at column 2 of line #33.
 """.
 -type ast_atomic_literal() :: { 'atom',    file_loc(), atom() }
-							| { 'char',    file_loc(), char() }
-							| { 'float',   file_loc(), float() }
-							| { 'integer', file_loc(), integer() }
-							| { 'string',  file_loc(), ustring() }.
+                            | { 'char',    file_loc(), char() }
+                            | { 'float',   file_loc(), float() }
+                            | { 'integer', file_loc(), integer() }
+                            | { 'string',  file_loc(), ustring() }.
 
 
 -type ast_compound_literal() :: { 'nil', file_loc() }.
@@ -73,7 +73,7 @@ For example: nil, in {nil,{33,2}} for [] at column 2 of line #33.
 
 
 -export_type([ ast_atomic_literal/0, ast_compound_literal/0,
-			   ast_immediate_value/0, maybe_ast_immediate_value/0 ]).
+               ast_immediate_value/0, maybe_ast_immediate_value/0 ]).
 
 
 % Transformations:
@@ -83,13 +83,13 @@ For example: nil, in {nil,{33,2}} for [] at column 2 of line #33.
 
 % Forging AST values:
 -export([ forge_boolean_value/1, forge_boolean_value/2,
-		  forge_atom_value/1, forge_atom_value/2
-		  %forge_pid_value/1, forge_pid_value/2,
-		  %forge_integer_value/1, forge_integer_value/2,
-		  %forge_float_value/1, forge_float_value/2,
-		  %forge_tuple_value/1, forge_tuple_value/2,
-		  %forge_list_value/1, forge_list_value/2
-		]).
+          forge_atom_value/1, forge_atom_value/2
+          %forge_pid_value/1, forge_pid_value/2,
+          %forge_integer_value/1, forge_integer_value/2,
+          %forge_float_value/1, forge_float_value/2,
+          %forge_tuple_value/1, forge_tuple_value/2,
+          %forge_list_value/1, forge_list_value/2
+        ]).
 
 
 
@@ -121,27 +121,27 @@ Transforms specified literal value, operating relevant AST transformations onto
 it.
 """.
 -spec transform_value( ast_atomic_literal(), ast_transforms() ) ->
-								{ ast_atomic_literal(), ast_transforms() }.
+                                { ast_atomic_literal(), ast_transforms() }.
 transform_value( Literal={ atom, _FileLoc, _Atom }, Transforms ) ?rec_guard ->
-	{ Literal, Transforms };
+    { Literal, Transforms };
 
 transform_value( Literal={ char, _FileLoc, _Char }, Transforms ) ?rec_guard ->
-	{ Literal, Transforms };
+    { Literal, Transforms };
 
 transform_value( Literal={ float, _FileLoc, _Float }, Transforms ) ?rec_guard ->
-	{ Literal, Transforms };
+    { Literal, Transforms };
 
 transform_value( Literal={ integer, _FileLoc, _Integer },
-				 Transforms ) ?rec_guard ->
-	{ Literal, Transforms };
+                 Transforms ) ?rec_guard ->
+    { Literal, Transforms };
 
 transform_value( Literal={ string, _FileLoc, _String },
-				 Transforms ) ?rec_guard ->
-	{ Literal, Transforms };
+                 Transforms ) ?rec_guard ->
+    { Literal, Transforms };
 
 transform_value( UnexpectedLiteral, Transforms )
-						when is_record( Transforms, ast_transforms ) ->
-	throw( { unexpected_literal, UnexpectedLiteral } ).
+                        when is_record( Transforms, ast_transforms ) ->
+    throw( { unexpected_literal, UnexpectedLiteral } ).
 
 
 
@@ -150,20 +150,20 @@ Returns the actual (immediate) value corresponding to the specified form
 (regardless of its actual type).
 """.
 get_immediate_value( { atom, _FileLoc, Atom } ) ->
-	Atom;
+    Atom;
 
 get_immediate_value( { integer, _FileLoc, Integer } ) ->
-	Integer;
+    Integer;
 
 get_immediate_value( { float, _FileLoc, Float } ) ->
-	Float;
+    Float;
 
 get_immediate_value( { nil, _FileLoc } ) ->
-	[];
+    [];
 
 % To be completed:
 get_immediate_value( Other ) ->
-	throw( { unsupported_immediate_value, Other } ).
+    throw( { unsupported_immediate_value, Other } ).
 
 
 
@@ -178,7 +178,7 @@ For example: forge_boolean_value(true) returns: {boolean,{0,1},true}.
 """.
 -spec forge_boolean_value( boolean() ) -> ast_element().
 forge_boolean_value( BooleanValue ) ->
-	forge_boolean_value( BooleanValue, ?default_generation_location ).
+    forge_boolean_value( BooleanValue, ?default_generation_location ).
 
 
 
@@ -191,7 +191,7 @@ false}.
 """.
 -spec forge_boolean_value( boolean(), file_loc() ) -> ast_element().
 forge_boolean_value( BooleanValue, FileLoc ) ->
-	{ boolean, FileLoc, BooleanValue }.
+    { boolean, FileLoc, BooleanValue }.
 
 
 
@@ -203,7 +203,7 @@ For example: forge_atom_value(basic_utils) returns: {atom,{0,1},basic_utils}.
 """.
 -spec forge_atom_value( atom() ) -> ast_element().
 forge_atom_value( AtomValue ) ->
-	forge_atom_value( AtomValue, ?default_generation_location ).
+    forge_atom_value( AtomValue, ?default_generation_location ).
 
 
 
@@ -216,4 +216,4 @@ For example: forge_atom_value(basic_utils, {4,1}) returns:
 """.
 -spec forge_atom_value( atom(), file_loc() ) -> ast_element().
 forge_atom_value( AtomValue, FileLoc ) ->
-	{ atom, FileLoc, AtomValue }.
+    { atom, FileLoc, AtomValue }.

@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 Olivier Boudeville
+% Copyright (C) 2014-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-WOOPER library.
 %
@@ -42,54 +42,54 @@ See the wooper_parse_transform.erl tested module.
 
 perform_direct_ast_operations( TargetSourceFile ) ->
 
-	trace_utils:notice( "Now performing directly AST-level operations." ),
+    trace_utils:notice( "Now performing directly AST-level operations." ),
 
-	BaseAST = ast_utils:erl_to_ast( TargetSourceFile ),
+    BaseAST = ast_utils:erl_to_ast( TargetSourceFile ),
 
-	%trace_utils:notice_fmt( "Base AST:~n~p", [ BaseAST ] ),
+    %trace_utils:notice_fmt( "Base AST:~n~p", [ BaseAST ] ),
 
-	BaseModuleInfo = ast_info:extract_module_info_from_ast( BaseAST ),
+    BaseModuleInfo = ast_info:extract_module_info_from_ast( BaseAST ),
 
-	trace_utils:notice_fmt( "Base module info: ~ts~n",
-		[ ast_info:module_info_to_string( BaseModuleInfo ) ] ),
+    trace_utils:notice_fmt( "Base module info: ~ts~n",
+        [ ast_info:module_info_to_string( BaseModuleInfo ) ] ),
 
-	FinalModuleInfo = BaseModuleInfo,
+    FinalModuleInfo = BaseModuleInfo,
 
-	trace_utils:notice_fmt( "Final module info: ~ts~n",
-		[ ast_info:module_info_to_string( FinalModuleInfo ) ] ),
+    trace_utils:notice_fmt( "Final module info: ~ts~n",
+        [ ast_info:module_info_to_string( FinalModuleInfo ) ] ),
 
-	_FinalAST = ast_info:recompose_ast_from_module_info( FinalModuleInfo ),
+    _FinalAST = ast_info:recompose_ast_from_module_info( FinalModuleInfo ),
 
-	%trace_utils:notice_fmt( "Final AST:~n~p", [ FinalAST ] ),
+    %trace_utils:notice_fmt( "Final AST:~n~p", [ FinalAST ] ),
 
-	ok.
+    ok.
 
 
 
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	TargetSourceFile = "../priv/examples/class_Cat.erl",
+    TargetSourceFile = "../priv/examples/class_Cat.erl",
 
-	trace_utils:notice_fmt( "Applying the WOOPER parse transform to the "
-							"'~ts' source file.", [ TargetSourceFile ] ),
+    trace_utils:notice_fmt( "Applying the WOOPER parse transform to the "
+                            "'~ts' source file.", [ TargetSourceFile ] ),
 
-	PreprocessorOptions = [ { includes, [ "../include" ] } ],
+    PreprocessorOptions = [ { includes, [ "../include" ] } ],
 
-	_TransformedAST = wooper_parse_transform:run_standalone( TargetSourceFile,
-		PreprocessorOptions ),
+    _TransformedAST = wooper_parse_transform:run_standalone( TargetSourceFile,
+        PreprocessorOptions ),
 
-	%trace_utils:notice_fmt( "Transformed AST:~n~p", [ TransformedAST ] ),
+    %trace_utils:notice_fmt( "Transformed AST:~n~p", [ TransformedAST ] ),
 
-	%ast_utils:write_ast_to_file( TransformedAST, TargetSourceFile ++ ".ast" ),
+    %ast_utils:write_ast_to_file( TransformedAST, TargetSourceFile ++ ".ast" ),
 
-	%perform_direct_ast_operations( TargetSourceFile ),
+    %perform_direct_ast_operations( TargetSourceFile ),
 
-	trace_utils:notice( "Test successful." ),
+    trace_utils:notice( "Test successful." ),
 
-	% Otherwise freezes indefinitely:
-	basic_utils:stop(),
+    % Otherwise freezes indefinitely:
+    basic_utils:stop(),
 
-	test_facilities:stop().
+    test_facilities:stop().

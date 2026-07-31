@@ -1,4 +1,4 @@
-% Copyright (C) 2024-2025 Olivier Boudeville
+% Copyright (C) 2024-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -51,13 +51,13 @@ implementations.
 % (if updating this export, update list_builtin_commands/0 accordingly)
 %
 -export([ list_bindings/1, b/1, print_bindings/1,
-		  clear_bindings/1, f/1, clear_binding/2, f/2,
-		  print_command_history/1, hc/1, print_result_history/1, hr/1,
-		  recall_command/2, r/2, get_result/2,
-		  clear_commands/1, fc/1, clear_results/1, fr/1,
-		  set_command_history_depth/2, set_result_history_depth/2,
-		  clear_persistent_command_history/1,
-		  help/1 ]).
+          clear_bindings/1, f/1, clear_binding/2, f/2,
+          print_command_history/1, hc/1, print_result_history/1, hr/1,
+          recall_command/2, r/2, get_result/2,
+          clear_commands/1, fc/1, clear_results/1, fr/1,
+          set_command_history_depth/2, set_result_history_depth/2,
+          clear_persistent_command_history/1,
+          help/1 ]).
 
 
 
@@ -107,16 +107,16 @@ this callback module.
 """.
 -spec list_builtin_commands() -> [ function_id() ].
 list_builtin_commands() ->
-	% See the corresponding export:
-	[ { list_bindings, 1 }, { b, 1 }, { print_bindings, 1 },
-	  { clear_bindings, 1 }, { f, 1 }, { clear_binding, 2 }, { f, 2 },
-	  { print_command_history, 1 }, { hc, 1 },
-	  { print_result_history, 1 }, { hr, 1 },
-	  { recall_command, 2 }, { r, 2 }, { get_result, 2 },
-	  { clear_commands, 1 }, { fc, 1 }, { clear_results, 1 }, { fr, 1 },
-	  { set_command_history_depth, 2 }, { set_result_history_depth, 2 },
-	  { clear_persistent_command_history, 1 },
-	  { help, 1 } ].
+    % See the corresponding export:
+    [ { list_bindings, 1 }, { b, 1 }, { print_bindings, 1 },
+      { clear_bindings, 1 }, { f, 1 }, { clear_binding, 2 }, { f, 2 },
+      { print_command_history, 1 }, { hc, 1 },
+      { print_result_history, 1 }, { hr, 1 },
+      { recall_command, 2 }, { r, 2 }, { get_result, 2 },
+      { clear_commands, 1 }, { fc, 1 }, { clear_results, 1 }, { fr, 1 },
+      { set_command_history_depth, 2 }, { set_result_history_depth, 2 },
+      { clear_persistent_command_history, 1 },
+      { help, 1 } ].
 
 
 
@@ -138,17 +138,17 @@ list_builtin_commands() ->
 -doc "Lists (as terms) the current variable bindings.".
 -spec list_bindings( shell_state() ) -> { shell_state(), [ binding() ] }.
 list_bindings( ShellState=#shell_state{ bindings=BindingStruct } ) ->
-	%trace_utils:debug( "Listing bindings." ),
+    %trace_utils:debug( "Listing bindings." ),
 
-	FilteredBindings = shell_utils:filter_bindings( BindingStruct ),
+    FilteredBindings = shell_utils:filter_bindings( BindingStruct ),
 
-	{ ShellState, FilteredBindings }.
+    { ShellState, FilteredBindings }.
 
 
 -doc "Shorthand for list_bindings/1.".
 -spec b( shell_state() ) -> { shell_state(), [ binding() ] }.
 b( ShellState ) ->
-	list_bindings( ShellState ).
+    list_bindings( ShellState ).
 
 
 
@@ -156,24 +156,24 @@ b( ShellState ) ->
 -spec print_bindings( shell_state() ) -> { shell_state(), ustring() }.
 print_bindings( ShellState=#shell_state{ bindings=BindingStruct } ) ->
 
-	Res = text_utils:format( "Shell has ~ts",
-		[ shell_utils:bindings_to_command_string( BindingStruct ) ] ),
+    Res = text_utils:format( "Shell has ~ts",
+        [ shell_utils:bindings_to_command_string( BindingStruct ) ] ),
 
-	{ ShellState, Res }.
+    { ShellState, Res }.
 
 
 
 -doc "Clears all variable bindings.".
 -spec clear_bindings( shell_state() ) -> builtin_state_only().
 clear_bindings( ShellState ) ->
-	NewBindingStruct = erl_eval:new_bindings(),
-	{ ShellState#shell_state{ bindings=NewBindingStruct }, ok }.
+    NewBindingStruct = erl_eval:new_bindings(),
+    { ShellState#shell_state{ bindings=NewBindingStruct }, ok }.
 
 
 -doc "Shorthand for clear_bindings/1.".
 -spec f( shell_state() ) -> builtin_state_only().
 f( ShellState ) ->
-	clear_bindings( ShellState ).
+    clear_bindings( ShellState ).
 
 
 -doc """
@@ -182,53 +182,53 @@ Clears the binding of the specified variable.
 No error is triggered if no such variable was bound.
 """.
 -spec clear_binding( shell_state(), variable_string_name() ) ->
-										builtin_state_only().
+                                        builtin_state_only().
 clear_binding( ShellState=#shell_state{ bindings=BindingStruct },
-			   VarName ) when is_list( VarName ) ->
+               VarName ) when is_list( VarName ) ->
 
-	%trace_utils:debug_fmt( "Clearing binding '~ts'.", [ VarName ] ),
+    %trace_utils:debug_fmt( "Clearing binding '~ts'.", [ VarName ] ),
 
-	NewBindingStruct = erl_eval:del_binding( list_to_atom( VarName ),
-											 BindingStruct ),
+    NewBindingStruct = erl_eval:del_binding( list_to_atom( VarName ),
+                                             BindingStruct ),
 
-	{ ShellState#shell_state{ bindings=NewBindingStruct }, ok };
+    { ShellState#shell_state{ bindings=NewBindingStruct }, ok };
 
 clear_binding( _ShellState, VarName ) ->
-	throw( { invalid_variable_name, VarName } ).
+    throw( { invalid_variable_name, VarName } ).
 
 
 
 -doc "Shorthand for clear_bindings/2.".
 -spec f( shell_state(), variable_string_name() ) -> builtin_state_only().
 f( ShellState, VarName ) ->
-	clear_binding( ShellState, VarName ).
+    clear_binding( ShellState, VarName ).
 
 
 
 -doc "Displays the current history of commands.".
 -spec print_command_history( shell_state() ) -> { shell_state(), ustring() }.
 print_command_history( ShellState ) ->
-	Res = shell_utils:command_history_to_string_with_ids( ShellState ),
-	{ ShellState, Res }.
+    Res = shell_utils:command_history_to_string_with_ids( ShellState ),
+    { ShellState, Res }.
 
 
 -doc "Shorthand for print_command_history/1.".
 -spec hc( shell_state() ) -> { shell_state(), ustring() }.
 hc( ShellState ) ->
-	print_command_history( ShellState ).
+    print_command_history( ShellState ).
 
 
 -doc "Displays the current history of results.".
 -spec print_result_history( shell_state() ) -> { shell_state(), ustring() }.
 print_result_history( ShellState ) ->
-	Res = shell_utils:result_history_to_string_with_ids( ShellState ),
-	{ ShellState, Res }.
+    Res = shell_utils:result_history_to_string_with_ids( ShellState ),
+    { ShellState, Res }.
 
 
 -doc "Shorthand for print_result_history/1.".
 -spec hr( shell_state() ) -> { shell_state(), ustring() }.
 hr( ShellState ) ->
-	print_result_history( ShellState ).
+    print_result_history( ShellState ).
 
 
 
@@ -237,16 +237,16 @@ Returns the command of the specified identifier (if it is in command history),
 so that, if validated by the user, it can be evaluated again.
 """.
 -spec recall_command( shell_state(), command_id() ) ->
-								{ shell_state(), command_str() }.
+                                { shell_state(), command_str() }.
 recall_command( ShellState, CmdId ) ->
-	Res = shell_utils:recall_command( ShellState, CmdId ),
-	{ ShellState, Res }.
+    Res = shell_utils:recall_command( ShellState, CmdId ),
+    { ShellState, Res }.
 
 
 -doc "Shorthand for recall_command/2.".
 -spec r( shell_state(), command_id() ) -> { shell_state(), command_str() }.
 r( ShellState, CmdId ) ->
-	recall_command( ShellState, CmdId ).
+    recall_command( ShellState, CmdId ).
 
 
 
@@ -258,59 +258,59 @@ still in result history, otherwise returns 'undefined'.
 % this is not a problem as it is only for interactive use:
 %
 -spec get_result( shell_state(), command_id() ) ->
-								{ shell_state(), message() | command_result() }.
+                                { shell_state(), message() | command_result() }.
 get_result( ShellState, CmdId ) ->
-	Res = shell_utils:get_result( ShellState, CmdId ),
-	{ ShellState, Res }.
+    Res = shell_utils:get_result( ShellState, CmdId ),
+    { ShellState, Res }.
 
 
 
 -doc "Clears the full (live) history of commands.".
 -spec clear_commands( shell_state() ) ->
-								builtin_state_only( 'commands_cleared' ).
+                                builtin_state_only( 'commands_cleared' ).
 clear_commands( ShellState ) ->
-	ClearedShellState = ShellState#shell_state{ cmd_history=queue:new() },
-	{ ClearedShellState, commands_cleared }.
+    ClearedShellState = ShellState#shell_state{ cmd_history=queue:new() },
+    { ClearedShellState, commands_cleared }.
 
 
 -doc "Shorthand for clear_commands/1.".
 -spec fc( shell_state() ) -> builtin_state_only( 'commands_cleared' ).
 fc( ShellState ) ->
-	clear_commands( ShellState ).
+    clear_commands( ShellState ).
 
 
 
 -doc "Clears the full history of command results.".
 -spec clear_results( shell_state() ) ->
-								builtin_state_only( 'results_cleared' ).
+                                builtin_state_only( 'results_cleared' ).
 clear_results( ShellState ) ->
-	ClearedShellState = ShellState#shell_state{ res_history=queue:new() },
-	{ ClearedShellState, results_cleared }.
+    ClearedShellState = ShellState#shell_state{ res_history=queue:new() },
+    { ClearedShellState, results_cleared }.
 
 
 -doc "Shorthand for clear_results/1.".
 -spec fr( shell_state() ) -> builtin_state_only( 'results_cleared' ).
 fr( ShellState ) ->
-	clear_results( ShellState ).
+    clear_results( ShellState ).
 
 
 
 -doc "Sets the depth of the command history.".
 -spec set_command_history_depth( shell_state(), option( count() ) ) ->
-											builtin_state_only().
+                                            builtin_state_only().
 set_command_history_depth( ShellState, NewDepth ) ->
-	SetShellState = ShellState#shell_state{
-		cmd_history_max_depth=shell_utils:check_history_depth( NewDepth ) },
-	{ SetShellState, ok }.
+    SetShellState = ShellState#shell_state{
+        cmd_history_max_depth=shell_utils:check_history_depth( NewDepth ) },
+    { SetShellState, ok }.
 
 
 -doc "Sets the depth of the result history.".
 -spec set_result_history_depth( shell_state(), option( count() ) ) ->
-											builtin_state_only().
+                                            builtin_state_only().
 set_result_history_depth( ShellState, NewDepth ) ->
-	SetShellState = ShellState#shell_state{
-		res_history_max_depth=shell_utils:check_history_depth( NewDepth ) },
-	{ SetShellState, ok }.
+    SetShellState = ShellState#shell_state{
+        res_history_max_depth=shell_utils:check_history_depth( NewDepth ) },
+    { SetShellState, ok }.
 
 
 
@@ -319,28 +319,28 @@ Clears the persistent history of commands (even if not currently activated), and
 does not change its current activation status.
 """.
 -spec clear_persistent_command_history( shell_state() ) ->
-			builtin_state_only( 'persistent_command_history_cleared' ).
+            builtin_state_only( 'persistent_command_history_cleared' ).
 
 clear_persistent_command_history( ShellState=#shell_state{
-										cmd_history_file=undefined } ) ->
+                                        cmd_history_file=undefined } ) ->
 
-	file_utils:remove_file_if_existing(
-		shell_utils:get_history_file_path() ),
+    file_utils:remove_file_if_existing(
+        shell_utils:get_history_file_path() ),
 
-	{ ShellState, persistent_command_history_cleared };
+    { ShellState, persistent_command_history_cleared };
 
 
 clear_persistent_command_history( ShellState=#shell_state{
-										cmd_history_file=CmdHistFile } ) ->
+                                        cmd_history_file=CmdHistFile } ) ->
 
-	file_utils:close( CmdHistFile ),
+    file_utils:close( CmdHistFile ),
 
-	NewCmdHistFile = file_utils:open( shell_utils:get_history_file_path(),
-									  _Opts=[ truncate ] ),
+    NewCmdHistFile = file_utils:open( shell_utils:get_history_file_path(),
+                                      _Opts=[ truncate ] ),
 
-	NewShellState = ShellState#shell_state{ cmd_history_file=NewCmdHistFile },
+    NewShellState = ShellState#shell_state{ cmd_history_file=NewCmdHistFile },
 
-	{ NewShellState, persistent_command_history_cleared }.
+    { NewShellState, persistent_command_history_cleared }.
 
 
 
@@ -348,7 +348,7 @@ clear_persistent_command_history( ShellState=#shell_state{
 -doc "Displays help information.".
 -spec help( shell_state() ) -> builtin_state_only().
 help( ShellState=#shell_state{ reference_module=undefined } ) ->
-	{ ShellState, "(no help information available)" };
+    { ShellState, "(no help information available)" };
 
 help( ShellState=#shell_state{ reference_module=RefModule } ) ->
-	{ ShellState, RefModule:get_help() }.
+    { ShellState, RefModule:get_help() }.

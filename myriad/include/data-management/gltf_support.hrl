@@ -1,4 +1,4 @@
-% Copyright (C) 2021-2025 Olivier Boudeville
+% Copyright (C) 2021-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -33,65 +33,65 @@
 % Gathers all information regarding a glTF 2.0 content.
 -record( gltf_content, {
 
-	% No content name defined, as no place in format was such information.
+    % No content name defined, as no place in format was such information.
 
-	% The index of the default scene (if any) of this content:
-	default_scene = undefined :: option( gltf_support:scene_index() ),
+    % The index of the default scene (if any) of this content:
+    default_scene = undefined :: option( gltf_support:scene_index() ),
 
-	% The in-order definition of all known scenes:
-	scenes = [] :: [ gltf_support:gltf_scene() ],
+    % The in-order definition of all known scenes:
+    scenes = [] :: [ gltf_support:gltf_scene() ],
 
-	% The in-order definition of all known (scene) nodes:
-	nodes = [] :: [ gltf_support:gltf_node() ],
+    % The in-order definition of all known (scene) nodes:
+    nodes = [] :: [ gltf_support:gltf_node() ],
 
-	% The in-order definition of all known materials:
-	materials = [] :: [ gltf_support:gltf_material() ],
+    % The in-order definition of all known materials:
+    materials = [] :: [ gltf_support:gltf_material() ],
 
-	% The in-order definition of all known types of cameras:
-	camera_types = [] :: [ gltf_support:gltf_camera_type() ],
+    % The in-order definition of all known types of cameras:
+    camera_types = [] :: [ gltf_support:gltf_camera_type() ],
 
-	% The in-order definition of all known meshes:
-	meshes = [] :: [ gltf_support:gltf_mesh() ],
+    % The in-order definition of all known meshes:
+    meshes = [] :: [ gltf_support:gltf_mesh() ],
 
-	% The in-order definition of all known (buffer) accessors:
-	accessors = [] :: [ gltf_support:gltf_accessor() ],
+    % The in-order definition of all known (buffer) accessors:
+    accessors = [] :: [ gltf_support:gltf_accessor() ],
 
-	% The in-order definition of all known buffers:
-	buffers = [] :: [ gltf_support:gltf_buffer() ],
+    % The in-order definition of all known buffers:
+    buffers = [] :: [ gltf_support:gltf_buffer() ],
 
-	% The in-order definition of all known buffer-views:
-	buffer_views = [] :: [ gltf_support:gltf_buffer_view() ] } ).
+    % The in-order definition of all known buffer-views:
+    buffer_views = [] :: [ gltf_support:gltf_buffer_view() ] } ).
 
 
 
 % A scene defined in a glTF content.
 -record( gltf_scene, {
 
-	% The name (if any) of this scene:
-	name :: option( gltf_support:object_name() ),
+    % The name (if any) of this scene:
+    name :: option( gltf_support:object_name() ),
 
-	% The indexes of the nodes of this scene:
-	nodes = [] :: [ gltf_support:node_index() ] } ).
+    % The indexes of the nodes of this scene:
+    nodes = [] :: [ gltf_support:node_index() ] } ).
 
 
 
 % A node defined in a glTF content.
 -record( gltf_node, {
 
-	% The name (if any) of this node:
-	name :: option( gltf_support:object_name() ),
+    % The name (if any) of this node:
+    name :: option( gltf_support:object_name() ),
 
-	% The index of the mesh (if any) associated to this node:
-	mesh :: option( gltf_support:mesh_index() ),
+    % The index of the mesh (if any) associated to this node:
+    mesh :: option( gltf_support:mesh_index() ),
 
-	% The quaternion (if any) defining the rotation associated to this node:
-	rotation :: option( quaternion:quaternion() ),
+    % The quaternion (if any) defining the rotation associated to this node:
+    rotation :: option( quaternion:quaternion() ),
 
-	% The translation (if any) associated to this node:
-	translation :: option( vector3:vector3() ),
+    % The translation (if any) associated to this node:
+    translation :: option( vector3:vector3() ),
 
-	% The type of camera (if any) attached to this node:
-	camera :: option( gltf_support:camera_type_index() ) } ).
+    % The type of camera (if any) attached to this node:
+    camera :: option( gltf_support:camera_type_index() ) } ).
 
 
 
@@ -112,10 +112,10 @@
 %
 -record( gltf_mesh, {
 
-	% The name (if any) of this mesh:
-	name :: option( gltf_support:object_name() ),
+    % The name (if any) of this mesh:
+    name :: option( gltf_support:object_name() ),
 
-	primitives = [] :: [ gltf_support:gltf_primitive() ] } ).
+    primitives = [] :: [ gltf_support:gltf_primitive() ] } ).
 
 
 
@@ -130,16 +130,16 @@
 %
 -record( gltf_primitive, {
 
-	% No name possibly defined.
+    % No name possibly defined.
 
-	attributes :: gltf_support:gltf_attributes(),
+    attributes :: gltf_support:gltf_attributes(),
 
-	indexes :: option( gltf_support:accessor_index() ),
+    indexes :: option( gltf_support:accessor_index() ),
 
-	material :: option( gltf_support:accessor_index() ),
+    material :: option( gltf_support:accessor_index() ),
 
-	% The topology type of primitives to render:
-	mode :: option( linear_2D:topology_type() ) } ).
+    % The topology type of primitives to render:
+    mode :: option( linear_2D:topology_type() ) } ).
 
 
 
@@ -148,29 +148,29 @@
 %
 -record( gltf_attributes, {
 
-	position   :: option( gltf_support:accessor_index() ),
-	normal     :: option( gltf_support:accessor_index() ),
-	tangent    :: option( gltf_support:accessor_index() ),
-	texcoord_0 :: option( gltf_support:accessor_index() )
+    position   :: option( gltf_support:accessor_index() ),
+    normal     :: option( gltf_support:accessor_index() ),
+    tangent    :: option( gltf_support:accessor_index() ),
+    texcoord_0 :: option( gltf_support:accessor_index() )
 
-	% Also: TEXCOORD_n, COLOR_n, JOINTS_n, WEIGHTS_n.
+    % Also: TEXCOORD_n, COLOR_n, JOINTS_n, WEIGHTS_n.
 
-						  } ).
+                          } ).
 
 
 
 % A material defined in a glTF content.
 -record( gltf_material, {
 
-	% The name (if any) of this material:
-	name :: option( gltf_support:object_name() ),
+    % The name (if any) of this material:
+    name :: option( gltf_support:object_name() ),
 
-	% Tells whether this mesh is double-sided:
-	double_sided :: option( boolean() ),
+    % Tells whether this mesh is double-sided:
+    double_sided :: option( boolean() ),
 
-	% The Physically-Based Rendering (PBR) metallic roughness of this material:
-	pbr_metallic_roughness ::
-					option( gltf_support:gltf_pbr_metallic_roughness() ) } ).
+    % The Physically-Based Rendering (PBR) metallic roughness of this material:
+    pbr_metallic_roughness ::
+                    option( gltf_support:gltf_pbr_metallic_roughness() ) } ).
 
 
 
@@ -179,11 +179,11 @@
 %
 -record( gltf_pbr_metallic_roughness, {
 
-	base_color_factor :: gui_color:render_color(),
+    base_color_factor :: gui_color:render_color(),
 
-	metallic_factor :: math_utils:factor(),
+    metallic_factor :: math_utils:factor(),
 
-	roughness_factor :: math_utils:factor() } ).
+    roughness_factor :: math_utils:factor() } ).
 
 
 
@@ -196,17 +196,17 @@
 %
 -record( gltf_orthographic_camera, {
 
-	% The name (if any) of this camera:
-	name :: option( gltf_support:object_name() ),
+    % The name (if any) of this camera:
+    name :: option( gltf_support:object_name() ),
 
-	x_magnification :: math_utils:positive_factor(),
+    x_magnification :: math_utils:positive_factor(),
 
-	y_magnification :: math_utils:positive_factor(),
+    y_magnification :: math_utils:positive_factor(),
 
-	z_near_distance :: linear:distance(),
+    z_near_distance :: linear:distance(),
 
-	% Must be greater than z_near_distance:
-	z_far_distance :: linear:distance() } ).
+    % Must be greater than z_near_distance:
+    z_far_distance :: linear:distance() } ).
 
 
 
@@ -216,22 +216,22 @@
 %
 -record( gltf_perspective_camera, {
 
-	% The name (if any) of this camera:
-	name :: option( gltf_support:object_name() ),
+    % The name (if any) of this camera:
+    name :: option( gltf_support:object_name() ),
 
-	% The aspect ratio of the field of view:
-	aspect_ratio :: option( math_utils:ratio() ),
+    % The aspect ratio of the field of view:
+    aspect_ratio :: option( math_utils:ratio() ),
 
-	% The floating-point vertical field of view:
-	y_field_of_view  :: unit_utils:radians(),
+    % The floating-point vertical field of view:
+    y_field_of_view  :: unit_utils:radians(),
 
-	% Must be strictly positive:
-	z_near_distance :: linear:distance(),
+    % Must be strictly positive:
+    z_near_distance :: linear:distance(),
 
-	% Must be greater than z_near_distance; as both are mapped to a cube whose
-	% edge length is 1.0, their ratio matters the most):
-	%
-	z_far_distance :: option( linear:distance() ) } ).
+    % Must be greater than z_near_distance; as both are mapped to a cube whose
+    % edge length is 1.0, their ratio matters the most):
+    %
+    z_far_distance :: option( linear:distance() ) } ).
 
 
 
@@ -243,27 +243,27 @@
 %
 -record( gltf_accessor, {
 
-	% The name (if any) of this accessor:
-	name :: option( gltf_support:object_name() ),
+    % The name (if any) of this accessor:
+    name :: option( gltf_support:object_name() ),
 
-	buffer_view :: option( gltf_support:buffer_view_index() ),
+    buffer_view :: option( gltf_support:buffer_view_index() ),
 
-	% Specifies if the accessor’s elements are scalars, vectors, or matrices:
-	% (e.g. 'vector4')
-	%
-	element_type :: gltf_support:element_type(),
+    % Specifies if the accessor’s elements are scalars, vectors, or matrices:
+    % (e.g. 'vector4')
+    %
+    element_type :: gltf_support:element_type(),
 
-	% The datatype of a component of an accessor (e.g. 'uint8').
-	component_type :: gltf_support:component_type(),
+    % The datatype of a component of an accessor (e.g. 'uint8').
+    component_type :: gltf_support:component_type(),
 
-	% The number of elements referenced by this accessor:
-	count :: basic_utils:count(),
+    % The number of elements referenced by this accessor:
+    count :: basic_utils:count(),
 
-	% The maximum value (if any) of each component in this accessor:
-	max :: option( [ gltf_support:component_value() ] ),
+    % The maximum value (if any) of each component in this accessor:
+    max :: option( [ gltf_support:component_value() ] ),
 
-	% The minimum value (if any) of each component in this accessor:
-	min :: option( [ gltf_support:component_value() ] ) } ).
+    % The minimum value (if any) of each component in this accessor:
+    min :: option( [ gltf_support:component_value() ] ) } ).
 
 
 
@@ -274,14 +274,14 @@
 %
 -record( gltf_buffer, {
 
-	% The name (if any) of this buffer:
-	name :: option( gltf_support:object_name() ),
+    % The name (if any) of this buffer:
+    name :: option( gltf_support:object_name() ),
 
-	% The URI designating the data to be fetched for the content of this buffer:
-	uri :: web_utils:uri(),
+    % The URI designating the data to be fetched for the content of this buffer:
+    uri :: web_utils:uri(),
 
-	% The total size of this buffer:
-	size :: system_utils:byte_size() } ).
+    % The total size of this buffer:
+    size :: system_utils:byte_size() } ).
 
 
 
@@ -292,16 +292,16 @@
 %
 -record( gltf_buffer_view, {
 
-	% The name (if any) of this buffer-view:
-	name :: option( gltf_support:object_name() ),
+    % The name (if any) of this buffer-view:
+    name :: option( gltf_support:object_name() ),
 
-	% The index of the target buffer:
-	buffer :: gltf_support:buffer_index(),
+    % The index of the target buffer:
+    buffer :: gltf_support:buffer_index(),
 
-	% The byte offset of the beginning of this view compared to the beginning of
-	% its buffer:
-	%
-	offset :: option( system_utils:byte_offset() ),
+    % The byte offset of the beginning of this view compared to the beginning of
+    % its buffer:
+    %
+    offset :: option( system_utils:byte_offset() ),
 
-	% The size of this view into its buffer:
-	size :: system_utils:byte_size() } ).
+    % The size of this view into its buffer:
+    size :: system_utils:byte_size() } ).

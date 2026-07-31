@@ -1,4 +1,4 @@
-% Copyright (C) 2016-2025 Olivier Boudeville
+% Copyright (C) 2016-2026 Olivier Boudeville
 %
 % This file is part of the Ceylan-Myriad library.
 %
@@ -66,196 +66,196 @@ Returns the connection and user settings (if any) to apply to this test.
 """.
 get_test_settings() ->
 
-	% Optional; will look-up the default '~/.ceylan-settings.etf' preference
-	% file:
-	%
-	preferences:start_link(),
+    % Optional; will look-up the default '~/.ceylan-settings.etf' preference
+    % file:
+    %
+    preferences:start_link(),
 
-	% Depending on the context, any of the preferences can be 'undefined':
+    % Depending on the context, any of the preferences can be 'undefined':
 
-	[ DbHostname, DbPort, DbName ] = preferences:get(
-		[ myriad_test_sql_database_host, myriad_test_sql_database_port,
-		  myriad_test_sql_database_name ] ),
+    [ DbHostname, DbPort, DbName ] = preferences:get(
+        [ myriad_test_sql_database_host, myriad_test_sql_database_port,
+          myriad_test_sql_database_name ] ),
 
-	[ DbUserName, DbUserPassword ] = preferences:get(
-		[ myriad_test_sql_user_name, myriad_test_sql_user_password ] ),
+    [ DbUserName, DbUserPassword ] = preferences:get(
+        [ myriad_test_sql_user_name, myriad_test_sql_user_password ] ),
 
-	% Testing the preferences that are required:
-	case basic_utils:are_all_defined(
-			[ DbHostname, DbName, DbUserName, DbUserPassword ] ) of
+    % Testing the preferences that are required:
+    case basic_utils:are_all_defined(
+            [ DbHostname, DbName, DbUserName, DbUserPassword ] ) of
 
-		true ->
-			ConnSettings = #database_connection_settings{ host_name=DbHostname,
-														  port=DbPort,
-														  name=DbName },
+        true ->
+            ConnSettings = #database_connection_settings{ host_name=DbHostname,
+                                                          port=DbPort,
+                                                          name=DbName },
 
-			UserSettings = #database_user_settings{
-				user_name=DbUserName,
-				user_password=DbUserPassword },
+            UserSettings = #database_user_settings{
+                user_name=DbUserName,
+                user_password=DbUserPassword },
 
-			{ ConnSettings, UserSettings };
+            { ConnSettings, UserSettings };
 
-		false ->
-			undefined
+        false ->
+            undefined
 
-	end.
+    end.
 
 
 
 % To be integrated in sql_support API.
 test_sqlite3() ->
 
-	test_facilities:display( "Testing the direct use of the SQLite3 backend." ),
+    test_facilities:display( "Testing the direct use of the SQLite3 backend." ),
 
-	% Preparing all elements necessary for the dataset creation:
+    % Preparing all elements necessary for the dataset creation:
 
-	DatabaseName = "sql_support_test",
+    DatabaseName = "sql_support_test",
 
-	DatabaseFilename = DatabaseName ++ ".sqlite3",
+    DatabaseFilename = DatabaseName ++ ".sqlite3",
 
-	test_facilities:display( "We will first create a SQLite3 database, "
-							 "in '~ts'.", [ DatabaseFilename ] ),
+    test_facilities:display( "We will first create a SQLite3 database, "
+                             "in '~ts'.", [ DatabaseFilename ] ),
 
-	% Prior tests may have left it:
-	file_utils:remove_file_if_existing( DatabaseFilename ),
+    % Prior tests may have left it:
+    file_utils:remove_file_if_existing( DatabaseFilename ),
 
-	{ ok, DbPid } = sqlite3:open( my_db, [ { file, DatabaseFilename } ] ),
+    { ok, DbPid } = sqlite3:open( my_db, [ { file, DatabaseFilename } ] ),
 
-	% Shall be empty at first:
-	[] = sqlite3:list_tables( DbPid ),
+    % Shall be empty at first:
+    [] = sqlite3:list_tables( DbPid ),
 
-	% Directly inspired from sqlite3_test:basic_functionality/0:
-	test_facilities:display( "Creating a table named 'my_table'." ),
+    % Directly inspired from sqlite3_test:basic_functionality/0:
+    test_facilities:display( "Creating a table named 'my_table'." ),
 
-	% Four columns defined:
-	ColumnInfo = [ { id,   integer, [ {primary_key, [ asc, autoincrement ]} ] },
-				   { name, text,    [ not_null, unique ] },
-				   { age,  integer, [ not_null ] },
-				   { wage, integer } ],
+    % Four columns defined:
+    ColumnInfo = [ { id,   integer, [ {primary_key, [ asc, autoincrement ]} ] },
+                   { name, text,    [ not_null, unique ] },
+                   { age,  integer, [ not_null ] },
+                   { wage, integer } ],
 
-	ok = sqlite3:create_table( DbPid, my_table, ColumnInfo ),
+    ok = sqlite3:create_table( DbPid, my_table, ColumnInfo ),
 
 
-	test_facilities:display( "Checking table list." ),
-	[ my_table, sqlite_sequence ] = sqlite3:list_tables( DbPid ),
+    test_facilities:display( "Checking table list." ),
+    [ my_table, sqlite_sequence ] = sqlite3:list_tables( DbPid ),
 
-	ColumnInfo = sqlite3:table_info( DbPid, my_table ),
+    ColumnInfo = sqlite3:table_info( DbPid, my_table ),
 
-	test_facilities:display( "Writing a few rows in this table." ),
+    test_facilities:display( "Writing a few rows in this table." ),
 
-	% First writing:
-	{ rowid, 1 } = sqlite3:write( DbPid, my_table,
-		[ {name,"abby"}, {age, 20}, {<<"wage">>, 2000} ] ),
+    % First writing:
+    { rowid, 1 } = sqlite3:write( DbPid, my_table,
+        [ {name,"abby"}, {age, 20}, {<<"wage">>, 2000} ] ),
 
-	% Second one:
-	MargeEntry = [ {name, "marge"}, {age, 30}, {wage, 2000} ],
-	{ rowid, 2 } = sqlite3:write( DbPid, my_table, MargeEntry ),
+    % Second one:
+    MargeEntry = [ {name, "marge"}, {age, 30}, {wage, 2000} ],
+    { rowid, 2 } = sqlite3:write( DbPid, my_table, MargeEntry ),
 
-	% Only one should be accepted:
-	{ error, 19, _ } = sqlite3:write( DbPid, my_table, MargeEntry ),
+    % Only one should be accepted:
+    { error, 19, _ } = sqlite3:write( DbPid, my_table, MargeEntry ),
 
-	Columns = [ "id", "name", "age", "wage" ],
+    Columns = [ "id", "name", "age", "wage" ],
 
-	AbbyRow = { 1, <<"abby">>, 20, 2000 },
-	AllRows = [ AbbyRow, { 2, <<"marge">>, 30, 2000 } ],
+    AbbyRow = { 1, <<"abby">>, 20, 2000 },
+    AllRows = [ AbbyRow, { 2, <<"marge">>, 30, 2000 } ],
 
-	test_facilities:display( "Checking the content table now." ),
-	ExpectedContent = [ {columns,Columns}, {rows,AllRows} ],
+    test_facilities:display( "Checking the content table now." ),
+    ExpectedContent = [ {columns,Columns}, {rows,AllRows} ],
 
-	ExpectedContent = sqlite3:sql_exec( DbPid, "select * from my_table;" ),
+    ExpectedContent = sqlite3:sql_exec( DbPid, "select * from my_table;" ),
 
-	ExpectedContent = sqlite3:read_all( DbPid, my_table ),
+    ExpectedContent = sqlite3:read_all( DbPid, my_table ),
 
-	% Many tests could be added here.
+    % Many tests could be added here.
 
-	test_facilities:display( "Closing database." ),
-	ok = sqlite3:close( DbPid ),
+    test_facilities:display( "Closing database." ),
+    ok = sqlite3:close( DbPid ),
 
-	file_utils:remove_file( DatabaseFilename ).
+    file_utils:remove_file( DatabaseFilename ).
 
 
 
 test_myriad_sql_support() ->
 
-	test_facilities:display(
-		"Testing the actual use of our sql_support module." ),
+    test_facilities:display(
+        "Testing the actual use of our sql_support module." ),
 
-	case get_test_settings() of
+    case get_test_settings() of
 
-		undefined ->
-			test_facilities:display( "No sufficient settings found in "
-				"preferences, no test done." );
+        undefined ->
+            test_facilities:display( "No sufficient settings found in "
+                "preferences, no test done." );
 
-		{ ConnSettings, UserSettings } ->
-			test_sql( ConnSettings, UserSettings )
+        { ConnSettings, UserSettings } ->
+            test_sql( ConnSettings, UserSettings )
 
-	end.
+    end.
 
 
 
 test_sql( ConnSettings, UserSettings ) ->
 
-	test_facilities:display( "Connecting to ~ts as ~ts.",
-		[ sql_support:connection_settings_to_string( ConnSettings ),
-		  sql_support:user_settings_to_string( UserSettings ) ] ),
+    test_facilities:display( "Connecting to ~ts as ~ts.",
+        [ sql_support:connection_settings_to_string( ConnSettings ),
+          sql_support:user_settings_to_string( UserSettings ) ] ),
 
-	Conn = case sql_support:connect( ConnSettings, UserSettings ) of
+    Conn = case sql_support:connect( ConnSettings, UserSettings ) of
 
-		{ ok, C } ->
-			C;
+        { ok, C } ->
+            C;
 
-		{ error, Reason } ->
-			throw( { connection_failed, Reason, ConnSettings, UserSettings } )
+        { error, Reason } ->
+            throw( { connection_failed, Reason, ConnSettings, UserSettings } )
 
-	end,
+    end,
 
-	test_facilities:display( "Connection established (~p).", [ Conn ] ),
+    test_facilities:display( "Connection established (~p).", [ Conn ] ),
 
-	ok = sql_support:close( Conn ).
+    ok = sql_support:close( Conn ).
 
 
 
 -spec run() -> no_return().
 run() ->
 
-	test_facilities:start( ?MODULE ),
+    test_facilities:start( ?MODULE ),
 
-	test_facilities:display( "Testing the availability of known SQL "
-							 "backends: ~ts",
-		[ text_utils:strings_to_string( [ text_utils:format( "~ts: ~ts",
-				[ BN, sql_support:has_backend( BN ) ] )
-					|| BN <- sql_support:list_possible_backend_names() ] ) ] ),
+    test_facilities:display( "Testing the availability of known SQL "
+                             "backends: ~ts",
+        [ text_utils:strings_to_string( [ text_utils:format( "~ts: ~ts",
+                [ BN, sql_support:has_backend( BN ) ] )
+                    || BN <- sql_support:list_possible_backend_names() ] ) ] ),
 
-	case sql_support:get_backend_name() of
+    case sql_support:get_backend_name() of
 
-		undefined ->
-			test_facilities:display( "No SQL backend found available, "
-									 "stopping test." );
+        undefined ->
+            test_facilities:display( "No SQL backend found available, "
+                                     "stopping test." );
 
-		BackendType ->
-			test_facilities:display( "Starting SQL support with backend '~ts'.",
-									 [ BackendType ] ),
+        BackendType ->
+            test_facilities:display( "Starting SQL support with backend '~ts'.",
+                                     [ BackendType ] ),
 
-			sql_support:start(),
+            sql_support:start(),
 
-			% Temporary:
-			case BackendType of
+            % Temporary:
+            case BackendType of
 
-				sqlite3 ->
-					test_sqlite3();
+                sqlite3 ->
+                    test_sqlite3();
 
-				_ ->
-					test_myriad_sql_support()
+                _ ->
+                    test_myriad_sql_support()
 
-			end,
+            end,
 
-			test_facilities:display( "Stopping SQL support." ),
-			sql_support:stop()
+            test_facilities:display( "Stopping SQL support." ),
+            sql_support:stop()
 
-	end,
+    end,
 
 
-	test_facilities:stop().
+    test_facilities:stop().
 
 
 
@@ -275,33 +275,33 @@ Usage example: run 'make shell' from the current test directory, then:
 -spec run_interactive() -> connection().
 run_interactive() ->
 
-	sql_support:start(),
+    sql_support:start(),
 
-	{ ConnSettings, UserSettings } = case get_test_settings() of
+    { ConnSettings, UserSettings } = case get_test_settings() of
 
-		undefined ->
-			test_facilities:display(
-			  "No sufficient settings found in preferences." ),
-			throw( no_connection_settings );
+        undefined ->
+            test_facilities:display(
+              "No sufficient settings found in preferences." ),
+            throw( no_connection_settings );
 
-		AccessSettings ->
-			AccessSettings
+        AccessSettings ->
+            AccessSettings
 
-	end,
+    end,
 
-	Conn = case sql_support:connect( ConnSettings, UserSettings ) of
+    Conn = case sql_support:connect( ConnSettings, UserSettings ) of
 
-		{ ok, C } ->
-			C;
+        { ok, C } ->
+            C;
 
-		{ error, Reason } ->
-			throw( { connection_failed, Reason, ConnSettings, UserSettings } )
+        { error, Reason } ->
+            throw( { connection_failed, Reason, ConnSettings, UserSettings } )
 
-	end,
+    end,
 
-	test_facilities:display( "Interactive connection to ~ts, as ~ts "
-		"established (~w).",
-		[ sql_support:connection_settings_to_string( ConnSettings ),
-		  sql_support:user_settings_to_string( UserSettings ), Conn ] ),
+    test_facilities:display( "Interactive connection to ~ts, as ~ts "
+        "established (~w).",
+        [ sql_support:connection_settings_to_string( ConnSettings ),
+          sql_support:user_settings_to_string( UserSettings ), Conn ] ),
 
-	Conn.
+    Conn.

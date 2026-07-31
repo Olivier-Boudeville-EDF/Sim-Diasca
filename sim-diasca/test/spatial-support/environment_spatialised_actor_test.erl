@@ -1,4 +1,4 @@
-% Copyright (C) 2014-2025 EDF R&D
+% Copyright (C) 2014-2026 EDF R&D
 %
 % This file is part of Sim-Diasca.
 %
@@ -39,111 +39,111 @@ Integration test for the **spatial support**.
 -spec run() -> no_return().
 run() ->
 
-	?case_start,
+    ?case_start,
 
-	% Use default simulation settings (50Hz, batch reproducible):
-	SimulationSettings = #simulation_settings{
+    % Use default simulation settings (50Hz, batch reproducible):
+    SimulationSettings = #simulation_settings{
 
-		simulation_name="Sim-Diasca Spatial Integration Test",
+        simulation_name="Sim-Diasca Spatial Integration Test",
 
-		% Using 100Hz here:
-		tick_duration=0.01
+        % Using 100Hz here:
+        tick_duration=0.01
 
-		% We leave it to the default specification (all_outputs):
-		% result_specification=
-		%  [ { targeted_patterns, [ {".*",[data_and_rendering]} ] },
-		%    { blacklisted_patterns, ["^Second" ] } ]
+        % We leave it to the default specification (all_outputs):
+        % result_specification=
+        %  [ { targeted_patterns, [ {".*",[data_and_rendering]} ] },
+        %    { blacklisted_patterns, ["^Second" ] } ]
 
-		%result_specification = [ { targeted_patterns, [ {".*",data_only} ] } ]
+        %result_specification = [ { targeted_patterns, [ {".*",data_only} ] } ]
 
-	},
-
-
-	DeploymentSettings = #deployment_settings{
-
-		computing_hosts={ use_host_file_otherwise_local,
-						  "sim-diasca-host-candidates.etf" } },
+    },
 
 
-	% Default load balancing settings (round-robin placement heuristic):
-	LoadBalancingSettings = #load_balancing_settings{},
+    DeploymentSettings = #deployment_settings{
 
-	% A deployment manager is created directly on the user node:
-	DeploymentManagerPid = sim_diasca:init( SimulationSettings,
-		DeploymentSettings, LoadBalancingSettings ),
+        computing_hosts={ use_host_file_otherwise_local,
+                          "sim-diasca-host-candidates.etf" } },
 
 
-	% Let's create first a proper environment:
-	EnvPid = class_Actor:create_initial_actor( class_TwoDimensionalEnvironment,
-		[ _Width=400, _Height=300, _BorderSettings=torus ] ),
+    % Default load balancing settings (round-robin placement heuristic):
+    LoadBalancingSettings = #load_balancing_settings{},
 
-	% This one will go from left to right:
-	%
-	% (one may specify a huger perception period - thus depriving the
-	% environment from the corresponding updates - and/or an undefined maximum
-	% speed to test updates triggered by the environment)
-
-	_FirstActorPid = class_Actor:create_initial_actor(
-		class_TestSpatialisedActor,
-		[ _FName="First Actor", _FInitialPosition={ -100.0, 0.0 },
-		  _FPerceptionRadius=40.0, _FPerceptionPeriod=20,
-		  _FMaxSpeed=5.0, _FTerminationOffset=500, EnvPid ] ),
+    % A deployment manager is created directly on the user node:
+    DeploymentManagerPid = sim_diasca:init( SimulationSettings,
+        DeploymentSettings, LoadBalancingSettings ),
 
 
-	% This one just sits idle at the origin:
-	_SecondActorPid = class_Actor:create_initial_actor(
-		class_TestSpatialisedActor,
-		[ _SName="Second Actor", _SInitialPosition={ 0.0, 999990.0 },
-		  _SPerceptionRadius=80.0, _SPerceptionPeriod=1500000,
-		  _SMaxSpeed=undefined, _STerminationOffset=none, EnvPid ] ),
+    % Let's create first a proper environment:
+    EnvPid = class_Actor:create_initial_actor( class_TwoDimensionalEnvironment,
+        [ _Width=400, _Height=300, _BorderSettings=torus ] ),
+
+    % This one will go from left to right:
+    %
+    % (one may specify a huger perception period - thus depriving the
+    % environment from the corresponding updates - and/or an undefined maximum
+    % speed to test updates triggered by the environment)
+
+    _FirstActorPid = class_Actor:create_initial_actor(
+        class_TestSpatialisedActor,
+        [ _FName="First Actor", _FInitialPosition={ -100.0, 0.0 },
+          _FPerceptionRadius=40.0, _FPerceptionPeriod=20,
+          _FMaxSpeed=5.0, _FTerminationOffset=500, EnvPid ] ),
 
 
-	% During the eastward movement of the first actor:
-	%
-	% - initially (at abscissa -100.0) and until having reached -80.0: none sees
-	% the other
-	%
-	% - from -80.0 to -40.0: first is seen by second (and first does not see
-	% anything)
-	%
-	% - from -40.0 to 40.0: both see the other
-	%
-	% - from 40.0 to 80.0: first is seen by second (and first does not see
-	% anything)
+    % This one just sits idle at the origin:
+    _SecondActorPid = class_Actor:create_initial_actor(
+        class_TestSpatialisedActor,
+        [ _SName="Second Actor", _SInitialPosition={ 0.0, 999990.0 },
+          _SPerceptionRadius=80.0, _SPerceptionPeriod=1500000,
+          _SMaxSpeed=undefined, _STerminationOffset=none, EnvPid ] ),
 
 
-	% We want this test to end once a specified virtual duration elapsed, in
-	% seconds:
-	%
-	SimulationDuration = 150,
+    % During the eastward movement of the first actor:
+    %
+    % - initially (at abscissa -100.0) and until having reached -80.0: none sees
+    % the other
+    %
+    % - from -80.0 to -40.0: first is seen by second (and first does not see
+    % anything)
+    %
+    % - from -40.0 to 40.0: both see the other
+    %
+    % - from 40.0 to 80.0: first is seen by second (and first does not see
+    % anything)
 
-	DeploymentManagerPid ! { getRootTimeManager, [], self() },
-	_RootTimeManagerPid = test_receive(),
 
-	?test_notice_fmt( "Starting simulation, for a stop after a duration "
-					  "in virtual time of ~Bms.", [ SimulationDuration ] ),
+    % We want this test to end once a specified virtual duration elapsed, in
+    % seconds:
+    %
+    SimulationDuration = 150,
 
-	% Currently disabled as fails in class_TimeManager:beginTimeManagerTick/2,
-	% in:
-	%
-	% true = set_utils:is_empty( ?getAttr(actors_to_trigger_in_one_diasca) ),
+    DeploymentManagerPid ! { getRootTimeManager, [], self() },
+    _RootTimeManagerPid = test_receive(),
 
-	%RootTimeManagerPid ! { startFor, [ SimulationDuration, self() ] },
+    ?test_notice_fmt( "Starting simulation, for a stop after a duration "
+                      "in virtual time of ~Bms.", [ SimulationDuration ] ),
 
-	?test_info( "Waiting for the simulation to end, since having been declared "
-				"as a simulation listener." ),
+    % Currently disabled as fails in class_TimeManager:beginTimeManagerTick/2,
+    % in:
+    %
+    % true = set_utils:is_empty( ?getAttr(actors_to_trigger_in_one_diasca) ),
 
-	%receive
+    %RootTimeManagerPid ! { startFor, [ SimulationDuration, self() ] },
 
-	%   simulation_stopped ->
-	%       ?test_info( "Simulation stopped spontaneously, "
-	%                   "specified stop tick must have been reached." )
+    ?test_info( "Waiting for the simulation to end, since having been declared "
+                "as a simulation listener." ),
 
-	%end,
+    %receive
 
-	?test_info( "Browsing the report results, if in batch mode." ),
-	%class_ResultManager:browse_reports(),
+    %   simulation_stopped ->
+    %       ?test_info( "Simulation stopped spontaneously, "
+    %                   "specified stop tick must have been reached." )
 
-	%sim_diasca:shutdown(),
+    %end,
 
-	?case_stop.
+    ?test_info( "Browsing the report results, if in batch mode." ),
+    %class_ResultManager:browse_reports(),
+
+    %sim_diasca:shutdown(),
+
+    ?case_stop.
