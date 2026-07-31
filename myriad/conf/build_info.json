@@ -1,0 +1,22 @@
+{
+  "_comment": "Project configuration for ELP (Erlang Language Platform), which includes a corresponding LSP language server; syntax described in https://whatsapp.github.io/erlang-language-platform/docs/get-started/configure-project/custom-project/",
+  "apps": [
+
+    {
+      "_comment": "The value for the src_dirs entry for this layer can be generated/updated by executing: 'make list-src-dirs' from the root of this layer, and copying them verbatim below (relative paths already correct). The same applies for extra_src_dirs, with 'make list-extra-src-dirs'",
+      "name": "myriad",
+      "dir": "..",
+      "src_dirs": ["./src/apps/generate-password", "./src/apps/mbdr-system", "./src/apps/merge-tool", "./src/data-management", "./src/maths", "./src/meta", "./src/user-interface", "./src/user-interface/audio", "./src/user-interface/graphical", "./src/user-interface/graphical/opengl", "./src/user-interface/textual", "./src/utils"],
+      "extra_src_dirs": ["test/data-management", "test/maths", "test/meta", "test/user-interface", "test/user-interface/audio", "test/user-interface/graphical", "test/user-interface/graphical/opengl", "test/user-interface/textual", "test/utils"],
+      "include_dirs": [
+      "include"
+      ],
+      "macros": {
+        "exec_target_is_production": "false",
+        "myriad_debug_mode": "true"
+      }
+    }
+
+  ],
+  "deps": []
+}

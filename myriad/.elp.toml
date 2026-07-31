@@ -1,0 +1,13 @@
+[build_info]
+file = "conf/build_info.json"
+
+[eqwalizer]
+enable_all = true
+#max_tasks = 32
+#ignore_modules = ["very_big_generated_module"]
+
+#[buck]
+#enabled = false
+
+#[rebar]
+#profile = "test"

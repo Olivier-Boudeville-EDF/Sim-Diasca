@@ -1,0 +1,77 @@
+{
+  "_comment": "Project configuration for ELP (Erlang Language Platform), which includes a corresponding LSP language server; syntax described in https://whatsapp.github.io/erlang-language-platform/docs/get-started/configure-project/custom-project/",
+
+  "apps": [
+
+    {
+      "_comment": "The value for the src_dirs entry for this layer can be generated/updated by executing: 'make list-src-dirs' from the root of this layer, and copying them verbatim below (relative paths already correct). The same applies for extra_src_dirs, with 'make list-extra-src-dirs'",
+      "name": "sim_diasca",
+      "dir": "..",
+      "src_dirs": ["./src/core/generic", "./src/core/mesh", "./src/core/services", "./src/core/services/bindings", "./src/core/services/bindings/java", "./src/core/services/bindings/python", "./src/core/services/case-support", "./src/core/services/control-management/webserver", "./src/core/services/dataflow", "./src/core/services/dataflow/bindings", "./src/core/services/dataflow/bindings/java", "./src/core/services/dataflow/bindings/python", "./src/core/services/dataflow/mockup-support", "./src/core/services/data-management/data-exchange", "./src/core/services/data-management/data-storage", "./src/core/services/data-management/monitoring/basic-probe", "./src/core/services/data-management/monitoring/graph-stream-probe", "./src/core/services/data-management/monitoring/performance", "./src/core/services/data-management/monitoring/web-probe", "./src/core/services/data-management/result-management", "./src/core/services/deployment", "./src/core/services/instance-creation", "./src/core/services/plugins", "./src/core/services/random", "./src/core/services/resilience", "./src/core/services/scheduling", "./src/core/space", "./src/models/equipment", "./src/models/reliability/failure", "./src/models/reliability/reparation", "./src/post-processing", "./src/spatial-support"],
+      "extra_src_dirs": ["test/core", "test/core/generic", "test/core/mesh", "test/core/services/dataflow", "test/core/services/data-management/data-exchange", "test/core/services/data-management/data-storage", "test/core/services/data-management/monitoring/basic-probe", "test/core/services/data-management/monitoring/graph-stream-probe", "test/core/services/data-management/monitoring/performance", "test/core/services/data-management/monitoring/web-probe", "test/core/services/data-management/result-management", "test/core/services/deployment", "test/core/services/instance-creation", "test/core/services/plugins", "test/core/services/random", "test/core/services/resilience", "test/core/services/scheduling", "test/core/space", "test/models/equipment", "test/post-processing", "test/spatial-support"],
+      "include_dirs": [
+        "include"
+      ],
+
+      "macros": {
+        "traces_debug_mode": "true",
+        "wooper_debug_mode": "true",
+        "myriad_debug_mode": "true"
+      }
+    },
+
+
+    {
+      "_comment": "The value for the src_dirs entry for this layer can be generated/updated by executing: 'make list-src-dirs' from the root of this layer, and copying them verbatim below (relative paths already correct). The same applies for extra_src_dirs, with 'make list-extra-src-dirs'",
+      "name": "traces",
+      "dir": "../../traces",
+      "src_dirs": ["./src"],
+      "extra_src_dirs": ["test"],
+      "include_dirs": [
+        "include"
+      ],
+
+      "macros": {
+        "traces_debug_mode": "true",
+        "wooper_debug_mode": "true",
+        "myriad_debug_mode": "true"
+      }
+    },
+
+
+    {
+      "_comment": "The value for the src_dirs entry for this layer can be generated/updated by executing: 'make list-src-dirs' from the root of this layer, and copying them verbatim below (relative paths already correct). The same applies for extra_src_dirs, with 'make list-extra-src-dirs'",
+      "name": "wooper",
+      "dir": "../../wooper",
+      "src_dirs": ["./priv/examples", "./src", "./src/interfaces"],
+      "extra_src_dirs": ["test", "test/interfaces"],
+      "include_dirs": [
+        "include"
+      ],
+
+      "macros": {
+        "wooper_debug_mode": "true",
+        "myriad_debug_mode": "true"
+      }
+    },
+
+
+    {
+      "_comment": "Can be copied verbatim from myriad/conf/build_info.json, provided that the next 'dir' entry is updated afterwards:",
+      "name": "myriad",
+      "dir": "../../myriad",
+      "src_dirs": ["./src/apps/generate-password", "./src/apps/mbdr-system", "./src/apps/merge-tool", "./src/data-management", "./src/maths", "./src/meta", "./src/user-interface", "./src/user-interface/audio", "./src/user-interface/graphical", "./src/user-interface/graphical/opengl", "./src/user-interface/textual", "./src/utils"],
+      "extra_src_dirs": ["test/data-management", "test/maths", "test/meta", "test/user-interface", "test/user-interface/audio", "test/user-interface/graphical", "test/user-interface/graphical/opengl", "test/user-interface/textual", "test/utils"],
+      "include_dirs": [
+        "include"
+      ],
+      "macros": {
+        "exec_target_is_production": "false",
+        "myriad_debug_mode": "true"
+      }
+    }
+
+
+  ],
+  "deps": []
+}
