@@ -39,6 +39,10 @@
 <p><code>proplist() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/proplists.html#type-proplist" docgen-rel="seetype" docgen-href="stdlib:proplists#proplist/0">proplists:proplist()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-random_state">random_state()</a></h3>
+<p><code>random_state() = <a href="random_utils.html#type-random_state" docgen-rel="seetype" docgen-href="random_utils#random_state/0">random_utils:random_state()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
@@ -55,6 +59,7 @@
 <tr><td valign="top"><a href="#check_integers-1">check_integers/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#check_same_length-1">check_same_length/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#check_strictly_ascending-1">check_strictly_ascending/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_unordered_match-2">check_unordered_match/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#concatenate_per_rank-2">concatenate_per_rank/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#count_occurrences-1">count_occurrences/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#delete_all_in-2">delete_all_in/2</a></td><td></td></tr>
@@ -99,8 +104,10 @@
 <tr><td valign="top"><a href="#insert_element_at-3">insert_element_at/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#intercalate-2">intercalate/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#intersection-2">intersection/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_proper_list-1">is_proper_list/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#random_invertible_permute-2">random_invertible_permute/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#random_invertible_permute_reciprocal-2">random_invertible_permute_reciprocal/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#random_permute-1">random_permute/1</a></td><td></td></tr>
-<tr><td valign="top"><a href="#random_permute_reciprocal-1">random_permute_reciprocal/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#reconstruct_tuples-2">reconstruct_tuples/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#remove_element_at-2">remove_element_at/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#remove_element_from-2">remove_element_from/2</a></td><td></td></tr>
@@ -187,6 +194,12 @@
 <h3 class="function"><a name="check_strictly_ascending-1">check_strictly_ascending/1</a></h3>
 <div class="spec">
 <p><code>check_strictly_ascending(List::list()) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="check_unordered_match-2">check_unordered_match/2</a></h3>
+<div class="spec">
+<p><code>check_unordered_match(L1::list(), L2::list()) -&gt; list()</code><br></p>
 <p> </p>
 </div>
 
@@ -336,7 +349,7 @@
 
 <h3 class="function"><a name="extract_first_elements-2">extract_first_elements/2</a></h3>
 <div class="spec">
-<p><code>extract_first_elements(List::list(), Count::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>) -&gt; {list(), list()}</code><br></p>
+<p><code>extract_first_elements(List::list(), Count::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>) -&gt; {Extracted::list(), Rest::list()}</code><br></p>
 <p> </p>
 </div>
 
@@ -454,15 +467,27 @@
 <p> </p>
 </div>
 
-<h3 class="function"><a name="random_permute-1">random_permute/1</a></h3>
+<h3 class="function"><a name="is_proper_list-1">is_proper_list/1</a></h3>
 <div class="spec">
-<p><code>random_permute(List::list()) -&gt; list()</code><br></p>
+<p><code>is_proper_list(L::list()) -&gt; boolean()</code><br></p>
 <p> </p>
 </div>
 
-<h3 class="function"><a name="random_permute_reciprocal-1">random_permute_reciprocal/1</a></h3>
+<h3 class="function"><a name="random_invertible_permute-2">random_invertible_permute/2</a></h3>
 <div class="spec">
-<p><code>random_permute_reciprocal(List::list()) -&gt; list()</code><br></p>
+<p><code>random_invertible_permute(List::list(), RandomState::<a href="#type-random_state" docgen-rel="seetype" docgen-href="#random_state/0">random_state()</a>) -&gt; {list(), <a href="#type-random_state" docgen-rel="seetype" docgen-href="#random_state/0">random_state()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="random_invertible_permute_reciprocal-2">random_invertible_permute_reciprocal/2</a></h3>
+<div class="spec">
+<p><code>random_invertible_permute_reciprocal(List::list(), RandomState::<a href="#type-random_state" docgen-rel="seetype" docgen-href="#random_state/0">random_state()</a>) -&gt; {list(), <a href="#type-random_state" docgen-rel="seetype" docgen-href="#random_state/0">random_state()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="random_permute-1">random_permute/1</a></h3>
+<div class="spec">
+<p><code>random_permute(List::list()) -&gt; list()</code><br></p>
 <p> </p>
 </div>
 

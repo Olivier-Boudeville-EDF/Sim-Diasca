@@ -28,11 +28,11 @@
 
 
 <h3 class="typedecl"><a name="type-gui_shell_option">gui_shell_option()</a></h3>
-<p><code>gui_shell_option() = <a href="#type-text_edit_option" docgen-rel="seetype" docgen-href="#text_edit_option/0">text_edit_option()</a> | focused | auto_parenthesis</code></p>
+<p><code>gui_shell_option() = <a href="#type-text_edit_option" docgen-rel="seetype" docgen-href="#text_edit_option/0">text_edit_option()</a> | focused | auto_pair_delimiters</code></p>
 
 
 <h3 class="typedecl"><a name="type-gui_shell_state">gui_shell_state()</a></h3>
-<p><code>gui_shell_state() = #gui_shell_state{past_ops_editor = <a href="#type-text_editor" docgen-rel="seetype" docgen-href="#text_editor/0">text_editor()</a>, past_ops_text = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a>, command_editor = <a href="#type-text_editor" docgen-rel="seetype" docgen-href="#text_editor/0">text_editor()</a>, command_char_width = <a href="#type-width" docgen-rel="seetype" docgen-href="#width/0">width()</a>, text_edit = <a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>, auto_parenthesis = boolean()}</code></p>
+<p><code>gui_shell_state() = #gui_shell_state{past_ops_editor = <a href="#type-text_editor" docgen-rel="seetype" docgen-href="#text_editor/0">text_editor()</a>, past_ops_text = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a>, command_editor = <a href="#type-text_editor" docgen-rel="seetype" docgen-href="#text_editor/0">text_editor()</a>, command_char_width = <a href="#type-width" docgen-rel="seetype" docgen-href="#width/0">width()</a>, text_edit = <a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>, current_symbol_prefix = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a>), auto_pair_delimiters = boolean()}</code></p>
 
 
 <h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
@@ -68,7 +68,8 @@
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#create-1">create/1</a></td><td></td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#apply_text_and_set_cursor-2">apply_text_and_set_cursor/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create-1">create/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#create-2">create/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#create-3">create/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td></td></tr>
@@ -77,6 +78,12 @@
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="apply_text_and_set_cursor-2">apply_text_and_set_cursor/2</a></h3>
+<div class="spec">
+<p><code>apply_text_and_set_cursor(TextEdit::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>, CmdEditor::<a href="#type-text_editor" docgen-rel="seetype" docgen-href="#text_editor/0">text_editor()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="create-1">create/1</a></h3>
 <div class="spec">

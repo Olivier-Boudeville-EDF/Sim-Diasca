@@ -51,6 +51,10 @@
 <p><code>basic_credential() = {<a href="#type-user_name" docgen-rel="seetype" docgen-href="#user_name/0">user_name()</a>, <a href="#type-password" docgen-rel="seetype" docgen-href="#password/0">password()</a>}</code></p>
 
 
+<h3 class="typedecl"><a name="type-bin_command">bin_command()</a></h3>
+<p><code>bin_command() = <a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-bin_executable_path">bin_executable_path()</a></h3>
 <p><code>bin_executable_path() = <a href="file_utils.html#type-bin_executable_path" docgen-rel="seetype" docgen-href="file_utils#bin_executable_path/0">file_utils:bin_executable_path()</a></code></p>
 
@@ -65,6 +69,10 @@
 
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
 <p><code>bin_string() = <a href="text_utils.html#type-bin_string" docgen-rel="seetype" docgen-href="text_utils#bin_string/0">text_utils:bin_string()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-bin_user_name">bin_user_name()</a></h3>
+<p><code>bin_user_name() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-bit_size">bit_size()</a></h3>
@@ -93,6 +101,10 @@
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
 <p><code>count() = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-cpu_load">cpu_load()</a></h3>
+<p><code>cpu_load() = <a href="#type-percent" docgen-rel="seetype" docgen-href="#percent/0">percent()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-cpu_usage_info">cpu_usage_info()</a></h3>
@@ -215,6 +227,14 @@
 <p><code>port_option() = {packet, 1 | 2 | 4} | stream | {line, <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>} | atom() | {atom(), term()}</code></p>
 
 
+<h3 class="typedecl"><a name="type-process_cpu_info">process_cpu_info()</a></h3>
+<p><code>process_cpu_info() = {CPULoad::<a href="#type-cpu_load" docgen-rel="seetype" docgen-href="#cpu_load/0">cpu_load()</a>, <a href="#type-os_pid" docgen-rel="seetype" docgen-href="#os_pid/0">os_pid()</a>, <a href="#type-bin_user_name" docgen-rel="seetype" docgen-href="#bin_user_name/0">bin_user_name()</a>, <a href="#type-bin_command" docgen-rel="seetype" docgen-href="#bin_command/0">bin_command()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-process_memory_info">process_memory_info()</a></h3>
+<p><code>process_memory_info() = {RSSSize::<a href="#type-byte_size" docgen-rel="seetype" docgen-href="#byte_size/0">byte_size()</a>, VSZSize::<a href="#type-byte_size" docgen-rel="seetype" docgen-href="#byte_size/0">byte_size()</a>, <a href="#type-os_pid" docgen-rel="seetype" docgen-href="#os_pid/0">os_pid()</a>, <a href="#type-bin_user_name" docgen-rel="seetype" docgen-href="#bin_user_name/0">bin_user_name()</a>, <a href="#type-bin_command" docgen-rel="seetype" docgen-href="#bin_command/0">bin_command()</a>}</code></p>
+
+
 <h3 class="typedecl"><a name="type-pseudo_filesystem_type">pseudo_filesystem_type()</a></h3>
 <p><code>pseudo_filesystem_type() = devtmpfs | tmpfs</code></p>
 
@@ -314,6 +334,10 @@
 <tr><td valign="top"><a href="#get_swap_status-0">get_swap_status/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_swap_status_string-0">get_swap_status_string/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_system_description-0">get_system_description/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_top_cumulated_cpu_processes-0">get_top_cumulated_cpu_processes/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_top_cumulated_cpu_processes-1">get_top_cumulated_cpu_processes/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_top_memory_using_processes-0">get_top_memory_using_processes/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_top_memory_using_processes-1">get_top_memory_using_processes/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_total_memory_used-0">get_total_memory_used/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_total_physical_memory-0">get_total_physical_memory/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_total_physical_memory_on-1">get_total_physical_memory_on/1</a></td><td></td></tr>
@@ -330,9 +354,17 @@
 <tr><td valign="top"><a href="#has_graphical_output-0">has_graphical_output/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#interpret_byte_size-1">interpret_byte_size/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#interpret_byte_size_with_unit-1">interpret_byte_size_with_unit/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#interpret_top_cumulated_cpu_processes-0">interpret_top_cumulated_cpu_processes/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#interpret_top_cumulated_cpu_processes-1">interpret_top_cumulated_cpu_processes/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#interpret_top_memory_using_processes-0">interpret_top_memory_using_processes/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#interpret_top_memory_using_processes-1">interpret_top_memory_using_processes/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_hdf5_support_available-0">is_hdf5_support_available/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_json_support_available-0">is_json_support_available/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#monitor_port-2">monitor_port/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#process_cpu_info_to_string-1">process_cpu_info_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#process_memory_info_to_string-1">process_memory_info_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#report_main_system_metrics-0">report_main_system_metrics/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#report_main_system_metrics-1">report_main_system_metrics/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#run_background_command-1">run_background_command/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#run_background_command-2">run_background_command/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#run_background_command-3">run_background_command/3</a></td><td></td></tr>
@@ -775,6 +807,30 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="get_top_cumulated_cpu_processes-0">get_top_cumulated_cpu_processes/0</a></h3>
+<div class="spec">
+<p><code>get_top_cumulated_cpu_processes() -&gt; [{<a href="#type-process_cpu_info" docgen-rel="seetype" docgen-href="#process_cpu_info/0">process_cpu_info()</a>}]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_top_cumulated_cpu_processes-1">get_top_cumulated_cpu_processes/1</a></h3>
+<div class="spec">
+<p><code>get_top_cumulated_cpu_processes(ProcessCount::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>) -&gt; [{<a href="#type-process_cpu_info" docgen-rel="seetype" docgen-href="#process_cpu_info/0">process_cpu_info()</a>}]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_top_memory_using_processes-0">get_top_memory_using_processes/0</a></h3>
+<div class="spec">
+<p><code>get_top_memory_using_processes() -&gt; [{<a href="#type-process_memory_info" docgen-rel="seetype" docgen-href="#process_memory_info/0">process_memory_info()</a>}]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_top_memory_using_processes-1">get_top_memory_using_processes/1</a></h3>
+<div class="spec">
+<p><code>get_top_memory_using_processes(ProcessCount::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>) -&gt; [{<a href="#type-process_memory_info" docgen-rel="seetype" docgen-href="#process_memory_info/0">process_memory_info()</a>}]</code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="get_total_memory_used-0">get_total_memory_used/0</a></h3>
 <div class="spec">
 <p><code>get_total_memory_used() -&gt; {<a href="#type-byte_size" docgen-rel="seetype" docgen-href="#byte_size/0">byte_size()</a>, <a href="#type-byte_size" docgen-rel="seetype" docgen-href="#byte_size/0">byte_size()</a>}</code><br></p>
@@ -871,6 +927,30 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="interpret_top_cumulated_cpu_processes-0">interpret_top_cumulated_cpu_processes/0</a></h3>
+<div class="spec">
+<p><code>interpret_top_cumulated_cpu_processes() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="interpret_top_cumulated_cpu_processes-1">interpret_top_cumulated_cpu_processes/1</a></h3>
+<div class="spec">
+<p><code>interpret_top_cumulated_cpu_processes(ProcessCount::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="interpret_top_memory_using_processes-0">interpret_top_memory_using_processes/0</a></h3>
+<div class="spec">
+<p><code>interpret_top_memory_using_processes() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="interpret_top_memory_using_processes-1">interpret_top_memory_using_processes/1</a></h3>
+<div class="spec">
+<p><code>interpret_top_memory_using_processes(ProcessCount::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="is_hdf5_support_available-0">is_hdf5_support_available/0</a></h3>
 <div class="spec">
 <p><code>is_hdf5_support_available() -&gt; boolean()</code><br></p>
@@ -886,6 +966,30 @@
 <h3 class="function"><a name="monitor_port-2">monitor_port/2</a></h3>
 <div class="spec">
 <p><code>monitor_port(Port, Data) -&gt; any()</code></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="process_cpu_info_to_string-1">process_cpu_info_to_string/1</a></h3>
+<div class="spec">
+<p><code>process_cpu_info_to_string(PCpuInfo::<a href="#type-process_cpu_info" docgen-rel="seetype" docgen-href="#process_cpu_info/0">process_cpu_info()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="process_memory_info_to_string-1">process_memory_info_to_string/1</a></h3>
+<div class="spec">
+<p><code>process_memory_info_to_string(PMemInfo::<a href="#type-process_memory_info" docgen-rel="seetype" docgen-href="#process_memory_info/0">process_memory_info()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="report_main_system_metrics-0">report_main_system_metrics/0</a></h3>
+<div class="spec">
+<p><code>report_main_system_metrics() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="report_main_system_metrics-1">report_main_system_metrics/1</a></h3>
+<div class="spec">
+<p><code>report_main_system_metrics(ProcessCount::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 

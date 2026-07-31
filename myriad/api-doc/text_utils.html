@@ -53,7 +53,7 @@
 
 <h3 class="typedecl"><a name="type-chars">chars()</a></h3>
 <p><code>chars() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/io_lib.html#type-chars" docgen-rel="seetype" docgen-href="stdlib:io_lib#chars/0">io_lib:chars()</a></code></p>
-<p> Thus [char() | chars()].</p>
+<p> Thus a recursive type: [char() | chars()].</p>
 
 <h3 class="typedecl"><a name="type-control_sequence">control_sequence()</a></h3>
 <p><code>control_sequence() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
@@ -75,8 +75,8 @@
 <p><code>distance() = non_neg_integer()</code></p>
 
 
-<h3 class="typedecl"><a name="type-float_option">float_option()</a></h3>
-<p><code>float_option() = {decimals, 0..253} | {scientific, 0..249} | compact</code></p>
+<h3 class="typedecl"><a name="type-float_format_option">float_format_option()</a></h3>
+<p><code>float_format_option() = {decimals, Decimals::0..253} | {scientific, Decimals::0..249} | compact</code></p>
 
 
 <h3 class="typedecl"><a name="type-format_bin_string">format_bin_string()</a></h3>
@@ -209,6 +209,9 @@
 
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#are_binaries-1">are_binaries/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#are_chars-1">are_chars/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#are_digits-1">are_digits/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#are_nested_chars-1">are_nested_chars/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#are_of_same_string_type-2">are_of_same_string_type/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#are_strings-1">are_strings/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#atom_format-2">atom_format/2</a></td><td></td></tr>
@@ -231,6 +234,7 @@
 <tr><td valign="top"><a href="#binaries_to_string-2">binaries_to_string/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#binaries_to_strings-1">binaries_to_strings/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#binary_to_atom-1">binary_to_atom/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#binary_to_bits-1">binary_to_bits/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#binary_to_float-1">binary_to_float/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#binary_to_hexastring-1">binary_to_hexastring/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#binary_to_hexastring-2">binary_to_hexastring/2</a></td><td></td></tr>
@@ -241,6 +245,8 @@
 <tr><td valign="top"><a href="#buffer_to_string-1">buffer_to_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#center_string-2">center_string/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#center_string-3">center_string/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_digit-1">check_digit/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_digits-1">check_digits/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#concatenate-1">concatenate/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#concatenate-2">concatenate/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#distance_to_short_string-1">distance_to_short_string/1</a></td><td></td></tr>
@@ -257,12 +263,14 @@
 <tr><td valign="top"><a href="#ensure_binary-1">ensure_binary/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#ensure_binary-2">ensure_binary/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#ensure_maybe_binary-1">ensure_maybe_binary/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#ensure_newline_terminated-1">ensure_newline_terminated/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#ensure_string-1">ensure_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#ensure_string-2">ensure_string/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#ensure_strings-1">ensure_strings/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#ensure_strings-2">ensure_strings/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#escape_all_quotes-1">escape_all_quotes/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#escape_double_quotes-1">escape_double_quotes/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#escape_for_format_string-1">escape_for_format_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#escape_single_quotes-1">escape_single_quotes/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#escape_with-3">escape_with/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#filter-2">filter/2</a></td><td></td></tr>
@@ -284,7 +292,9 @@
 <tr><td valign="top"><a href="#format_text_for_width-3">format_text_for_width/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#generate_text_name_from-1">generate_text_name_from/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#generate_title-2">generate_title/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_any_suffix-2">get_any_suffix/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_bullet_for_level-1">get_bullet_for_level/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_common_prefix_with_suffixes-2">get_common_prefix_with_suffixes/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_default_bullet-0">get_default_bullet/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_lexicographic_distance-2">get_lexicographic_distance/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_longest_common_prefix-1">get_longest_common_prefix/1</a></td><td></td></tr>
@@ -308,15 +318,20 @@
 <tr><td valign="top"><a href="#is_any_string-1">is_any_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_bin_string-1">is_bin_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_char-1">is_char/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_digit-1">is_digit/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_figure-1">is_figure/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_non_empty_string-1">is_non_empty_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_prefixed_with-2">is_prefixed_with/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_string-1">is_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_string_like-1">is_string_like/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_uppercase-1">is_uppercase/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#join-2">join/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#join_maybe-2">join_maybe/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#length-1">length/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#list_whitespaces-0">list_whitespaces/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#lowercase_initial_letter-1">lowercase_initial_letter/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#match_types-3">match_types/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#maybe_any_string_to_binary-1">maybe_any_string_to_binary/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#maybe_string_to_binary-1">maybe_string_to_binary/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#maybe_strings_to_listed_string-1">maybe_strings_to_listed_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#number_to_string-1">number_to_string/1</a></td><td></td></tr>
@@ -335,12 +350,15 @@
 <tr><td valign="top"><a href="#pid_to_string-1">pid_to_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#pids_to_short_string-1">pids_to_short_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#pids_to_string-1">pids_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#port_to_string-1">port_to_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#proplist_to_string-1">proplist_to_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#record_to_string-1">record_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#reference_to_string-1">reference_to_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#remove_empty_lines-1">remove_empty_lines/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#remove_ending_carriage_return-1">remove_ending_carriage_return/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#remove_last_characters-2">remove_last_characters/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#remove_newlines-1">remove_newlines/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#remove_trailing_newline-1">remove_trailing_newline/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#remove_whitespaces-1">remove_whitespaces/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#repetition_to_string-1">repetition_to_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#report_not_a_binary_string-1">report_not_a_binary_string/1</a></td><td></td></tr>
@@ -351,10 +369,12 @@
 <tr><td valign="top"><a href="#scan_format_string-1">scan_format_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#single_quote_string-1">single_quote_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#single_quote_strings-1">single_quote_strings/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#slugify-1">slugify/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#split-2">split/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#split_after_prefix-2">split_after_prefix/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#split_at_first-2">split_at_first/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#split_at_whitespaces-1">split_at_whitespaces/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#split_at_whitespaces_non_empty-1">split_at_whitespaces_non_empty/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#split_before_suffix-2">split_before_suffix/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#split_camel_case-1">split_camel_case/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#split_every-2">split_every/2</a></td><td></td></tr>
@@ -395,6 +415,8 @@
 <tr><td valign="top"><a href="#term_to_string-3">term_to_string/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#terms_to_enumerated_string-1">terms_to_enumerated_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#terms_to_listed_string-1">terms_to_listed_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#terms_to_raw_string-1">terms_to_raw_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#terms_to_raw_string-2">terms_to_raw_string/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#terms_to_string-1">terms_to_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#terms_to_string-2">terms_to_string/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#to_lowercase-1">to_lowercase/1</a></td><td></td></tr>
@@ -423,6 +445,24 @@
 <h3 class="function"><a name="are_binaries-1">are_binaries/1</a></h3>
 <div class="spec">
 <p><code>are_binaries(List::term()) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="are_chars-1">are_chars/1</a></h3>
+<div class="spec">
+<p><code>are_chars(L::term()) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="are_digits-1">are_digits/1</a></h3>
+<div class="spec">
+<p><code>are_digits(L::term()) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="are_nested_chars-1">are_nested_chars/1</a></h3>
+<div class="spec">
+<p><code>are_nested_chars(L::term()) -&gt; boolean()</code><br></p>
 <p> </p>
 </div>
 
@@ -558,6 +598,12 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="binary_to_bits-1">binary_to_bits/1</a></h3>
+<div class="spec">
+<p><code>binary_to_bits(Bin::binary()) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="binary_to_float-1">binary_to_float/1</a></h3>
 <div class="spec">
 <p><code>binary_to_float(BinString::<a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a>) -&gt; float()</code><br></p>
@@ -615,6 +661,18 @@
 <h3 class="function"><a name="center_string-3">center_string/3</a></h3>
 <div class="spec">
 <p><code>center_string(String::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>, Width::<a href="#type-width" docgen-rel="seetype" docgen-href="#width/0">width()</a>, PaddingChar::<a href="#type-grapheme_cluster" docgen-rel="seetype" docgen-href="#grapheme_cluster/0">grapheme_cluster()</a>) -&gt; <a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="check_digit-1">check_digit/1</a></h3>
+<div class="spec">
+<p><code>check_digit(T::term()) -&gt; <a href="#type-uchar" docgen-rel="seetype" docgen-href="#uchar/0">uchar()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="check_digits-1">check_digits/1</a></h3>
+<div class="spec">
+<p><code>check_digits(L::term()) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -714,6 +772,12 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="ensure_newline_terminated-1">ensure_newline_terminated/1</a></h3>
+<div class="spec">
+<p><code>ensure_newline_terminated(Str::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="ensure_string-1">ensure_string/1</a></h3>
 <div class="spec">
 <p><code>ensure_string(String::<a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
@@ -747,6 +811,12 @@
 <h3 class="function"><a name="escape_double_quotes-1">escape_double_quotes/1</a></h3>
 <div class="spec">
 <p><code>escape_double_quotes(Text::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="escape_for_format_string-1">escape_for_format_string/1</a></h3>
+<div class="spec">
+<p><code>escape_for_format_string(Text::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -794,7 +864,7 @@
 
 <h3 class="function"><a name="float_to_string-2">float_to_string/2</a></h3>
 <div class="spec">
-<p><code>float_to_string(Float::float(), Options::[<a href="#type-float_option" docgen-rel="seetype" docgen-href="#float_option/0">float_option()</a>]) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p><code>float_to_string(Float::float(), Options::[<a href="#type-float_format_option" docgen-rel="seetype" docgen-href="#float_format_option/0">float_format_option()</a>]) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -843,7 +913,7 @@
 
 <h3 class="function"><a name="format_ellipsed-3">format_ellipsed/3</a></h3>
 <div class="spec">
-<p><code>format_ellipsed(FormatString::<a href="#type-format_string" docgen-rel="seetype" docgen-href="#format_string/0">format_string()</a>, Values::<a href="#type-format_values" docgen-rel="seetype" docgen-href="#format_values/0">format_values()</a>, MaxLen::<a href="#type-length" docgen-rel="seetype" docgen-href="#length/0">length()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p><code>format_ellipsed(FormatString::<a href="#type-format_string" docgen-rel="seetype" docgen-href="#format_string/0">format_string()</a>, Values::<a href="#type-format_values" docgen-rel="seetype" docgen-href="#format_values/0">format_values()</a>, EllipseAtLen::<a href="#type-length" docgen-rel="seetype" docgen-href="#length/0">length()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -877,9 +947,21 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="get_any_suffix-2">get_any_suffix/2</a></h3>
+<div class="spec">
+<p><code>get_any_suffix(PfxStr::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>, TestStr::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>)</code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="get_bullet_for_level-1">get_bullet_for_level/1</a></h3>
 <div class="spec">
 <p><code>get_bullet_for_level(N::<a href="#type-indentation_level" docgen-rel="seetype" docgen-href="#indentation_level/0">indentation_level()</a>) -&gt; <a href="#type-bullet" docgen-rel="seetype" docgen-href="#bullet/0">bullet()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_common_prefix_with_suffixes-2">get_common_prefix_with_suffixes/2</a></h3>
+<div class="spec">
+<p><code>get_common_prefix_with_suffixes(FirstStr::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>, SecondStr::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; {CommonPrefix::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>, FirstSuffix::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>, SecondSuffix::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>}</code><br></p>
 <p> </p>
 </div>
 
@@ -1021,6 +1103,12 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="is_digit-1">is_digit/1</a></h3>
+<div class="spec">
+<p><code>is_digit(I::term()) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="is_figure-1">is_figure/1</a></h3>
 <div class="spec">
 <p><code>is_figure(Char::char()) -&gt; boolean()</code><br></p>
@@ -1030,6 +1118,12 @@
 <h3 class="function"><a name="is_non_empty_string-1">is_non_empty_string/1</a></h3>
 <div class="spec">
 <p><code>is_non_empty_string(S::term()) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="is_prefixed_with-2">is_prefixed_with/2</a></h3>
+<div class="spec">
+<p><code>is_prefixed_with(Str::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>, Prefix::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div>
 
@@ -1057,6 +1151,12 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="join_maybe-2">join_maybe/2</a></h3>
+<div class="spec">
+<p><code>join_maybe(Separator::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a> | <a href="#type-uchar" docgen-rel="seetype" docgen-href="#uchar/0">uchar()</a>, ListToJoin::[<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>)]) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="length-1">length/1</a></h3>
 <div class="spec">
 <p><code>length(AnyString::<a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a>) -&gt; <a href="#type-length" docgen-rel="seetype" docgen-href="#length/0">length()</a></code><br></p>
@@ -1069,9 +1169,21 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="lowercase_initial_letter-1">lowercase_initial_letter/1</a></h3>
+<div class="spec">
+<p><code>lowercase_initial_letter(LettersBin::<a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="match_types-3">match_types/3</a></h3>
 <div class="spec">
 <p><code>match_types(TypeDescs::[<a href="#type-value_description" docgen-rel="seetype" docgen-href="#value_description/0">value_description()</a>], Values::<a href="#type-format_values" docgen-rel="seetype" docgen-href="#format_values/0">format_values()</a>, Count::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="maybe_any_string_to_binary-1">maybe_any_string_to_binary/1</a></h3>
+<div class="spec">
+<p><code>maybe_any_string_to_binary(MaybeAnyString::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a>)) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a>)</code><br></p>
 <p> </p>
 </div>
 
@@ -1183,6 +1295,12 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="port_to_string-1">port_to_string/1</a></h3>
+<div class="spec">
+<p><code>port_to_string(Port::port()) -&gt; <a href="#type-chars" docgen-rel="seetype" docgen-href="#chars/0">chars()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="proplist_to_string-1">proplist_to_string/1</a></h3>
 <div class="spec">
 <p><code>proplist_to_string(Proplist::<a href="list_table.html#type-list_table" docgen-rel="seetype" docgen-href="list_table#list_table/0">list_table:list_table()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
@@ -1192,6 +1310,12 @@
 <h3 class="function"><a name="record_to_string-1">record_to_string/1</a></h3>
 <div class="spec">
 <p><code>record_to_string(Record::term()) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="reference_to_string-1">reference_to_string/1</a></h3>
+<div class="spec">
+<p><code>reference_to_string(Reference::reference()) -&gt; <a href="#type-chars" docgen-rel="seetype" docgen-href="#chars/0">chars()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -1216,6 +1340,12 @@
 <h3 class="function"><a name="remove_newlines-1">remove_newlines/1</a></h3>
 <div class="spec">
 <p><code>remove_newlines(String::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="remove_trailing_newline-1">remove_trailing_newline/1</a></h3>
+<div class="spec">
+<p><code>remove_trailing_newline(Str::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -1279,6 +1409,12 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="slugify-1">slugify/1</a></h3>
+<div class="spec">
+<p><code>slugify(BinStr::<a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a>) -&gt; <a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="split-2">split/2</a></h3>
 <div class="spec">
 <p><code>split(AnyString::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>, Separator::[<a href="#type-uchar" docgen-rel="seetype" docgen-href="#uchar/0">uchar()</a>] | <a href="#type-uchar" docgen-rel="seetype" docgen-href="#uchar/0">uchar()</a>) -&gt; [<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>]</code><br></p><p><code>split(AnyString::<a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a>, Separator::[<a href="#type-uchar" docgen-rel="seetype" docgen-href="#uchar/0">uchar()</a>] | <a href="#type-uchar" docgen-rel="seetype" docgen-href="#uchar/0">uchar()</a>) -&gt; [<a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a>]</code><br></p>
@@ -1300,7 +1436,13 @@
 
 <h3 class="function"><a name="split_at_whitespaces-1">split_at_whitespaces/1</a></h3>
 <div class="spec">
-<p><code>split_at_whitespaces(String::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; [<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>]</code><br></p>
+<p><code>split_at_whitespaces(String::<a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a>) -&gt; [<a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a>]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="split_at_whitespaces_non_empty-1">split_at_whitespaces_non_empty/1</a></h3>
+<div class="spec">
+<p><code>split_at_whitespaces_non_empty(String::<a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a>) -&gt; [<a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a>]</code><br></p>
 <p> </p>
 </div>
 
@@ -1545,6 +1687,18 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="terms_to_raw_string-1">terms_to_raw_string/1</a></h3>
+<div class="spec">
+<p><code>terms_to_raw_string(Terms::[term()]) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="terms_to_raw_string-2">terms_to_raw_string/2</a></h3>
+<div class="spec">
+<p><code>terms_to_raw_string(Terms::[term()], IndentationOrBullet::<a href="#type-indentation_level_or_bullet" docgen-rel="seetype" docgen-href="#indentation_level_or_bullet/0">indentation_level_or_bullet()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="terms_to_string-1">terms_to_string/1</a></h3>
 <div class="spec">
 <p><code>terms_to_string(Terms::[term()]) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
@@ -1663,7 +1817,7 @@
 
 <h3 class="function"><a name="uppercase_initial_letter-1">uppercase_initial_letter/1</a></h3>
 <div class="spec">
-<p><code>uppercase_initial_letter(Letters::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p><code>uppercase_initial_letter(LettersBin::<a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 

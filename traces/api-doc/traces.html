@@ -19,6 +19,10 @@
 <p><code>aggregator_pid() = <a href="class_TraceAggregator.html#type-aggregator_pid" docgen-rel="seetype" docgen-href="class_TraceAggregator#aggregator_pid/0">class_TraceAggregator:aggregator_pid()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-any_message">any_message()</a></h3>
+<p><code>any_message() = <a href="trace_utils.html#type-trace_any_message" docgen-rel="seetype" docgen-href="trace_utils#trace_any_message/0">trace_utils:trace_any_message()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-app_timestamp">app_timestamp()</a></h3>
 <p><code>app_timestamp() = <a href="trace_utils.html#type-trace_timestamp" docgen-rel="seetype" docgen-href="trace_utils#trace_timestamp/0">trace_utils:trace_timestamp()</a></code></p>
 
@@ -125,6 +129,7 @@
 <tr><td valign="top"><a href="#reset_handler-0">reset_handler/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#set_handler-0">set_handler/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#set_handler-1">set_handler/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#wait_supervisor_launched-0">wait_supervisor_launched/0</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -173,7 +178,7 @@
 
 <h3 class="function"><a name="manage_supervision-0">manage_supervision/0</a></h3>
 <div class="spec">
-<p><code>manage_supervision() -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="class_TraceSupervisor.html#type-supervisor_pid" docgen-rel="seetype" docgen-href="class_TraceSupervisor#supervisor_pid/0">class_TraceSupervisor:supervisor_pid()</a>)</code><br></p>
+<p><code>manage_supervision() -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(IsTraceSupervisorLaunched::boolean())</code><br></p>
 <p> </p>
 </div>
 
@@ -204,6 +209,12 @@
 <h3 class="function"><a name="set_handler-1">set_handler/1</a></h3>
 <div class="spec">
 <p><code>set_handler(AggregatorPid::<a href="#type-aggregator_pid" docgen-rel="seetype" docgen-href="#aggregator_pid/0">aggregator_pid()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="wait_supervisor_launched-0">wait_supervisor_launched/0</a></h3>
+<div class="spec">
+<p><code>wait_supervisor_launched() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
 </div>
 <hr>

@@ -19,6 +19,10 @@
 <p><code>abs_directory_path() = <a href="#type-directory_path" docgen-rel="seetype" docgen-href="#directory_path/0">directory_path()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-abs_file_path">abs_file_path()</a></h3>
+<p><code>abs_file_path() = <a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-any_abs_directory_path">any_abs_directory_path()</a></h3>
 <p><code>any_abs_directory_path() = <a href="#type-any_directory_path" docgen-rel="seetype" docgen-href="#any_directory_path/0">any_directory_path()</a></code></p>
 
@@ -325,6 +329,7 @@
 <tr><td valign="top"><a href="#find_files_with_extension_from-3">find_files_with_extension_from/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#find_links_from-1">find_links_from/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#find_links_from-2">find_links_from/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#find_longest_existing_path_prefix-1">find_longest_existing_path_prefix/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#find_regular_files_from-1">find_regular_files_from/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#from_permission_mask-1">from_permission_mask/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_base_path-1">get_base_path/1</a></td><td></td></tr>
@@ -381,6 +386,7 @@
 <tr><td valign="top"><a href="#is_owner_executable-1">is_owner_executable/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_owner_readable-1">is_owner_readable/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_owner_writable-1">is_owner_writable/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_relative-2">is_relative/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_user_executable-1">is_user_executable/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_user_readable-1">is_user_readable/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_user_writable-1">is_user_writable/1</a></td><td></td></tr>
@@ -421,6 +427,7 @@
 <tr><td valign="top"><a href="#remove_symlink_if_existing-1">remove_symlink_if_existing/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#remove_upper_levels_and_extension-1">remove_upper_levels_and_extension/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#rename-2">rename/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#rename_force-2">rename_force/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#rename_preserving-2">rename_preserving/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#rename_preserving-3">rename_preserving/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#replace_extension-3">replace_extension/3</a></td><td></td></tr>
@@ -431,6 +438,7 @@
 <tr><td valign="top"><a href="#resolve_type_of-1">resolve_type_of/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#set_current_directory-1">set_current_directory/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#split-1">split/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#split_extension-1">split_extension/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#split_path-1">split_path/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#to_permission_mask-1">to_permission_mask/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#touch-1">touch/1</a></td><td></td></tr>
@@ -542,7 +550,7 @@
 
 <h3 class="function"><a name="convert_to_filename-1">convert_to_filename/1</a></h3>
 <div class="spec">
-<p><code>convert_to_filename(BinName::<a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a>) -&gt; <a href="#type-any_file_name" docgen-rel="seetype" docgen-href="#any_file_name/0">any_file_name()</a></code><br></p>
+<p><code>convert_to_filename(Name::<a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a>) -&gt; <a href="#type-any_file_name" docgen-rel="seetype" docgen-href="#any_file_name/0">any_file_name()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -823,6 +831,12 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="find_longest_existing_path_prefix-1">find_longest_existing_path_prefix/1</a></h3>
+<div class="spec">
+<p><code>find_longest_existing_path_prefix(Path::<a href="#type-path" docgen-rel="seetype" docgen-href="#path/0">path()</a>) -&gt; <a href="#type-path" docgen-rel="seetype" docgen-href="#path/0">path()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="find_regular_files_from-1">find_regular_files_from/1</a></h3>
 <div class="spec">
 <p><code>find_regular_files_from(RootDir::<a href="#type-any_directory_path" docgen-rel="seetype" docgen-href="#any_directory_path/0">any_directory_path()</a>) -&gt; [<a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>]</code><br></p>
@@ -909,7 +923,7 @@
 
 <h3 class="function"><a name="get_extension-1">get_extension/1</a></h3>
 <div class="spec">
-<p><code>get_extension(Filename::<a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>) -&gt; <a href="#type-extension" docgen-rel="seetype" docgen-href="#extension/0">extension()</a> | no_extension</code><br></p>
+<p><code>get_extension(FilePath::<a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>) -&gt; <a href="#type-extension" docgen-rel="seetype" docgen-href="#extension/0">extension()</a> | no_extension</code><br></p>
 <p> </p>
 </div>
 
@@ -921,7 +935,7 @@
 
 <h3 class="function"><a name="get_extensions-1">get_extensions/1</a></h3>
 <div class="spec">
-<p><code>get_extensions(Filename::<a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>) -&gt; [<a href="#type-extension" docgen-rel="seetype" docgen-href="#extension/0">extension()</a>] | no_extension</code><br></p>
+<p><code>get_extensions(FilePath::<a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>) -&gt; [<a href="#type-extension" docgen-rel="seetype" docgen-href="#extension/0">extension()</a>] | no_extension</code><br></p>
 <p> </p>
 </div>
 
@@ -1156,6 +1170,12 @@
 <h3 class="function"><a name="is_owner_writable-1">is_owner_writable/1</a></h3>
 <div class="spec">
 <p><code>is_owner_writable(Path::<a href="#type-any_path" docgen-rel="seetype" docgen-href="#any_path/0">any_path()</a>) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="is_relative-2">is_relative/2</a></h3>
+<div class="spec">
+<p><code>is_relative(Path::<a href="#type-any_path" docgen-rel="seetype" docgen-href="#any_path/0">any_path()</a>, RefDir::<a href="#type-any_directory_path" docgen-rel="seetype" docgen-href="#any_directory_path/0">any_directory_path()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div>
 
@@ -1401,6 +1421,12 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="rename_force-2">rename_force/2</a></h3>
+<div class="spec">
+<p><code>rename_force(SourceFilePath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>, DestinationFilePath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>) -&gt; <a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="rename_preserving-2">rename_preserving/2</a></h3>
 <div class="spec">
 <p><code>rename_preserving(SourceFilePath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>, DestinationFilePath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>) -&gt; <a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a></code><br></p>
@@ -1433,7 +1459,7 @@
 
 <h3 class="function"><a name="resolve_symlink_fully-1">resolve_symlink_fully/1</a></h3>
 <div class="spec">
-<p><code>resolve_symlink_fully(SymlinkPath::<a href="#type-any_path" docgen-rel="seetype" docgen-href="#any_path/0">any_path()</a>) -&gt; <a href="#type-any_path" docgen-rel="seetype" docgen-href="#any_path/0">any_path()</a></code><br></p>
+<p><code>resolve_symlink_fully(SymlinkPath::<a href="#type-any_path" docgen-rel="seetype" docgen-href="#any_path/0">any_path()</a>) -&gt; <a href="#type-abs_directory_path" docgen-rel="seetype" docgen-href="#abs_directory_path/0">abs_directory_path()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -1458,6 +1484,12 @@
 <h3 class="function"><a name="split-1">split/1</a></h3>
 <div class="spec">
 <p><code>split(Path::<a href="#type-any_path" docgen-rel="seetype" docgen-href="#any_path/0">any_path()</a>) -&gt; [<a href="#type-any_path_element" docgen-rel="seetype" docgen-href="#any_path_element/0">any_path_element()</a>]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="split_extension-1">split_extension/1</a></h3>
+<div class="spec">
+<p><code>split_extension(FilePath::<a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>) -&gt; {<a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>, <a href="#type-extension" docgen-rel="seetype" docgen-href="#extension/0">extension()</a>}</code><br></p>
 <p> </p>
 </div>
 

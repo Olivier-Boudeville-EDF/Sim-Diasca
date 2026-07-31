@@ -16,20 +16,36 @@
 
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-class_key">class_key()</a></h3>
+<p><code>class_key() = <a href="wooper.html#type-class_key" docgen-rel="seetype" docgen-href="wooper#class_key/0">wooper:class_key()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-class_table">class_table()</a></h3>
+<p><code>class_table() = <a href="table.html#type-table" docgen-rel="seetype" docgen-href="table#table/0">table:table</a>(<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, <a href="#type-virtual_table" docgen-rel="seetype" docgen-href="#virtual_table/0">virtual_table()</a>)</code></p>
+
+
+<h3 class="typedecl"><a name="type-classname">classname()</a></h3>
+<p><code>classname() = <a href="wooper.html#type-classname" docgen-rel="seetype" docgen-href="wooper#classname/0">wooper:classname()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-manager_pid">manager_pid()</a></h3>
 <p><code>manager_pid() = pid()</code></p>
 
+
+<h3 class="typedecl"><a name="type-manager_state">manager_state()</a></h3>
+<p><code>manager_state() = <a href="#type-class_table" docgen-rel="seetype" docgen-href="#class_table/0">class_table()</a></code></p>
+<p> Just all known virtual tables.</p>
 
 <h3 class="typedecl"><a name="type-start_return">start_return()</a></h3>
 <p><code>start_return() = {ok, Child::<a href="#type-manager_pid" docgen-rel="seetype" docgen-href="#manager_pid/0">manager_pid()</a>}</code></p>
 
 
-<h3 class="typedecl"><a name="type-state">state()</a></h3>
-<p><code>state() = <a href="table.html#type-table" docgen-rel="seetype" docgen-href="table#table/0">table:table()</a></code></p>
-
-
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-virtual_table">virtual_table()</a></h3>
+<p><code>virtual_table() = <a href="wooper.html#type-virtual_table" docgen-rel="seetype" docgen-href="wooper#virtual_table/0">wooper:virtual_table()</a></code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -39,9 +55,10 @@
 <tr><td valign="top"><a href="#display_msg-2">display_msg/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#display_state-1">display_state/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#display_table_creation-1">display_table_creation/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_class_key-1">get_class_key/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_existing_manager-0">get_existing_manager/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_manager-0">get_manager/0</a></td><td></td></tr>
-<tr><td valign="top"><a href="#get_table_key-1">get_table_key/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_virtual_table-1">get_virtual_table/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#handle_call-3">handle_call/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#handle_cast-2">handle_cast/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#handle_info-2">handle_info/2</a></td><td></td></tr>
@@ -84,13 +101,19 @@
 
 <h3 class="function"><a name="display_state-1">display_state/1</a></h3>
 <div class="spec">
-<p><code>display_state(Tables::<a href="table.html#type-table" docgen-rel="seetype" docgen-href="table#table/0">table:table()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p><code>display_state(State::<a href="#type-manager_state" docgen-rel="seetype" docgen-href="#manager_state/0">manager_state()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="display_table_creation-1">display_table_creation/1</a></h3>
 <div class="spec">
-<p><code>display_table_creation(Module::<a href="basic_utils.html#type-module_name" docgen-rel="seetype" docgen-href="basic_utils#module_name/0">basic_utils:module_name()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p><code>display_table_creation(Classname::<a href="basic_utils.html#type-module_name" docgen-rel="seetype" docgen-href="basic_utils#module_name/0">basic_utils:module_name()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_class_key-1">get_class_key/1</a></h3>
+<div class="spec">
+<p><code>get_class_key(Classname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>) -&gt; <a href="#type-class_key" docgen-rel="seetype" docgen-href="#class_key/0">class_key()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -106,9 +129,9 @@
 <p> </p>
 </div>
 
-<h3 class="function"><a name="get_table_key-1">get_table_key/1</a></h3>
+<h3 class="function"><a name="get_virtual_table-1">get_virtual_table/1</a></h3>
 <div class="spec">
-<p><code>get_table_key(Classname::<a href="wooper.html#type-classname" docgen-rel="seetype" docgen-href="wooper#classname/0">wooper:classname()</a>) -&gt; <a href="wooper.html#type-class_key" docgen-rel="seetype" docgen-href="wooper#class_key/0">wooper:class_key()</a></code><br></p>
+<p><code>get_virtual_table(Classname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>) -&gt; <a href="#type-virtual_table" docgen-rel="seetype" docgen-href="#virtual_table/0">virtual_table()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -132,7 +155,7 @@
 
 <h3 class="function"><a name="init-1">init/1</a></h3>
 <div class="spec">
-<p><code>init(Args::any()) -&gt; {ok, <a href="#type-state" docgen-rel="seetype" docgen-href="#state/0">state()</a>}</code><br></p>
+<p><code>init(Args::any()) -&gt; {ok, <a href="#type-manager_state" docgen-rel="seetype" docgen-href="#manager_state/0">manager_state()</a>}</code><br></p>
 <p> </p>
 </div>
 

@@ -17,7 +17,15 @@
 
 <h3 class="typedecl"><a name="type-camelcase_type">camelcase_type()</a></h3>
 <p><code>camelcase_type() = atom()</code></p>
-<p> For example 'apple' or 'travelling_salesman'.</p>
+
+
+<h3 class="typedecl"><a name="type-classname">classname()</a></h3>
+<p><code>classname() = <a href="wooper.html#type-classname" docgen-rel="seetype" docgen-href="wooper#classname/0">wooper:classname()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-snakecase_type">snakecase_type()</a></h3>
+<p><code>snakecase_type() = atom()</code></p>
+
 
 <h3 class="typedecl"><a name="type-three_digit_version">three_digit_version()</a></h3>
 <p><code>three_digit_version() = <a href="basic_utils.html#type-three_digit_version" docgen-rel="seetype" docgen-href="basic_utils#three_digit_version/0">basic_utils:three_digit_version()</a></code></p>
@@ -27,10 +35,15 @@
 <p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-virtual_table">virtual_table()</a></h3>
+<p><code>virtual_table() = <a href="wooper.html#type-virtual_table" docgen-rel="seetype" docgen-href="wooper#virtual_table/0">wooper:virtual_table()</a></code></p>
+
+
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#camelcase_type_to_wooper_class-1">camelcase_type_to_wooper_class/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_java_package_and_class_for-1">get_java_package_and_class_for/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_persistent_key_for-1">get_persistent_key_for/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_virtual_table_for-1">get_virtual_table_for/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_wooper_version-0">get_wooper_version/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_wooper_version_string-0">get_wooper_version_string/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#java_class_to_wooper_class-1">java_class_to_wooper_class/1</a></td><td></td></tr>
@@ -59,6 +72,12 @@
 <h3 class="function"><a name="get_persistent_key_for-1">get_persistent_key_for/1</a></h3>
 <div class="spec">
 <p><code>get_persistent_key_for(Classname::<a href="wooper.html#type-classname" docgen-rel="seetype" docgen-href="wooper#classname/0">wooper:classname()</a>) -&gt; term()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_virtual_table_for-1">get_virtual_table_for/1</a></h3>
+<div class="spec">
+<p><code>get_virtual_table_for(Classname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>) -&gt; <a href="#type-virtual_table" docgen-rel="seetype" docgen-href="#virtual_table/0">virtual_table()</a></code><br></p>
 <p> </p>
 </div>
 

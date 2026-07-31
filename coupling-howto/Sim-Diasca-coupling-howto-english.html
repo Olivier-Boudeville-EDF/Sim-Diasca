@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.16: http://docutils.sourceforge.net/" />
-<title>Sim-Diasca Coupling HOWTO</title>
+<meta name="generator" content="Docutils 0.21.2: https://docutils.sourceforge.io/" />
 <meta content="Sim-Diasca, coupling, how-to, co-simulation, adapter" name="keywords" />
+<title>Sim-Diasca Coupling HOWTO</title>
 <link rel="stylesheet" href="pygments-default.css" type="text/css" />
 <link rel="stylesheet" href="sim-diasca.css" type="text/css" />
 <link href="sim-diasca-icon.png" rel="icon">
@@ -18,12 +18,12 @@
 <p><span class="raw-html"><a name="sim_diasca_top"></a></span></p>
 <p><span class="raw-html"><center><table><tr colspan="2"><center><img src="sim-diasca.png" style="width:500px"></center></tr><tr><td><center><img src="logo-EDF-english.png" style="width:150px"></center></td><td><center><img src="lgpl-v3-logo-bordered.png" style="width:140px"></center></td></tr></table></span></p>
 <p></p>
-<p><span class="raw-html"><div class="banner"><p><em>Sim-Diasca Coupling HOWTO</em> <a href="https://olivier-boudeville-edf.github.io/Sim-Diasca/">browse latest</a> <a href="Sim-Diasca-coupling-howto-english.pdf">get PDF</a> <a href="#sim_diasca_top">go to top</a> <a href="#sim_diasca_toc">go to toc</a> <a href="#sim_diasca_bottom">go to bottom</a> <a href="https://github.com/Olivier-Boudeville-EDF/Sim-Diasca">go to project</a> <a href="mailto:olivier(dot)boudeville(at)edf(dot)fr?subject=[Sim-Diasca]%20Remark">email us</a></p></div></span></p>
+<p><span class="raw-html"><div class="banner"><p><em>Sim-Diasca Coupling HOWTO</em> <a href="https://edf-lab.github.io/Sim-Diasca/">browse latest</a> <a href="Sim-Diasca-coupling-howto-english.pdf">get PDF</a> <a href="#sim_diasca_top">go to top</a> <a href="#sim_diasca_toc">go to toc</a> <a href="#sim_diasca_bottom">go to bottom</a> <a href="https://github.com/EDF-Lab/Sim-Diasca">go to project</a> <a href="mailto:olivier(dot)boudeville(at)edf(dot)fr?subject=[Sim-Diasca]%20Remark">email us</a></p></div></span></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Organisation:</th><td class="field-body"><p class="first">Copyright (C) 2016-2025 EDF R&amp;D</p>
+<tr class="field"><th class="field-name">Organisation:</th><td class="field-body"><p class="first">Copyright (C) 2016-2026 EDF R&amp;D</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Contact:</th><td class="field-body"><p class="first">olivier (dot) boudeville (at) edf (dot) fr</p>
@@ -35,10 +35,10 @@
 <tr class="field"><th class="field-name">Creation Date:</th><td class="field-body"><p class="first">Tuesday, January 3, 2017</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body"><p class="first">Friday, July 18, 2025</p>
+<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body"><p class="first">Friday, July 31, 2026</p>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Version:</th><td class="field-body"><p class="first">2.4.8</p>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body"><p class="first">2.4.9</p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Status:</th><td class="field-body"><p class="first">Stable</p>
@@ -67,47 +67,47 @@
 <p></p>
 <p><span class="raw-html"><a name="sim_diasca_toc"></a></span></p>
 <div class="contents topic" id="table-of-contents">
-<p class="topic-title"><strong>Table of Contents</strong></p>
+<p class="topic-title"><a class="reference internal" href="#top"><strong>Table of Contents</strong></a></p>
 <ul class="simple">
-<li><a class="reference internal" href="#understanding-the-coupling-use-case" id="id18">Understanding the Coupling Use Case</a><ul>
-<li><a class="reference internal" href="#purpose-of-coupling" id="id19">Purpose of Coupling</a></li>
-<li><a class="reference internal" href="#coupling-among-the-sim-diasca-example-cases" id="id20">Coupling Among the Sim-Diasca Example Cases</a></li>
+<li><a class="reference internal" href="#understanding-the-coupling-use-case" id="toc-entry-1">Understanding the Coupling Use Case</a><ul>
+<li><a class="reference internal" href="#purpose-of-coupling" id="toc-entry-2">Purpose of Coupling</a></li>
+<li><a class="reference internal" href="#coupling-among-the-sim-diasca-example-cases" id="toc-entry-3">Coupling Among the Sim-Diasca Example Cases</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#coupling-architecture" id="id21">Coupling Architecture</a><ul>
-<li><a class="reference internal" href="#simulations-including-native-models-and-adapted-ones" id="id22">Simulations Including Native Models and Adapted Ones</a></li>
-<li><a class="reference internal" href="#a-co-simulation" id="id23">A Co-Simulation</a></li>
-<li><a class="reference internal" href="#the-four-main-coupling-schemes-considered-here" id="id24">The Four Main Coupling Schemes Considered Here</a><ul>
-<li><a class="reference internal" href="#adapted-black-box-cs1" id="id25">Adapted Black Box [CS1]</a></li>
-<li><a class="reference internal" href="#autonomous-adapted-model-cs2" id="id26">Autonomous Adapted Model [CS2]</a></li>
-<li><a class="reference internal" href="#adapter-driven-model-cs3" id="id27">Adapter-Driven Model [CS3]</a></li>
-<li><a class="reference internal" href="#native-model-cs4" id="id28">Native Model [CS4]</a></li>
+<li><a class="reference internal" href="#coupling-architecture" id="toc-entry-4">Coupling Architecture</a><ul>
+<li><a class="reference internal" href="#simulations-including-native-models-and-adapted-ones" id="toc-entry-5">Simulations Including Native Models and Adapted Ones</a></li>
+<li><a class="reference internal" href="#a-co-simulation" id="toc-entry-6">A Co-Simulation</a></li>
+<li><a class="reference internal" href="#the-four-main-coupling-schemes-considered-here" id="toc-entry-7">The Four Main Coupling Schemes Considered Here</a><ul>
+<li><a class="reference internal" href="#adapted-black-box-cs1" id="toc-entry-8">Adapted Black Box [CS1]</a></li>
+<li><a class="reference internal" href="#autonomous-adapted-model-cs2" id="toc-entry-9">Autonomous Adapted Model [CS2]</a></li>
+<li><a class="reference internal" href="#adapter-driven-model-cs3" id="toc-entry-10">Adapter-Driven Model [CS3]</a></li>
+<li><a class="reference internal" href="#native-model-cs4" id="toc-entry-11">Native Model [CS4]</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#a-focus-on-the-special-case-of-the-dataflow" id="id29">A Focus on the Special Case of the Dataflow</a><ul>
-<li><a class="reference internal" href="#library-based-blocks" id="id30">Library-Based Blocks</a></li>
-<li><a class="reference internal" href="#blocks-using-foreign-dataflow-api" id="id31">Blocks Using Foreign Dataflow API</a></li>
-<li><a class="reference internal" href="#choosing-a-dataflow-option" id="id32">Choosing a Dataflow Option</a></li>
+<li><a class="reference internal" href="#a-focus-on-the-special-case-of-the-dataflow" id="toc-entry-12">A Focus on the Special Case of the Dataflow</a><ul>
+<li><a class="reference internal" href="#library-based-blocks" id="toc-entry-13">Library-Based Blocks</a></li>
+<li><a class="reference internal" href="#blocks-using-foreign-dataflow-api" id="toc-entry-14">Blocks Using Foreign Dataflow API</a></li>
+<li><a class="reference internal" href="#choosing-a-dataflow-option" id="toc-entry-15">Choosing a Dataflow Option</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#recommendations-in-terms-of-choice-of-coupling-scheme" id="id33">Recommendations in terms of Choice of Coupling Scheme</a><ul>
-<li><a class="reference internal" href="#sweet-spot-in-terms-of-coupling-schemes" id="id34">Sweet Spot in terms of Coupling Schemes</a></li>
-<li><a class="reference internal" href="#a-very-basic-decision-tree-to-choose-a-coupling-scheme-for-a-given-model" id="id35">A Very Basic Decision Tree to Choose a Coupling Scheme for a Given Model</a></li>
+<li><a class="reference internal" href="#recommendations-in-terms-of-choice-of-coupling-scheme" id="toc-entry-16">Recommendations in terms of Choice of Coupling Scheme</a><ul>
+<li><a class="reference internal" href="#sweet-spot-in-terms-of-coupling-schemes" id="toc-entry-17">Sweet Spot in terms of Coupling Schemes</a></li>
+<li><a class="reference internal" href="#a-very-basic-decision-tree-to-choose-a-coupling-scheme-for-a-given-model" id="toc-entry-18">A Very Basic Decision Tree to Choose a Coupling Scheme for a Given Model</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#other-coupling-related-topics-to-consider" id="id36">Other Coupling-Related Topics to Consider</a><ul>
-<li><a class="reference internal" href="#simulation-results" id="id37">Simulation Results</a></li>
-<li><a class="reference internal" href="#error-management" id="id38">Error Management</a></li>
-<li><a class="reference internal" href="#simulation-traces" id="id39">Simulation Traces</a></li>
+<li><a class="reference internal" href="#other-coupling-related-topics-to-consider" id="toc-entry-19">Other Coupling-Related Topics to Consider</a><ul>
+<li><a class="reference internal" href="#simulation-results" id="toc-entry-20">Simulation Results</a></li>
+<li><a class="reference internal" href="#error-management" id="toc-entry-21">Error Management</a></li>
+<li><a class="reference internal" href="#simulation-traces" id="toc-entry-22">Simulation Traces</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#appendices" id="id40">Appendices</a><ul>
-<li><a class="reference internal" href="#interworking-with-other-programming-languages" id="id41">Interworking with Other Programming Languages</a><ul>
-<li><a class="reference internal" href="#interworking-with-java" id="id42">Interworking with Java</a></li>
-<li><a class="reference internal" href="#interworking-with-python" id="id43">Interworking with Python</a></li>
-<li><a class="reference internal" href="#interworking-with-other-languages" id="id44">Interworking with Other Languages</a></li>
+<li><a class="reference internal" href="#appendices" id="toc-entry-23">Appendices</a><ul>
+<li><a class="reference internal" href="#interworking-with-other-programming-languages" id="toc-entry-24">Interworking with Other Programming Languages</a><ul>
+<li><a class="reference internal" href="#interworking-with-java" id="toc-entry-25">Interworking with Java</a></li>
+<li><a class="reference internal" href="#interworking-with-python" id="toc-entry-26">Interworking with Python</a></li>
+<li><a class="reference internal" href="#interworking-with-other-languages" id="toc-entry-27">Interworking with Other Languages</a></li>
 </ul>
 </li>
 </ul>
@@ -116,9 +116,9 @@
 </div>
 <p></p>
 <div class="section" id="understanding-the-coupling-use-case">
-<h1><a class="toc-backref" href="#id18">Understanding the Coupling Use Case</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-1">Understanding the Coupling Use Case</a></h1>
 <div class="section" id="purpose-of-coupling">
-<h2><a class="toc-backref" href="#id19">Purpose of Coupling</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-2">Purpose of Coupling</a></h2>
 <p>When having to perform simulations, the usual design process involves:</p>
 <ol class="arabic simple">
 <li>specifying the questions that shall be answered by the study</li>
@@ -133,39 +133,39 @@
 <p>We suppose, in the context of this document, that this most direct &quot;native&quot; approach cannot be taken, inducing the need to perform some kind of coupling instead.</p>
 </div>
 <div class="section" id="coupling-among-the-sim-diasca-example-cases">
-<h2><a class="toc-backref" href="#id20">Coupling Among the Sim-Diasca Example Cases</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-3">Coupling Among the Sim-Diasca Example Cases</a></h2>
 <p>Sim-Diasca primarily focuses on the usual simulation design process described above, where the engine is first selected, and then the models are written for that engine.</p>
-<p>This typically corresponds to the <cite>City-Example</cite> simulation case <a class="footnote-reference" href="#id2" id="id1">[1]</a>, which focuses on urban simulation by itself (i.e. on the models themselves).</p>
-<table class="docutils footnote" frame="void" id="id2" rules="none">
+<p>This typically corresponds to the <cite>City-Example</cite> simulation case <a class="footnote-reference" href="#footnote-1" id="footnote-reference-1">[1]</a>, which focuses on urban simulation by itself (i.e. on the models themselves).</p>
+<table class="docutils footnote" frame="void" id="footnote-1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>This case is distributed with the free software version of Sim-Diasca, and can be found in the <tt class="docutils literal"><span class="pre">mock-simulators/city-example</span></tt> directory.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-1">[1]</a></td><td>This case is distributed with the free software version of Sim-Diasca, and can be found in the <tt class="docutils literal"><span class="pre">mock-simulators/city-example</span></tt> directory.</td></tr>
 </tbody>
 </table>
-<p>Another example case, the <cite>Sustainable-Cities</cite> <a class="footnote-reference" href="#id4" id="id3">[2]</a> one, is also a fairly classical simulation, yet focuses on its boundaries (i.e. its input and output) in the context of the integration to a third-party platform; yet no actual coupling is involved here either.</p>
-<table class="docutils footnote" frame="void" id="id4" rules="none">
+<p>Another example case, the <cite>Sustainable-Cities</cite> <a class="footnote-reference" href="#footnote-2" id="footnote-reference-2">[2]</a> one, is also a fairly classical simulation, yet focuses on its boundaries (i.e. its input and output) in the context of the integration to a third-party platform; yet no actual coupling is involved here either.</p>
+<table class="docutils footnote" frame="void" id="footnote-2" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3">[2]</a></td><td>This case does not belong to the free software version of Sim-Diasca; it is located in the <tt class="docutils literal"><span class="pre">sustainable-cities/sustainable-cities-case</span></tt> directory.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-2">[2]</a></td><td>This case does not belong to the free software version of Sim-Diasca; it is located in the <tt class="docutils literal"><span class="pre">sustainable-cities/sustainable-cities-case</span></tt> directory.</td></tr>
 </tbody>
 </table>
-<p>A third simulation case, nicknamed <cite>MUG</cite> <a class="footnote-reference" href="#id6" id="id5">[3]</a>, focuses on the subject of interest here, i.e. the <strong>coupling of a set of models that were not all written for Sim-Diasca</strong> (they were written independently, and their coupling is thus an afterthought).</p>
-<table class="docutils footnote" frame="void" id="id6" rules="none">
+<p>A third simulation case, nicknamed <cite>MUG</cite> <a class="footnote-reference" href="#footnote-3" id="footnote-reference-3">[3]</a>, focuses on the subject of interest here, i.e. the <strong>coupling of a set of models that were not all written for Sim-Diasca</strong> (they were written independently, and their coupling is thus an afterthought).</p>
+<table class="docutils footnote" frame="void" id="footnote-3" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id5">[3]</a></td><td>This case does not belong to the free software version of Sim-Diasca (it is located in the <tt class="docutils literal"><span class="pre">sustainable-cities/mug-case</span></tt> directory of the internal version).</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-3">[3]</a></td><td>This case does not belong to the free software version of Sim-Diasca (it is located in the <tt class="docutils literal"><span class="pre">sustainable-cities/mug-case</span></tt> directory of the internal version).</td></tr>
 </tbody>
 </table>
 <p>As a result these models were not specifically in line with the engine's expectations at various levels; from the most problematic to the least:</p>
 <ul class="simple">
-<li><strong>models had heterogeneous semantics</strong>: their modelling differed from one to another, and also altogether from the engine's ones (e.g. some were based on a dataflow logic <a class="footnote-reference" href="#id8" id="id7">[4]</a> rather than on the usual multi-agent, disaggregated approach upon which Sim-Diasca relies; their view on the target system, on space, on time also differed, i.e. they did not obey a common ontology)</li>
+<li><strong>models had heterogeneous semantics</strong>: their modelling differed from one to another, and also altogether from the engine's ones (e.g. some were based on a dataflow logic <a class="footnote-reference" href="#footnote-4" id="footnote-reference-4">[4]</a> rather than on the usual multi-agent, disaggregated approach upon which Sim-Diasca relies; their view on the target system, on space, on time also differed, i.e. they did not obey a common ontology)</li>
 <li>regarding simulation, <strong>models had their own mode of operation</strong>, organization, and conventions regarding their respective creation, state management, scheduling, evaluation, interactions, result generation, etc.</li>
 <li>regarding their software architecture, <strong>models relied on different build-time and runtime environments</strong>: operating systems could differ, programming language were also heterogeneous (e.g. some models had been developed in Python, others in Java, inducing the need for the engine to be able to deal simultaneously with multiple programming languages that had to cooperate)</li>
 </ul>
-<table class="docutils footnote" frame="void" id="id8" rules="none">
+<table class="docutils footnote" frame="void" id="footnote-4" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id7">[4]</a></td><td>Please refer to the <em>Sim-Diasca Dataflow HOWTO</em> for more information.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-4">[4]</a></td><td>Please refer to the <em>Sim-Diasca Dataflow HOWTO</em> for more information.</td></tr>
 </tbody>
 </table>
 <p>Additionally some models were delivered &quot;as they were&quot;, as black boxes (hence with no information at all about their inner workings and no possibility of being modified either).</p>
@@ -174,9 +174,9 @@
 </div>
 </div>
 <div class="section" id="coupling-architecture">
-<h1><a class="toc-backref" href="#id21">Coupling Architecture</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-4">Coupling Architecture</a></h1>
 <div class="section" id="simulations-including-native-models-and-adapted-ones">
-<h2><a class="toc-backref" href="#id22">Simulations Including Native Models and Adapted Ones</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-5">Simulations Including Native Models and Adapted Ones</a></h2>
 <p>Whether or not a case relies on coupling, the overall simulation is to be driven by the engine, notably by its time management service. As a consequence, from the engine's point of view, all the scheduled elements are expected to be ultimately (Sim-Diasca) actors.</p>
 <p>For some models, either not developed yet or for which having an alternate implementation is relevant, the best option for the project may be to have them implemented directly in the target simulation environment. Then by design they will be well integrated with the engine.</p>
 <p>However, probably more often than not, such a complete integration will not be performed, for various reasons: a model may have been delivered as a black box only, or another form of implementation is preferred, or any kind of port for this model would require too much rewriting work.</p>
@@ -186,14 +186,14 @@
 <p>Such a simulation, where the models accommodate the engine, can alternatively be seen as a <em>co-simulation</em>, as discussed in the next section.</p>
 </div>
 <div class="section" id="a-co-simulation">
-<h2><a class="toc-backref" href="#id23">A Co-Simulation</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-6">A Co-Simulation</a></h2>
 <p>Let's start with an excerpt of the Wikipedia article about <a class="reference external" href="https://en.wikipedia.org/wiki/Co-simulation">co-simulation</a>:</p>
 <p><em>In co-simulation the different subsystems which form a coupled problem are modeled and simulated in a distributed manner. Hence, the modeling is done on the subsystem level without having the coupled problem in mind. Furthermore, the coupled simulation is carried out by running the subsystems in a black-box manner. During the simulation the subsystems will exchange data.</em></p>
-<p>In this context, the architecture of the coupling case discussed here can also be seen as Sim-Diasca being the <em>master</em> <a class="footnote-reference" href="#id10" id="id9">[5]</a> engine, with each of the third-party <em>slave</em> models corresponding to a coupled simulation (not to an individual model anymore), a simulation evaluated by any engine that this slave embeds.</p>
-<table class="docutils footnote" frame="void" id="id10" rules="none">
+<p>In this context, the architecture of the coupling case discussed here can also be seen as Sim-Diasca being the <em>master</em> <a class="footnote-reference" href="#footnote-5" id="footnote-reference-5">[5]</a> engine, with each of the third-party <em>slave</em> models corresponding to a coupled simulation (not to an individual model anymore), a simulation evaluated by any engine that this slave embeds.</p>
+<table class="docutils footnote" frame="void" id="footnote-5" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id9">[5]</a></td><td>A term used also in <a class="reference external" href="https://en.wikipedia.org/wiki/Functional_Mock-up_Interface">FMI</a> parlance, for <em>Co-Simulation</em>, as opposed to a <em>Model-Exchange</em> integration.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-5">[5]</a></td><td>A term used also in <a class="reference external" href="https://en.wikipedia.org/wiki/Functional_Mock-up_Interface">FMI</a> parlance, for <em>Co-Simulation</em>, as opposed to a <em>Model-Exchange</em> integration.</td></tr>
 </tbody>
 </table>
 <p>Mixing and matching models that are either natively developed for the engine or that are merely adapted for it somewhat blurs the frontier between a simulation engine and a coupling engine (i.e. a master).</p>
@@ -201,7 +201,7 @@
 <p>We will see in the next sections that, for the coupling cases considered here, more diverse schemes than mere black boxes are to be managed.</p>
 </div>
 <div class="section" id="the-four-main-coupling-schemes-considered-here">
-<h2><a class="toc-backref" href="#id24">The Four Main Coupling Schemes Considered Here</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-7">The Four Main Coupling Schemes Considered Here</a></h2>
 <p>So we saw that there is a kind of continuum between &quot;pure <em>co-simulations</em>&quot; (i.e. with only coupled simulations being involved) and &quot;pure <em>simulations</em>&quot; (i.e. with only engine-native models involved).</p>
 <p>More precisely, for any given model, four main <strong>coupling schemes</strong> (noted <tt class="docutils literal">CS</tt>) can be seen as pacing this continuum; going from the least integrated to the engine to the most, one may rely on:</p>
 <ul class="simple">
@@ -234,7 +234,7 @@
 <p>Let's then discuss each coupling scheme in turn.</p>
 <p></p>
 <div class="section" id="adapted-black-box-cs1">
-<h3><a class="toc-backref" href="#id25">Adapted Black Box [CS1]</a></h3>
+<h3><a class="toc-backref" href="#toc-entry-8">Adapted Black Box [CS1]</a></h3>
 <p>In this setting, we have <strong>a pre-existing model</strong>, possibly a raw binary <strong>standalone executable</strong>, on the mode of operation of which we have little to no information, except:</p>
 <ul class="simple">
 <li>the file formats of its inputs</li>
@@ -243,8 +243,8 @@
 </ul>
 <p>So this model is originally expected to be run (in an appropriate environment) with a command-line akin to:</p>
 <pre class="code bash literal-block">
-$ ./my-simulator.exe --option_1 --option_2<span class="o">=</span><span class="m">42</span>
-     --first-input-file<span class="o">=</span>foo.dat --first-output-file<span class="o">=</span>bar.dat
+$<span class="w"> </span>./my-simulator.exe<span class="w"> </span>--option_1<span class="w"> </span>--option_2<span class="o">=</span><span class="m">42</span><span class="w">
+     </span>--first-input-file<span class="o">=</span>foo.dat<span class="w"> </span>--first-output-file<span class="o">=</span>bar.dat
 </pre>
 <p>In this scheme we then create a corresponding black-box adapter, in the form of a Sim-Diasca actor, comprising mostly:</p>
 <ul class="simple">
@@ -298,7 +298,7 @@ $ ./my-simulator.exe --option_1 --option_2<span class="o">=</span><span class="m
 <p></p>
 </div>
 <div class="section" id="autonomous-adapted-model-cs2">
-<h3><a class="toc-backref" href="#id26">Autonomous Adapted Model [CS2]</a></h3>
+<h3><a class="toc-backref" href="#toc-entry-9">Autonomous Adapted Model [CS2]</a></h3>
 <p>In this coupling scheme, one starts with <strong>a pre-existing model taken as it is, yet its inner logic used to fetch its inputs and transmit its outputs is replaced by calls to a coupling API</strong>, in order to perform the same operations, yet this time through the engine.</p>
 <p>This scheme, while looking interesting on the paper, conceals pitfalls of its own, as <strong>it reverses the intended control flow between the engine (meant to drive) and the models (meant to be driven)</strong>.</p>
 <p>Indeed, once triggered, each model instance may, thanks the coupling APIs at its disposal, act quite freely upon the simulation, i.e. mostly by itself and with little to no control of the engine - whereas it is up to the latter to organise, synchronise and control accesses of the numerous actors involved.</p>
@@ -338,7 +338,7 @@ $ ./my-simulator.exe --option_1 --option_2<span class="o">=</span><span class="m
 <p></p>
 </div>
 <div class="section" id="adapter-driven-model-cs3">
-<h3><a class="toc-backref" href="#id27">Adapter-Driven Model [CS3]</a></h3>
+<h3><a class="toc-backref" href="#toc-entry-10">Adapter-Driven Model [CS3]</a></h3>
 <p>This coupling scheme may superficially look similar to the previous one; it is actually quite different. Indeed in this scheme <strong>the model appears to be mostly made of the adapter itself</strong>, since most its key elements, from the state to the interactions, are actually directly mediated by the adapter itself; <strong>however the actual computations are - at least to some elected extent - deferred to the actual, embedded model, which can be seen here mostly as a domain-specific library</strong>, i.e. as a set of exposed functions.</p>
 <p>So the role of the adapter is here to:</p>
 <ul class="simple">
@@ -351,11 +351,11 @@ $ ./my-simulator.exe --option_1 --option_2<span class="o">=</span><span class="m
 </li>
 </ul>
 <p>By moving the centre of gravity (with regard to control, state, interactions) from the embedded model to the adapter, <strong>the tricky part of the coupling, which is the synchronisation with the rest of the simulation, can be secured directly and a lot more easily; moreover the degree of integration can be finely tuned</strong>.</p>
-<p>Indeed embedded models could expose only a very limited set of functions (possibly just one in the simplest cases, a function that could be named for example <tt class="docutils literal">process</tt> or <tt class="docutils literal">compute</tt>) to perform their actual operations, while, over time, the services they offer might be subdivided into finer and finer pieces, for better control and selective interactions <a class="footnote-reference" href="#id12" id="id11">[6]</a>; the granularity of the computations exposed by the embedded model can be freely adjusted to accommodate the interactions needed by a simulation, which can be seen as well as finding a balance between the operations delegated to the model and the ones directly taken in charge by the adapter - knowing that being able to change their respective amount over time could be very convenient.</p>
-<table class="docutils footnote" frame="void" id="id12" rules="none">
+<p>Indeed embedded models could expose only a very limited set of functions (possibly just one in the simplest cases, a function that could be named for example <tt class="docutils literal">process</tt> or <tt class="docutils literal">compute</tt>) to perform their actual operations, while, over time, the services they offer might be subdivided into finer and finer pieces, for better control and selective interactions <a class="footnote-reference" href="#footnote-6" id="footnote-reference-6">[6]</a>; the granularity of the computations exposed by the embedded model can be freely adjusted to accommodate the interactions needed by a simulation, which can be seen as well as finding a balance between the operations delegated to the model and the ones directly taken in charge by the adapter - knowing that being able to change their respective amount over time could be very convenient.</p>
+<table class="docutils footnote" frame="void" id="footnote-6" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id11">[6]</a></td><td>For example in some cases the precise set of needed data cannot be determined from the very start of the model's evaluation at a given timestep; hence, instead of first collecting inputs, then fully performing the processing, then collecting the outputs,  it could be more effective, thanks to the adapter, to intersperse more finely the computations with the relevant data exchanges.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-6">[6]</a></td><td>For example in some cases the precise set of needed data cannot be determined from the very start of the model's evaluation at a given timestep; hence, instead of first collecting inputs, then fully performing the processing, then collecting the outputs,  it could be more effective, thanks to the adapter, to intersperse more finely the computations with the relevant data exchanges.</td></tr>
 </tbody>
 </table>
 <p>In some cases it may be contemplated that the state of that actor is split in two parts:</p>
@@ -398,7 +398,7 @@ $ ./my-simulator.exe --option_1 --option_2<span class="o">=</span><span class="m
 <p></p>
 </div>
 <div class="section" id="native-model-cs4">
-<h3><a class="toc-backref" href="#id28">Native Model [CS4]</a></h3>
+<h3><a class="toc-backref" href="#toc-entry-11">Native Model [CS4]</a></h3>
 <p>This coupling scheme is the most straightforward one: like for most simulations, a model here is specifically designed according to the engine that is supposed to evaluate it.</p>
 <p>As such, the model is fully compliant with the framework, and is perfectly integrated with the rest of the simulation, which often leads to the best controllability and runtime performances (significantly better than the ones obtained with co-simulation).</p>
 <p>Of course developing a model specific to Sim-Diasca has a cost; however integrating a third-party model requires efforts as well, and they may be significant.</p>
@@ -424,20 +424,20 @@ $ ./my-simulator.exe --option_1 --option_2<span class="o">=</span><span class="m
 </div>
 </div>
 <div class="section" id="a-focus-on-the-special-case-of-the-dataflow">
-<h2><a class="toc-backref" href="#id29">A Focus on the Special Case of the Dataflow</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-12">A Focus on the Special Case of the Dataflow</a></h2>
 <p>Some simulations significantly deviate from the usual multi-agent, disaggregated scheme often seen in the simulation of complex systems, and are best expressed according to alternate paradigms.</p>
-<p>One of these paradigms is the <strong>dataflow</strong> <a class="footnote-reference" href="#id14" id="id13">[7]</a> architecture, where operations are implemented by blocks that are interlinked in a rather static overall assembly.</p>
-<table class="docutils footnote" frame="void" id="id14" rules="none">
+<p>One of these paradigms is the <strong>dataflow</strong> <a class="footnote-reference" href="#footnote-7" id="footnote-reference-7">[7]</a> architecture, where operations are implemented by blocks that are interlinked in a rather static overall assembly.</p>
+<table class="docutils footnote" frame="void" id="footnote-7" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id13">[7]</a></td><td>Please refer to the <em>Sim-Diasca Dataflow HOWTO</em> for more information.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-7">[7]</a></td><td>Please refer to the <em>Sim-Diasca Dataflow HOWTO</em> for more information.</td></tr>
 </tbody>
 </table>
 <p>This architecture, involving fixed, typed routes delimited by input and output ports, is more constrained than the usual multi-agent approach, and as such <strong>offers coupling perspectives of its own</strong>.</p>
 <p>Indeed, even if of course the targeted dataflow may involve only Sim-Diasca actors, having to dispatch the corresponding computations to well-defined blocks fuels the possibility of having some of these blocks be implemented as third-party components, with their own technical conventions and languages.</p>
 <p>We therefore identified specifically two main  <em>coupling</em> opportunities pertaining to the dataflow approach, discussed and contrasted below: having library-based blocks, or blocks using a foreign dataflow API.</p>
 <div class="section" id="library-based-blocks">
-<h3><a class="toc-backref" href="#id30">Library-Based Blocks</a></h3>
+<h3><a class="toc-backref" href="#toc-entry-13">Library-Based Blocks</a></h3>
 <p>This architecture simply corresponds to CS3 (i.e. the <em>Adapter-Driven Model</em> coupling scheme) once applied to the dataflow special case.</p>
 <p>More precisely, in this approach a given third-party model is structured as a domain-specific component offering a set of pre-implemented computations, of relevant granularity. <strong>On top of this &quot;expert library&quot;, a Sim-Diasca dataflow adapter is then defined</strong>, in order to obtain from it an actual dataflow block.</p>
 <p>The purpose of this adapter is to drive that embedded domain library in the context of the underlying dataflow, triggering the services it offers according to a relevant logic, feeding it with the proper information and fetching from it the relevant outputs.</p>
@@ -451,14 +451,14 @@ $ ./my-simulator.exe --option_1 --option_2<span class="o">=</span><span class="m
 </ul>
 <p>These domain services exposed by the library, which are often at least loosely coupled, might then be federated by a relevant Sim-Diasca adapter, in charge of:</p>
 <ul class="simple">
-<li>defining the relevant operations involving these services to account for the targeted computation block <a class="footnote-reference" href="#id16" id="id15">[8]</a></li>
+<li>defining the relevant operations involving these services to account for the targeted computation block <a class="footnote-reference" href="#footnote-8" id="footnote-reference-8">[8]</a></li>
 <li>requesting from the simulation (thanks to actor messages) the necessary information held by other actors that shall be supplied as input to these domain-specific functions</li>
 <li>getting back from them the corresponding outputs, using them to update the state of this adapter and/or the one of other actors, possibly also generating simulation results from them thanks to probes</li>
 </ul>
-<table class="docutils footnote" frame="void" id="id16" rules="none">
+<table class="docutils footnote" frame="void" id="footnote-8" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id15">[8]</a></td><td>The logic of a block may exceed a plain, unconditional series of steps; in the general case an adapter-level algorithm is to be defined (e.g. with stateful logic, conditional sections, loops, etc.).</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-8">[8]</a></td><td>The logic of a block may exceed a plain, unconditional series of steps; in the general case an adapter-level algorithm is to be defined (e.g. with stateful logic, conditional sections, loops, etc.).</td></tr>
 </tbody>
 </table>
 <p>Of course a bridge must be created between the third-party library and the adapter. As in the general case different, non-Erlang programming languages have to be accommodated, please refer to the <a class="reference internal" href="#interworking-with-other-programming-languages">Interworking with Other Programming Languages</a> section for the corresponding technical details.</p>
@@ -467,7 +467,7 @@ $ ./my-simulator.exe --option_1 --option_2<span class="o">=</span><span class="m
 <p>For example, on top of the same library, separate, re-usable tests can be defined, adapters to other platforms can be devised, etc., while the library can still be used directly, in ad hoc developments.</p>
 </div>
 <div class="section" id="blocks-using-foreign-dataflow-api">
-<h3><a class="toc-backref" href="#id31">Blocks Using Foreign Dataflow API</a></h3>
+<h3><a class="toc-backref" href="#toc-entry-14">Blocks Using Foreign Dataflow API</a></h3>
 <p>Another coupling approach can be considered in such a dataflow context: any component can be safely integrated provided that it respects the laws and rules applying to the dataflow at hand.</p>
 <p>For that a dataflow API must have been defined, and be implemented in the programming language that has been chosen in order to develop the model.</p>
 <p><strong>The model would then take the form of a dataflow block, and use directly the various constructs provided by the API</strong>, such as input and output ports, that are implemented by the coupling architecture - and all that developed in one's language of choice.</p>
@@ -475,7 +475,7 @@ $ ./my-simulator.exe --option_1 --option_2<span class="o">=</span><span class="m
 <p>A drawback is that this approach results in a version of the model that is dedicated to this coupling architecture, and thus cannot be readily used in other contexts.</p>
 </div>
 <div class="section" id="choosing-a-dataflow-option">
-<h3><a class="toc-backref" href="#id32">Choosing a Dataflow Option</a></h3>
+<h3><a class="toc-backref" href="#toc-entry-15">Choosing a Dataflow Option</a></h3>
 <p>The choice between dataflow coupling options is to be made <em>per-block</em>: in a given simulation, native dataflow blocks (i.e. based on classical Sim-Diasca actors), library-based ones (based on Sim-Diasca dataflow adapters) and blocks relying on one of the foreign dataflow APIs can safely coexist, as they obey the same conventions.</p>
 <p>So, for a given model, how should it best integrated as a computation block in a target dataflow?</p>
 <p>If a clean separation between the domain expertise and the software development is sought upon, then the library approach shall be considered, especially if technical support is available in order to couple the model (i.e. write the dataflow adapter); this would offer much potential for model re-use.</p>
@@ -484,14 +484,14 @@ $ ./my-simulator.exe --option_1 --option_2<span class="o">=</span><span class="m
 </div>
 </div>
 <div class="section" id="recommendations-in-terms-of-choice-of-coupling-scheme">
-<h2><a class="toc-backref" href="#id33">Recommendations in terms of Choice of Coupling Scheme</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-16">Recommendations in terms of Choice of Coupling Scheme</a></h2>
 <div class="section" id="sweet-spot-in-terms-of-coupling-schemes">
-<h3><a class="toc-backref" href="#id34">Sweet Spot in terms of Coupling Schemes</a></h3>
+<h3><a class="toc-backref" href="#toc-entry-17">Sweet Spot in terms of Coupling Schemes</a></h3>
 <p><span class="raw-html"><center><img src="continuum-of-coupling-options-for-models.png" id="responsive-image-intermediate"></img></center></span>
 </p>
 </div>
 <div class="section" id="a-very-basic-decision-tree-to-choose-a-coupling-scheme-for-a-given-model">
-<h3><a class="toc-backref" href="#id35">A Very Basic Decision Tree to Choose a Coupling Scheme for a Given Model</a></h3>
+<h3><a class="toc-backref" href="#toc-entry-18">A Very Basic Decision Tree to Choose a Coupling Scheme for a Given Model</a></h3>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">As mentioned, a different coupling scheme can be chosen <em>for each model</em>.</p>
@@ -516,10 +516,10 @@ If yes, refer to <a class="reference internal" href="#choosing-a-dataflow-option
 </div>
 </div>
 <div class="section" id="other-coupling-related-topics-to-consider">
-<h2><a class="toc-backref" href="#id36">Other Coupling-Related Topics to Consider</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-19">Other Coupling-Related Topics to Consider</a></h2>
 <p>Ideally, regardless of the coupling scheme being chosen, following topics should be secured in the context of the finally obtained implemented model.</p>
 <div class="section" id="simulation-results">
-<h3><a class="toc-backref" href="#id37">Simulation Results</a></h3>
+<h3><a class="toc-backref" href="#toc-entry-20">Simulation Results</a></h3>
 <p>Results shall be sent from models; of course the actual mode of operation would depend onto the coupling scheme:</p>
 <p><span class="raw-html"><center></span></p>
 <table border="1" class="docutils">
@@ -550,7 +550,7 @@ If yes, refer to <a class="reference internal" href="#choosing-a-dataflow-option
 <p><span class="raw-html"></center></span></p>
 </div>
 <div class="section" id="error-management">
-<h3><a class="toc-backref" href="#id38">Error Management</a></h3>
+<h3><a class="toc-backref" href="#toc-entry-21">Error Management</a></h3>
 <p>Regardless of the coupling scheme, errors should be detected as early as possible, reported with an informative message describing at least a relevant context, and should in the general case halt the simulation (&quot;<em>fail fast and loudly</em>&quot;; of course silent failures shall not be tolerated).</p>
 <p>Sim-Diasca has been designed so that no model-level error could remain unnoticed; on the contrary, measures have been taken so that the crash, the faulty behaviour or the seemingly non-termination of a model instance will halt the simulation on failure (regardless of parallelism and distribution) with a detailed error report, the engine attempting to establish a more precise diagnosis.</p>
 <p>How errors shall be reported weakly depends on the coupling scheme:</p>
@@ -583,7 +583,7 @@ If yes, refer to <a class="reference internal" href="#choosing-a-dataflow-option
 <p><span class="raw-html"></center></span></p>
 </div>
 <div class="section" id="simulation-traces">
-<h3><a class="toc-backref" href="#id39">Simulation Traces</a></h3>
+<h3><a class="toc-backref" href="#toc-entry-22">Simulation Traces</a></h3>
 <p>These runtime traces, which can be purely technical and/or relative to the domain-specific mode of operation of the model (possibly on separate channels), are priceless to troubleshoot many design and implementation issues.</p>
 <p>They shall be reported by the model based on the support provided by each coupling scheme; these traces would be aggregated by the native Sim-Diasca concurrent trace system, among any other system(s).</p>
 <p><span class="raw-html"><center></span></p>
@@ -618,9 +618,9 @@ If yes, refer to <a class="reference internal" href="#choosing-a-dataflow-option
 </div>
 </div>
 <div class="section" id="appendices">
-<h1><a class="toc-backref" href="#id40">Appendices</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-23">Appendices</a></h1>
 <div class="section" id="interworking-with-other-programming-languages">
-<h2><a class="toc-backref" href="#id41">Interworking with Other Programming Languages</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-24">Interworking with Other Programming Languages</a></h2>
 <p>Often a separate process animated by the target programming language is spawned. Then following components are used:</p>
 <ul class="simple">
 <li>the Sim-Diasca adapter (in Erlang)</li>
@@ -628,19 +628,19 @@ If yes, refer to <a class="reference internal" href="#choosing-a-dataflow-option
 <li>an adaptation bridge (still in the native language of the original model), mediating the technical bidirectional communication between the previous two components</li>
 </ul>
 <div class="section" id="interworking-with-java">
-<h3><a class="toc-backref" href="#id42">Interworking with Java</a></h3>
+<h3><a class="toc-backref" href="#toc-entry-25">Interworking with Java</a></h3>
 <p>So that Java code can interact with Erlang code, one should use <a class="reference external" href="http://erlang.org/doc/apps/jinterface/users_guide.html">Jinterface</a>.</p>
 <p>Parallel execution and bidirectional control and exchange can be implemented.</p>
 <p>The adaptation bridge here is the thin Java layer added on top of the adapted model so that it can emulate the behaviour of an Erlang node (hence relying on the primitives offered by Jinterface in order to define a mailbox, send and receive messages, create Erlang terms, etc.).</p>
 <p>The purpose of this bridge is mostly to route the requests emanating from the adapter so that their Java implementation is executed and their results are propagated back.</p>
 </div>
 <div class="section" id="interworking-with-python">
-<h3><a class="toc-backref" href="#id43">Interworking with Python</a></h3>
+<h3><a class="toc-backref" href="#toc-entry-26">Interworking with Python</a></h3>
 <p>This can be done either thanks to <a class="reference external" href="http://erlport.org/">ErlPort</a> (probably the best choice), or to <a class="reference external" href="http://www.lysator.liu.se/~tab/erlang/py_interface/">Py-Interface</a>.</p>
 <p>Parallel execution and bidirectional control and exchange can be implemented.</p>
 </div>
 <div class="section" id="interworking-with-other-languages">
-<h3><a class="toc-backref" href="#id44">Interworking with Other Languages</a></h3>
+<h3><a class="toc-backref" href="#toc-entry-27">Interworking with Other Languages</a></h3>
 <p id="list">Links known to exist:</p>
 <ul class="simple">
 <li>to <tt class="docutils literal">C</tt>: use C nodes, based on an Erlang port</li>

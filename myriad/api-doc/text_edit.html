@@ -27,12 +27,12 @@
 <p><code>char_pos() = pos_integer()</code></p>
 
 
-<h3 class="typedecl"><a name="type-completion">completion()</a></h3>
-<p><code>completion() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
-
-
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
 <p><code>count() = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-delimiter">delimiter()</a></h3>
+<p><code>delimiter() = <a href="#type-uchar" docgen-rel="seetype" docgen-href="#uchar/0">uchar()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-entry">entry()</a></h3>
@@ -112,13 +112,14 @@
 <tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#filter_options-1">filter_options/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_bin_entry-1">get_bin_entry/1</a></td><td></td></tr>
-<tr><td valign="top"><a href="#get_completions-1">get_completions/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_completion_info-1">get_completion_info/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_cursor_position-1">get_cursor_position/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_entry-1">get_entry/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_entry_for_submission-1">get_entry_for_submission/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_entry_id-1">get_entry_id/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_full_text-1">get_full_text/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_full_text_with_cursor-1">get_full_text_with_cursor/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_maybe_closing_delimiter-1">get_maybe_closing_delimiter/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_prefix-1">get_prefix/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_prefix_length-1">get_prefix_length/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#kill_from_cursor-1">kill_from_cursor/1</a></td><td></td></tr>
@@ -209,9 +210,9 @@
 <p> </p>
 </div>
 
-<h3 class="function"><a name="get_completions-1">get_completions/1</a></h3>
+<h3 class="function"><a name="get_completion_info-1">get_completion_info/1</a></h3>
 <div class="spec">
-<p><code>get_completions(TextEdit::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; {<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>, <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>([<a href="#type-completion" docgen-rel="seetype" docgen-href="#completion/0">completion()</a>])}</code><br></p>
+<p><code>get_completion_info(TextEdit::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>({SymbolPrefixBin::<a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a>, CmplBins::[<a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a>]})</code><br></p>
 <p> </p>
 </div>
 
@@ -223,7 +224,7 @@
 
 <h3 class="function"><a name="get_entry-1">get_entry/1</a></h3>
 <div class="spec">
-<p><code>get_entry(Text_edit::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a></code><br></p>
+<p><code>get_entry(Text_edit::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -241,13 +242,19 @@
 
 <h3 class="function"><a name="get_full_text-1">get_full_text/1</a></h3>
 <div class="spec">
-<p><code>get_full_text(TE::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a></code><br></p>
+<p><code>get_full_text(TE::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="get_full_text_with_cursor-1">get_full_text_with_cursor/1</a></h3>
 <div class="spec">
 <p><code>get_full_text_with_cursor(TE::<a href="#type-text_edit" docgen-rel="seetype" docgen-href="#text_edit/0">text_edit()</a>) -&gt; {<a href="#type-text" docgen-rel="seetype" docgen-href="#text/0">text()</a>, <a href="#type-char_pos" docgen-rel="seetype" docgen-href="#char_pos/0">char_pos()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_maybe_closing_delimiter-1">get_maybe_closing_delimiter/1</a></h3>
+<div class="spec">
+<p><code>get_maybe_closing_delimiter(Char::<a href="#type-uchar" docgen-rel="seetype" docgen-href="#uchar/0">uchar()</a>) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-delimiter" docgen-rel="seetype" docgen-href="#delimiter/0">delimiter()</a>)</code><br></p>
 <p> </p>
 </div>
 

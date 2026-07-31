@@ -71,6 +71,26 @@
 <p><code>body() = <a href="#type-string_body" docgen-rel="seetype" docgen-href="#string_body/0">string_body()</a> | <a href="#type-bin_body" docgen-rel="seetype" docgen-href="#bin_body/0">bin_body()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-client_option">client_option()</a></h3>
+<p><code>client_option() = {<a href="#type-client_option_key" docgen-rel="seetype" docgen-href="#client_option_key/0">client_option_key()</a>, <a href="#type-client_option_value" docgen-rel="seetype" docgen-href="#client_option_value/0">client_option_value()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-client_option_key">client_option_key()</a></h3>
+<p><code>client_option_key() = atom()</code></p>
+
+
+<h3 class="typedecl"><a name="type-client_option_map">client_option_map()</a></h3>
+<p><code>client_option_map() = <a href="#type-table" docgen-rel="seetype" docgen-href="#table/0">table</a>(<a href="#type-client_option_key" docgen-rel="seetype" docgen-href="#client_option_key/0">client_option_key()</a>, <a href="#type-client_option_value" docgen-rel="seetype" docgen-href="#client_option_value/0">client_option_value()</a>)</code></p>
+
+
+<h3 class="typedecl"><a name="type-client_option_value">client_option_value()</a></h3>
+<p><code>client_option_value() = term()</code></p>
+
+
+<h3 class="typedecl"><a name="type-client_options">client_options()</a></h3>
+<p><code>client_options() = [<a href="#type-client_option" docgen-rel="seetype" docgen-href="#client_option/0">client_option()</a>] | <a href="#type-client_option_map" docgen-rel="seetype" docgen-href="#client_option_map/0">client_option_map()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-cloud_instance_info">cloud_instance_info()</a></h3>
 <p><code>cloud_instance_info() = <a href="#type-azure_instance_info" docgen-rel="seetype" docgen-href="#azure_instance_info/0">azure_instance_info()</a></code></p>
 
@@ -81,6 +101,10 @@
 
 <h3 class="typedecl"><a name="type-content_type">content_type()</a></h3>
 <p><code>content_type() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-extension">extension()</a></h3>
+<p><code>extension() = <a href="file_utils.html#type-extension" docgen-rel="seetype" docgen-href="file_utils#extension/0">file_utils:extension()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-file_name">file_name()</a></h3>
@@ -107,14 +131,6 @@
 <p><code>html_element() = <a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a></code></p>
 
 
-<h3 class="typedecl"><a name="type-http_option">http_option()</a></h3>
-<p><code>http_option() = any()</code></p>
-
-
-<h3 class="typedecl"><a name="type-http_options">http_options()</a></h3>
-<p><code>http_options() = <a href="#type-options_for_httpc" docgen-rel="seetype" docgen-href="#options_for_httpc/0">options_for_httpc()</a> | <a href="#type-map_options" docgen-rel="seetype" docgen-href="#map_options/0">map_options()</a></code></p>
-
-
 <h3 class="typedecl"><a name="type-http_status_class">http_status_class()</a></h3>
 <p><code>http_status_class() = informational_response | successful | redirection | client_error | server_error</code></p>
 
@@ -127,20 +143,20 @@
 <p><code>instance_key() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-ip_address">ip_address()</a></h3>
+<p><code>ip_address() = <a href="net_utils.html#type-ip_address" docgen-rel="seetype" docgen-href="net_utils#ip_address/0">net_utils:ip_address()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-ip_address_spec">ip_address_spec()</a></h3>
+<p><code>ip_address_spec() = <a href="net_utils.html#type-tcp_port" docgen-rel="seetype" docgen-href="net_utils#tcp_port/0">net_utils:tcp_port()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-json_body">json_body()</a></h3>
 <p><code>json_body() = <a href="#type-body" docgen-rel="seetype" docgen-href="#body/0">body()</a></code></p>
 
 
-<h3 class="typedecl"><a name="type-list_options">list_options()</a></h3>
-<p><code>list_options() = [{atom(), term()}]</code></p>
-
-
 <h3 class="typedecl"><a name="type-location">location()</a></h3>
 <p><code>location() = atom()</code></p>
-
-
-<h3 class="typedecl"><a name="type-map_options">map_options()</a></h3>
-<p><code>map_options() = <a href="#type-table" docgen-rel="seetype" docgen-href="#table/0">table()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-media_type">media_type()</a></h3>
@@ -149,6 +165,14 @@
 
 <h3 class="typedecl"><a name="type-method">method()</a></h3>
 <p><code>method() = <a href="rest_utils.html#type-method" docgen-rel="seetype" docgen-href="rest_utils#method/0">rest_utils:method()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-mime_mapping">mime_mapping()</a></h3>
+<p><code>mime_mapping() = {<a href="#type-extension" docgen-rel="seetype" docgen-href="#extension/0">extension()</a>, <a href="#type-media_type" docgen-rel="seetype" docgen-href="#media_type/0">media_type()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-mime_usage">mime_usage()</a></h3>
+<p><code>mime_usage() = text | javascript | data | images | audio | video | fonts | api | base</code></p>
 
 
 <h3 class="typedecl"><a name="type-new_style_options">new_style_options()</a></h3>
@@ -167,10 +191,6 @@
 <p><code>option_list() = <a href="option_list.html#type-option_list" docgen-rel="seetype" docgen-href="option_list#option_list/0">option_list:option_list()</a></code></p>
 
 
-<h3 class="typedecl"><a name="type-options_for_httpc">options_for_httpc()</a></h3>
-<p><code>options_for_httpc() = [<a href="#type-http_option" docgen-rel="seetype" docgen-href="#http_option/0">http_option()</a>]</code></p>
-
-
 <h3 class="typedecl"><a name="type-path">path()</a></h3>
 <p><code>path() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
 
@@ -183,6 +203,30 @@
 <p><code>request_result() = {<a href="#type-http_status_code" docgen-rel="seetype" docgen-href="#http_status_code/0">http_status_code()</a>, <a href="#type-headers_as_maps" docgen-rel="seetype" docgen-href="#headers_as_maps/0">headers_as_maps()</a>, <a href="#type-bin_body" docgen-rel="seetype" docgen-href="#bin_body/0">bin_body()</a>} | {error, <a href="basic_utils.html#type-error_reason" docgen-rel="seetype" docgen-href="basic_utils#error_reason/0">basic_utils:error_reason()</a>}</code></p>
 
 
+<h3 class="typedecl"><a name="type-server_id">server_id()</a></h3>
+<p><code>server_id() = <a href="#type-server_pid" docgen-rel="seetype" docgen-href="#server_pid/0">server_pid()</a> | {BindAddress::<a href="#type-ip_address" docgen-rel="seetype" docgen-href="#ip_address/0">ip_address()</a>, <a href="#type-tcp_port" docgen-rel="seetype" docgen-href="#tcp_port/0">tcp_port()</a>} | {BindAddress::<a href="#type-ip_address" docgen-rel="seetype" docgen-href="#ip_address/0">ip_address()</a>, <a href="#type-tcp_port" docgen-rel="seetype" docgen-href="#tcp_port/0">tcp_port()</a>, <a href="#type-server_profile" docgen-rel="seetype" docgen-href="#server_profile/0">server_profile()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-server_option">server_option()</a></h3>
+<p><code>server_option() = {<a href="#type-server_option_key" docgen-rel="seetype" docgen-href="#server_option_key/0">server_option_key()</a>, <a href="#type-server_option_value" docgen-rel="seetype" docgen-href="#server_option_value/0">server_option_value()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-server_option_key">server_option_key()</a></h3>
+<p><code>server_option_key() = atom()</code></p>
+
+
+<h3 class="typedecl"><a name="type-server_option_value">server_option_value()</a></h3>
+<p><code>server_option_value() = term()</code></p>
+
+
+<h3 class="typedecl"><a name="type-server_pid">server_pid()</a></h3>
+<p><code>server_pid() = pid()</code></p>
+
+
+<h3 class="typedecl"><a name="type-server_profile">server_profile()</a></h3>
+<p><code>server_profile() = atom()</code></p>
+
+
 <h3 class="typedecl"><a name="type-service_endpoint">service_endpoint()</a></h3>
 <p><code>service_endpoint() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
 
@@ -192,11 +236,15 @@
 
 
 <h3 class="typedecl"><a name="type-ssl_options">ssl_options()</a></h3>
-<p><code>ssl_options() = <a href="#type-list_options" docgen-rel="seetype" docgen-href="#list_options/0">list_options()</a></code></p>
-<p> map_options().</p>
+<p><code>ssl_options() = <a href="list_table.html#type-tagged_table" docgen-rel="seetype" docgen-href="list_table#tagged_table/0">list_table:tagged_table()</a></code></p>
+<p> Cannot be a map.</p>
 
 <h3 class="typedecl"><a name="type-string_body">string_body()</a></h3>
 <p><code>string_body() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-tcp_port">tcp_port()</a></h3>
+<p><code>tcp_port() = <a href="net_utils.html#type-tcp_port" docgen-rel="seetype" docgen-href="net_utils#tcp_port/0">net_utils:tcp_port()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-uri">uri()</a></h3>
@@ -208,7 +256,7 @@
 
 
 <h3 class="typedecl"><a name="type-url_info">url_info()</a></h3>
-<p><code>url_info() = #url_info{protocol = <a href="web_utils.html#type-protocol_type" docgen-rel="seetype" docgen-href="web_utils#protocol_type/0">web_utils:protocol_type()</a>, host_identifier = <a href="net_utils.html#type-host_identifier" docgen-rel="seetype" docgen-href="net_utils#host_identifier/0">net_utils:host_identifier()</a>, port = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="net_utils.html#type-net_port" docgen-rel="seetype" docgen-href="net_utils#net_port/0">net_utils:net_port()</a>), path = <a href="web_utils.html#type-path" docgen-rel="seetype" docgen-href="web_utils#path/0">web_utils:path()</a>}</code></p>
+<p><code>url_info() = #url_info{protocol = <a href="web_utils.html#type-protocol_type" docgen-rel="seetype" docgen-href="web_utils#protocol_type/0">web_utils:protocol_type()</a>, host_identifier = <a href="net_utils.html#type-host_identifier" docgen-rel="seetype" docgen-href="net_utils#host_identifier/0">net_utils:host_identifier()</a>, port = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="net_utils.html#type-tcp_port" docgen-rel="seetype" docgen-href="net_utils#tcp_port/0">net_utils:tcp_port()</a>), path = <a href="web_utils.html#type-path" docgen-rel="seetype" docgen-href="web_utils#path/0">web_utils:path()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
@@ -228,6 +276,7 @@
 <tr><td valign="top"><a href="#get_azure_instance_information-2">get_azure_instance_information/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_http_status_class-1">get_http_status_class/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_last_path_element-1">get_last_path_element/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_mime_mappings-1">get_mime_mappings/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_ordered_list-1">get_ordered_list/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_ssl_verify_options-0">get_ssl_verify_options/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_ssl_verify_options-1">get_ssl_verify_options/1</a></td><td></td></tr>
@@ -240,7 +289,11 @@
 <tr><td valign="top"><a href="#request-6">request/6</a></td><td></td></tr>
 <tr><td valign="top"><a href="#start-0">start/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#start-1">start/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_server-0">start_server/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_server-5">start_server/5</a></td><td></td></tr>
+<tr><td valign="top"><a href="#start_server-6">start_server/6</a></td><td></td></tr>
 <tr><td valign="top"><a href="#stop-0">stop/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#stop_server-1">stop_server/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#string_to_uri_map-1">string_to_uri_map/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#string_to_url_info-1">string_to_url_info/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#url_info_to_string-1">url_info_to_string/1</a></td><td></td></tr>
@@ -262,7 +315,7 @@
 
 <h3 class="function"><a name="download_file-3">download_file/3</a></h3>
 <div class="spec">
-<p><code>download_file(Url::<a href="#type-url" docgen-rel="seetype" docgen-href="#url/0">url()</a>, TargetDir::<a href="#type-any_directory_path" docgen-rel="seetype" docgen-href="#any_directory_path/0">any_directory_path()</a>, HttpOptions::<a href="#type-http_options" docgen-rel="seetype" docgen-href="#http_options/0">http_options()</a>) -&gt; <a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a></code><br></p>
+<p><code>download_file(Url::<a href="#type-url" docgen-rel="seetype" docgen-href="#url/0">url()</a>, TargetDir::<a href="#type-any_directory_path" docgen-rel="seetype" docgen-href="#any_directory_path/0">any_directory_path()</a>, ClientOptions::<a href="#type-client_options" docgen-rel="seetype" docgen-href="#client_options/0">client_options()</a>) -&gt; <a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -298,7 +351,7 @@
 
 <h3 class="function"><a name="get-3">get/3</a></h3>
 <div class="spec">
-<p><code>get(Uri::<a href="#type-uri" docgen-rel="seetype" docgen-href="#uri/0">uri()</a>, Headers::<a href="#type-headers" docgen-rel="seetype" docgen-href="#headers/0">headers()</a>, HttpOptions::<a href="#type-http_options" docgen-rel="seetype" docgen-href="#http_options/0">http_options()</a>) -&gt; <a href="#type-request_result" docgen-rel="seetype" docgen-href="#request_result/0">request_result()</a></code><br></p>
+<p><code>get(Uri::<a href="#type-uri" docgen-rel="seetype" docgen-href="#uri/0">uri()</a>, Headers::<a href="#type-headers" docgen-rel="seetype" docgen-href="#headers/0">headers()</a>, ClientOptions::<a href="#type-client_options" docgen-rel="seetype" docgen-href="#client_options/0">client_options()</a>) -&gt; <a href="#type-request_result" docgen-rel="seetype" docgen-href="#request_result/0">request_result()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -317,6 +370,12 @@
 <h3 class="function"><a name="get_last_path_element-1">get_last_path_element/1</a></h3>
 <div class="spec">
 <p><code>get_last_path_element(Url::<a href="#type-url" docgen-rel="seetype" docgen-href="#url/0">url()</a>) -&gt; <a href="#type-file_name" docgen-rel="seetype" docgen-href="#file_name/0">file_name()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_mime_mappings-1">get_mime_mappings/1</a></h3>
+<div class="spec">
+<p><code>get_mime_mappings(MimeUsage::<a href="#type-mime_usage" docgen-rel="seetype" docgen-href="#mime_usage/0">mime_usage()</a>) -&gt; [<a href="#type-mime_mapping" docgen-rel="seetype" docgen-href="#mime_mapping/0">mime_mapping()</a>]</code><br></p>
 <p> </p>
 </div>
 
@@ -358,25 +417,25 @@
 
 <h3 class="function"><a name="post-3">post/3</a></h3>
 <div class="spec">
-<p><code>post(Uri::<a href="#type-uri" docgen-rel="seetype" docgen-href="#uri/0">uri()</a>, Headers::<a href="#type-headers" docgen-rel="seetype" docgen-href="#headers/0">headers()</a>, HttpOptions::<a href="#type-http_options" docgen-rel="seetype" docgen-href="#http_options/0">http_options()</a>) -&gt; <a href="#type-request_result" docgen-rel="seetype" docgen-href="#request_result/0">request_result()</a></code><br></p>
+<p><code>post(Uri::<a href="#type-uri" docgen-rel="seetype" docgen-href="#uri/0">uri()</a>, Headers::<a href="#type-headers" docgen-rel="seetype" docgen-href="#headers/0">headers()</a>, ClientOptions::<a href="#type-client_options" docgen-rel="seetype" docgen-href="#client_options/0">client_options()</a>) -&gt; <a href="#type-request_result" docgen-rel="seetype" docgen-href="#request_result/0">request_result()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="post-4">post/4</a></h3>
 <div class="spec">
-<p><code>post(Uri::<a href="#type-uri" docgen-rel="seetype" docgen-href="#uri/0">uri()</a>, Headers::<a href="#type-headers" docgen-rel="seetype" docgen-href="#headers/0">headers()</a>, HttpOptions::<a href="#type-http_options" docgen-rel="seetype" docgen-href="#http_options/0">http_options()</a>, MaybeBody::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-body" docgen-rel="seetype" docgen-href="#body/0">body()</a>)) -&gt; <a href="#type-request_result" docgen-rel="seetype" docgen-href="#request_result/0">request_result()</a></code><br></p>
+<p><code>post(Uri::<a href="#type-uri" docgen-rel="seetype" docgen-href="#uri/0">uri()</a>, Headers::<a href="#type-headers" docgen-rel="seetype" docgen-href="#headers/0">headers()</a>, ClientOptions::<a href="#type-client_options" docgen-rel="seetype" docgen-href="#client_options/0">client_options()</a>, MaybeBody::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-body" docgen-rel="seetype" docgen-href="#body/0">body()</a>)) -&gt; <a href="#type-request_result" docgen-rel="seetype" docgen-href="#request_result/0">request_result()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="post-5">post/5</a></h3>
 <div class="spec">
-<p><code>post(Uri::<a href="#type-uri" docgen-rel="seetype" docgen-href="#uri/0">uri()</a>, Headers::<a href="#type-headers" docgen-rel="seetype" docgen-href="#headers/0">headers()</a>, HttpOptions::<a href="#type-http_options" docgen-rel="seetype" docgen-href="#http_options/0">http_options()</a>, MaybeBody::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-body" docgen-rel="seetype" docgen-href="#body/0">body()</a>), MaybeContentType::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-content_type" docgen-rel="seetype" docgen-href="#content_type/0">content_type()</a>)) -&gt; <a href="#type-request_result" docgen-rel="seetype" docgen-href="#request_result/0">request_result()</a></code><br></p>
+<p><code>post(Uri::<a href="#type-uri" docgen-rel="seetype" docgen-href="#uri/0">uri()</a>, Headers::<a href="#type-headers" docgen-rel="seetype" docgen-href="#headers/0">headers()</a>, ClientOptions::<a href="#type-client_options" docgen-rel="seetype" docgen-href="#client_options/0">client_options()</a>, MaybeBody::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-body" docgen-rel="seetype" docgen-href="#body/0">body()</a>), MaybeContentType::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-content_type" docgen-rel="seetype" docgen-href="#content_type/0">content_type()</a>)) -&gt; <a href="#type-request_result" docgen-rel="seetype" docgen-href="#request_result/0">request_result()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="request-6">request/6</a></h3>
 <div class="spec">
-<p><code>request(Method::<a href="#type-method" docgen-rel="seetype" docgen-href="#method/0">method()</a>, Uri::<a href="#type-uri" docgen-rel="seetype" docgen-href="#uri/0">uri()</a>, Headers::<a href="#type-headers" docgen-rel="seetype" docgen-href="#headers/0">headers()</a>, HttpOptions::<a href="#type-http_options" docgen-rel="seetype" docgen-href="#http_options/0">http_options()</a>, MaybeBody::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-bin_body" docgen-rel="seetype" docgen-href="#bin_body/0">bin_body()</a>), MaybeContentType::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-content_type" docgen-rel="seetype" docgen-href="#content_type/0">content_type()</a>)) -&gt; <a href="#type-request_result" docgen-rel="seetype" docgen-href="#request_result/0">request_result()</a></code><br></p>
+<p><code>request(Method::<a href="#type-method" docgen-rel="seetype" docgen-href="#method/0">method()</a>, Uri::<a href="#type-uri" docgen-rel="seetype" docgen-href="#uri/0">uri()</a>, Headers::<a href="#type-headers" docgen-rel="seetype" docgen-href="#headers/0">headers()</a>, ClientOptions::<a href="#type-client_options" docgen-rel="seetype" docgen-href="#client_options/0">client_options()</a>, MaybeBody::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-bin_body" docgen-rel="seetype" docgen-href="#bin_body/0">bin_body()</a>), MaybeContentType::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-content_type" docgen-rel="seetype" docgen-href="#content_type/0">content_type()</a>)) -&gt; <a href="#type-request_result" docgen-rel="seetype" docgen-href="#request_result/0">request_result()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -392,9 +451,33 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="start_server-0">start_server/0</a></h3>
+<div class="spec">
+<p><code>start_server() -&gt; <a href="#type-server_id" docgen-rel="seetype" docgen-href="#server_id/0">server_id()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="start_server-5">start_server/5</a></h3>
+<div class="spec">
+<p><code>start_server(SrvName::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>, BindIPAddressSpec::<a href="#type-ip_address_spec" docgen-rel="seetype" docgen-href="#ip_address_spec/0">ip_address_spec()</a>, TCPPort::<a href="#type-tcp_port" docgen-rel="seetype" docgen-href="#tcp_port/0">tcp_port()</a>, AnySrvRootDir::<a href="#type-any_directory_path" docgen-rel="seetype" docgen-href="#any_directory_path/0">any_directory_path()</a>, AnyDocRootDir::<a href="#type-any_directory_path" docgen-rel="seetype" docgen-href="#any_directory_path/0">any_directory_path()</a>) -&gt; <a href="#type-server_id" docgen-rel="seetype" docgen-href="#server_id/0">server_id()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="start_server-6">start_server/6</a></h3>
+<div class="spec">
+<p><code>start_server(SrvName::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>, BindIPAddressSpec::<a href="#type-ip_address_spec" docgen-rel="seetype" docgen-href="#ip_address_spec/0">ip_address_spec()</a>, TCPPort::<a href="#type-tcp_port" docgen-rel="seetype" docgen-href="#tcp_port/0">tcp_port()</a>, AnySrvRootDir::<a href="#type-any_directory_path" docgen-rel="seetype" docgen-href="#any_directory_path/0">any_directory_path()</a>, AnyDocRootDir::<a href="#type-any_directory_path" docgen-rel="seetype" docgen-href="#any_directory_path/0">any_directory_path()</a>, SrvProfile::<a href="#type-server_profile" docgen-rel="seetype" docgen-href="#server_profile/0">server_profile()</a>) -&gt; <a href="#type-server_id" docgen-rel="seetype" docgen-href="#server_id/0">server_id()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="stop-0">stop/0</a></h3>
 <div class="spec">
 <p><code>stop() -&gt; <a href="basic_utils.html#type-base_status" docgen-rel="seetype" docgen-href="basic_utils#base_status/0">basic_utils:base_status()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="stop_server-1">stop_server/1</a></h3>
+<div class="spec">
+<p><code>stop_server(SrvId::<a href="#type-server_id" docgen-rel="seetype" docgen-href="#server_id/0">server_id()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
 </div>
 

@@ -271,6 +271,10 @@
 <p><code>ls_per_second() = <a href="#type-c" docgen-rel="seetype" docgen-href="#c/0">c()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-lux">lux()</a></h3>
+<p><code>lux() = number()</code></p>
+
+
 <h3 class="typedecl"><a name="type-ly">ly()</a></h3>
 <p><code>ly() = <a href="#type-light_year" docgen-rel="seetype" docgen-href="#light_year/0">light_year()</a></code></p>
 
@@ -391,6 +395,10 @@
 <p><code>pc() = <a href="#type-parsec" docgen-rel="seetype" docgen-href="#parsec/0">parsec()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-percent">percent()</a></h3>
+<p><code>percent() = <a href="math_utils.html#type-percent" docgen-rel="seetype" docgen-href="math_utils#percent/0">math_utils:percent()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-position">position()</a></h3>
 <p><code>position() = {<a href="#type-latitude" docgen-rel="seetype" docgen-href="#latitude/0">latitude()</a>, <a href="#type-longitude" docgen-rel="seetype" docgen-href="#longitude/0">longitude()</a>}</code></p>
 
@@ -401,6 +409,10 @@
 
 <h3 class="typedecl"><a name="type-radians">radians()</a></h3>
 <p><code>radians() = float()</code></p>
+
+
+<h3 class="typedecl"><a name="type-relative_humidity">relative_humidity()</a></h3>
+<p><code>relative_humidity() = <a href="#type-percent" docgen-rel="seetype" docgen-href="#percent/0">percent()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-rpm">rpm()</a></h3>
@@ -467,6 +479,10 @@
 <p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-volts">volts()</a></h3>
+<p><code>volts() = float()</code></p>
+
+
 <h3 class="typedecl"><a name="type-volume_reference_unit">volume_reference_unit()</a></h3>
 <p><code>volume_reference_unit() = <a href="#type-cubic_meters" docgen-rel="seetype" docgen-href="#cubic_meters/0">cubic_meters()</a></code></p>
 
@@ -504,6 +520,7 @@
 <tr><td valign="top"><a href="#get_prefix_for_order-1">get_prefix_for_order/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_prefix_information-0">get_prefix_information/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#human_time_to_milliseconds-5">human_time_to_milliseconds/5</a></td><td></td></tr>
+<tr><td valign="top"><a href="#illuminance_to_string-1">illuminance_to_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_canonical_unit-1">is_canonical_unit/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#km_per_hour_to_meters_per_second-1">km_per_hour_to_meters_per_second/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#light_seconds_to_meters-1">light_seconds_to_meters/1</a></td><td></td></tr>
@@ -524,6 +541,7 @@
 <tr><td valign="top"><a href="#temperature_to_string-1">temperature_to_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#unit_to_string-1">unit_to_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#value_with_unit_to_string-2">value_with_unit_to_string/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#voltage_to_string-1">voltage_to_string/1</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -573,6 +591,12 @@
 <h3 class="function"><a name="human_time_to_milliseconds-5">human_time_to_milliseconds/5</a></h3>
 <div class="spec">
 <p><code>human_time_to_milliseconds(Day::<a href="#type-days" docgen-rel="seetype" docgen-href="#days/0">days()</a>, Hour::<a href="#type-hours" docgen-rel="seetype" docgen-href="#hours/0">hours()</a>, Minute::<a href="#type-minutes" docgen-rel="seetype" docgen-href="#minutes/0">minutes()</a>, Second::<a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a>, Millisecond::<a href="#type-milliseconds" docgen-rel="seetype" docgen-href="#milliseconds/0">milliseconds()</a>) -&gt; <a href="#type-milliseconds" docgen-rel="seetype" docgen-href="#milliseconds/0">milliseconds()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="illuminance_to_string-1">illuminance_to_string/1</a></h3>
+<div class="spec">
+<p><code>illuminance_to_string(L::<a href="#type-lux" docgen-rel="seetype" docgen-href="#lux/0">lux()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -693,6 +717,12 @@
 <h3 class="function"><a name="value_with_unit_to_string-2">value_with_unit_to_string/2</a></h3>
 <div class="spec">
 <p><code>value_with_unit_to_string(Value::<a href="#type-numerical_value" docgen-rel="seetype" docgen-href="#numerical_value/0">numerical_value()</a>, Unit::<a href="#type-canonical_unit" docgen-rel="seetype" docgen-href="#canonical_unit/0">canonical_unit()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="voltage_to_string-1">voltage_to_string/1</a></h3>
+<div class="spec">
+<p><code>voltage_to_string(V::<a href="#type-volts" docgen-rel="seetype" docgen-href="#volts/0">volts()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 <hr>

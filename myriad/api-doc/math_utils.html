@@ -23,6 +23,14 @@
 <p><code>any_abscissa() = <a href="#type-abscissa" docgen-rel="seetype" docgen-href="#abscissa/0">abscissa()</a> | <a href="#type-integer_abscissa" docgen-rel="seetype" docgen-href="#integer_abscissa/0">integer_abscissa()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-any_bound">any_bound()</a></h3>
+<p><code>any_bound() = number()</code></p>
+
+
+<h3 class="typedecl"><a name="type-any_bounds">any_bounds()</a></h3>
+<p><code>any_bounds() = {MinBound::<a href="#type-any_bound" docgen-rel="seetype" docgen-href="#any_bound/0">any_bound()</a>, MaxBound::<a href="#type-any_bound" docgen-rel="seetype" docgen-href="#any_bound/0">any_bound()</a>}</code></p>
+
+
 <h3 class="typedecl"><a name="type-any_degrees">any_degrees()</a></h3>
 <p><code>any_degrees() = <a href="unit_utils.html#type-any_degrees" docgen-rel="seetype" docgen-href="unit_utils#any_degrees/0">unit_utils:any_degrees()</a></code></p>
 
@@ -183,6 +191,10 @@
 <p><code>standard_deviation() = float()</code></p>
 
 
+<h3 class="typedecl"><a name="type-tuple">tuple()</a></h3>
+<p><code>tuple(T) = <a href="type_utils.html#type-tuple" docgen-rel="seetype" docgen-href="type_utils#tuple/0">type_utils:tuple</a>(T)</code></p>
+
+
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
@@ -192,7 +204,8 @@
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#are_close-2">are_close/2</a></td><td></td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#any_bounds_to_string-1">any_bounds_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#are_close-2">are_close/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#are_close-3">are_close/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#are_equal-2">are_equal/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#are_equal-3">are_equal/3</a></td><td></td></tr>
@@ -204,6 +217,7 @@
 <tr><td valign="top"><a href="#canonicalise_integer_bounds-1">canonicalise_integer_bounds/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#canonify-1">canonify/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#ceiling-1">ceiling/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_any_bounds-1">check_any_bounds/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#check_percent_basic_range-1">check_percent_basic_range/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#clamp-2">clamp/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#clamp-3">clamp/3</a></td><td></td></tr>
@@ -216,6 +230,7 @@
 <tr><td valign="top"><a href="#copy_sign-2">copy_sign/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#degrees_to_radians-1">degrees_to_radians/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#evaluate-2">evaluate/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#evaluate_multi-2">evaluate_multi/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#factorial-1">factorial/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#float_to_integer-1">float_to_integer/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#float_to_integer-2">float_to_integer/2</a></td><td></td></tr>
@@ -248,12 +263,24 @@
 <tr><td valign="top"><a href="#sample_as_pairs_for-3">sample_as_pairs_for/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#sample_as_pairs_for-4">sample_as_pairs_for/4</a></td><td></td></tr>
 <tr><td valign="top"><a href="#sample_for-4">sample_for/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#sample_multi-4">sample_multi/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#sample_multi_as_pairs-3">sample_multi_as_pairs/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#sample_multi_as_pairs-4">sample_multi_as_pairs/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#sample_multi_as_pairs_for-3">sample_multi_as_pairs_for/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#sample_multi_as_pairs_for-4">sample_multi_as_pairs_for/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#sample_multi_for-4">sample_multi_for/4</a></td><td></td></tr>
 <tr><td valign="top"><a href="#sign-1">sign/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#square-1">square/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#squarify-1">squarify/1</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="any_bounds_to_string-1">any_bounds_to_string/1</a></h3>
+<div class="spec">
+<p><code>any_bounds_to_string(Bounds::<a href="#type-any_bounds" docgen-rel="seetype" docgen-href="#any_bounds/0">any_bounds()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="are_close-2">are_close/2</a></h3>
 <div class="spec">
@@ -324,6 +351,12 @@
 <h3 class="function"><a name="ceiling-1">ceiling/1</a></h3>
 <div class="spec">
 <p><code>ceiling(X::number()) -&gt; integer()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="check_any_bounds-1">check_any_bounds/1</a></h3>
+<div class="spec">
+<p><code>check_any_bounds(Bounds) -&gt; any()</code></p>
 <p> </p>
 </div>
 
@@ -399,6 +432,12 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="evaluate_multi-2">evaluate_multi/2</a></h3>
+<div class="spec">
+<p><code>evaluate_multi(Funs::[<a href="#type-float_to_float_fun" docgen-rel="seetype" docgen-href="#float_to_float_fun/0">float_to_float_fun()</a>], Abs::<a href="#type-abscissa" docgen-rel="seetype" docgen-href="#abscissa/0">abscissa()</a>) -&gt; {<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-float_result_value" docgen-rel="seetype" docgen-href="#float_result_value/0">float_result_value()</a>)}</code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="factorial-1">factorial/1</a></h3>
 <div class="spec">
 <p><code>factorial(N::non_neg_integer()) -&gt; pos_integer()</code><br></p>
@@ -450,7 +489,7 @@
 
 <h3 class="function"><a name="integer_bounds_to_string-1">integer_bounds_to_string/1</a></h3>
 <div class="spec">
-<p><code>integer_bounds_to_string(Bounds::<a href="#type-bounds" docgen-rel="seetype" docgen-href="#bounds/0">bounds()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p><code>integer_bounds_to_string(Bounds::<a href="#type-integer_bounds" docgen-rel="seetype" docgen-href="#integer_bounds/0">integer_bounds()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -590,6 +629,42 @@
 <h3 class="function"><a name="sample_for-4">sample_for/4</a></h3>
 <div class="spec">
 <p><code>sample_for(Fun::fun((number()) -&gt; T), StartPoint::number(), StopPoint::number(), SampleCount::<a href="#type-sample_count" docgen-rel="seetype" docgen-href="#sample_count/0">sample_count()</a>) -&gt; [T]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="sample_multi-4">sample_multi/4</a></h3>
+<div class="spec">
+<p><code>sample_multi(Funs::[fun((number()) -&gt; T)], StartPoint::number(), StopPoint::number(), Increment::number()) -&gt; [T]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="sample_multi_as_pairs-3">sample_multi_as_pairs/3</a></h3>
+<div class="spec">
+<p><code>sample_multi_as_pairs(Funs::[fun((number()) -&gt; T)], Bounds::<a href="#type-bounds" docgen-rel="seetype" docgen-href="#bounds/0">bounds()</a>, Increment::number()) -&gt; [{number(), <a href="#type-tuple" docgen-rel="seetype" docgen-href="#tuple/0">tuple</a>(T)}]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="sample_multi_as_pairs-4">sample_multi_as_pairs/4</a></h3>
+<div class="spec">
+<p><code>sample_multi_as_pairs(Funs::[fun((number()) -&gt; T)], StartPoint::number(), StopPoint::number(), Increment::number()) -&gt; [{number(), <a href="#type-tuple" docgen-rel="seetype" docgen-href="#tuple/0">tuple</a>(T)}]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="sample_multi_as_pairs_for-3">sample_multi_as_pairs_for/3</a></h3>
+<div class="spec">
+<p><code>sample_multi_as_pairs_for(Funs::[fun((number()) -&gt; T)], Bounds::<a href="#type-bounds" docgen-rel="seetype" docgen-href="#bounds/0">bounds()</a>, SampleCount::<a href="#type-sample_count" docgen-rel="seetype" docgen-href="#sample_count/0">sample_count()</a>) -&gt; [{number(), <a href="#type-tuple" docgen-rel="seetype" docgen-href="#tuple/0">tuple</a>(T)}]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="sample_multi_as_pairs_for-4">sample_multi_as_pairs_for/4</a></h3>
+<div class="spec">
+<p><code>sample_multi_as_pairs_for(Funs::[fun((number()) -&gt; T)], StartPoint::number(), StopPoint::number(), SampleCount::<a href="#type-sample_count" docgen-rel="seetype" docgen-href="#sample_count/0">sample_count()</a>) -&gt; [{number(), <a href="#type-tuple" docgen-rel="seetype" docgen-href="#tuple/0">tuple</a>(T)}]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="sample_multi_for-4">sample_multi_for/4</a></h3>
+<div class="spec">
+<p><code>sample_multi_for(Funs::[fun((number()) -&gt; T)], StartPoint::number(), StopPoint::number(), SampleCount::<a href="#type-sample_count" docgen-rel="seetype" docgen-href="#sample_count/0">sample_count()</a>) -&gt; [<a href="#type-tuple" docgen-rel="seetype" docgen-href="#tuple/0">tuple</a>(T)]</code><br></p>
 <p> </p>
 </div>
 

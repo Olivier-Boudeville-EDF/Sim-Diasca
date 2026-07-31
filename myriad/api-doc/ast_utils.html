@@ -31,6 +31,10 @@
 <p><code>error_reason() = <a href="basic_utils.html#type-error_reason" docgen-rel="seetype" docgen-href="basic_utils#error_reason/0">basic_utils:error_reason()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-fallible">fallible()</a></h3>
+<p><code>fallible(TSuccess) = <a href="basic_utils.html#type-fallible" docgen-rel="seetype" docgen-href="basic_utils#fallible/0">basic_utils:fallible</a>(TSuccess)</code></p>
+
+
 <h3 class="typedecl"><a name="type-file_loc">file_loc()</a></h3>
 <p><code>file_loc() = <a href="ast_base.html#type-file_loc" docgen-rel="seetype" docgen-href="ast_base#file_loc/0">ast_base:file_loc()</a></code></p>
 
@@ -105,6 +109,10 @@
 
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-value">value()</a></h3>
+<p><code>value() = <a href="type_utils.html#type-value" docgen-rel="seetype" docgen-href="type_utils#value/0">type_utils:value()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-void">void()</a></h3>
@@ -529,7 +537,7 @@
 
 <h3 class="function"><a name="string_to_value-1">string_to_value/1</a></h3>
 <div class="spec">
-<p><code>string_to_value(ExprStr::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; term()</code><br></p>
+<p><code>string_to_value(ExprStr::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; <a href="#type-fallible" docgen-rel="seetype" docgen-href="#fallible/0">fallible</a>(<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>)</code><br></p>
 <p> </p>
 </div>
 

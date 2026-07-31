@@ -15,6 +15,10 @@
 
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-any_color">any_color()</a></h3>
+<p><code>any_color() = <a href="gui_color.html#type-any_color" docgen-rel="seetype" docgen-href="gui_color#any_color/0">gui_color:any_color()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
 <p><code>any_file_path() = <a href="file_utils.html#type-any_file_path" docgen-rel="seetype" docgen-href="file_utils#any_file_path/0">file_utils:any_file_path()</a></code></p>
 
@@ -22,6 +26,14 @@
 <h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
 <p><code>any_string() = <a href="text_utils.html#type-any_string" docgen-rel="seetype" docgen-href="text_utils#any_string/0">text_utils:any_string()</a></code></p>
 
+
+<h3 class="typedecl"><a name="type-backend_fill_style">backend_fill_style()</a></h3>
+<p><code>backend_fill_style() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+<p> Default: "empty".</p>
+
+<h3 class="typedecl"><a name="type-backend_plot_style">backend_plot_style()</a></h3>
+<p><code>backend_plot_style() = linespoints | lines | points | boxes | histograms | filledcurves | fillsteps | atom()</code></p>
+<p> As many others exist.</p>
 
 <h3 class="typedecl"><a name="type-bin_command_file_name">bin_command_file_name()</a></h3>
 <p><code>bin_command_file_name() = <a href="#type-bin_file_name" docgen-rel="seetype" docgen-href="#bin_file_name/0">bin_file_name()</a></code></p>
@@ -63,8 +75,8 @@
 <p><code>bin_string() = <a href="text_utils.html#type-bin_string" docgen-rel="seetype" docgen-href="text_utils#bin_string/0">text_utils:bin_string()</a></code></p>
 
 
-<h3 class="typedecl"><a name="type-bounds">bounds()</a></h3>
-<p><code>bounds() = <a href="math_utils.html#type-bounds" docgen-rel="seetype" docgen-href="math_utils#bounds/0">math_utils:bounds()</a></code></p>
+<h3 class="typedecl"><a name="type-bound">bound()</a></h3>
+<p><code>bound() = <a href="math_utils.html#type-bound" docgen-rel="seetype" docgen-href="math_utils#bound/0">math_utils:bound()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-color">color()</a></h3>
@@ -156,8 +168,8 @@
 
 
 <h3 class="typedecl"><a name="type-fill_style">fill_style()</a></h3>
-<p><code>fill_style() = empty | term()</code></p>
-<p> to be further specified</p>
+<p><code>fill_style() = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-any_color" docgen-rel="seetype" docgen-href="#any_color/0">any_color()</a>)</code></p>
+
 
 <h3 class="typedecl"><a name="type-float_to_float_fun">float_to_float_fun()</a></h3>
 <p><code>float_to_float_fun() = <a href="math_utils.html#type-float_to_float_fun" docgen-rel="seetype" docgen-href="math_utils#float_to_float_fun/0">math_utils:float_to_float_fun()</a></code></p>
@@ -200,7 +212,7 @@
 
 
 <h3 class="typedecl"><a name="type-label_spec">label_spec()</a></h3>
-<p><code>label_spec() = {<a href="#type-label_text" docgen-rel="seetype" docgen-href="#label_text/0">label_text()</a>, <a href="#type-label_location" docgen-rel="seetype" docgen-href="#label_location/0">label_location()</a>} | {<a href="#type-label_text" docgen-rel="seetype" docgen-href="#label_text/0">label_text()</a>, <a href="#type-label_location" docgen-rel="seetype" docgen-href="#label_location/0">label_location()</a>, <a href="#type-user_point_style_spec" docgen-rel="seetype" docgen-href="#user_point_style_spec/0">user_point_style_spec()</a>}</code></p>
+<p><code>label_spec() = {<a href="#type-label_text" docgen-rel="seetype" docgen-href="#label_text/0">label_text()</a>, <a href="#type-label_location" docgen-rel="seetype" docgen-href="#label_location/0">label_location()</a>} | {<a href="#type-label_text" docgen-rel="seetype" docgen-href="#label_text/0">label_text()</a>, <a href="#type-label_location" docgen-rel="seetype" docgen-href="#label_location/0">label_location()</a>, <a href="#type-point_style" docgen-rel="seetype" docgen-href="#point_style/0">point_style()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-label_text">label_text()</a></h3>
@@ -209,6 +221,18 @@
 
 <h3 class="typedecl"><a name="type-list_table">list_table()</a></h3>
 <p><code>list_table(K, V) = <a href="list_table.html#type-list_table" docgen-rel="seetype" docgen-href="list_table#list_table/0">list_table:list_table</a>(K, V)</code></p>
+
+
+<h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
+<p><code>maybe_list(T) = <a href="basic_utils.html#type-maybe_list" docgen-rel="seetype" docgen-href="basic_utils#maybe_list/0">basic_utils:maybe_list</a>(T)</code></p>
+
+
+<h3 class="typedecl"><a name="type-plot_bound">plot_bound()</a></h3>
+<p><code>plot_bound() = <a href="math_utils.html#type-any_bounds" docgen-rel="seetype" docgen-href="math_utils#any_bounds/0">math_utils:any_bounds()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-plot_bounds">plot_bounds()</a></h3>
+<p><code>plot_bounds() = {MaybeMinBound::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-bound" docgen-rel="seetype" docgen-href="#bound/0">bound()</a>), MaybeMaxBound::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-bound" docgen-rel="seetype" docgen-href="#bound/0">bound()</a>)}</code></p>
 
 
 <h3 class="typedecl"><a name="type-plot_data">plot_data()</a></h3>
@@ -224,7 +248,7 @@
 
 
 <h3 class="typedecl"><a name="type-plot_label">plot_label()</a></h3>
-<p><code>plot_label() = #plot_label{text = <a href="plot_utils.html#type-label_text" docgen-rel="seetype" docgen-href="plot_utils#label_text/0">plot_utils:label_text()</a>, location = <a href="plot_utils.html#type-label_location" docgen-rel="seetype" docgen-href="plot_utils#label_location/0">plot_utils:label_location()</a>, color = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-label_color" docgen-rel="seetype" docgen-href="plot_utils#label_color/0">plot_utils:label_color()</a>), justification = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-label_justification" docgen-rel="seetype" docgen-href="plot_utils#label_justification/0">plot_utils:label_justification()</a>), orientation = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-label_orientation" docgen-rel="seetype" docgen-href="plot_utils#label_orientation/0">plot_utils:label_orientation()</a>), point = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-point_style_spec" docgen-rel="seetype" docgen-href="plot_utils#point_style_spec/0">plot_utils:point_style_spec()</a>)}</code></p>
+<p><code>plot_label() = #plot_label{text = <a href="plot_utils.html#type-label_text" docgen-rel="seetype" docgen-href="plot_utils#label_text/0">plot_utils:label_text()</a>, location = <a href="plot_utils.html#type-label_location" docgen-rel="seetype" docgen-href="plot_utils#label_location/0">plot_utils:label_location()</a>, color = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-label_color" docgen-rel="seetype" docgen-href="plot_utils#label_color/0">plot_utils:label_color()</a>), justification = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-label_justification" docgen-rel="seetype" docgen-href="plot_utils#label_justification/0">plot_utils:label_justification()</a>), orientation = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-label_orientation" docgen-rel="seetype" docgen-href="plot_utils#label_orientation/0">plot_utils:label_orientation()</a>), point_type = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-point_style" docgen-rel="seetype" docgen-href="plot_utils#point_style/0">plot_utils:point_style()</a>)}</code></p>
 
 
 <h3 class="typedecl"><a name="type-plot_meta_data">plot_meta_data()</a></h3>
@@ -236,11 +260,19 @@
 
 
 <h3 class="typedecl"><a name="type-plot_parameter">plot_parameter()</a></h3>
-<p><code>plot_parameter() = <a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a> | number()</code></p>
+<p><code>plot_parameter() = <a href="#type-plot_parameter_name" docgen-rel="seetype" docgen-href="#plot_parameter_name/0">plot_parameter_name()</a> | {<a href="#type-plot_parameter_name" docgen-rel="seetype" docgen-href="#plot_parameter_name/0">plot_parameter_name()</a>, <a href="#type-plot_parameter_value" docgen-rel="seetype" docgen-href="#plot_parameter_value/0">plot_parameter_value()</a>}</code></p>
 
 
-<h3 class="typedecl"><a name="type-plot_parameter_bin_string">plot_parameter_bin_string()</a></h3>
-<p><code>plot_parameter_bin_string() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
+<h3 class="typedecl"><a name="type-plot_parameter_name">plot_parameter_name()</a></h3>
+<p><code>plot_parameter_name() = atom()</code></p>
+
+
+<h3 class="typedecl"><a name="type-plot_parameter_value">plot_parameter_value()</a></h3>
+<p><code>plot_parameter_value() = term()</code></p>
+
+
+<h3 class="typedecl"><a name="type-plot_parametrisation">plot_parametrisation()</a></h3>
+<p><code>plot_parametrisation() = <a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-plot_parameter" docgen-rel="seetype" docgen-href="#plot_parameter/0">plot_parameter()</a>)</code></p>
 
 
 <h3 class="typedecl"><a name="type-plot_path">plot_path()</a></h3>
@@ -248,31 +280,43 @@
 
 
 <h3 class="typedecl"><a name="type-plot_point">plot_point()</a></h3>
-<p><code>plot_point() = {<a href="#type-plot_parameter" docgen-rel="seetype" docgen-href="#plot_parameter/0">plot_parameter()</a>, <a href="#type-plot_sample" docgen-rel="seetype" docgen-href="#plot_sample/0">plot_sample()</a>}</code></p>
+<p><code>plot_point() = {<a href="#type-sample_parameter" docgen-rel="seetype" docgen-href="#sample_parameter/0">sample_parameter()</a>, <a href="#type-plot_sample" docgen-rel="seetype" docgen-href="#plot_sample/0">plot_sample()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-plot_sample">plot_sample()</a></h3>
-<p><code>plot_sample() = <a href="type_utils.html#type-tuploid" docgen-rel="seetype" docgen-href="type_utils#tuploid/0">type_utils:tuploid</a>(<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-plot_value" docgen-rel="seetype" docgen-href="#plot_value/0">plot_value()</a>))</code></p>
+<p><code>plot_sample() = <a href="type_utils.html#type-tuploid" docgen-rel="seetype" docgen-href="type_utils#tuploid/0">type_utils:tuploid</a>(<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-sample_value" docgen-rel="seetype" docgen-href="#sample_value/0">sample_value()</a>))</code></p>
+
+
+<h3 class="typedecl"><a name="type-plot_setting_key">plot_setting_key()</a></h3>
+<p><code>plot_setting_key() = name | title | key_options | x_label | y_label | x_tick_options | y_tick_options | x_range | y_range | is_timestamped | x_ticks_timestamp_time_format | plot_style | symbol_scale | fill_style | curve_name | curve_names | labels | sampling_offset | extra_defines | canvas_width | canvas_height | image_format | plot_directory | plot_filename | display</code></p>
+
+
+<h3 class="typedecl"><a name="type-plot_setting_value">plot_setting_value()</a></h3>
+<p><code>plot_setting_value() = <a href="#type-plot_parametrisation" docgen-rel="seetype" docgen-href="#plot_parametrisation/0">plot_parametrisation()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-plot_settings">plot_settings()</a></h3>
-<p><code>plot_settings() = #plot_settings{name = <a href="plot_utils.html#type-bin_plot_name" docgen-rel="seetype" docgen-href="plot_utils#bin_plot_name/0">plot_utils:bin_plot_name()</a>, title = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="ui.html#type-bin_title" docgen-rel="seetype" docgen-href="ui#bin_title/0">ui:bin_title()</a>), key_options = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-key_options" docgen-rel="seetype" docgen-href="plot_utils#key_options/0">plot_utils:key_options()</a>), x_label = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-label_text" docgen-rel="seetype" docgen-href="plot_utils#label_text/0">plot_utils:label_text()</a>), y_label = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-label_text" docgen-rel="seetype" docgen-href="plot_utils#label_text/0">plot_utils:label_text()</a>), x_tick = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-tick_option" docgen-rel="seetype" docgen-href="plot_utils#tick_option/0">plot_utils:tick_option()</a>), y_tick = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-tick_option" docgen-rel="seetype" docgen-href="plot_utils#tick_option/0">plot_utils:tick_option()</a>), x_range = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>({<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="gui.html#type-coordinate" docgen-rel="seetype" docgen-href="gui#coordinate/0">gui:coordinate()</a>), <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="gui.html#type-coordinate" docgen-rel="seetype" docgen-href="gui#coordinate/0">gui:coordinate()</a>)}), y_range = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>({<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="gui.html#type-coordinate" docgen-rel="seetype" docgen-href="gui#coordinate/0">gui:coordinate()</a>), <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="gui.html#type-coordinate" docgen-rel="seetype" docgen-href="gui#coordinate/0">gui:coordinate()</a>)}), x_ticks = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-ticks_option" docgen-rel="seetype" docgen-href="plot_utils#ticks_option/0">plot_utils:ticks_option()</a>), is_timestamped = boolean(), x_ticks_timestamp_time_format = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-timestamp_time_format" docgen-rel="seetype" docgen-href="plot_utils#timestamp_time_format/0">plot_utils:timestamp_time_format()</a>), y_ticks = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-ticks_option" docgen-rel="seetype" docgen-href="plot_utils#ticks_option/0">plot_utils:ticks_option()</a>), plot_style = <a href="plot_utils.html#type-plot_style" docgen-rel="seetype" docgen-href="plot_utils#plot_style/0">plot_utils:plot_style()</a>, point_size = non_neg_integer(), fill_style = <a href="plot_utils.html#type-fill_style" docgen-rel="seetype" docgen-href="plot_utils#fill_style/0">plot_utils:fill_style()</a>, canvas_width = <a href="gui.html#type-width" docgen-rel="seetype" docgen-href="gui#width/0">gui:width()</a>, canvas_height = <a href="gui.html#type-height" docgen-rel="seetype" docgen-href="gui#height/0">gui:height()</a>, image_format = <a href="gui_image.html#type-image_format" docgen-rel="seetype" docgen-href="gui_image#image_format/0">gui_image:image_format()</a>, labels = [<a href="plot_utils.html#type-plot_label" docgen-rel="seetype" docgen-href="plot_utils#plot_label/0">plot_utils:plot_label()</a>], extra_defines = [<a href="text_utils.html#type-bin_string" docgen-rel="seetype" docgen-href="text_utils#bin_string/0">text_utils:bin_string()</a>], meta_data = <a href="plot_utils.html#type-plot_meta_data" docgen-rel="seetype" docgen-href="plot_utils#plot_meta_data/0">plot_utils:plot_meta_data()</a>, plot_directory = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="file_utils.html#type-bin_directory_name" docgen-rel="seetype" docgen-href="file_utils#bin_directory_name/0">file_utils:bin_directory_name()</a>), plot_filename = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="file_utils.html#type-bin_file_name" docgen-rel="seetype" docgen-href="file_utils#bin_file_name/0">file_utils:bin_file_name()</a>), curve_entries = [<a href="plot_utils.html#type-curve_entry" docgen-rel="seetype" docgen-href="plot_utils#curve_entry/0">plot_utils:curve_entry()</a>], zone_entries = [<a href="plot_utils.html#type-zone_entry" docgen-rel="seetype" docgen-href="plot_utils#zone_entry/0">plot_utils:zone_entry()</a>], row_format_string = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="text_utils.html#type-format_bin_string" docgen-rel="seetype" docgen-href="text_utils#format_bin_string/0">text_utils:format_bin_string()</a>)}</code></p>
+<p><code>plot_settings() = #plot_settings{name = <a href="plot_utils.html#type-bin_plot_name" docgen-rel="seetype" docgen-href="plot_utils#bin_plot_name/0">plot_utils:bin_plot_name()</a>, title = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="ui.html#type-bin_title" docgen-rel="seetype" docgen-href="ui#bin_title/0">ui:bin_title()</a>), key_options = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-key_options" docgen-rel="seetype" docgen-href="plot_utils#key_options/0">plot_utils:key_options()</a>), x_label = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-label_text" docgen-rel="seetype" docgen-href="plot_utils#label_text/0">plot_utils:label_text()</a>), y_label = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-label_text" docgen-rel="seetype" docgen-href="plot_utils#label_text/0">plot_utils:label_text()</a>), x_tick = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-tick_option" docgen-rel="seetype" docgen-href="plot_utils#tick_option/0">plot_utils:tick_option()</a>), y_tick = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-tick_option" docgen-rel="seetype" docgen-href="plot_utils#tick_option/0">plot_utils:tick_option()</a>), x_range = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>({<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(number()), <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(number())}), y_range = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>({<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(number()), <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(number())}), x_ticks = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-ticks_option" docgen-rel="seetype" docgen-href="plot_utils#ticks_option/0">plot_utils:ticks_option()</a>), is_timestamped = boolean(), x_ticks_timestamp_time_format = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-timestamp_time_format" docgen-rel="seetype" docgen-href="plot_utils#timestamp_time_format/0">plot_utils:timestamp_time_format()</a>), y_ticks = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="plot_utils.html#type-ticks_option" docgen-rel="seetype" docgen-href="plot_utils#ticks_option/0">plot_utils:ticks_option()</a>), plot_style = <a href="plot_utils.html#type-plot_style" docgen-rel="seetype" docgen-href="plot_utils#plot_style/0">plot_utils:plot_style()</a>, point_size = number(), fill_style = <a href="plot_utils.html#type-fill_style" docgen-rel="seetype" docgen-href="plot_utils#fill_style/0">plot_utils:fill_style()</a>, canvas_width = <a href="gui.html#type-width" docgen-rel="seetype" docgen-href="gui#width/0">gui:width()</a>, canvas_height = <a href="gui.html#type-height" docgen-rel="seetype" docgen-href="gui#height/0">gui:height()</a>, image_format = <a href="gui_image.html#type-image_format" docgen-rel="seetype" docgen-href="gui_image#image_format/0">gui_image:image_format()</a>, labels = [<a href="plot_utils.html#type-plot_label" docgen-rel="seetype" docgen-href="plot_utils#plot_label/0">plot_utils:plot_label()</a>], extra_defines = [<a href="text_utils.html#type-bin_string" docgen-rel="seetype" docgen-href="text_utils#bin_string/0">text_utils:bin_string()</a>], meta_data = <a href="plot_utils.html#type-plot_meta_data" docgen-rel="seetype" docgen-href="plot_utils#plot_meta_data/0">plot_utils:plot_meta_data()</a>, plot_directory = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="file_utils.html#type-bin_directory_name" docgen-rel="seetype" docgen-href="file_utils#bin_directory_name/0">file_utils:bin_directory_name()</a>), plot_filename = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="file_utils.html#type-bin_file_name" docgen-rel="seetype" docgen-href="file_utils#bin_file_name/0">file_utils:bin_file_name()</a>), curve_entries = [<a href="plot_utils.html#type-curve_entry" docgen-rel="seetype" docgen-href="plot_utils#curve_entry/0">plot_utils:curve_entry()</a>], zone_entries = [<a href="plot_utils.html#type-zone_entry" docgen-rel="seetype" docgen-href="plot_utils#zone_entry/0">plot_utils:zone_entry()</a>], row_format_string = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="text_utils.html#type-format_bin_string" docgen-rel="seetype" docgen-href="text_utils#format_bin_string/0">text_utils:format_bin_string()</a>)}</code></p>
+
+
+<h3 class="typedecl"><a name="type-plot_settings_entry">plot_settings_entry()</a></h3>
+<p><code>plot_settings_entry() = {<a href="#type-plot_setting_key" docgen-rel="seetype" docgen-href="#plot_setting_key/0">plot_setting_key()</a>, <a href="#type-plot_setting_value" docgen-rel="seetype" docgen-href="#plot_setting_value/0">plot_setting_value()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-plot_settings_table">plot_settings_table()</a></h3>
+<p><code>plot_settings_table() = <a href="list_table.html#type-list_table" docgen-rel="seetype" docgen-href="list_table#list_table/0">list_table:list_table</a>(<a href="#type-plot_setting_key" docgen-rel="seetype" docgen-href="#plot_setting_key/0">plot_setting_key()</a>, <a href="#type-plot_setting_value" docgen-rel="seetype" docgen-href="#plot_setting_value/0">plot_setting_value()</a>)</code></p>
 
 
 <h3 class="typedecl"><a name="type-plot_style">plot_style()</a></h3>
-<p><code>plot_style() = linespoints | lines | points | boxes | histograms | filledcurves | fillsteps | atom()</code></p>
-<p> As many others exist.</p>
-
-<h3 class="typedecl"><a name="type-plot_value">plot_value()</a></h3>
-<p><code>plot_value() = <a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a> | number()</code></p>
+<p><code>plot_style() = symbols_and_lines | symbols_only | lines_only | boxes | histograms | filled_curves | filled_steps</code></p>
 
 
 <h3 class="typedecl"><a name="type-point_size_factor">point_size_factor()</a></h3>
 <p><code>point_size_factor() = pos_integer()</code></p>
 
 
-<h3 class="typedecl"><a name="type-point_style_spec">point_style_spec()</a></h3>
-<p><code>point_style_spec() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
+<h3 class="typedecl"><a name="type-point_style">point_style()</a></h3>
+<p><code>point_style() = <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-rgb_hexastring">rgb_hexastring()</a></h3>
@@ -287,8 +331,24 @@
 <p><code>row_format_string() = <a href="#type-format_string" docgen-rel="seetype" docgen-href="#format_string/0">format_string()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-sample_parameter">sample_parameter()</a></h3>
+<p><code>sample_parameter() = <a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a> | number()</code></p>
+
+
+<h3 class="typedecl"><a name="type-sample_parameter_bin_string">sample_parameter_bin_string()</a></h3>
+<p><code>sample_parameter_bin_string() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-sample_value">sample_value()</a></h3>
+<p><code>sample_value() = <a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a> | number()</code></p>
+
+
 <h3 class="typedecl"><a name="type-special_curve_id">special_curve_id()</a></h3>
 <p><code>special_curve_id() = abscissa_top | abscissa_bottom</code></p>
+
+
+<h3 class="typedecl"><a name="type-symbol_spec">symbol_spec()</a></h3>
+<p><code>symbol_spec() = boolean() | dot | plus | times | star | square_empty | square_filled | circle | disc | up_triangle_empty | up_triangle_filled | down_triangle_empty | down_triangle_filled | diamond_empty | diamond_filled | down_arrow_empty | down_arrow_filled</code></p>
 
 
 <h3 class="typedecl"><a name="type-tick_option">tick_option()</a></h3>
@@ -327,18 +387,13 @@
 <p><code>user_plot_path() = <a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a></code></p>
 
 
-<h3 class="typedecl"><a name="type-user_point_style_spec">user_point_style_spec()</a></h3>
-<p><code>user_point_style_spec() = <a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a> | boolean()</code></p>
-
-
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-warning_message">warning_message()</a></h3>
 <p><code>warning_message() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
-<p> Any warning (still a success case, plot was generated) message issued when
- trying to generate a plot.</p>
+
 
 <h3 class="typedecl"><a name="type-zone_entry">zone_entry()</a></h3>
 <p><code>zone_entry() = {<a href="#type-zone_name" docgen-rel="seetype" docgen-href="#zone_name/0">zone_name()</a>, {<a href="#type-extended_curve_id" docgen-rel="seetype" docgen-href="#extended_curve_id/0">extended_curve_id()</a>, <a href="#type-extended_curve_id" docgen-rel="seetype" docgen-href="#extended_curve_id/0">extended_curve_id()</a>}, <a href="#type-zone_plot_suffix" docgen-rel="seetype" docgen-href="#zone_plot_suffix/0">zone_plot_suffix()</a>}</code></p>
@@ -364,10 +419,13 @@
 <tr><td valign="top"><a href="#generate_command_file-1">generate_command_file/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#generate_data_file-2">generate_data_file/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_basic_options-1">get_basic_options/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_command_filename-1">get_command_filename/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_data_filename-1">get_data_filename/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_default_curve_plot_suffix-0">get_default_curve_plot_suffix/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_default_plot_settings-0">get_default_plot_settings/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_default_plot_settings-1">get_default_plot_settings/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_default_zone_plot_suffix-0">get_default_zone_plot_suffix/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_escaped_text-1">get_escaped_text/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_formatted_orientation-1">get_formatted_orientation/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_gnuplot_reference_version-0">get_gnuplot_reference_version/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_label_definitions-1">get_label_definitions/1</a></td><td></td></tr>
@@ -382,13 +440,20 @@
 <tr><td valign="top"><a href="#get_y_range_option-1">get_y_range_option/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_y_ticks_option-1">get_y_ticks_option/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_yticks_option-1">get_yticks_option/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#label-2">label/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#label-3">label/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#label-6">label/6</a></td><td></td></tr>
+<tr><td valign="top"><a href="#plot-2">plot/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#plot-3">plot/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#plot-4">plot/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#plot_multi-3">plot_multi/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#plot_multi-4">plot_multi/4</a></td><td></td></tr>
 <tr><td valign="top"><a href="#plot_samples-2">plot_samples/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#plot_samples-3">plot_samples/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#remove_labels-1">remove_labels/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#set_key_options-2">set_key_options/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#set_plot_name-2">set_plot_name/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_point_count-2">set_point_count/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#set_title-2">set_title/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#set_x_label-2">set_x_label/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#set_y_label-2">set_y_label/2</a></td><td></td></tr>
@@ -407,13 +472,13 @@
 
 <h3 class="function"><a name="add_label-4">add_label/4</a></h3>
 <div class="spec">
-<p><code>add_label(Text::<a href="#type-label_text" docgen-rel="seetype" docgen-href="#label_text/0">label_text()</a>, Location::<a href="#type-label_location" docgen-rel="seetype" docgen-href="#label_location/0">label_location()</a>, UsrPtStyleSpec::<a href="#type-user_point_style_spec" docgen-rel="seetype" docgen-href="#user_point_style_spec/0">user_point_style_spec()</a>, PlotSettings::<a href="#type-plot_settings" docgen-rel="seetype" docgen-href="#plot_settings/0">plot_settings()</a>) -&gt; <a href="#type-plot_settings" docgen-rel="seetype" docgen-href="#plot_settings/0">plot_settings()</a></code><br></p>
+<p><code>add_label(Text::<a href="#type-label_text" docgen-rel="seetype" docgen-href="#label_text/0">label_text()</a>, Location::<a href="#type-label_location" docgen-rel="seetype" docgen-href="#label_location/0">label_location()</a>, UsrPtStyleSpec::<a href="#type-symbol_spec" docgen-rel="seetype" docgen-href="#symbol_spec/0">symbol_spec()</a>, PlotSettings::<a href="#type-plot_settings" docgen-rel="seetype" docgen-href="#plot_settings/0">plot_settings()</a>) -&gt; <a href="#type-plot_settings" docgen-rel="seetype" docgen-href="#plot_settings/0">plot_settings()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="add_label-7">add_label/7</a></h3>
 <div class="spec">
-<p><code>add_label(Text, Location, Color, Justification, Orientation, UsrPtStyleSpec, PlotSettings) -&gt; any()</code></p>
+<p><code>add_label(Text::<a href="#type-label_text" docgen-rel="seetype" docgen-href="#label_text/0">label_text()</a>, Location::<a href="#type-label_location" docgen-rel="seetype" docgen-href="#label_location/0">label_location()</a>, Color::<a href="#type-label_color" docgen-rel="seetype" docgen-href="#label_color/0">label_color()</a>, Justification::<a href="#type-label_justification" docgen-rel="seetype" docgen-href="#label_justification/0">label_justification()</a>, Orientation::<a href="#type-label_orientation" docgen-rel="seetype" docgen-href="#label_orientation/0">label_orientation()</a>, UsrPtStyleSpec::<a href="#type-symbol_spec" docgen-rel="seetype" docgen-href="#symbol_spec/0">symbol_spec()</a>, PlotSettings::<a href="#type-plot_settings" docgen-rel="seetype" docgen-href="#plot_settings/0">plot_settings()</a>) -&gt; <a href="#type-plot_settings" docgen-rel="seetype" docgen-href="#plot_settings/0">plot_settings()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -465,6 +530,18 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="get_command_filename-1">get_command_filename/1</a></h3>
+<div class="spec">
+<p><code>get_command_filename(Name::<a href="#type-plot_name" docgen-rel="seetype" docgen-href="#plot_name/0">plot_name()</a>) -&gt; <a href="#type-bin_file_name" docgen-rel="seetype" docgen-href="#bin_file_name/0">bin_file_name()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_data_filename-1">get_data_filename/1</a></h3>
+<div class="spec">
+<p><code>get_data_filename(Name::<a href="#type-plot_name" docgen-rel="seetype" docgen-href="#plot_name/0">plot_name()</a>) -&gt; <a href="#type-bin_file_name" docgen-rel="seetype" docgen-href="#bin_file_name/0">bin_file_name()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="get_default_curve_plot_suffix-0">get_default_curve_plot_suffix/0</a></h3>
 <div class="spec">
 <p><code>get_default_curve_plot_suffix() -&gt; <a href="#type-curve_plot_suffix" docgen-rel="seetype" docgen-href="#curve_plot_suffix/0">curve_plot_suffix()</a></code><br></p>
@@ -486,6 +563,12 @@
 <h3 class="function"><a name="get_default_zone_plot_suffix-0">get_default_zone_plot_suffix/0</a></h3>
 <div class="spec">
 <p><code>get_default_zone_plot_suffix() -&gt; <a href="#type-curve_plot_suffix" docgen-rel="seetype" docgen-href="#curve_plot_suffix/0">curve_plot_suffix()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_escaped_text-1">get_escaped_text/1</a></h3>
+<div class="spec">
+<p><code>get_escaped_text(Text::<a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -573,15 +656,51 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="label-2">label/2</a></h3>
+<div class="spec">
+<p><code>label(Text::<a href="#type-label_text" docgen-rel="seetype" docgen-href="#label_text/0">label_text()</a>, Location::<a href="#type-label_location" docgen-rel="seetype" docgen-href="#label_location/0">label_location()</a>) -&gt; <a href="#type-plot_label" docgen-rel="seetype" docgen-href="#plot_label/0">plot_label()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="label-3">label/3</a></h3>
+<div class="spec">
+<p><code>label(Text::<a href="#type-label_text" docgen-rel="seetype" docgen-href="#label_text/0">label_text()</a>, Location::<a href="#type-label_location" docgen-rel="seetype" docgen-href="#label_location/0">label_location()</a>, SymbolSpec::<a href="#type-symbol_spec" docgen-rel="seetype" docgen-href="#symbol_spec/0">symbol_spec()</a>) -&gt; <a href="#type-plot_label" docgen-rel="seetype" docgen-href="#plot_label/0">plot_label()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="label-6">label/6</a></h3>
+<div class="spec">
+<p><code>label(Text::<a href="#type-label_text" docgen-rel="seetype" docgen-href="#label_text/0">label_text()</a>, Location::<a href="#type-label_location" docgen-rel="seetype" docgen-href="#label_location/0">label_location()</a>, Color::<a href="#type-label_color" docgen-rel="seetype" docgen-href="#label_color/0">label_color()</a>, Justification::<a href="#type-label_justification" docgen-rel="seetype" docgen-href="#label_justification/0">label_justification()</a>, Orientation::<a href="#type-label_orientation" docgen-rel="seetype" docgen-href="#label_orientation/0">label_orientation()</a>, SymbolSpec::<a href="#type-symbol_spec" docgen-rel="seetype" docgen-href="#symbol_spec/0">symbol_spec()</a>) -&gt; <a href="#type-plot_label" docgen-rel="seetype" docgen-href="#plot_label/0">plot_label()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="plot-2">plot/2</a></h3>
+<div class="spec">
+<p><code>plot(FunsToPlot::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-plot_function" docgen-rel="seetype" docgen-href="#plot_function/0">plot_function()</a>), PlotSettingsTable::<a href="#type-plot_settings_table" docgen-rel="seetype" docgen-href="#plot_settings_table/0">plot_settings_table()</a>) -&gt; <a href="#type-plot_generation_outcome" docgen-rel="seetype" docgen-href="#plot_generation_outcome/0">plot_generation_outcome()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="plot-3">plot/3</a></h3>
 <div class="spec">
-<p><code>plot(FunToPlot::<a href="#type-plot_function" docgen-rel="seetype" docgen-href="#plot_function/0">plot_function()</a>, Bounds::<a href="#type-bounds" docgen-rel="seetype" docgen-href="#bounds/0">bounds()</a>, MaybePlotSettings::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-plot_settings" docgen-rel="seetype" docgen-href="#plot_settings/0">plot_settings()</a>)) -&gt; <a href="#type-plot_generation_outcome" docgen-rel="seetype" docgen-href="#plot_generation_outcome/0">plot_generation_outcome()</a></code><br></p>
+<p><code>plot(FunToPlot::<a href="#type-plot_function" docgen-rel="seetype" docgen-href="#plot_function/0">plot_function()</a>, Bounds::<a href="#type-plot_bounds" docgen-rel="seetype" docgen-href="#plot_bounds/0">plot_bounds()</a>, MaybePlotSettings::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-plot_settings" docgen-rel="seetype" docgen-href="#plot_settings/0">plot_settings()</a>)) -&gt; <a href="#type-plot_generation_outcome" docgen-rel="seetype" docgen-href="#plot_generation_outcome/0">plot_generation_outcome()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="plot-4">plot/4</a></h3>
 <div class="spec">
-<p><code>plot(FunToPlot::<a href="#type-plot_function" docgen-rel="seetype" docgen-href="#plot_function/0">plot_function()</a>, Bounds::<a href="#type-bounds" docgen-rel="seetype" docgen-href="#bounds/0">bounds()</a>, MaybePlotSettings::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-plot_settings" docgen-rel="seetype" docgen-href="#plot_settings/0">plot_settings()</a>), DoDisplay::boolean()) -&gt; <a href="#type-plot_generation_outcome" docgen-rel="seetype" docgen-href="#plot_generation_outcome/0">plot_generation_outcome()</a></code><br></p>
+<p><code>plot(FunToPlot::<a href="#type-plot_function" docgen-rel="seetype" docgen-href="#plot_function/0">plot_function()</a>, Bounds::<a href="#type-plot_bounds" docgen-rel="seetype" docgen-href="#plot_bounds/0">plot_bounds()</a>, MaybePlotSettings::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-plot_settings" docgen-rel="seetype" docgen-href="#plot_settings/0">plot_settings()</a>), DoDisplay::boolean()) -&gt; <a href="#type-plot_generation_outcome" docgen-rel="seetype" docgen-href="#plot_generation_outcome/0">plot_generation_outcome()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="plot_multi-3">plot_multi/3</a></h3>
+<div class="spec">
+<p><code>plot_multi(FunsToPlot::[<a href="#type-plot_function" docgen-rel="seetype" docgen-href="#plot_function/0">plot_function()</a>], Bounds::<a href="#type-plot_bounds" docgen-rel="seetype" docgen-href="#plot_bounds/0">plot_bounds()</a>, MaybePlotSettings::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-plot_settings" docgen-rel="seetype" docgen-href="#plot_settings/0">plot_settings()</a>)) -&gt; <a href="#type-plot_generation_outcome" docgen-rel="seetype" docgen-href="#plot_generation_outcome/0">plot_generation_outcome()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="plot_multi-4">plot_multi/4</a></h3>
+<div class="spec">
+<p><code>plot_multi(FunsToPlot::[<a href="#type-plot_function" docgen-rel="seetype" docgen-href="#plot_function/0">plot_function()</a>], Bounds::<a href="#type-plot_bounds" docgen-rel="seetype" docgen-href="#plot_bounds/0">plot_bounds()</a>, MaybePlotSettings::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-plot_settings" docgen-rel="seetype" docgen-href="#plot_settings/0">plot_settings()</a>), DoDisplay::boolean()) -&gt; <a href="#type-plot_generation_outcome" docgen-rel="seetype" docgen-href="#plot_generation_outcome/0">plot_generation_outcome()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -612,6 +731,12 @@
 <h3 class="function"><a name="set_plot_name-2">set_plot_name/2</a></h3>
 <div class="spec">
 <p><code>set_plot_name(UsrPlotName::<a href="#type-user_plot_name" docgen-rel="seetype" docgen-href="#user_plot_name/0">user_plot_name()</a>, PlotSettings::<a href="#type-plot_settings" docgen-rel="seetype" docgen-href="#plot_settings/0">plot_settings()</a>) -&gt; <a href="#type-plot_settings" docgen-rel="seetype" docgen-href="#plot_settings/0">plot_settings()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_point_count-2">set_point_count/2</a></h3>
+<div class="spec">
+<p><code>set_point_count(PointCount::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>, PlotSettings::<a href="#type-plot_settings" docgen-rel="seetype" docgen-href="#plot_settings/0">plot_settings()</a>) -&gt; <a href="#type-plot_settings" docgen-rel="seetype" docgen-href="#plot_settings/0">plot_settings()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -647,7 +772,7 @@
 
 <h3 class="function"><a name="write_row-3">write_row/3</a></h3>
 <div class="spec">
-<p><code>write_row(File::<a href="#type-file" docgen-rel="seetype" docgen-href="#file/0">file()</a>, PlotParamBinStr::<a href="#type-plot_parameter_bin_string" docgen-rel="seetype" docgen-href="#plot_parameter_bin_string/0">plot_parameter_bin_string()</a>, PlotSample::<a href="#type-plot_sample" docgen-rel="seetype" docgen-href="#plot_sample/0">plot_sample()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p><code>write_row(File::<a href="#type-file" docgen-rel="seetype" docgen-href="#file/0">file()</a>, SampleParamBinStr::<a href="#type-sample_parameter_bin_string" docgen-rel="seetype" docgen-href="#sample_parameter_bin_string/0">sample_parameter_bin_string()</a>, PlotSample::<a href="#type-plot_sample" docgen-rel="seetype" docgen-href="#plot_sample/0">plot_sample()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
 </div>
 <hr>

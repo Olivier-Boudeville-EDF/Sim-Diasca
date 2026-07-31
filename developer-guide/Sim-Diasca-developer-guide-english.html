@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.16: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.21.2: https://docutils.sourceforge.io/" />
 <title>Sim-Diasca Developer Guide</title>
 <link rel="stylesheet" href="pygments-default.css" type="text/css" />
 <link rel="stylesheet" href="sim-diasca.css" type="text/css" />
@@ -17,12 +17,12 @@
 <p><span class="raw-html"><a name="sim_diasca_top"></a></span></p>
 <p><span class="raw-html"><center><table><tr colspan="2"><center><img src="sim-diasca.png" style="width:500px"></center></tr><tr><td><center><img src="logo-EDF-english.png" style="width:150px"></center></td><td><center><img src="lgpl-v3-logo-bordered.png" style="width:140px"></center></td></tr></table></span></p>
 <p></p>
-<p><span class="raw-html"><div class="banner"><p><em>Sim-Diasca Developer Guide</em> <a href="https://olivier-boudeville-edf.github.io/Sim-Diasca/">browse latest</a> <a href="Sim-Diasca-developer-guide-english.pdf">get PDF</a> <a href="#sim_diasca_top">go to top</a> <a href="#sim_diasca_toc">go to toc</a> <a href="#sim_diasca_bottom">go to bottom</a> <a href="https://github.com/Olivier-Boudeville-EDF/Sim-Diasca">go to project</a> <a href="mailto:olivier(dot)boudeville(at)edf(dot)fr?subject=[Sim-Diasca]%20Remark%20about%20the%20developer%20guide">email us</a></p></div></span></p>
+<p><span class="raw-html"><div class="banner"><p><em>Sim-Diasca Developer Guide</em> <a href="https://edf-lab.github.io/Sim-Diasca/">browse latest</a> <a href="Sim-Diasca-developer-guide-english.pdf">get PDF</a> <a href="#sim_diasca_top">go to top</a> <a href="#sim_diasca_toc">go to toc</a> <a href="#sim_diasca_bottom">go to bottom</a> <a href="https://github.com/EDF-Lab/Sim-Diasca">go to project</a> <a href="mailto:olivier(dot)boudeville(at)edf(dot)fr?subject=[Sim-Diasca]%20Remark%20about%20the%20developer%20guide">email us</a></p></div></span></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Organisation:</th><td class="field-body">Copyright (C) 2008-2025 EDF R&amp;D</td>
+<tr class="field"><th class="field-name">Organisation:</th><td class="field-body">Copyright (C) 2008-2026 EDF R&amp;D</td>
 </tr>
 <tr class="field"><th class="field-name">Contact:</th><td class="field-body">olivier (dot) boudeville (at) edf (dot) fr</td>
 </tr>
@@ -30,9 +30,9 @@
 </tr>
 <tr class="field"><th class="field-name">Creation Date:</th><td class="field-body">February 2009</td>
 </tr>
-<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Friday, July 18, 2025</td>
+<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Friday, July 31, 2026</td>
 </tr>
-<tr class="field"><th class="field-name">Version:</th><td class="field-body">2.4.8</td>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body">2.4.9</td>
 </tr>
 <tr class="field"><th class="field-name">Status:</th><td class="field-body">Stable</td>
 </tr>
@@ -48,66 +48,66 @@
 <p></p>
 <p><span class="raw-html"><a name="sim_diasca_toc"></a></span></p>
 <div class="contents topic" id="table-of-contents">
-<p class="topic-title"><strong>Table of Contents</strong></p>
+<p class="topic-title"><a class="reference internal" href="#top"><strong>Table of Contents</strong></a></p>
 <ul class="simple">
-<li><a class="reference internal" href="#sim-diasca-code-conventions" id="id31">Sim-Diasca Code Conventions</a><ul>
-<li><a class="reference internal" href="#foreword" id="id32">Foreword</a></li>
-<li><a class="reference internal" href="#text-conventions" id="id33">Text Conventions</a></li>
-<li><a class="reference internal" href="#general-view-of-the-software-stack" id="id34">General View of the Software Stack</a></li>
-<li><a class="reference internal" href="#erlang-conventions" id="id35">Erlang Conventions</a></li>
-<li><a class="reference internal" href="#myriad-conventions" id="id36">Myriad Conventions</a></li>
-<li><a class="reference internal" href="#wooper-conventions" id="id37">WOOPER Conventions</a></li>
-<li><a class="reference internal" href="#traces-conventions" id="id38">Traces Conventions</a></li>
-<li><a class="reference internal" href="#sim-diasca-conventions" id="id39">Sim-Diasca Conventions</a><ul>
-<li><a class="reference internal" href="#thou-shalt-not-bypass-the-simulation-engine" id="id40">Thou Shalt Not Bypass The Simulation Engine</a><ul>
-<li><a class="reference internal" href="#proper-inter-actor-communication" id="id41">Proper Inter-Actor Communication</a></li>
-<li><a class="reference internal" href="#proper-actor-life-cycle" id="id42">Proper Actor Life-Cycle</a></li>
+<li><a class="reference internal" href="#sim-diasca-code-conventions" id="toc-entry-1">Sim-Diasca Code Conventions</a><ul>
+<li><a class="reference internal" href="#foreword" id="toc-entry-2">Foreword</a></li>
+<li><a class="reference internal" href="#text-conventions" id="toc-entry-3">Text Conventions</a></li>
+<li><a class="reference internal" href="#general-view-of-the-software-stack" id="toc-entry-4">General View of the Software Stack</a></li>
+<li><a class="reference internal" href="#erlang-conventions" id="toc-entry-5">Erlang Conventions</a></li>
+<li><a class="reference internal" href="#myriad-conventions" id="toc-entry-6">Myriad Conventions</a></li>
+<li><a class="reference internal" href="#wooper-conventions" id="toc-entry-7">WOOPER Conventions</a></li>
+<li><a class="reference internal" href="#traces-conventions" id="toc-entry-8">Traces Conventions</a></li>
+<li><a class="reference internal" href="#sim-diasca-conventions" id="toc-entry-9">Sim-Diasca Conventions</a><ul>
+<li><a class="reference internal" href="#thou-shalt-not-bypass-the-simulation-engine" id="toc-entry-10">Thou Shalt Not Bypass The Simulation Engine</a><ul>
+<li><a class="reference internal" href="#proper-inter-actor-communication" id="toc-entry-11">Proper Inter-Actor Communication</a></li>
+<li><a class="reference internal" href="#proper-actor-life-cycle" id="toc-entry-12">Proper Actor Life-Cycle</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#actor-scheduling" id="id43">Actor Scheduling</a><ul>
-<li><a class="reference internal" href="#id14" id="id44">Basics</a></li>
-<li><a class="reference internal" href="#id21" id="id45">Actor Scheduling</a></li>
-<li><a class="reference internal" href="#planning-future-spontaneous-behaviour" id="id46">Planning Future Spontaneous Behaviour</a></li>
+<li><a class="reference internal" href="#actor-scheduling" id="toc-entry-13">Actor Scheduling</a><ul>
+<li><a class="reference internal" href="#basics-1" id="toc-entry-14">Basics</a></li>
+<li><a class="reference internal" href="#actor-scheduling-1" id="toc-entry-15">Actor Scheduling</a></li>
+<li><a class="reference internal" href="#planning-future-spontaneous-behaviour" id="toc-entry-16">Planning Future Spontaneous Behaviour</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#data-management" id="id47">Data Management</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#sim-diasca-implementation-spotlights" id="id48">Sim-Diasca Implementation Spotlights</a><ul>
-<li><a class="reference internal" href="#about-erlang-nodes-and-simulation-identifiers" id="id49">About Erlang Nodes and Simulation Identifiers</a><ul>
-<li><a class="reference internal" href="#how-many-erlang-nodes-are-involved-in-a-simulation" id="id50">How Many Erlang Nodes Are Involved in a Simulation?</a></li>
-<li><a class="reference internal" href="#how-are-launched-the-erlang-nodes" id="id51">How Are Launched the Erlang nodes?</a></li>
-<li><a class="reference internal" href="#what-is-the-simulation-instance-identifier" id="id52">What is the <em>Simulation Instance Identifier</em>?</a></li>
-<li><a class="reference internal" href="#how-erlang-nodes-are-named" id="id53">How Erlang nodes are named?</a></li>
-<li><a class="reference internal" href="#how-is-it-ensured-that-no-two-simulations-can-interfere" id="id54">How Is It Ensured that No Two Simulations Can Interfere?</a></li>
+<li><a class="reference internal" href="#data-management" id="toc-entry-17">Data Management</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#sim-diasca-technical-gotchas" id="id55">Sim-Diasca Technical Gotchas</a><ul>
-<li><a class="reference internal" href="#the-code-was-updated-yet-seems-to-linger" id="id56">The Code Was Updated, Yet Seems To Linger</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#developer-hints" id="id57">Developer Hints</a><ul>
-<li><a class="reference internal" href="#choosing-the-right-datastructures" id="id58">Choosing The Right Datastructures</a></li>
-<li><a class="reference internal" href="#running-bullet-proof-experiments" id="id59">Running Bullet-Proof Experiments</a></li>
-<li><a class="reference internal" href="#using-type-specifications-with-sim-diasca" id="id60">Using Type Specifications With Sim-Diasca</a><ul>
-<li><a class="reference internal" href="#type-specifications-what-for" id="id61">Type Specifications: What For?</a></li>
-<li><a class="reference internal" href="#type-specifications-how" id="id62">Type Specifications: How?</a><ul>
-<li><a class="reference internal" href="#prerequisites" id="id63">Prerequisites</a></li>
-<li><a class="reference internal" href="#expressing-type-specifications" id="id64">Expressing Type Specifications</a></li>
-<li><a class="reference internal" href="#checking-type-specifications" id="id65">Checking Type Specifications</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#references" id="id66">References</a></li>
+<li><a class="reference internal" href="#sim-diasca-implementation-spotlights" id="toc-entry-18">Sim-Diasca Implementation Spotlights</a><ul>
+<li><a class="reference internal" href="#about-erlang-nodes-and-simulation-identifiers" id="toc-entry-19">About Erlang Nodes and Simulation Identifiers</a><ul>
+<li><a class="reference internal" href="#how-many-erlang-nodes-are-involved-in-a-simulation" id="toc-entry-20">How Many Erlang Nodes Are Involved in a Simulation?</a></li>
+<li><a class="reference internal" href="#how-are-launched-the-erlang-nodes" id="toc-entry-21">How Are Launched the Erlang nodes?</a></li>
+<li><a class="reference internal" href="#what-is-the-simulation-instance-identifier" id="toc-entry-22">What is the <em>Simulation Instance Identifier</em>?</a></li>
+<li><a class="reference internal" href="#how-erlang-nodes-are-named" id="toc-entry-23">How Erlang nodes are named?</a></li>
+<li><a class="reference internal" href="#how-is-it-ensured-that-no-two-simulations-can-interfere" id="toc-entry-24">How Is It Ensured that No Two Simulations Can Interfere?</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id30" id="id67">Credits</a></li>
-<li><a class="reference internal" href="#what-to-do-next" id="id68">What To Do Next?</a></li>
+<li><a class="reference internal" href="#sim-diasca-technical-gotchas" id="toc-entry-25">Sim-Diasca Technical Gotchas</a><ul>
+<li><a class="reference internal" href="#the-code-was-updated-yet-seems-to-linger" id="toc-entry-26">The Code Was Updated, Yet Seems To Linger</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#developer-hints" id="toc-entry-27">Developer Hints</a><ul>
+<li><a class="reference internal" href="#choosing-the-right-datastructures" id="toc-entry-28">Choosing The Right Datastructures</a></li>
+<li><a class="reference internal" href="#running-bullet-proof-experiments" id="toc-entry-29">Running Bullet-Proof Experiments</a></li>
+<li><a class="reference internal" href="#using-type-specifications-with-sim-diasca" id="toc-entry-30">Using Type Specifications With Sim-Diasca</a><ul>
+<li><a class="reference internal" href="#type-specifications-what-for" id="toc-entry-31">Type Specifications: What For?</a></li>
+<li><a class="reference internal" href="#type-specifications-how" id="toc-entry-32">Type Specifications: How?</a><ul>
+<li><a class="reference internal" href="#prerequisites" id="toc-entry-33">Prerequisites</a></li>
+<li><a class="reference internal" href="#expressing-type-specifications" id="toc-entry-34">Expressing Type Specifications</a></li>
+<li><a class="reference internal" href="#checking-type-specifications" id="toc-entry-35">Checking Type Specifications</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#references" id="toc-entry-36">References</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#credits-1" id="toc-entry-37">Credits</a></li>
+<li><a class="reference internal" href="#what-to-do-next" id="toc-entry-38">What To Do Next?</a></li>
 </ul>
 </div>
 <p></p>
@@ -118,9 +118,9 @@
 <p class="last">As we believe that these conventions may benefit to third-party users, we share them as well.</p>
 </div>
 <div class="section" id="sim-diasca-code-conventions">
-<h1><a class="toc-backref" href="#id31">Sim-Diasca Code Conventions</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-1">Sim-Diasca Code Conventions</a></h1>
 <div class="section" id="foreword">
-<h2><a class="toc-backref" href="#id32">Foreword</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-2">Foreword</a></h2>
 <p>At all levels of the technical architecture, we tried to enforce a few conventions, that are detailed below.</p>
 <p>Some of them are necessary, others are mere good practices, a few are arbitrary (notably in terms of style), but we believe that, for the sake of clarity and homogeneity, all of them should be respected in the code of the Sim-Diasca stack, and preferably also in code using it (typically models, tools, etc.).</p>
 <p><span class="raw-html"><center><img src="xkcd-code_quality.png"></img></center></span>
@@ -131,7 +131,7 @@
 </p>
 </div>
 <div class="section" id="text-conventions">
-<h2><a class="toc-backref" href="#id33">Text Conventions</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-3">Text Conventions</a></h2>
 <p>We now recommend to directly stick to the <a class="reference external" href="http://myriad.esperide.org/#myriad-main-conventions">Myriad ones</a> <a class="reference external" href="https://olivier-boudeville.github.io/Ceylan-Myriad/#myriad-main-conventions">[mirror]</a>.</p>
 <p><span class="raw-html"><center><img src="xkcd-real_programmers.png"></img></center></span>
 </p>
@@ -143,7 +143,7 @@
 <p></p>
 </div>
 <div class="section" id="general-view-of-the-software-stack">
-<h2><a class="toc-backref" href="#id34">General View of the Software Stack</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-4">General View of the Software Stack</a></h2>
 <p>We see Sim-Diasca as a stack of layers, so that a given layer only depends on the ones below it, and never from the ones above.</p>
 <p>Top-to-bottom, we have:</p>
 <p><span class="raw-html"><center></span></p>
@@ -183,7 +183,7 @@
 <li><a class="reference external" href="https://olivier-boudeville.github.io/Ceylan-Myriad/">Myriad</a>, which gathers all common services that are needed, in terms of data-structures, lower-level constructs, most frequent processings, etc.</li>
 <li><a class="reference external" href="https://olivier-boudeville.github.io/Ceylan-Myriad/">WOOPER</a>, which transforms Erlang processes into instances of classes with multiple inheritance, still running concurrently</li>
 <li><a class="reference external" href="https://olivier-boudeville.github.io/Ceylan-Myriad/">Traces</a>, which allows each distributed instance to send appropriate traces</li>
-<li><a class="reference external" href="https://olivier-boudeville-edf.github.io/Sim-Diasca/">Sim-Diasca</a>, which transforms a distributed object-oriented application into a simulation</li>
+<li><a class="reference external" href="https://edf-lab.github.io/Sim-Diasca/">Sim-Diasca</a>, which transforms a distributed object-oriented application into a simulation</li>
 </ul>
 <p>On top of that stack, which provides the simulation engine, there are at least:</p>
 <ul class="simple">
@@ -195,14 +195,14 @@
 <p></p>
 </div>
 <div class="section" id="erlang-conventions">
-<h2><a class="toc-backref" href="#id35">Erlang Conventions</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-5">Erlang Conventions</a></h2>
 <p><span class="raw-html"><center><img src="xkcd-parenthesis.png"></img></center></span>
 </p>
 <p>The most obvious conventions are:</p>
 <ul class="simple">
 <li>the <strong>settings of the build chain</strong> should be used (e.g. with regard to compiler flags) and adapted/completed if needed; the (possibly-specialised) <tt class="docutils literal">GNUmakesettings.inc</tt>,  <tt class="docutils literal">GNUmakerules.inc</tt> and <tt class="docutils literal">GNUmakevars.inc</tt> files should be relied upon</li>
 <li><strong>no warning should be tolerated</strong>; anyway now our build chain treats warnings as (blocking) errors</li>
-<li><strong>test cases</strong> should be developed alongside most if not all modules <a class="footnote-reference" href="#id2" id="id1">[1]</a>; e.g. if developing <tt class="docutils literal">class_X.erl</tt>, then probably the <tt class="docutils literal">class_X_test.erl</tt> testing code should be developed, after or, preferably, before the implementation of the tested code; test success should be evaluated automatically, by the code (e.g. thanks to pattern matching), not by the person running the test (e.g. who would have to compare visually the actual results with the expected ones); in some cases, only <strong>integrated tests</strong> can be devised in practice; tests should be gathered in <strong>test suites</strong>, that should be runnable automatically (<tt class="docutils literal">make test</tt>) and fail loudly (and in a blocking manner) at the first error met</li>
+<li><strong>test cases</strong> should be developed alongside most if not all modules <a class="footnote-reference" href="#footnote-1" id="footnote-reference-1">[1]</a>; e.g. if developing <tt class="docutils literal">class_X.erl</tt>, then probably the <tt class="docutils literal">class_X_test.erl</tt> testing code should be developed, after or, preferably, before the implementation of the tested code; test success should be evaluated automatically, by the code (e.g. thanks to pattern matching), not by the person running the test (e.g. who would have to compare visually the actual results with the expected ones); in some cases, only <strong>integrated tests</strong> can be devised in practice; tests should be gathered in <strong>test suites</strong>, that should be runnable automatically (<tt class="docutils literal">make test</tt>) and fail loudly (and in a blocking manner) at the first error met</li>
 <li><strong>multiple levels of quality documentation</strong> should be made available to the code user, and probably be written in parallel to the code; there are at least three documentation levels:<ul>
 <li>lower-level documentation: code should always be <strong>densely commented</strong>, with headers added to all functions, inlined comments (not paraphrasing the code) and self-describing symbols: function names, variable names (e.g. <tt class="docutils literal"><span class="pre">RegisteredState=...</span></tt> to be preferred to <tt class="docutils literal"><span class="pre">NewState=...</span></tt>), etc.; more generally all names shall be long enough to be descriptive (clarity preferred over compactness); type specifications also pertain to this low-level documentation effort</li>
 <li>higher-level <strong>design and/or implementation notes</strong>: they should be available as a set of paragraphs in each source file, before the function definitions, to help understanding how the features are implemented, and why</li>
@@ -237,10 +237,10 @@
 </ul>
 </li>
 </ul>
-<table class="docutils footnote" frame="void" id="id2" rules="none">
+<table class="docutils footnote" frame="void" id="footnote-1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>In terms of directories, the source of modules (<tt class="docutils literal">*.erl</tt>) shall be in <tt class="docutils literal">src</tt>, the includes (<tt class="docutils literal">*.hrl</tt>) in <tt class="docutils literal">include</tt>, the tests (<tt class="docutils literal">*_test.erl</tt>) in <tt class="docutils literal">test</tt> - in each case, either directly in the specified directory, or at any depth in nested subdirectories.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-1">[1]</a></td><td>In terms of directories, the source of modules (<tt class="docutils literal">*.erl</tt>) shall be in <tt class="docutils literal">src</tt>, the includes (<tt class="docutils literal">*.hrl</tt>) in <tt class="docutils literal">include</tt>, the tests (<tt class="docutils literal">*_test.erl</tt>) in <tt class="docutils literal">test</tt> - in each case, either directly in the specified directory, or at any depth in nested subdirectories.</td></tr>
 </tbody>
 </table>
 <div class="admonition note">
@@ -274,7 +274,7 @@ Of course we cannot stress enough that securing a sufficient code quality is ess
 <p></p>
 </div>
 <div class="section" id="myriad-conventions">
-<h2><a class="toc-backref" href="#id36">Myriad Conventions</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-6">Myriad Conventions</a></h2>
 <p>The general goal is to collect recurring generic lower-level patterns and solutions in that layer.</p>
 <p>When an helper mechanism is already available in <tt class="docutils literal">Myriad</tt>, it should be used instead of being defined multiple times in the software stack.</p>
 <p>Reciprocally, when a well-defined generic sequence of instructions is used more than once, it should be integrated (commented and tested) in that <tt class="docutils literal">Myriad</tt> layer.</p>
@@ -285,21 +285,21 @@ Of course we cannot stress enough that securing a sufficient code quality is ess
 <li>support of some math-related operations, mostly linear (in <tt class="docutils literal">maths</tt>)</li>
 <li>various helpers, for system-related operations, text management, network operations, executable support, unit management, etc. (in <tt class="docutils literal">utils</tt>)</li>
 </ul>
-<p>For further information, please refer to the <strong>Technical Manual of the Myriad Layer</strong> <a class="footnote-reference" href="#id4" id="id3">[2]</a>.</p>
-<table class="docutils footnote" frame="void" id="id4" rules="none">
+<p>For further information, please refer to the <strong>Technical Manual of the Myriad Layer</strong> <a class="footnote-reference" href="#footnote-2" id="footnote-reference-2">[2]</a>.</p>
+<table class="docutils footnote" frame="void" id="footnote-2" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3">[2]</a></td><td>It can be generated by running <tt class="docutils literal">make <span class="pre">full-doc</span></tt> from <tt class="docutils literal">myriad/doc</tt>.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-2">[2]</a></td><td>It can be generated by running <tt class="docutils literal">make <span class="pre">full-doc</span></tt> from <tt class="docutils literal">myriad/doc</tt>.</td></tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="wooper-conventions">
-<h2><a class="toc-backref" href="#id37">WOOPER Conventions</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-7">WOOPER Conventions</a></h2>
 <p>One should respect the WOOPER conventions (please refer to the <a class="reference external" href="http://wooper.esperide.org/">WOOPER</a> documentation).</p>
 <p>For example,  <tt class="docutils literal">oneway</tt>, <tt class="docutils literal">request</tt> or <tt class="docutils literal">helper function</tt> (possibly with qualifiers like <tt class="docutils literal">const</tt>) should be specified in each method header.</p>
 <p>WOOPER type conventions shall be used as well, for example:</p>
 <pre class="code erlang literal-block">
-<span class="p">-</span><span class="ni">spec</span> <span class="n">getFoo</span><span class="p">(</span> <span class="nn">wooper</span><span class="p">:</span><span class="nf">state</span><span class="p">()</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">request_return</span><span class="p">(</span> <span class="n">foo</span><span class="p">()</span> <span class="p">).</span>
+<span class="p">-</span><span class="ni">spec</span><span class="w"> </span><span class="n">getFoo</span><span class="p">(</span><span class="w"> </span><span class="nn">wooper</span><span class="p">:</span><span class="nf">state</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">request_return</span><span class="p">(</span><span class="w"> </span><span class="n">foo</span><span class="p">()</span><span class="w"> </span><span class="p">).</span>
 </pre>
 <p>Method names should be spelled in <tt class="docutils literal">CamelCase</tt> (e.g. <tt class="docutils literal">getColorOf</tt>, not <tt class="docutils literal">get_color_of</tt>).</p>
 <p>Variables bound to a WOOPER state shall have their name suffixed with <tt class="docutils literal">State</tt>; e.g. <tt class="docutils literal">NewState</tt>, <tt class="docutils literal">UpdatedState</tt>, etc.</p>
@@ -311,20 +311,20 @@ Of course we cannot stress enough that securing a sufficient code quality is ess
 </ul>
 <p>Example:</p>
 <pre class="code erlang literal-block">
-<span class="c">% The class-specific attributes of an instance of this class are:
-</span><span class="p">-</span><span class="ni">define</span><span class="p">(</span> <span class="n">class_attributes</span><span class="p">,</span> <span class="p">[</span>
+<span class="c">% The class-specific attributes of an instance of this class are:</span><span class="w">
+</span><span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="w"> </span><span class="n">class_attributes</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="w">
 
-   <span class="p">{</span> <span class="n">current_step</span><span class="p">,</span> <span class="n">step_count</span><span class="p">(),</span>
-     <span class="s">&quot;current step at which the experiment is&quot;</span> <span class="p">},</span>
+   </span><span class="p">{</span><span class="w"> </span><span class="n">current_step</span><span class="p">,</span><span class="w"> </span><span class="n">step_count</span><span class="p">(),</span><span class="w">
+     </span><span class="s">&quot;current step at which the experiment is&quot;</span><span class="w"> </span><span class="p">},</span><span class="w">
 
-   <span class="p">[...]</span>
+   </span><span class="p">[...]</span><span class="w">
 
-<span class="p">]).</span>
+</span><span class="p">]).</span>
 </pre>
 <p></p>
 </div>
 <div class="section" id="traces-conventions">
-<h2><a class="toc-backref" href="#id38">Traces Conventions</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-8">Traces Conventions</a></h2>
 <p>So that log messages can be kept track of over time, a distributed trace system is provided, with relevant components: trace emitter, listener, supervisor, aggregator, etc.</p>
 <p>At implementation time, one just has to choose:</p>
 <ul class="simple">
@@ -340,11 +340,11 @@ Of course we cannot stress enough that securing a sufficient code quality is ess
 </ul>
 <p>At execution time, the command-line option <tt class="docutils literal"><span class="pre">--batch</span></tt> can be specified, which causes all interactive elements to be disabled, including any trace supervisor (like the LogMX browser). It can be specified that way:</p>
 <pre class="code bash literal-block">
-$ make my_case_run <span class="nv">CMD_LINE_OPT</span><span class="o">=</span><span class="s2">&quot;--batch&quot;</span>
+$<span class="w"> </span>make<span class="w"> </span>my_case_run<span class="w"> </span><span class="nv">CMD_LINE_OPT</span><span class="o">=</span><span class="s2">&quot;--batch&quot;</span>
 </pre>
 <p>For convenience, often the developer defines in his shell environment file <tt class="docutils literal">export <span class="pre">BATCH='CMD_LINE_OPT=&quot;--batch&quot;'</span></tt>, so that he can make use of this shorthand instead:</p>
 <pre class="code bash literal-block">
-$ make my_case_run <span class="nv">$BATCH</span>
+$<span class="w"> </span>make<span class="w"> </span>my_case_run<span class="w"> </span><span class="nv">$BATCH</span>
 </pre>
 <p>(this is very convenient when debugging brand new code: before having to peer at the traces, runtime errors may occur, and the relevant information, like the stack trace, the actual parameters and the current instance state will be displayed on the console)</p>
 <p>The trace system has been designed with performance and scalability in mind, thus if disabled no per-instance overhead penalty will be incurred at all, and, if enabled, efforts have been made so that as large as possible a number of traces are to be managed by the trace system, for any given resources in terms of network, memory and processing.</p>
@@ -357,16 +357,16 @@ $ make my_case_run <span class="nv">$BATCH</span>
 <p></p>
 </div>
 <div class="section" id="sim-diasca-conventions">
-<h2><a class="toc-backref" href="#id39">Sim-Diasca Conventions</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-9">Sim-Diasca Conventions</a></h2>
 <p>In this section the conventions to be respected with regard to Sim-Diasca are detailed.</p>
 <div class="section" id="thou-shalt-not-bypass-the-simulation-engine">
-<h3><a class="toc-backref" href="#id40">Thou Shalt Not Bypass The Simulation Engine</a></h3>
+<h3><a class="toc-backref" href="#toc-entry-10">Thou Shalt Not Bypass The Simulation Engine</a></h3>
 <p>The Sim-Diasca services should be used whenever applicable. Notably, bypassing the simulation mechanisms (for actor creation, communication, deletion, etc.) is absolutely prohibited, as essential properties, like the respect of causality, would then be lost.</p>
 <p>Such a short-time &quot;simplification&quot; would be considered still more harmful than others like the use of the <tt class="docutils literal">goto</tt> statement in <tt class="docutils literal">C</tt>:</p>
 <p><span class="raw-html"><center><img src="xkcd-goto.png"></img></center></span>
 </p>
 <div class="section" id="proper-inter-actor-communication">
-<h4><a class="toc-backref" href="#id41">Proper Inter-Actor Communication</a></h4>
+<h4><a class="toc-backref" href="#toc-entry-11">Proper Inter-Actor Communication</a></h4>
 <p>To implement the communication between two actors, neither plain Erlang messages nor arbitrary WOOPER messages can be used: as we aim to develop a distributed <em>simulation</em>, as opposed to a mere distributed <em>application</em>, we have to make use of the Sim-Diasca mechanisms for automatic inter-actor message reordering.</p>
 <p>This means that, for inter-actor communication purpose, <em>only</em> the following helper functions shall be used:</p>
 <ul class="simple">
@@ -376,7 +376,7 @@ $ make my_case_run <span class="nv">$BATCH</span>
 <p>Of course one may rely on higher-level specialization layers, making use of Sim-Diasca but providing another API. The point is that inter-actor messages should be ultimately managed by Sim-Diasca, rather than being sent directly with the <tt class="docutils literal">!</tt> operator provided by Erlang.</p>
 </div>
 <div class="section" id="proper-actor-life-cycle">
-<h4><a class="toc-backref" href="#id42">Proper Actor Life-Cycle</a></h4>
+<h4><a class="toc-backref" href="#toc-entry-12">Proper Actor Life-Cycle</a></h4>
 <p>Very similarly, life-cycle of actors should be ultimately managed by the engine, not directly by the developer: the creation and termination of actors must respect the conventions detailed below.</p>
 <div class="section" id="proper-actor-creation">
 <h5>Proper Actor Creation</h5>
@@ -386,7 +386,7 @@ $ make my_case_run <span class="nv">$BATCH</span>
 <p>Whether an actor is initial or not, construction parameters are to be supplied for its creation.</p>
 <p>These construction parameters will be specified as a list, for example <tt class="docutils literal">[_Age=5,_Gender=male]</tt>. The matching constructor <em>must</em> then be in the form of:</p>
 <pre class="code erlang literal-block">
-<span class="nf">construct</span><span class="p">(</span> <span class="nv">State</span><span class="p">,</span> <span class="nv">ActorSettings</span><span class="p">,</span> <span class="nv">P1</span><span class="p">,</span> <span class="nv">P2</span> <span class="p">)</span> <span class="o">-&gt;</span>
+<span class="nf">construct</span><span class="p">(</span><span class="w"> </span><span class="nv">State</span><span class="p">,</span><span class="w"> </span><span class="nv">ActorSettings</span><span class="p">,</span><span class="w"> </span><span class="nv">P1</span><span class="p">,</span><span class="w"> </span><span class="nv">P2</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span>
 </pre>
 <p>Note that two additional initial parameters appear here:</p>
 <ul class="simple">
@@ -395,51 +395,51 @@ $ make my_case_run <span class="nv">$BATCH</span>
 </ul>
 <p>So a typical constructor for a model <tt class="docutils literal">class_M1</tt>, inheriting from, for example, <tt class="docutils literal">class_SpecialisedActor</tt> and from classes <tt class="docutils literal">class_C1</tt> and <tt class="docutils literal">class_C2</tt>, could be:</p>
 <pre class="code erlang literal-block">
-<span class="c">% Constructs a new instance of class_M1:
-</span><span class="nf">construct</span><span class="p">(</span> <span class="nv">State</span><span class="p">,</span> <span class="nv">ActorSettings</span><span class="p">,</span> <span class="nv">P1</span><span class="p">,</span> <span class="nv">P2</span><span class="p">,</span> <span class="p">...</span> <span class="p">)</span> <span class="o">-&gt;</span>
-  <span class="c">% Will result ultimately in a call to
-</span>  <span class="c">% class_Actor:construct( State, ActorSettings, AName ):
-</span>  <span class="nv">SpecialisedState</span> <span class="o">=</span> <span class="nn">class_SpecialisedActor</span><span class="p">:</span><span class="nf">construct</span><span class="p">(</span> <span class="nv">State</span><span class="p">,</span>
-   <span class="nv">ActorSettings</span><span class="p">,</span> <span class="p">...</span> <span class="p">),</span>
-  <span class="nv">C1State</span> <span class="o">=</span> <span class="nn">class_C1</span><span class="p">:</span><span class="nf">construct</span><span class="p">(</span> <span class="nv">SpecialisedState</span><span class="p">,</span> <span class="nv">P1</span><span class="p">,</span> <span class="p">...</span> <span class="p">),</span>
-  <span class="nv">C2State</span> <span class="o">=</span> <span class="nn">class_C2</span><span class="p">:</span><span class="nf">construct</span><span class="p">(</span> <span class="nv">C1State</span><span class="p">,</span> <span class="nv">P1</span><span class="p">,</span> <span class="nv">P2</span><span class="p">,</span> <span class="p">...</span> <span class="p">),</span>
-  <span class="p">[...]</span>
-  <span class="nv">FinalState</span><span class="p">.</span>
+<span class="c">% Constructs a new instance of class_M1:</span><span class="w">
+</span><span class="nf">construct</span><span class="p">(</span><span class="w"> </span><span class="nv">State</span><span class="p">,</span><span class="w"> </span><span class="nv">ActorSettings</span><span class="p">,</span><span class="w"> </span><span class="nv">P1</span><span class="p">,</span><span class="w"> </span><span class="nv">P2</span><span class="p">,</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">
+  </span><span class="c">% Will result ultimately in a call to</span><span class="w">
+  </span><span class="c">% class_Actor:construct( State, ActorSettings, AName ):</span><span class="w">
+  </span><span class="nv">SpecialisedState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">class_SpecialisedActor</span><span class="p">:</span><span class="nf">construct</span><span class="p">(</span><span class="w"> </span><span class="nv">State</span><span class="p">,</span><span class="w">
+   </span><span class="nv">ActorSettings</span><span class="p">,</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">),</span><span class="w">
+  </span><span class="nv">C1State</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">class_C1</span><span class="p">:</span><span class="nf">construct</span><span class="p">(</span><span class="w"> </span><span class="nv">SpecialisedState</span><span class="p">,</span><span class="w"> </span><span class="nv">P1</span><span class="p">,</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">),</span><span class="w">
+  </span><span class="nv">C2State</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">class_C2</span><span class="p">:</span><span class="nf">construct</span><span class="p">(</span><span class="w"> </span><span class="nv">C1State</span><span class="p">,</span><span class="w"> </span><span class="nv">P1</span><span class="p">,</span><span class="w"> </span><span class="nv">P2</span><span class="p">,</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">),</span><span class="w">
+  </span><span class="p">[...]</span><span class="w">
+  </span><span class="nv">FinalState</span><span class="p">.</span>
 </pre>
 <p>Note how states are chained (one being built on top of the other), from the blank, initial one (<tt class="docutils literal">State</tt>) to the one corresponding to the complete initial state of the instance (<tt class="docutils literal">FinalState</tt>), as returned by the constructor.</p>
 <p>We strongly encourage the use of type specifications, which would be here:</p>
 <pre class="code erlang literal-block">
-<span class="p">-</span><span class="ni">spec</span> <span class="n">construct</span><span class="p">(</span> <span class="nn">wooper</span><span class="p">:</span><span class="nf">state</span><span class="p">(),</span> <span class="nn">class_Actor</span><span class="p">:</span><span class="nf">actor_settings</span><span class="p">(),</span>
-     <span class="n">type_of_p1</span><span class="p">(),</span> <span class="n">type_of_p2</span><span class="p">()</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="nn">wooper</span><span class="p">:</span><span class="nf">state</span><span class="p">().</span>
+<span class="p">-</span><span class="ni">spec</span><span class="w"> </span><span class="n">construct</span><span class="p">(</span><span class="w"> </span><span class="nn">wooper</span><span class="p">:</span><span class="nf">state</span><span class="p">(),</span><span class="w"> </span><span class="nn">class_Actor</span><span class="p">:</span><span class="nf">actor_settings</span><span class="p">(),</span><span class="w">
+     </span><span class="n">type_of_p1</span><span class="p">(),</span><span class="w"> </span><span class="n">type_of_p2</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nn">wooper</span><span class="p">:</span><span class="nf">state</span><span class="p">().</span>
 </pre>
 <div class="section" id="initial-actor-creation">
 <h6>Initial Actor Creation</h6>
 <div class="section" id="basics">
-<h7>Basics</h7>
+<h6 class="h7">Basics</h6>
 <p>An abstraction API is available to create from a simulation case <em>initial</em> actors, i.e. bootstrapping actors, which are created before the simulation is started.</p>
 <p>It is generally based on the <tt class="docutils literal">class_Actor:create_initial_actor/2</tt> static method:</p>
 <pre class="code erlang literal-block">
-<span class="nv">ActorPid</span> <span class="o">=</span> <span class="nn">class_Actor</span><span class="p">:</span><span class="nf">create_initial_actor</span><span class="p">(</span> <span class="nv">ActorClassName</span><span class="p">,</span>
-   <span class="nv">ActorConstructionParameters</span> <span class="p">)</span>
+<span class="nv">ActorPid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">class_Actor</span><span class="p">:</span><span class="nf">create_initial_actor</span><span class="p">(</span><span class="w"> </span><span class="nv">ActorClassName</span><span class="p">,</span><span class="w">
+   </span><span class="nv">ActorConstructionParameters</span><span class="w"> </span><span class="p">)</span>
 </pre>
 <p>For example, in <tt class="docutils literal">my_example_test.erl</tt> we could have:</p>
 <pre class="code erlang literal-block">
-<span class="nv">ActorPid</span> <span class="o">=</span> <span class="nn">class_Actor</span><span class="p">:</span><span class="nf">create_initial_actor</span><span class="p">(</span> <span class="n">class_PinkFlamingo</span><span class="p">,</span>
-  <span class="p">[</span> <span class="p">_</span><span class="nv">Age</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="p">_</span><span class="nv">Gender</span><span class="o">=</span><span class="n">male</span> <span class="p">]</span> <span class="p">)</span>
+<span class="nv">ActorPid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">class_Actor</span><span class="p">:</span><span class="nf">create_initial_actor</span><span class="p">(</span><span class="w"> </span><span class="n">class_PinkFlamingo</span><span class="p">,</span><span class="w">
+  </span><span class="p">[</span><span class="w"> </span><span class="p">_</span><span class="nv">Age</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="p">_</span><span class="nv">Gender</span><span class="o">=</span><span class="n">male</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">)</span>
 </pre>
 <p>Should multiple initial actors have to be created, using this method would be less than optimal, as the load-balancer would be looked-up in the process registry at each call of this static method, which, if creating thousands of actors in a row, could induce some overhead.</p>
 <p>Therefore a more efficient alternative is available, the  <tt class="docutils literal">class_Actor:create_initial_actor/3</tt> static method, for which the PID of the load-balancer is to be specified as a parameter, having thus to be looked-up only once in the simulation case:</p>
 <pre class="code erlang literal-block">
-<span class="nv">LoadBalancerPid</span> <span class="o">=</span> <span class="nv">LoadBalancer</span><span class="p">:</span><span class="nf">get_balancer</span><span class="p">(),</span>
-<span class="nv">FirstActorPid</span> <span class="o">=</span>  <span class="nn">class_Actor</span><span class="p">:</span><span class="nf">create_initial_actor</span><span class="p">(</span> <span class="nv">Class1</span><span class="p">,</span> <span class="nv">Parameters1</span><span class="p">,</span>
-  <span class="nv">LoadBalancerPid</span><span class="p">),</span>
-<span class="nv">SecondActorPid</span> <span class="o">=</span> <span class="nn">class_Actor</span><span class="p">:</span><span class="nf">create_initial_actor</span><span class="p">(</span> <span class="nv">Class2</span><span class="p">,</span> <span class="nv">Parameters2</span><span class="p">,</span>
-  <span class="nv">LoadBalancerPid</span><span class="p">),</span>
-<span class="p">[...]</span>
+<span class="nv">LoadBalancerPid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">LoadBalancer</span><span class="p">:</span><span class="nf">get_balancer</span><span class="p">(),</span><span class="w">
+</span><span class="nv">FirstActorPid</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="nn">class_Actor</span><span class="p">:</span><span class="nf">create_initial_actor</span><span class="p">(</span><span class="w"> </span><span class="nv">Class1</span><span class="p">,</span><span class="w"> </span><span class="nv">Parameters1</span><span class="p">,</span><span class="w">
+  </span><span class="nv">LoadBalancerPid</span><span class="p">),</span><span class="w">
+</span><span class="nv">SecondActorPid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">class_Actor</span><span class="p">:</span><span class="nf">create_initial_actor</span><span class="p">(</span><span class="w"> </span><span class="nv">Class2</span><span class="p">,</span><span class="w"> </span><span class="nv">Parameters2</span><span class="p">,</span><span class="w">
+  </span><span class="nv">LoadBalancerPid</span><span class="p">),</span><span class="w">
+</span><span class="p">[...]</span>
 </pre>
 </div>
 <div class="section" id="multiple-parallel-creations">
-<h7>Multiple Parallel Creations</h7>
+<h6 class="h7">Multiple Parallel Creations</h6>
 <p>A typical use case is to load from any source (file, database, etc.) a set of construction parameters for a large number of instances.</p>
 <p>For larger cases, creating actors sequentially may lead to very significant simulation start-up durations.</p>
 <p>In such cases, <tt class="docutils literal">class_Actor:create_initial_actor/1</tt> should be used instead : then a smart, parallel, batched creation will be done, allowing to create all instances as efficiently as reasonably possible.</p>
@@ -447,7 +447,7 @@ $ make my_case_run <span class="nv">$BATCH</span>
 <p>For non-programmatic, file-based initialisation, we strongly recommend using our rather advanced loading system, as described in the technical guide (see its <tt class="docutils literal"><span class="pre">Sim-Diasca</span> Management of Simulation Inputs</tt> section).</p>
 </div>
 <div class="section" id="synchronicity">
-<h7>Synchronicity</h7>
+<h6 class="h7">Synchronicity</h6>
 <p>All initial operations (i.e. all operations to be triggered before the simulation starts) must be synchronous, to ensure they are indeed finished once the simulation is run: the simulation case has to wait for their completion before greenlighting the start the simulation.</p>
 <p>This involves the use of:</p>
 <ul class="simple">
@@ -457,19 +457,19 @@ $ make my_case_run <span class="nv">$BATCH</span>
 <p>Otherwise there could be a race condition between the end of these initial operations (which may take any time) and the triggering of the simulation start (a message which, without flow control, could be sent too early by the simulation case).</p>
 </div>
 <div class="section" id="nested-creations">
-<h7>Nested Creations</h7>
+<h6 class="h7">Nested Creations</h6>
 <p>When creating initial actors, we might find useful to create an actor A that would create in turn other initial actors, and so on (nested creations).</p>
-<p>This is possible, however these creations should not be directly done from the constructor of A, as this would lead to a systematic deadlock by design <a class="footnote-reference" href="#id8" id="id6">[3]</a>. Some solutions have been identified, but they were not satisfactory enough <a class="footnote-reference" href="#id9" id="id7">[4]</a>.</p>
-<table class="docutils footnote" frame="void" id="id8" rules="none">
+<p>This is possible, however these creations should not be directly done from the constructor of A, as this would lead to a systematic deadlock by design <a class="footnote-reference" href="#footnote-3" id="footnote-reference-3">[3]</a>. Some solutions have been identified, but they were not satisfactory enough <a class="footnote-reference" href="#footnote-4" id="footnote-reference-4">[4]</a>.</p>
+<table class="docutils footnote" frame="void" id="footnote-3" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id6">[3]</a></td><td>A deadlock will occur because the load balancer will be blocked waiting for the creation of actor A to finish, thus paying no attention to the requested creations in-between, while they themselves are waited for the creation of A to complete.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-3">[3]</a></td><td>A deadlock will occur because the load balancer will be blocked waiting for the creation of actor A to finish, thus paying no attention to the requested creations in-between, while they themselves are waited for the creation of A to complete.</td></tr>
 </tbody>
 </table>
-<table class="docutils footnote" frame="void" id="id9" rules="none">
+<table class="docutils footnote" frame="void" id="footnote-4" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id7">[4]</a></td><td><p class="first">A non-blocking solution could be to have a load balancer that does not wait for an instance to acknowledge that its spawn is over: the load balancer would thus return immediately and keep track of the <tt class="docutils literal">spawn_successful</tt> message (interpreted as a oneway) that it should receive before the simulation starts.</p>
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-4">[4]</a></td><td><p class="first">A non-blocking solution could be to have a load balancer that does not wait for an instance to acknowledge that its spawn is over: the load balancer would thus return immediately and keep track of the <tt class="docutils literal">spawn_successful</tt> message (interpreted as a oneway) that it should receive before the simulation starts.</p>
 <p class="last">However in that case no total order in actor creation seems to be possibly guaranteed: actor A could create B and C, which themselves could, after some processing, create others actors. As a consequence B and C would create them concurrently, and, depending on various contextual factors, their creation requests could be received by the load balancer in no particular order, leading to a given actor bearing different AAI from one run to another. Nested creations would thus be obtained at the expense of reproducibility, which is not wanted.</p>
 </td></tr>
 </tbody>
@@ -477,12 +477,12 @@ $ make my_case_run <span class="nv">$BATCH</span>
 <p>Instead, the constructor of A should just create A and return, and the actual creations of other actors should be triggered by a subsequent method call (a request, not a oneway, as explained in the <a class="reference internal" href="#synchronicity">Synchronicity</a> section).</p>
 <p>For example, in <tt class="docutils literal">my_creation_test.erl</tt>, we could have:</p>
 <pre class="code erlang literal-block">
-<span class="p">[...]</span>
-<span class="nv">ActorAPid</span> <span class="o">=</span> <span class="nn">class_Actor</span><span class="p">:</span><span class="nf">create_initial_actor</span><span class="p">(</span> <span class="nv">ClassA</span><span class="p">,</span>
-   <span class="nv">ParametersForA</span> <span class="p">),</span>
-<span class="nv">ActorAPid</span> <span class="o">!</span> <span class="p">{</span> <span class="n">createDependingActors</span><span class="p">,</span> <span class="p">[],</span> <span class="n">self</span><span class="p">()</span> <span class="p">},</span>
-<span class="n">actors_created</span> <span class="o">=</span> <span class="n">test_receive</span><span class="p">(),</span>
-<span class="p">[...]</span>
+<span class="p">[...]</span><span class="w">
+</span><span class="nv">ActorAPid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">class_Actor</span><span class="p">:</span><span class="nf">create_initial_actor</span><span class="p">(</span><span class="w"> </span><span class="nv">ClassA</span><span class="p">,</span><span class="w">
+   </span><span class="nv">ParametersForA</span><span class="w"> </span><span class="p">),</span><span class="w">
+</span><span class="nv">ActorAPid</span><span class="w"> </span><span class="o">!</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">createDependingActors</span><span class="p">,</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="n">self</span><span class="p">()</span><span class="w"> </span><span class="p">},</span><span class="w">
+</span><span class="n">actors_created</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">test_receive</span><span class="p">(),</span><span class="w">
+</span><span class="p">[...]</span>
 </pre>
 <p>Note that <tt class="docutils literal">test_receive/0</tt> corresponds to a safer form than <tt class="docutils literal">receive {wooper_result, R} <span class="pre">-&gt;</span> R end</tt>. It is logically equivalent, but immune to interfering messages that could be sent to the simulation case by other Sim-Diasca services (e.g. notifications from the trace supervisor).</p>
 </div>
@@ -492,9 +492,9 @@ $ make my_case_run <span class="nv">$BATCH</span>
 <p>Once the simulation is started, an actor can <em>only</em> be created by another one (for example it then cannot be created directly by the simulation case itself), so that a correct simulation time can be enforced.</p>
 <p>The creating actor should call the <tt class="docutils literal">class_Actor:create_actor/3</tt> helper function for that creation, like in:</p>
 <pre class="code erlang literal-block">
-<span class="nv">CreationState</span> <span class="o">=</span> <span class="nn">class_Actor</span><span class="p">:</span><span class="nf">create_actor</span><span class="p">(</span> <span class="nv">Classname</span><span class="p">,</span>
-   <span class="nv">ConstructionParameters</span><span class="p">,</span> <span class="nv">State</span> <span class="p">),</span>
-<span class="p">[...]</span>
+<span class="nv">CreationState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">class_Actor</span><span class="p">:</span><span class="nf">create_actor</span><span class="p">(</span><span class="w"> </span><span class="nv">Classname</span><span class="p">,</span><span class="w">
+   </span><span class="nv">ConstructionParameters</span><span class="p">,</span><span class="w"> </span><span class="nv">State</span><span class="w"> </span><span class="p">),</span><span class="w">
+</span><span class="p">[...]</span>
 </pre>
 <p>If called at simulation timestamp <tt class="docutils literal">{T,D}</tt>, then the specified actor will be actually created (by the load-balancer) at <tt class="docutils literal">{T,D+1}</tt>, and at <tt class="docutils literal">{T,D+2}</tt> the creating actor will know (as its <tt class="docutils literal">onActorCreated/5</tt> method will be called) the PID of the just created actor.</p>
 <p>The creating actor - and any other actor that will be given the returned PID - can then freely interact with the created actor (of course thanks to actor messages), exactly as with any other actor (once its creation is performed, there is no difference between an actor created in the course of the simulation and an initial actor).</p>
@@ -504,11 +504,11 @@ $ make my_case_run <span class="nv">$BATCH</span>
 <p>Regardless of whether a creation is to happen initially or on the course of the simulation, it is often a lot more efficient to ensure that sets of actors known to be tightly coupled are created on the same computing host (i.e. are co-allocated).</p>
 <p>Otherwise these actors would be scattered by the load balancer on multiple computing hosts according to its placement policy, i.e. regardless of their relationship (since the load balancer has no a priori knowledge about the interactions between models), which would lead in the general case to a useless massive network overhead, and thus to simulations that would be considerably slowed down.</p>
 <p>Sim-Diasca offers a way of forcing co-allocation (i.e. to ensure that a set of actors will be in all cases created on the same computing host, no matter of which host it is), thanks to <em>placement hints</em>.</p>
-<p>A placement hint can be any Erlang term (atoms are generally used for that purpose), that can be specified whenever an actor is created. The engine guarantees that two actors created with the same placement hint will end up being instantiated (by the load balancer) on the same computing host <a class="footnote-reference" href="#id11" id="id10">[5]</a>.</p>
-<table class="docutils footnote" frame="void" id="id11" rules="none">
+<p>A placement hint can be any Erlang term (atoms are generally used for that purpose), that can be specified whenever an actor is created. The engine guarantees that two actors created with the same placement hint will end up being instantiated (by the load balancer) on the same computing host <a class="footnote-reference" href="#footnote-5" id="footnote-reference-5">[5]</a>.</p>
+<table class="docutils footnote" frame="void" id="footnote-5" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id10">[5]</a></td><td>Unless a compute node was lost in the course of a simulation that recovered from it.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-5">[5]</a></td><td>Unless a compute node was lost in the course of a simulation that recovered from it.</td></tr>
 </tbody>
 </table>
 <p>So Sim-Diasca provides a counterpart to its basic creation API, whose functions are just expecting one extra parameter, the aforementioned placement hint:</p>
@@ -525,11 +525,11 @@ $ make my_case_run <span class="nv">$BATCH</span>
 <div class="section" id="proper-actor-termination">
 <h5>Proper Actor Termination</h5>
 <p>Removing an actor from the simulation is a bit more complex than inserting a new one, due to pending inter-actor relationships that may interfere with the actor termination.</p>
-<p>An actor A should not decide that another actor B is to be removed immediately from the simulation. Notably, sending a <tt class="docutils literal">delete</tt> message to B means just calling directly the WOOPER destructor and therefore bypassing the Sim-Diasca simulation layer and making the simulation freeze or fail on error <a class="footnote-reference" href="#id13" id="id12">[6]</a>.</p>
-<table class="docutils footnote" frame="void" id="id13" rules="none">
+<p>An actor A should not decide that another actor B is to be removed immediately from the simulation. Notably, sending a <tt class="docutils literal">delete</tt> message to B means just calling directly the WOOPER destructor and therefore bypassing the Sim-Diasca simulation layer and making the simulation freeze or fail on error <a class="footnote-reference" href="#footnote-6" id="footnote-reference-6">[6]</a>.</p>
+<table class="docutils footnote" frame="void" id="footnote-6" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id12">[6]</a></td><td>Indeed actor B would then terminate immediately, either causing the time manager to wait for it unsuccessfully (if the tick of B was not finished yet) or possibly making it be removed from the simulation whereas another actor could still send an actor message to it, thus being blocked forever, waiting for an acknowledgment that would never come. Moreover the time manager intercepts actor deletions and checks that they were indeed expected.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-6">[6]</a></td><td>Indeed actor B would then terminate immediately, either causing the time manager to wait for it unsuccessfully (if the tick of B was not finished yet) or possibly making it be removed from the simulation whereas another actor could still send an actor message to it, thus being blocked forever, waiting for an acknowledgment that would never come. Moreover the time manager intercepts actor deletions and checks that they were indeed expected.</td></tr>
 </tbody>
 </table>
 <p>Instead the actor A should send an actor message to actor B (if ever B is not just to terminate solely on its own purpose), resulting on the corresponding oneway of B to be triggered. Then B may or may not choose to terminate, immediately or not. Alternatively B may, by itself, determine it is time for it to be removed from the simulation.</p>
@@ -625,9 +625,9 @@ triggered termination</td>
 </div>
 </div>
 <div class="section" id="actor-scheduling">
-<h3><a class="toc-backref" href="#id43">Actor Scheduling</a></h3>
-<div class="section" id="id14">
-<h4><a class="toc-backref" href="#id44">Basics</a></h4>
+<h3><a class="toc-backref" href="#toc-entry-13">Actor Scheduling</a></h3>
+<div class="section" id="basics-1">
+<h4><a class="toc-backref" href="#toc-entry-14">Basics</a></h4>
 <div class="section" id="simulation-time-of-ticks-and-diascas">
 <h5>Simulation Time: Of Ticks and Diascas</h5>
 <p>Simulation time is fully decorrelated from wall-clock time, and is controlled by the time manager(s): the <tt class="docutils literal">fundamental frequency</tt> of the simulation (e.g. 50Hz) leads to a unit time-step (a.k.a. <tt class="docutils literal">simulation tick</tt>) to be defined (e.g. 20ms, in simulation time), each time-step lasting, in wall-clock time, for any duration needed so that all relevant actors can be evaluated for that tick.</p>
@@ -645,18 +645,18 @@ triggered termination</td>
 </div>
 <div class="section" id="at-actor-creation">
 <h5>At Actor Creation</h5>
-<p>Each actor, when created, has first its <tt class="docutils literal">onFirstDiasca/2</tt> actor oneway triggered <a class="footnote-reference" href="#id16" id="id15">[7]</a>. This is the opportunity for this newly created actor to develop any immediate first behaviour, and also to specify at once when it is to be scheduled next for a spontaneous behaviour: otherwise, as all actor are created with an empty agenda, they would remain fully passive (never being spontaneously scheduled), at least until a first actor message (if any) is sent to them.</p>
-<table class="docutils footnote" frame="void" id="id16" rules="none">
+<p>Each actor, when created, has first its <tt class="docutils literal">onFirstDiasca/2</tt> actor oneway triggered <a class="footnote-reference" href="#footnote-7" id="footnote-reference-7">[7]</a>. This is the opportunity for this newly created actor to develop any immediate first behaviour, and also to specify at once when it is to be scheduled next for a spontaneous behaviour: otherwise, as all actor are created with an empty agenda, they would remain fully passive (never being spontaneously scheduled), at least until a first actor message (if any) is sent to them.</p>
+<table class="docutils footnote" frame="void" id="footnote-7" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id15">[7]</a></td><td>This actor actually receives the corresponding actor message sent by the load balancer, which determined a placement for it and created it.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-7">[7]</a></td><td>This actor actually receives the corresponding actor message sent by the load balancer, which determined a placement for it and created it.</td></tr>
 </tbody>
 </table>
-<p>So all models are expected to define their <tt class="docutils literal">onFirstDiasca/2</tt> actor oneway <a class="footnote-reference" href="#id18" id="id17">[8]</a>, in which most of them will at least program their next spontaneous schedulings (see, in <tt class="docutils literal">class_Actor</tt>, notably <tt class="docutils literal">addSpontaneousTick/2</tt> and <tt class="docutils literal">addSpontaneousTicks/2</tt>). This corresponds, internally, to exchanges with the time managers in charge of the corresponding actors.</p>
-<table class="docutils footnote" frame="void" id="id18" rules="none">
+<p>So all models are expected to define their <tt class="docutils literal">onFirstDiasca/2</tt> actor oneway <a class="footnote-reference" href="#footnote-8" id="footnote-reference-8">[8]</a>, in which most of them will at least program their next spontaneous schedulings (see, in <tt class="docutils literal">class_Actor</tt>, notably <tt class="docutils literal">addSpontaneousTick/2</tt> and <tt class="docutils literal">addSpontaneousTicks/2</tt>). This corresponds, internally, to exchanges with the time managers in charge of the corresponding actors.</p>
+<table class="docutils footnote" frame="void" id="footnote-8" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id17">[8]</a></td><td>Knowing that the default implementation for <tt class="docutils literal">onFirstDiasca/2</tt>, inherited from <tt class="docutils literal">class_Actor</tt>, simply halts the simulation on error, purposely.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-8">[8]</a></td><td>Knowing that the default implementation for <tt class="docutils literal">onFirstDiasca/2</tt>, inherited from <tt class="docutils literal">class_Actor</tt>, simply halts the simulation on error, purposely.</td></tr>
 </tbody>
 </table>
 <p>Creations happen at the diasca level rather than at the tick level, so that any sequence of model-related operations (creation, deletion, action and interactions) can happen immediately (in virtual time), to avoid any time bias.</p>
@@ -667,16 +667,16 @@ triggered termination</td>
 <ol class="arabic simple">
 <li>when a new simulation tick <tt class="docutils literal">T</tt> is scheduled, this tick starts at diasca <tt class="docutils literal">D=0</tt></li>
 <li>as the tick was to be scheduled, there was at least one actor which had planned to develop a spontaneous behaviour at this tick; all such actors have their <tt class="docutils literal">actSpontaneous/1</tt> oneway executed</li>
-<li>as soon as at least one actor sent an actor message, the next diasca, <tt class="docutils literal">D+1</tt>, is scheduled <a class="footnote-reference" href="#id20" id="id19">[9]</a></li>
+<li>as soon as at least one actor sent an actor message, the next diasca, <tt class="docutils literal">D+1</tt>, is scheduled <a class="footnote-reference" href="#footnote-9" id="footnote-reference-9">[9]</a></li>
 <li>all actors targeted by such a message (sent at <tt class="docutils literal">D</tt>) process their messages at <tt class="docutils literal">D+1</tt>; possibly they may send in turn other messages</li>
 <li>increasing diascas will be created, as long as new actor messages are exchanged</li>
 <li>once no more actor message is sent, the tick <tt class="docutils literal">T</tt> is over, and the next is scheduled (possibly <tt class="docutils literal">T+1</tt>, or any later tick, depending on the spontaneous ticks planned previously)</li>
 <li>simulation ends either when no spontaneous tick is planned anymore or when a termination criteria is met (often, a timestamp in virtual time having been reached)</li>
 </ol>
-<table class="docutils footnote" frame="void" id="id20" rules="none">
+<table class="docutils footnote" frame="void" id="footnote-9" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id19">[9]</a></td><td>Actually there are other reasons for a diasca to be created, like the termination of an actor, but they are transparent for the model developer.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-9">[9]</a></td><td>Actually there are other reasons for a diasca to be created, like the termination of an actor, but they are transparent for the model developer.</td></tr>
 </tbody>
 </table>
 <p>Internally, these scheduling procedures are driven by message exchanges by actors and time managers:</p>
@@ -686,8 +686,8 @@ triggered termination</td>
 </ul>
 </div>
 </div>
-<div class="section" id="id21">
-<h4><a class="toc-backref" href="#id45">Actor Scheduling</a></h4>
+<div class="section" id="actor-scheduling-1">
+<h4><a class="toc-backref" href="#toc-entry-15">Actor Scheduling</a></h4>
 <p>The basic granularity in virtual time is the tick, further split on as many diascas as needed (logical moments).</p>
 <p>The engine is able to automatically:</p>
 <ul class="simple">
@@ -695,11 +695,11 @@ triggered termination</td>
 <li>trigger only the appropriate actors once a diasca is scheduled, i.e. either the ones which planned a spontaneous behaviour or the ones having received an actor message during the last diasca or being terminating</li>
 <li>create as many diascas during a tick as strictly needed, i.e. exactly as long as actor messages are exchanged or actors are still terminating</li>
 </ul>
-<p>Indeed the simulation engine keeps track both of the sendings of actor messages <a class="footnote-reference" href="#id23" id="id22">[10]</a> and of the planned future actions for each actor. It can thus determine, once a diasca is over, if all next diascas or even a number of ticks can be safely skipped, and then simply schedule the first next timestamp to come.</p>
-<table class="docutils footnote" frame="void" id="id23" rules="none">
+<p>Indeed the simulation engine keeps track both of the sendings of actor messages <a class="footnote-reference" href="#footnote-10" id="footnote-reference-10">[10]</a> and of the planned future actions for each actor. It can thus determine, once a diasca is over, if all next diascas or even a number of ticks can be safely skipped, and then simply schedule the first next timestamp to come.</p>
+<table class="docutils footnote" frame="void" id="footnote-10" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id22">[10]</a></td><td><p class="first">This is done on a fully distributed way (i.e. through the scheduling tree of time managers over computing nodes) and all communications between an actor and its time manager are purely local (i.e. they are by design on the same Erlang node).</p>
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-10">[10]</a></td><td><p class="first">This is done on a fully distributed way (i.e. through the scheduling tree of time managers over computing nodes) and all communications between an actor and its time manager are purely local (i.e. they are by design on the same Erlang node).</p>
 <p class="last">Moreover the messages themselves only go from the emitting actor to the recipient one: in each diasca, only the <em>fact</em> that the target actor received a first message is of interest, and this is reported only to its own, local time manager - the actual message is never sent to third parties (like a time manager), and no more notifications are sent by the receiving actor once the first message has been reported. So the number of messages, their payload and communication distance are reduced to a bare minimum.</p>
 </td></tr>
 </tbody>
@@ -715,7 +715,7 @@ triggered termination</td>
 <p>Thus the developer just has to define the various actor oneways that the model should support (i.e. the ones that other actors could trigger thanks to an actor message), and the spontaneous behaviour of that model (i.e. its <tt class="docutils literal">actSpontaneous/1</tt> oneway). Then the simulation engine takes care of the rest.</p>
 </div>
 <div class="section" id="planning-future-spontaneous-behaviour">
-<h4><a class="toc-backref" href="#id46">Planning Future Spontaneous Behaviour</a></h4>
+<h4><a class="toc-backref" href="#toc-entry-16">Planning Future Spontaneous Behaviour</a></h4>
 <p>Each actor is able to specify, while being scheduled for any reason (an actor message having been received, and/or a spontaneous action taking place), at least one additional tick at which it should be spontaneously scheduled later. An actor can be scheduled for a spontaneous action up to once per tick.</p>
 <p>To do so, it can rely on a very simple API, defined in <tt class="docutils literal">class_Actor</tt>:</p>
 <ul class="simple">
@@ -725,17 +725,17 @@ triggered termination</td>
 <li><tt class="docutils literal">withdrawSpontaneousTick/2</tt>: withdraws the specified spontaneous tick offset from the already registered ones</li>
 <li><tt class="docutils literal">withdrawSpontaneousTicks/2</tt>: same as before, this time for a <em>list</em> of tick offsets</li>
 </ul>
-<p>An actor may also decide instead to terminate, using <tt class="docutils literal"><span class="pre">declareTermination/{1,2}</span></tt> for that, once having withdrawn any spontaneous ticks that it had already planned <a class="footnote-reference" href="#id25" id="id24">[11]</a>.</p>
-<table class="docutils footnote" frame="void" id="id25" rules="none">
+<p>An actor may also decide instead to terminate, using <tt class="docutils literal"><span class="pre">declareTermination/{1,2}</span></tt> for that, once having withdrawn any spontaneous ticks that it had already planned <a class="footnote-reference" href="#footnote-11" id="footnote-reference-11">[11]</a>.</p>
+<table class="docutils footnote" frame="void" id="footnote-11" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id24">[11]</a></td><td>The time management service could be able to determine by itself which ticks shall be withdrawn whenever an actor departs, however this operation would not be scalable at all (it would become prohibitively expensive as soon as there are many actors and/or many ticks planned for future actions).</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-11">[11]</a></td><td>The time management service could be able to determine by itself which ticks shall be withdrawn whenever an actor departs, however this operation would not be scalable at all (it would become prohibitively expensive as soon as there are many actors and/or many ticks planned for future actions).</td></tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="section" id="data-management">
-<h3><a class="toc-backref" href="#id47">Data Management</a></h3>
+<h3><a class="toc-backref" href="#toc-entry-17">Data Management</a></h3>
 <p>In a distributed context, on each computing host, the current working directory of the simulation is set automatically to a temporary root directory, which will be appropriately cleaned-up and re-created.</p>
 <p>This root directory is in <tt class="docutils literal">/tmp</tt>, to store all live data, deployed for the simulation or produced by it.</p>
 <p>Its name starts with <tt class="docutils literal"><span class="pre">sim-diasca</span></tt> (to prevent clashes with other applications), then continues with the name of the simulation case (so that multiple cases can run in the same context), then finishes with the user name (so that multiple users can run the same cases on the same hosts with no interference).</p>
@@ -755,20 +755,20 @@ triggered termination</td>
 <p>A simulator which added third-party data to the simulation archive (thanks to the <tt class="docutils literal">additional_elements_to_deploy</tt> field of the deployment settings specified in the simulation case) is able to access to them thanks to <tt class="docutils literal">class_Actor:get_deployed_root_directory/1</tt>.</p>
 <p>For example, if the following was specified:</p>
 <pre class="code erlang literal-block">
-<span class="nv">DeploymentSettings</span> <span class="o">=</span> <span class="nl">#deployment_settings</span><span class="p">{</span>
-  <span class="p">...</span>
-  <span class="n">additional_elements_to_deploy</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">{</span><span class="s">&quot;mock-simulators/soda-test&quot;</span><span class="p">,</span><span class="n">code</span><span class="p">},</span>
-    <span class="p">{</span><span class="s">&quot;mock-simulators/soda-test/src/soda_test.dat&quot;</span><span class="p">,</span><span class="n">data</span><span class="p">}</span>
-  <span class="p">...</span>
-<span class="p">},</span>
-<span class="p">...</span>
+<span class="nv">DeploymentSettings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nl">#deployment_settings</span><span class="p">{</span><span class="w">
+  </span><span class="p">...</span><span class="w">
+  </span><span class="n">additional_elements_to_deploy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="s">&quot;mock-simulators/soda-test&quot;</span><span class="p">,</span><span class="n">code</span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="s">&quot;mock-simulators/soda-test/src/soda_test.dat&quot;</span><span class="p">,</span><span class="n">data</span><span class="p">}</span><span class="w">
+  </span><span class="p">...</span><span class="w">
+</span><span class="p">},</span><span class="w">
+</span><span class="p">...</span>
 </pre>
 <p>Then all models are able to access to the data file thanks to:</p>
 <pre class="code erlang literal-block">
- <span class="nv">DataPath</span> <span class="o">=</span> <span class="nn">file_utils</span><span class="p">:</span><span class="nf">join</span><span class="p">(</span> <span class="nn">class_Actor</span><span class="p">:</span><span class="nf">get_deployed_root_directory</span><span class="p">(</span><span class="nv">State</span><span class="p">),</span>
-  <span class="s">&quot;mock-simulators/soda-test/src/soda_test.dat&quot;</span> <span class="p">),</span>
-<span class="c">% Then open, read, parse, etc. at will.</span>
+<span class="w"> </span><span class="nv">DataPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">file_utils</span><span class="p">:</span><span class="nf">join</span><span class="p">(</span><span class="w"> </span><span class="nn">class_Actor</span><span class="p">:</span><span class="nf">get_deployed_root_directory</span><span class="p">(</span><span class="nv">State</span><span class="p">),</span><span class="w">
+  </span><span class="s">&quot;mock-simulators/soda-test/src/soda_test.dat&quot;</span><span class="w"> </span><span class="p">),</span><span class="w">
+</span><span class="c">% Then open, read, parse, etc. at will.</span>
 </pre>
 <p>On simulation success, all results will be appropriately generated (in a rather optimal, parallel, distributed way), then aggregated and sent over the network to the centralised result directory, created in the directory from which the simulation was launched, on the user host.</p>
 <p>Finally, on simulation shutdown, the deployment base directory will be fully removed.</p>
@@ -777,18 +777,18 @@ triggered termination</td>
 </div>
 </div>
 <div class="section" id="sim-diasca-implementation-spotlights">
-<h1><a class="toc-backref" href="#id48">Sim-Diasca Implementation Spotlights</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-18">Sim-Diasca Implementation Spotlights</a></h1>
 <p>In this section, various technical pieces of information (not of interest for users, but relevant for engine maintainers) will be discussed regarding the <em>mode of operation</em> of Sim-Diasca.</p>
 <div class="section" id="about-erlang-nodes-and-simulation-identifiers">
-<h2><a class="toc-backref" href="#id49">About Erlang Nodes and Simulation Identifiers</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-19">About Erlang Nodes and Simulation Identifiers</a></h2>
 <div class="section" id="how-many-erlang-nodes-are-involved-in-a-simulation">
-<h3><a class="toc-backref" href="#id50">How Many Erlang Nodes Are Involved in a Simulation?</a></h3>
+<h3><a class="toc-backref" href="#toc-entry-20">How Many Erlang Nodes Are Involved in a Simulation?</a></h3>
 <p>By default (unless the case specifies otherwise), only the local host is involved, yet there are two VMs (Erlang virtual machines) running then: the one of the user node, and the one of a (local) computing node.</p>
 <p>In the general case, distributed simulations running on <tt class="docutils literal">N</tt> hosts will involve by default <tt class="docutils literal">N+1</tt> nodes: one user node (on the user host) and <tt class="docutils literal">N</tt> computing nodes (including one on the user host).</p>
 <p>See the <tt class="docutils literal">computing_hosts</tt> field in the <tt class="docutils literal">deployment_settings</tt> record (defined in <tt class="docutils literal">class_DeploymentManager.hrl</tt>) for further options.</p>
 </div>
 <div class="section" id="how-are-launched-the-erlang-nodes">
-<h3><a class="toc-backref" href="#id51">How Are Launched the Erlang nodes?</a></h3>
+<h3><a class="toc-backref" href="#toc-entry-21">How Are Launched the Erlang nodes?</a></h3>
 <p>By default, <a class="reference external" href="http://erlang.org/doc/reference_manual/distributed.html">long names</a> are used for all Sim-Diasca related nodes.</p>
 <p>To avoid any possible cross-talk, we have to ensure that a simulation (live or post-mortem) remains fully self-contained and immune to interferences (notably from other simulations that would be run in parallel or afterwards, i.e. both at runtime and regarding the on-disk generated information).</p>
 <p>Erlang ensures (thanks to EPMD) that, on any given host, regardless of the Erlang installations, of their version, of the UNIX users involved, no two nodes can bear the same (long) name (otherwise the second node will fail to launch).</p>
@@ -806,13 +806,13 @@ Sim-Diasca-soda_deterministic_case-john-43416933-computing-node-on-volt
 </pre>
 </div>
 <div class="section" id="what-is-the-simulation-instance-identifier">
-<span id="simulation-instance-identifier"></span><h3><a class="toc-backref" href="#id52">What is the <em>Simulation Instance Identifier</em>?</a></h3>
+<span id="simulation-instance-identifier"></span><h3><a class="toc-backref" href="#toc-entry-22">What is the <em>Simulation Instance Identifier</em>?</a></h3>
 <p>This information, whose shorthand is <tt class="docutils literal">SII</tt>, is a string made of alphanumerical characters, dashes (<tt class="docutils literal">-</tt>) and underscores (<tt class="docutils literal">_</tt>), and is meant to guarantee the uniqueness of a given instance of a simulation (i.e. no two simulations, run simultaneously or not, should ever bear the same SII).</p>
-<p>By default the SII is automatically generated and managed by Sim-Diasca. It is based on a <a class="reference external" href="https://en.wikipedia.org/wiki/Universally_unique_identifier">UUID</a> (<em>Universally unique identifier</em>) determined at start-up <a class="footnote-reference" href="#id27" id="id26">[12]</a>. An example of a UUID is <tt class="docutils literal"><span class="pre">4f8fbacd-93d2-487d-86ff-23f75339c191</span></tt>.</p>
-<table class="docutils footnote" frame="void" id="id27" rules="none">
+<p>By default the SII is automatically generated and managed by Sim-Diasca. It is based on a <a class="reference external" href="https://en.wikipedia.org/wiki/Universally_unique_identifier">UUID</a> (<em>Universally unique identifier</em>) determined at start-up <a class="footnote-reference" href="#footnote-12" id="footnote-reference-12">[12]</a>. An example of a UUID is <tt class="docutils literal"><span class="pre">4f8fbacd-93d2-487d-86ff-23f75339c191</span></tt>.</p>
+<table class="docutils footnote" frame="void" id="footnote-12" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id26">[12]</a></td><td>A UUID is obtained thanks to any system-provided <tt class="docutils literal">uuidgen</tt> command, otherwise our own implementation is used for that (refer, in the <strong>Myriad</strong> layer, to <tt class="docutils literal">basic_utils:generate_uuid/0</tt>).</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-12">[12]</a></td><td>A UUID is obtained thanks to any system-provided <tt class="docutils literal">uuidgen</tt> command, otherwise our own implementation is used for that (refer, in the <strong>Myriad</strong> layer, to <tt class="docutils literal">basic_utils:generate_uuid/0</tt>).</td></tr>
 </tbody>
 </table>
 <p>As the acronym suggests, there is very little chance that two simulation instances may succeed in drawing the same UUID, so they provide an adequate guarantee of uniqueness.</p>
@@ -822,8 +822,8 @@ Sim-Diasca-soda_deterministic_case-john-43416933-computing-node-on-volt
 <p>Then Sim-Diasca is able to use such an externally-obtained identifier thanks to its <tt class="docutils literal"><span class="pre">--simulation-instance-id</span></tt> command line option.</p>
 <p>As a result, such a platform may run a simulation case with:</p>
 <pre class="code bash literal-block">
-$ make my_foobar_case
-    <span class="nv">CMD_LINE_OPT</span><span class="o">=</span><span class="s2">&quot;--batch --simulation-instance-id 117&quot;</span>
+$<span class="w"> </span>make<span class="w"> </span>my_foobar_case<span class="w">
+    </span><span class="nv">CMD_LINE_OPT</span><span class="o">=</span><span class="s2">&quot;--batch --simulation-instance-id 117&quot;</span>
 </pre>
 <p>Then the specified SII will be used instead of the one that would be determined internally, at runtime, notably to designate:</p>
 <ul class="simple">
@@ -834,12 +834,12 @@ $ make my_foobar_case
 </ul>
 </div>
 <div class="section" id="how-erlang-nodes-are-named">
-<span id="node-naming"></span><h3><a class="toc-backref" href="#id53">How Erlang nodes are named?</a></h3>
+<span id="node-naming"></span><h3><a class="toc-backref" href="#toc-entry-23">How Erlang nodes are named?</a></h3>
 <p>So the SII is either user-supplied or determined at runtime, by the engine itself. As a result, the name of the user node cannot be determined statically in the general case (the node must run so that it may draw its UUID then determine its SII).</p>
 <p>Knowing that additionally a node created as a distributed one (here with the &quot;long names&quot; command-line option) cannot be renamed (<tt class="docutils literal">net_kernel:stop/0</tt> not allowed), the only relevant design is, from the Sim-Diasca layer onward (lower ones relying on long names) to start the user-node in non-distributed mode (thanks to the <tt class="docutils literal"><span class="pre">--nn</span></tt> option of <tt class="docutils literal"><span class="pre">launch-erl.sh</span></tt>), establish the name it shall bear, and then only execute <tt class="docutils literal">net_kernel:start/1</tt>.</p>
 </div>
 <div class="section" id="how-is-it-ensured-that-no-two-simulations-can-interfere">
-<h3><a class="toc-backref" href="#id54">How Is It Ensured that No Two Simulations Can Interfere?</a></h3>
+<h3><a class="toc-backref" href="#toc-entry-24">How Is It Ensured that No Two Simulations Can Interfere?</a></h3>
 <p>The naming of nodes is a first-level security, which should prevent most accidental collisions.</p>
 <p>If ever all other safety measures failed for any reason, a node naming clash will happen, yet it will be detected and will lead to making the clashing simulations fail, so no silent failure shall be feared.</p>
 <p>This protection is obtained thanks to Erlang cookies using transparently the UUID mentioned in the previous section (UUIDs will be used in all cases for cookies, even if a third-party SII is specified - for an increased safety, should clashing SIIs be provided by mistake).</p>
@@ -848,19 +848,19 @@ $ make my_foobar_case
 </div>
 </div>
 <div class="section" id="sim-diasca-technical-gotchas">
-<h1><a class="toc-backref" href="#id55">Sim-Diasca Technical Gotchas</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-25">Sim-Diasca Technical Gotchas</a></h1>
 <p>We mention here the main technical sources of puzzlement that may affect the unwary developer.</p>
 <div class="section" id="the-code-was-updated-yet-seems-to-linger">
-<h2><a class="toc-backref" href="#id56">The Code Was Updated, Yet Seems To Linger</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-26">The Code Was Updated, Yet Seems To Linger</a></h2>
 <p>This may happen <strong>if the code source has been changed yet has not been recompiled before launching a simulation</strong>: Sim-Diasca, once executed, will attempt to compile it, and hopefully succeed.</p>
 <p>Then the corresponding BEAM modules will be available in their newer version and, when they will be referenced for the first time, they will be loaded - thus in their newer form.</p>
 <p>However, some modules may have already been loaded by the engine (for its internal mode of operation), <em>before</em> it triggered the compilation update.</p>
-<p>As a result, even if a newer version of their BEAM file becomes available on disk, these modules have already been loaded (and will not be specifically reloaded) <a class="footnote-reference" href="#id29" id="id28">[13]</a>
+<p>As a result, even if a newer version of their BEAM file becomes available on disk, these modules have already been loaded (and will not be specifically reloaded) <a class="footnote-reference" href="#footnote-13" id="footnote-reference-13">[13]</a>
 ; they will thus stick to their former version, and their newer version will be loaded only at the <em>next</em> Sim-Diasca run.</p>
-<table class="docutils footnote" frame="void" id="id29" rules="none">
+<table class="docutils footnote" frame="void" id="footnote-13" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id28">[13]</a></td><td>Moreover, they may belong to the pioneer modules, in which case they will be deployed over the network on other nodes as well, instead of being read in an updated version from the simulation archive.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#footnote-reference-13">[13]</a></td><td>Moreover, they may belong to the pioneer modules, in which case they will be deployed over the network on other nodes as well, instead of being read in an updated version from the simulation archive.</td></tr>
 </tbody>
 </table>
 <p>A solution is simply to ensure that any module whose source has been modified is recompiled afterwards (simply a matter of typing <tt class="docutils literal"><span class="pre">CTRL-P</span></tt> with our emacs settings), at least <em>before</em> a new simulation is run.</p>
@@ -868,9 +868,9 @@ $ make my_foobar_case
 </div>
 </div>
 <div class="section" id="developer-hints">
-<h1><a class="toc-backref" href="#id57">Developer Hints</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-27">Developer Hints</a></h1>
 <div class="section" id="choosing-the-right-datastructures">
-<h2><a class="toc-backref" href="#id58">Choosing The Right Datastructures</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-28">Choosing The Right Datastructures</a></h2>
 <p>Writing models involves a lot of algorithmic design decisions, and many of them deal with data-structures.</p>
 <p><span class="raw-html"><center><img src="xkcd-set_theory.png"></img></center></span>
 </p>
@@ -879,11 +879,11 @@ $ make my_foobar_case
 <p>We nevertheless use most of the time the built-in data-structures, like <tt class="docutils literal">gb_sets</tt> or <tt class="docutils literal">queues</tt>. When multiple implementations providing the same API are available (e.g. for ordered lists), we usually define a (sometimes module-specific) <tt class="docutils literal">list_impl</tt> symbol, allowing to switch easily between similar datastructures.</p>
 <p>For example:</p>
 <pre class="code erlang literal-block">
-<span class="c">% Defines list_impl:
-</span><span class="p">-</span><span class="ni">include</span><span class="p">(</span><span class="s">&quot;data_types.hrl&quot;</span><span class="p">).</span>
+<span class="c">% Defines list_impl:</span><span class="w">
+</span><span class="p">-</span><span class="ni">include</span><span class="p">(</span><span class="s">&quot;data_types.hrl&quot;</span><span class="p">).</span><span class="w">
 
-<span class="nf">f</span><span class="p">(</span> <span class="nv">A</span> <span class="p">)</span> <span class="o">-&gt;</span>
-   <span class="n">true</span> <span class="o">=</span> <span class="o">?</span><span class="nn">list_impl</span><span class="p">:</span><span class="nf">is_empty</span><span class="p">(</span> <span class="nv">A</span> <span class="p">),</span> <span class="p">[...]</span>
+</span><span class="nf">f</span><span class="p">(</span><span class="w"> </span><span class="nv">A</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">
+   </span><span class="n">true</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">?</span><span class="nn">list_impl</span><span class="p">:</span><span class="nf">is_empty</span><span class="p">(</span><span class="w"> </span><span class="nv">A</span><span class="w"> </span><span class="p">),</span><span class="w"> </span><span class="p">[...]</span>
 </pre>
 <p><span class="raw-html"><center><img src="xkcd-tree.png"></img></center></span>
 </p>
@@ -892,7 +892,7 @@ $ make my_foobar_case
 </p>
 </div>
 <div class="section" id="running-bullet-proof-experiments">
-<h2><a class="toc-backref" href="#id59">Running Bullet-Proof Experiments</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-29">Running Bullet-Proof Experiments</a></h2>
 <p>Making use of large-scale HPC infrastructures is not straightforward: they often behave like black boxes, and because of the number and specificities of the hardware and software elements that are involved, they tend to exhibit unanticipated behaviours.</p>
 <p>Here is a list of recommended steps to go through, in order to have a better chance of making good use of these resources:</p>
 <ol class="arabic">
@@ -932,16 +932,16 @@ $ make my_foobar_case
 </li>
 </ol>
 <pre class="code bash literal-block">
-sim-diasca/conf/clusters/sim-diasca-launcher.sh --debug
- --node-count <span class="m">32</span> --cores-per-node <span class="m">8</span> --queue parall_256
- --max-duration <span class="m">64</span> foobar-simulator/src/uc23_integration_test.erl
+sim-diasca/conf/clusters/sim-diasca-launcher.sh<span class="w"> </span>--debug<span class="w">
+ </span>--node-count<span class="w"> </span><span class="m">32</span><span class="w"> </span>--cores-per-node<span class="w"> </span><span class="m">8</span><span class="w"> </span>--queue<span class="w"> </span>parall_256<span class="w">
+ </span>--max-duration<span class="w"> </span><span class="m">64</span><span class="w"> </span>foobar-simulator/src/uc23_integration_test.erl
 </pre>
 <p></p>
 </div>
 <div class="section" id="using-type-specifications-with-sim-diasca">
-<h2><a class="toc-backref" href="#id60">Using Type Specifications With Sim-Diasca</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-30">Using Type Specifications With Sim-Diasca</a></h2>
 <div class="section" id="type-specifications-what-for">
-<h3><a class="toc-backref" href="#id61">Type Specifications: What For?</a></h3>
+<h3><a class="toc-backref" href="#toc-entry-31">Type Specifications: What For?</a></h3>
 <p>Adding a type specification (shorthand: <em>spec</em>) to the source code of a function means specifying what are its intended input and output parameters, in terms of number and types. This can be applied to records as well.</p>
 <p>Once all Sim-Diasca code (including prerequisites, like <tt class="docutils literal">Myriad</tt>, <tt class="docutils literal">WOOPER</tt> and <tt class="docutils literal">Traces</tt>) and the one of user applications based on it (e.g. <tt class="docutils literal"><span class="pre">Mock-Simulators</span></tt> or any actual simulator) have been instrumented with type specifications (i.e. when all exported functions and records of all modules have a proper spec), then:</p>
 <ul class="simple">
@@ -951,9 +951,9 @@ sim-diasca/conf/clusters/sim-diasca-launcher.sh --debug
 <p>Some versions of Sim-Diasca are referenced in <a class="reference external" href="http://dialyzer.softlab.ntua.gr/apps/#Sim-Diasca-2-0-10">Dialyzer's application repository</a>.</p>
 </div>
 <div class="section" id="type-specifications-how">
-<h3><a class="toc-backref" href="#id62">Type Specifications: How?</a></h3>
+<h3><a class="toc-backref" href="#toc-entry-32">Type Specifications: How?</a></h3>
 <div class="section" id="prerequisites">
-<h4><a class="toc-backref" href="#id63">Prerequisites</a></h4>
+<h4><a class="toc-backref" href="#toc-entry-33">Prerequisites</a></h4>
 <div class="section" id="taking-care-of-erlang-otp">
 <h5>Taking Care of Erlang/OTP</h5>
 <p>First of all, type information must have been already extracted from the Erlang/OTP files of the install that will be used, and stored in a PLT (for <em>Persistent Lookup Table</em>) file for later-reuse (this is a preprocessing stage). Such a file is preferably created one time for all for each Erlang environment being used. Therefore a PLT file is better produced as the last step of an Erlang installation (see the <tt class="docutils literal"><span class="pre">--generate-plt</span></tt> option of our <tt class="docutils literal"><span class="pre">install-erlang.sh</span></tt> script, which streamlines it). This operation is rather long (e.g. one hour and a half).</p>
@@ -961,8 +961,8 @@ sim-diasca/conf/clusters/sim-diasca-launcher.sh --debug
 <p>These BEAM files must have been compiled with debug information (i.e. with the <tt class="docutils literal">+debug_info</tt> compiler option). This is thus the default enforced for the full Sim-Diasca software stack.</p>
 <p>When writing type specifications, one must know what are the built-in ones, in order to re-use them, so that they do not end up being defined more than once, under different names. To do so, one may use our <tt class="docutils literal"><span class="pre">myriad/src/scripts/list-available-types.sh</span></tt> script, like in:</p>
 <pre class="code bash literal-block">
-$ <span class="nb">cd</span> otp_src_RxBy
-$ list-available-types.sh <span class="p">|</span> tee declared-types-in-Erlang-RxBy.txt
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>otp_src_RxBy<span class="w">
+</span>$<span class="w"> </span>list-available-types.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>declared-types-in-Erlang-RxBy.txt
 </pre>
 </div>
 <div class="section" id="taking-care-of-above-layers">
@@ -976,7 +976,7 @@ $ list-available-types.sh <span class="p">|</span> tee declared-types-in-Erlang-
 </div>
 </div>
 <div class="section" id="expressing-type-specifications">
-<h4><a class="toc-backref" href="#id64">Expressing Type Specifications</a></h4>
+<h4><a class="toc-backref" href="#toc-entry-34">Expressing Type Specifications</a></h4>
 <p>The complete syntax is described <a class="reference external" href="http://erlang.org/doc/reference_manual/typespec.html#id74368">here</a>. This will be the main reference to be used and kept ready when writing type specs.</p>
 <p>Following conventions are to respect:</p>
 <ul class="simple">
@@ -1000,33 +1000,33 @@ $ list-available-types.sh <span class="p">|</span> tee declared-types-in-Erlang-
 </div>
 </div>
 <div class="section" id="checking-type-specifications">
-<h4><a class="toc-backref" href="#id65">Checking Type Specifications</a></h4>
+<h4><a class="toc-backref" href="#toc-entry-35">Checking Type Specifications</a></h4>
 <p>In the context of each layer, one may routinely run:</p>
 <pre class="code bash literal-block">
-$ make clean all generate-local-plt
+$<span class="w"> </span>make<span class="w"> </span>clean<span class="w"> </span>all<span class="w"> </span>generate-local-plt
 </pre>
 <p>This allows to list all the types that are unknown (generally misspelled or not exported) and spot a few kinds of errors (e.g. <tt class="docutils literal">Call to missing or unexported function</tt>).</p>
 <p>For a layer <tt class="docutils literal">foo</tt> (e.g. <tt class="docutils literal">Myriad</tt>, <tt class="docutils literal">WOOPER</tt>, etc.), one should run from its root directory:</p>
 <pre class="code bash literal-block">
-$ make self-check-against-plt
+$<span class="w"> </span>make<span class="w"> </span>self-check-against-plt
 </pre>
 <p>You will have an output like:</p>
 <pre class="code bash literal-block">
-$ make self-check-against-plt
-  Building all, in parallel over <span class="m">8</span> core<span class="o">(</span>s<span class="o">)</span>, from BASE/foo
-  <span class="o">[</span>..<span class="o">]</span>
-   Checking foo against its PLT <span class="o">(</span>./foo.plt<span class="o">)</span>
- Checking whether the PLT ./foo.plt is up-to-date... yes
- Compiling some key modules to native code... <span class="k">done</span> in 0m29.49s
- Proceeding with analysis...
- bar.erl:53: Function run/0 has no <span class="nb">local</span> <span class="k">return</span>
- <span class="o">[</span>..<span class="o">]</span>
+$<span class="w"> </span>make<span class="w"> </span>self-check-against-plt<span class="w">
+  </span>Building<span class="w"> </span>all,<span class="w"> </span><span class="k">in</span><span class="w"> </span>parallel<span class="w"> </span>over<span class="w"> </span><span class="m">8</span><span class="w"> </span>core<span class="o">(</span>s<span class="o">)</span>,<span class="w"> </span>from<span class="w"> </span>BASE/foo<span class="w">
+  </span><span class="o">[</span>..<span class="o">]</span><span class="w">
+   </span>Checking<span class="w"> </span>foo<span class="w"> </span>against<span class="w"> </span>its<span class="w"> </span>PLT<span class="w"> </span><span class="o">(</span>./foo.plt<span class="o">)</span><span class="w">
+ </span>Checking<span class="w"> </span>whether<span class="w"> </span>the<span class="w"> </span>PLT<span class="w"> </span>./foo.plt<span class="w"> </span>is<span class="w"> </span>up-to-date...<span class="w"> </span>yes<span class="w">
+ </span>Compiling<span class="w"> </span>some<span class="w"> </span>key<span class="w"> </span>modules<span class="w"> </span>to<span class="w"> </span>native<span class="w"> </span>code...<span class="w"> </span><span class="k">done</span><span class="w"> </span><span class="k">in</span><span class="w"> </span>0m29.49s<span class="w">
+ </span>Proceeding<span class="w"> </span>with<span class="w"> </span>analysis...<span class="w">
+ </span>bar.erl:53:<span class="w"> </span>Function<span class="w"> </span>run/0<span class="w"> </span>has<span class="w"> </span>no<span class="w"> </span><span class="nb">local</span><span class="w"> </span><span class="k">return</span><span class="w">
+ </span><span class="o">[</span>..<span class="o">]</span>
 </pre>
 <p>Issues can then be tackled one by one. To speed up the process of improving a module <tt class="docutils literal">bar</tt>, one can run:</p>
 <pre class="code bash literal-block">
-$ make bar.plt
-Checking module <span class="s1">'bar.beam'</span> against relevant PLT
-<span class="o">[</span>...<span class="o">]</span>
+$<span class="w"> </span>make<span class="w"> </span>bar.plt<span class="w">
+</span>Checking<span class="w"> </span>module<span class="w"> </span><span class="s1">'bar.beam'</span><span class="w"> </span>against<span class="w"> </span>relevant<span class="w"> </span>PLT<span class="w">
+</span><span class="o">[</span>...<span class="o">]</span>
 </pre>
 <p>And only this module will be checked, allowing to fix them one by one.</p>
 <div class="admonition note">
@@ -1036,7 +1036,7 @@ Checking module <span class="s1">'bar.beam'</span> against relevant PLT
 </div>
 </div>
 <div class="section" id="references">
-<h3><a class="toc-backref" href="#id66">References</a></h3>
+<h3><a class="toc-backref" href="#toc-entry-36">References</a></h3>
 <ul class="simple">
 <li><a class="reference external" href="http://www.it.uu.se/research/group/hipe/dialyzer">Dialyzer homepage</a></li>
 <li><a class="reference external" href="http://www.ejabberd.im/dialyzer">a useful Dialyzer practical guide</a></li>
@@ -1048,13 +1048,13 @@ Checking module <span class="s1">'bar.beam'</span> against relevant PLT
 </div>
 </div>
 </div>
-<div class="section" id="id30">
-<span id="credits"></span><h1><a class="toc-backref" href="#id67">Credits</a></h1>
+<div class="section" id="credits-1">
+<span id="credits"></span><h1><a class="toc-backref" href="#toc-entry-37">Credits</a></h1>
 <p>Special thanks to <strong>Randall Munroe</strong> who is the author of all the comic strips that enliven this documentation, and who kindly allowed their use in this material.</p>
 <p>See his <a class="reference external" href="http://xkcd.com/">XKCD</a> website for all information, including for all his delightful other strips.</p>
 </div>
 <div class="section" id="what-to-do-next">
-<h1><a class="toc-backref" href="#id68">What To Do Next?</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-38">What To Do Next?</a></h1>
 <p>Congratulations, you reached the end of this developer guide!</p>
 <p><span class="raw-html"><center><img src="xkcd-anti_mind_virus.png"></img></center></span>
 </p>

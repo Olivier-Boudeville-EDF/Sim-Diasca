@@ -19,6 +19,10 @@
 <p><code>any_directory_path() = <a href="file_utils.html#type-any_directory_path" docgen-rel="seetype" docgen-href="file_utils#any_directory_path/0">file_utils:any_directory_path()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-argument">argument()</a></h3>
+<p><code>argument() = <a href="basic_utils.html#type-argument" docgen-rel="seetype" docgen-href="basic_utils#argument/0">basic_utils:argument()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-atom_node_name">atom_node_name()</a></h3>
 <p><code>atom_node_name() = <a href="net_utils.html#type-atom_node_name" docgen-rel="seetype" docgen-href="net_utils#atom_node_name/0">net_utils:atom_node_name()</a></code></p>
 
@@ -79,6 +83,10 @@
 <p><code>function_name() = <a href="basic_utils.html#type-function_name" docgen-rel="seetype" docgen-href="basic_utils#function_name/0">basic_utils:function_name()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-length">length()</a></h3>
+<p><code>length() = <a href="text_utils.html#type-length" docgen-rel="seetype" docgen-href="text_utils#length/0">text_utils:length()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-md5_sum">md5_sum()</a></h3>
 <p><code>md5_sum() = <a href="hash_utils.html#type-md5_sum" docgen-rel="seetype" docgen-href="hash_utils#md5_sum/0">hash_utils:md5_sum()</a></code></p>
 
@@ -107,6 +115,10 @@
 <p><code>stack_trace() = [<a href="#type-stack_item" docgen-rel="seetype" docgen-href="#stack_item/0">stack_item()</a>]</code></p>
 
 
+<h3 class="typedecl"><a name="type-stacktrace_error_output">stacktrace_error_output()</a></h3>
+<p><code>stacktrace_error_output() = {StdOutputStackStr::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>, MaybeFileOutputStackStr::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>)}</code></p>
+
+
 <h3 class="typedecl"><a name="type-time_out">time_out()</a></h3>
 <p><code>time_out() = <a href="time_utils.html#type-time_out" docgen-rel="seetype" docgen-href="time_utils#time_out/0">time_utils:time_out()</a></code></p>
 
@@ -116,7 +128,8 @@
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#code_path_to_string-0">code_path_to_string/0</a></td><td></td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#arguments_to_string-1">arguments_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#code_path_to_string-0">code_path_to_string/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#code_path_to_string-1">code_path_to_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#declare_beam_directories-1">declare_beam_directories/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#declare_beam_directories-2">declare_beam_directories/2</a></td><td></td></tr>
@@ -134,20 +147,26 @@
 <tr><td valign="top"><a href="#get_beam_dirs_for-1">get_beam_dirs_for/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_beam_dirs_for_myriad-0">get_beam_dirs_for_myriad/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_beam_filename-1">get_beam_filename/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_beams_in_path-0">get_beams_in_path/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_code_for-1">get_code_for/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_code_path-0">get_code_path/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_code_path_as_string-0">get_code_path_as_string/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_erlang_root_path-0">get_erlang_root_path/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_error_report_output_ellipsings-0">get_error_report_output_ellipsings/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_md5_for_loaded_module-1">get_md5_for_loaded_module/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_md5_for_stored_module-1">get_md5_for_stored_module/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_source_filename-1">get_source_filename/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_stacktrace-0">get_stacktrace/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_stacktrace-1">get_stacktrace/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#interpret_arguments-2">interpret_arguments/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#interpret_beams_in_path-0">interpret_beams_in_path/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#interpret_error-2">interpret_error/2</a></td><td></td></tr>
-<tr><td valign="top"><a href="#interpret_shortened_stacktrace-1">interpret_shortened_stacktrace/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#interpret_stacktrace-0">interpret_stacktrace/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#interpret_stacktrace-1">interpret_stacktrace/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#interpret_stacktrace-2">interpret_stacktrace/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#interpret_stacktrace_for_error_output-0">interpret_stacktrace_for_error_output/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#interpret_stacktrace_for_error_output-2">interpret_stacktrace_for_error_output/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#interpret_truncated_stacktrace-1">interpret_truncated_stacktrace/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#interpret_undef_exception-3">interpret_undef_exception/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_beam_in_path-1">is_beam_in_path/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_loaded_module_same_on_filesystem-1">is_loaded_module_same_on_filesystem/1</a></td><td></td></tr>
@@ -164,6 +183,12 @@
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="arguments_to_string-1">arguments_to_string/1</a></h3>
+<div class="spec">
+<p><code>arguments_to_string(ArgStrs::[<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>]) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="code_path_to_string-0">code_path_to_string/0</a></h3>
 <div class="spec">
@@ -273,6 +298,12 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="get_beams_in_path-0">get_beams_in_path/0</a></h3>
+<div class="spec">
+<p><code>get_beams_in_path() -&gt; [<a href="#type-module_name" docgen-rel="seetype" docgen-href="#module_name/0">module_name()</a>]</code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="get_code_for-1">get_code_for/1</a></h3>
 <div class="spec">
 <p><code>get_code_for(ModuleName::<a href="#type-module_name" docgen-rel="seetype" docgen-href="#module_name/0">module_name()</a>) -&gt; {binary(), <a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>}</code><br></p>
@@ -294,6 +325,12 @@
 <h3 class="function"><a name="get_erlang_root_path-0">get_erlang_root_path/0</a></h3>
 <div class="spec">
 <p><code>get_erlang_root_path() -&gt; <a href="#type-directory_path" docgen-rel="seetype" docgen-href="#directory_path/0">directory_path()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_error_report_output_ellipsings-0">get_error_report_output_ellipsings/0</a></h3>
+<div class="spec">
+<p><code>get_error_report_output_ellipsings() -&gt; {StdErrorOutputEllipseLen::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-length" docgen-rel="seetype" docgen-href="#length/0">length()</a>), FileErrorOutputChoice::false | undefined | (EllipseLen::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>)}</code><br></p>
 <p> </p>
 </div>
 
@@ -327,15 +364,21 @@
 <p> </p>
 </div>
 
-<h3 class="function"><a name="interpret_error-2">interpret_error/2</a></h3>
+<h3 class="function"><a name="interpret_arguments-2">interpret_arguments/2</a></h3>
 <div class="spec">
-<p><code>interpret_error(ErrorTerm::<a href="#type-error_term" docgen-rel="seetype" docgen-href="#error_term/0">error_term()</a>, Stacktrace::<a href="#type-stack_trace" docgen-rel="seetype" docgen-href="#stack_trace/0">stack_trace()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p><code>interpret_arguments(Args::[<a href="#type-argument" docgen-rel="seetype" docgen-href="#argument/0">argument()</a>], MaybeEllipseAtLen::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-length" docgen-rel="seetype" docgen-href="#length/0">length()</a>)) -&gt; [<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>]</code><br></p>
 <p> </p>
 </div>
 
-<h3 class="function"><a name="interpret_shortened_stacktrace-1">interpret_shortened_stacktrace/1</a></h3>
+<h3 class="function"><a name="interpret_beams_in_path-0">interpret_beams_in_path/0</a></h3>
 <div class="spec">
-<p><code>interpret_shortened_stacktrace(SkipLastElemCount::<a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p><code>interpret_beams_in_path() -&gt; {<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>), [<a href="#type-module_name" docgen-rel="seetype" docgen-href="#module_name/0">module_name()</a>]}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="interpret_error-2">interpret_error/2</a></h3>
+<div class="spec">
+<p><code>interpret_error(ErrorTerm::<a href="#type-error_term" docgen-rel="seetype" docgen-href="#error_term/0">error_term()</a>, Stacktrace::<a href="#type-stack_trace" docgen-rel="seetype" docgen-href="#stack_trace/0">stack_trace()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -354,6 +397,24 @@
 <h3 class="function"><a name="interpret_stacktrace-2">interpret_stacktrace/2</a></h3>
 <div class="spec">
 <p><code>interpret_stacktrace(Stacktrace::<a href="#type-stack_trace" docgen-rel="seetype" docgen-href="#stack_trace/0">stack_trace()</a>, MaybeErrorTerm::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-error_term" docgen-rel="seetype" docgen-href="#error_term/0">error_term()</a>)) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="interpret_stacktrace_for_error_output-0">interpret_stacktrace_for_error_output/0</a></h3>
+<div class="spec">
+<p><code>interpret_stacktrace_for_error_output() -&gt; <a href="#type-stacktrace_error_output" docgen-rel="seetype" docgen-href="#stacktrace_error_output/0">stacktrace_error_output()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="interpret_stacktrace_for_error_output-2">interpret_stacktrace_for_error_output/2</a></h3>
+<div class="spec">
+<p><code>interpret_stacktrace_for_error_output(Stacktrace::<a href="#type-stack_trace" docgen-rel="seetype" docgen-href="#stack_trace/0">stack_trace()</a>, MaybeErrorTerm::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-error_term" docgen-rel="seetype" docgen-href="#error_term/0">error_term()</a>)) -&gt; <a href="#type-stacktrace_error_output" docgen-rel="seetype" docgen-href="#stacktrace_error_output/0">stacktrace_error_output()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="interpret_truncated_stacktrace-1">interpret_truncated_stacktrace/1</a></h3>
+<div class="spec">
+<p><code>interpret_truncated_stacktrace(SkipLastElemCount::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 

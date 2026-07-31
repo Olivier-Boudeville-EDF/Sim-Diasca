@@ -39,6 +39,10 @@
 <p><code>attribute_qualifier() = const</code></p>
 
 
+<h3 class="typedecl"><a name="type-attribute_table">attribute_table()</a></h3>
+<p><code>attribute_table() = <a href="table.html#type-table" docgen-rel="seetype" docgen-href="table#table/0">table:table</a>(<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>, <a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>)</code></p>
+
+
 <h3 class="typedecl"><a name="type-attribute_type">attribute_type()</a></h3>
 <p><code>attribute_type() = <a href="type_utils.html#type-type" docgen-rel="seetype" docgen-href="type_utils#type/0">type_utils:type()</a></code></p>
 
@@ -63,6 +67,26 @@
 <p><code>classname() = atom()</code></p>
 
 
+<h3 class="typedecl"><a name="type-concurrent_outcome">concurrent_outcome()</a></h3>
+<p><code>concurrent_outcome() = {_MaybeResults::[<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-request_result" docgen-rel="seetype" docgen-href="#request_result/0">request_result()</a>)], _TimedOutInstances::[<a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>]}</code></p>
+
+
+<h3 class="typedecl"><a name="type-concurrent_request_tag">concurrent_request_tag()</a></h3>
+<p><code>concurrent_request_tag() = term()</code></p>
+
+
+<h3 class="typedecl"><a name="type-concurrent_result">concurrent_result()</a></h3>
+<p><code>concurrent_result() = <a href="#type-concurrent_result" docgen-rel="seetype" docgen-href="#concurrent_result/0">concurrent_result</a>(<a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a>)</code></p>
+
+
+<h3 class="typedecl"><a name="type-concurrent_result">concurrent_result()</a></h3>
+<p><code>concurrent_result(R) = {<a href="#type-concurrent_request_tag" docgen-rel="seetype" docgen-href="#concurrent_request_tag/0">concurrent_request_tag()</a>, <a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>, R}</code></p>
+
+
+<h3 class="typedecl"><a name="type-concurrent_waiting_info">concurrent_waiting_info()</a></h3>
+<p><code>concurrent_waiting_info() = {[<a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>], MaybeFinalTimestamp::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-ms_monotonic" docgen-rel="seetype" docgen-href="#ms_monotonic/0">ms_monotonic()</a>), <a href="#type-concurrent_request_tag" docgen-rel="seetype" docgen-href="#concurrent_request_tag/0">concurrent_request_tag()</a>, <a href="#type-result_table" docgen-rel="seetype" docgen-href="#result_table/0">result_table()</a>, TargetResCount::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>}</code></p>
+
+
 <h3 class="typedecl"><a name="type-const_oneway_return">const_oneway_return()</a></h3>
 <p><code>const_oneway_return() = <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code></p>
 
@@ -81,6 +105,10 @@
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
 <p><code>count() = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-error_term">error_term()</a></h3>
+<p><code>error_term() = <a href="basic_utils.html#type-error_term" docgen-rel="seetype" docgen-href="basic_utils#error_term/0">basic_utils:error_term()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-exception_class">exception_class()</a></h3>
@@ -155,6 +183,10 @@
 <p><code>monitor_node_info() = <a href="monitor_utils.html#type-monitor_node_info" docgen-rel="seetype" docgen-href="monitor_utils#monitor_node_info/0">monitor_utils:monitor_node_info()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-ms_monotonic">ms_monotonic()</a></h3>
+<p><code>ms_monotonic() = <a href="time_utils.html#type-ms_monotonic" docgen-rel="seetype" docgen-href="time_utils#ms_monotonic/0">time_utils:ms_monotonic()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-oneway_arity">oneway_arity()</a></h3>
 <p><code>oneway_arity() = <a href="#type-method_arity" docgen-rel="seetype" docgen-href="#method_arity/0">method_arity()</a></code></p>
 
@@ -208,7 +240,11 @@
 
 
 <h3 class="typedecl"><a name="type-requests_outcome">requests_outcome()</a></h3>
-<p><code>requests_outcome() = success | {failure, [pid()]}</code></p>
+<p><code>requests_outcome() = success | {failure, [<a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>]}</code></p>
+
+
+<h3 class="typedecl"><a name="type-result_table">result_table()</a></h3>
+<p><code>result_table() = <a href="#type-table" docgen-rel="seetype" docgen-href="#table/0">table</a>(<a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>, <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-request_result" docgen-rel="seetype" docgen-href="#request_result/0">request_result()</a>))</code></p>
 
 
 <h3 class="typedecl"><a name="type-stack_trace">stack_trace()</a></h3>
@@ -216,7 +252,7 @@
 
 
 <h3 class="typedecl"><a name="type-state">state()</a></h3>
-<p><code>state() = #state_holder{virtual_table = <a href="table.html#type-table" docgen-rel="seetype" docgen-href="table#table/0">table:table()</a>, attribute_table = <a href="table.html#type-table" docgen-rel="seetype" docgen-href="table#table/0">table:table()</a>, actual_class = <a href="wooper.html#type-classname" docgen-rel="seetype" docgen-href="wooper#classname/0">wooper:classname()</a>, request_sender = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(pid())}</code></p>
+<p><code>state() = #state_holder{virtual_table = <a href="wooper.html#type-virtual_table" docgen-rel="seetype" docgen-href="wooper#virtual_table/0">wooper:virtual_table()</a>, attribute_table = <a href="wooper.html#type-attribute_table" docgen-rel="seetype" docgen-href="wooper#attribute_table/0">wooper:attribute_table()</a>, actual_class = <a href="wooper.html#type-classname" docgen-rel="seetype" docgen-href="wooper#classname/0">wooper:classname()</a>, request_sender = <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(pid())}</code></p>
 
 
 <h3 class="typedecl"><a name="type-static_arity">static_arity()</a></h3>
@@ -251,6 +287,10 @@
 <p><code>static_void_return() = <a href="#type-static_return" docgen-rel="seetype" docgen-href="#static_return/0">static_return</a>(any())</code></p>
 
 
+<h3 class="typedecl"><a name="type-string_like">string_like()</a></h3>
+<p><code>string_like() = <a href="text_utils.html#type-string_like" docgen-rel="seetype" docgen-href="text_utils#string_like/0">text_utils:string_like()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-time_out">time_out()</a></h3>
 <p><code>time_out() = <a href="time_utils.html#type-time_out" docgen-rel="seetype" docgen-href="time_utils#time_out/0">time_utils:time_out()</a></code></p>
 
@@ -259,13 +299,19 @@
 <p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-virtual_table">virtual_table()</a></h3>
+<p><code>virtual_table() = <a href="table.html#type-table" docgen-rel="seetype" docgen-href="table#table/0">table:table</a>(<a href="#type-method_id" docgen-rel="seetype" docgen-href="#method_id/0">method_id()</a>, ParentClassname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>)</code></p>
+
+
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#addKeyValueToAttribute-4">addKeyValueToAttribute/4</a></td><td></td></tr>
 <tr><td valign="top"><a href="#addToAttribute-3">addToAttribute/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#appendToAttribute-3">appendToAttribute/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#check_all_undefined-2">check_all_undefined/2</a></td><td></td></tr>
-<tr><td valign="top"><a href="#check_classname_and_arity-2">check_classname_and_arity/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_constructor_for-2">check_constructor_for/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_equal-3">check_equal/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#check_instance_of-2">check_instance_of/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_operational-1">check_operational/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#check_undefined-2">check_undefined/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#concatToAttribute-3">concatToAttribute/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#const_return-0">const_return/0</a></td><td></td></tr>
@@ -302,6 +348,10 @@
 <tr><td valign="top"><a href="#executeRequest-3">executeRequest/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#executeRequestAs-3">executeRequestAs/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#executeRequestAs-4">executeRequestAs/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#execute_concurrent_request-2">execute_concurrent_request/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#execute_concurrent_request-3">execute_concurrent_request/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#execute_concurrent_request-4">execute_concurrent_request/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#execute_concurrent_request-5">execute_concurrent_request/5</a></td><td></td></tr>
 <tr><td valign="top"><a href="#execute_const_oneway-2">execute_const_oneway/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#execute_const_oneway-3">execute_const_oneway/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#execute_const_request-2">execute_const_request/2</a></td><td></td></tr>
@@ -311,6 +361,8 @@
 <tr><td valign="top"><a href="#execute_request-2">execute_request/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#execute_request-3">execute_request/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#execute_request-4">execute_request/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#forge_concurrent_result-1">forge_concurrent_result/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#forge_concurrent_result-2">forge_concurrent_result/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#getAttribute-2">getAttribute/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#getAttributes-2">getAttributes/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#getMaybeAttribute-2">getMaybeAttribute/2</a></td><td></td></tr>
@@ -321,9 +373,11 @@
 <tr><td valign="top"><a href="#get_classname-1">get_classname/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_execution_target-0">get_execution_target/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_exported_functions_set-0">get_exported_functions_set/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_status-1">get_status/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_synchronous_time_out-1">get_synchronous_time_out/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#hasAttribute-2">hasAttribute/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#incrementAttribute-2">incrementAttribute/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#interpret_error_term-2">interpret_error_term/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_instance_of-2">is_instance_of/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_wooper_debug-0">is_wooper_debug/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#log_error-1">log_error/1</a></td><td></td></tr>
@@ -333,6 +387,8 @@
 <tr><td valign="top"><a href="#log_info-2">log_info/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#log_warning-1">log_warning/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#log_warning-2">log_warning/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#method_call_to_string-2">method_call_to_string/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#method_name_to_string-1">method_name_to_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#obtain_results_for_request_series-2">obtain_results_for_request_series/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#obtain_results_for_requests-3">obtain_results_for_requests/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#on_failed_oneway-6">on_failed_oneway/6</a></td><td></td></tr>
@@ -348,6 +404,10 @@
 <tr><td valign="top"><a href="#safe_delete_synchronously_instances-1">safe_delete_synchronously_instances/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#send_acknowledged_oneway_in_turn-5">send_acknowledged_oneway_in_turn/5</a></td><td></td></tr>
 <tr><td valign="top"><a href="#send_and_listen-3">send_and_listen/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#send_concurrent_request-2">send_concurrent_request/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#send_concurrent_request-3">send_concurrent_request/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#send_concurrent_request-4">send_concurrent_request/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#send_concurrent_request-5">send_concurrent_request/5</a></td><td></td></tr>
 <tr><td valign="top"><a href="#send_request_in_turn-3">send_request_in_turn/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#send_request_in_turn-4">send_request_in_turn/4</a></td><td></td></tr>
 <tr><td valign="top"><a href="#send_request_series-2">send_request_series/2</a></td><td></td></tr>
@@ -360,6 +420,7 @@
 <tr><td valign="top"><a href="#subtractFromAttribute-3">subtractFromAttribute/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#swapInAttribute-3">swapInAttribute/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#toggleAttribute-2">toggleAttribute/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#wait_for_concurrent_request_results-1">wait_for_concurrent_request_results/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#wait_for_request_acknowledgements-2">wait_for_request_acknowledgements/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#wait_for_request_acknowledgements-3">wait_for_request_acknowledgements/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#wait_for_request_answers-2">wait_for_request_answers/2</a></td><td></td></tr>
@@ -399,15 +460,27 @@
 <p> </p>
 </div>
 
-<h3 class="function"><a name="check_classname_and_arity-2">check_classname_and_arity/2</a></h3>
+<h3 class="function"><a name="check_constructor_for-2">check_constructor_for/2</a></h3>
 <div class="spec">
-<p><code>check_classname_and_arity(Classname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, ConstructionParameters::<a href="#type-construction_parameters" docgen-rel="seetype" docgen-href="#construction_parameters/0">construction_parameters()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p><code>check_constructor_for(Classname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, ConstructionParameters::<a href="#type-construction_parameters" docgen-rel="seetype" docgen-href="#construction_parameters/0">construction_parameters()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="check_equal-3">check_equal/3</a></h3>
+<div class="spec">
+<p><code>check_equal(AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>, AttributeValue::<a href="#type-attribute_value" docgen-rel="seetype" docgen-href="#attribute_value/0">attribute_value()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="check_instance_of-2">check_instance_of/2</a></h3>
 <div class="spec">
 <p><code>check_instance_of(Classname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="check_operational-1">check_operational/1</a></h3>
+<div class="spec">
+<p><code>check_operational(InstPid::<a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -539,19 +612,19 @@
 
 <h3 class="function"><a name="executeConstOneway-3">executeConstOneway/3</a></h3>
 <div class="spec">
-<p><code>executeConstOneway(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name" docgen-rel="seetype" docgen-href="#oneway_name/0">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p><code>executeConstOneway(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name" docgen-rel="seetype" docgen-href="#oneway_name/0">oneway_name()</a>, ArgumentMaybeList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstOnewayAs-3">executeConstOnewayAs/3</a></h3>
 <div class="spec">
-<p><code>executeConstOnewayAs(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, Classname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, OnewayAtom::<a href="#type-oneway_name" docgen-rel="seetype" docgen-href="#oneway_name/0">oneway_name()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p><code>executeConstOnewayAs(ParentClassname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name" docgen-rel="seetype" docgen-href="#oneway_name/0">oneway_name()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstOnewayAs-4">executeConstOnewayAs/4</a></h3>
 <div class="spec">
-<p><code>executeConstOnewayAs(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, Classname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, OnewayAtom::<a href="#type-oneway_name" docgen-rel="seetype" docgen-href="#oneway_name/0">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p><code>executeConstOnewayAs(ParentClassname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name" docgen-rel="seetype" docgen-href="#oneway_name/0">oneway_name()</a>, MaybeArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -563,19 +636,19 @@
 
 <h3 class="function"><a name="executeConstRequest-3">executeConstRequest/3</a></h3>
 <div class="spec">
-<p><code>executeConstRequest(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, RequestAtom::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a></code><br></p>
+<p><code>executeConstRequest(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, RequestAtom::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>, ArgumentMaybeList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstRequestAs-3">executeConstRequestAs/3</a></h3>
 <div class="spec">
-<p><code>executeConstRequestAs(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, ParentClassname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, RequestAtom::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>) -&gt; <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a></code><br></p>
+<p><code>executeConstRequestAs(ParentClassname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, RequestAtom::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>) -&gt; <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeConstRequestAs-4">executeConstRequestAs/4</a></h3>
 <div class="spec">
-<p><code>executeConstRequestAs(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, Classname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, RequestAtom::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a></code><br></p>
+<p><code>executeConstRequestAs(ParentClassname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, RequestAtom::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>, MaybeArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -593,13 +666,13 @@
 
 <h3 class="function"><a name="executeOnewayAs-3">executeOnewayAs/3</a></h3>
 <div class="spec">
-<p><code>executeOnewayAs(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, ParentClassname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, OnewayAtom::<a href="#type-oneway_name" docgen-rel="seetype" docgen-href="#oneway_name/0">oneway_name()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
+<p><code>executeOnewayAs(ParentClassname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name" docgen-rel="seetype" docgen-href="#oneway_name/0">oneway_name()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeOnewayAs-4">executeOnewayAs/4</a></h3>
 <div class="spec">
-<p><code>executeOnewayAs(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, Classname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, OnewayAtom::<a href="#type-oneway_name" docgen-rel="seetype" docgen-href="#oneway_name/0">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
+<p><code>executeOnewayAs(ParentClassname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, OnewayAtom::<a href="#type-oneway_name" docgen-rel="seetype" docgen-href="#oneway_name/0">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -617,13 +690,37 @@
 
 <h3 class="function"><a name="executeRequestAs-3">executeRequestAs/3</a></h3>
 <div class="spec">
-<p><code>executeRequestAs(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, ParentClassname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, RequestAtom::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a>}</code><br></p>
+<p><code>executeRequestAs(ParentClassname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, RequestAtom::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="executeRequestAs-4">executeRequestAs/4</a></h3>
 <div class="spec">
-<p><code>executeRequestAs(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, Classname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, RequestAtom::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a>}</code><br></p>
+<p><code>executeRequestAs(ParentClassname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, RequestAtom::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="execute_concurrent_request-2">execute_concurrent_request/2</a></h3>
+<div class="spec">
+<p><code>execute_concurrent_request(TargetInstancePids::[<a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>], RequestName::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>) -&gt; [<a href="#type-request_result" docgen-rel="seetype" docgen-href="#request_result/0">request_result()</a>]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="execute_concurrent_request-3">execute_concurrent_request/3</a></h3>
+<div class="spec">
+<p><code>execute_concurrent_request(TargetInstancePids::[<a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>], RequestName::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>, RequestArgs::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; [<a href="#type-request_result" docgen-rel="seetype" docgen-href="#request_result/0">request_result()</a>]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="execute_concurrent_request-4">execute_concurrent_request/4</a></h3>
+<div class="spec">
+<p><code>execute_concurrent_request(TargetInstancePids::[<a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>], RequestName::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>, RequestArgs::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>, TimeOut::<a href="#type-time_out" docgen-rel="seetype" docgen-href="#time_out/0">time_out()</a>) -&gt; <a href="#type-concurrent_outcome" docgen-rel="seetype" docgen-href="#concurrent_outcome/0">concurrent_outcome()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="execute_concurrent_request-5">execute_concurrent_request/5</a></h3>
+<div class="spec">
+<p><code>execute_concurrent_request(TargetInstancePids::[<a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>], RequestName::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>, RequestArgs::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>, TimeOut::<a href="#type-time_out" docgen-rel="seetype" docgen-href="#time_out/0">time_out()</a>, ConcurrentRequestTag::<a href="#type-concurrent_request_tag" docgen-rel="seetype" docgen-href="#concurrent_request_tag/0">concurrent_request_tag()</a>) -&gt; <a href="#type-concurrent_outcome" docgen-rel="seetype" docgen-href="#concurrent_outcome/0">concurrent_outcome()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -682,6 +779,18 @@
 <h3 class="function"><a name="execute_request-4">execute_request/4</a></h3>
 <div class="spec">
 <p><code>execute_request(TargetInstancePID::<a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>, RequestName::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>, RequestArgs::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>, ExpectedResult::<a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="forge_concurrent_result-1">forge_concurrent_result/1</a></h3>
+<div class="spec">
+<p><code>forge_concurrent_result(ActualResult::<a href="#type-request_result" docgen-rel="seetype" docgen-href="#request_result/0">request_result()</a>) -&gt; <a href="#type-concurrent_result" docgen-rel="seetype" docgen-href="#concurrent_result/0">concurrent_result()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="forge_concurrent_result-2">forge_concurrent_result/2</a></h3>
+<div class="spec">
+<p><code>forge_concurrent_result(ActualResult::<a href="#type-request_result" docgen-rel="seetype" docgen-href="#request_result/0">request_result()</a>, ConcurrentRequestTag::<a href="#type-concurrent_request_tag" docgen-rel="seetype" docgen-href="#concurrent_request_tag/0">concurrent_request_tag()</a>) -&gt; <a href="#type-concurrent_result" docgen-rel="seetype" docgen-href="#concurrent_result/0">concurrent_result()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -745,6 +854,12 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="get_status-1">get_status/1</a></h3>
+<div class="spec">
+<p><code>get_status(InstPid::<a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>) -&gt; {not_pid, term()} | no_process | not_responsive | operational</code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="get_synchronous_time_out-1">get_synchronous_time_out/1</a></h3>
 <div class="spec">
 <p><code>get_synchronous_time_out(IsDebugMode::boolean()) -&gt; <a href="#type-time_out" docgen-rel="seetype" docgen-href="#time_out/0">time_out()</a></code><br></p>
@@ -760,6 +875,12 @@
 <h3 class="function"><a name="incrementAttribute-2">incrementAttribute/2</a></h3>
 <div class="spec">
 <p><code>incrementAttribute(State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, AttributeName::<a href="#type-attribute_name" docgen-rel="seetype" docgen-href="#attribute_name/0">attribute_name()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="interpret_error_term-2">interpret_error_term/2</a></h3>
+<div class="spec">
+<p><code>interpret_error_term(ErrorTerm::<a href="#type-error_term" docgen-rel="seetype" docgen-href="#error_term/0">error_term()</a>, MaybeErrorEllipseLen::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>)) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -817,6 +938,18 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="method_call_to_string-2">method_call_to_string/2</a></h3>
+<div class="spec">
+<p><code>method_call_to_string(MethodName::any(), Args::any()) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="method_name_to_string-1">method_name_to_string/1</a></h3>
+<div class="spec">
+<p><code>method_name_to_string(MethodName::any()) -&gt; <a href="#type-string_like" docgen-rel="seetype" docgen-href="#string_like/0">string_like()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="obtain_results_for_request_series-2">obtain_results_for_request_series/2</a></h3>
 <div class="spec">
 <p><code>obtain_results_for_request_series(Requests::[{<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>, <a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>}], TargetInstancePID::<a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>) -&gt; [<a href="#type-request_result" docgen-rel="seetype" docgen-href="#request_result/0">request_result()</a>]</code><br></p>
@@ -831,13 +964,13 @@
 
 <h3 class="function"><a name="on_failed_oneway-6">on_failed_oneway/6</a></h3>
 <div class="spec">
-<p><code>on_failed_oneway(OnewayName::<a href="#type-oneway_name" docgen-rel="seetype" docgen-href="#oneway_name/0">oneway_name()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>, ExceptionClass::<a href="#type-exception_class" docgen-rel="seetype" docgen-href="#exception_class/0">exception_class()</a>, ExceptionTerm::<a href="#type-exception_term" docgen-rel="seetype" docgen-href="#exception_term/0">exception_term()</a>, Stacktrace::<a href="#type-stack_trace" docgen-rel="seetype" docgen-href="#stack_trace/0">stack_trace()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; no_return()</code><br></p>
+<p><code>on_failed_oneway(OnewayName::<a href="#type-oneway_name" docgen-rel="seetype" docgen-href="#oneway_name/0">oneway_name()</a>, Arguments::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>, ExceptionClass::<a href="#type-exception_class" docgen-rel="seetype" docgen-href="#exception_class/0">exception_class()</a>, ExceptionTerm::<a href="#type-exception_term" docgen-rel="seetype" docgen-href="#exception_term/0">exception_term()</a>, Stacktrace::<a href="#type-stack_trace" docgen-rel="seetype" docgen-href="#stack_trace/0">stack_trace()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; no_return()</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="on_failed_request-7">on_failed_request/7</a></h3>
 <div class="spec">
-<p><code>on_failed_request(RequestName::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>, CallerPid::pid(), ExceptionClass::<a href="#type-exception_class" docgen-rel="seetype" docgen-href="#exception_class/0">exception_class()</a>, ExceptionTerm::<a href="#type-exception_term" docgen-rel="seetype" docgen-href="#exception_term/0">exception_term()</a>, Stacktrace::<a href="#type-stack_trace" docgen-rel="seetype" docgen-href="#stack_trace/0">stack_trace()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; no_return()</code><br></p>
+<p><code>on_failed_request(RequestName::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>, Arguments::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>, CallerPid::pid(), ExceptionClass::<a href="#type-exception_class" docgen-rel="seetype" docgen-href="#exception_class/0">exception_class()</a>, ExceptionTerm::<a href="#type-exception_term" docgen-rel="seetype" docgen-href="#exception_term/0">exception_term()</a>, Stacktrace::<a href="#type-stack_trace" docgen-rel="seetype" docgen-href="#stack_trace/0">stack_trace()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; no_return()</code><br></p>
 <p> </p>
 </div>
 
@@ -904,6 +1037,30 @@
 <h3 class="function"><a name="send_and_listen-3">send_and_listen/3</a></h3>
 <div class="spec">
 <p><code>send_and_listen(InstancePid::<a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>, RequestName::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>, Arguments::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; term()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="send_concurrent_request-2">send_concurrent_request/2</a></h3>
+<div class="spec">
+<p><code>send_concurrent_request(TargetInstancePids::[<a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>], RequestName::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>) -&gt; <a href="#type-concurrent_waiting_info" docgen-rel="seetype" docgen-href="#concurrent_waiting_info/0">concurrent_waiting_info()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="send_concurrent_request-3">send_concurrent_request/3</a></h3>
+<div class="spec">
+<p><code>send_concurrent_request(TargetInstancePids::[<a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>], RequestName::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>, RequestArgs::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; <a href="#type-concurrent_waiting_info" docgen-rel="seetype" docgen-href="#concurrent_waiting_info/0">concurrent_waiting_info()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="send_concurrent_request-4">send_concurrent_request/4</a></h3>
+<div class="spec">
+<p><code>send_concurrent_request(TargetInstancePids::[<a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>], RequestName::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>, RequestArgs::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>, TimeOut::<a href="#type-time_out" docgen-rel="seetype" docgen-href="#time_out/0">time_out()</a>) -&gt; <a href="#type-concurrent_waiting_info" docgen-rel="seetype" docgen-href="#concurrent_waiting_info/0">concurrent_waiting_info()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="send_concurrent_request-5">send_concurrent_request/5</a></h3>
+<div class="spec">
+<p><code>send_concurrent_request(TargetInstancePids::[<a href="#type-instance_pid" docgen-rel="seetype" docgen-href="#instance_pid/0">instance_pid()</a>], RequestName::<a href="#type-request_name" docgen-rel="seetype" docgen-href="#request_name/0">request_name()</a>, RequestArgs::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>, TimeOut::<a href="#type-time_out" docgen-rel="seetype" docgen-href="#time_out/0">time_out()</a>, ConcurrentRequestTag::<a href="#type-concurrent_request_tag" docgen-rel="seetype" docgen-href="#concurrent_request_tag/0">concurrent_request_tag()</a>) -&gt; <a href="#type-concurrent_waiting_info" docgen-rel="seetype" docgen-href="#concurrent_waiting_info/0">concurrent_waiting_info()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -979,6 +1136,12 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="wait_for_concurrent_request_results-1">wait_for_concurrent_request_results/1</a></h3>
+<div class="spec">
+<p><code>wait_for_concurrent_request_results(ConcurrentWaitInfo::<a href="#type-concurrent_waiting_info" docgen-rel="seetype" docgen-href="#concurrent_waiting_info/0">concurrent_waiting_info()</a>) -&gt; <a href="#type-concurrent_outcome" docgen-rel="seetype" docgen-href="#concurrent_outcome/0">concurrent_outcome()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="wait_for_request_acknowledgements-2">wait_for_request_acknowledgements/2</a></h3>
 <div class="spec">
 <p><code>wait_for_request_acknowledgements(Count::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>, AckTerm::<a href="#type-ack_term" docgen-rel="seetype" docgen-href="#ack_term/0">ack_term()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
@@ -1005,43 +1168,43 @@
 
 <h3 class="function"><a name="wooper_effective_method_execution-4">wooper_effective_method_execution/4</a></h3>
 <div class="spec">
-<p><code>wooper_effective_method_execution(SelectedModule::module(), MethodAtom::<a href="#type-method_name" docgen-rel="seetype" docgen-href="#method_name/0">method_name()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, Parameters::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a>}</code><br></p>
+<p><code>wooper_effective_method_execution(SelectedModule::module(), MethodAtom::<a href="#type-method_name" docgen-rel="seetype" docgen-href="#method_name/0">method_name()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, Arguments::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_execute_method-3">wooper_execute_method/3</a></h3>
 <div class="spec">
-<p><code>wooper_execute_method(MethodAtom::<a href="#type-method_name" docgen-rel="seetype" docgen-href="#method_name/0">method_name()</a>, Parameters::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a>}</code><br></p>
+<p><code>wooper_execute_method(MethodAtom::<a href="#type-method_name" docgen-rel="seetype" docgen-href="#method_name/0">method_name()</a>, Arguments::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_execute_method_as-4">wooper_execute_method_as/4</a></h3>
 <div class="spec">
-<p><code>wooper_execute_method_as(ParentClassname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, MethodAtom::<a href="#type-method_name" docgen-rel="seetype" docgen-href="#method_name/0">method_name()</a>, Parameters::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a>}</code><br></p>
+<p><code>wooper_execute_method_as(ParentClassname::<a href="#type-classname" docgen-rel="seetype" docgen-href="#classname/0">classname()</a>, MethodAtom::<a href="#type-method_name" docgen-rel="seetype" docgen-href="#method_name/0">method_name()</a>, Arguments::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_handle_local_oneway_execution-3">wooper_handle_local_oneway_execution/3</a></h3>
 <div class="spec">
-<p><code>wooper_handle_local_oneway_execution(OnewayAtom::<a href="#type-method_name" docgen-rel="seetype" docgen-href="#method_name/0">method_name()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
+<p><code>wooper_handle_local_oneway_execution(OnewayAtom::<a href="#type-method_name" docgen-rel="seetype" docgen-href="#method_name/0">method_name()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, Arguments::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_handle_local_request_execution-3">wooper_handle_local_request_execution/3</a></h3>
 <div class="spec">
-<p><code>wooper_handle_local_request_execution(RequestAtom::<a href="#type-method_name" docgen-rel="seetype" docgen-href="#method_name/0">method_name()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a>}</code><br></p>
+<p><code>wooper_handle_local_request_execution(RequestAtom::<a href="#type-method_name" docgen-rel="seetype" docgen-href="#method_name/0">method_name()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, Arguments::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; {<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, <a href="#type-method_internal_result" docgen-rel="seetype" docgen-href="#method_internal_result/0">method_internal_result()</a>}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_handle_remote_oneway_execution-3">wooper_handle_remote_oneway_execution/3</a></h3>
 <div class="spec">
-<p><code>wooper_handle_remote_oneway_execution(OnewayAtom::<a href="#type-method_name" docgen-rel="seetype" docgen-href="#method_name/0">method_name()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
+<p><code>wooper_handle_remote_oneway_execution(OnewayAtom::<a href="#type-method_name" docgen-rel="seetype" docgen-href="#method_name/0">method_name()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, Arguments::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="wooper_handle_remote_request_execution-4">wooper_handle_remote_request_execution/4</a></h3>
 <div class="spec">
-<p><code>wooper_handle_remote_request_execution(RequestAtom::<a href="#type-method_name" docgen-rel="seetype" docgen-href="#method_name/0">method_name()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, ArgumentList::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>, CallerPid::pid()) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
+<p><code>wooper_handle_remote_request_execution(RequestAtom::<a href="#type-method_name" docgen-rel="seetype" docgen-href="#method_name/0">method_name()</a>, State::<a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a>, Arguments::<a href="#type-method_arguments" docgen-rel="seetype" docgen-href="#method_arguments/0">method_arguments()</a>, CallerPid::pid()) -&gt; <a href="wooper.html#type-state" docgen-rel="seetype" docgen-href="wooper#state/0">wooper:state()</a></code><br></p>
 <p> </p>
 </div>
 <hr>

@@ -55,6 +55,22 @@
 <p><code>table() = <a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-tagged_list_table">tagged_list_table()</a></h3>
+<p><code>tagged_list_table() = <a href="#type-tagged_list_table" docgen-rel="seetype" docgen-href="#tagged_list_table/0">tagged_list_table</a>(term())</code></p>
+
+
+<h3 class="typedecl"><a name="type-tagged_list_table">tagged_list_table()</a></h3>
+<p><code>tagged_list_table(V) = <a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table</a>(atom(), V)</code></p>
+
+
+<h3 class="typedecl"><a name="type-tagged_table">tagged_table()</a></h3>
+<p><code>tagged_table() = <a href="#type-tagged_list_table" docgen-rel="seetype" docgen-href="#tagged_list_table/0">tagged_list_table</a>(term())</code></p>
+
+
+<h3 class="typedecl"><a name="type-tagged_table">tagged_table()</a></h3>
+<p><code>tagged_table(V) = <a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table</a>(atom(), V)</code></p>
+
+
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
@@ -71,8 +87,10 @@
 <tr><td valign="top"><a href="#add_to_entry-3">add_to_entry/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#append_list_to_entry-3">append_list_to_entry/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#append_list_to_existing_entry-3">append_list_to_existing_entry/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#append_list_to_existing_entry_end-3">append_list_to_existing_entry_end/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#append_to_entry-3">append_to_entry/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#append_to_existing_entry-3">append_to_existing_entry/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_keys_unique-1">check_keys_unique/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#check_proper-1">check_proper/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#delete_from_entry-3">delete_from_entry/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#display-1">display/1</a></td><td></td></tr>
@@ -95,9 +113,12 @@
 <tr><td valign="top"><a href="#lookup_entry-2">lookup_entry/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#map_on_entries-2">map_on_entries/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#map_on_values-2">map_on_values/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#merge-1">merge/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#merge-2">merge/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#merge_in_key-3">merge_in_key/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#merge_in_keys-2">merge_in_keys/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#merge_unique-1">merge_unique/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#merge_unique-2">merge_unique/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#new-0">new/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#new-1">new/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#optimise-1">optimise/1</a></td><td></td></tr>
@@ -105,11 +126,13 @@
 <tr><td valign="top"><a href="#remove_entries-2">remove_entries/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#remove_entry-2">remove_entry/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#select_entries-2">select_entries/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#singleton-2">singleton/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#size-1">size/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#subtract_from_entry-3">subtract_from_entry/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#to_string-2">to_string/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#toggle_entry-2">toggle_entry/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#update_in_place-3">update_in_place/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#values-1">values/1</a></td><td></td></tr>
 </table>
 
@@ -157,6 +180,12 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="append_list_to_existing_entry_end-3">append_list_to_existing_entry_end/3</a></h3>
+<div class="spec">
+<p><code>append_list_to_existing_entry_end(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, Elements::[term()], Table::<a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a>) -&gt; <a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="append_to_entry-3">append_to_entry/3</a></h3>
 <div class="spec">
 <p><code>append_to_entry(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, Element::term(), Table::<a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a>) -&gt; <a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a></code><br></p>
@@ -166,6 +195,12 @@
 <h3 class="function"><a name="append_to_existing_entry-3">append_to_existing_entry/3</a></h3>
 <div class="spec">
 <p><code>append_to_existing_entry(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, Element::term(), Table::<a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a>) -&gt; <a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="check_keys_unique-1">check_keys_unique/1</a></h3>
+<div class="spec">
+<p><code>check_keys_unique(Table::<a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a>) -&gt; <a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -301,6 +336,12 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="merge-1">merge/1</a></h3>
+<div class="spec">
+<p><code>merge(Tables::[<a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a>]) -&gt; <a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="merge-2">merge/2</a></h3>
 <div class="spec">
 <p><code>merge(TableBase::<a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a>, TableAdd::<a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a>) -&gt; <a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a></code><br></p>
@@ -316,6 +357,18 @@
 <h3 class="function"><a name="merge_in_keys-2">merge_in_keys/2</a></h3>
 <div class="spec">
 <p><code>merge_in_keys(KeyAssoc::<a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a>, Table::<a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a>) -&gt; <a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="merge_unique-1">merge_unique/1</a></h3>
+<div class="spec">
+<p><code>merge_unique(Tables::[<a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a>]) -&gt; <a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="merge_unique-2">merge_unique/2</a></h3>
+<div class="spec">
+<p><code>merge_unique(FirstTable::<a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a>, SecondTable::<a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a>) -&gt; <a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -361,6 +414,12 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="singleton-2">singleton/2</a></h3>
+<div class="spec">
+<p><code>singleton(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, Value::<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>) -&gt; <a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="size-1">size/1</a></h3>
 <div class="spec">
 <p><code>size(Table::<a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a>) -&gt; <a href="#type-entry_count" docgen-rel="seetype" docgen-href="#entry_count/0">entry_count()</a></code><br></p>
@@ -388,6 +447,12 @@
 <h3 class="function"><a name="toggle_entry-2">toggle_entry/2</a></h3>
 <div class="spec">
 <p><code>toggle_entry(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, Table::<a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a>) -&gt; <a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="update_in_place-3">update_in_place/3</a></h3>
+<div class="spec">
+<p><code>update_in_place(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, UpdateFun::fun((<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>) -&gt; <a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>), Table::<a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a>) -&gt; no_update | <a href="#type-list_table" docgen-rel="seetype" docgen-href="#list_table/0">list_table()</a></code><br></p>
 <p> </p>
 </div>
 

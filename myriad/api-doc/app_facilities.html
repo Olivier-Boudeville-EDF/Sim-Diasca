@@ -35,6 +35,14 @@
 <p><code>app_info_map() = any()</code></p>
 
 
+<h3 class="typedecl"><a name="type-config_key">config_key()</a></h3>
+<p><code>config_key() = atom()</code></p>
+
+
+<h3 class="typedecl"><a name="type-config_table">config_table()</a></h3>
+<p><code>config_table() = <a href="#type-table" docgen-rel="seetype" docgen-href="#table/0">table</a>(<a href="#type-config_key" docgen-rel="seetype" docgen-href="#config_key/0">config_key()</a>, Value::term())</code></p>
+
+
 <h3 class="typedecl"><a name="type-format_string">format_string()</a></h3>
 <p><code>format_string() = <a href="text_utils.html#type-format_string" docgen-rel="seetype" docgen-href="text_utils#format_string/0">text_utils:format_string()</a></code></p>
 
@@ -57,12 +65,14 @@
 <tr><td valign="top"><a href="#fail-1">fail/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#fail-2">fail/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#finished-0">finished/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#finished-2">finished/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_app_info-1">get_app_info/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_app_info-2">get_app_info/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_app_info-3">get_app_info/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_app_info_map-1">get_app_info_map/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#start-1">start/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#stop-0">stop/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#stop-1">stop/1</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -94,6 +104,12 @@
 <h3 class="function"><a name="finished-0">finished/0</a></h3>
 <div class="spec">
 <p><code>finished() -&gt; no_return()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="finished-2">finished/2</a></h3>
+<div class="spec">
+<p><code>finished(IsVerbose::boolean(), BeQuick::boolean()) -&gt; no_return()</code><br></p>
 <p> </p>
 </div>
 
@@ -130,6 +146,12 @@
 <h3 class="function"><a name="stop-0">stop/0</a></h3>
 <div class="spec">
 <p><code>stop() -&gt; no_return()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="stop-1">stop/1</a></h3>
+<div class="spec">
+<p><code>stop(IsVerbose::boolean()) -&gt; no_return()</code><br></p>
 <p> </p>
 </div>
 <hr>

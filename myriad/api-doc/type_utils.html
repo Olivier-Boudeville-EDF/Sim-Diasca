@@ -15,6 +15,10 @@
 
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-abstract_type_name">abstract_type_name()</a></h3>
+<p><code>abstract_type_name() = any | none | option | table | union</code></p>
+
+
 <h3 class="typedecl"><a name="type-any_string">any_string()</a></h3>
 <p><code>any_string() = <a href="text_utils.html#type-any_string" docgen-rel="seetype" docgen-href="text_utils#any_string/0">text_utils:any_string()</a></code></p>
 
@@ -31,16 +35,20 @@
 <p><code>byte_size() = <a href="system_utils.html#type-byte_size" docgen-rel="seetype" docgen-href="system_utils#byte_size/0">system_utils:byte_size()</a></code></p>
 
 
-<h3 class="typedecl"><a name="type-compounding_type_description">compounding_type_description()</a></h3>
-<p><code>compounding_type_description() = list | table | tuple | union</code></p>
+<h3 class="typedecl"><a name="type-compounding_type_name">compounding_type_name()</a></h3>
+<p><code>compounding_type_name() = <a href="#type-monomorphic_container_type_name" docgen-rel="seetype" docgen-href="#monomorphic_container_type_name/0">monomorphic_container_type_name()</a> | table | tuple | union</code></p>
 
 
 <h3 class="typedecl"><a name="type-compounding_type_spec">compounding_type_spec()</a></h3>
-<p><code>compounding_type_spec() = {list, <a href="#type-type" docgen-rel="seetype" docgen-href="#type/0">type()</a>} | {table, <a href="#type-type" docgen-rel="seetype" docgen-href="#type/0">type()</a>, <a href="#type-type" docgen-rel="seetype" docgen-href="#type/0">type()</a>} | {tuple, [<a href="#type-type" docgen-rel="seetype" docgen-href="#type/0">type()</a>]} | {union, [<a href="#type-type" docgen-rel="seetype" docgen-href="#type/0">type()</a>]}</code></p>
+<p><code>compounding_type_spec() = <a href="#type-monomorphic_container_type_spec" docgen-rel="seetype" docgen-href="#monomorphic_container_type_spec/0">monomorphic_container_type_spec()</a> | {table, {<a href="#type-contextual_type" docgen-rel="seetype" docgen-href="#contextual_type/0">contextual_type()</a>, <a href="#type-contextual_type" docgen-rel="seetype" docgen-href="#contextual_type/0">contextual_type()</a>}} | {tuple, [<a href="#type-contextual_type" docgen-rel="seetype" docgen-href="#contextual_type/0">contextual_type()</a>]} | {union, [<a href="#type-contextual_type" docgen-rel="seetype" docgen-href="#contextual_type/0">contextual_type()</a>]}</code></p>
+
+
+<h3 class="typedecl"><a name="type-concrete_type_name">concrete_type_name()</a></h3>
+<p><code>concrete_type_name() = <a href="#type-primitive_type_name" docgen-rel="seetype" docgen-href="#primitive_type_name/0">primitive_type_name()</a> | map | tuple | list</code></p>
 
 
 <h3 class="typedecl"><a name="type-contextual_type">contextual_type()</a></h3>
-<p><code>contextual_type() = term()</code></p>
+<p><code>contextual_type() = <a href="#type-tuploid" docgen-rel="seetype" docgen-href="#tuploid/0">tuploid</a>(<a href="#type-primitive_type_spec" docgen-rel="seetype" docgen-href="#primitive_type_spec/0">primitive_type_spec()</a> | <a href="#type-compounding_type_spec" docgen-rel="seetype" docgen-href="#compounding_type_spec/0">compounding_type_spec()</a>)</code></p>
 
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
@@ -52,7 +60,11 @@
 
 
 <h3 class="typedecl"><a name="type-explicit_type">explicit_type()</a></h3>
-<p><code>explicit_type() = <a href="#type-type" docgen-rel="seetype" docgen-href="#type/0">type()</a></code></p>
+<p><code>explicit_type() = <a href="#type-contextual_type" docgen-rel="seetype" docgen-href="#contextual_type/0">contextual_type()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-fallible">fallible()</a></h3>
+<p><code>fallible(TSuccess, TFailure) = <a href="basic_utils.html#type-fallible" docgen-rel="seetype" docgen-href="basic_utils#fallible/0">basic_utils:fallible</a>(TSuccess, TFailure)</code></p>
 
 
 <h3 class="typedecl"><a name="type-float32">float32()</a></h3>
@@ -91,6 +103,14 @@
 <p><code>map(_K, _V) = map()</code></p>
 
 
+<h3 class="typedecl"><a name="type-monomorphic_container_type_name">monomorphic_container_type_name()</a></h3>
+<p><code>monomorphic_container_type_name() = option | list</code></p>
+
+
+<h3 class="typedecl"><a name="type-monomorphic_container_type_spec">monomorphic_container_type_spec()</a></h3>
+<p><code>monomorphic_container_type_spec() = {option, <a href="#type-contextual_type" docgen-rel="seetype" docgen-href="#contextual_type/0">contextual_type()</a>} | {list, <a href="#type-contextual_type" docgen-rel="seetype" docgen-href="#contextual_type/0">contextual_type()</a>}</code></p>
+
+
 <h3 class="typedecl"><a name="type-nesting_depth">nesting_depth()</a></h3>
 <p><code>nesting_depth() = {<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>, <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>}</code></p>
 
@@ -123,24 +143,20 @@
 <p><code>positive_index() = <a href="basic_utils.html#type-positive_index" docgen-rel="seetype" docgen-href="basic_utils#positive_index/0">basic_utils:positive_index()</a></code></p>
 
 
-<h3 class="typedecl"><a name="type-primitive_type_description">primitive_type_description()</a></h3>
-<p><code>primitive_type_description() = atom | binary | boolean | float | integer | pid | port | reference</code></p>
-
+<h3 class="typedecl"><a name="type-primitive_type_name">primitive_type_name()</a></h3>
+<p><code>primitive_type_name() = atom | binary | float | integer | pid | port | reference | void</code></p>
+<p> This "bottom" type may be useful to describe function returns.</p>
 
 <h3 class="typedecl"><a name="type-primitive_type_spec">primitive_type_spec()</a></h3>
-<p><code>primitive_type_spec() = <a href="#type-primitive_type_description" docgen-rel="seetype" docgen-href="#primitive_type_description/0">primitive_type_description()</a></code></p>
+<p><code>primitive_type_spec() = {<a href="#type-primitive_type_name" docgen-rel="seetype" docgen-href="#primitive_type_name/0">primitive_type_name()</a>, <a href="#type-primitive_type_specialiser" docgen-rel="seetype" docgen-href="#primitive_type_specialiser/0">primitive_type_specialiser()</a>}</code></p>
 
 
-<h3 class="typedecl"><a name="type-record">record()</a></h3>
-<p><code>record() = tuple()</code></p>
+<h3 class="typedecl"><a name="type-primitive_type_specialiser">primitive_type_specialiser()</a></h3>
+<p><code>primitive_type_specialiser() = [] | atom() | binary() | float() | integer() | pid() | port() | reference()</code></p>
 
 
 <h3 class="typedecl"><a name="type-record_tag">record_tag()</a></h3>
 <p><code>record_tag() = atom()</code></p>
-
-
-<h3 class="typedecl"><a name="type-resolved_type">resolved_type()</a></h3>
-<p><code>resolved_type() = term()</code></p>
 
 
 <h3 class="typedecl"><a name="type-safe_option">safe_option()</a></h3>
@@ -163,6 +179,14 @@
 <p><code>sint8() = -128..127</code></p>
 
 
+<h3 class="typedecl"><a name="type-tagged_error_info">tagged_error_info()</a></h3>
+<p><code>tagged_error_info() = <a href="basic_utils.html#type-tagged_error_info" docgen-rel="seetype" docgen-href="basic_utils#tagged_error_info/0">basic_utils:tagged_error_info()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-tagged_fallible">tagged_fallible()</a></h3>
+<p><code>tagged_fallible(T) = <a href="basic_utils.html#type-tagged_fallible" docgen-rel="seetype" docgen-href="basic_utils#tagged_fallible/0">basic_utils:tagged_fallible</a>(T)</code></p>
+
+
 <h3 class="typedecl"><a name="type-text_type">text_type()</a></h3>
 <p><code>text_type() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
 
@@ -183,6 +207,10 @@
 <p><code>tuple(_T) = tuple()</code></p>
 
 
+<h3 class="typedecl"><a name="type-tuple_based_record">tuple_based_record()</a></h3>
+<p><code>tuple_based_record() = tuple()</code></p>
+
+
 <h3 class="typedecl"><a name="type-tuploid">tuploid()</a></h3>
 <p><code>tuploid(T) = <a href="#type-tuple" docgen-rel="seetype" docgen-href="#tuple/0">tuple</a>(T) | T</code></p>
 
@@ -191,16 +219,16 @@
 <p><code>tuploid() = <a href="#type-tuploid" docgen-rel="seetype" docgen-href="#tuploid/0">tuploid</a>(term())</code></p>
 
 
-<h3 class="typedecl"><a name="type-type">type()</a></h3>
-<p><code>type() = <a href="#type-tuploid" docgen-rel="seetype" docgen-href="#tuploid/0">tuploid</a>(<a href="#type-primitive_type_spec" docgen-rel="seetype" docgen-href="#primitive_type_spec/0">primitive_type_spec()</a> | <a href="#type-compounding_type_spec" docgen-rel="seetype" docgen-href="#compounding_type_spec/0">compounding_type_spec()</a>)</code></p>
-
-
 <h3 class="typedecl"><a name="type-type_arity">type_arity()</a></h3>
 <p><code>type_arity() = <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a></code></p>
 
 
-<h3 class="typedecl"><a name="type-type_description">type_description()</a></h3>
-<p><code>type_description() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+<h3 class="typedecl"><a name="type-type_coercion_error">type_coercion_error()</a></h3>
+<p><code>type_coercion_error() = {value_not_matching_type, ValueStr::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>, Value::<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>, <a href="#type-explicit_type" docgen-rel="seetype" docgen-href="#explicit_type/0">explicit_type()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-type_definition">type_definition()</a></h3>
+<p><code>type_definition() = {[<a href="#type-type_variable_name" docgen-rel="seetype" docgen-href="#type_variable_name/0">type_variable_name()</a>], <a href="#type-contextual_type" docgen-rel="seetype" docgen-href="#contextual_type/0">contextual_type()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-type_id">type_id()</a></h3>
@@ -209,6 +237,18 @@
 
 <h3 class="typedecl"><a name="type-type_name">type_name()</a></h3>
 <p><code>type_name() = atom()</code></p>
+
+
+<h3 class="typedecl"><a name="type-type_variable_name">type_variable_name()</a></h3>
+<p><code>type_variable_name() = atom()</code></p>
+
+
+<h3 class="typedecl"><a name="type-typedef_table">typedef_table()</a></h3>
+<p><code>typedef_table() = <a href="map_hashtable.html#type-map_hashtable" docgen-rel="seetype" docgen-href="map_hashtable#map_hashtable/0">map_hashtable:map_hashtable</a>(<a href="#type-type_id" docgen-rel="seetype" docgen-href="#type_id/0">type_id()</a>, <a href="#type-type_definition" docgen-rel="seetype" docgen-href="#type_definition/0">type_definition()</a>)</code></p>
+
+
+<h3 class="typedecl"><a name="type-typevar_binding">typevar_binding()</a></h3>
+<p><code>typevar_binding() = {<a href="#type-type_variable_name" docgen-rel="seetype" docgen-href="#type_variable_name/0">type_variable_name()</a>, <a href="#type-contextual_type" docgen-rel="seetype" docgen-href="#contextual_type/0">contextual_type()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-uint16">uint16()</a></h3>
@@ -227,8 +267,16 @@
 <p><code>uint8() = 0..255</code></p>
 
 
+<h3 class="typedecl"><a name="type-user_text_type">user_text_type()</a></h3>
+<p><code>user_text_type() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-value">value()</a></h3>
+<p><code>value() = term()</code></p>
 
 
 <h3 class="typedecl"><a name="type-value_description">value_description()</a></h3>
@@ -295,7 +343,8 @@ toolchain:</p>
 <tr><td valign="top"><a href="#check_strictly_positive_number-1">check_strictly_positive_number/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#check_tuple-1">check_tuple/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#coerce_stringified_to_type-2">coerce_stringified_to_type/2</a></td><td></td></tr>
-<tr><td valign="top"><a href="#description_to_type-1">description_to_type/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#define_type-4">define_type/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#describe_type_of-1">describe_type_of/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#ensure_binary-1">ensure_binary/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#ensure_ceiled_integer-1">ensure_ceiled_integer/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#ensure_float-1">ensure_float/1</a></td><td></td></tr>
@@ -304,17 +353,22 @@ toolchain:</p>
 <tr><td valign="top"><a href="#ensure_positive_float-1">ensure_positive_float/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#ensure_rounded_integer-1">ensure_rounded_integer/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#ensure_string-1">ensure_string/1</a></td><td></td></tr>
-<tr><td valign="top"><a href="#get_ast_simple_builtin_types-0">get_ast_simple_builtin_types/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_ast_builtin_types-0">get_ast_builtin_types/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_base_typedef_table-0">get_base_typedef_table/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_elementary_types-0">get_elementary_types/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_immediate_types-0">get_immediate_types/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_last_tuple_element-1">get_last_tuple_element/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_low_level_type_size-1">get_low_level_type_size/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_plain_builtin_types-0">get_plain_builtin_types/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_record_tag-1">get_record_tag/1</a></td><td></td></tr>
-<tr><td valign="top"><a href="#get_simple_builtin_types-0">get_simple_builtin_types/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_type_of-1">get_type_of/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#increment_counter-2">increment_counter/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#initialise_counters-1">initialise_counters/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#initialise_counters-2">initialise_counters/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#instantiate_type-2">instantiate_type/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#integer_to_boolean-1">integer_to_boolean/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#interpret_parse_type_error-1">interpret_parse_type_error/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#interpret_type_coercion_error-1">interpret_type_coercion_error/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#interpret_type_of-1">interpret_type_of/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#interpret_type_of-2">interpret_type_of/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_byte-1">is_byte/1</a></td><td></td></tr>
@@ -322,19 +376,26 @@ toolchain:</p>
 <tr><td valign="top"><a href="#is_homogeneous-2">is_homogeneous/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_neg_integer-1">is_neg_integer/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_non_neg_integer-1">is_non_neg_integer/1</a></td><td></td></tr>
-<tr><td valign="top"><a href="#is_of_described_type-2">is_of_described_type/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_of_type-2">is_of_type/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_pos_integer-1">is_pos_integer/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_subtype_of-2">is_subtype_of/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_transient-1">is_transient/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_type-1">is_type/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_value_matching-2">is_value_matching/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#parse_type-1">parse_type/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#register_typedef-3">register_typedef/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#register_typedefs-2">register_typedefs/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#resolve_type-2">resolve_type/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#resolve_typedef_table-1">resolve_typedef_table/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#set_last_tuple_element-2">set_last_tuple_element/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#share-1">share/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#share-2">share/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#share-3">share/3</a></td><td></td></tr>
-<tr><td valign="top"><a href="#tokenise_per_union-1">tokenise_per_union/1</a></td><td></td></tr>
-<tr><td valign="top"><a href="#type_to_description-1">type_to_description/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#type_to_string-1">type_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#typedef_table_to_string-1">typedef_table_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#typedef_to_string-2">typedef_to_string/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#vet_contextual_type-1">vet_contextual_type/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#vet_explicit_type-1">vet_explicit_type/1</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -395,7 +456,7 @@ toolchain:</p>
 
 <h3 class="function"><a name="are_types_identical-2">are_types_identical/2</a></h3>
 <div class="spec">
-<p><code>are_types_identical(Type::<a href="#type-type" docgen-rel="seetype" docgen-href="#type/0">type()</a>, SecondType::<a href="#type-type" docgen-rel="seetype" docgen-href="#type/0">type()</a>) -&gt; boolean()</code><br></p>
+<p><code>are_types_identical(ExplType::<a href="#type-explicit_type" docgen-rel="seetype" docgen-href="#explicit_type/0">explicit_type()</a>, SecondExplType::<a href="#type-explicit_type" docgen-rel="seetype" docgen-href="#explicit_type/0">explicit_type()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div>
 
@@ -437,7 +498,7 @@ toolchain:</p>
 
 <h3 class="function"><a name="check_boolean-1">check_boolean/1</a></h3>
 <div class="spec">
-<p><code>check_boolean(Other::term()) -&gt; atom()</code><br></p>
+<p><code>check_boolean(Other::term()) -&gt; boolean()</code><br></p>
 <p> </p>
 </div>
 
@@ -623,13 +684,19 @@ toolchain:</p>
 
 <h3 class="function"><a name="coerce_stringified_to_type-2">coerce_stringified_to_type/2</a></h3>
 <div class="spec">
-<p><code>coerce_stringified_to_type(BinStr::<a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a>, Type::<a href="#type-type" docgen-rel="seetype" docgen-href="#type/0">type()</a>) -&gt; term()</code><br></p>
+<p><code>coerce_stringified_to_type(BinValueStr::<a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a>, ExplType::<a href="#type-explicit_type" docgen-rel="seetype" docgen-href="#explicit_type/0">explicit_type()</a>) -&gt; <a href="#type-fallible" docgen-rel="seetype" docgen-href="#fallible/0">fallible</a>(<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>, <a href="#type-type_coercion_error" docgen-rel="seetype" docgen-href="#type_coercion_error/0">type_coercion_error()</a>)</code><br></p>
 <p> </p>
 </div>
 
-<h3 class="function"><a name="description_to_type-1">description_to_type/1</a></h3>
+<h3 class="function"><a name="define_type-4">define_type/4</a></h3>
 <div class="spec">
-<p><code>description_to_type(TypeDescription::<a href="#type-type_description" docgen-rel="seetype" docgen-href="#type_description/0">type_description()</a>) -&gt; <a href="#type-type" docgen-rel="seetype" docgen-href="#type/0">type()</a></code><br></p>
+<p><code>define_type(TypeName::<a href="#type-type_name" docgen-rel="seetype" docgen-href="#type_name/0">type_name()</a>, TypeVarNames::[<a href="#type-type_variable_name" docgen-rel="seetype" docgen-href="#type_variable_name/0">type_variable_name()</a>], CtxtType::<a href="#type-contextual_type" docgen-rel="seetype" docgen-href="#contextual_type/0">contextual_type()</a>, TypedefTable::<a href="#type-typedef_table" docgen-rel="seetype" docgen-href="#typedef_table/0">typedef_table()</a>) -&gt; <a href="#type-typedef_table" docgen-rel="seetype" docgen-href="#typedef_table/0">typedef_table()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="describe_type_of-1">describe_type_of/1</a></h3>
+<div class="spec">
+<p><code>describe_type_of(Term::term()) -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>)</code><br></p>
 <p> </p>
 </div>
 
@@ -681,9 +748,15 @@ toolchain:</p>
 <p> </p>
 </div>
 
-<h3 class="function"><a name="get_ast_simple_builtin_types-0">get_ast_simple_builtin_types/0</a></h3>
+<h3 class="function"><a name="get_ast_builtin_types-0">get_ast_builtin_types/0</a></h3>
 <div class="spec">
-<p><code>get_ast_simple_builtin_types() -&gt; [<a href="#type-type_name" docgen-rel="seetype" docgen-href="#type_name/0">type_name()</a>]</code><br></p>
+<p><code>get_ast_builtin_types() -&gt; [<a href="#type-type_name" docgen-rel="seetype" docgen-href="#type_name/0">type_name()</a>]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_base_typedef_table-0">get_base_typedef_table/0</a></h3>
+<div class="spec">
+<p><code>get_base_typedef_table() -&gt; <a href="#type-typedef_table" docgen-rel="seetype" docgen-href="#typedef_table/0">typedef_table()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -711,21 +784,21 @@ toolchain:</p>
 <p> </p>
 </div>
 
-<h3 class="function"><a name="get_record_tag-1">get_record_tag/1</a></h3>
+<h3 class="function"><a name="get_plain_builtin_types-0">get_plain_builtin_types/0</a></h3>
 <div class="spec">
-<p><code>get_record_tag(RecordTuple::<a href="#type-record" docgen-rel="seetype" docgen-href="#record/0">record()</a>) -&gt; <a href="#type-record_tag" docgen-rel="seetype" docgen-href="#record_tag/0">record_tag()</a></code><br></p>
+<p><code>get_plain_builtin_types() -&gt; [<a href="#type-type_name" docgen-rel="seetype" docgen-href="#type_name/0">type_name()</a>]</code><br></p>
 <p> </p>
 </div>
 
-<h3 class="function"><a name="get_simple_builtin_types-0">get_simple_builtin_types/0</a></h3>
+<h3 class="function"><a name="get_record_tag-1">get_record_tag/1</a></h3>
 <div class="spec">
-<p><code>get_simple_builtin_types() -&gt; [<a href="#type-type_name" docgen-rel="seetype" docgen-href="#type_name/0">type_name()</a>]</code><br></p>
+<p><code>get_record_tag(RecordTuple::record()) -&gt; <a href="#type-record_tag" docgen-rel="seetype" docgen-href="#record_tag/0">record_tag()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="get_type_of-1">get_type_of/1</a></h3>
 <div class="spec">
-<p><code>get_type_of(Term::term()) -&gt; <a href="#type-primitive_type_description" docgen-rel="seetype" docgen-href="#primitive_type_description/0">primitive_type_description()</a></code><br></p>
+<p><code>get_type_of(Term::term()) -&gt; <a href="#type-value_description" docgen-rel="seetype" docgen-href="#value_description/0">value_description()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -744,6 +817,30 @@ toolchain:</p>
 <h3 class="function"><a name="initialise_counters-2">initialise_counters/2</a></h3>
 <div class="spec">
 <p><code>initialise_counters(Count::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>, InitValue::integer()) -&gt; <a href="#type-counters" docgen-rel="seetype" docgen-href="#counters/0">counters()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="instantiate_type-2">instantiate_type/2</a></h3>
+<div class="spec">
+<p><code>instantiate_type(CtxtType::<a href="#type-contextual_type" docgen-rel="seetype" docgen-href="#contextual_type/0">contextual_type()</a>, TypevarBindings::[<a href="#type-typevar_binding" docgen-rel="seetype" docgen-href="#typevar_binding/0">typevar_binding()</a>]) -&gt; <a href="#type-contextual_type" docgen-rel="seetype" docgen-href="#contextual_type/0">contextual_type()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="integer_to_boolean-1">integer_to_boolean/1</a></h3>
+<div class="spec">
+<p><code>integer_to_boolean(I::integer()) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="interpret_parse_type_error-1">interpret_parse_type_error/1</a></h3>
+<div class="spec">
+<p><code>interpret_parse_type_error(X1::<a href="#type-tagged_error_info" docgen-rel="seetype" docgen-href="#tagged_error_info/0">tagged_error_info()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="interpret_type_coercion_error-1">interpret_type_coercion_error/1</a></h3>
+<div class="spec">
+<p><code>interpret_type_coercion_error(Error::<a href="#type-type_coercion_error" docgen-rel="seetype" docgen-href="#type_coercion_error/0">type_coercion_error()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -767,13 +864,13 @@ toolchain:</p>
 
 <h3 class="function"><a name="is_homogeneous-1">is_homogeneous/1</a></h3>
 <div class="spec">
-<p><code>is_homogeneous(List::list() | tuple()) -&gt; {true, <a href="#type-primitive_type_description" docgen-rel="seetype" docgen-href="#primitive_type_description/0">primitive_type_description()</a>} | {false, {<a href="#type-primitive_type_description" docgen-rel="seetype" docgen-href="#primitive_type_description/0">primitive_type_description()</a>, <a href="#type-primitive_type_description" docgen-rel="seetype" docgen-href="#primitive_type_description/0">primitive_type_description()</a>}}</code><br></p>
+<p><code>is_homogeneous(List::<a href="#type-monomorphic_container_type_name" docgen-rel="seetype" docgen-href="#monomorphic_container_type_name/0">monomorphic_container_type_name()</a>) -&gt; {true, <a href="#type-primitive_type_name" docgen-rel="seetype" docgen-href="#primitive_type_name/0">primitive_type_name()</a>} | {false, {<a href="#type-primitive_type_name" docgen-rel="seetype" docgen-href="#primitive_type_name/0">primitive_type_name()</a>, <a href="#type-primitive_type_name" docgen-rel="seetype" docgen-href="#primitive_type_name/0">primitive_type_name()</a>}}</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="is_homogeneous-2">is_homogeneous/2</a></h3>
 <div class="spec">
-<p><code>is_homogeneous(List::list() | tuple(), Type::<a href="#type-primitive_type_description" docgen-rel="seetype" docgen-href="#primitive_type_description/0">primitive_type_description()</a>) -&gt; boolean()</code><br></p>
+<p><code>is_homogeneous(List::<a href="#type-monomorphic_container_type_name" docgen-rel="seetype" docgen-href="#monomorphic_container_type_name/0">monomorphic_container_type_name()</a>, Type::<a href="#type-primitive_type_name" docgen-rel="seetype" docgen-href="#primitive_type_name/0">primitive_type_name()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div>
 
@@ -789,21 +886,21 @@ toolchain:</p>
 <p> </p>
 </div>
 
-<h3 class="function"><a name="is_of_described_type-2">is_of_described_type/2</a></h3>
-<div class="spec">
-<p><code>is_of_described_type(Term::term(), TypeDescription::<a href="#type-type_description" docgen-rel="seetype" docgen-href="#type_description/0">type_description()</a>) -&gt; boolean()</code><br></p>
-<p> </p>
-</div>
-
 <h3 class="function"><a name="is_of_type-2">is_of_type/2</a></h3>
 <div class="spec">
-<p><code>is_of_type(Term::term(), Type::<a href="#type-type" docgen-rel="seetype" docgen-href="#type/0">type()</a>) -&gt; boolean()</code><br></p>
+<p><code>is_of_type(Term::term(), Type::<a href="#type-explicit_type" docgen-rel="seetype" docgen-href="#explicit_type/0">explicit_type()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="is_pos_integer-1">is_pos_integer/1</a></h3>
 <div class="spec">
 <p><code>is_pos_integer(I::term()) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="is_subtype_of-2">is_subtype_of/2</a></h3>
+<div class="spec">
+<p><code>is_subtype_of(FirstType::<a href="#type-explicit_type" docgen-rel="seetype" docgen-href="#explicit_type/0">explicit_type()</a>, SecondType::<a href="#type-explicit_type" docgen-rel="seetype" docgen-href="#explicit_type/0">explicit_type()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div>
 
@@ -815,13 +912,43 @@ toolchain:</p>
 
 <h3 class="function"><a name="is_type-1">is_type/1</a></h3>
 <div class="spec">
-<p><code>is_type(TypeList::term()) -&gt; boolean()</code><br></p>
+<p><code>is_type(T::term()) -&gt; boolean()</code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="is_value_matching-2">is_value_matching/2</a></h3>
 <div class="spec">
 <p><code>is_value_matching(VDesc::<a href="#type-value_description" docgen-rel="seetype" docgen-href="#value_description/0">value_description()</a>, Value::term()) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="parse_type-1">parse_type/1</a></h3>
+<div class="spec">
+<p><code>parse_type(TypeStr::<a href="#type-text_type" docgen-rel="seetype" docgen-href="#text_type/0">text_type()</a>) -&gt; <a href="#type-tagged_fallible" docgen-rel="seetype" docgen-href="#tagged_fallible/0">tagged_fallible</a>(<a href="#type-contextual_type" docgen-rel="seetype" docgen-href="#contextual_type/0">contextual_type()</a>)</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="register_typedef-3">register_typedef/3</a></h3>
+<div class="spec">
+<p><code>register_typedef(TypeName::<a href="#type-type_name" docgen-rel="seetype" docgen-href="#type_name/0">type_name()</a>, TypeDef::<a href="#type-type_definition" docgen-rel="seetype" docgen-href="#type_definition/0">type_definition()</a>, TypedefTable::<a href="#type-typedef_table" docgen-rel="seetype" docgen-href="#typedef_table/0">typedef_table()</a>) -&gt; <a href="#type-typedef_table" docgen-rel="seetype" docgen-href="#typedef_table/0">typedef_table()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="register_typedefs-2">register_typedefs/2</a></h3>
+<div class="spec">
+<p><code>register_typedefs(TypedefPairs::[{<a href="#type-type_name" docgen-rel="seetype" docgen-href="#type_name/0">type_name()</a>, <a href="#type-type_definition" docgen-rel="seetype" docgen-href="#type_definition/0">type_definition()</a>}], TypedefTable::<a href="#type-typedef_table" docgen-rel="seetype" docgen-href="#typedef_table/0">typedef_table()</a>) -&gt; <a href="#type-typedef_table" docgen-rel="seetype" docgen-href="#typedef_table/0">typedef_table()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="resolve_type-2">resolve_type/2</a></h3>
+<div class="spec">
+<p><code>resolve_type(Type::<a href="#type-contextual_type" docgen-rel="seetype" docgen-href="#contextual_type/0">contextual_type()</a>, TypedefTable::<a href="#type-typedef_table" docgen-rel="seetype" docgen-href="#typedef_table/0">typedef_table()</a>) -&gt; <a href="#type-explicit_type" docgen-rel="seetype" docgen-href="#explicit_type/0">explicit_type()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="resolve_typedef_table-1">resolve_typedef_table/1</a></h3>
+<div class="spec">
+<p><code>resolve_typedef_table(TypedefTable::<a href="#type-typedef_table" docgen-rel="seetype" docgen-href="#typedef_table/0">typedef_table()</a>) -&gt; <a href="#type-typedef_table" docgen-rel="seetype" docgen-href="#typedef_table/0">typedef_table()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -849,21 +976,33 @@ toolchain:</p>
 <p> </p>
 </div>
 
-<h3 class="function"><a name="tokenise_per_union-1">tokenise_per_union/1</a></h3>
-<div class="spec">
-<p><code>tokenise_per_union(TypeDescription::<a href="#type-type_description" docgen-rel="seetype" docgen-href="#type_description/0">type_description()</a>) -&gt; [<a href="#type-type_description" docgen-rel="seetype" docgen-href="#type_description/0">type_description()</a>]</code><br></p>
-<p> </p>
-</div>
-
-<h3 class="function"><a name="type_to_description-1">type_to_description/1</a></h3>
-<div class="spec">
-<p><code>type_to_description(Type::<a href="#type-type" docgen-rel="seetype" docgen-href="#type/0">type()</a>) -&gt; <a href="#type-type_description" docgen-rel="seetype" docgen-href="#type_description/0">type_description()</a></code><br></p>
-<p> </p>
-</div>
-
 <h3 class="function"><a name="type_to_string-1">type_to_string/1</a></h3>
 <div class="spec">
-<p><code>type_to_string(Type::<a href="#type-type" docgen-rel="seetype" docgen-href="#type/0">type()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p><code>type_to_string(Type::<a href="#type-contextual_type" docgen-rel="seetype" docgen-href="#contextual_type/0">contextual_type()</a>) -&gt; <a href="#type-text_type" docgen-rel="seetype" docgen-href="#text_type/0">text_type()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="typedef_table_to_string-1">typedef_table_to_string/1</a></h3>
+<div class="spec">
+<p><code>typedef_table_to_string(TypedefTable::<a href="#type-typedef_table" docgen-rel="seetype" docgen-href="#typedef_table/0">typedef_table()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="typedef_to_string-2">typedef_to_string/2</a></h3>
+<div class="spec">
+<p><code>typedef_to_string(TypeId::<a href="#type-type_id" docgen-rel="seetype" docgen-href="#type_id/0">type_id()</a>, TypeDef::<a href="#type-type_definition" docgen-rel="seetype" docgen-href="#type_definition/0">type_definition()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="vet_contextual_type-1">vet_contextual_type/1</a></h3>
+<div class="spec">
+<p><code>vet_contextual_type(Type::<a href="#type-contextual_type" docgen-rel="seetype" docgen-href="#contextual_type/0">contextual_type()</a>) -&gt; <a href="#type-contextual_type" docgen-rel="seetype" docgen-href="#contextual_type/0">contextual_type()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="vet_explicit_type-1">vet_explicit_type/1</a></h3>
+<div class="spec">
+<p><code>vet_explicit_type(Type::<a href="#type-explicit_type" docgen-rel="seetype" docgen-href="#explicit_type/0">explicit_type()</a>) -&gt; <a href="#type-explicit_type" docgen-rel="seetype" docgen-href="#explicit_type/0">explicit_type()</a></code><br></p>
 <p> </p>
 </div>
 <hr>

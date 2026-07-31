@@ -31,6 +31,10 @@
 <p><code>directory_path() = <a href="file_utils.html#type-directory_path" docgen-rel="seetype" docgen-href="file_utils#directory_path/0">file_utils:directory_path()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-executable_argument">executable_argument()</a></h3>
+<p><code>executable_argument() = <a href="system_utils.html#type-executable_argument" docgen-rel="seetype" docgen-href="system_utils#executable_argument/0">system_utils:executable_argument()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-executable_info">executable_info()</a></h3>
 <p><code>executable_info() = {<a href="#type-executable_name" docgen-rel="seetype" docgen-href="#executable_name/0">executable_name()</a>, <a href="#type-executable_path" docgen-rel="seetype" docgen-href="#executable_path/0">executable_path()</a>}</code></p>
 
@@ -51,8 +55,20 @@
 <p><code>image_format() = <a href="gui_image.html#type-image_format" docgen-rel="seetype" docgen-href="gui_image#image_format/0">gui_image:image_format()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-two_digit_version">two_digit_version()</a></h3>
+<p><code>two_digit_version() = <a href="basic_utils.html#type-two_digit_version" docgen-rel="seetype" docgen-href="basic_utils#two_digit_version/0">basic_utils:two_digit_version()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
 <p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-web_browser_family">web_browser_family()</a></h3>
+<p><code>web_browser_family() = firefox_family | chrome_family</code></p>
+<p> Comprises chromium</p>
+
+<h3 class="typedecl"><a name="type-web_browser_info">web_browser_info()</a></h3>
+<p><code>web_browser_info() = {<a href="#type-web_browser_family" docgen-rel="seetype" docgen-href="#web_browser_family/0">web_browser_family()</a>, <a href="#type-executable_path" docgen-rel="seetype" docgen-href="#executable_path/0">executable_path()</a>, [<a href="#type-executable_argument" docgen-rel="seetype" docgen-href="#executable_argument/0">executable_argument()</a>]}</code></p>
 
 
 <h3 class="typedecl"><a name="type-width">width()</a></h3>
@@ -70,6 +86,8 @@
 <tr><td valign="top"><a href="#find_executable-1">find_executable/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#generate_png_from_graph_file-2">generate_png_from_graph_file/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#generate_png_from_graph_file-3">generate_png_from_graph_file/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_any_web_browser_info-0">get_any_web_browser_info/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_any_web_browser_info_for_local_access-0">get_any_web_browser_info_for_local_access/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_current_gnuplot_version-0">get_current_gnuplot_version/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_current_gnuplot_version-1">get_current_gnuplot_version/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_default_audio_player_info-0">get_default_audio_player_info/0</a></td><td></td></tr>
@@ -113,11 +131,14 @@
 <tr><td valign="top"><a href="#get_default_zip_compress_tool-0">get_default_zip_compress_tool/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_default_zip_decompress_tool-0">get_default_zip_decompress_tool/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_gnuplot_path-0">get_gnuplot_path/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_last_resort_image_viewer_name-0">get_last_resort_image_viewer_name/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_make_path-0">get_make_path/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_maybe_gnuplot_path-0">get_maybe_gnuplot_path/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_ps_path-0">get_ps_path/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_secondary_default_audio_player_name-0">get_secondary_default_audio_player_name/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_secondary_default_image_viewer_name-0">get_secondary_default_image_viewer_name/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_ssh_mute_option-0">get_ssh_mute_option/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_web_browser_path_for_family-1">get_web_browser_path_for_family/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_batch-0">is_batch/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#lookup_executable-1">lookup_executable/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#lookup_executable-2">lookup_executable/2</a></td><td></td></tr>
@@ -187,15 +208,27 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="get_any_web_browser_info-0">get_any_web_browser_info/0</a></h3>
+<div class="spec">
+<p><code>get_any_web_browser_info() -&gt; <a href="#type-coarse_fallible" docgen-rel="seetype" docgen-href="#coarse_fallible/0">coarse_fallible</a>(<a href="#type-web_browser_info" docgen-rel="seetype" docgen-href="#web_browser_info/0">web_browser_info()</a>)</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_any_web_browser_info_for_local_access-0">get_any_web_browser_info_for_local_access/0</a></h3>
+<div class="spec">
+<p><code>get_any_web_browser_info_for_local_access() -&gt; <a href="#type-coarse_fallible" docgen-rel="seetype" docgen-href="#coarse_fallible/0">coarse_fallible</a>(<a href="#type-web_browser_info" docgen-rel="seetype" docgen-href="#web_browser_info/0">web_browser_info()</a>)</code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="get_current_gnuplot_version-0">get_current_gnuplot_version/0</a></h3>
 <div class="spec">
-<p><code>get_current_gnuplot_version() -&gt; <a href="basic_utils.html#type-two_digit_version" docgen-rel="seetype" docgen-href="basic_utils#two_digit_version/0">basic_utils:two_digit_version()</a></code><br></p>
+<p><code>get_current_gnuplot_version() -&gt; <a href="#type-two_digit_version" docgen-rel="seetype" docgen-href="#two_digit_version/0">two_digit_version()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="get_current_gnuplot_version-1">get_current_gnuplot_version/1</a></h3>
 <div class="spec">
-<p><code>get_current_gnuplot_version(GnuplotPath::<a href="#type-executable_path" docgen-rel="seetype" docgen-href="#executable_path/0">executable_path()</a>) -&gt; <a href="basic_utils.html#type-two_digit_version" docgen-rel="seetype" docgen-href="basic_utils#two_digit_version/0">basic_utils:two_digit_version()</a></code><br></p>
+<p><code>get_current_gnuplot_version(GnuplotPath::<a href="#type-executable_path" docgen-rel="seetype" docgen-href="#executable_path/0">executable_path()</a>) -&gt; <a href="#type-two_digit_version" docgen-rel="seetype" docgen-href="#two_digit_version/0">two_digit_version()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -445,6 +478,12 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="get_last_resort_image_viewer_name-0">get_last_resort_image_viewer_name/0</a></h3>
+<div class="spec">
+<p><code>get_last_resort_image_viewer_name() -&gt; <a href="#type-executable_name" docgen-rel="seetype" docgen-href="#executable_name/0">executable_name()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="get_make_path-0">get_make_path/0</a></h3>
 <div class="spec">
 <p><code>get_make_path() -&gt; <a href="#type-executable_path" docgen-rel="seetype" docgen-href="#executable_path/0">executable_path()</a></code><br></p>
@@ -454,6 +493,12 @@
 <h3 class="function"><a name="get_maybe_gnuplot_path-0">get_maybe_gnuplot_path/0</a></h3>
 <div class="spec">
 <p><code>get_maybe_gnuplot_path() -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-executable_path" docgen-rel="seetype" docgen-href="#executable_path/0">executable_path()</a>)</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_ps_path-0">get_ps_path/0</a></h3>
+<div class="spec">
+<p><code>get_ps_path() -&gt; <a href="#type-executable_path" docgen-rel="seetype" docgen-href="#executable_path/0">executable_path()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -472,6 +517,12 @@
 <h3 class="function"><a name="get_ssh_mute_option-0">get_ssh_mute_option/0</a></h3>
 <div class="spec">
 <p><code>get_ssh_mute_option() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_web_browser_path_for_family-1">get_web_browser_path_for_family/1</a></h3>
+<div class="spec">
+<p><code>get_web_browser_path_for_family(BrowserFamily::<a href="#type-web_browser_family" docgen-rel="seetype" docgen-href="#web_browser_family/0">web_browser_family()</a>) -&gt; <a href="#type-coarse_fallible" docgen-rel="seetype" docgen-href="#coarse_fallible/0">coarse_fallible</a>(<a href="#type-executable_path" docgen-rel="seetype" docgen-href="#executable_path/0">executable_path()</a>)</code><br></p>
 <p> </p>
 </div>
 

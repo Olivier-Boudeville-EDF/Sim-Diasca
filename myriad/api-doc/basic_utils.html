@@ -15,6 +15,10 @@
 
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-abs_file_path">abs_file_path()</a></h3>
+<p><code>abs_file_path() = <a href="file_utils.html#type-abs_file_path" docgen-rel="seetype" docgen-href="file_utils#abs_file_path/0">file_utils:abs_file_path()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-accumulator">accumulator()</a></h3>
 <p><code>accumulator() = any()</code></p>
 
@@ -59,6 +63,10 @@
 <p><code>byte_size() = <a href="system_utils.html#type-byte_size" docgen-rel="seetype" docgen-href="system_utils#byte_size/0">system_utils:byte_size()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-coarse_fallible">coarse_fallible()</a></h3>
+<p><code>coarse_fallible(TSuccess) = <a href="#type-successful" docgen-rel="seetype" docgen-href="#successful/0">successful</a>(TSuccess) | error</code></p>
+
+
 <h3 class="typedecl"><a name="type-command_spec">command_spec()</a></h3>
 <p><code>command_spec() = {<a href="#type-module_name" docgen-rel="seetype" docgen-href="#module_name/0">module_name()</a>, <a href="#type-function_name" docgen-rel="seetype" docgen-href="#function_name/0">function_name()</a>, [<a href="#type-argument" docgen-rel="seetype" docgen-href="#argument/0">argument()</a>]}</code></p>
 
@@ -88,11 +96,15 @@
 
 
 <h3 class="typedecl"><a name="type-diagnosed_fallible">diagnosed_fallible()</a></h3>
-<p><code>diagnosed_fallible(TSuccess, TFailure) = <a href="#type-fallible" docgen-rel="seetype" docgen-href="#fallible/0">fallible</a>(TSuccess, <a href="#type-diagnosed_error_term" docgen-rel="seetype" docgen-href="#diagnosed_error_term/0">diagnosed_error_term</a>(TFailure))</code></p>
+<p><code>diagnosed_fallible(TSuccess) = <a href="#type-fallible" docgen-rel="seetype" docgen-href="#fallible/0">fallible</a>(TSuccess, <a href="#type-diagnosed_error_reason" docgen-rel="seetype" docgen-href="#diagnosed_error_reason/0">diagnosed_error_reason()</a>)</code></p>
 
 
 <h3 class="typedecl"><a name="type-diagnosed_fallible">diagnosed_fallible()</a></h3>
-<p><code>diagnosed_fallible(T) = <a href="#type-fallible" docgen-rel="seetype" docgen-href="#fallible/0">fallible</a>(T, <a href="#type-diagnosed_error_term" docgen-rel="seetype" docgen-href="#diagnosed_error_term/0">diagnosed_error_term()</a>)</code></p>
+<p><code>diagnosed_fallible(TSuccess, TFailure) = <a href="#type-fallible" docgen-rel="seetype" docgen-href="#fallible/0">fallible</a>(TSuccess, <a href="#type-diagnosed_error_reason" docgen-rel="seetype" docgen-href="#diagnosed_error_reason/0">diagnosed_error_reason</a>(TFailure))</code></p>
+
+
+<h3 class="typedecl"><a name="type-diagnosed_tagged_fallible">diagnosed_tagged_fallible()</a></h3>
+<p><code>diagnosed_tagged_fallible(TSuccess) = <a href="#type-fallible" docgen-rel="seetype" docgen-href="#fallible/0">fallible</a>(TSuccess, <a href="#type-diagnosed_error_reason" docgen-rel="seetype" docgen-href="#diagnosed_error_reason/0">diagnosed_error_reason()</a>)</code></p>
 
 
 <h3 class="typedecl"><a name="type-directory_path">directory_path()</a></h3>
@@ -107,12 +119,24 @@
 <p><code>error_diagnosis() = <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-error_info_tuploid">error_info_tuploid()</a></h3>
+<p><code>error_info_tuploid() = <a href="#type-tuploid" docgen-rel="seetype" docgen-href="#tuploid/0">tuploid()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-error_message">error_message()</a></h3>
 <p><code>error_message() = <a href="#type-error_diagnosis" docgen-rel="seetype" docgen-href="#error_diagnosis/0">error_diagnosis()</a> | <a href="#type-error_bin_diagnosis" docgen-rel="seetype" docgen-href="#error_bin_diagnosis/0">error_bin_diagnosis()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-error_reason">error_reason()</a></h3>
 <p><code>error_reason() = <a href="#type-reason" docgen-rel="seetype" docgen-href="#reason/0">reason()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-error_report_output">error_report_output()</a></h3>
+<p><code>error_report_output() = standard_full | standard_ellipsed | standard_ellipsed_file_full | standard_and_file_ellipsed</code></p>
+
+
+<h3 class="typedecl"><a name="type-error_tag">error_tag()</a></h3>
+<p><code>error_tag() = atom()</code></p>
 
 
 <h3 class="typedecl"><a name="type-error_term">error_term()</a></h3>
@@ -155,16 +179,32 @@
 <p><code>external_data() = term()</code></p>
 
 
-<h3 class="typedecl"><a name="type-fallible">fallible()</a></h3>
-<p><code>fallible(TSuccess, TFailure) = {ok, TSuccess} | {error, TFailure}</code></p>
+<h3 class="typedecl"><a name="type-failing">failing()</a></h3>
+<p><code>failing() = <a href="#type-failing" docgen-rel="seetype" docgen-href="#failing/0">failing</a>(TFailure::any())</code></p>
+
+
+<h3 class="typedecl"><a name="type-failing">failing()</a></h3>
+<p><code>failing(TFailure) = {error, TFailure}</code></p>
 
 
 <h3 class="typedecl"><a name="type-fallible">fallible()</a></h3>
-<p><code>fallible(T) = {ok, T} | <a href="#type-error_term" docgen-rel="seetype" docgen-href="#error_term/0">error_term()</a></code></p>
+<p><code>fallible() = <a href="#type-fallible" docgen-rel="seetype" docgen-href="#fallible/0">fallible</a>(TSuccess::any())</code></p>
+
+
+<h3 class="typedecl"><a name="type-fallible">fallible()</a></h3>
+<p><code>fallible(TSuccess) = <a href="#type-fallible" docgen-rel="seetype" docgen-href="#fallible/0">fallible</a>(TSuccess, TFailure::any())</code></p>
+
+
+<h3 class="typedecl"><a name="type-fallible">fallible()</a></h3>
+<p><code>fallible(TSuccess, TFailure) = <a href="#type-successful" docgen-rel="seetype" docgen-href="#successful/0">successful</a>(TSuccess) | <a href="#type-failing" docgen-rel="seetype" docgen-href="#failing/0">failing</a>(TFailure)</code></p>
 
 
 <h3 class="typedecl"><a name="type-field_name">field_name()</a></h3>
 <p><code>field_name() = atom()</code></p>
+
+
+<h3 class="typedecl"><a name="type-file_path">file_path()</a></h3>
+<p><code>file_path() = <a href="file_utils.html#type-file_path" docgen-rel="seetype" docgen-href="file_utils#file_path/0">file_utils:file_path()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-finite_time_out">finite_time_out()</a></h3>
@@ -255,8 +295,40 @@
 <p><code>status_code() = 0..255</code></p>
 
 
+<h3 class="typedecl"><a name="type-string_fallible">string_fallible()</a></h3>
+<p><code>string_fallible() = <a href="#type-fallible" docgen-rel="seetype" docgen-href="#fallible/0">fallible</a>(TSuccess::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>, TFailure::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>)</code></p>
+
+
+<h3 class="typedecl"><a name="type-successful">successful()</a></h3>
+<p><code>successful() = <a href="#type-successful" docgen-rel="seetype" docgen-href="#successful/0">successful</a>(TSuccess::any())</code></p>
+
+
+<h3 class="typedecl"><a name="type-successful">successful()</a></h3>
+<p><code>successful(TSuccess) = {ok, TSuccess}</code></p>
+
+
 <h3 class="typedecl"><a name="type-tagged_error">tagged_error()</a></h3>
 <p><code>tagged_error() = {error, <a href="#type-error_reason" docgen-rel="seetype" docgen-href="#error_reason/0">error_reason()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-tagged_error_info">tagged_error_info()</a></h3>
+<p><code>tagged_error_info() = <a href="#type-tagged_error_info" docgen-rel="seetype" docgen-href="#tagged_error_info/0">tagged_error_info</a>(<a href="#type-error_info_tuploid" docgen-rel="seetype" docgen-href="#error_info_tuploid/0">error_info_tuploid()</a>)</code></p>
+
+
+<h3 class="typedecl"><a name="type-tagged_error_info">tagged_error_info()</a></h3>
+<p><code>tagged_error_info(TErrorInfoTuploid) = {<a href="#type-error_tag" docgen-rel="seetype" docgen-href="#error_tag/0">error_tag()</a>, TErrorInfoTuploid}</code></p>
+
+
+<h3 class="typedecl"><a name="type-tagged_fallible">tagged_fallible()</a></h3>
+<p><code>tagged_fallible() = <a href="#type-tagged_fallible" docgen-rel="seetype" docgen-href="#tagged_fallible/0">tagged_fallible</a>(TSuccess::any())</code></p>
+
+
+<h3 class="typedecl"><a name="type-tagged_fallible">tagged_fallible()</a></h3>
+<p><code>tagged_fallible(TSuccess) = <a href="#type-tagged_fallible" docgen-rel="seetype" docgen-href="#tagged_fallible/0">tagged_fallible</a>(TSuccess, <a href="#type-tuploid" docgen-rel="seetype" docgen-href="#tuploid/0">tuploid()</a>)</code></p>
+
+
+<h3 class="typedecl"><a name="type-tagged_fallible">tagged_fallible()</a></h3>
+<p><code>tagged_fallible(TSuccess, TErrorInfoTuploid) = <a href="#type-fallible" docgen-rel="seetype" docgen-href="#fallible/0">fallible</a>(TSuccess, <a href="#type-tagged_error_info" docgen-rel="seetype" docgen-href="#tagged_error_info/0">tagged_error_info</a>(TErrorInfoTuploid))</code></p>
 
 
 <h3 class="typedecl"><a name="type-three_digit_version">three_digit_version()</a></h3>
@@ -265,6 +337,10 @@
 
 <h3 class="typedecl"><a name="type-time_out">time_out()</a></h3>
 <p><code>time_out() = <a href="time_utils.html#type-time_out" docgen-rel="seetype" docgen-href="time_utils#time_out/0">time_utils:time_out()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-tuploid">tuploid()</a></h3>
+<p><code>tuploid() = <a href="type_utils.html#type-tuploid" docgen-rel="seetype" docgen-href="type_utils#tuploid/0">type_utils:tuploid()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-two_digit_version">two_digit_version()</a></h3>
@@ -305,13 +381,16 @@
 <tr><td valign="top"><a href="#assert_different-2">assert_different/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#assert_equal-2">assert_equal/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#assert_false-1">assert_false/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#assert_maybe_equal-2">assert_maybe_equal/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#assert_true-1">assert_true/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#check_all_defined-1">check_all_defined/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#check_all_undefined-1">check_all_undefined/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#check_any_version-1">check_any_version/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#check_defined-1">check_defined/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_error_report_output-1">check_error_report_output/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#check_no_pending_message-0">check_no_pending_message/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#check_not_undefined-1">check_not_undefined/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#check_only_normal_exit_pending_messages-0">check_only_normal_exit_pending_messages/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#check_three_digit_version-1">check_three_digit_version/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#check_undefined-1">check_undefined/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#checkpoint-1">checkpoint/1</a></td><td></td></tr>
@@ -337,6 +416,8 @@
 <tr><td valign="top"><a href="#flush_pending_messages-0">flush_pending_messages/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#flush_pending_messages-1">flush_pending_messages/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#freeze-0">freeze/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_all_error_report_outputs-0">get_all_error_report_outputs/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_error_report_output-0">get_error_report_output/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_execution_target-0">get_execution_target/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_myriad_root_path-0">get_myriad_root_path/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_myriad_version-0">get_myriad_version/0</a></td><td></td></tr>
@@ -364,7 +445,10 @@
 <tr><td valign="top"><a href="#run-2">run/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#run-3">run/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#send_to_pid_set-2">send_to_pid_set/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_error_report_output-1">set_error_report_output/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#set_option-2">set_option/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#setup_execution_target-0">setup_execution_target/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#setup_execution_target-1">setup_execution_target/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#speak-1">speak/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#stop-0">stop/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#stop-1">stop/1</a></td><td></td></tr>
@@ -383,6 +467,8 @@
 <tr><td valign="top"><a href="#wait_for_many_acks-4">wait_for_many_acks/4</a></td><td></td></tr>
 <tr><td valign="top"><a href="#wait_for_many_acks-5">wait_for_many_acks/5</a></td><td></td></tr>
 <tr><td valign="top"><a href="#wait_for_summable_acks-5">wait_for_summable_acks/5</a></td><td></td></tr>
+<tr><td valign="top"><a href="#write_error_on_file-1">write_error_on_file/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#write_error_on_file-2">write_error_on_file/2</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -417,6 +503,12 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="assert_maybe_equal-2">assert_maybe_equal/2</a></h3>
+<div class="spec">
+<p><code>assert_maybe_equal(Expr::term(), MaybeExpr::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(term())) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="assert_true-1">assert_true/1</a></h3>
 <div class="spec">
 <p><code>assert_true(Expr::term()) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
@@ -447,6 +539,12 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="check_error_report_output-1">check_error_report_output/1</a></h3>
+<div class="spec">
+<p><code>check_error_report_output(T::term()) -&gt; <a href="#type-error_report_output" docgen-rel="seetype" docgen-href="#error_report_output/0">error_report_output()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="check_no_pending_message-0">check_no_pending_message/0</a></h3>
 <div class="spec">
 <p><code>check_no_pending_message() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
@@ -456,6 +554,12 @@
 <h3 class="function"><a name="check_not_undefined-1">check_not_undefined/1</a></h3>
 <div class="spec">
 <p><code>check_not_undefined(Term::term()) -&gt; term()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="check_only_normal_exit_pending_messages-0">check_only_normal_exit_pending_messages/0</a></h3>
+<div class="spec">
+<p><code>check_only_normal_exit_pending_messages() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -606,6 +710,18 @@
 <h3 class="function"><a name="freeze-0">freeze/0</a></h3>
 <div class="spec">
 <p><code>freeze() -&gt; no_return()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_all_error_report_outputs-0">get_all_error_report_outputs/0</a></h3>
+<div class="spec">
+<p><code>get_all_error_report_outputs() -&gt; [<a href="#type-error_report_output" docgen-rel="seetype" docgen-href="#error_report_output/0">error_report_output()</a>]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_error_report_output-0">get_error_report_output/0</a></h3>
+<div class="spec">
+<p><code>get_error_report_output() -&gt; <a href="#type-error_report_output" docgen-rel="seetype" docgen-href="#error_report_output/0">error_report_output()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -772,9 +888,27 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="set_error_report_output-1">set_error_report_output/1</a></h3>
+<div class="spec">
+<p><code>set_error_report_output(ErrortReportOutput::<a href="#type-error_report_output" docgen-rel="seetype" docgen-href="#error_report_output/0">error_report_output()</a>) -&gt; <a href="http://www.erlang.org/edoc/doc/erts/doc/persistent_term.html#type-info" docgen-rel="seetype" docgen-href="erts:persistent_term#info/0">persistent_term:info()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="set_option-2">set_option/2</a></h3>
 <div class="spec">
 <p><code>set_option(OptionTerm::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(term()), TDef::term()) -&gt; term()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="setup_execution_target-0">setup_execution_target/0</a></h3>
+<div class="spec">
+<p><code>setup_execution_target() -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="setup_execution_target-1">setup_execution_target/1</a></h3>
+<div class="spec">
+<p><code>setup_execution_target(ExecTarget::<a href="#type-execution_target" docgen-rel="seetype" docgen-href="#execution_target/0">execution_target()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -883,6 +1017,18 @@
 <h3 class="function"><a name="wait_for_summable_acks-5">wait_for_summable_acks/5</a></h3>
 <div class="spec">
 <p><code>wait_for_summable_acks(WaitedSenders::[pid()], InitialValue::number(), MaxDurationInSeconds::<a href="#type-time_out" docgen-rel="seetype" docgen-href="#time_out/0">time_out()</a>, AckReceiveAtom::atom(), ThrowAtom::atom()) -&gt; number()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="write_error_on_file-1">write_error_on_file/1</a></h3>
+<div class="spec">
+<p><code>write_error_on_file(ErrorMsg::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>) -&gt; <a href="#type-abs_file_path" docgen-rel="seetype" docgen-href="#abs_file_path/0">abs_file_path()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="write_error_on_file-2">write_error_on_file/2</a></h3>
+<div class="spec">
+<p><code>write_error_on_file(ErrorMsg::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>, FilePath::<a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>) -&gt; <a href="#type-abs_file_path" docgen-rel="seetype" docgen-href="#abs_file_path/0">abs_file_path()</a></code><br></p>
 <p> </p>
 </div>
 <hr>

@@ -23,6 +23,10 @@
 <p><code>any_hertz() = <a href="unit_utils.html#type-any_hertz" docgen-rel="seetype" docgen-href="unit_utils#any_hertz/0">unit_utils:any_hertz()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-any_second_duration">any_second_duration()</a></h3>
+<p><code>any_second_duration() = <a href="#type-modhms_duration" docgen-rel="seetype" docgen-href="#modhms_duration/0">modhms_duration()</a> | <a href="#type-dhms_duration" docgen-rel="seetype" docgen-href="#dhms_duration/0">dhms_duration()</a> | <a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a> | <a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-bin_string">bin_string()</a></h3>
 <p><code>bin_string() = <a href="text_utils.html#type-bin_string" docgen-rel="seetype" docgen-href="text_utils#bin_string/0">text_utils:bin_string()</a></code></p>
 
@@ -49,6 +53,10 @@
 
 <h3 class="typedecl"><a name="type-canonical_second">canonical_second()</a></h3>
 <p><code>canonical_second() = <a href="unit_utils.html#type-canonical_second" docgen-rel="seetype" docgen-href="unit_utils#canonical_second/0">unit_utils:canonical_second()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-comparison_result">comparison_result()</a></h3>
+<p><code>comparison_result() = <a href="basic_utils.html#type-comparison_result" docgen-rel="seetype" docgen-href="basic_utils#comparison_result/0">basic_utils:comparison_result()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-country">country()</a></h3>
@@ -87,8 +95,16 @@
 <p><code>dhms_duration() = {D::<a href="#type-days" docgen-rel="seetype" docgen-href="#days/0">days()</a>, H::<a href="#type-hours" docgen-rel="seetype" docgen-href="#hours/0">hours()</a>, M::<a href="#type-minutes" docgen-rel="seetype" docgen-href="#minutes/0">minutes()</a>, S::<a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a>}</code></p>
 
 
+<h3 class="typedecl"><a name="type-dst_convention">dst_convention()</a></h3>
+<p><code>dst_convention() = us_dst | cuba_dst | europe_dst | lebanon_dst | israel_dst | palestine_dst | egypt_dst | chile_dst | australia_dst | australia_second_dst | new_zealand_dst</code></p>
+
+
 <h3 class="typedecl"><a name="type-extended_date">extended_date()</a></h3>
 <p><code>extended_date() = <a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a> | yesterday | today | tomorrow</code></p>
+
+
+<h3 class="typedecl"><a name="type-extended_duration">extended_duration()</a></h3>
+<p><code>extended_duration() = <a href="#type-milliseconds" docgen-rel="seetype" docgen-href="#milliseconds/0">milliseconds()</a> | float() | infinity</code></p>
 
 
 <h3 class="typedecl"><a name="type-extended_time">extended_time()</a></h3>
@@ -115,6 +131,10 @@
 <p><code>hours() = <a href="unit_utils.html#type-hours" docgen-rel="seetype" docgen-href="unit_utils#hours/0">unit_utils:hours()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-human_language">human_language()</a></h3>
+<p><code>human_language() = <a href="language_utils.html#type-human_language" docgen-rel="seetype" docgen-href="language_utils#human_language/0">language_utils:human_language()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-iso8601_bin_string">iso8601_bin_string()</a></h3>
 <p><code>iso8601_bin_string() = <a href="#type-bin_string" docgen-rel="seetype" docgen-href="#bin_string/0">bin_string()</a></code></p>
 
@@ -137,6 +157,10 @@
 
 <h3 class="typedecl"><a name="type-minutes">minutes()</a></h3>
 <p><code>minutes() = <a href="unit_utils.html#type-minutes" docgen-rel="seetype" docgen-href="unit_utils#minutes/0">unit_utils:minutes()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-modhms_duration">modhms_duration()</a></h3>
+<p><code>modhms_duration() = {Mo::<a href="#type-months" docgen-rel="seetype" docgen-href="#months/0">months()</a>, D::<a href="#type-days" docgen-rel="seetype" docgen-href="#days/0">days()</a>, H::<a href="#type-hours" docgen-rel="seetype" docgen-href="#hours/0">hours()</a>, M::<a href="#type-minutes" docgen-rel="seetype" docgen-href="#minutes/0">minutes()</a>, S::<a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-month">month()</a></h3>
@@ -219,6 +243,10 @@
 <p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-utc_timestamp">utc_timestamp()</a></h3>
+<p><code>utc_timestamp() = <a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-week_day">week_day()</a></h3>
 <p><code>week_day() = monday | tuesday | wednesday | thursday | friday | saturday | sunday</code></p>
 
@@ -236,7 +264,8 @@
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#canonical_to_user_date-1">canonical_to_user_date/1</a></td><td></td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#any_second_duration_to_seconds-1">any_second_duration_to_seconds/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#canonical_to_user_date-1">canonical_to_user_date/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#canonicalise_month-1">canonicalise_month/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#canonicalise_time_frame-1">canonicalise_time_frame/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#check_canonical_date-1">check_canonical_date/1</a></td><td></td></tr>
@@ -255,9 +284,13 @@
 <tr><td valign="top"><a href="#days_to_seconds-1">days_to_seconds/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#dhms_to_seconds-1">dhms_to_seconds/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#dhms_to_string-1">dhms_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#duration_to_compact_string-1">duration_to_compact_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#duration_to_compact_string-2">duration_to_compact_string/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#duration_to_french_string-1">duration_to_french_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#duration_to_string-1">duration_to_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#duration_to_string-2">duration_to_string/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#duration_to_synthetic_string-1">duration_to_synthetic_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#duration_to_synthetic_string-2">duration_to_synthetic_string/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#find_common_bank_holidays-3">find_common_bank_holidays/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#frequency_to_period-1">frequency_to_period/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#from_posix_timestamp-1">from_posix_timestamp/1</a></td><td></td></tr>
@@ -268,15 +301,21 @@
 <tr><td valign="top"><a href="#get_date_difference-2">get_date_difference/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_day_in_year-1">get_day_in_year/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_day_rank-1">get_day_rank/1</a></td><td></td></tr>
-<tr><td valign="top"><a href="#get_daylight_saving_time-1">get_daylight_saving_time/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_dst_conventions-0">get_dst_conventions/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_dst_offset-2">get_dst_offset/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_dst_shift-1">get_dst_shift/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_dst_transitions-2">get_dst_transitions/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_duration-1">get_duration/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_duration-2">get_duration/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_duration_since-1">get_duration_since/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_epoch_milliseconds_since_year_0-0">get_epoch_milliseconds_since_year_0/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_epoch_timestamp-0">get_epoch_timestamp/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_french_textual_duration-2">get_french_textual_duration/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_french_textual_timestamp-0">get_french_textual_timestamp/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_french_textual_timestamp-1">get_french_textual_timestamp/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_intertime_duration-2">get_intertime_duration/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_last_sunday-2">get_last_sunday/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_last_sunday-3">get_last_sunday/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_local_date-0">get_local_date/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_local_time-0">get_local_time/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_local_timestamp-0">get_local_timestamp/0</a></td><td></td></tr>
@@ -291,6 +330,7 @@
 <tr><td valign="top"><a href="#get_system_time-0">get_system_time/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_textual_date-1">get_textual_date/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_textual_duration-2">get_textual_duration/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_textual_duration_since-1">get_textual_duration_since/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_textual_timestamp-0">get_textual_timestamp/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_textual_timestamp-1">get_textual_timestamp/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_textual_timestamp_for_path-0">get_textual_timestamp_for_path/0</a></td><td></td></tr>
@@ -314,7 +354,9 @@
 <tr><td valign="top"><a href="#is_timestamp-1">is_timestamp/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_user_date-1">is_user_date/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#local_to_universal_time-1">local_to_universal_time/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#modhms_to_seconds-1">modhms_to_seconds/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#month_to_string-1">month_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#months_to_float_seconds-1">months_to_float_seconds/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#months_to_seconds-1">months_to_seconds/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#next_month-1">next_month/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#offset_time-2">offset_time/2</a></td><td></td></tr>
@@ -341,6 +383,7 @@
 <tr><td valign="top"><a href="#timestamp_to_weekday-1">timestamp_to_weekday/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#universal_to_local_time-1">universal_to_local_time/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#user_to_canonical_date-1">user_to_canonical_date/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#vet_dst_convention-1">vet_dst_convention/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#wait_period_ending-2">wait_period_ending/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#week_day_to_string-1">week_day_to_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#weeks_to_seconds-1">weeks_to_seconds/1</a></td><td></td></tr>
@@ -348,6 +391,12 @@
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="any_second_duration_to_seconds-1">any_second_duration_to_seconds/1</a></h3>
+<div class="spec">
+<p><code>any_second_duration_to_seconds(D::<a href="#type-any_second_duration" docgen-rel="seetype" docgen-href="#any_second_duration/0">any_second_duration()</a>) -&gt; <a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a></code><br></p>
+<p> </p>
+</div>
 
 <h3 class="function"><a name="canonical_to_user_date-1">canonical_to_user_date/1</a></h3>
 <div class="spec">
@@ -429,13 +478,13 @@
 
 <h3 class="function"><a name="compare_dates-2">compare_dates/2</a></h3>
 <div class="spec">
-<p><code>compare_dates(FirstDate::<a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a>, SecondDate::<a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a>) -&gt; <a href="basic_utils.html#type-comparison_result" docgen-rel="seetype" docgen-href="basic_utils#comparison_result/0">basic_utils:comparison_result()</a></code><br></p>
+<p><code>compare_dates(FirstDate::<a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a>, SecondDate::<a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a>) -&gt; <a href="#type-comparison_result" docgen-rel="seetype" docgen-href="#comparison_result/0">comparison_result()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="compare_times-2">compare_times/2</a></h3>
 <div class="spec">
-<p><code>compare_times(FirstTime::<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>, SecondTime::<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>) -&gt; <a href="basic_utils.html#type-comparison_result" docgen-rel="seetype" docgen-href="basic_utils#comparison_result/0">basic_utils:comparison_result()</a></code><br></p>
+<p><code>compare_times(FirstTime::<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>, SecondTime::<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>) -&gt; <a href="#type-comparison_result" docgen-rel="seetype" docgen-href="#comparison_result/0">comparison_result()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -463,21 +512,45 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="duration_to_compact_string-1">duration_to_compact_string/1</a></h3>
+<div class="spec">
+<p><code>duration_to_compact_string(ExtDuration::<a href="#type-extended_duration" docgen-rel="seetype" docgen-href="#extended_duration/0">extended_duration()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="duration_to_compact_string-2">duration_to_compact_string/2</a></h3>
+<div class="spec">
+<p><code>duration_to_compact_string(Milliseconds::<a href="#type-extended_duration" docgen-rel="seetype" docgen-href="#extended_duration/0">extended_duration()</a>, Lang::<a href="#type-human_language" docgen-rel="seetype" docgen-href="#human_language/0">human_language()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="duration_to_french_string-1">duration_to_french_string/1</a></h3>
 <div class="spec">
-<p><code>duration_to_french_string(Milliseconds::<a href="#type-milliseconds" docgen-rel="seetype" docgen-href="#milliseconds/0">milliseconds()</a> | float() | infinity) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p><code>duration_to_french_string(Milliseconds::<a href="#type-extended_duration" docgen-rel="seetype" docgen-href="#extended_duration/0">extended_duration()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="duration_to_string-1">duration_to_string/1</a></h3>
 <div class="spec">
-<p><code>duration_to_string(Milliseconds::<a href="#type-milliseconds" docgen-rel="seetype" docgen-href="#milliseconds/0">milliseconds()</a> | float() | infinity) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p><code>duration_to_string(Milliseconds::<a href="#type-extended_duration" docgen-rel="seetype" docgen-href="#extended_duration/0">extended_duration()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="duration_to_string-2">duration_to_string/2</a></h3>
 <div class="spec">
-<p><code>duration_to_string(Duration::<a href="#type-milliseconds" docgen-rel="seetype" docgen-href="#milliseconds/0">milliseconds()</a> | float() | infinity, Lang::<a href="language_utils.html#type-human_language" docgen-rel="seetype" docgen-href="language_utils#human_language/0">language_utils:human_language()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p><code>duration_to_string(Duration::<a href="#type-extended_duration" docgen-rel="seetype" docgen-href="#extended_duration/0">extended_duration()</a>, Lang::<a href="#type-human_language" docgen-rel="seetype" docgen-href="#human_language/0">human_language()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="duration_to_synthetic_string-1">duration_to_synthetic_string/1</a></h3>
+<div class="spec">
+<p><code>duration_to_synthetic_string(ExtDuration::<a href="#type-extended_duration" docgen-rel="seetype" docgen-href="#extended_duration/0">extended_duration()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="duration_to_synthetic_string-2">duration_to_synthetic_string/2</a></h3>
+<div class="spec">
+<p><code>duration_to_synthetic_string(Milliseconds::<a href="#type-extended_duration" docgen-rel="seetype" docgen-href="#extended_duration/0">extended_duration()</a>, Lang::<a href="#type-human_language" docgen-rel="seetype" docgen-href="#human_language/0">human_language()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -541,9 +614,27 @@
 <p> </p>
 </div>
 
-<h3 class="function"><a name="get_daylight_saving_time-1">get_daylight_saving_time/1</a></h3>
+<h3 class="function"><a name="get_dst_conventions-0">get_dst_conventions/0</a></h3>
 <div class="spec">
-<p><code>get_daylight_saving_time(Date::<a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a>) -&gt; <a href="#type-hours" docgen-rel="seetype" docgen-href="#hours/0">hours()</a></code><br></p>
+<p><code>get_dst_conventions() -&gt; [<a href="#type-dst_convention" docgen-rel="seetype" docgen-href="#dst_convention/0">dst_convention()</a>]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_dst_offset-2">get_dst_offset/2</a></h3>
+<div class="spec">
+<p><code>get_dst_offset(X1::<a href="#type-utc_timestamp" docgen-rel="seetype" docgen-href="#utc_timestamp/0">utc_timestamp()</a>, DSTConv::<a href="#type-dst_convention" docgen-rel="seetype" docgen-href="#dst_convention/0">dst_convention()</a>) -&gt; <a href="#type-minutes" docgen-rel="seetype" docgen-href="#minutes/0">minutes()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_dst_shift-1">get_dst_shift/1</a></h3>
+<div class="spec">
+<p><code>get_dst_shift(DSTConv::<a href="#type-dst_convention" docgen-rel="seetype" docgen-href="#dst_convention/0">dst_convention()</a>) -&gt; <a href="#type-minutes" docgen-rel="seetype" docgen-href="#minutes/0">minutes()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_dst_transitions-2">get_dst_transitions/2</a></h3>
+<div class="spec">
+<p><code>get_dst_transitions(Year::<a href="#type-year" docgen-rel="seetype" docgen-href="#year/0">year()</a>, DSTConv::<a href="#type-dst_convention" docgen-rel="seetype" docgen-href="#dst_convention/0">dst_convention()</a>) -&gt; {ToSummer::<a href="#type-utc_timestamp" docgen-rel="seetype" docgen-href="#utc_timestamp/0">utc_timestamp()</a>, ToWinter::<a href="#type-utc_timestamp" docgen-rel="seetype" docgen-href="#utc_timestamp/0">utc_timestamp()</a>}</code><br></p>
 <p> </p>
 </div>
 
@@ -583,6 +674,12 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="get_french_textual_timestamp-0">get_french_textual_timestamp/0</a></h3>
+<div class="spec">
+<p><code>get_french_textual_timestamp() -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="get_french_textual_timestamp-1">get_french_textual_timestamp/1</a></h3>
 <div class="spec">
 <p><code>get_french_textual_timestamp(Timestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
@@ -592,6 +689,18 @@
 <h3 class="function"><a name="get_intertime_duration-2">get_intertime_duration/2</a></h3>
 <div class="spec">
 <p><code>get_intertime_duration(Start::<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>, Stop::<a href="#type-time" docgen-rel="seetype" docgen-href="#time/0">time()</a>) -&gt; <a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_last_sunday-2">get_last_sunday/2</a></h3>
+<div class="spec">
+<p><code>get_last_sunday(Month, Year) -&gt; any()</code></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_last_sunday-3">get_last_sunday/3</a></h3>
+<div class="spec">
+<p><code>get_last_sunday(Month, Year, DayCount) -&gt; any()</code></p>
 <p> </p>
 </div>
 
@@ -676,6 +785,12 @@
 <h3 class="function"><a name="get_textual_duration-2">get_textual_duration/2</a></h3>
 <div class="spec">
 <p><code>get_textual_duration(FirstTimestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>, SecondTimestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_textual_duration_since-1">get_textual_duration_since/1</a></h3>
+<div class="spec">
+<p><code>get_textual_duration_since(Timestamp::<a href="#type-timestamp" docgen-rel="seetype" docgen-href="#timestamp/0">timestamp()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -817,15 +932,27 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="modhms_to_seconds-1">modhms_to_seconds/1</a></h3>
+<div class="spec">
+<p><code>modhms_to_seconds(MoDHMS::<a href="#type-modhms_duration" docgen-rel="seetype" docgen-href="#modhms_duration/0">modhms_duration()</a>) -&gt; <a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="month_to_string-1">month_to_string/1</a></h3>
 <div class="spec">
 <p><code>month_to_string(MonthIndex::<a href="#type-month" docgen-rel="seetype" docgen-href="#month/0">month()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 
+<h3 class="function"><a name="months_to_float_seconds-1">months_to_float_seconds/1</a></h3>
+<div class="spec">
+<p><code>months_to_float_seconds(MonthDuration::<a href="#type-months" docgen-rel="seetype" docgen-href="#months/0">months()</a>) -&gt; <a href="#type-float_seconds" docgen-rel="seetype" docgen-href="#float_seconds/0">float_seconds()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="months_to_seconds-1">months_to_seconds/1</a></h3>
 <div class="spec">
-<p><code>months_to_seconds(MonthDuration::<a href="#type-months" docgen-rel="seetype" docgen-href="#months/0">months()</a>) -&gt; <a href="#type-float_seconds" docgen-rel="seetype" docgen-href="#float_seconds/0">float_seconds()</a></code><br></p>
+<p><code>months_to_seconds(MonthDuration::<a href="#type-months" docgen-rel="seetype" docgen-href="#months/0">months()</a>) -&gt; <a href="#type-seconds" docgen-rel="seetype" docgen-href="#seconds/0">seconds()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -909,7 +1036,7 @@
 
 <h3 class="function"><a name="time_out_to_string-2">time_out_to_string/2</a></h3>
 <div class="spec">
-<p><code>time_out_to_string(Duration::<a href="#type-time_out" docgen-rel="seetype" docgen-href="#time_out/0">time_out()</a>, Lang::<a href="language_utils.html#type-human_language" docgen-rel="seetype" docgen-href="language_utils#human_language/0">language_utils:human_language()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p><code>time_out_to_string(Duration::<a href="#type-time_out" docgen-rel="seetype" docgen-href="#time_out/0">time_out()</a>, Lang::<a href="#type-human_language" docgen-rel="seetype" docgen-href="#human_language/0">human_language()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -976,6 +1103,12 @@
 <h3 class="function"><a name="user_to_canonical_date-1">user_to_canonical_date/1</a></h3>
 <div class="spec">
 <p><code>user_to_canonical_date(X1::<a href="#type-user_date" docgen-rel="seetype" docgen-href="#user_date/0">user_date()</a>) -&gt; <a href="#type-date" docgen-rel="seetype" docgen-href="#date/0">date()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="vet_dst_convention-1">vet_dst_convention/1</a></h3>
+<div class="spec">
+<p><code>vet_dst_convention(DSTConv::term()) -&gt; <a href="#type-dst_convention" docgen-rel="seetype" docgen-href="#dst_convention/0">dst_convention()</a></code><br></p>
 <p> </p>
 </div>
 

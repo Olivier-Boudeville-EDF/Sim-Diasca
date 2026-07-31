@@ -31,6 +31,10 @@
 <p><code>any_color_by_decimal() = <a href="#type-color_by_decimal" docgen-rel="seetype" docgen-href="#color_by_decimal/0">color_by_decimal()</a> | <a href="#type-color_by_decimal_with_alpha" docgen-rel="seetype" docgen-href="#color_by_decimal_with_alpha/0">color_by_decimal_with_alpha()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-bit_size">bit_size()</a></h3>
+<p><code>bit_size() = <a href="system_utils.html#type-bit_size" docgen-rel="seetype" docgen-href="system_utils#bit_size/0">system_utils:bit_size()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-buffer">buffer()</a></h3>
 <p><code>buffer() = <a href="bin_utils.html#type-buffer" docgen-rel="seetype" docgen-href="bin_utils#buffer/0">bin_utils:buffer()</a></code></p>
 
@@ -68,7 +72,7 @@
 
 
 <h3 class="typedecl"><a name="type-color_depth">color_depth()</a></h3>
-<p><code>color_depth() = <a href="system_utils.html#type-bit_size" docgen-rel="seetype" docgen-href="system_utils#bit_size/0">system_utils:bit_size()</a></code></p>
+<p><code>color_depth() = <a href="#type-bit_size" docgen-rel="seetype" docgen-href="#bit_size/0">bit_size()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-count">count()</a></h3>
@@ -93,10 +97,22 @@
 
 <h3 class="typedecl"><a name="type-render_rgb_color">render_rgb_color()</a></h3>
 <p><code>render_rgb_color() = {Red::<a href="#type-color_coordinate" docgen-rel="seetype" docgen-href="#color_coordinate/0">color_coordinate()</a>, Green::<a href="#type-color_coordinate" docgen-rel="seetype" docgen-href="#color_coordinate/0">color_coordinate()</a>, Blue::<a href="#type-color_coordinate" docgen-rel="seetype" docgen-href="#color_coordinate/0">color_coordinate()</a>}</code></p>
-<p>[ color_coordinate() ]. % (a list of 3 elements)</p>
+
+
+<h3 class="typedecl"><a name="type-render_rgb_vector">render_rgb_vector()</a></h3>
+<p><code>render_rgb_vector() = [<a href="#type-color_coordinate" docgen-rel="seetype" docgen-href="#color_coordinate/0">color_coordinate()</a>]</code></p>
+<p> 3 of them</p>
 
 <h3 class="typedecl"><a name="type-render_rgba_color">render_rgba_color()</a></h3>
 <p><code>render_rgba_color() = {Red::<a href="#type-color_coordinate" docgen-rel="seetype" docgen-href="#color_coordinate/0">color_coordinate()</a>, Green::<a href="#type-color_coordinate" docgen-rel="seetype" docgen-href="#color_coordinate/0">color_coordinate()</a>, Blue::<a href="#type-color_coordinate" docgen-rel="seetype" docgen-href="#color_coordinate/0">color_coordinate()</a>, Alpha::<a href="#type-alpha_coordinate" docgen-rel="seetype" docgen-href="#alpha_coordinate/0">alpha_coordinate()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-render_rgba_vector">render_rgba_vector()</a></h3>
+<p><code>render_rgba_vector() = [<a href="#type-color_coordinate" docgen-rel="seetype" docgen-href="#color_coordinate/0">color_coordinate()</a>]</code></p>
+<p> 4 of them</p>
+
+<h3 class="typedecl"><a name="type-render_vector">render_vector()</a></h3>
+<p><code>render_vector() = <a href="#type-render_rgb_vector" docgen-rel="seetype" docgen-href="#render_rgb_vector/0">render_rgb_vector()</a> | <a href="#type-render_rgba_vector" docgen-rel="seetype" docgen-href="#render_rgba_vector/0">render_rgba_vector()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-rgb_color_buffer">rgb_color_buffer()</a></h3>
@@ -126,6 +142,7 @@
 <tr><td valign="top"><a href="#color_by_decimal_to_string-1">color_by_decimal_to_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#color_by_decimal_with_alpha_to_string-1">color_by_decimal_with_alpha_to_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#decimal_to_render-1">decimal_to_render/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#decimal_to_vector-1">decimal_to_vector/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_any_color-1">get_any_color/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_color-1">get_color/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_color_for_gnuplot-1">get_color_for_gnuplot/1</a></td><td></td></tr>
@@ -181,6 +198,15 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="decimal_to_vector-1">decimal_to_vector/1</a></h3>
+<div class="spec">
+<p><code>decimal_to_vector(T::<a href="#type-color_by_decimal" docgen-rel="seetype" docgen-href="#color_by_decimal/0">color_by_decimal()</a>) -&gt; <a href="#type-render_rgb_vector" docgen-rel="seetype" docgen-href="#render_rgb_vector/0">render_rgb_vector()</a></code><br></p><p><code>decimal_to_vector(T::<a href="#type-color_by_decimal_with_alpha" docgen-rel="seetype" docgen-href="#color_by_decimal_with_alpha/0">color_by_decimal_with_alpha()</a>) -&gt; <a href="#type-render_rgba_vector" docgen-rel="seetype" docgen-href="#render_rgba_vector/0">render_rgba_vector()</a></code><br></p><p><code>decimal_to_vector(T::[<a href="#type-color_by_decimal" docgen-rel="seetype" docgen-href="#color_by_decimal/0">color_by_decimal()</a>]) -&gt; [<a href="#type-render_rgb_vector" docgen-rel="seetype" docgen-href="#render_rgb_vector/0">render_rgb_vector()</a>]</code><br></p><p><code>decimal_to_vector(T::[<a href="#type-color_by_decimal_with_alpha" docgen-rel="seetype" docgen-href="#color_by_decimal_with_alpha/0">color_by_decimal_with_alpha()</a>]) -&gt; [<a href="#type-render_rgba_vector" docgen-rel="seetype" docgen-href="#render_rgba_vector/0">render_rgba_vector()</a>]</code><br></p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="get_any_color-1">get_any_color/1</a></h3>
 <div class="spec">
 <p><code>get_any_color(Color::<a href="#type-any_color" docgen-rel="seetype" docgen-href="#any_color/0">any_color()</a>) -&gt; <a href="#type-any_color_by_decimal" docgen-rel="seetype" docgen-href="#any_color_by_decimal/0">any_color_by_decimal()</a></code><br></p>
@@ -195,13 +221,13 @@
 
 <h3 class="function"><a name="get_color_for_gnuplot-1">get_color_for_gnuplot/1</a></h3>
 <div class="spec">
-<p><code>get_color_for_gnuplot(Color::<a href="#type-color" docgen-rel="seetype" docgen-href="#color/0">color()</a>) -&gt; <a href="#type-color" docgen-rel="seetype" docgen-href="#color/0">color()</a></code><br></p>
+<p><code>get_color_for_gnuplot(Color::<a href="#type-color" docgen-rel="seetype" docgen-href="#color/0">color()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="get_colors-0">get_colors/0</a></h3>
 <div class="spec">
-<p><code>get_colors() -&gt; [{<a href="#type-color_by_name" docgen-rel="seetype" docgen-href="#color_by_name/0">color_by_name()</a>, <a href="#type-any_color_by_decimal" docgen-rel="seetype" docgen-href="#any_color_by_decimal/0">any_color_by_decimal()</a>}]</code><br></p>
+<p><code>get_colors() -&gt; [{<a href="#type-color_by_name" docgen-rel="seetype" docgen-href="#color_by_name/0">color_by_name()</a>, <a href="#type-color_by_decimal" docgen-rel="seetype" docgen-href="#color_by_decimal/0">color_by_decimal()</a>}]</code><br></p>
 <p> </p>
 </div>
 

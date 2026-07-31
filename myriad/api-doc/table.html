@@ -1,0 +1,517 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module table</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module table</h1>
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
+
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-accumulator">accumulator()</a></h3>
+<p><code>accumulator() = <a href="basic_utils.html#type-accumulator" docgen-rel="seetype" docgen-href="basic_utils#accumulator/0">basic_utils:accumulator()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-entries">entries()</a></h3>
+<p><code>entries() = <a href="hashtable.html#type-entries" docgen-rel="seetype" docgen-href="hashtable#entries/0">hashtable:entries()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-entry">entry()</a></h3>
+<p><code>entry() = <a href="hashtable.html#type-entry" docgen-rel="seetype" docgen-href="hashtable#entry/0">hashtable:entry()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-entry_count">entry_count()</a></h3>
+<p><code>entry_count() = <a href="basic_utils.html#type-count" docgen-rel="seetype" docgen-href="basic_utils#count/0">basic_utils:count()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-key">key()</a></h3>
+<p><code>key() = <a href="hashtable.html#type-key" docgen-rel="seetype" docgen-href="hashtable#key/0">hashtable:key()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-map_hashtable">map_hashtable()</a></h3>
+<p><code>map_hashtable() = map()</code></p>
+
+
+<h3 class="typedecl"><a name="type-option_entries">option_entries()</a></h3>
+<p><code>option_entries() = <a href="hashtable.html#type-option_entries" docgen-rel="seetype" docgen-href="hashtable#option_entries/0">hashtable:option_entries()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-option_entry">option_entry()</a></h3>
+<p><code>option_entry() = <a href="hashtable.html#type-option_entry" docgen-rel="seetype" docgen-href="hashtable#option_entry/0">hashtable:option_entry()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-table">table()</a></h3>
+<p><code>table(K, V) = <a href="type_utils.html#type-map" docgen-rel="seetype" docgen-href="type_utils#map/0">type_utils:map</a>(K, V)</code></p>
+
+
+<h3 class="typedecl"><a name="type-table">table()</a></h3>
+<p><code>table() = <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-tagged_table">tagged_table()</a></h3>
+<p><code>tagged_table() = <a href="#type-tagged_table" docgen-rel="seetype" docgen-href="#tagged_table/0">tagged_table</a>(term())</code></p>
+
+
+<h3 class="typedecl"><a name="type-tagged_table">tagged_table()</a></h3>
+<p><code>tagged_table(V) = <a href="#type-table" docgen-rel="seetype" docgen-href="#table/0">table</a>(atom(), V)</code></p>
+
+
+<h3 class="typedecl"><a name="type-ustring">ustring()</a></h3>
+<p><code>ustring() = <a href="text_utils.html#type-ustring" docgen-rel="seetype" docgen-href="text_utils#ustring/0">text_utils:ustring()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-value">value()</a></h3>
+<p><code>value() = <a href="hashtable.html#type-value" docgen-rel="seetype" docgen-href="hashtable#value/0">hashtable:value()</a></code></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#add_entries-2">add_entries/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_entry-3">add_entry/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_entry_if_new_key-3">add_entry_if_new_key/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_new_entries-2">add_new_entries/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_new_entry-3">add_new_entry/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_option_entries-2">add_option_entries/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_option_entry-3">add_option_entry/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#add_to_entry-3">add_to_entry/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#append_list_to_entry-3">append_list_to_entry/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#append_list_to_existing_entry-3">append_list_to_existing_entry/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#append_to_entry-3">append_to_entry/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#append_to_existing_entry-3">append_to_existing_entry/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#concat_list_to_entries-2">concat_list_to_entries/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#concat_to_entry-3">concat_to_entry/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#delete_existing_from_entry-3">delete_existing_from_entry/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#delete_from_entry-3">delete_from_entry/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#display-1">display/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#display-2">display/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#enumerate-1">enumerate/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#extract_entries-2">extract_entries/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#extract_entries_if_existing-2">extract_entries_if_existing/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#extract_entry-2">extract_entry/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#extract_entry_if_existing-2">extract_entry_if_existing/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#extract_entry_with_default-3">extract_entry_with_default/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#fold-3">fold/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#fold_on_entries-3">fold_on_entries/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_all_values-2">get_all_values/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_value-2">get_value/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_value_with_default-3">get_value_with_default/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_values-2">get_values/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#has_entry-2">has_entry/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_empty-1">is_empty/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#keys-1">keys/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#lookup_entry-2">lookup_entry/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#map-2">map/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#map_on_entries-2">map_on_entries/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#map_on_values-2">map_on_values/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#merge-1">merge/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#merge-2">merge/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#merge_unique-1">merge_unique/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#merge_unique-2">merge_unique/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#new-0">new/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#new-1">new/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#new_from_unique_entries-1">new_from_unique_entries/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#optimise-1">optimise/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#pop_from_entry-2">pop_from_entry/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#remove_entries-2">remove_entries/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#remove_entry-2">remove_entry/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#remove_existing_entries-2">remove_existing_entries/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#remove_existing_entry-2">remove_existing_entry/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#select_entries-2">select_entries/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#singleton-2">singleton/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#size-1">size/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#subtract_from_entry-3">subtract_from_entry/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#swap_value-3">swap_value/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_string-1">to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#to_string-2">to_string/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#toggle_entry-2">toggle_entry/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#update_entries-2">update_entries/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#update_entry-3">update_entry/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#update_existing_entries-2">update_existing_entries/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#values-1">values/1</a></td><td></td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="add_entries-2">add_entries/2</a></h3>
+<div class="spec">
+<p><code>add_entries(Entries::<a href="#type-entries" docgen-rel="seetype" docgen-href="#entries/0">entries()</a>, MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="add_entry-3">add_entry/3</a></h3>
+<div class="spec">
+<p><code>add_entry(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, Value::<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>, MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="add_entry_if_new_key-3">add_entry_if_new_key/3</a></h3>
+<div class="spec">
+<p><code>add_entry_if_new_key(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, Value::<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>, MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="add_new_entries-2">add_new_entries/2</a></h3>
+<div class="spec">
+<p><code>add_new_entries(Entries::<a href="#type-entries" docgen-rel="seetype" docgen-href="#entries/0">entries()</a>, MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="add_new_entry-3">add_new_entry/3</a></h3>
+<div class="spec">
+<p><code>add_new_entry(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, Value::<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>, MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="add_option_entries-2">add_option_entries/2</a></h3>
+<div class="spec">
+<p><code>add_option_entries(MaybeEntries::<a href="#type-option_entries" docgen-rel="seetype" docgen-href="#option_entries/0">option_entries()</a>, MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="add_option_entry-3">add_option_entry/3</a></h3>
+<div class="spec">
+<p><code>add_option_entry(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, MaybeValue::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>), MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="add_to_entry-3">add_to_entry/3</a></h3>
+<div class="spec">
+<p><code>add_to_entry(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, Value::number(), MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="append_list_to_entry-3">append_list_to_entry/3</a></h3>
+<div class="spec">
+<p><code>append_list_to_entry(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, Elements::[term()], MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="append_list_to_existing_entry-3">append_list_to_existing_entry/3</a></h3>
+<div class="spec">
+<p><code>append_list_to_existing_entry(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, Elements::[term()], Hashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="append_to_entry-3">append_to_entry/3</a></h3>
+<div class="spec">
+<p><code>append_to_entry(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, Element::term(), MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="append_to_existing_entry-3">append_to_existing_entry/3</a></h3>
+<div class="spec">
+<p><code>append_to_existing_entry(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, Element::term(), MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="concat_list_to_entries-2">concat_list_to_entries/2</a></h3>
+<div class="spec">
+<p><code>concat_list_to_entries(KeyListValuePairs::<a href="list_table.html#type-list_table" docgen-rel="seetype" docgen-href="list_table#list_table/0">list_table:list_table()</a>, MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="concat_to_entry-3">concat_to_entry/3</a></h3>
+<div class="spec">
+<p><code>concat_to_entry(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, ListToConcat::list(), MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="delete_existing_from_entry-3">delete_existing_from_entry/3</a></h3>
+<div class="spec">
+<p><code>delete_existing_from_entry(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, Element::term(), MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="delete_from_entry-3">delete_from_entry/3</a></h3>
+<div class="spec">
+<p><code>delete_from_entry(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, Element::term(), MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="display-1">display/1</a></h3>
+<div class="spec">
+<p><code>display(MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="display-2">display/2</a></h3>
+<div class="spec">
+<p><code>display(Title::<a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a>, MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="enumerate-1">enumerate/1</a></h3>
+<div class="spec">
+<p><code>enumerate(MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-entries" docgen-rel="seetype" docgen-href="#entries/0">entries()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="extract_entries-2">extract_entries/2</a></h3>
+<div class="spec">
+<p><code>extract_entries(Keys::[<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>], MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; {[<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>], <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="extract_entries_if_existing-2">extract_entries_if_existing/2</a></h3>
+<div class="spec">
+<p><code>extract_entries_if_existing(Keys::[<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>], ListTable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; {<a href="#type-entries" docgen-rel="seetype" docgen-href="#entries/0">entries()</a>, <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="extract_entry-2">extract_entry/2</a></h3>
+<div class="spec">
+<p><code>extract_entry(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; {<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>, <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="extract_entry_if_existing-2">extract_entry_if_existing/2</a></h3>
+<div class="spec">
+<p><code>extract_entry_if_existing(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; false | {<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>, <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="extract_entry_with_default-3">extract_entry_with_default/3</a></h3>
+<div class="spec">
+<p><code>extract_entry_with_default(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, DefaultValue::<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>, Table::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; {<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>, <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="fold-3">fold/3</a></h3>
+<div class="spec">
+<p><code>fold(Fun::fun((<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, <a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>, <a href="#type-accumulator" docgen-rel="seetype" docgen-href="#accumulator/0">accumulator()</a>) -&gt; <a href="#type-accumulator" docgen-rel="seetype" docgen-href="#accumulator/0">accumulator()</a>), InitialAcc::<a href="#type-accumulator" docgen-rel="seetype" docgen-href="#accumulator/0">accumulator()</a>, Table::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-accumulator" docgen-rel="seetype" docgen-href="#accumulator/0">accumulator()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="fold_on_entries-3">fold_on_entries/3</a></h3>
+<div class="spec">
+<p><code>fold_on_entries(Fun::fun((<a href="#type-entry" docgen-rel="seetype" docgen-href="#entry/0">entry()</a>, <a href="#type-accumulator" docgen-rel="seetype" docgen-href="#accumulator/0">accumulator()</a>) -&gt; <a href="#type-accumulator" docgen-rel="seetype" docgen-href="#accumulator/0">accumulator()</a>), InitialAcc::<a href="#type-accumulator" docgen-rel="seetype" docgen-href="#accumulator/0">accumulator()</a>, MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-accumulator" docgen-rel="seetype" docgen-href="#accumulator/0">accumulator()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_all_values-2">get_all_values/2</a></h3>
+<div class="spec">
+<p><code>get_all_values(Keys::[<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>], Hashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; [<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_value-2">get_value/2</a></h3>
+<div class="spec">
+<p><code>get_value(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_value_with_default-3">get_value_with_default/3</a></h3>
+<div class="spec">
+<p><code>get_value_with_default(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, DefaultValue::<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>, MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_values-2">get_values/2</a></h3>
+<div class="spec">
+<p><code>get_values(Keys::[<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>], Hashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; [<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="has_entry-2">has_entry/2</a></h3>
+<div class="spec">
+<p><code>has_entry(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="is_empty-1">is_empty/1</a></h3>
+<div class="spec">
+<p><code>is_empty(MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="keys-1">keys/1</a></h3>
+<div class="spec">
+<p><code>keys(MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; [<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="lookup_entry-2">lookup_entry/2</a></h3>
+<div class="spec">
+<p><code>lookup_entry(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; key_not_found | {value, <a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="map-2">map/2</a></h3>
+<div class="spec">
+<p><code>map(Fun::fun((<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, <a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>) -&gt; <a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>), MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="map_on_entries-2">map_on_entries/2</a></h3>
+<div class="spec">
+<p><code>map_on_entries(Fun::fun((<a href="#type-entry" docgen-rel="seetype" docgen-href="#entry/0">entry()</a>) -&gt; <a href="#type-entry" docgen-rel="seetype" docgen-href="#entry/0">entry()</a>), MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="map_on_values-2">map_on_values/2</a></h3>
+<div class="spec">
+<p><code>map_on_values(Fun::fun((<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>) -&gt; <a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>), MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="merge-1">merge/1</a></h3>
+<div class="spec">
+<p><code>merge(MapHashtables::[<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>]) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="merge-2">merge/2</a></h3>
+<div class="spec">
+<p><code>merge(MapHashtableRef::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>, MapHashtableOnlyForAdditions::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="merge_unique-1">merge_unique/1</a></h3>
+<div class="spec">
+<p><code>merge_unique(Tables::[<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>]) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="merge_unique-2">merge_unique/2</a></h3>
+<div class="spec">
+<p><code>merge_unique(FirstHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>, SecondHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="new-0">new/0</a></h3>
+<div class="spec">
+<p><code>new() -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="new-1">new/1</a></h3>
+<div class="spec">
+<p><code>new(ExpectedNumberOfEntries::<a href="#type-entries" docgen-rel="seetype" docgen-href="#entries/0">entries()</a> | <a href="#type-entry_count" docgen-rel="seetype" docgen-href="#entry_count/0">entry_count()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="new_from_unique_entries-1">new_from_unique_entries/1</a></h3>
+<div class="spec">
+<p><code>new_from_unique_entries(InitialEntries) -&gt; any()</code></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="optimise-1">optimise/1</a></h3>
+<div class="spec">
+<p><code>optimise(Hashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="pop_from_entry-2">pop_from_entry/2</a></h3>
+<div class="spec">
+<p><code>pop_from_entry(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; {term(), <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="remove_entries-2">remove_entries/2</a></h3>
+<div class="spec">
+<p><code>remove_entries(Keys::[<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>], MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="remove_entry-2">remove_entry/2</a></h3>
+<div class="spec">
+<p><code>remove_entry(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="remove_existing_entries-2">remove_existing_entries/2</a></h3>
+<div class="spec">
+<p><code>remove_existing_entries(Keys::[<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>], MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="remove_existing_entry-2">remove_existing_entry/2</a></h3>
+<div class="spec">
+<p><code>remove_existing_entry(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="select_entries-2">select_entries/2</a></h3>
+<div class="spec">
+<p><code>select_entries(Keys::[<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>], MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-entries" docgen-rel="seetype" docgen-href="#entries/0">entries()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="singleton-2">singleton/2</a></h3>
+<div class="spec">
+<p><code>singleton(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, Value::<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="size-1">size/1</a></h3>
+<div class="spec">
+<p><code>size(MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-entry_count" docgen-rel="seetype" docgen-href="#entry_count/0">entry_count()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="subtract_from_entry-3">subtract_from_entry/3</a></h3>
+<div class="spec">
+<p><code>subtract_from_entry(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, Value::number(), MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="swap_value-3">swap_value/3</a></h3>
+<div class="spec">
+<p><code>swap_value(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, NewValue::<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>, MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; {<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>, <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="to_string-1">to_string/1</a></h3>
+<div class="spec">
+<p><code>to_string(MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="to_string-2">to_string/2</a></h3>
+<div class="spec">
+<p><code>to_string(MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>, DescriptionType::<a href="hashtable.html#type-description_type" docgen-rel="seetype" docgen-href="hashtable#description_type/0">hashtable:description_type()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="toggle_entry-2">toggle_entry/2</a></h3>
+<div class="spec">
+<p><code>toggle_entry(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="update_entries-2">update_entries/2</a></h3>
+<div class="spec">
+<p><code>update_entries(Entries::<a href="#type-entries" docgen-rel="seetype" docgen-href="#entries/0">entries()</a>, MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="update_entry-3">update_entry/3</a></h3>
+<div class="spec">
+<p><code>update_entry(Key::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>, Value::<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>, MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="update_existing_entries-2">update_existing_entries/2</a></h3>
+<div class="spec">
+<p><code>update_existing_entries(Entries::<a href="#type-entries" docgen-rel="seetype" docgen-href="#entries/0">entries()</a>, MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; <a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="values-1">values/1</a></h3>
+<div class="spec">
+<p><code>values(MapHashtable::<a href="#type-map_hashtable" docgen-rel="seetype" docgen-href="#map_hashtable/0">map_hashtable()</a>) -&gt; [<a href="#type-value" docgen-rel="seetype" docgen-href="#value/0">value()</a>]</code><br></p>
+<p> </p>
+</div>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

@@ -15,6 +15,18 @@
 
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-abs_file_path">abs_file_path()</a></h3>
+<p><code>abs_file_path() = <a href="file_utils.html#type-abs_file_path" docgen-rel="seetype" docgen-href="file_utils#abs_file_path/0">file_utils:abs_file_path()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-any_file_path">any_file_path()</a></h3>
+<p><code>any_file_path() = <a href="file_utils.html#type-any_file_path" docgen-rel="seetype" docgen-href="file_utils#any_file_path/0">file_utils:any_file_path()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-file_path">file_path()</a></h3>
+<p><code>file_path() = <a href="file_utils.html#type-file_path" docgen-rel="seetype" docgen-href="file_utils#file_path/0">file_utils:file_path()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-human_language">human_language()</a></h3>
 <p><code>human_language() = english | french | spanish | german | italian | russian | chinese | japanese</code></p>
 
@@ -45,10 +57,14 @@
 
 <h2><a name="index">Function Index</a></h2>
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_additional_beam_directories_for-1">get_additional_beam_directories_for/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_file_path-1">get_file_path/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_file_path-2">get_file_path/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_supported_foreign_languages-0">get_supported_foreign_languages/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_supported_languages-0">get_supported_languages/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_user_language-0">get_user_language/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#language_to_string-1">language_to_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#language_to_string-2">language_to_string/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_user_language-1">set_user_language/1</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -56,6 +72,18 @@
 <h3 class="function"><a name="get_additional_beam_directories_for-1">get_additional_beam_directories_for/1</a></h3>
 <div class="spec">
 <p><code>get_additional_beam_directories_for(Languages::[<a href="#type-language" docgen-rel="seetype" docgen-href="#language/0">language()</a>]) -&gt; [<a href="#type-possibly_resolvable_path" docgen-rel="seetype" docgen-href="#possibly_resolvable_path/0">possibly_resolvable_path()</a>]</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_file_path-1">get_file_path/1</a></h3>
+<div class="spec">
+<p><code>get_file_path(AnyFilePath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>) -&gt; <a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_file_path-2">get_file_path/2</a></h3>
+<div class="spec">
+<p><code>get_file_path(BinFilePath::<a href="#type-any_file_path" docgen-rel="seetype" docgen-href="#any_file_path/0">any_file_path()</a>, Language::<a href="#type-human_language" docgen-rel="seetype" docgen-href="#human_language/0">human_language()</a>) -&gt; <a href="#type-abs_file_path" docgen-rel="seetype" docgen-href="#abs_file_path/0">abs_file_path()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -71,6 +99,12 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="get_user_language-0">get_user_language/0</a></h3>
+<div class="spec">
+<p><code>get_user_language() -&gt; <a href="#type-human_language" docgen-rel="seetype" docgen-href="#human_language/0">human_language()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="language_to_string-1">language_to_string/1</a></h3>
 <div class="spec">
 <p><code>language_to_string(Language::<a href="#type-language" docgen-rel="seetype" docgen-href="#language/0">language()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
@@ -80,6 +114,12 @@
 <h3 class="function"><a name="language_to_string-2">language_to_string/2</a></h3>
 <div class="spec">
 <p><code>language_to_string(Language::<a href="#type-language" docgen-rel="seetype" docgen-href="#language/0">language()</a>, IndentationLevel::<a href="text_utils.html#type-indentation_level" docgen-rel="seetype" docgen-href="text_utils#indentation_level/0">text_utils:indentation_level()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_user_language-1">set_user_language/1</a></h3>
+<div class="spec">
+<p><code>set_user_language(NewLanguage::<a href="#type-human_language" docgen-rel="seetype" docgen-href="#human_language/0">human_language()</a>) -&gt; <a href="http://www.erlang.org/edoc/doc/erts/doc/persistent_term.html#type-info" docgen-rel="seetype" docgen-href="erts:persistent_term#info/0">persistent_term:info()</a></code><br></p>
 <p> </p>
 </div>
 <hr>

@@ -103,6 +103,10 @@
 <p><code>ephemeral_tcp_port() = <a href="#type-tcp_port" docgen-rel="seetype" docgen-href="#tcp_port/0">tcp_port()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-epmd_port">epmd_port()</a></h3>
+<p><code>epmd_port() = <a href="#type-tcp_port" docgen-rel="seetype" docgen-href="#tcp_port/0">tcp_port()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-erlang_naming_type">erlang_naming_type()</a></h3>
 <p><code>erlang_naming_type() = shortnames | longnames</code></p>
 
@@ -127,12 +131,20 @@
 <p><code>ip_address() = <a href="#type-ip_v4_address" docgen-rel="seetype" docgen-href="#ip_v4_address/0">ip_v4_address()</a> | <a href="#type-ip_v6_address" docgen-rel="seetype" docgen-href="#ip_v6_address/0">ip_v6_address()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-ip_address_spec">ip_address_spec()</a></h3>
+<p><code>ip_address_spec() = <a href="#type-ip_address" docgen-rel="seetype" docgen-href="#ip_address/0">ip_address()</a> | <a href="#type-any_string" docgen-rel="seetype" docgen-href="#any_string/0">any_string()</a> | localhost</code></p>
+
+
 <h3 class="typedecl"><a name="type-ip_v4_address">ip_v4_address()</a></h3>
-<p><code>ip_v4_address() = {byte(), byte(), byte(), byte()}</code></p>
+<p><code>ip_v4_address() = {0..255, 0..255, 0..255, 0..255}</code></p>
 
 
 <h3 class="typedecl"><a name="type-ip_v6_address">ip_v6_address()</a></h3>
-<p><code>ip_v6_address() = &lt;&lt;_:128&gt;&gt;</code></p>
+<p><code>ip_v6_address() = {<a href="#type-ipv6_component" docgen-rel="seetype" docgen-href="#ipv6_component/0">ipv6_component()</a>, <a href="#type-ipv6_component" docgen-rel="seetype" docgen-href="#ipv6_component/0">ipv6_component()</a>, <a href="#type-ipv6_component" docgen-rel="seetype" docgen-href="#ipv6_component/0">ipv6_component()</a>, <a href="#type-ipv6_component" docgen-rel="seetype" docgen-href="#ipv6_component/0">ipv6_component()</a>, <a href="#type-ipv6_component" docgen-rel="seetype" docgen-href="#ipv6_component/0">ipv6_component()</a>, <a href="#type-ipv6_component" docgen-rel="seetype" docgen-href="#ipv6_component/0">ipv6_component()</a>, <a href="#type-ipv6_component" docgen-rel="seetype" docgen-href="#ipv6_component/0">ipv6_component()</a>, <a href="#type-ipv6_component" docgen-rel="seetype" docgen-href="#ipv6_component/0">ipv6_component()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-ipv6_component">ipv6_component()</a></h3>
+<p><code>ipv6_component() = 0..65535</code></p>
 
 
 <h3 class="typedecl"><a name="type-listening_socket">listening_socket()</a></h3>
@@ -156,7 +168,7 @@
 
 
 <h3 class="typedecl"><a name="type-net_port">net_port()</a></h3>
-<p><code>net_port() = non_neg_integer()</code></p>
+<p><code>net_port() = 0..65535</code></p>
 
 
 <h3 class="typedecl"><a name="type-node_name">node_name()</a></h3>
@@ -249,7 +261,9 @@
 <tr><td valign="top"><a href="#get_cookie-0">get_cookie/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_cookie_option-0">get_cookie_option/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_default_epmd_port-0">get_default_epmd_port/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_distribution_port-0">get_distribution_port/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_epmd_environment-1">get_epmd_environment/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_epmd_port-0">get_epmd_port/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_hostname-1">get_hostname/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_hostname_from_node_name-1">get_hostname_from_node_name/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_local_ip_address-0">get_local_ip_address/0</a></td><td></td></tr>
@@ -264,8 +278,8 @@
 <tr><td valign="top"><a href="#ipv4_to_string-1">ipv4_to_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#ipv4_to_string-2">ipv4_to_string/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#ipv6_to_string-1">ipv6_to_string/1</a></td><td></td></tr>
-<tr><td valign="top"><a href="#ipv6_to_string-2">ipv6_to_string/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_local_service_running_at-1">is_local_service_running_at/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_local_service_running_at-2">is_local_service_running_at/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_routable-1">is_routable/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_service_running_at-2">is_service_running_at/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#is_service_running_at-3">is_service_running_at/3</a></td><td></td></tr>
@@ -290,6 +304,7 @@
 <tr><td valign="top"><a href="#set_unique_node_name-0">set_unique_node_name/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#shutdown_node-0">shutdown_node/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#shutdown_node-1">shutdown_node/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#spec_to_ip-1">spec_to_ip/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#split_fqdn-1">split_fqdn/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#wait_unavailable-3">wait_unavailable/3</a></td><td></td></tr>
 </table>
@@ -398,9 +413,21 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="get_distribution_port-0">get_distribution_port/0</a></h3>
+<div class="spec">
+<p><code>get_distribution_port() -&gt; <a href="#type-tcp_port" docgen-rel="seetype" docgen-href="#tcp_port/0">tcp_port()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="get_epmd_environment-1">get_epmd_environment/1</a></h3>
 <div class="spec">
 <p><code>get_epmd_environment(EpmdPort::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-tcp_port" docgen-rel="seetype" docgen-href="#tcp_port/0">tcp_port()</a>)) -&gt; <a href="#type-environment" docgen-rel="seetype" docgen-href="#environment/0">environment()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_epmd_port-0">get_epmd_port/0</a></h3>
+<div class="spec">
+<p><code>get_epmd_port() -&gt; <a href="#type-epmd_port" docgen-rel="seetype" docgen-href="#epmd_port/0">epmd_port()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -478,25 +505,25 @@
 
 <h3 class="function"><a name="ipv4_to_string-2">ipv4_to_string/2</a></h3>
 <div class="spec">
-<p><code>ipv4_to_string(X1::<a href="#type-ip_v4_address" docgen-rel="seetype" docgen-href="#ip_v4_address/0">ip_v4_address()</a>, Port::<a href="#type-net_port" docgen-rel="seetype" docgen-href="#net_port/0">net_port()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p><code>ipv4_to_string(IPv4::<a href="#type-ip_v4_address" docgen-rel="seetype" docgen-href="#ip_v4_address/0">ip_v4_address()</a>, Port::<a href="#type-net_port" docgen-rel="seetype" docgen-href="#net_port/0">net_port()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="ipv6_to_string-1">ipv6_to_string/1</a></h3>
 <div class="spec">
-<p><code>ipv6_to_string(Ipv6Bin::<a href="#type-ip_v6_address" docgen-rel="seetype" docgen-href="#ip_v6_address/0">ip_v6_address()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
-<p> </p>
-</div>
-
-<h3 class="function"><a name="ipv6_to_string-2">ipv6_to_string/2</a></h3>
-<div class="spec">
-<p><code>ipv6_to_string(Ipv6::<a href="#type-ip_v6_address" docgen-rel="seetype" docgen-href="#ip_v6_address/0">ip_v6_address()</a>, Port::<a href="#type-net_port" docgen-rel="seetype" docgen-href="#net_port/0">net_port()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p><code>ipv6_to_string(IPv6::<a href="#type-ip_v6_address" docgen-rel="seetype" docgen-href="#ip_v6_address/0">ip_v6_address()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
 <p> </p>
 </div>
 
 <h3 class="function"><a name="is_local_service_running_at-1">is_local_service_running_at/1</a></h3>
 <div class="spec">
 <p><code>is_local_service_running_at(TCPPort::<a href="#type-tcp_port" docgen-rel="seetype" docgen-href="#tcp_port/0">tcp_port()</a>) -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="is_local_service_running_at-2">is_local_service_running_at/2</a></h3>
+<div class="spec">
+<p><code>is_local_service_running_at(TCPPort, DoReuseAddr) -&gt; any()</code></p>
 <p> </p>
 </div>
 
@@ -641,6 +668,12 @@
 <h3 class="function"><a name="shutdown_node-1">shutdown_node/1</a></h3>
 <div class="spec">
 <p><code>shutdown_node(NodeName::<a href="#type-node_name" docgen-rel="seetype" docgen-href="#node_name/0">node_name()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="spec_to_ip-1">spec_to_ip/1</a></h3>
+<div class="spec">
+<p><code>spec_to_ip(Tuple::<a href="#type-ip_address_spec" docgen-rel="seetype" docgen-href="#ip_address_spec/0">ip_address_spec()</a>) -&gt; <a href="#type-ip_address" docgen-rel="seetype" docgen-href="#ip_address/0">ip_address()</a></code><br></p>
 <p> </p>
 </div>
 

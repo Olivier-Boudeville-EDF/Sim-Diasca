@@ -15,10 +15,6 @@
 
 <h2><a name="types">Data Types</a></h2>
 
-<h3 class="typedecl"><a name="type-any_transform">any_transform()</a></h3>
-<p><code>any_transform() = <a href="#type-cipher_transform" docgen-rel="seetype" docgen-href="#cipher_transform/0">cipher_transform()</a> | <a href="#type-decipher_transform" docgen-rel="seetype" docgen-href="#decipher_transform/0">decipher_transform()</a></code></p>
-
-
 <h3 class="typedecl"><a name="type-cell">cell()</a></h3>
 <p><code>cell() = {<a href="#type-state" docgen-rel="seetype" docgen-href="#state/0">state()</a>, <a href="#type-letter" docgen-rel="seetype" docgen-href="#letter/0">letter()</a>}</code></p>
 
@@ -56,7 +52,7 @@
 
 
 <h3 class="typedecl"><a name="type-extract_random_transform">extract_random_transform()</a></h3>
-<p><code>extract_random_transform() = {extract_random, <a href="#type-seed" docgen-rel="seetype" docgen-href="#seed/0">seed()</a>, <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>}</code></p>
+<p><code>extract_random_transform() = {extract_random, <a href="#type-seed" docgen-rel="seetype" docgen-href="#seed/0">seed()</a>, MaxExtractionOffset::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-file_path">file_path()</a></h3>
@@ -72,11 +68,11 @@
 
 
 <h3 class="typedecl"><a name="type-insert_random_transform">insert_random_transform()</a></h3>
-<p><code>insert_random_transform() = {insert_random, <a href="#type-seed" docgen-rel="seetype" docgen-href="#seed/0">seed()</a>, <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>}</code></p>
+<p><code>insert_random_transform() = {insert_random, <a href="#type-seed" docgen-rel="seetype" docgen-href="#seed/0">seed()</a>, MaxInsertionOffset::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-key">key()</a></h3>
-<p><code>key() = [<a href="#type-any_transform" docgen-rel="seetype" docgen-href="#any_transform/0">any_transform()</a>]</code></p>
+<p><code>key() = [<a href="#type-cipher_transform" docgen-rel="seetype" docgen-href="#cipher_transform/0">cipher_transform()</a>]</code></p>
 
 
 <h3 class="typedecl"><a name="type-letter">letter()</a></h3>
@@ -96,11 +92,11 @@
 
 
 <h3 class="typedecl"><a name="type-offset_transform">offset_transform()</a></h3>
-<p><code>offset_transform() = {offset, integer()}</code></p>
+<p><code>offset_transform() = {offset, Offset::integer()}</code></p>
 
 
 <h3 class="typedecl"><a name="type-reciprocal_shuffle_transform">reciprocal_shuffle_transform()</a></h3>
-<p><code>reciprocal_shuffle_transform() = {reciprocal_shuffle, <a href="#type-seed" docgen-rel="seetype" docgen-href="#seed/0">seed()</a>, <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>}</code></p>
+<p><code>reciprocal_shuffle_transform() = {reciprocal_shuffle, <a href="#type-seed" docgen-rel="seetype" docgen-href="#seed/0">seed()</a>, MaxLen::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-seed">seed()</a></h3>
@@ -108,7 +104,7 @@
 
 
 <h3 class="typedecl"><a name="type-shuffle_transform">shuffle_transform()</a></h3>
-<p><code>shuffle_transform() = {shuffle, <a href="#type-seed" docgen-rel="seetype" docgen-href="#seed/0">seed()</a>, <a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>}</code></p>
+<p><code>shuffle_transform() = {shuffle, <a href="#type-seed" docgen-rel="seetype" docgen-href="#seed/0">seed()</a>, MaxLen::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>}</code></p>
 
 
 <h3 class="typedecl"><a name="type-state">state()</a></h3>
@@ -120,7 +116,7 @@
 
 
 <h3 class="typedecl"><a name="type-xor_transform">xor_transform()</a></h3>
-<p><code>xor_transform() = {'xor', [integer()]}</code></p>
+<p><code>xor_transform() = {'xor', XORMask::[integer()]}</code></p>
 
 
 <h2><a name="index">Function Index</a></h2>
@@ -128,10 +124,10 @@
 <tr><td valign="top"><a href="#compute_inverse_mealy_table-1">compute_inverse_mealy_table/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#decrypt-3">decrypt/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#encrypt-3">encrypt/3</a></td><td></td></tr>
-<tr><td valign="top"><a href="#generate_key-2">generate_key/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#generate_mealy_table-1">generate_mealy_table/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#key_to_string-1">key_to_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#mealy_table_to_string-1">mealy_table_to_string/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#write_key_file-2">write_key_file/2</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -160,12 +156,6 @@
 <p> </p>
 </div>
 
-<h3 class="function"><a name="generate_key-2">generate_key/2</a></h3>
-<div class="spec">
-<p><code>generate_key(KeyFilePath::<a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>, Transforms::[<a href="#type-cipher_transform" docgen-rel="seetype" docgen-href="#cipher_transform/0">cipher_transform()</a>]) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
-<p> </p>
-</div>
-
 <h3 class="function"><a name="generate_mealy_table-1">generate_mealy_table/1</a></h3>
 <div class="spec">
 <p><code>generate_mealy_table(StateCount::<a href="#type-count" docgen-rel="seetype" docgen-href="#count/0">count()</a>) -&gt; <a href="#type-mealy_table" docgen-rel="seetype" docgen-href="#mealy_table/0">mealy_table()</a></code><br></p>
@@ -181,6 +171,12 @@
 <h3 class="function"><a name="mealy_table_to_string-1">mealy_table_to_string/1</a></h3>
 <div class="spec">
 <p><code>mealy_table_to_string(Table::<a href="#type-mealy_table" docgen-rel="seetype" docgen-href="#mealy_table/0">mealy_table()</a>) -&gt; <a href="#type-ustring" docgen-rel="seetype" docgen-href="#ustring/0">ustring()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="write_key_file-2">write_key_file/2</a></h3>
+<div class="spec">
+<p><code>write_key_file(KeyFilePath::<a href="#type-file_path" docgen-rel="seetype" docgen-href="#file_path/0">file_path()</a>, Transforms::<a href="#type-key" docgen-rel="seetype" docgen-href="#key/0">key()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
 </div>
 <hr>

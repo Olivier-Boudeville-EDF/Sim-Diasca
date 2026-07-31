@@ -15,6 +15,10 @@
 
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-algorithm">algorithm()</a></h3>
+<p><code>algorithm() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/rand.html#type-alg" docgen-rel="seetype" docgen-href="stdlib:rand#alg/0">rand:alg()</a></code></p>
+<p> Thus atom().</p>
+
 <h3 class="typedecl"><a name="type-alias_table">alias_table()</a></h3>
 <p><b>abstract datatype</b>: <code>alias_table()</code></p>
 
@@ -507,6 +511,10 @@
 <p><code>seed_element() = integer()</code></p>
 
 
+<h3 class="typedecl"><a name="type-seeding">seeding()</a></h3>
+<p><code>seeding() = default_seed | time_based_seed | <a href="#type-seed" docgen-rel="seetype" docgen-href="#seed/0">seed()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-shape">shape()</a></h3>
 <p><code>shape() = number()</code></p>
 
@@ -651,12 +659,15 @@
 <table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#beta_2p_pdf-3">beta_2p_pdf/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#can_be_seeded-0">can_be_seeded/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#check_random_seed-1">check_random_seed/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#ensure_random_state-0">ensure_random_state/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#ensure_random_state-1">ensure_random_state/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#exponential_1p_pdf-2">exponential_1p_pdf/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#exponential_2p_pdf-3">exponential_2p_pdf/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#gamma_2p_pdf-3">gamma_2p_pdf/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#gamma_3p_pdf-4">gamma_3p_pdf/4</a></td><td></td></tr>
 <tr><td valign="top"><a href="#gaussian_pdf-3">gaussian_pdf/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#generate_alias_table_from-1">generate_alias_table_from/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_algorithm-0">get_algorithm/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_all_sample_pairs-1">get_all_sample_pairs/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_boolean-0">get_boolean/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_exponential_1p_pdf-2">get_exponential_1p_pdf/2</a></td><td></td></tr>
@@ -667,6 +678,7 @@
 <tr><td valign="top"><a href="#get_lambda_from_mean_time-1">get_lambda_from_mean_time/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_law_name-1">get_law_name/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_law_settings-1">get_law_settings/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_maybe_random_state-0">get_maybe_random_state/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_positive_integer_exponential_1p_value-1">get_positive_integer_exponential_1p_value/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_positive_integer_exponential_1p_values-2">get_positive_integer_exponential_1p_values/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_positive_integer_gaussian_value-2">get_positive_integer_gaussian_value/2</a></td><td></td></tr>
@@ -679,9 +691,14 @@
 <tr><td valign="top"><a href="#get_samples_from-2">get_samples_from/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_uniform_floating_point_value-1">get_uniform_floating_point_value/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_uniform_floating_point_value-2">get_uniform_floating_point_value/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_uniform_floating_point_value_with-2">get_uniform_floating_point_value_with/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_uniform_floating_point_value_with-3">get_uniform_floating_point_value_with/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_uniform_value-0">get_uniform_value/0</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_uniform_value-1">get_uniform_value/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_uniform_value-2">get_uniform_value/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_uniform_value_with-1">get_uniform_value_with/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_uniform_value_with-2">get_uniform_value_with/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_uniform_value_with-3">get_uniform_value_with/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_uniform_values-2">get_uniform_values/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#get_uniform_values-3">get_uniform_values/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#gumbel_2p_pdf-3">gumbel_2p_pdf/3</a></td><td></td></tr>
@@ -697,6 +714,7 @@
 <tr><td valign="top"><a href="#sampling_info_to_string-1">sampling_info_to_string/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#sampling_info_to_string-2">sampling_info_to_string/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#set_random_state-1">set_random_state/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_random_state-2">set_random_state/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#start_random_source-1">start_random_source/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#start_random_source-3">start_random_source/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#stop_random_source-0">stop_random_source/0</a></td><td></td></tr>
@@ -726,6 +744,18 @@
 <h3 class="function"><a name="check_random_seed-1">check_random_seed/1</a></h3>
 <div class="spec">
 <p><code>check_random_seed(S::<a href="#type-seed" docgen-rel="seetype" docgen-href="#seed/0">seed()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="ensure_random_state-0">ensure_random_state/0</a></h3>
+<div class="spec">
+<p><code>ensure_random_state() -&gt; boolean()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="ensure_random_state-1">ensure_random_state/1</a></h3>
+<div class="spec">
+<p><code>ensure_random_state(Algorithm::<a href="#type-algorithm" docgen-rel="seetype" docgen-href="#algorithm/0">algorithm()</a>) -&gt; boolean()</code><br></p>
 <p> </p>
 </div>
 
@@ -762,6 +792,12 @@
 <h3 class="function"><a name="generate_alias_table_from-1">generate_alias_table_from/1</a></h3>
 <div class="spec">
 <p><code>generate_alias_table_from(DiscreteProbDist::<a href="#type-discrete_probability_distribution" docgen-rel="seetype" docgen-href="#discrete_probability_distribution/0">discrete_probability_distribution()</a>) -&gt; <a href="#type-alias_table" docgen-rel="seetype" docgen-href="#alias_table/0">alias_table()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_algorithm-0">get_algorithm/0</a></h3>
+<div class="spec">
+<p><code>get_algorithm() -&gt; <a href="#type-algorithm" docgen-rel="seetype" docgen-href="#algorithm/0">algorithm()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -825,6 +861,12 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="get_maybe_random_state-0">get_maybe_random_state/0</a></h3>
+<div class="spec">
+<p><code>get_maybe_random_state() -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-random_state" docgen-rel="seetype" docgen-href="#random_state/0">random_state()</a>)</code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="get_positive_integer_exponential_1p_value-1">get_positive_integer_exponential_1p_value/1</a></h3>
 <div class="spec">
 <p><code>get_positive_integer_exponential_1p_value(Lambda::<a href="#type-rate" docgen-rel="seetype" docgen-href="#rate/0">rate()</a>) -&gt; non_neg_integer()</code><br></p>
@@ -851,7 +893,7 @@
 
 <h3 class="function"><a name="get_random_module_name-0">get_random_module_name/0</a></h3>
 <div class="spec">
-<p><code>get_random_module_name() -&gt; crypto</code><br></p>
+<p><code>get_random_module_name() -&gt; any()</code></p>
 <p> </p>
 </div>
 
@@ -863,7 +905,7 @@
 
 <h3 class="function"><a name="get_random_state-0">get_random_state/0</a></h3>
 <div class="spec">
-<p><code>get_random_state() -&gt; <a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-random_state" docgen-rel="seetype" docgen-href="#random_state/0">random_state()</a>)</code><br></p>
+<p><code>get_random_state() -&gt; <a href="#type-random_state" docgen-rel="seetype" docgen-href="#random_state/0">random_state()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -897,6 +939,18 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="get_uniform_floating_point_value_with-2">get_uniform_floating_point_value_with/2</a></h3>
+<div class="spec">
+<p><code>get_uniform_floating_point_value_with(N::number(), RandomState::<a href="#type-random_state" docgen-rel="seetype" docgen-href="#random_state/0">random_state()</a>) -&gt; {float(), <a href="#type-random_state" docgen-rel="seetype" docgen-href="#random_state/0">random_state()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_uniform_floating_point_value_with-3">get_uniform_floating_point_value_with/3</a></h3>
+<div class="spec">
+<p><code>get_uniform_floating_point_value_with(Nmin::number(), Nmax::number(), RandomState::<a href="#type-random_state" docgen-rel="seetype" docgen-href="#random_state/0">random_state()</a>) -&gt; {float(), <a href="#type-random_state" docgen-rel="seetype" docgen-href="#random_state/0">random_state()</a>}</code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="get_uniform_value-0">get_uniform_value/0</a></h3>
 <div class="spec">
 <p><code>get_uniform_value() -&gt; float()</code><br></p>
@@ -912,6 +966,24 @@
 <h3 class="function"><a name="get_uniform_value-2">get_uniform_value/2</a></h3>
 <div class="spec">
 <p><code>get_uniform_value(Nmin::integer(), Nmax::integer()) -&gt; integer()</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_uniform_value_with-1">get_uniform_value_with/1</a></h3>
+<div class="spec">
+<p><code>get_uniform_value_with(RandomState::<a href="#type-random_state" docgen-rel="seetype" docgen-href="#random_state/0">random_state()</a>) -&gt; {float(), <a href="#type-random_state" docgen-rel="seetype" docgen-href="#random_state/0">random_state()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_uniform_value_with-2">get_uniform_value_with/2</a></h3>
+<div class="spec">
+<p><code>get_uniform_value_with(N::pos_integer(), RandomState::<a href="#type-random_state" docgen-rel="seetype" docgen-href="#random_state/0">random_state()</a>) -&gt; {pos_integer(), <a href="#type-random_state" docgen-rel="seetype" docgen-href="#random_state/0">random_state()</a>}</code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="get_uniform_value_with-3">get_uniform_value_with/3</a></h3>
+<div class="spec">
+<p><code>get_uniform_value_with(Nmin::integer(), Nmax::integer(), RandomState::<a href="#type-random_state" docgen-rel="seetype" docgen-href="#random_state/0">random_state()</a>) -&gt; {integer(), <a href="#type-random_state" docgen-rel="seetype" docgen-href="#random_state/0">random_state()</a>}</code><br></p>
 <p> </p>
 </div>
 
@@ -983,7 +1055,7 @@
 
 <h3 class="function"><a name="reset_random_source-1">reset_random_source/1</a></h3>
 <div class="spec">
-<p><code>reset_random_source(Seed::default_seed | time_based_seed | <a href="#type-seed" docgen-rel="seetype" docgen-href="#seed/0">seed()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p><code>reset_random_source(Seeding::<a href="#type-seeding" docgen-rel="seetype" docgen-href="#seeding/0">seeding()</a>) -&gt; <a href="#type-random_state" docgen-rel="seetype" docgen-href="#random_state/0">random_state()</a></code><br></p>
 <p> </p>
 </div>
 
@@ -1005,9 +1077,15 @@
 <p> </p>
 </div>
 
+<h3 class="function"><a name="set_random_state-2">set_random_state/2</a></h3>
+<div class="spec">
+<p><code>set_random_state(Algorithm::<a href="#type-algorithm" docgen-rel="seetype" docgen-href="#algorithm/0">algorithm()</a>, NewRandomState::<a href="#type-random_state" docgen-rel="seetype" docgen-href="#random_state/0">random_state()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
 <h3 class="function"><a name="start_random_source-1">start_random_source/1</a></h3>
 <div class="spec">
-<p><code>start_random_source(X1::default_seed | time_based_seed | <a href="#type-seed" docgen-rel="seetype" docgen-href="#seed/0">seed()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p><code>start_random_source(Seeding::<a href="#type-seeding" docgen-rel="seetype" docgen-href="#seeding/0">seeding()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
 <p> </p>
 </div>
 

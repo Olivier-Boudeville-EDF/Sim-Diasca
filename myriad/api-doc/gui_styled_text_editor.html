@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module gui_styled_text_editor</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module gui_styled_text_editor</h1>
+<ul class="index"><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
+
+
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-any_color">any_color()</a></h3>
+<p><code>any_color() = <a href="gui_color.html#type-any_color" docgen-rel="seetype" docgen-href="gui_color#any_color/0">gui_color:any_color()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-char_pos">char_pos()</a></h3>
+<p><code>char_pos() = <a href="text_edit.html#type-char_pos" docgen-rel="seetype" docgen-href="text_edit#char_pos/0">text_edit:char_pos()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-maybe_list">maybe_list()</a></h3>
+<p><code>maybe_list(T) = <a href="list_utils.html#type-maybe_list" docgen-rel="seetype" docgen-href="list_utils#maybe_list/0">list_utils:maybe_list</a>(T)</code></p>
+
+
+<h3 class="typedecl"><a name="type-parent">parent()</a></h3>
+<p><code>parent() = <a href="gui.html#type-parent" docgen-rel="seetype" docgen-href="gui#parent/0">gui:parent()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-point">point()</a></h3>
+<p><code>point() = <a href="gui.html#type-point" docgen-rel="seetype" docgen-href="gui#point/0">gui:point()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-range_settings">range_settings()</a></h3>
+<p><b>abstract datatype</b>: <code>range_settings()</code></p>
+
+
+<h3 class="typedecl"><a name="type-size">size()</a></h3>
+<p><code>size() = <a href="gui.html#type-size" docgen-rel="seetype" docgen-href="gui#size/0">gui:size()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-ste">ste()</a></h3>
+<p><code>ste() = <a href="#type-styled_text_editor" docgen-rel="seetype" docgen-href="#styled_text_editor/0">styled_text_editor()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-style_name">style_name()</a></h3>
+<p><code>style_name() = atom()</code></p>
+
+
+<h3 class="typedecl"><a name="type-style_option">style_option()</a></h3>
+<p><code>style_option() = bold | underline | {foreground_color, <a href="#type-any_color" docgen-rel="seetype" docgen-href="#any_color/0">any_color()</a>} | {background_color, <a href="#type-any_color" docgen-rel="seetype" docgen-href="#any_color/0">any_color()</a>}</code></p>
+
+
+<h3 class="typedecl"><a name="type-styled_text_editor">styled_text_editor()</a></h3>
+<p><b>abstract datatype</b>: <code>styled_text_editor()</code></p>
+
+
+<h3 class="typedecl"><a name="type-styled_text_editor_option">styled_text_editor_option()</a></h3>
+<p><code>styled_text_editor_option() = {position, <a href="#type-point" docgen-rel="seetype" docgen-href="#point/0">point()</a>} | {size, <a href="#type-size" docgen-rel="seetype" docgen-href="#size/0">size()</a>} | {style, [<a href="#type-text_editor_style" docgen-rel="seetype" docgen-href="#text_editor_style/0">text_editor_style()</a>]}</code></p>
+
+
+<h3 class="typedecl"><a name="type-text_editor_event_type">text_editor_event_type()</a></h3>
+<p><code>text_editor_event_type() = <a href="gui_text_editor.html#type-text_editor_event_type" docgen-rel="seetype" docgen-href="gui_text_editor#text_editor_event_type/0">gui_text_editor:text_editor_event_type()</a></code></p>
+
+
+<h3 class="typedecl"><a name="type-text_editor_style">text_editor_style()</a></h3>
+<p><code>text_editor_style() = <a href="gui_text_editor.html#type-text_editor_style" docgen-rel="seetype" docgen-href="gui_text_editor#text_editor_style/0">gui_text_editor:text_editor_style()</a></code></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#create-1">create/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#create-2">create/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#declare_style-2">declare_style/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#declare_style-3">declare_style/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#destruct-1">destruct/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_background_color-3">set_background_color/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_foreground_color-3">set_foreground_color/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_styling_at-3">set_styling_at/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#set_underline-3">set_underline/3</a></td><td></td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="create-1">create/1</a></h3>
+<div class="spec">
+<p><code>create(Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; <a href="#type-styled_text_editor" docgen-rel="seetype" docgen-href="#styled_text_editor/0">styled_text_editor()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="create-2">create/2</a></h3>
+<div class="spec">
+<p><code>create(Option::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-styled_text_editor_option" docgen-rel="seetype" docgen-href="#styled_text_editor_option/0">styled_text_editor_option()</a>), Parent::<a href="#type-parent" docgen-rel="seetype" docgen-href="#parent/0">parent()</a>) -&gt; <a href="#type-styled_text_editor" docgen-rel="seetype" docgen-href="#styled_text_editor/0">styled_text_editor()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="declare_style-2">declare_style/2</a></h3>
+<div class="spec">
+<p><code>declare_style(STE::<a href="#type-ste" docgen-rel="seetype" docgen-href="#ste/0">ste()</a>, StyleName::<a href="#type-style_name" docgen-rel="seetype" docgen-href="#style_name/0">style_name()</a>) -&gt; <a href="#type-ste" docgen-rel="seetype" docgen-href="#ste/0">ste()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="declare_style-3">declare_style/3</a></h3>
+<div class="spec">
+<p><code>declare_style(STE::<a href="#type-ste" docgen-rel="seetype" docgen-href="#ste/0">ste()</a>, StyleName::<a href="#type-style_name" docgen-rel="seetype" docgen-href="#style_name/0">style_name()</a>, StyleOpts::<a href="#type-maybe_list" docgen-rel="seetype" docgen-href="#maybe_list/0">maybe_list</a>(<a href="#type-style_option" docgen-rel="seetype" docgen-href="#style_option/0">style_option()</a>)) -&gt; <a href="#type-ste" docgen-rel="seetype" docgen-href="#ste/0">ste()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="destruct-1">destruct/1</a></h3>
+<div class="spec">
+<p><code>destruct(STE::<a href="#type-styled_text_editor" docgen-rel="seetype" docgen-href="#styled_text_editor/0">styled_text_editor()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_background_color-3">set_background_color/3</a></h3>
+<div class="spec">
+<p><code>set_background_color(STE::<a href="#type-ste" docgen-rel="seetype" docgen-href="#ste/0">ste()</a>, StyleName::<a href="#type-style_name" docgen-rel="seetype" docgen-href="#style_name/0">style_name()</a>, AnyColor::<a href="#type-any_color" docgen-rel="seetype" docgen-href="#any_color/0">any_color()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_foreground_color-3">set_foreground_color/3</a></h3>
+<div class="spec">
+<p><code>set_foreground_color(STE::<a href="#type-ste" docgen-rel="seetype" docgen-href="#ste/0">ste()</a>, StyleName::<a href="#type-style_name" docgen-rel="seetype" docgen-href="#style_name/0">style_name()</a>, AnyColor::<a href="#type-any_color" docgen-rel="seetype" docgen-href="#any_color/0">any_color()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_styling_at-3">set_styling_at/3</a></h3>
+<div class="spec">
+<p><code>set_styling_at(STE::<a href="#type-ste" docgen-rel="seetype" docgen-href="#ste/0">ste()</a>, StyleName::<a href="#type-style_name" docgen-rel="seetype" docgen-href="#style_name/0">style_name()</a>, StartPos::<a href="#type-char_pos" docgen-rel="seetype" docgen-href="#char_pos/0">char_pos()</a>) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+
+<h3 class="function"><a name="set_underline-3">set_underline/3</a></h3>
+<div class="spec">
+<p><code>set_underline(STE::<a href="#type-ste" docgen-rel="seetype" docgen-href="#ste/0">ste()</a>, StyleName::<a href="#type-style_name" docgen-rel="seetype" docgen-href="#style_name/0">style_name()</a>, IsUnderlined::boolean()) -&gt; <a href="#type-void" docgen-rel="seetype" docgen-href="#void/0">void()</a></code><br></p>
+<p> </p>
+</div>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc</i></p>
+</body>
+</html>

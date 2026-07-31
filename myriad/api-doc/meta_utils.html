@@ -23,6 +23,10 @@
 <p><code>clause_def() = <a href="#type-form" docgen-rel="seetype" docgen-href="#form/0">form()</a></code></p>
 
 
+<h3 class="typedecl"><a name="type-concrete_type_description">concrete_type_description()</a></h3>
+<p><code>concrete_type_description() = <a href="type_utils.html#type-concrete_type_description" docgen-rel="seetype" docgen-href="type_utils#concrete_type_description/0">type_utils:concrete_type_description()</a></code></p>
+
+
 <h3 class="typedecl"><a name="type-form">form()</a></h3>
 <p><code>form() = <a href="ast_base.html#type-form" docgen-rel="seetype" docgen-href="ast_base#form/0">ast_base:form()</a></code></p>
 
@@ -65,10 +69,6 @@
 
 <h3 class="typedecl"><a name="type-parse_transform_options">parse_transform_options()</a></h3>
 <p><code>parse_transform_options() = <a href="http://www.erlang.org/edoc/doc/stdlib/doc/proplists.html#type-proplist" docgen-rel="seetype" docgen-href="stdlib:proplists#proplist/0">proplists:proplist()</a></code></p>
-
-
-<h3 class="typedecl"><a name="type-primitive_type_description">primitive_type_description()</a></h3>
-<p><code>primitive_type_description() = <a href="type_utils.html#type-primitive_type_description" docgen-rel="seetype" docgen-href="type_utils#primitive_type_description/0">type_utils:primitive_type_description()</a></code></p>
 
 
 <h3 class="typedecl"><a name="type-term_transformer">term_transformer()</a></h3>
@@ -179,7 +179,7 @@
 
 <h3 class="function"><a name="transform_term-4">transform_term/4</a></h3>
 <div class="spec">
-<p><code>transform_term(TargetTerm::term(), TypeDescription::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-primitive_type_description" docgen-rel="seetype" docgen-href="#primitive_type_description/0">primitive_type_description()</a>), TermTransformer::<a href="#type-term_transformer" docgen-rel="seetype" docgen-href="#term_transformer/0">term_transformer()</a>, UserData::<a href="#type-user_data" docgen-rel="seetype" docgen-href="#user_data/0">user_data()</a>) -&gt; {term(), <a href="#type-user_data" docgen-rel="seetype" docgen-href="#user_data/0">user_data()</a>}</code><br></p>
+<p><code>transform_term(TargetTerm::term(), ConcTypeDesc::<a href="#type-option" docgen-rel="seetype" docgen-href="#option/0">option</a>(<a href="#type-concrete_type_description" docgen-rel="seetype" docgen-href="#concrete_type_description/0">concrete_type_description()</a>), TermTransformer::<a href="#type-term_transformer" docgen-rel="seetype" docgen-href="#term_transformer/0">term_transformer()</a>, UserData::<a href="#type-user_data" docgen-rel="seetype" docgen-href="#user_data/0">user_data()</a>) -&gt; {term(), <a href="#type-user_data" docgen-rel="seetype" docgen-href="#user_data/0">user_data()</a>}</code><br></p>
 <p> </p>
 </div>
 <hr>
