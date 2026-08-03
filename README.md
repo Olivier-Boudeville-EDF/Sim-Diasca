@@ -1,4 +1,4 @@
-[![Erlang CI](https://github.com/Olivier-Boudeville-EDF/Sim-Diasca/actions/workflows/erlang-ci.yml/badge.svg)](https://github.com/Olivier-Boudeville-EDF/Sim-Diasca/actions/workflows/erlang-ci.yml)
+[![Erlang CI](https://github.com/EDF-Lab/Sim-Diasca/actions/workflows/erlang-ci.yml/badge.svg)](https://github.com/EDF-Lab/Sim-Diasca/actions/workflows/erlang-ci.yml)
 # Sim-Diasca
 
 ![](/sim-diasca/doc/common-elements/edf-related/sim-diasca.png)
@@ -8,7 +8,7 @@
 
 This is the official repository of the Sim-Diasca simulation engine, which is developed and released by [EDF R&D](https://www.edf.fr/en/the-edf-group/inventing-the-future-of-energy/r-d-global-expertise).
 
-The purpose of this public repository is to complement the [official page](https://www.edf.fr/en/the-edf-group/inventing-the-future-of-energy/r-d-global-expertise/our-offers/simulation-softwares/sim-diasca) and to share with the community the code and the [documentation](http://olivier-boudeville-edf.github.io/Sim-Diasca/) of Sim-Diasca.
+The purpose of this public repository is to complement the [official page](https://www.edf.fr/en/the-edf-group/inventing-the-future-of-energy/r-d-global-expertise/our-offers/simulation-softwares/sim-diasca) and to share with the community the code and the [documentation](http://edf-lab.github.io/Sim-Diasca/) of Sim-Diasca.
 
 
 ## Sim-Diasca in a nutshell
@@ -29,8 +29,8 @@ Until the various elements are available online, please [contact us](https://www
 
 ## Sim-Diasca documentation
 
-Please refer to the full [Sim-Diasca official documentation](http://olivier-boudeville-edf.github.io/Sim-Diasca/) for further information.
+Please refer to the full [Sim-Diasca official documentation](http://edf-lab.github.io/Sim-Diasca/) for further information.
 
-One may also have a look at the [Sim-Diasca wiki](https://github.com/Olivier-Boudeville-EDF/Sim-Diasca/wiki).
+One may also have a look at the [Sim-Diasca wiki](https://github.com/EDF-Lab/Sim-Diasca/wiki).
 
-This branch corresponds to the current stable version (2.4.8) of Sim-Diasca.
+This branch corresponds to the current stable version (2.4.9) of Sim-Diasca.
