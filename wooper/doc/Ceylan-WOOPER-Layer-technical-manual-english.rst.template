@@ -4297,7 +4297,7 @@ Sources, Inspirations & Alternate Solutions
 
 - **Concurrent Programming in Erlang**, Joe Armstrong, Robert Virding, Claes Wikström et Mike Williams. Chapter 18, page 299: Object-oriented Programming. This book describes a simple way of implementing multiple inheritance, without virtual table, at the expense of a (probably slow) systematic method look-up (at each method call). No specific state management is supported
 
-- Chris Rathman's `approach <http://www.angelfire.com/tx4/cus/shapes/erlang.html>`_ to life cycle management and polymorphism ; inheritance not supported
+- Chris Rathman's `approach <http://www.angelfire.com/tx4/cus/shapes/erlang.html>`_ (a dead link at the time of this writing) to life cycle management and polymorphism ; inheritance not supported
 
 - `ECT <http://www.erlang-factory.com/upload/presentations/162/ECT.pdf>`_, an Object-Oriented Extension to Erlang, very promising yet apparently not maintained anymore
 

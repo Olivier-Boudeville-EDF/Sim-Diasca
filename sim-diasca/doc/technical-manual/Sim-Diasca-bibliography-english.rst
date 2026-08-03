@@ -8,7 +8,8 @@ In terms of multi-agent systems and distributed simulations, we spotted the foll
 
 - `Time, Clocks, and the Ordering of Events in a Distributed System <http://research.microsoft.com/users/lamport/pubs/time-clocks.pdf>`_, by Leslie Lamport
 
-- `Communicating Sequential Processes (CSP) <http://www.usingcsp.com/cspbook.pdf>`_, by C.A.R. Hoare
+.. comment: 404 - `Communicating Sequential Processes (CSP) <http://www.usingcsp.com/cspbook.pdf>`_, by C.A.R. Hoare
+- `Communicating Sequential Processes (CSP) <https://cs.stanford.edu/people/eroberts/courses/soco/projects/2008-09/tony-hoare/csp.html>`_, by C.A.R. Hoare
 
 - `Sim94, A concurrent simulator for plan-driven troops <http://citeseer.ist.psu.edu/carlson95sim.html>`_ (1995), by Bjorn Carlson
 

@@ -184,9 +184,10 @@ In this context, the architecture of the coupling case discussed here can also b
 
 Mixing and matching models that are either natively developed for the engine or that are merely adapted for it somewhat blurs the frontier between a simulation engine and a coupling engine (i.e. a master).
 
-.. comment Was https://daccosim.foundry.supelec.fr/
+.. comment Was https://daccosim.foundry.supelec.fr/ and later https://www.edf.fr/en/the-edf-group/inventing-the-future-of-energy/r-d-global-expertise/our-offers/simulation-softwares/daccosim-ng
 
-Should there be *only* coupled models (as opposed to native ones), we could rely on a pure co-simulation master, an example of which being `MECSYCO <http://mecsyco.com/>`_; if, additionally, all coupled models were FMUs, `DACCOSIM <https://www.edf.fr/en/the-edf-group/inventing-the-future-of-energy/r-d-global-expertise/our-offers/simulation-softwares/daccosim-ng>`_ could also be used.
+
+Should there be *only* coupled models (as opposed to native ones), we could rely on a pure co-simulation master, an example of which being `MECSYCO <http://mecsyco.com/>`_; if, additionally, all coupled models were FMUs, DACCOSIM-ng could also be used.
 
 We will see in the next sections that, for the coupling cases considered here, more diverse schemes than mere black boxes are to be managed.
 

@@ -122,7 +122,7 @@ For a layer ``foo`` (e.g. ``Myriad``, ``WOOPER``, etc.), one should run from its
 
 .. code:: bash
 
-    $ make self-check-against-plt
+ $ make self-check-against-plt
 
 
 You will have an output like:
@@ -132,7 +132,7 @@ You will have an output like:
  $ make self-check-against-plt
    Building all, in parallel over 8 core(s), from BASE/foo
    [..]
-    Checking foo against its PLT (./foo.plt)
+	Checking foo against its PLT (./foo.plt)
   Checking whether the PLT ./foo.plt is up-to-date... yes
   Compiling some key modules to native code... done in 0m29.49s
   Proceeding with analysis...
@@ -160,7 +160,7 @@ References
 ----------
 
 - `Dialyzer homepage <http://www.it.uu.se/research/group/hipe/dialyzer>`_
-- `a useful Dialyzer practical guide <http://www.ejabberd.im/dialyzer>`_
+.. 404 now: - `a useful Dialyzer practical guide <http://www.ejabberd.im/dialyzer>`_
 - `Types (or lack thereof) <http://learnyousomeerlang.com/types-or-lack-thereof>`_
 - `Types and Function Specifications <http://erlang.org/doc/reference_manual/typespec.html>`_
 - `edoc User's Guide <http://erlang.org/doc/apps/edoc/users_guide.html>`_

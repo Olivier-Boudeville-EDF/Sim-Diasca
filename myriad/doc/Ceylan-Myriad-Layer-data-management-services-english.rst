@@ -66,7 +66,7 @@ More precisely, a module name (e.g. ``foobar``) and a list of ``{atom(), type_ut
 
   -spec baz() -> term().
   baz() ->
-    42.0.
+	42.0.
 
 .. [#] Of course transient terms like PIDs, references, etc. cannot/should not stored in such tables.
 
@@ -280,9 +280,9 @@ Example:
 
  MyJSONTerm = table:add_entries([
    {<<"asset">>, #{<<"generator">> => <<"My Generator">>,
-                   <<"version">> => <<"2.0">>}},
+				   <<"version">> => <<"2.0">>}},
    {<<"other">>, 42}
-                                ], table:new()),
+								], table:new()),
 
  JSONString = json_utils:to_json(MyJSONTerm)
 
@@ -294,8 +294,8 @@ shall result in a JSON document like:
 
  {
    "asset": {
-     "generator": "My Generator",
-     "version": "2.0"
+	 "generator": "My Generator",
+	 "version": "2.0"
    },
    "other": 42
  }
@@ -380,7 +380,9 @@ To communicate with other systems (non-Erlang and/or non-trusted) over a network
 
 This format can be ad hoc (defined with one's conventions) or standard. We prefer here the latter solution, as a standard format favors interoperability and reduces tedious, error-prone transformations.
 
-Moreover various well-supported standard options exist, like `XDR <https://en.wikipedia.org/wiki/External_Data_Representation>`_, `ASN.1 <https://en.wikipedia.org/wiki/ASN.1>`_, `Protobuf <https://en.wikipedia.org/wiki/Protocol_Buffers>`_ (a.k.a. *Protocol Buffer*), `Piqi <http://piqi.org/>`_ and many others.
+Moreover various well-supported standard options exist, like `XDR <https://en.wikipedia.org/wiki/External_Data_Representation>`_, `ASN.1 <https://en.wikipedia.org/wiki/ASN.1>`_, `Protobuf <https://en.wikipedia.org/wiki/Protocol_Buffers>`_ (a.k.a. *Protocol Buffer*), and many others.
+
+.. 404: `Piqi <http://piqi.org/>`_
 
 
 

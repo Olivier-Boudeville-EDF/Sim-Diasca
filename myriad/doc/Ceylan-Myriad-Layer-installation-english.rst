@@ -427,7 +427,7 @@ The `hex <https://hex.pm/>`_ package manager relies on mix, which is commonly in
 
 Thanks to the rebar3 integration with the ``rebar3_hex`` plugin specified in Myriad's (generated) `rebar.config <https://github.com/Olivier-Boudeville/Ceylan-Myriad/blob/master/rebar.config>`_, ``hex`` will be automatically installed and set up.
 
-By following the publishing guidelines (`[1] <https://hex.pm/docs/rebar3_publish>`_, `[2] <https://www.rebar3.org/docs/package_management/publishing-packages/>`_), we were able to publish `Hex packages for Myriad <https://hex.pm/packages/myriad>`_ that can be freely used. And there was much rejoicing!
+By following the publishing guidelines (`[1] <https://hex.pm/docs/rebar3-publish>`_, `[2] <https://www.rebar3.org/docs/package_management/publishing-packages/>`_), we were able to publish `Hex packages for Myriad <https://hex.pm/packages/myriad>`_ that can be freely used. And there was much rejoicing!
 
 One just has to specify for example ``{deps,[myriad]}.`` in one's ``rebar.config``, and that's it.
 

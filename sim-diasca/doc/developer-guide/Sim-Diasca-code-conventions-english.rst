@@ -132,7 +132,8 @@ The most obvious conventions are:
 
 - the **latest stable version of Erlang** should be used, preferably built thanks to our ``myriad/conf/install-erlang.sh`` script
 
-.. comment: 404: - the official *Programming Rules and Conventions* should be enforced, as defined `here <http://www.erlang.se/doc/programming_rules.shtml>`_
+- the official **Programming Rules and Conventions** should be enforced, as defined `here <http://www.erlang.se/doc/programming_rules.shtml>`_ (a dead link at the time of this writing; one may try `this mirror <https://docs.jj1bdx.tokyo/Erlang_Programming_Rules.html>`_ instead)
+_
 
 :raw-html:`<center><img src="xkcd-functional.png"></img></center>`
 :raw-latex:`\includegraphics[scale=0.7]{xkcd-functional.png}`
