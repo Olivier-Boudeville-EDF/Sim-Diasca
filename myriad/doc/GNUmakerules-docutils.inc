@@ -354,18 +354,32 @@ create-api-doc:
 	@cd $(LAYER_TOP)/doc && $(MAKE) -s generate-api-doc
 
 
+
+
 # As no Makefile in TMP_RST_REPOSITORY:
+
+# Problem: when commands are chained by pipes, the overall result is the one of
+# the last (piped) command, so executing a generator (through make) and piping
+# its outputs in 'tee' will not detect generation failures; moreover 'pipefail'
+# does not exist in sh.
+#
+# So not using anymore:
+#	@$(MAKE) -s $(TMP_RST_REPOSITORY)/$(OVERALL_DOCUMENT_HTML_TARGET) 2>&1 | \
+#	tee $(GENERATOR_LOG_FILE)
+#
+# Instead of 'cmd | tee foo.txt', we use below:
+# tmp=$(mktemp); (cmd; echo $? >"$tmp") | tee foo.txt; rc=$(cat "$tmp");
+# rm -f "$tmp"; exit "${rc}"
+
 
 create-html-doc:
 	@echo "  Generating $(TMP_RST_REPOSITORY)/$(OVERALL_DOCUMENT_HTML_TARGET)"
-	@$(MAKE) -s $(TMP_RST_REPOSITORY)/$(OVERALL_DOCUMENT_HTML_TARGET) 2>&1 | \
-	tee $(GENERATOR_LOG_FILE)
+	@tmp=$$(mktemp); ($(MAKE) -s $(TMP_RST_REPOSITORY)/$(OVERALL_DOCUMENT_HTML_TARGET) 2>&1; echo $$? >"$$tmp") | tee $(GENERATOR_LOG_FILE); rc=$$(cat "$$tmp"); /bin/rm -f "$$tmp"; exit "$$rc"
 
 
 create-pdf-doc:
 	@echo "  Generating $(TMP_RST_REPOSITORY)/$(OVERALL_DOCUMENT_PDF_TARGET)"
-	@$(MAKE) -s $(TMP_RST_REPOSITORY)/$(OVERALL_DOCUMENT_PDF_TARGET) 2>&1 | \
-	tee $(GENERATOR_LOG_FILE)
+	@tmp=$$(mktemp); ($(MAKE) -s $(TMP_RST_REPOSITORY)/$(OVERALL_DOCUMENT_PDF_TARGET) 2>&1; echo $$? >"$$tmp") | tee $(GENERATOR_LOG_FILE); rc=$$(cat "$$tmp"); /bin/rm -f "$$tmp"; exit "$$rc"
 
 
 
