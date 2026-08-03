@@ -30,7 +30,7 @@
 </tr>
 <tr class="field"><th class="field-name">Creation Date:</th><td class="field-body">February 2009</td>
 </tr>
-<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Friday, July 31, 2026</td>
+<tr class="field"><th class="field-name">Lastly updated:</th><td class="field-body">Monday, August 3, 2026</td>
 </tr>
 <tr class="field"><th class="field-name">Version:</th><td class="field-body">2.4.9</td>
 </tr>
@@ -214,7 +214,9 @@
 <li><strong>spacing homogeneity</strong> across Sim-Diasca source files should be enforced; for example three blank lines should exist between two function definitions, one between the clauses of any given function (possibly two in case of longer clauses), arguments should be separated by spaces (e.g. <tt class="docutils literal">f( X ) <span class="pre">-&gt;</span> ...</tt>, not <tt class="docutils literal">f(X) <span class="pre">-&gt;</span> ...</tt>), especially if they are a bit complex (<tt class="docutils literal">f( <span class="pre">A={U,V},</span> B, _C ) <span class="pre">-&gt;</span> ...</tt>, not <tt class="docutils literal"><span class="pre">f(A={U,V},B,_C)</span> <span class="pre">-&gt;</span> ...</tt>)</li>
 <li>see the <a class="reference internal" href="#using-type-specifications-with-sim-diasca">Using Type Specifications With Sim-Diasca</a> section for <strong>type-related conventions</strong>; at least all exported functions shall have a <tt class="docutils literal"><span class="pre">-spec</span></tt> declaration; if an actual type is referenced more than once (notably in a given module), a specific user-defined type shall be defined; types shall be defined in &quot;semantic&quot; terms rather than on technical ones (e.g. <tt class="docutils literal"><span class="pre">-type</span> temperature() :: ...</tt> than <tt class="docutils literal">float()</tt>); developers may refer to, or enrich, <tt class="docutils literal">myriad/src/utils/unit_utils.erl</tt> for that</li>
 <li>the <strong>latest stable version of Erlang</strong> should be used, preferably built thanks to our <tt class="docutils literal"><span class="pre">myriad/conf/install-erlang.sh</span></tt> script</li>
+<li>the official <strong>Programming Rules and Conventions</strong> should be enforced, as defined <a class="reference external" href="http://www.erlang.se/doc/programming_rules.shtml">here</a> (a dead link at the time of this writing; one may try <a class="reference external" href="https://docs.jj1bdx.tokyo/Erlang_Programming_Rules.html">this mirror</a> instead)</li>
 </ul>
+<p>_</p>
 <p><span class="raw-html"><center><img src="xkcd-functional.png"></img></center></span>
 </p>
 <ul class="simple">
@@ -1039,7 +1041,8 @@ $<span class="w"> </span>make<span class="w"> </span>bar.plt<span class="w">
 <h3><a class="toc-backref" href="#toc-entry-36">References</a></h3>
 <ul class="simple">
 <li><a class="reference external" href="http://www.it.uu.se/research/group/hipe/dialyzer">Dialyzer homepage</a></li>
-<li><a class="reference external" href="http://www.ejabberd.im/dialyzer">a useful Dialyzer practical guide</a></li>
+</ul>
+<ul class="simple">
 <li><a class="reference external" href="http://learnyousomeerlang.com/types-or-lack-thereof">Types (or lack thereof)</a></li>
 <li><a class="reference external" href="http://erlang.org/doc/reference_manual/typespec.html">Types and Function Specifications</a></li>
 <li><a class="reference external" href="http://erlang.org/doc/apps/edoc/users_guide.html">edoc User's Guide</a></li>
