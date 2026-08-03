@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2010-2023 Olivier Boudeville
+# Copyright (C) 2010-2026 Olivier Boudeville
 #
 # This file is part of the Ceylan-Myriad library.
 # Author: Olivier Boudeville [olivier (dot) boudeville (at) esperide (dot) com]
@@ -20,7 +20,7 @@
 # errors...
 
 
-usage="Usage: $(basename $0) <target rst file> [--pdf|--all|<comma-separated path(s) to CSS file to be used, e.g. common/css/XXX.css,other.css>] [--icon-file ICON_FILENAME]
+usage="Usage: $(basename $0) TARGET_RST_FILE [--pdf|--all|<comma-separated path(s) to CSS file to be used, e.g. common/css/XXX.css,other.css>] [--icon-file ICON_FILENAME]
 
 Generates a final document from specified docutils source file (*.rst).
 By default, only the HTML output will be enabled (using any specified CSS file).
@@ -240,7 +240,7 @@ fi
 
 
 manage_rst_to_html()
-# $1: name of the .rst file to convert to HTML.
+# $1: name of the .rst file to convert to HTML
 # $2: name of the HTML target file
 {
 
