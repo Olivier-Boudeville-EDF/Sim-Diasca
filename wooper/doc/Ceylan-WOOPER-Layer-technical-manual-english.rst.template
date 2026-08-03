@@ -276,7 +276,7 @@ The example_ mentioned through the current guide is an illustration [#]_ of the 
 
 .. [#] This example is not a *simulation*, it is just a multi-agent system. For real, massive, discrete-time simulations of complex systems in Erlang (using WOOPER), one may refer to `Sim-Diasca <https://github.com/edf-Lab/Sim-Diasca>`_ instead (a free software discrete-time simulation engine).
 
-.. one may refer to `Sim-Diasca <http://www.sim-diasca.com>`_ instead (a free software simulation engine).
+.. one may refer to `Sim-Diasca <http://sim-diasca.com>`_ instead (a free software simulation engine).
 
 WOOPER, which stands for *Wrapper for OOP in Erlang*, is a lightweight yet effective (performance-wise, but also regarding the user-side  developing efforts) means of making these constructs available, notably in terms of state management and multiple inheritance.
 
